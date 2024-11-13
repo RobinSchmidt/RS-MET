@@ -1390,26 +1390,23 @@ public:
 //
 // We define:
 //
-// H   = H(t) = input signal
-// H'  = dH/dt
-// d   = sign(H')
-// Q   = (H + alpha*M) / a
-// P   = M_s * L(Q) - M                                 with  L (x) = coth(x) - 1/x
-// R   = c * (M_s/a) * L'(Q)                            with  L'(x) = 1/x^2 - (coth(x))^2 + 1
-// d_M = 1, if d and M_s*L(Q) have same sign, else 0
-// S   = ((1-c)*d_M*P) / ((1-c)*d*k - alpha*P)
+//   H   = H(t) = input signal
+//   H'  = dH/dt
+//   d   = sign(H')
+//   Q   = (H + alpha*M) / a
+//   P   = M_s * L(Q) - M                                 with  L (x) = coth(x) - 1/x
+//   R   = c * (M_s/a) * L'(Q)                            with  L'(x) = 1/x^2 - (coth(x))^2 + 1
+//   d_M = 1, if d and M_s*L(Q) have same sign, else 0
+//   S   = ((1-c)*d_M*P) / ((1-c)*d*k - alpha*P)
 //
 // Then the ODE can be written down as:
 //
-//  dM     S * H'  +  R * H'
-// ---- = ------------------- = f(t,M,H,H')  
-//  dt       1 - R * alpha
+//   dM     S * H'  +  R * H'
+//  ---- = ------------------- = f(t,M,H,H')  
+//   dt       1 - R * alpha
 //
 // M is the output signal and can be obtained by integrating dM/dt. Maybe try to throw that at a
 // general ODE solver
-
-
-
 
 void tapeEmulation()
 {
@@ -1435,6 +1432,9 @@ void tapeEmulation()
     y[n] = tapeSat.getSample(x[n]);
   rsPlotVectors(x, (1./3) * y);  // (1./3) is eyballed to make the levels of in/out similar
 
+  using ODE = rsDifferentialEquationSystem<double, double>;
+  //ODE ode.
+  
 
   // Observations:
   //
@@ -1466,9 +1466,11 @@ void tapeEmulation()
   // - Figure out, what's up with the jaggies and artifacts. Check against Jatin Chowdhury's own 
   //   implementation which is available on GitHub. 
   //   https://github.com/jatinchowdhury18/AnalogTapeModel/blob/master/Plugin/Source/Processors/Hysteresis/HysteresisProcessing.h
-  //   Jaitin's code has different solvers to choose
+  //   Jatin's code has different solvers to choose
   //   from. Maybe an (implicit) trapezoidal rule could be best (because it preserves system 
   //   stability in the linear case)?
+  //
+  // - Maybe try to throw the ODE at my general ODE solver
   //
   // - Try it on more complex input signals - maybe a mix of two sines. Eventually, we may want to
   //   use it as mastering effect, so we are really interested in what it does to complex signals.
