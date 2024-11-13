@@ -1490,7 +1490,7 @@ void tapeEmulationChow()
 
 void tapeEmulationViaOdeSolver()
 {
-  // UNDER CONSTRUCTION
+  // UNDER CONSTRUCTION - very very preliminary! It does not yet work at all
   //
   // I try to re-implement the tape-saturation above using my ODE solver class. 
   
@@ -1499,7 +1499,6 @@ void tapeEmulationViaOdeSolver()
   double inFreq       =   100;
   double inAmp        =     1.0;
   
-
 
   // The relevant equations for the doel are:
   //
@@ -1550,7 +1549,7 @@ void tapeEmulationViaOdeSolver()
     double Mp  = (S*Hp + R*Hp) / (1 - R*alpha) ;           // M'(t) = dM/dt
 
     // Store result of derivative computation in dy:
-    dy[0] = M;
+    dy[0] = Mp;
     dy[1] = 0;   // H is only an input, so we treat it as constant with derivative zero
     dy[2] = 0;   // same for H'
   };
@@ -1565,36 +1564,45 @@ void tapeEmulationViaOdeSolver()
   v[0] = v[1] = v[2] = 0;
   ode.init(3, p, v);
 
-  // Create input signal:
+  // Create input signal and its (numerical) derivative:
   using Vec = std::vector<double>;
   Vec x  = inAmp * createWaveform(N, 0, inFreq, sampleRate);
   Vec xd(N);
   xd[0] = 0;
   for(int n = 1; n < N; n++)
     xd[n] = (x[n] - x[n-1]) / sampleRate;
+  //rsPlotVectors(x, xd);                    // xd is quite small!
 
 
   // Create output signal:
   Vec y(N);
+  double M = 0;
   for(int n = 0; n < N; n++)
   {
     double H  = x[n];
     double Hp = xd[n];
 
-    // 
+    // Do the step:
+    p[0] = M;
+    p[1] = H;
+    p[2] = Hp;
+    ode.stepForwardEuler(f, numDims, p, v, 1/sampleRate);
 
-
-
+    // Extract result:
+    M = p[0];   // p[1], p[2] should not have changed (verify that!)
+    y[n] = M;
   }
+  rsPlotVectors(x, y); // y is full of NaNs!
 
-
-
-  rsPlotVectors(x, xd);
-
+  // ToDo:
+  //
+  // - I think, before attempting to throw the ODE solver at such a complex problem, we need to 
+  //   develop and test the solver itself to some degree of maturity which it currently doesn't 
+  //   have. Only then can we real
 }
 
 void tapeEmulation()
 {
   //tapeEmulationChow();
-  tapeEmulationViaOdeSolver();
+  tapeEmulationViaOdeSolver();   // This is in early stages. It does not yet work at all
 }
