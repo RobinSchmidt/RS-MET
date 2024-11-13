@@ -1432,6 +1432,7 @@ void tapeEmulation()
   //
   // - Figure out, what's up with the jaggies and artifacts. Check against Jatin Chowdhury's own 
   //   implementation which is available on GitHub. 
+  //   https://github.com/jatinchowdhury18/AnalogTapeModel/blob/master/Plugin/Source/Processors/Hysteresis/HysteresisProcessing.h
   //
   // - Try it on more complex input signals - maybe a mix of two sines. Eventually, we may want to
   //   use it as mastering effect, so we are really interested in what it does to complex signals.
