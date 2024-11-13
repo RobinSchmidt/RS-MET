@@ -1256,15 +1256,15 @@ void adHocTapeEmuIdeas()
 
 
 
-/** Translation of Astrobear's Ableton Max4Live code for Jatin Chowdhury's tape emulation algorithm 
-presented by Astrobear here: 
+/** Translation of Astrobear's Ableton Max4Live code for Jatin Chowdhury's tape saturation algorithm 
+fetauring hysteresis presented by Astrobear here: 
 
 https://www.youtube.com/watch?v=6zxUNiweIgU
 
 */
 
 template<class TSig, class TPar>
-class rsTapeEmu
+class rsTapeSaturation  
 {
 
 public:
@@ -1283,10 +1283,57 @@ public:
     return stable ? y : x / 3;
   }
 
+  TSig Langevin_Prime(TSig x) 
+  {
+    stable = (abs(x)) > 0.0001;
+    TSig t1 = 1 / (pow(x, 2));
+    TSig t2 = 1 / (tanh(x));
+    TSig t2_pow2 = pow(t2, 2);
+    TSig y = (t1 - t2_pow2) + 1;
+    return stable ? y : 1 / 3;
+  }
+
+  TSig JilesAtherton(TSig M, TSig H, TSig H_d, TSig alpha, TSig a, TSig M_s, TSig k, TSig c) 
+  {
+    TSig x = ((H + (alpha * M))) / a;
+    TSig L = Langevin(x);
+    TSig L_prime = Langevin_Prime(x);
+    TSig M_diff = (M_s * L) - M;
+    TSig delta = H_d > 0 ? 1 : -1;
+    TSig delta_M = (sign(delta)) == (sign(M_diff)) ? 1 : 0;
+    TSig denominator = 1 - (((((c * alpha)) * (M_s / a))) * L_prime);
+    TSig t1_num = ((((1 - c)) * delta_M)) * M_diff;
+    TSig t1_den = (((((1 - c)) * delta)) * k) - (alpha * M_diff);
+    TSig t1 = (t1_num / t1_den) * H_d;
+    TSig t2 = ((((c * (M_s / a))) * H_d)) * L_prime;
+    return ((t1 + t2)) / denominator;
+  }
+  // Wait! some of the inputs are actually not signals but parameters! Figure out which and declare
+  // them as type TPar! I think, it's aplha, a, M_s, k, c. We actaully have them as members here, 
+  // so they can eventually be removed from the parameter list.
+  
+  // Also, we should moev some of the functions into the proceted section.
+
+  TSig M_n(TSig M_n1, TSig k1, TSig k2, TSig k3, TSig k4) 
+  {
+    return ((((((M_n1 + (k1 / 6))) + (k2 / 3))) + (k3 / 3))) + (k4 / 6);
+  }
+
 
 
 protected:
 
+  // Parameters:
+  TPar alpha = 0.0016;
+  TPar a     = 22000;
+  TPar M_s   = 350000;
+  TPar k     = 2700;
+  TPar c     = 0.17;
+
+  // State:
+  TSig H_n1   = 0;
+  TSig H_d_n1 = 0;
+  TSig M_n1   = 0;
 
 };
 
