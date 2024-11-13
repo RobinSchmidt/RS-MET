@@ -1303,7 +1303,7 @@ public:
     return stable ? y : 1 / 3;
   }
 
-  TSig JilesAtherton(TSig M, TSig H, TSig H_d, TSig alpha, TSig a, TSig M_s, TSig k, TSig c) 
+  TSig JilesAtherton(TSig M, TSig H, TSig H_d, TPar alpha, TPar a, TPar M_s, TPar k, TPar c) 
   {
     TSig x = ((H + (alpha * M))) / a;
     TSig L = Langevin(x);
@@ -1355,21 +1355,32 @@ public:
 
 protected:
 
-  // Parameters:
-  TPar alpha = 0.0016;
-  TPar a     = 22000;
-  TPar M_s   = 350000;
-  TPar k     = 2700;
-  TPar c     = 0.17;
-  TPar T     = 1.0/44100;      // 1/sampleRate
 
-  TPar gain  = 90000;          // Added by Robin Schmidt
+  // Parameters (from the original M4L patch):
+  TPar alpha = 0.0016;       // Mean field parameter
+  TPar a     = 22000;        // Characterizes shape of anhysteric magnetization
+  TPar M_s   = 350000;       // Magnetization saturation
+  TPar k     = 2700;         // Measure of width of hysteresis loop
+  TPar c     = 0.17;         // Ratio of normal and anhysteric initial susceptibilities
+
+  // More parameters (added by Robin Schmidt):
+  TPar T     = 1.0/44100;    // 1/sampleRate
+  TPar gain  = 90000;        // The pre/post-gain that Astrobear applies outside the codebox
 
   // State:
-  TSig H_n1   = 0;
-  TSig H_d_n1 = 0;
-  TSig M_n1   = 0;
+  TSig H_n1   = 0;           // Magnetic field, delayed by 1 sample
+  TSig H_d_n1 = 0;           // Magnetic field derivative, delayed by 1 sample
+  TSig M_n1   = 0;           // Output (magnetization?), delayed by 1 sample
 };
+
+// Notes:
+//
+// - This is a direct traslation of Astrobear's M4L patch. In C++, I would do a couple of things 
+//   differently - like not passing all the variables as function parameters when they are 
+//   already member variables of the class and moving all the functions except for getSample() into
+//   the private or protected section. I didn't do this because I wanted the C++ code to stay as 
+//   closely as possible to the M4L code. There's a lot of room for improving the code with regard
+//   to aesthetics and efficieny.
 
 
 void tapeEmulation()
