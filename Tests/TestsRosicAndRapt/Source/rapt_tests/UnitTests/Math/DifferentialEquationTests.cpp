@@ -414,10 +414,7 @@ bool testNewOdeSolver()
   ok &= z3 == z2;
 
 
-
   // Now, the 4th order Runge-Kutta method:
-
-  //h = 0.1;  // For debugging
 
   // Old solver:
   state[0] = 1;
@@ -463,20 +460,6 @@ bool testNewOdeSolver()
   //rsPlotVectors(x2-x3,y2-y3,z2-z3); 
   // The seem to diverge. Maybe there is some slight difference in the numerical roundoff behavior 
   // that blows up via the Butterfly effect?
-
-
-
-  // Compare results of both implementattions:
-  //rsPlotVectors(x2, x3); // Yes - we see a match!
-
-
-  //rsPlotVectors(x, x3);   // Compare result of x-coordinate Euler and midpoint method
-
-
-  // The look very different! I guess that shouldn't be surprising. Unfortunately, we have no 
-  // reference signal for the midpoint method solution.
-  // Oh - but we could use rsLorentzSystem as reference. It uses the old solver code
-
 
 
   rsAssert(ok);
