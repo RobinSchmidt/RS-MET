@@ -322,7 +322,7 @@ bool testNewOdeSolver()
     y2[n] = lsOld.getElementOfY(1);
     z2[n] = lsOld.getElementOfY(2);
   }
-  rsPlotVectors(x2, y2, z2); 
+  //rsPlotVectors(x2, y2, z2); 
   ok &= x2 == x;
   ok &= y2 == y;
   ok &= z2 == z;
@@ -383,7 +383,7 @@ bool testNewOdeSolver()
     y2[n] = lsOld.getElementOfY(1);
     z2[n] = lsOld.getElementOfY(2);
   }
-  rsPlotVectors(x2, y2, z2); 
+  //rsPlotVectors(x2, y2, z2); 
 
   // New solver:
   p[0] = p[1] = p[2] = 1;              // Reset state
@@ -398,11 +398,11 @@ bool testNewOdeSolver()
     //ODES2::stepRungeKutta4(f, 3, p, h, wrk);
     ODES2::stepMidpoint(f, 3, p, h, wrk);
   }
-  rsPlotVectors(x3, y3, z3); 
+  //rsPlotVectors(x3, y3, z3); 
 
 
   // Compare results of both implementattions:
-  rsPlotVectors(x2, x3); 
+  rsPlotVectors(x2, x3); // Nope - no match!
 
 
 
