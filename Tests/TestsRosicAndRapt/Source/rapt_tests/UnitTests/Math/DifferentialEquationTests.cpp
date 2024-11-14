@@ -312,15 +312,14 @@ bool testNewOdeSolver()
   state.v[0] = 1;   // ToDo: use the () operator for element access
   state.v[1] = 1;
   state.v[2] = 1;
-  //double dummy;
   lsOld.setX(0.0);
   lsOld.setY(state);
   for(int n = 0; n < N; n++)
   {
-    lsOld.stepEuler(h);
     x2[n] = lsOld.getElementOfY(0);
     y2[n] = lsOld.getElementOfY(1);
     z2[n] = lsOld.getElementOfY(2);
+    lsOld.stepEuler(h);
   }
   //rsPlotVectors(x2, y2, z2); 
   ok &= x2 == x;
@@ -365,8 +364,6 @@ bool testNewOdeSolver()
   ok &= z3 == z;
 
 
-
-
   // OK - we have compared the forward Euler results of all 3 implementations. Now we want to check 
   // the higher order solver methods like Runge-Kutta, etc....
 
@@ -380,10 +377,10 @@ bool testNewOdeSolver()
   lsOld.setY(state);
   for(int n = 0; n < N; n++)
   {
-    lsOld.stepMidpoint(h);
     x2[n] = lsOld.getElementOfY(0);
     y2[n] = lsOld.getElementOfY(1);
     z2[n] = lsOld.getElementOfY(2);
+    lsOld.stepMidpoint(h);
   }
   //rsPlotVectors(x2, y2, z2); 
 
@@ -402,11 +399,15 @@ bool testNewOdeSolver()
   }
   //rsPlotVectors(x3, y3, z3); 
 
+  ok &= x3 == x2;
+  ok &= y3 == y2;
+  ok &= z3 == z2;
+
+
+
 
   // Compare results of both implementattions:
-  rsPlotVectors(x2, x3); // Nope - no match!
-
-
+  //rsPlotVectors(x2, x3); // Yes - we see a match!
 
 
   //rsPlotVectors(x, x3);   // Compare result of x-coordinate Euler and midpoint method
