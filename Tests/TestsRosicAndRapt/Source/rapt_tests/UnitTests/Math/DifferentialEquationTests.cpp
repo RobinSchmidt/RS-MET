@@ -312,8 +312,8 @@ bool testNewOdeSolver()
   state.v[0] = 1;   // ToDo: use the () operator for element access
   state.v[1] = 1;
   state.v[2] = 1;
-  double dummy;
-  lsOld.setX(dummy);
+  //double dummy;
+  lsOld.setX(0.0);
   lsOld.setY(state);
   for(int n = 0; n < N; n++)
   {
@@ -376,6 +376,8 @@ bool testNewOdeSolver()
   state.v[0] = 1;                      // ToDo: use the () operator for element access
   state.v[1] = 1;
   state.v[2] = 1;
+  lsOld.setX(0.0);
+  lsOld.setY(state);
   for(int n = 0; n < N; n++)
   {
     lsOld.stepMidpoint(h);
