@@ -80,9 +80,12 @@ void rsInitialValueSolver2<T>::stepMidpoint(const Func& f, int N, T* y, T h, T* 
 template<class T>
 void rsInitialValueSolver2<T>::stepRungeKutta4(const Func& f, int N, T* y, T h, T* wrk)
 {
-  using Vec = std::vector<T>;
-  Vec d1(N), d2(N), d3(N), d4(N), yE(N); // Derivatives and evaluation point
-
+  // Assign convenient names to certain parts of the workspace:
+  T* yE = &wrk[0*N];
+  T* d1 = &wrk[1*N];
+  T* d2 = &wrk[2*N];
+  T* d3 = &wrk[3*N];
+  T* d4 = &wrk[4*N];
   
   // Compute derivatives at 4 evaluation points:
   f(y, &d1[0]);                          // d1 = f(y)

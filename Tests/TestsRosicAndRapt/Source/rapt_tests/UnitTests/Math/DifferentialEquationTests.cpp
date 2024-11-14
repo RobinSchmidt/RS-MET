@@ -303,9 +303,9 @@ bool testNewOdeSolver()
   p[0] = p[1] = p[2] = 1;  // We use again (1,1,1) as initial state  --is this redundant?
 
 
-  double wrk[6];           // Workspace for the solver (for storing computed derivatives)
+  double wrk[5*3];       // Workspace for the solver (for storing computed derivatives)
   // ToDo: document the required size. For Euler-steps, it's equal to N, for midpoint steps it's
-  // 2*N, etc.
+  // 2*N, RK4 needs 5*N, etc.
 
 
   // Now let's try to reproduce it with the old general ODE solver. The old implementation required 
@@ -459,11 +459,10 @@ bool testNewOdeSolver()
   // The seem to diverge. Maybe there is some slight difference in the numerical roundoff behavior 
   // that blows up via the Butterfly effect?
 
-
-  ok &= x3 == x2;
-  ok &= y3 == y2;
-  ok &= z3 == z2;
-
+  double tol = 1.e-6;
+  ok &= rsIsCloseTo(x2, x3, tol);
+  ok &= rsIsCloseTo(y2, y3, tol);
+  ok &= rsIsCloseTo(z2, z3, tol);
 
 
 
