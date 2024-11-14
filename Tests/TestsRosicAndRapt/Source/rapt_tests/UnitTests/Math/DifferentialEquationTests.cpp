@@ -454,15 +454,15 @@ bool testNewOdeSolver()
   }
   //rsPlotVectors(x3, y3, z3); 
 
-  rsPlotVectors(x2, x3);
-  rsPlotVectors(x2-x3,y2-y3,z2-z3); 
-  // The seem to diverge. Maybe there is some slight difference in the numerical roundoff behavior 
-  // that blows up via the Butterfly effect?
-
   double tol = 1.e-6;
   ok &= rsIsCloseTo(x2, x3, tol);
   ok &= rsIsCloseTo(y2, y3, tol);
   ok &= rsIsCloseTo(z2, z3, tol);
+
+  //rsPlotVectors(x2, x3);
+  //rsPlotVectors(x2-x3,y2-y3,z2-z3); 
+  // The seem to diverge. Maybe there is some slight difference in the numerical roundoff behavior 
+  // that blows up via the Butterfly effect?
 
 
 

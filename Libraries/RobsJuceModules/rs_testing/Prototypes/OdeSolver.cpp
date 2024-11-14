@@ -57,9 +57,6 @@ void rsInitialValueSolver2<T>::stepForwardEuler(const Func& f, int N, T* y, T h,
 template<class T>
 void rsInitialValueSolver2<T>::stepMidpoint(const Func& f, int N, T* y, T h, T* wrk)
 {
-  //using Vec = std::vector<T>;
-  //Vec d(N), yM(N);   // Only for development - eventually, we wnat to use the workspace
-
   // Assign convenient names to certain parts of the workspace:
   T* d  = &wrk[0*N];
   T* yM = &wrk[1*N];
@@ -70,7 +67,7 @@ void rsInitialValueSolver2<T>::stepMidpoint(const Func& f, int N, T* y, T h, T* 
     yM[n] = y[n] + 0.5*h*d[n];          // yM = y + h*d/2   (k1 = h*d in the literature)
 
   // Compute derivative at midpoint:
-  f(&yM[0], &d[0]);                     // d = f(yM) = f(y + h*d/2)
+  f(yM, &d[0]);                     // d = f(yM) = f(y + h*d/2)
 
   // Do update step with derivative calculated at midpoint:
   for(int n = 0; n < N; n++)
@@ -88,40 +85,24 @@ void rsInitialValueSolver2<T>::stepRungeKutta4(const Func& f, int N, T* y, T h, 
   T* d4 = &wrk[4*N];
   
   // Compute derivatives at 4 evaluation points:
-  f(y, &d1[0]);                          // d1 = f(y)
+  f(y, d1);                        // d1 = f(y)
 
   for(int n = 0; n < N; n++)
-    yE[n] = y[n] + 0.5*h*d1[n];          // yE = y + h*d1/2 = y + k1/2
-  f(&yE[0], &d2[0]);                     // d2 = f(yE) = f(y + h*d1/2)
+    yE[n] = y[n] + 0.5*h*d1[n];    // yE = y + h*d1/2 = y + k1/2
+  f(yE, d2);                       // d2 = f(yE) = f(y + h*d1/2)
 
   for(int n = 0; n < N; n++)
-    yE[n] = y[n] + 0.5*h*d2[n];          // yE = y + h*d2/2 = y + k2/2
-  f(&yE[0], &d3[0]);                     // d3 = f(yE) = f(y + h*d2/2)
+    yE[n] = y[n] + 0.5*h*d2[n];    // yE = y + h*d2/2 = y + k2/2
+  f(yE, d3);                       // d3 = f(yE) = f(y + h*d2/2)
 
   for(int n = 0; n < N; n++)
-    yE[n] = y[n] + h*d3[n];              // yE = y + h*d3 = y + k3
-  f(&yE[0], &d4[0]);                     // d4 = f(y + h*d3)
-
+    yE[n] = y[n] + h*d3[n];        // yE = y + h*d3 = y + k3
+  f(yE, d4);                       // d4 = f(y + h*d3)
 
   // Do update step using weighted average of the 4 calculated derivatives:
   for(int n = 0; n < N; n++)
     y[n] += h * (d1[n]/6 + d2[n]/3 + d3[n]/3 + d4[n]/6);
-   
-
-  //rsVector<TypeY> k1, k2, k3, k4;
-
-  //k1 = h * f(x, y);
-  //k2 = h * f(x+h/2, y+k1/2);
-  //k3 = h * f(x+h/2, y+k2/2);
-  //k4 = h * f(x+h, y+k3);
-
-  //y += k1/6 + k2/3 + k3/3 + k4/6;
-  //x += h;
 }
-
-
-
-
 
 template<class T>
 void rsInitialValueSolver2<T>::init(int dimensionality, T* initialPosition, T* initialVelocity)
