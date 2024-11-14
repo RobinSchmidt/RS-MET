@@ -1284,12 +1284,20 @@ public:
   // Numeric derivative calculuation:
   static TSig Derivative(TSig T, TSig x, TSig x_n1, TSig x_d_n1) 
   {
-    return ((2 / T) * (x - x_n1)) - x_d_n1;
+    //return (1 / T) * (x - x_n1);  // Test: use a simple backward difference rule
+
+    //double test =  ((2 / T) * (x - x_n1)) - x_d_n1;  // For inspection in debugger
+
+    return ((2 / T) * (x - x_n1)) - x_d_n1; // Trapezoidal integration rule inverted
+
     // Why - x_d_n1? See eq. 21 in the paper. I think, for a simple simple backward difference, it 
     // would be  (1 / T) * (x - x_n1), but the paper says it uses the trapezoidal rule. I don't 
     // know what that means in the context of differentiation - I know it as integration rule. 
     // Hmm....it uses the simple backward difference rule, multiplies the result by 2 and then 
-    // subtracts the previous estimate.
+    // subtracts the previous estimate. When we invert the ruls for trapezoidal integration with
+    // stepsize h:  y[n] = y[n-1] + (h/2)*(x[n] + x[n-1])  to solve for x[n], we obtain
+    // x[n] = (2/h)*(y[n] - y[n-1]) - x[n-1]. So, the differentiation rule results from inverting 
+    // the trapezoidal integration rule.
   }
 
   // Langevin's saturation function:
@@ -1419,7 +1427,7 @@ void tapeEmulationChow()
 {
   int    N            =  3000;
   double sampleRate   = 44100;
-  double inFreq       =   500;
+  double inFreq       =  1500;
   double startAmp     =     0.0;
   double endAmp       =     3.0;
   double preGain      = 50000;       // Astrobear uses 90000 in the video
@@ -1437,7 +1445,9 @@ void tapeEmulationChow()
   Vec y(N);
   for(int n = 0; n < N; n++)
     y[n] = tapeSat.getSample(x[n]);
-  rsPlotVectors(x, y);  // (1./3) is eyballed to make the levels of in/out similar
+  rsPlotVectors(x, y);
+
+  int dummy = 0;
 
 
   // Try to create an implementation based on an ODE solver class
@@ -1470,6 +1480,9 @@ void tapeEmulationChow()
   //   really much saturation going on - but the waveshape is still modified. But with very low 
   //   preGain factors (like 1 or 10), we again get very weird results - but in a different way.
   //   With 10000, the output follows the input closely (up to a sclae factor)
+  //
+  // - Changing the trapezoidal differentiation rule to a simple backward difference rule doesn't
+  //   really help against the artifacts.
   //
   // - The input and output levels are unequal. I needed to reduce the output by a factor of 3 to
   //   bring it to the same level as the input.
@@ -1541,16 +1554,16 @@ void tapeEmulationViaOdeSolver()
   // Produce reference target signal:
 
   TapeSat tapeSat;
+  tapeSat.gain = 1.0; // For test of derivative function
   Vec yt(N);
   for(int n = 0; n < N; n++)
     yt[n] = tapeSat.getSample(x[n]);
-  rsPlotVectors(x, yt); 
-
-
-  //GNUPlotter plt;
-  //plt.plotFunctions(501, -10.0, +10.0, &TapeSat::Langevin, &TapeSat::Langevin_Prime);
-
-
+  rsPlotVectors(x, yt);
+  // When we set  tapeSat.gain = 1  and inspect the values the TapeSat::Derivative in the debugger,
+  // they dou indeed seem to match our xd signal produced above by the trapezoidal(?) rule. The 
+  // signal looks wrong though. It features a Nyquist oscillation. That suggests that my 
+  // translation of Astrobears M4L code is already buggy. Might that explain the artifacts that we
+  // observed in the tests with this class?
 
 
   // The relevant equations for the model are:
@@ -1573,9 +1586,6 @@ void tapeEmulationViaOdeSolver()
   using Func = std::function<void(const double* y, double* dy)>;
   Func f = [&](const double* y, double* dy )
   {
-    // Parameters:
-
-
     // Extract variables from state vector:
     double M  = y[0];              // M(t)
     double H  = y[1];              // H(t)
@@ -1622,10 +1632,6 @@ void tapeEmulationViaOdeSolver()
   double p[numDims];                 // Current position in phase space
   double wrk[numDims];               // Workspace for the ODE solver
   p[0] = p[1] = p[2] = 0;
-  //v[0] = v[1] = v[2] = 0;
-  //ODE ode;
-  //ode.init(3, p, v);
-
 
   // Create output signal:
   Vec y(N);
@@ -1659,6 +1665,6 @@ void tapeEmulationViaOdeSolver()
 
 void tapeEmulation()
 {
-  //tapeEmulationChow();
+  tapeEmulationChow();
   tapeEmulationViaOdeSolver();   // This is in early stages. It does not yet work at all
 }
