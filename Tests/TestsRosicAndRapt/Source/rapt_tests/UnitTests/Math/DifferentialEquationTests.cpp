@@ -290,7 +290,7 @@ bool testNewOdeSolver()
     lorentzSystem.getState(&x[n], &y[n], &z[n]);
     lorentzSystem.iterateState();
   }
-  rsPlotVectors(x, y, z);  // OK - looks good.
+  //rsPlotVectors(x, y, z);  // OK - looks good.
 
 
 
@@ -303,11 +303,14 @@ bool testNewOdeSolver()
   // Retrieve parameters and initial state from reference
   //lorentzSystem.getState(&p[0], &p[1], &p[2]);  // Retrieve initial state
 
-
-  //p[0]   = p[1]   = p[2]   = 0;
+  p[0] = p[1] = p[2] = 1;  // We use again (1,1,1) as initial state
   //wrk[0] = wrk[1] = wrk[2] = 0;
 
-  double h = lorentzSystem.getStepSize();
+  // Retrieve parameters from reference implementation:
+  double h     = lorentzSystem.getStepSize();
+  double sigma = lorentzSystem.getSigma();
+  double rho   = lorentzSystem.getRho();
+  double beta  = lorentzSystem.getBeta();
 
 
 
@@ -318,10 +321,6 @@ bool testNewOdeSolver()
   using Func = std::function<void(const double* y, double* dy)>;
   Func f = [&](const double* y, double* dy)
   {
-    // Parameters:
-    double sigma = lorentzSystem.getSigma();
-    double rho   = lorentzSystem.getRho();
-    double beta  = lorentzSystem.getBeta();
     dy[0] = sigma*(y[1]-y[0]);                    // dx/dt = sigma*(y-x)
     dy[1] = y[0]*(rho-y[2]) - y[1];               // dy/dt = x*(rho-z) - y
     dy[2] = y[0]*y[1] - beta*y[2];                // dz/dt = x*y - beta*z;
@@ -330,14 +329,26 @@ bool testNewOdeSolver()
 
   using ODES2 = rsInitialValueSolver2<double>;    // Why the 2? I don't see any with a 1.
   std::vector<double> x2(N), y2(N), z2(N);
-  x2[0] = p[0];  // The initial values are already stored in p. We'll start out loop at n = 1.
-  y2[0] = p[1];
-  z2[0] = p[2];
-  for(int n = 1; n < N; n++)
-  {
-    ODES2::stepForwardEuler(f, 3, p, wrk, h);
 
+
+  for(int n = 0; n < N; n++)
+  {
+    // Retrieve current state and write into output signals:
+    x2[n] = p[0];
+    y2[n] = p[1];
+    z2[n] = p[2];
+
+    // Iterate state in phase space:
+    ODES2::stepForwardEuler(f, 3, p, wrk, h);    
   }
+  //rsPlotVectors(x2, y2, z2);  // OK - looks good.
+
+  // Check that the solver produced the same result as the reference implementation:
+  ok &= x2 == x;
+  ok &= y2 == y;
+  ok &= z2 == z;
+
+
 
 
 
