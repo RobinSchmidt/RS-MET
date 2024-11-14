@@ -417,6 +417,8 @@ bool testNewOdeSolver()
 
   // Now, the 4th order Runge-Kutta method:
 
+  //h = 0.1;  // For debugging
+
   // Old solver:
   state[0] = 1;
   state[1] = 1;
@@ -452,7 +454,8 @@ bool testNewOdeSolver()
   }
   //rsPlotVectors(x3, y3, z3); 
 
-  rsPlotVectors(x2, x3); 
+  rsPlotVectors(x2, x3);
+  rsPlotVectors(x2-x3,y2-y3,z2-z3); 
   // Wrong!
 
 
