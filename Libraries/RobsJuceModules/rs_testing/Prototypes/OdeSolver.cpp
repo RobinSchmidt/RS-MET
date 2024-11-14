@@ -47,7 +47,7 @@ std::vector<T> rsOdeCoeffs<T>::adamsMoulton(int s)
 
 
 template<class T>
-void rsInitialValueSolver2<T>::stepForwardEuler(const Func& f, int N, T* y, T* v, T h)
+void rsInitialValueSolver2<T>::stepForwardEuler(const Func& f, int N, T* y, T h, T* v)
 {
   f(y, v);                         // Compute derivative, i.e. velocity: v = dy/dt
   for(int i = 0; i < N; i++)       // Update state
@@ -55,7 +55,7 @@ void rsInitialValueSolver2<T>::stepForwardEuler(const Func& f, int N, T* y, T* v
 }
 
 template<class T>
-void rsInitialValueSolver2<T>::stepRungeKutta4(const Func& f, int N, T* y, T* v, T h)
+void rsInitialValueSolver2<T>::stepRungeKutta4(const Func& f, int N, T* y, T h, T* v)
 {
   rsError("Not yet implemented");
 }

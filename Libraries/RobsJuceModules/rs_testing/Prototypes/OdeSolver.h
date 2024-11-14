@@ -76,8 +76,9 @@ public:
 
 
   // Low-level API (requires user to provide workspace variables - inconvenient and error-prone!)
-  static void stepForwardEuler(const Func& f, int N, T* y, T* v, T h);
-  static void stepRungeKutta4( const Func& f, int N, T* y, T* v, T h);
+  static void stepForwardEuler(const Func& f, int N, T* y, T h, T* v);
+
+  static void stepRungeKutta4( const Func& f, int N, T* y, T h, T* v);
   // Rename v to wrk and make it the last parameter. Document for each function, how much workspace
   // is needed. 
 

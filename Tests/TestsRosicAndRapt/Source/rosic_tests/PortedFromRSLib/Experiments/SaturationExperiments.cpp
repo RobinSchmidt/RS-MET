@@ -1615,7 +1615,7 @@ void tapeEmulationViaOdeSolver()
     p[0] = M;  // ?
     p[1] = H;
     p[2] = Hp;
-    ODE::stepForwardEuler(f, numDims, p, v, 1/sampleRate);
+    ODE::stepForwardEuler(f, numDims, p, 1/sampleRate, v);
 
     // Extract the magnetization as result:
     M = p[0];              // p[1], p[2] should not have changed (verify that!)

@@ -277,14 +277,13 @@ bool testNewOdeSolver()
 {
   bool ok = true;
 
-  int N = 2000;   // Number of samples
+  int  N = 2000;                         // Number of samples to produce
 
   // Generate a reference signal with our old, known to work, Lorenz-system implementation:
-  rosic::LorentzSystem lorentzSystem;
-  lorentzSystem.setPseudoFrequency(500); // make this a parameter
-  std::vector<double> x(N), y(N), z(N);
-  //lorentzSystem.getState(&x[0], &y[0], &z[0]);
+  rosic::LorentzSystem lorentzSystem;    
+  lorentzSystem.setPseudoFrequency(500); // Determines step-size (together with sample rate) 
   lorentzSystem.setState(1, 1, 1);       // Set up initial state, (0,0,0) doesn't work - is fixed point
+  std::vector<double> x(N), y(N), z(N);  // Signal arrays
   for(int n = 0; n < N; n++)
   {
     lorentzSystem.getState(&x[n], &y[n], &z[n]);
@@ -297,22 +296,15 @@ bool testNewOdeSolver()
   // Now let's try to reproduce that using the new general ODE solver:
 
   // Create some temporaary workspace variables that are used by the low-level API of the solver:
-  double p[3];       // Vector in phase space
-  double wrk[3];     // Workspace for the solver (for storin computed derivatives)
-
-  // Retrieve parameters and initial state from reference
-  //lorentzSystem.getState(&p[0], &p[1], &p[2]);  // Retrieve initial state
-
+  double p[3];             // Vector in phase space
+  double wrk[3];           // Workspace for the solver (for storing computed derivatives)
   p[0] = p[1] = p[2] = 1;  // We use again (1,1,1) as initial state
-  //wrk[0] = wrk[1] = wrk[2] = 0;
 
-  // Retrieve parameters from reference implementation:
+  // Retrieve system and solver parameters from reference implementation:
   double h     = lorentzSystem.getStepSize();
   double sigma = lorentzSystem.getSigma();
   double rho   = lorentzSystem.getRho();
   double beta  = lorentzSystem.getBeta();
-
-
 
   // Define the std::function object that computes the derivatives (i.e. the phase-space velocity)
   // from a given position y in phase space. The phase space point where we currently are in passed
@@ -326,11 +318,10 @@ bool testNewOdeSolver()
     dy[2] = y[0]*y[1] - beta*y[2];                // dz/dt = x*y - beta*z;
   };
 
-
+  // Solve the Lorenz system with the genral solver. The reference implementation uses the simple
+  // forward Euler method, so we use that here, too.
   using ODES2 = rsInitialValueSolver2<double>;    // Why the 2? I don't see any with a 1.
   std::vector<double> x2(N), y2(N), z2(N);
-
-
   for(int n = 0; n < N; n++)
   {
     // Retrieve current state and write into output signals:
@@ -339,7 +330,7 @@ bool testNewOdeSolver()
     z2[n] = p[2];
 
     // Iterate state in phase space:
-    ODES2::stepForwardEuler(f, 3, p, wrk, h);    
+    ODES2::stepForwardEuler(f, 3, p, h, wrk);
   }
   //rsPlotVectors(x2, y2, z2);  // OK - looks good.
 
@@ -349,6 +340,9 @@ bool testNewOdeSolver()
   ok &= z2 == z;
 
 
+  // OK - now we wnat to check the higher order solver methods like Runge-Kutta, etc....
+  p[0] = p[1] = p[2] = 1; // Reset state
+  std::vector<double> x3(N), y3(N), z3(N);
 
 
 

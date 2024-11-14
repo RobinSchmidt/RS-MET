@@ -89,14 +89,16 @@ namespace rosic
       y += h*dy;
       z += h*dz;
     }
-
+    // Maybe rename to updateState
 
   protected:
 
     INLINE void updateStepSize()
     {
       const double c = 1.0;    
-        // \todo tweak this such that pseudoFrequency indeed coincides with perceived frequency
+      // ToDo: tweak this such that pseudoFrequency indeed coincides with perceived frequency.
+      // To figure out the perceived frequency, look at spectrum plots and listen. Maybe make
+      // autocorrelation analysis.
 
       h = c * pseudoFrequency / sampleRate; 
     }
