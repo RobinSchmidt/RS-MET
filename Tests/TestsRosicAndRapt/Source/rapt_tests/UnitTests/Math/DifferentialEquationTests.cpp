@@ -419,6 +419,7 @@ bool testNewOdeSolver()
 
 
 
+  rsAssert(ok);
   return ok;
 
   // ToDo:

@@ -61,12 +61,12 @@ void rsInitialValueSolver2<T>::stepMidpoint(const Func& f, int N, T* y, T h, T* 
   Vec k1(N), k2(N), yM(N);   // Only for development - eventually, we wnat to use the workspace
 
   // Compute midpoint yM:
-  f(y, &k1[0]);                        // k1 = h * f(y)
-  for(int n = 0; n < N; n++)
-    k1[n] *= h;
+  f(y, &k1[0]);                        // k1 = f(y)
+  //for(int n = 0; n < N; n++)
+  //  k1[n] *= h;
 
   for(int n = 0; n < N; n++)
-    yM[n] = y[n] + 0.5*k1[n];          // yM = y + k1/2
+    yM[n] = y[n] + 0.5*h*k1[n];          // yM = y + h*k1/2
   // These two loops can be merged. Define k1 as f(y) and then do yM[n] = y[n] + 0.5*h*k1[n]
 
   // Compute derivative at midpoint:
@@ -77,14 +77,6 @@ void rsInitialValueSolver2<T>::stepMidpoint(const Func& f, int N, T* y, T h, T* 
     y[n] += h * k2[n];
 
 
-  // From old implementation in rsDifferentialEquationSystem:
-  //rsVector<TypeY> k1, k2;
-
-  //k1 = h * f(x, y);
-  //k2 = h * f(x+h/2, y+k1/2);
-
-  //y += k2;
-  //x += h;
 }
 
 template<class T>
