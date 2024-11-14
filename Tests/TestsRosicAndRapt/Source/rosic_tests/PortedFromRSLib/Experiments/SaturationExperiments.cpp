@@ -1284,11 +1284,8 @@ public:
   // Numeric derivative calculuation:
   static TSig Derivative(TSig T, TSig x, TSig x_n1, TSig x_d_n1) 
   {
-    //return (1 / T) * (x - x_n1);  // Test: use a simple backward difference rule
-
-    //double test =  ((2 / T) * (x - x_n1)) - x_d_n1;  // For inspection in debugger
-
-    return ((2 / T) * (x - x_n1)) - x_d_n1;
+    //return (1 / T) * (x - x_n1);             // Backward difference rule
+    return ((2 / T) * (x - x_n1)) - x_d_n1;  // Trapezoidal rule
     // This strange looking numerical differentiation rule can be obtained by inverting the 
     // trapezoidal rule for numerical integration:  y[n] = y[n-1] + (T/2)*(x[n] + x[n-1])  
     // Solve for  x[n] = (2/T)*(y[n] - y[n-1]) - x[n-1]. See eq. 21 in the paper. In some 
