@@ -58,23 +58,20 @@ template<class T>
 void rsInitialValueSolver2<T>::stepMidpoint(const Func& f, int N, T* y, T h, T* wrk)
 {
   using Vec = std::vector<T>;
-  Vec k1(N), k2(N), yM(N);   // Only for development - eventually, we wnat to use the workspace
+  Vec d1(N), d2(N), yM(N);   // Only for development - eventually, we wnat to use the workspace
 
   // Compute midpoint yM:
-  f(y, &k1[0]);                        // k1 = f(y)
-  //for(int n = 0; n < N; n++)
-  //  k1[n] *= h;
-
+  f(y, &d1[0]);                          // d1 = f(y)
   for(int n = 0; n < N; n++)
-    yM[n] = y[n] + 0.5*h*k1[n];          // yM = y + h*k1/2
-  // These two loops can be merged. Define k1 as f(y) and then do yM[n] = y[n] + 0.5*h*k1[n]
+    yM[n] = y[n] + 0.5*h*d1[n];          // yM = y + h*d1/2   (k1 = h*d1)
+
 
   // Compute derivative at midpoint:
-  f(&yM[0], &k2[0]);
+  f(&yM[0], &d2[0]);
 
   // Do update step with derivative calculated at midpoint:
   for(int n = 0; n < N; n++)
-    y[n] += h * k2[n];
+    y[n] += h * d2[n];
 
 
 }
