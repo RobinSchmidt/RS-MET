@@ -1289,12 +1289,13 @@ public:
     //double test =  ((2 / T) * (x - x_n1)) - x_d_n1;  // For inspection in debugger
 
     return ((2 / T) * (x - x_n1)) - x_d_n1;
-    // This strange looking numerical differentiation rule can be ontained by inverting the 
+    // This strange looking numerical differentiation rule can be obtained by inverting the 
     // trapezoidal rule for numerical integration:  y[n] = y[n-1] + (T/2)*(x[n] + x[n-1])  
     // Solve for  x[n] = (2/T)*(y[n] - y[n-1]) - x[n-1]. See eq. 21 in the paper. In some 
     // experiments, I observed that it may produce oscillations at the Nyquist freq. Maybe a 
     // 2-point moving average could be used to counteract it? But maybe we should just use a
-    // different rule
+    // different rule. The rule is recursive and stateful, so the results may depend on an initial
+    // condition - which is also a very weird feature for a numeric differentiation rule.
   }
 
   // Langevin's saturation function:
@@ -1425,7 +1426,7 @@ void tapeEmulationChow()
 {
   int    N            =  3000;
   double sampleRate   = 44100;
-  double inFreq       =  1500;
+  double inFreq       =   500;
   double startAmp     =     0.0;
   double endAmp       =     3.0;
   double preGain      = 50000;       // Astrobear uses 90000 in the video
@@ -1444,6 +1445,7 @@ void tapeEmulationChow()
   for(int n = 0; n < N; n++)
     y[n] = tapeSat.getSample(x[n]);
   rsPlotVectors(x, y);
+  int dummy = 0;
 
   // Observations:
   //
@@ -1652,6 +1654,6 @@ void tapeEmulationViaOdeSolver()
 
 void tapeEmulation()
 {
-  //tapeEmulationChow();
+  tapeEmulationChow();
   tapeEmulationViaOdeSolver();   // This is in early stages. It does not yet work at all
 }
