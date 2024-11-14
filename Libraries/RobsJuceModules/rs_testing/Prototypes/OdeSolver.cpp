@@ -85,7 +85,7 @@ void rsInitialValueSolver2<T>::stepRungeKutta4(const Func& f, int N, T* y, T h, 
   using Vec = std::vector<T>;
   Vec d1(N), d2(N), d3(N), d4(N), yE(N); // Derivatives and evaluation point
 
-  /*
+  
   // Compute derivatives at 4 evaluation points:
   f(y, &d1[0]);                          // d1 = f(y)
 
@@ -105,9 +105,10 @@ void rsInitialValueSolver2<T>::stepRungeKutta4(const Func& f, int N, T* y, T h, 
   // Do update step using weighted average of the 4 calculated derivatives:
   for(int n = 0; n < N; n++)
     y[n] += h * (d1[n]/6 + d2[n]/3 + d3[n]/3 + d4[n]/6);
-    */
+   
 
 
+  /*
   // Try it again:
   using AT = rsArrayTools;
   Vec k1(N), k2(N), k3(N), k4(N); 
@@ -134,6 +135,7 @@ void rsInitialValueSolver2<T>::stepRungeKutta4(const Func& f, int N, T* y, T h, 
   // Do update step using weighted average of the 4 calculated derivatives:
   for(int n = 0; n < N; n++)
     y[n] += k1[n]/6 + k2[n]/3 + k3[n]/3 + k4[n]/6;
+    */
 
 
 

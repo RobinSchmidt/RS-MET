@@ -456,7 +456,8 @@ bool testNewOdeSolver()
 
   rsPlotVectors(x2, x3);
   rsPlotVectors(x2-x3,y2-y3,z2-z3); 
-  // Wrong!
+  // The seem to diverge. Maybe there is some slight difference in the numerical roundoff behavior 
+  // that blows up via the Butterfly effect?
 
 
   ok &= x3 == x2;
