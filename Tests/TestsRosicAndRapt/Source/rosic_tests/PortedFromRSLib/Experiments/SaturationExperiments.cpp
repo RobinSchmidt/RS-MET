@@ -1288,7 +1288,7 @@ public:
 
     //double test =  ((2 / T) * (x - x_n1)) - x_d_n1;  // For inspection in debugger
 
-    //return ((2 / T) * (x - x_n1)) - x_d_n1; 
+    return ((2 / T) * (x - x_n1)) - x_d_n1;
     // This strange looking numerical differentiation rule can be ontained by inverting the 
     // trapezoidal rule for numerical integration:  y[n] = y[n-1] + (T/2)*(x[n] + x[n-1])  
     // Solve for  x[n] = (2/T)*(y[n] - y[n-1]) - x[n-1]. See eq. 21 in the paper. In some 
@@ -1517,6 +1517,10 @@ void tapeEmulationViaOdeSolver()
   // Create input signal and its (numerical) derivative:
   using Vec = std::vector<double>;
   Vec x  = inAmp * createWaveform(N, 0, inFreq, sampleRate);
+
+  //x = rsLinearRangeVector(N, 1.0, 2.0);  // DC for test for differentiator
+  // Shows the parasitic Nyquist oscillation of the trapezoidal differentiation rule.
+
   Vec xd(N);
   xd[0] = 0;
   for(int n = 1; n < N; n++)
@@ -1531,15 +1535,13 @@ void tapeEmulationViaOdeSolver()
   }
   rsPlotVectors(x, xd);                    // xd is quite small!
 
-  // return ((2 / T) * (x - x_n1)) - x_d_n1;
-  // return ((2 / T) * (x - x_n1)) - x_d_n1;
 
 
 
   // Produce reference target signal:
 
   TapeSat tapeSat;
-  tapeSat.gain = 1.0; // For test of derivative function
+  //tapeSat.gain = 1.0; // For test of derivative function
   Vec yt(N);
   for(int n = 0; n < N; n++)
     yt[n] = tapeSat.getSample(x[n]);
