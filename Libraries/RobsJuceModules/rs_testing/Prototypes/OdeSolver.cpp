@@ -70,7 +70,7 @@ void rsInitialValueSolver2<T>::stepMidpoint(const Func& f, int N, T* y, T h, T* 
     yM[n] = y[n] + 0.5*h*d[n];          // yM = y + h*d/2   (k1 = h*d in the literature)
 
   // Compute derivative at midpoint:
-  f(&yM[0], &d[0]);
+  f(&yM[0], &d[0]);                     // d = f(yM) = f(y + h*d/2)
 
   // Do update step with derivative calculated at midpoint:
   for(int n = 0; n < N; n++)
@@ -80,6 +80,9 @@ void rsInitialValueSolver2<T>::stepMidpoint(const Func& f, int N, T* y, T h, T* 
 template<class T>
 void rsInitialValueSolver2<T>::stepRungeKutta4(const Func& f, int N, T* y, T h, T* wrk)
 {
+  //using Vec = std::vector<T>;
+  //Vec d(N), yM(N); 
+
 
 
   rsError("Not yet implemented");

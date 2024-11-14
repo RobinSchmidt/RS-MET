@@ -315,9 +315,9 @@ bool testNewOdeSolver()
   rsLorentzSystem lsOld;
   std::vector<double> x2(N), y2(N), z2(N);
   rsVector<double> state(3);
-  state.v[0] = 1;   // ToDo: use the () operator for element access
-  state.v[1] = 1;
-  state.v[2] = 1;
+  state[0] = 1;
+  state[1] = 1;
+  state[2] = 1;
   lsOld.setX(0.0);
   lsOld.setY(state);
   for(int n = 0; n < N; n++)
@@ -376,9 +376,9 @@ bool testNewOdeSolver()
   // First, the midpoint method:
 
   // Old solver:
-  state.v[0] = 1;                      // ToDo: use the () operator for element access
-  state.v[1] = 1;
-  state.v[2] = 1;
+  state[0] = 1;
+  state[1] = 1;
+  state[2] = 1;
   lsOld.setX(0.0);
   lsOld.setY(state);
   for(int n = 0; n < N; n++)
@@ -408,6 +408,30 @@ bool testNewOdeSolver()
   ok &= x3 == x2;
   ok &= y3 == y2;
   ok &= z3 == z2;
+
+
+
+  // Now, the 4th order Runge-Kutta method:
+
+  // Old solver:
+  state[0] = 1;
+  state[1] = 1;
+  state[2] = 1;
+  lsOld.setX(0.0);
+  lsOld.setY(state);
+  for(int n = 0; n < N; n++)
+  {
+    x2[n] = lsOld.getElementOfY(0);
+    y2[n] = lsOld.getElementOfY(1);
+    z2[n] = lsOld.getElementOfY(2);
+    lsOld.stepRungeKutta4(h);
+  }
+  rsPlotVectors(x2, y2, z2); 
+
+  rsPlotVectors(x2, x3);   
+  // Compare RK4 to midpoint. They stay pretty close for 1200 samples and then they go off into
+  // different directions.
+
 
 
 
