@@ -308,9 +308,10 @@ bool testNewOdeSolver()
   // 2*N, etc.
 
 
-
-
-  // Now let's try to reproduce it with the old general ODE solver:
+  // Now let's try to reproduce it with the old general ODE solver. The old implementation required 
+  // client cod to create a subsclass of rsDifferentialEquationSystem and there implement the 
+  // derivative computation method in a "template method" design pattern. The class rsLorentzSystem 
+  // is such a subclass that implements the Lorenz equations in the overriden method:
 
   rsLorentzSystem lsOld;
   std::vector<double> x2(N), y2(N), z2(N);
@@ -333,7 +334,10 @@ bool testNewOdeSolver()
   ok &= z2 == z;
 
 
-  // Now let's try to reproduce that using the new general ODE solver:
+  // Now let's try to reproduce that using the new general ODE solver. This one has a different 
+  // API. Instead of subclassing a solver class, the user must pass it a std::function object for
+  // the derivative computations. The low-level API takes a reference to such a funtion as argument
+  // to the stepper methods (along with pointers to a state-vector and a workspace).
 
   // Define the std::function object that computes the derivatives (i.e. the phase-space velocity)
   // from a given position y in phase space. The phase space point where we currently are in passed
@@ -426,12 +430,35 @@ bool testNewOdeSolver()
     z2[n] = lsOld.getElementOfY(2);
     lsOld.stepRungeKutta4(h);
   }
-  rsPlotVectors(x2, y2, z2); 
+  //rsPlotVectors(x2, y2, z2); 
 
-  rsPlotVectors(x2, x3);   
+  //rsPlotVectors(x2, x3);   
   // Compare RK4 to midpoint. They stay pretty close for 1200 samples and then they go off into
   // different directions.
 
+  // New solver:
+
+  // New solver:
+  p[0] = p[1] = p[2] = 1;              // Reset state
+  for(int n = 0; n < N; n++)
+  {
+    // Retrieve current state and write into output signals:
+    x3[n] = p[0];
+    y3[n] = p[1];
+    z3[n] = p[2];
+
+    // Iterate state in phase space:
+    ODES2::stepRungeKutta4(f, 3, p, h, wrk);
+  }
+  //rsPlotVectors(x3, y3, z3); 
+
+  rsPlotVectors(x2, x3); 
+  // Wrong!
+
+
+  ok &= x3 == x2;
+  ok &= y3 == y2;
+  ok &= z3 == z2;
 
 
 
@@ -453,6 +480,10 @@ bool testNewOdeSolver()
   return ok;
 
   // ToDo:
+  //
+  // - Implement and test a more convenient high-level API for the new solver. It should be used 
+  //   like solver.setDerivativeFunction(f); solver.setMethod(R); solver.doStep(); 
+  //   solver.setState(); solver.getState(); and it should manage its workspace memory internally.
   //
   // - Maybe do some tests with a simple system that has an analytic solution such that we can 
   //   compare the results of different solvers with the analytic solution. Maybe a damped 

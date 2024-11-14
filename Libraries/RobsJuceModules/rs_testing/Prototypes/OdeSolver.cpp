@@ -80,12 +80,43 @@ void rsInitialValueSolver2<T>::stepMidpoint(const Func& f, int N, T* y, T h, T* 
 template<class T>
 void rsInitialValueSolver2<T>::stepRungeKutta4(const Func& f, int N, T* y, T h, T* wrk)
 {
-  //using Vec = std::vector<T>;
-  //Vec d(N), yM(N); 
+  using Vec = std::vector<T>;
+  Vec d1(N), d2(N), d3(N), d4(N), yE(N); // Derivatives and evaluation point
+
+  // Compute derivatives at 4 evaluation points:
+  f(y, &d1[0]);                          // d1 = f(y)
+
+  for(int n = 0; n < N; n++)
+    yE[n] = y[n] + 0.5*h*d1[n];          // yE = y + h*d1/2 = y + k1/2
+  f(&yE[0], &d2[0]);                         // d2 = f(yE) = f(y + h*d1/2)
+
+  for(int n = 0; n < N; n++)
+    yE[n] = y[n] + 0.5*h*d2[n];          // yE = y + h*d2/2 = y + k2/2
+  f(&yE[0], &d3[0]);                         // d3 = f(yE) = f(y + h*d2/2)
+
+  for(int n = 0; n < N; n++)
+    yE[n] = y[n] + h*d3[n];              // yE = y + h*d3 = y + k3
+  f(&yE[0], &d4[0]);                         // d4 = f(y + h*d3)
+
+
+  // Do update step using weighted average of the 4 calculated derivatives:
+  for(int n = 0; n < N; n++)
+    y[n] += h * (d1[n]/6 + d2[n]/3 + d3[n]/3 + d4[n]);
 
 
 
-  rsError("Not yet implemented");
+  //d1 = f(y);
+  //d2 = f(y + h*d1/2);
+  //d3 = f(y + h*d2/2);
+  //d4 = f(y + h*d3  );
+
+  //y += h * (d1/6 + d2/3 + d3/3 + d4/6);
+
+
+
+
+
+  //rsError("Not yet implemented");
 
 
   //rsVector<TypeY> k1, k2, k3, k4;
@@ -97,6 +128,9 @@ void rsInitialValueSolver2<T>::stepRungeKutta4(const Func& f, int N, T* y, T h, 
 
   //y += k1/6 + k2/3 + k3/3 + k4/6;
   //x += h;
+
+
+
 }
 
 
