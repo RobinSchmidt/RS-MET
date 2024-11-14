@@ -1512,6 +1512,26 @@ void tapeEmulationViaOdeSolver()
   double T          = 1.0/sampleRate; // 1/sampleRate
 
 
+  // Create input signal and its (numerical) derivative:
+  using Vec = std::vector<double>;
+  Vec x  = inAmp * createWaveform(N, 0, inFreq, sampleRate);
+  Vec xd(N);
+  xd[0] = 0;
+  for(int n = 1; n < N; n++)
+    xd[n] = (x[n] - x[n-1]) / sampleRate;
+  //rsPlotVectors(x, xd);                    // xd is quite small!
+
+
+  // Produce reference signal:
+  using TapeSat = rsTapeSaturation<double, double>;
+  TapeSat tapeSat;
+
+
+  //GNUPlotter plt;
+  //plt.plotFunctions(501, -10.0, +10.0, &TapeSat::Langevin, &TapeSat::Langevin_Prime);
+
+
+
   // The relevant equations for the model are:
   //
   //   H   = H(t) = input signal
@@ -1529,14 +1549,7 @@ void tapeEmulationViaOdeSolver()
   //  ---- = ------------------- = f(t,M,H,H')  
   //   dt       1 - R * alpha
 
-  using TapeSat = rsTapeSaturation<double, double>;
-  using Func    = std::function<void(const double* y, double* dy)>;
-
-
-  //GNUPlotter plt;
-  //plt.plotFunctions(501, -10.0, +10.0, &TapeSat::Langevin, &TapeSat::Langevin_Prime);
-
-
+  using Func = std::function<void(const double* y, double* dy)>;
   Func f = [&](const double* y, double* dy )
   {
     // Parameters:
@@ -1586,20 +1599,11 @@ void tapeEmulationViaOdeSolver()
   using ODE = rsInitialValueSolver2<double>;
   static const int numDims = 3;      // M, H, H' where H, H' are only used for inputs
   double p[numDims];                 // Current position in phase space
-  double v[numDims];                 // Velocity in phase space
+  double wrk[numDims];               // Workspace for the ODE solver
   p[0] = p[1] = p[2] = 0;
-  v[0] = v[1] = v[2] = 0;
+  //v[0] = v[1] = v[2] = 0;
   //ODE ode;
   //ode.init(3, p, v);
-
-  // Create input signal and its (numerical) derivative:
-  using Vec = std::vector<double>;
-  Vec x  = inAmp * createWaveform(N, 0, inFreq, sampleRate);
-  Vec xd(N);
-  xd[0] = 0;
-  for(int n = 1; n < N; n++)
-    xd[n] = (x[n] - x[n-1]) / sampleRate;
-  //rsPlotVectors(x, xd);                    // xd is quite small!
 
 
   // Create output signal:
@@ -1615,7 +1619,8 @@ void tapeEmulationViaOdeSolver()
     p[0] = M;  // ?
     p[1] = H;
     p[2] = Hp;
-    ODE::stepForwardEuler(f, numDims, p, 1/sampleRate, v);
+    //ODE::stepForwardEuler(f, numDims, p, 1/sampleRate, wrk);
+    ODE::stepRungeKutta4(f, numDims, p, 1/sampleRate, wrk);
 
     // Extract the magnetization as result:
     M = p[0];              // p[1], p[2] should not have changed (verify that!)
