@@ -72,6 +72,7 @@ public:
 
   static void stepForwardEuler(const Func& f, int N, T* y, T* v, T h);
 
+  static void stepRungeKutta4(const Func& f, int N, T* y, T* v, T h);
 
   void init(int dimensionality, T* initialPosition, T* initialVelocity);
 

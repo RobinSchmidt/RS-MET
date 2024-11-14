@@ -97,7 +97,7 @@ public:
 };
 
 
-// 1-dimenstional "system" for test purposes with y' = n*((y-c)/x) - (y-c)/tau. The analytic
+// 1-dimensional "system" for test purposes with y' = n*((y-c)/x) - (y-c)/tau. The analytic
 // solution is y(x) = x^2 * e^(-x/tau) + c.  -> check this - it doesn't seem to work:
 
 class rsTestSystem : public rsDifferentialEquationSystemDbl
@@ -139,20 +139,6 @@ public:
   double n, tau, c;
 
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void retrieveVariables(rsDifferentialEquationSystemDbl &theSystem, int n)
 {
@@ -287,11 +273,22 @@ void testTestSystem1()
   */
 }
 
+bool testNewOdeSolver()
+{
+  bool ok = true;
+
+
+  return ok;
+}
+
 
 bool testDifferentialEquationSystem()
 {
   std::string testName = "DifferentialEquationSystem";
-  bool testResult = true;
+  bool ok = true;
+
+  ok &= testNewOdeSolver();
+
 
   //testLorentzSystem();
   //rsNormalize(y[0], numValues, 1.0);
@@ -306,5 +303,5 @@ bool testDifferentialEquationSystem()
   testTestSystem1();
 
   //appendTestResultToReport(reportString, testName, testResult);
-  return testResult;
+  return ok;
 }

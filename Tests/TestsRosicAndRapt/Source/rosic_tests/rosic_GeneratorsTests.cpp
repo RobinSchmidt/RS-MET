@@ -85,7 +85,8 @@ void rotes::testLorentzSystem()
   static const int N = 2000;
 
   rosic::LorentzSystem lorentzSystem;
-  lorentzSystem.setPseudoFrequency(1000);
+  //lorentzSystem.setPseudoFrequency(1000);
+  lorentzSystem.setPseudoFrequency(500);
 
   double t[N], x[N], y[N], z[N];
   lorentzSystem.getState(&x[0], &y[0], &z[0]);

@@ -49,10 +49,19 @@ std::vector<T> rsOdeCoeffs<T>::adamsMoulton(int s)
 template<class T>
 void rsInitialValueSolver2<T>::stepForwardEuler(const Func& f, int N, T* y, T* v, T h)
 {
-  f(y, v);                         // compute derivative, i.e. velocity: v = dy/dt
-  for(int i = 0; i < N; i++)       // update state (maybe factor out)
+  f(y, v);                         // Compute derivative, i.e. velocity: v = dy/dt
+  for(int i = 0; i < N; i++)       // Update state
     y[i] += h * v[i];
 }
+
+template<class T>
+void rsInitialValueSolver2<T>::stepRungeKutta4(const Func& f, int N, T* y, T* v, T h)
+{
+  rsError("Not yet implemented");
+}
+
+
+
 
 
 template<class T>
@@ -91,7 +100,7 @@ ToDo:
  https://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods
  https://www.ams.org/journals/mcom/1962-16-080/S0025-5718-1962-0150954-0/S0025-5718-1962-0150954-0.pdf
 
-
+-See class rsDifferentialEquationSystem for the old implementation - has some code to copy/paste/edit
 
 
 
