@@ -1358,7 +1358,9 @@ public:
     H_d_n1 = H_d;
     M_n1   = M;
 
-    return out1 / gain;      // Undo the pre-gain
+    return (1/3.) * out1 / gain;  // Undo the pre-gain and apply the 1/3 factor that makes
+                                  // in/out of similar levels
+                                  // (1./3) is eyballed to make the levels of in/out similar
   }
 
 
@@ -1435,7 +1437,7 @@ void tapeEmulationChow()
   Vec y(N);
   for(int n = 0; n < N; n++)
     y[n] = tapeSat.getSample(x[n]);
-  rsPlotVectors(x, (1./3) * y);  // (1./3) is eyballed to make the levels of in/out similar
+  rsPlotVectors(x, y);  // (1./3) is eyballed to make the levels of in/out similar
 
 
   // Try to create an implementation based on an ODE solver class
@@ -1522,13 +1524,18 @@ void tapeEmulationViaOdeSolver()
   //rsPlotVectors(x, xd);                    // xd is quite small!
 
 
-  // Produce reference signal:
+  // Produce reference target signal:
   using TapeSat = rsTapeSaturation<double, double>;
   TapeSat tapeSat;
+  Vec yt(N);
+  for(int n = 0; n < N; n++)
+    yt[n] = tapeSat.getSample(x[n]);
+  rsPlotVectors(x, yt); 
 
 
   //GNUPlotter plt;
   //plt.plotFunctions(501, -10.0, +10.0, &TapeSat::Langevin, &TapeSat::Langevin_Prime);
+
 
 
 
