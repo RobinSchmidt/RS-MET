@@ -343,11 +343,33 @@ bool testNewOdeSolver()
   // OK - now we wnat to check the higher order solver methods like Runge-Kutta, etc....
   p[0] = p[1] = p[2] = 1; // Reset state
   std::vector<double> x3(N), y3(N), z3(N);
+  for(int n = 0; n < N; n++)
+  {
+    // Retrieve current state and write into output signals:
+    x3[n] = p[0];
+    y3[n] = p[1];
+    z3[n] = p[2];
 
+    // Iterate state in phase space:
+    //ODES2::stepRungeKutta4(f, 3, p, h, wrk);
+    ODES2::stepMidpoint(f, 3, p, h, wrk);
+  }
+  rsPlotVectors(x3, y3, z3); 
+
+
+  rsPlotVectors(x2, x3);   // Compare result of x-coordinate Euler and midpoint method
+  // The look very different! I guess that shouldn't be surprising. Unfortunately, we have no 
+  // reference signal for the midpoint method solution.
 
 
 
   return ok;
+
+  // ToDo:
+  //
+  // - Maybe do some tests with a simple system that has an analytic solution such that we can 
+  //   compare the results of different solvers with the analytic solution. Maybe a damped 
+  //   sinuosoid would be a good example system. The ODE is given by: ...
 }
 
 
