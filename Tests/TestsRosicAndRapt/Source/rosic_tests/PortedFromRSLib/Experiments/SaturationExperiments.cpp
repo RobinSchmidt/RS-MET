@@ -1288,16 +1288,13 @@ public:
 
     //double test =  ((2 / T) * (x - x_n1)) - x_d_n1;  // For inspection in debugger
 
-    return ((2 / T) * (x - x_n1)) - x_d_n1; // Trapezoidal integration rule inverted
-
-    // Why - x_d_n1? See eq. 21 in the paper. I think, for a simple simple backward difference, it 
-    // would be  (1 / T) * (x - x_n1), but the paper says it uses the trapezoidal rule. I don't 
-    // know what that means in the context of differentiation - I know it as integration rule. 
-    // Hmm....it uses the simple backward difference rule, multiplies the result by 2 and then 
-    // subtracts the previous estimate. When we invert the ruls for trapezoidal integration with
-    // stepsize h:  y[n] = y[n-1] + (h/2)*(x[n] + x[n-1])  to solve for x[n], we obtain
-    // x[n] = (2/h)*(y[n] - y[n-1]) - x[n-1]. So, the differentiation rule results from inverting 
-    // the trapezoidal integration rule.
+    //return ((2 / T) * (x - x_n1)) - x_d_n1; 
+    // This strange looking numerical differentiation rule can be ontained by inverting the 
+    // trapezoidal rule for numerical integration:  y[n] = y[n-1] + (T/2)*(x[n] + x[n-1])  
+    // Solve for  x[n] = (2/T)*(y[n] - y[n-1]) - x[n-1]. See eq. 21 in the paper. In some 
+    // experiments, I observed that it may produce oscillations at the Nyquist freq. Maybe a 
+    // 2-point moving average could be used to counteract it? But maybe we should just use a
+    // different rule
   }
 
   // Langevin's saturation function:
@@ -1366,9 +1363,10 @@ public:
     H_d_n1 = H_d;
     M_n1   = M;
 
-    return (1/3.) * out1 / gain;  // Undo the pre-gain and apply the 1/3 factor that makes
-                                  // in/out of similar levels
-                                  // (1./3) is eyballed to make the levels of in/out similar
+    return (1/3.) * out1 / gain;  
+    // Undo the pre-gain and apply the 1/3 factor that makes in/out of similar levels.                              
+    // (1./3) is eyballed to make the levels of in/out similar. But it happens to be the value of 
+    // the derivative of the Langevin function at zero, so that might have something to do with it.
   }
 
 
@@ -1447,19 +1445,6 @@ void tapeEmulationChow()
     y[n] = tapeSat.getSample(x[n]);
   rsPlotVectors(x, y);
 
-  int dummy = 0;
-
-
-  // Try to create an implementation based on an ODE solver class
-  //using ODE = rsDifferentialEquationSystem<double, double>;
-  //ODE ode.
-
-  //using ODE = rsInitialValueSolver2<double>;
-  //ODE ode;
-  //ode.init(3, y, v);
-
-  
-
   // Observations:
   //
   // - For inFreq = 100, it looks pretty good, at 200 jaggies start to appear that become very 
@@ -1536,12 +1521,12 @@ void tapeEmulationViaOdeSolver()
   xd[0] = 0;
   for(int n = 1; n < N; n++)
   {
-    //xd[n] = TapeSat::Derivative(1/sampleRate, x[n], x[n-1], xd[n-1]);
+    xd[n] = TapeSat::Derivative(1/sampleRate, x[n], x[n-1], xd[n-1]);
     // Hmm...this also produces a signal with a parasitic oscillation at the Nyquist freq.
 
     //xd[n] = (x[n] - x[n-1]) / sampleRate;                // Backward difference
 
-    xd[n] = (2/T) * (x[n] - x[n-1]) - xd[n-1];  // Trapezoidal (?)
+    //xd[n] = (2/T) * (x[n] - x[n-1]) - xd[n-1];  // Trapezoidal (?)
     // Wrong! Has oscillation at Nyquist freq
   }
   rsPlotVectors(x, xd);                    // xd is quite small!
@@ -1665,6 +1650,6 @@ void tapeEmulationViaOdeSolver()
 
 void tapeEmulation()
 {
-  tapeEmulationChow();
+  //tapeEmulationChow();
   tapeEmulationViaOdeSolver();   // This is in early stages. It does not yet work at all
 }
