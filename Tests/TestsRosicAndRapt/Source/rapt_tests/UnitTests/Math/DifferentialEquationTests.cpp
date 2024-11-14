@@ -277,6 +277,70 @@ bool testNewOdeSolver()
 {
   bool ok = true;
 
+  int N = 2000;   // Number of samples
+
+  // Generate a reference signal with our old, known to work, Lorenz-system implementation:
+  rosic::LorentzSystem lorentzSystem;
+  lorentzSystem.setPseudoFrequency(500); // make this a parameter
+  std::vector<double> x(N), y(N), z(N);
+  //lorentzSystem.getState(&x[0], &y[0], &z[0]);
+  lorentzSystem.setState(1, 1, 1);       // Set up initial state, (0,0,0) doesn't work - is fixed point
+  for(int n = 0; n < N; n++)
+  {
+    lorentzSystem.getState(&x[n], &y[n], &z[n]);
+    lorentzSystem.iterateState();
+  }
+  rsPlotVectors(x, y, z);  // OK - looks good.
+
+
+
+  // Now let's try to reproduce that using the new general ODE solver:
+
+  // Create some temporaary workspace variables that are used by the low-level API of the solver:
+  double p[3];       // Vector in phase space
+  double wrk[3];     // Workspace for the solver (for storin computed derivatives)
+
+  // Retrieve parameters and initial state from reference
+  //lorentzSystem.getState(&p[0], &p[1], &p[2]);  // Retrieve initial state
+
+
+  //p[0]   = p[1]   = p[2]   = 0;
+  //wrk[0] = wrk[1] = wrk[2] = 0;
+
+  double h = lorentzSystem.getStepSize();
+
+
+
+  // Define the std::function object that computes the derivatives (i.e. the phase-space velocity)
+  // from a given position y in phase space. The phase space point where we currently are in passed
+  // in y, the derivative (velocity) should be stored in dy. That's hoW the API of the solver 
+  // works.
+  using Func = std::function<void(const double* y, double* dy)>;
+  Func f = [&](const double* y, double* dy)
+  {
+    // Parameters:
+    double sigma = lorentzSystem.getSigma();
+    double rho   = lorentzSystem.getRho();
+    double beta  = lorentzSystem.getBeta();
+    dy[0] = sigma*(y[1]-y[0]);                    // dx/dt = sigma*(y-x)
+    dy[1] = y[0]*(rho-y[2]) - y[1];               // dy/dt = x*(rho-z) - y
+    dy[2] = y[0]*y[1] - beta*y[2];                // dz/dt = x*y - beta*z;
+  };
+
+
+  using ODES2 = rsInitialValueSolver2<double>;    // Why the 2? I don't see any with a 1.
+  std::vector<double> x2(N), y2(N), z2(N);
+  x2[0] = p[0];  // The initial values are already stored in p. We'll start out loop at n = 1.
+  y2[0] = p[1];
+  z2[0] = p[2];
+  for(int n = 1; n < N; n++)
+  {
+    ODES2::stepForwardEuler(f, 3, p, wrk, h);
+
+  }
+
+
+
 
   return ok;
 }

@@ -70,12 +70,16 @@ public:
 
   using Func = std::function<void(const T* y, T* dy)>;
 
-  static void stepForwardEuler(const Func& f, int N, T* y, T* v, T h);
 
-  static void stepRungeKutta4(const Func& f, int N, T* y, T* v, T h);
 
   void init(int dimensionality, T* initialPosition, T* initialVelocity);
 
+
+  // Low-level API (requires user to provide workspace variables - inconvenient and error-prone!)
+  static void stepForwardEuler(const Func& f, int N, T* y, T* v, T h);
+  static void stepRungeKutta4( const Func& f, int N, T* y, T* v, T h);
+  // Rename v to wrk and make it the last parameter. Document for each function, how much workspace
+  // is needed. 
 
 protected:
 

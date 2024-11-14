@@ -39,7 +39,7 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  // \name Inquiry
+  // \name Inquiry  (ToDo: make them const!)
 
   /** Evaluates the magnitude response of this filter at a given normalized radian frequency 
   omega. This is useful for plotting it on a GUI. */

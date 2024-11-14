@@ -63,12 +63,19 @@ namespace rosic
 
     /** \name Inquiry */
 
-    INLINE void getState(double *x, double *y, double *z)
+    INLINE void getState(double *x, double *y, double *z) // const!
     {
       *x = this->x;
       *y = this->y;
       *z = this->z;
     }
+
+    double getSigma()    const { return sigma; }
+    double getRho()      const { return rho; }
+    double getBeta()     const { return beta; }
+    double getStepSize() const { return h; }
+
+
 
     /** \name Processing */
 
