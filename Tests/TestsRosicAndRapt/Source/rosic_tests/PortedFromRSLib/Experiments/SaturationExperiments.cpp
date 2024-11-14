@@ -1284,7 +1284,12 @@ public:
   // Numeric derivative calculuation:
   static TSig Derivative(TSig T, TSig x, TSig x_n1, TSig x_d_n1) 
   {
-    return ((2 / T) * (x - x_n1)) - x_d_n1;  // Why - x_d_n1? (See eq 21 in the paper)
+    return ((2 / T) * (x - x_n1)) - x_d_n1;
+    // Why - x_d_n1? See eq. 21 in the paper. I think, for a simple simple backward difference, it 
+    // would be  (1 / T) * (x - x_n1), but the paper says it uses the trapezoidal rule. I don't 
+    // know what that means in the context of differentiation - I know it as integration rule. 
+    // Hmm....it uses the simple backward difference rule, multiplies the result by 2 and then 
+    // subtracts the previous estimate.
   }
 
   // Langevin's saturation function:
@@ -1494,15 +1499,20 @@ void tapeEmulationViaOdeSolver()
   //
   // I try to re-implement the tape-saturation above using my ODE solver class. 
   
-  int    N            =  2000;
-  double sampleRate   = 44100;
-  double inFreq       =    50;
-  double inAmp        =     1.0;
-  double preGain      = 90000;
+  int    N          =  2000;
+  double sampleRate = 44100;
+  double inFreq     =   100;
+  double inAmp      =     1.0;
+  double preGain    = 90000;
+  double alpha      = 0.0016;         // Mean field parameter
+  double a          = 22000;          // Characterizes shape of anhysteric magnetization
+  double M_s        = 350000;         // Magnetization saturation
+  double k          = 2700;           // Measure of width of hysteresis loop
+  double c          = 0.17;           // Ratio of normal and anhysteric initial susceptibilities
+  double T          = 1.0/sampleRate; // 1/sampleRate
 
 
-
-  // The relevant equations for the doel are:
+  // The relevant equations for the model are:
   //
   //   H   = H(t) = input signal
   //   H'  = dH/dt
@@ -1530,21 +1540,12 @@ void tapeEmulationViaOdeSolver()
   Func f = [&](const double* y, double* dy )
   {
     // Parameters:
-    double alpha = 0.0016;         // Mean field parameter
-    double a     = 22000;          // Characterizes shape of anhysteric magnetization
-    double M_s   = 350000;         // Magnetization saturation
-    double k     = 2700;           // Measure of width of hysteresis loop
-    double c     = 0.17;           // Ratio of normal and anhysteric initial susceptibilities
-    double T     = 1.0/sampleRate; // 1/sampleRate
 
 
     // Extract variables from state vector:
     double M  = y[0];              // M(t)
     double H  = y[1];              // H(t)
     double Hp = y[2];              // H'(t) = dH/dt
-
-
-    //H *= gain;  // Apply pre-gain
 
     /*
     // Implement the model equations:
@@ -1566,10 +1567,9 @@ void tapeEmulationViaOdeSolver()
     // ToDo: catch division by zero!
     */
 
-
+    // For the time being, we use Astrobear's implementation of the Jiles-Atherton model:
     double Mp = TapeSat::JilesAtherton(M, H, Hp, alpha, a, M_s, k, c);
-
-    //Mp /= gain;  // Undo pre-gain
+    // ...but eventually, I want to make the code above work
 
 
     // Store result of derivative computation in dy:
@@ -1577,9 +1577,6 @@ void tapeEmulationViaOdeSolver()
     dy[1] = 0;   // H is only an input, so we treat it as constant with derivative zero
     dy[2] = 0;   // same for H'
 
-    // Nah - I think, we should not apply the pre/post gain here
-
-    // When everything is zero, we get NaNs!
     // Is it allowed that d is zero? The paper says that it's 1 when h is increasing and -1 when 
     // it's decreasing but says nothing about what happens when H is doing neither. I translated 
     // that to sign(H) - but I'm not sure about that
@@ -1615,7 +1612,7 @@ void tapeEmulationViaOdeSolver()
     double Hp = preGain * xd[n];
 
     // Do the step:
-    p[0] = M;
+    p[0] = M;  // ?
     p[1] = H;
     p[2] = Hp;
     ODE::stepForwardEuler(f, numDims, p, v, 1/sampleRate);
