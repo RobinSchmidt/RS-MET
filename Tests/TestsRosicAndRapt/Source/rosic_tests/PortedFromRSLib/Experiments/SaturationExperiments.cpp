@@ -1514,18 +1514,32 @@ void tapeEmulationViaOdeSolver()
   double T          = 1.0/sampleRate; // 1/sampleRate
 
 
+  using TapeSat = rsTapeSaturation<double, double>;
+
   // Create input signal and its (numerical) derivative:
   using Vec = std::vector<double>;
   Vec x  = inAmp * createWaveform(N, 0, inFreq, sampleRate);
   Vec xd(N);
   xd[0] = 0;
   for(int n = 1; n < N; n++)
-    xd[n] = (x[n] - x[n-1]) / sampleRate;
-  //rsPlotVectors(x, xd);                    // xd is quite small!
+  {
+    //xd[n] = TapeSat::Derivative(1/sampleRate, x[n], x[n-1], xd[n-1]);
+    // Hmm...this also produces a signal with a parasitic oscillation at the Nyquist freq.
+
+    //xd[n] = (x[n] - x[n-1]) / sampleRate;                // Backward difference
+
+    xd[n] = (2/T) * (x[n] - x[n-1]) - xd[n-1];  // Trapezoidal (?)
+    // Wrong! Has oscillation at Nyquist freq
+  }
+  rsPlotVectors(x, xd);                    // xd is quite small!
+
+  // return ((2 / T) * (x - x_n1)) - x_d_n1;
+  // return ((2 / T) * (x - x_n1)) - x_d_n1;
+
 
 
   // Produce reference target signal:
-  using TapeSat = rsTapeSaturation<double, double>;
+
   TapeSat tapeSat;
   Vec yt(N);
   for(int n = 0; n < N; n++)
