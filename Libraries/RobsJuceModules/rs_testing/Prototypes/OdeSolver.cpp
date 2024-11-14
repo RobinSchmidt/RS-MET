@@ -57,23 +57,24 @@ void rsInitialValueSolver2<T>::stepForwardEuler(const Func& f, int N, T* y, T h,
 template<class T>
 void rsInitialValueSolver2<T>::stepMidpoint(const Func& f, int N, T* y, T h, T* wrk)
 {
-  using Vec = std::vector<T>;
-  Vec d1(N), d2(N), yM(N);   // Only for development - eventually, we wnat to use the workspace
+  //using Vec = std::vector<T>;
+  //Vec d(N), yM(N);   // Only for development - eventually, we wnat to use the workspace
+
+  // Assign convenient names to certain parts of the workspace:
+  T* d  = &wrk[0*N];
+  T* yM = &wrk[1*N];
 
   // Compute midpoint yM:
-  f(y, &d1[0]);                          // d1 = f(y)
+  f(y, &d[0]);                          // d  = f(y)
   for(int n = 0; n < N; n++)
-    yM[n] = y[n] + 0.5*h*d1[n];          // yM = y + h*d1/2   (k1 = h*d1)
-
+    yM[n] = y[n] + 0.5*h*d[n];          // yM = y + h*d/2   (k1 = h*d in the literature)
 
   // Compute derivative at midpoint:
-  f(&yM[0], &d2[0]);
+  f(&yM[0], &d[0]);
 
   // Do update step with derivative calculated at midpoint:
   for(int n = 0; n < N; n++)
-    y[n] += h * d2[n];
-
-
+    y[n] += h * d[n];
 }
 
 template<class T>

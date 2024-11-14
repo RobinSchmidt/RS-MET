@@ -300,8 +300,14 @@ bool testNewOdeSolver()
 
   // Create some temporary workspace variables that are used by the low-level API of the solver:
   double p[3];             // Vector in phase space
-  double wrk[3];           // Workspace for the solver (for storing computed derivatives)
-  p[0] = p[1] = p[2] = 1;  // We use again (1,1,1) as initial state
+  p[0] = p[1] = p[2] = 1;  // We use again (1,1,1) as initial state  --is this redundant?
+
+
+  double wrk[6];           // Workspace for the solver (for storing computed derivatives)
+  // ToDo: document the required size. For Euler-steps, it's equal to N, for midpoint steps it's
+  // 2*N, etc.
+
+
 
 
   // Now let's try to reproduce it with the old general ODE solver:
