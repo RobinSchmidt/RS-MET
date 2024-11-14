@@ -291,20 +291,44 @@ bool testNewOdeSolver()
   }
   //rsPlotVectors(x, y, z);  // OK - looks good.
 
-
-
-  // Now let's try to reproduce that using the new general ODE solver:
-
-  // Create some temporaary workspace variables that are used by the low-level API of the solver:
-  double p[3];             // Vector in phase space
-  double wrk[3];           // Workspace for the solver (for storing computed derivatives)
-  p[0] = p[1] = p[2] = 1;  // We use again (1,1,1) as initial state
-
   // Retrieve system and solver parameters from reference implementation:
   double h     = lorentzSystem.getStepSize();
   double sigma = lorentzSystem.getSigma();
   double rho   = lorentzSystem.getRho();
   double beta  = lorentzSystem.getBeta();
+
+
+  // Create some temporary workspace variables that are used by the low-level API of the solver:
+  double p[3];             // Vector in phase space
+  double wrk[3];           // Workspace for the solver (for storing computed derivatives)
+  p[0] = p[1] = p[2] = 1;  // We use again (1,1,1) as initial state
+
+
+  // Now let's try to reproduce it with the old general ODE solver:
+
+  rsLorentzSystem lsOld;
+  std::vector<double> x2(N), y2(N), z2(N);
+  rsVector<double> state(3);
+  state.v[0] = 1;   // ToDo: use the () operator for element access
+  state.v[1] = 1;
+  state.v[2] = 1;
+  double dummy;
+  lsOld.setX(dummy);
+  lsOld.setY(state);
+  for(int n = 0; n < N; n++)
+  {
+    lsOld.stepEuler(h);
+    x2[n] = lsOld.getElementOfY(0);
+    y2[n] = lsOld.getElementOfY(1);
+    z2[n] = lsOld.getElementOfY(2);
+  }
+  rsPlotVectors(x2, y2, z2); 
+  ok &= x2 == x;
+  ok &= y2 == y;
+  ok &= z2 == z;
+
+
+  // Now let's try to reproduce that using the new general ODE solver:
 
   // Define the std::function object that computes the derivatives (i.e. the phase-space velocity)
   // from a given position y in phase space. The phase space point where we currently are in passed
@@ -321,13 +345,14 @@ bool testNewOdeSolver()
   // Solve the Lorenz system with the genral solver. The reference implementation uses the simple
   // forward Euler method, so we use that here, too.
   using ODES2 = rsInitialValueSolver2<double>;    // Why the 2? I don't see any with a 1.
-  std::vector<double> x2(N), y2(N), z2(N);
+  p[0] = p[1] = p[2] = 1;                         // Reset state
+  std::vector<double> x3(N), y3(N), z3(N);
   for(int n = 0; n < N; n++)
   {
     // Retrieve current state and write into output signals:
-    x2[n] = p[0];
-    y2[n] = p[1];
-    z2[n] = p[2];
+    x3[n] = p[0];
+    y3[n] = p[1];
+    z3[n] = p[2];
 
     // Iterate state in phase space:
     ODES2::stepForwardEuler(f, 3, p, h, wrk);
@@ -335,14 +360,33 @@ bool testNewOdeSolver()
   //rsPlotVectors(x2, y2, z2);  // OK - looks good.
 
   // Check that the solver produced the same result as the reference implementation:
-  ok &= x2 == x;
-  ok &= y2 == y;
-  ok &= z2 == z;
+  ok &= x3 == x;
+  ok &= y3 == y;
+  ok &= z3 == z;
 
 
-  // OK - now we wnat to check the higher order solver methods like Runge-Kutta, etc....
-  p[0] = p[1] = p[2] = 1; // Reset state
-  std::vector<double> x3(N), y3(N), z3(N);
+
+
+  // OK - we have compared the forward Euler results of all 3 implementations. Now we want to check 
+  // the higher order solver methods like Runge-Kutta, etc....
+
+  // First, the midpoint method:
+
+  // Old solver:
+  state.v[0] = 1;                      // ToDo: use the () operator for element access
+  state.v[1] = 1;
+  state.v[2] = 1;
+  for(int n = 0; n < N; n++)
+  {
+    lsOld.stepMidpoint(h);
+    x2[n] = lsOld.getElementOfY(0);
+    y2[n] = lsOld.getElementOfY(1);
+    z2[n] = lsOld.getElementOfY(2);
+  }
+  rsPlotVectors(x2, y2, z2); 
+
+  // New solver:
+  p[0] = p[1] = p[2] = 1;              // Reset state
   for(int n = 0; n < N; n++)
   {
     // Retrieve current state and write into output signals:
@@ -357,9 +401,18 @@ bool testNewOdeSolver()
   rsPlotVectors(x3, y3, z3); 
 
 
-  rsPlotVectors(x2, x3);   // Compare result of x-coordinate Euler and midpoint method
+  // Compare results of both implementattions:
+  rsPlotVectors(x2, x3); 
+
+
+
+
+  //rsPlotVectors(x, x3);   // Compare result of x-coordinate Euler and midpoint method
+
+
   // The look very different! I guess that shouldn't be surprising. Unfortunately, we have no 
   // reference signal for the midpoint method solution.
+  // Oh - but we could use rsLorentzSystem as reference. It uses the old solver code
 
 
 
