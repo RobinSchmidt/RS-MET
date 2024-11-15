@@ -1642,7 +1642,6 @@ void tapeEmulationViaOdeSolver()
   // Create output signal:
   Vec y(N);
   double M = 0;
-
   for(int n = 0; n < N; n++)
   {
     // Extract the magnetization as result:
