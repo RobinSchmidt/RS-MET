@@ -1644,7 +1644,7 @@ void tapeEmulationViaOdeSolver()
 
     // Extract the magnetization as result:
     M = p[0];              // p[1], p[2] should not have changed (verify that!)
-    y[n] = M / preGain;
+    y[n] = (1./3) * M / preGain;
   }
   rsPlotVectors(x, yt, y);
   rsPlotVectors(x, y);
