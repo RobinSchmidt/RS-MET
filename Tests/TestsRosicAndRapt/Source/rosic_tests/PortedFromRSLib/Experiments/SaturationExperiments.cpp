@@ -1505,10 +1505,10 @@ void tapeEmulationViaOdeSolver()
   // UNDER CONSTRUCTION - very very preliminary! It does not yet work at all
   //
   // I try to re-implement the tape-saturation above using my ODE solver class. 
-  
-  int    N          =  2000;
+
+  int    N          =   300;
   double sampleRate = 44100;
-  double inFreq     =   100;
+  double inFreq     =   500;
   double inAmp      =     1.0;
   double preGain    = 90000;
   double alpha      = 0.0016;         // Mean field parameter
@@ -1658,6 +1658,6 @@ void tapeEmulationViaOdeSolver()
 
 void tapeEmulation()
 {
-  tapeEmulationChow();
+  //tapeEmulationChow();
   tapeEmulationViaOdeSolver();   // This is in early stages. It does not yet work at all
 }
