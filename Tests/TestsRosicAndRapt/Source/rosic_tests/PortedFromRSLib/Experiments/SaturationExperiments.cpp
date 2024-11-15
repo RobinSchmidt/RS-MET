@@ -1642,6 +1642,7 @@ void tapeEmulationViaOdeSolver()
   // Create output signal:
   Vec y(N);
   double M = 0;
+
   for(int n = 0; n < N; n++)
   {
     // Extract the magnetization as result:
@@ -1664,12 +1665,35 @@ void tapeEmulationViaOdeSolver()
     p[1] = H;
     p[2] = Hp;
     ODE::stepRungeKutta4(f, numDims, p, 1/sampleRate, wrk);
-
-
-
-
   }
   rsPlotVectors(x, yt, y);
+
+  /*
+  for(int n = 0; n < N; n++)
+  {
+    // Extract the magnetization as result:
+    M = p[0]; 
+    y[n] = (1./3) * M / preGain;
+
+
+    // Get current input magnetic field and its derivative:
+    double H  = preGain * x[n];
+    double Hp = preGain * xd[n];
+
+
+    // From reference implementation:
+    //TSig H_d = Derivative(T, H, H_n1, H_d_n1);
+    //TSig k1 = T * JilesAtherton(M_n1, H_n1, H_d_n1, alpha, a, M_s, k, c);
+
+
+    // Do the step:
+    p[0] = M;
+    p[1] = H;
+    p[2] = Hp;
+    ODE::stepRungeKutta4(f, numDims, p, 1/sampleRate, wrk);
+  }
+  rsPlotVectors(x, yt, y);
+  */
   // The look similar but not quite the same! My version seems to be one sample in advance. There's
   // something wrong with a one sample delay somewhere, I think.
   // I think, we need to first read out the state and then do the step rather than the other way 
