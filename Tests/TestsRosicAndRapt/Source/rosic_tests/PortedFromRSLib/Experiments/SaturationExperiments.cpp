@@ -1540,9 +1540,9 @@ void tapeEmulationViaOdeSolver()
   xd[0] = 0;
   for(int n = 1; n < N; n++)
   {
-    xd[n] = TapeSat::Derivative(1/sampleRate, x[n], x[n-1], xd[n-1]);
+    //xd[n] = TapeSat::Derivative(1/sampleRate, x[n], x[n-1], xd[n-1]);
 
-    //xd[n] = (x[n] - x[n-1]) / sampleRate;          // Backward difference
+    xd[n] = (x[n] - x[n-1]) / T;          // Backward difference
     //xd[n] = (2/T) * (x[n] - x[n-1]) - xd[n-1];     // Trapezoidal (?)
   }
   //rsPlotVectors(x, xd);                    // xd is quite small!
@@ -1556,6 +1556,7 @@ void tapeEmulationViaOdeSolver()
 
   TapeSat tapeSat;
   //tapeSat.gain = 1.0; // For test of derivative function
+  tapeSat.T = T;
   Vec yt(N);
   for(int n = 0; n < N; n++)
     yt[n] = tapeSat.getSample(x[n]);
@@ -1612,6 +1613,10 @@ void tapeEmulationViaOdeSolver()
     // ToDo: catch division by zero!
     */
 
+
+
+
+
     // For the time being, we use Astrobear's implementation of the Jiles-Atherton model:
     double Mp = TapeSat::JilesAtherton(M, H, Hp, alpha, a, M_s, k, c);
     // ...but eventually, I want to make the code above work
@@ -1643,6 +1648,14 @@ void tapeEmulationViaOdeSolver()
     double H  = preGain * x[n];
     double Hp = preGain * xd[n];
 
+
+    // From reference implementation:
+    //TSig H_d = Derivative(T, H, H_n1, H_d_n1);
+    //TSig k1 = T * JilesAtherton(M_n1, H_n1, H_d_n1, alpha, a, M_s, k, c);
+
+
+
+
     // Do the step:
     p[0] = M;  // ?
     p[1] = H;
@@ -1657,6 +1670,8 @@ void tapeEmulationViaOdeSolver()
   rsPlotVectors(x, yt, y);
   // The look similar but not quite the same! My version seems to be one sample in advance. There's
   // something wrong with a one sample delay somewhere, I think.
+  // I think, we need to first read out the state and then do the step rather than the other way 
+  // around.
 
   // ToDo:
   //
