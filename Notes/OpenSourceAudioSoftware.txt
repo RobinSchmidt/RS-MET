@@ -213,6 +213,11 @@ https://github.com/Chowdhury-DSP/BYOD
 -BYOD is a guitar effects plugin with a customisable signal chain that allows users to create their 
  own guitar distortion effects.
 
+SmartGuitarAmp
+https://github.com/GuitarML/SmartGuitarAmp
+-Neural network model based guitar amp emulation
+
+
 ----------------------------------------------------------------------------------------------------
 Frameworks
 
@@ -411,7 +416,7 @@ https://github.com/googlecreativelab/open-nsynth-super
 -Experimental physical interface for NSynth, a machine learning algorithm developed by Google
 
 ----------------------------------------------------------------------------------------------------
-Audio AI projects and related stuff:
+Audio AI projects and related stuff
 
 AudioGen
 https://felixkreuk.github.io/audiogen/
@@ -420,6 +425,16 @@ https://felixkreuk.github.io/audiogen/
 Frechet Audio Distance
 https://github.com/gudgud96/frechet-audio-distance
 -Library to compute the Frechet Audio Distance (FAD) in PyTorch
+
+----------------------------------------------------------------------------------------------------
+People
+
+Cristian J. Steinmetz
+https://github.com/csteinmetz1
+-Developer of a number of audio and ML packages
+
+
+
 
 ----------------------------------------------------------------------------------------------------
 Online Tools

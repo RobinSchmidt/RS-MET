@@ -1284,8 +1284,8 @@ public:
   // Numeric derivative calculuation:
   static TSig Derivative(TSig T, TSig x, TSig x_n1, TSig x_d_n1) 
   {
-    //return (1 / T) * (x - x_n1);             // Backward difference rule
-    return ((2 / T) * (x - x_n1)) - x_d_n1;  // Trapezoidal rule
+    //return (1 / T) * (x - x_n1);             // Backward difference rule - my variation
+    return ((2 / T) * (x - x_n1)) - x_d_n1;  // Trapezoidal rule - original code
     // This strange looking numerical differentiation rule can be obtained by inverting the 
     // trapezoidal rule for numerical integration:  y[n] = y[n-1] + (T/2)*(x[n] + x[n-1])  
     // Solve for  x[n] = (2/T)*(y[n] - y[n-1]) - x[n-1]. See eq. 21 in the paper. In some 
@@ -1362,9 +1362,17 @@ public:
     M_n1   = M;
 
     return (1/3.) * out1 / gain;  
-    // Undo the pre-gain and apply the 1/3 factor that makes in/out of similar levels.                              
+    // Undo the pre-gain and apply the 1/3 factor that makes in/out of similar levels.
     // (1./3) is eyballed to make the levels of in/out similar. But it happens to be the value of 
     // the derivative of the Langevin function at zero, so that might have something to do with it.
+  }
+
+  // Reset internal state:
+  void reset()
+  {
+    H_n1   = 0;
+    H_d_n1 = 0;
+    M_n1   = 0;
   }
 
 
@@ -1421,12 +1429,12 @@ public:
 
 void tapeEmulationChow()
 {
-  int    N            =  3000;
+  int    N            =   300;
   double sampleRate   = 44100;
   double inFreq       =   500;
-  double startAmp     =     0.0;
-  double endAmp       =     3.0;
-  double preGain      = 50000;       // Astrobear uses 90000 in the video
+  double startAmp     =     1.0;
+  double endAmp       =     1.0;
+  double preGain      = 90000;       // Astrobear uses 90000 in the video
 
   // Create input signal - a sine-wave with linear amp envelope:
   using Vec = std::vector<double>;
@@ -1525,14 +1533,13 @@ void tapeEmulationViaOdeSolver()
   for(int n = 1; n < N; n++)
   {
     xd[n] = TapeSat::Derivative(1/sampleRate, x[n], x[n-1], xd[n-1]);
-    // Hmm...this also produces a signal with a parasitic oscillation at the Nyquist freq.
 
-    //xd[n] = (x[n] - x[n-1]) / sampleRate;                // Backward difference
-
-    //xd[n] = (2/T) * (x[n] - x[n-1]) - xd[n-1];  // Trapezoidal (?)
-    // Wrong! Has oscillation at Nyquist freq
+    //xd[n] = (x[n] - x[n-1]) / sampleRate;          // Backward difference
+    //xd[n] = (2/T) * (x[n] - x[n-1]) - xd[n-1];     // Trapezoidal (?)
   }
   rsPlotVectors(x, xd);                    // xd is quite small!
+  // The trapezoidal rule sometimes produces a signal with a parasitic oscillation at the Nyquist
+  // freq.
 
 
 
