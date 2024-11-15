@@ -1284,8 +1284,8 @@ public:
   // Numeric derivative calculuation:
   static TSig Derivative(TSig T, TSig x, TSig x_n1, TSig x_d_n1) 
   {
-    //return (1 / T) * (x - x_n1);             // Backward difference rule - my variation
-    return ((2 / T) * (x - x_n1)) - x_d_n1;  // Trapezoidal rule - original code
+    return (1 / T) * (x - x_n1);             // Backward difference rule - my variation
+    //return ((2 / T) * (x - x_n1)) - x_d_n1;  // Trapezoidal rule - original code
     // This strange looking numerical differentiation rule can be obtained by inverting the 
     // trapezoidal rule for numerical integration:  y[n] = y[n-1] + (T/2)*(x[n] + x[n-1])  
     // Solve for  x[n] = (2/T)*(y[n] - y[n-1]) - x[n-1]. See eq. 21 in the paper. In some 
@@ -1507,8 +1507,16 @@ void tapeEmulationViaOdeSolver()
   // I try to re-implement the tape-saturation above using my ODE solver class. 
 
   int    N          =   300;
-  double sampleRate = 44100;
-  double inFreq     =   500;
+
+  //double sampleRate = 44100;
+  //double inFreq     =   500;
+
+  // For debug such that k1..k4 variables in the original directly correspond to the d1..d4 
+  // variables in my RK4 solver
+  double sampleRate =     1.0;
+  double inFreq     =   500/44100.0;
+
+
   double inAmp      =     1.0;
   double preGain    = 90000;
   double alpha      = 0.0016;         // Mean field parameter
@@ -1647,7 +1655,8 @@ void tapeEmulationViaOdeSolver()
     y[n] = (1./3) * M / preGain;
   }
   rsPlotVectors(x, yt, y);
-  rsPlotVectors(x, y);
+  // The look similar but not quite the same! My version seems to be one sample in advance. There's
+  // something wrong with a one sample delay somewhere, I think.
 
   // ToDo:
   //
