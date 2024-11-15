@@ -1502,9 +1502,11 @@ void tapeEmulationChow()
 
 void tapeEmulationViaOdeSolver()
 {
-  // UNDER CONSTRUCTION - very very preliminary! It does not yet work at all
+  // Under construction.
   //
-  // I try to re-implement the tape-saturation above using my ODE solver class. 
+  // I try to re-implement the tape-saturation above using my ODE solver class. It almost works but
+  // there is some bug that leads to a 1 sample delay or advance (depending on the order of 
+  // read-out and update step in the main loop). 
 
   int    N          =   300;
 
@@ -1515,7 +1517,6 @@ void tapeEmulationViaOdeSolver()
   // variables in my RK4 solver
   double sampleRate =     1.0;
   double inFreq     =   500/44100.0;
-
 
   double inAmp      =     1.0;
   double preGain    = 90000;
@@ -1548,8 +1549,6 @@ void tapeEmulationViaOdeSolver()
   //rsPlotVectors(x, xd);                    // xd is quite small!
   // The trapezoidal rule sometimes produces a signal with a parasitic oscillation at the Nyquist
   // freq.
-
-
 
 
   // Produce reference target signal:
