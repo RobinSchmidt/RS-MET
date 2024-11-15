@@ -1537,7 +1537,7 @@ void tapeEmulationViaOdeSolver()
     //xd[n] = (x[n] - x[n-1]) / sampleRate;          // Backward difference
     //xd[n] = (2/T) * (x[n] - x[n-1]) - xd[n-1];     // Trapezoidal (?)
   }
-  rsPlotVectors(x, xd);                    // xd is quite small!
+  //rsPlotVectors(x, xd);                    // xd is quite small!
   // The trapezoidal rule sometimes produces a signal with a parasitic oscillation at the Nyquist
   // freq.
 
@@ -1551,7 +1551,7 @@ void tapeEmulationViaOdeSolver()
   Vec yt(N);
   for(int n = 0; n < N; n++)
     yt[n] = tapeSat.getSample(x[n]);
-  rsPlotVectors(x, yt);
+  //rsPlotVectors(x, yt);
   // When we set  tapeSat.gain = 1  and inspect the values the TapeSat::Derivative in the debugger,
   // they dou indeed seem to match our xd signal produced above by the trapezoidal(?) rule. The 
   // signal looks wrong though. It features a Nyquist oscillation. That suggests that my 
@@ -1646,7 +1646,7 @@ void tapeEmulationViaOdeSolver()
     M = p[0];              // p[1], p[2] should not have changed (verify that!)
     y[n] = M / preGain;
   }
-  rsPlotVectors(y);
+  rsPlotVectors(x, yt, y);
   rsPlotVectors(x, y);
 
   // ToDo:
