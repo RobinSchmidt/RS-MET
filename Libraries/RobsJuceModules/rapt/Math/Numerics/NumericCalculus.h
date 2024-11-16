@@ -582,6 +582,10 @@ public:
   template<class Tx>
   static void trapezoidal(const Tx *x, const T *y, T *yi, int N, T c = T(0));
 
+  // ToDo: Introduce a stepSize parameter h. I think, it may be nicer when the h parameter comes
+  // before c but that would be a breaking change an we would really need to be careful to change 
+  // the code at *all* the call sites
+
 
 protected:
 
@@ -638,6 +642,9 @@ void rsNumericIntegrator<T>::trapezoidal(const Tx* x, const T* y, T* yi, int N, 
     //rsAssert(rsIsFiniteNumber(tmp));
   }
   //rsPlotArraysXY(N, x, y, yi);               // uncomment for debug
+
+  // ToDo: Replace the multiplication by T(0.5) by a variable h2 = 0.5*h where h is a stepSize
+  // parameter that should be passed into the function (and may default to 1)
 }
 
 

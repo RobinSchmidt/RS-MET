@@ -1558,6 +1558,25 @@ void tapeEmulationChow()
   //   adding a 50 kHz signal at the input and filtering it out with a lowpass at the output.
 }
 
+// Move into clas rsNumericDifferentiator:
+template<class T>
+void centralDifference(const T* y, T* yd, int N, T h = 1) /*, bool extrapolateEnds = true)*/
+{
+  T s = T(1) / (T(2)*h);               // Scaler 1/(2h)
+
+  for(int n = 1; n < N-1; n++)
+    yd[n] = s * (y[n+1] - y[n-1]);
+
+  // Handle end points separately:
+  s *= T(2); 
+  yd[0]   = s*(y[1]   - y[0]);         // Forward difference
+  yd[N-1] = s*(y[N-1] - y[N-2]);       // Backward difference
+
+  // ToDo: optionally use linear extrapolation or maybe use a 2nd order forward- and backward 
+  // difference respectivly
+}
+
+
 void tapeEmulationViaOdeSolver()
 {
   // Under construction.
@@ -1609,6 +1628,10 @@ void tapeEmulationViaOdeSolver()
   //rsPlotVectors(x, xd);                    // xd is quite small!
   // The trapezoidal rule sometimes produces a signal with a parasitic oscillation at the Nyquist
   // freq.
+
+  // Let's try a central difference:
+  centralDifference(&x[0], &xd[0], N, T);
+
 
 
   // Produce reference target signal:
@@ -1697,7 +1720,10 @@ void tapeEmulationViaOdeSolver()
     dy[2] = 0;   // same for H'
     // Maybe we shouldn't do that and instead somehow use estimates obtained from the input signal.
     // Basically, what we want is a numerical estimate of H and H' with respect to time t. So, that
-    // means, we want to estimate the 1st and 2nd time derivative of the input signal H.
+    // means, we want to estimate the 1st and 2nd time derivative of the input signal H. Actually,
+    // It may make sense to set dy[1] = H' = Hp = y[2] because dy[1] is supposed to be the 
+    // derivative of H with resepct to t. But for dy[2], we ma really need to compute something. 
+    // Maybe we should use a central difference etsimate of the 2nd derivative of h.
 
     // Is it allowed that d is zero? The paper says that it's 1 when h is increasing and -1 when 
     // it's decreasing but says nothing about what happens when H is doing neither. I translated 
