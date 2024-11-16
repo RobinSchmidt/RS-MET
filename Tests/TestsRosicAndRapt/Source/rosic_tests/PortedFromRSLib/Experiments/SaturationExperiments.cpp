@@ -1356,9 +1356,16 @@ public:
     TSig M    = M_n(M_n1, k1, k2, k3, k4);
     TSig out1 = M;
     // This is interesting: in the computation of k1, this code uses H[n-1], H'[n-1], for k2,k3,
-    // it uses (H[n]+H[n-1])/2, (H'[n]+H'[n-1])/2 and for k4 it uses H[n], H'[n]
-
-
+    // it uses (H[n]+H[n-1])/2, (H'[n]+H'[n-1])/2 and for k4 it uses H[n], H'[n]. I think (not 
+    // totally sure, though), regular RK4 code would use something like:
+    //
+    // k1 =  T * JilesAtherton(M_n1       ,  H_n1       ,  H_d_n1       ,  ...);
+    // k2 =  T * JilesAtherton(M_n1 + k1/2,  H_n1 + k1/2,  H_d_n1 + k1/2,  ...);
+    // k3 =  T * JilesAtherton(M_n1 + k2/2,  H_n1 + k2/2,  H_d_n1 + k2/2,  ...);
+    // k4 =  T * JilesAtherton(M_n1 + k3  ,  H_n1 + k3  ,  H_d_n1 + k3  ,  ...);
+    //
+    // I guess, there is some rationale bhind using these other expressions. Maybe it works better
+    // for some reason? Figure out!
 
     // Set up the state for the next sample:
     H_n1   = H;
@@ -1390,10 +1397,10 @@ public:
     // Prepare state vector for ODE solver:
     TSig p[3], wrk[5*3];
     p[0] = M_n1;            // M[n-1]
-    //p[1] = H_n1;          // H[n-1]
-    //p[2] = H_d_n1;        // H'[n-1]
-    p[1] = 0.5*(H   + H_n1  );
-    p[2] = 0.5*(H_d + H_d_n1);
+    p[1] = H_n1;            // H[n-1]
+    p[2] = H_d_n1;          // H'[n-1]
+    //p[1] = 0.5*(H   + H_n1  );
+    //p[2] = 0.5*(H_d + H_d_n1);
     // When using the midpoint between H[n-1] and H[n] (and likewise for H'), we get quite close to
     // the result of the other getSample() function. But the other function does something even 
     // more strange: it uses different combinations of H[n-1] and H[n] for computation of the 
@@ -1569,7 +1576,7 @@ void tapeEmulationViaOdeSolver()
   // For debug such that k1..k4 variables in the original directly correspond to the d1..d4 
   // variables in my RK4 solver
   double sampleRate =     1.0;
-  double inFreq     =   500/44100.0;
+  double inFreq     =  500/44100.0;
 
   double inAmp      =     1.0;
   double preGain    = 90000;
@@ -1624,8 +1631,9 @@ void tapeEmulationViaOdeSolver()
   Vec yt2(N);
   for(int n = 0; n < N; n++)
     yt2[n] = tapeSat.getSample2(x[n]);
-  rsPlotVectors(x, yt, yt2);
-  // This looks delayed, too. WTF?
+  //rsPlotVectors(x, yt, yt2);
+  // This looks delayed, too. OK - I see - the original Astrobear code apparently uses a varation
+  // of the Runge-Kutta rule. See comments there.
 
 
   // The relevant equations for the model are:
@@ -1722,7 +1730,8 @@ void tapeEmulationViaOdeSolver()
     p[2] = Hp;
     ODE::stepRungeKutta4(f, numDims, p, 1/sampleRate, wrk);
   }
-  rsPlotVectors(x, yt, y);
+  //rsPlotVectors(x, yt, y);
+  rsPlotVectors(x, yt2, y);
   // The look similar but not quite the same! My version seems to be one sample in advance. There's
   // something wrong with a one sample delay somewhere, I think.
   // I think, we need to first read out the state and then do the step rather than the other way 
@@ -1742,6 +1751,12 @@ void tapeEmulationViaOdeSolver()
   // - I think, before attempting to throw the ODE solver at such a complex problem, we need to 
   //   develop and test the solver itself to some degree of maturity which it currently doesn't 
   //   have. Only then can we real
+  //
+  // - Try using a central difference approximation of the derivative - and one that is exactly in 
+  //   sync with the actual input signal. Currently, I think the derivative estimate has a time lag
+  //   of half a sample - at least when the backward difference rule is used. Not sure if that 
+  //   applies to the rapezoidal rule, too - but it might well be the case. Maybe this delay makes
+  //   the algorithm perform worse than it otherwise could.
 }
 
 void tapeEmulation()
