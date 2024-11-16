@@ -102,6 +102,9 @@ void rsInitialValueSolver2<T>::stepRungeKutta4(const Func& f, int N, T* y, T h, 
   // Do update step using weighted average of the 4 calculated derivatives:
   for(int n = 0; n < N; n++)
     y[n] += h * (d1[n]/6 + d2[n]/3 + d3[n]/3 + d4[n]/6);
+
+  // ToDo: maybe split the function into two parts: step computation and actually doing the step.
+  // Or maybe not.
 }
 
 template<class T>

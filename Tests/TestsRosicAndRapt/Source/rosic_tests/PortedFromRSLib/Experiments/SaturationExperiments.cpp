@@ -1370,8 +1370,35 @@ public:
   // Alternative implementation using the ODE solver:
   TSig getSample2(TSig in1)
   {
+    // Define derivative computation function for ODE solver:
+    using Func = std::function<void(const double* y, double* dy)>;
+    Func f = [&](const double* y, double* dy)
+    {
+      dy[0] = JilesAtherton(y[0], y[1], y[2], alpha, a, M_s, k, c);
+      dy[1] = 0;
+      dy[2] = 0;
+    };
 
-    return 0.0;  // Preliminary
+    // Prepare state vector for ODE solver:
+    TSig p[3], wrk[5*3];
+    p[0] = M_n1;          // M[n-1]
+    p[1] = H_n1;          // H[n-1]
+    p[2] = H_d_n1;        // H'[n-1]
+
+    // Perform the step and extract result:
+    using ODE = rsInitialValueSolver2<TSig>;
+    ODE::stepRungeKutta4(f, 3, p, T, wrk);
+    TSig M = p[0];
+
+    //  Compute and up the state for the next sample:
+    TSig H   = gain * in1;
+    TSig H_d = Derivative(T, H, H_n1, H_d_n1);
+    H_n1     = H;
+    H_d_n1   = H_d;
+    M_n1     = M;
+
+    // Return final output:
+    return (1/3.) * M / gain;
   }
 
 
@@ -1583,6 +1610,7 @@ void tapeEmulationViaOdeSolver()
   for(int n = 0; n < N; n++)
     yt2[n] = tapeSat.getSample2(x[n]);
   rsPlotVectors(x, yt, yt2);
+  // This looks delayed, too. WTF?
 
 
   // The relevant equations for the model are:
