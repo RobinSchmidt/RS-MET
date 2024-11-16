@@ -1588,15 +1588,8 @@ void tapeEmulationViaOdeSolver()
   // are delayed with respect to the input (or output) signal?
 
   int    N          =   300;
-
-  //double sampleRate = 44100;
-  //double inFreq     =   500;
-
-  // For debug such that k1..k4 variables in the original directly correspond to the d1..d4 
-  // variables in my RK4 solver
-  double sampleRate =     1.0;
-  double inFreq     =  500/44100.0;
-
+  double sampleRate = 44100;
+  double inFreq     =   500;
   double inAmp      =     1.0;
   double preGain    = 90000;
   double alpha      = 0.0016;         // Mean field parameter
@@ -1757,7 +1750,7 @@ void tapeEmulationViaOdeSolver()
     ODE::stepRungeKutta4(f, numDims, p, 1/sampleRate, wrk);
   }
   //rsPlotVectors(x, yt, y);
-  rsPlotVectors(x, yt2, y);   // OK - they match! Finally!
+  rsPlotVectors(x, yt, yt2, y);   // OK - they match! Finally!
   // The look similar but not quite the same! My version seems to be one sample in advance. There's
   // something wrong with a one sample delay somewhere, I think.
   // I think, we need to first read out the state and then do the step rather than the other way 
