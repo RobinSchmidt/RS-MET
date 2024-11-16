@@ -1589,7 +1589,7 @@ void tapeEmulationViaOdeSolver()
 
   int    N          =   300;
   double sampleRate = 44100;
-  double inFreq     =   500;
+  double inFreq     =  1500;
   double inAmp      =     1.0;
   double preGain    = 90000;
   double alpha      = 0.0016;         // Mean field parameter
@@ -1695,7 +1695,7 @@ void tapeEmulationViaOdeSolver()
 
     double MpNew  = (S*Hp + R*Hp) / (1 - R*alpha) ;           // M'(t) = dM/dt
     // ToDo: catch division by zero!
-    // It seems liek every other value is wrong and we may occasionally get NaNs
+    // It seems like every other value is wrong and we may occasionally get NaNs
 
 
 
@@ -1750,7 +1750,7 @@ void tapeEmulationViaOdeSolver()
     ODE::stepRungeKutta4(f, numDims, p, 1/sampleRate, wrk);
   }
   //rsPlotVectors(x, yt, y);
-  rsPlotVectors(x, yt, yt2, y);   // OK - they match! Finally!
+  rsPlotVectors(x, yt, yt2, y);
   // The look similar but not quite the same! My version seems to be one sample in advance. There's
   // something wrong with a one sample delay somewhere, I think.
   // I think, we need to first read out the state and then do the step rather than the other way 
