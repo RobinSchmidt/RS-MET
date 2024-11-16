@@ -1711,6 +1711,9 @@ void tapeEmulationViaOdeSolver()
     dy[0] = Mp;
     dy[1] = 0;   // H is only an input, so we treat it as constant with derivative zero
     dy[2] = 0;   // same for H'
+
+    dy[1] = Hp;  // New, Test - seems to improve results
+
     // Maybe we shouldn't do that and instead somehow use estimates obtained from the input signal.
     // Basically, what we want is a numerical estimate of H and H' with respect to time t. So, that
     // means, we want to estimate the 1st and 2nd time derivative of the input signal H. Actually,
