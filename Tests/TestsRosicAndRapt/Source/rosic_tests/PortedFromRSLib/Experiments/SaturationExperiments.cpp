@@ -1769,19 +1769,6 @@ void tapeEmulationViaOdeSolver()
   // does is to introduce a 1 sample delay. I also think, extracting first is the right thing to 
   // do. The sample a n = 0 ought to be our initial state p[0] = 0.
 
-
-
-  // ToDo:
-  //
-  // - I think, before attempting to throw the ODE solver at such a complex problem, we need to 
-  //   develop and test the solver itself to some degree of maturity which it currently doesn't 
-  //   have. Only then can we real
-  //
-  // - Try using a central difference approximation of the derivative - and one that is exactly in 
-  //   sync with the actual input signal. Currently, I think the derivative estimate has a time lag
-  //   of half a sample - at least when the backward difference rule is used. Not sure if that 
-  //   applies to the rapezoidal rule, too - but it might well be the case. Maybe this delay makes
-  //   the algorithm perform worse than it otherwise could.
 }
 
 void tapeEmulation()
