@@ -1345,16 +1345,20 @@ public:
   {
     // Magnetic Field for current Sample:
     TSig H = gain * in1;                         // We need a whole lot of pre-gain!
+    TSig H_d = Derivative(T, H, H_n1, H_d_n1);
 
     // 4th order Runge-Kutta solver:
     //T = 1 / samplerate;  // T is a member
-    TSig H_d = Derivative(T, H, H_n1, H_d_n1);
-    TSig k1 = T * JilesAtherton(M_n1, H_n1, H_d_n1, alpha, a, M_s, k, c);
+    TSig k1 = T * JilesAtherton(M_n1,           H_n1,           H_d_n1,            alpha, a, M_s, k, c);
     TSig k2 = T * JilesAtherton(M_n1 + k1 / 2, (H + H_n1) / 2, (H_d + H_d_n1) / 2, alpha, a, M_s, k, c);
     TSig k3 = T * JilesAtherton(M_n1 + k2 / 2, (H + H_n1) / 2, (H_d + H_d_n1) / 2, alpha, a, M_s, k, c);
-    TSig k4 = T * JilesAtherton(M_n1 + k3, H, H_d, alpha, a, M_s, k, c);
+    TSig k4 = T * JilesAtherton(M_n1 + k3,      H,              H_d,               alpha, a, M_s, k, c);
     TSig M    = M_n(M_n1, k1, k2, k3, k4);
     TSig out1 = M;
+    // This is interesting: in the computation of k1, this code uses H[n-1], H'[n-1], for k2,k3,
+    // it uses (H[n]+H[n-1])/2, (H'[n]+H'[n-1])/2 and for k4 it uses H[n], H'[n]
+
+
 
     // Set up the state for the next sample:
     H_n1   = H;
@@ -1385,9 +1389,18 @@ public:
 
     // Prepare state vector for ODE solver:
     TSig p[3], wrk[5*3];
-    p[0] = M_n1;          // M[n-1]
-    p[1] = H_n1;          // H[n-1]
-    p[2] = H_d_n1;        // H'[n-1]
+    p[0] = M_n1;            // M[n-1]
+    //p[1] = H_n1;          // H[n-1]
+    //p[2] = H_d_n1;        // H'[n-1]
+    p[1] = 0.5*(H   + H_n1  );
+    p[2] = 0.5*(H_d + H_d_n1);
+    // When using the midpoint between H[n-1] and H[n] (and likewise for H'), we get quite close to
+    // the result of the other getSample() function. But the other function does something even 
+    // more strange: it uses different combinations of H[n-1] and H[n] for computation of the 
+    // different k-values. So, whatever we try to do here, we will never get exactly the same 
+    // result as in getSample(). I think, using H[n-1] might be the most natural thing to use in 
+    // the context of the ODE solver.
+
 
     // Perform the step and extract result:
     using ODE = rsInitialValueSolver2<TSig>;
