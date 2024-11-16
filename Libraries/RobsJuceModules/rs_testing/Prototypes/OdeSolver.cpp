@@ -74,6 +74,14 @@ void rsInitialValueSolver2<T>::stepMidpoint(const Func& f, int N, T* y, T h, T* 
     y[n] += h * d[n];
 }
 
+// Move to rsArrayTools:
+template<class T>
+void addWithWeight(const T* in1, const T* in2, T weight2, int N, T* result)
+{
+  for(int i = 0; i < N; i++)
+    result[i] = in1[i] + weight2 * in2[i];
+}
+
 template<class T>
 void rsInitialValueSolver2<T>::stepRungeKutta4(const Func& f, int N, T* y, T h, T* wrk)
 {
@@ -84,27 +92,21 @@ void rsInitialValueSolver2<T>::stepRungeKutta4(const Func& f, int N, T* y, T h, 
   T* d3 = &wrk[3*N];
   T* d4 = &wrk[4*N];
   
-  // Compute derivatives at 4 evaluation points:
-  f(y, d1);                        // d1 = f(y)
-
-  for(int n = 0; n < N; n++)
-    yE[n] = y[n] + 0.5*h*d1[n];    // yE = y + h*d1/2 = y + k1/2
-  f(yE, d2);                       // d2 = f(yE) = f(y + h*d1/2)
-
-  for(int n = 0; n < N; n++)
-    yE[n] = y[n] + 0.5*h*d2[n];    // yE = y + h*d2/2 = y + k2/2
-  f(yE, d3);                       // d3 = f(yE) = f(y + h*d2/2)
-
-  for(int n = 0; n < N; n++)
-    yE[n] = y[n] + h*d3[n];        // yE = y + h*d3 = y + k3
-  f(yE, d4);                       // d4 = f(y + h*d3)
+  // Compute derivatives d1..d4 at 4 evaluation points:
+  f(y,  d1);                            // d1 = f(y)
+  addWithWeight(y, d1, 0.5*h, N, yE);   // yE =           y + h*d1/2  = y + k1/2
+  f(yE, d2);                            // d2 = f(yE) = f(y + h*d1/2)
+  addWithWeight(y, d2, 0.5*h, N, yE);   // yE =           y + h*d2/2  = y + k2/2
+  f(yE, d3);                            // d3 = f(yE) = f(y + h*d2/2)
+  addWithWeight(y, d3,     h, N, yE);   // yE =           y + h*d3    = y + k3
+  f(yE, d4);                            // d4 = f(yE) = f(y + h*d3)
 
   // Do update step using weighted average of the 4 calculated derivatives:
   for(int n = 0; n < N; n++)
     y[n] += h * (d1[n]/6 + d2[n]/3 + d3[n]/3 + d4[n]/6);
 
-  // ToDo: maybe split the function into two parts: step computation and actually doing the step.
-  // Or maybe not.
+  // ToDo: Maybe split the function into two parts: step computation and actually doing the step.
+  // Or maybe not. 
 }
 
 template<class T>
