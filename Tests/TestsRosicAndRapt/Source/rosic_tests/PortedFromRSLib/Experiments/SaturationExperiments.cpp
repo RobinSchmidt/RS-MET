@@ -1728,10 +1728,16 @@ void tapeEmulationViaOdeSolver()
 
   // Set up ODE solver:
   using ODE = rsInitialValueSolver2<double>;
-  static const int numDims = 3;      // M, H, H' where H, H' are only used for inputs
+  static const int numDims = 4;      // M, H, H' where H, H' are only used for inputs
   double p[numDims];                 // Current position in phase space
   double wrk[5*numDims];             // Workspace for the ODE solver
-  p[0] = p[1] = p[2] = 0;
+  p[0] = p[1] = p[2] = p[3] = 0;
+  // We give it an extra dimenstion such that we can pass in the 1st and 2nd derivative of h into f
+  // which in turn uses it to copy it into the outputs that are supposed to contain H' and H''.
+  // The function f should compute dM/dt, dH/dt, dH'/dt from M, H, H'. The only thing that really
+  // get computed is dM/dt. For dH/dt, we just copy the value of H' = p[2] into v[1] and for dH'/dt 
+  // we copy the value of H'' = p[3] into v[2]. v[3] is irrelevant and set to zero
+
 
   // Create output signal:
   Vec y(N);
