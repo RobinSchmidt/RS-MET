@@ -1661,7 +1661,7 @@ void tapeEmulationViaOdeSolver()
     double H  = y[1];              // H(t)
     double Hp = y[2];              // H'(t) = dH/dt
 
-    /*
+    
     // Implement the model equations:
     double d   = rsSign(Hp);       
     double Q   = (H + alpha*M) / a;
@@ -1677,9 +1677,9 @@ void tapeEmulationViaOdeSolver()
     double S   = ((1-c)*d_M*P) / ((1-c)*d*k - alpha*P);
     // ToDo: catch division by zero. But what should the value be?
 
-    double Mp  = (S*Hp + R*Hp) / (1 - R*alpha) ;           // M'(t) = dM/dt
+    double MpNew  = (S*Hp + R*Hp) / (1 - R*alpha) ;           // M'(t) = dM/dt
     // ToDo: catch division by zero!
-    */
+
 
 
 
@@ -1687,13 +1687,17 @@ void tapeEmulationViaOdeSolver()
 
     // For the time being, we use Astrobear's implementation of the Jiles-Atherton model:
     double Mp = TapeSat::JilesAtherton(M, H, Hp, alpha, a, M_s, k, c);
-    // ...but eventually, I want to make the code above work
+    // Eventually, I want to make the code above work. But as long as it doesn't we keep this for
+    // reference
 
 
     // Store result of derivative computation in dy:
     dy[0] = Mp;
     dy[1] = 0;   // H is only an input, so we treat it as constant with derivative zero
     dy[2] = 0;   // same for H'
+    // Maybe we shouldn't do that and instead somehow use estimates obtained from the input signal.
+    // Basically, what we want is a numerical estimate of H and H' with respect to time t. So, that
+    // means, we want to estimate the 1st and 2nd time derivative of the input signal H.
 
     // Is it allowed that d is zero? The paper says that it's 1 when h is increasing and -1 when 
     // it's decreasing but says nothing about what happens when H is doing neither. I translated 
@@ -1731,7 +1735,7 @@ void tapeEmulationViaOdeSolver()
     ODE::stepRungeKutta4(f, numDims, p, 1/sampleRate, wrk);
   }
   //rsPlotVectors(x, yt, y);
-  rsPlotVectors(x, yt2, y);
+  rsPlotVectors(x, yt2, y);   // OK - they match! Finally!
   // The look similar but not quite the same! My version seems to be one sample in advance. There's
   // something wrong with a one sample delay somewhere, I think.
   // I think, we need to first read out the state and then do the step rather than the other way 
