@@ -1589,7 +1589,7 @@ void tapeEmulationViaOdeSolver()
 
   int    N          =   300;
   double sampleRate = 44100;
-  double inFreq     =  1000;
+  double inFreq     =  1500;
   double inAmp      =     1.0;
   double preGain    = 90000;
   double alpha      = 0.0016;         // Mean field parameter
@@ -1716,7 +1716,7 @@ void tapeEmulationViaOdeSolver()
     //dy[2] = 0;   // same for H'
     dy[1] = Hd;  // New, Test - seems to improve results
     dy[2] = Hdd;
-    dy[3] = 0;
+    dy[3] = 0;   // Is not relevant anyway (I think)
 
     // Maybe we shouldn't do that and instead somehow use estimates obtained from the input signal.
     // Basically, what we want is a numerical estimate of H and H' with respect to time t. So, that
@@ -1735,7 +1735,7 @@ void tapeEmulationViaOdeSolver()
   static const int numDims = 4;      // M, H, H' where H, H' are only used for inputs
   double p[numDims];                 // Current position in phase space
   double wrk[5*numDims];             // Workspace for the ODE solver
-  p[0] = p[1] = p[2] = p[3] = 0;
+
   // We give it an extra dimenstion such that we can pass in the 1st and 2nd derivative of h into f
   // which in turn uses it to copy it into the outputs that are supposed to contain H' and H''.
   // The function f should compute dM/dt, dH/dt, dH'/dt from M, H, H'. The only thing that really
@@ -1745,6 +1745,28 @@ void tapeEmulationViaOdeSolver()
 
   // Create output signal:
   Vec y(N);
+  p[0] = 0;
+  for(int n = 0; n < N; n++)
+  {
+    // Extract the magnetization as result:
+    y[n] = (1./3) * p[0] / preGain;
+
+    // Assign current input magnetic field and its derivatives to state:
+    p[1] = preGain * x[n];     // H
+    p[2] = preGain * xd[n];    // H'
+    p[3] = preGain * xdd[n];   // H''
+
+    // Do the update step:
+    ODE::stepRungeKutta4(f, numDims, p, 1/sampleRate, wrk);
+  }
+  rsPlotVectors(x, yt, yt2, y);
+  // I also tried to put the "Extract..." code as last instruction in the loop. I think, all that
+  // does is to introduce a 1 sample delay. I also think, extracting first is the right thing to 
+  // do. The sample a n = 0 ought to be our initial state p[0] = 0.
+
+
+  /*
+  p[0] = p[1] = p[2] = p[3] = 0;
   double M = 0;
   for(int n = 0; n < N; n++)
   {
@@ -1757,7 +1779,6 @@ void tapeEmulationViaOdeSolver()
     double Hd  = preGain * xd[n];
     double Hdd = preGain * xdd[n];
 
-
     // Do the step:
     p[0] = M;
     p[1] = H;
@@ -1765,6 +1786,9 @@ void tapeEmulationViaOdeSolver()
     p[3] = Hdd;
     ODE::stepRungeKutta4(f, numDims, p, 1/sampleRate, wrk);
   }
+  */
+  // Maybe try it without the M-variable
+
   //rsPlotVectors(x, yt, y);
   rsPlotVectors(x, yt, yt2, y);
   // The look similar but not quite the same! My version seems to be one sample in advance. There's
