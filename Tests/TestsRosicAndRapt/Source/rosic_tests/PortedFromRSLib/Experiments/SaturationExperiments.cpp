@@ -1675,11 +1675,11 @@ void tapeEmulationViaOdeSolver()
     // Extract variables from state vector:
     double M  = y[0];              // M(t)
     double H  = y[1];              // H(t)
-    double Hp = y[2];              // H'(t) = dH/dt
+    double Hd = y[2];              // H'(t) = dH/dt
 
     
     // Implement the model equations:
-    double d   = rsSign(Hp);       
+    double d   = rsSign(Hd);
     double Q   = (H + alpha*M) / a;
     double L   = TapeSat::Langevin(Q);
     double P   = M_s * L - M;
@@ -1693,7 +1693,7 @@ void tapeEmulationViaOdeSolver()
     double S   = ((1-c)*d_M*P) / ((1-c)*d*k - alpha*P);
     // ToDo: catch division by zero. But what should the value be?
 
-    double MpNew  = (S*Hp + R*Hp) / (1 - R*alpha) ;           // M'(t) = dM/dt
+    double MdNew  = (S*Hd + R*Hd) / (1 - R*alpha) ;           // M'(t) = dM/dt
     // ToDo: catch division by zero!
     // It seems like every other value is wrong and we may occasionally get NaNs
 
@@ -1702,17 +1702,17 @@ void tapeEmulationViaOdeSolver()
 
 
     // For the time being, we use Astrobear's implementation of the Jiles-Atherton model:
-    double Mp = TapeSat::JilesAtherton(M, H, Hp, alpha, a, M_s, k, c);
+    double Md = TapeSat::JilesAtherton(M, H, Hd, alpha, a, M_s, k, c);
     // Eventually, I want to make the code above work. But as long as it doesn't we keep this for
     // reference
 
 
     // Store result of derivative computation in dy:
-    dy[0] = Mp;
+    dy[0] = Md;
     dy[1] = 0;   // H is only an input, so we treat it as constant with derivative zero
     dy[2] = 0;   // same for H'
 
-    dy[1] = Hp;  // New, Test - seems to improve results
+    dy[1] = Hd;  // New, Test - seems to improve results
 
     // Maybe we shouldn't do that and instead somehow use estimates obtained from the input signal.
     // Basically, what we want is a numerical estimate of H and H' with respect to time t. So, that
@@ -1745,6 +1745,7 @@ void tapeEmulationViaOdeSolver()
     // Get current input magnetic field and its derivative:
     double H  = preGain * x[n];
     double Hp = preGain * xd[n];
+
 
     // Do the step:
     p[0] = M;
