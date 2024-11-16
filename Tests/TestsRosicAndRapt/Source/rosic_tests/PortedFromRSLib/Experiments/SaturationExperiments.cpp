@@ -1712,11 +1712,13 @@ void tapeEmulationViaOdeSolver()
 
     // Store result of derivative computation in dy:
     dy[0] = Md;
-    //dy[1] = 0;   // H is only an input, so we treat it as constant with derivative zero
-    //dy[2] = 0;   // same for H'
-    dy[1] = Hd;  // New, Test - seems to improve results
+    dy[1] = Hd;         // New, Test - seems to improve results
     dy[2] = Hdd;
-    dy[3] = 0;   // Is not relevant anyway (I think)
+    dy[3] = 0;          // Is not relevant anyway (I think)
+
+
+    //dy[1] = dy[2] = 0;  // For test 
+
 
     // Maybe we shouldn't do that and instead somehow use estimates obtained from the input signal.
     // Basically, what we want is a numerical estimate of H and H' with respect to time t. So, that
@@ -1730,18 +1732,18 @@ void tapeEmulationViaOdeSolver()
     // that to sign(H) - but I'm not sure about that
   };
 
+
   // Set up ODE solver:
   using ODE = rsInitialValueSolver2<double>;
   static const int numDims = 4;      // M, H, H' where H, H' are only used for inputs
   double p[numDims];                 // Current position in phase space
   double wrk[5*numDims];             // Workspace for the ODE solver
 
-  // We give it an extra dimenstion such that we can pass in the 1st and 2nd derivative of h into f
+  // We give it an extra dimension such that we can pass in the 1st and 2nd derivative of H into f
   // which in turn uses it to copy it into the outputs that are supposed to contain H' and H''.
   // The function f should compute dM/dt, dH/dt, dH'/dt from M, H, H'. The only thing that really
-  // get computed is dM/dt. For dH/dt, we just copy the value of H' = p[2] into v[1] and for dH'/dt 
-  // we copy the value of H'' = p[3] into v[2]. v[3] is irrelevant and set to zero
-
+  // gets computed is dM/dt. For dH/dt, we just copy the value of H' = p[2] into dy[1] and for 
+  // dH'/dt we copy the value of H'' = p[3] into dy[2]. v[3] is irrelevant and set to zero.
 
   // Create output signal:
   Vec y(N);
@@ -1765,45 +1767,6 @@ void tapeEmulationViaOdeSolver()
   // do. The sample a n = 0 ought to be our initial state p[0] = 0.
 
 
-  /*
-  p[0] = p[1] = p[2] = p[3] = 0;
-  double M = 0;
-  for(int n = 0; n < N; n++)
-  {
-    // Extract the magnetization as result:
-    M = p[0]; 
-    y[n] = (1./3) * M / preGain;
-
-    // Get current input magnetic field and its derivative:
-    double H   = preGain * x[n];
-    double Hd  = preGain * xd[n];
-    double Hdd = preGain * xdd[n];
-
-    // Do the step:
-    p[0] = M;
-    p[1] = H;
-    p[2] = Hd;
-    p[3] = Hdd;
-    ODE::stepRungeKutta4(f, numDims, p, 1/sampleRate, wrk);
-  }
-  */
-  // Maybe try it without the M-variable
-
-  //rsPlotVectors(x, yt, y);
-  rsPlotVectors(x, yt, yt2, y);
-  // The look similar but not quite the same! My version seems to be one sample in advance. There's
-  // something wrong with a one sample delay somewhere, I think.
-  // I think, we need to first read out the state and then do the step rather than the other way 
-  // around.
-  // Hmm - when I put the "Extract..." code at the bottom of the loop body, then my signal is 
-  // shifted to the left, i.e. is too early. When I put it at the top, it is one sample too late.
-
-  // At n = 1, in the reference signal production, we have in the first call to JileAtherton the 
-  // arguments M = 0, H = 0, H_d = 0 whereas in my code, we get  M = 0, H = 6405.XX, H_d = 6405.XX
-
-  // With extraction on top, at n=1, the RK solver receives the following y-vector
-  // y = (0, 6405.XX, 6405.XX) and produces the following d-values:
-  //
 
   // ToDo:
   //
