@@ -1679,7 +1679,7 @@ void tapeEmulationViaOdeSolver()
 
     double MpNew  = (S*Hp + R*Hp) / (1 - R*alpha) ;           // M'(t) = dM/dt
     // ToDo: catch division by zero!
-
+    // It seems liek every other value is wrong and we may occasionally get NaNs
 
 
 
@@ -1723,10 +1723,6 @@ void tapeEmulationViaOdeSolver()
     // Get current input magnetic field and its derivative:
     double H  = preGain * x[n];
     double Hp = preGain * xd[n];
-
-    // From reference implementation:
-    //TSig H_d = Derivative(T, H, H_n1, H_d_n1);
-    //TSig k1 = T * JilesAtherton(M_n1, H_n1, H_d_n1, alpha, a, M_s, k, c);
 
     // Do the step:
     p[0] = M;
