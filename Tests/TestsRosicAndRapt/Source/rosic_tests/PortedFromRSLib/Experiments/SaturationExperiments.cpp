@@ -1367,6 +1367,15 @@ public:
     // the derivative of the Langevin function at zero, so that might have something to do with it.
   }
 
+  // Alternative implementation using the ODE solver:
+  TSig getSample2(TSig in1)
+  {
+
+    return 0.0;  // Preliminary
+  }
+
+
+
   // Reset internal state:
   void reset()
   {
@@ -1504,9 +1513,11 @@ void tapeEmulationViaOdeSolver()
 {
   // Under construction.
   //
-  // I try to re-implement the tape-saturation above using my ODE solver class. It almost works but
-  // there is some bug that leads to a 1 sample delay or advance (depending on the order of 
-  // read-out and update step in the main loop). 
+  // I try to re-implement the tape-saturation algorithm above using my ODE solver class. It almost
+  // works but there is some bug that leads to a 1 sample delay or advance (depending on the order 
+  // of read-out and update step in the main loop). Or, well - I think, the signals are not exactly 
+  // equal but look very similar. Maybe there's something wrong with how the derivative etsimates 
+  // are delayed with respect to the input (or output) signal?
 
   int    N          =   300;
 
@@ -1565,6 +1576,13 @@ void tapeEmulationViaOdeSolver()
   // signal looks wrong though. It features a Nyquist oscillation. That suggests that my 
   // translation of Astrobears M4L code is already buggy. Might that explain the artifacts that we
   // observed in the tests with this class?
+
+  // Now with the alternative getSample2() function:
+  tapeSat.reset();
+  Vec yt2(N);
+  for(int n = 0; n < N; n++)
+    yt2[n] = tapeSat.getSample2(x[n]);
+  rsPlotVectors(x, yt, yt2);
 
 
   // The relevant equations for the model are:
