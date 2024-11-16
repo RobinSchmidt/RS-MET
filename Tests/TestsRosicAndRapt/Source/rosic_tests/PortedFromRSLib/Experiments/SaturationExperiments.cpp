@@ -1589,7 +1589,7 @@ void tapeEmulationViaOdeSolver()
 
   int    N          =   300;
   double sampleRate = 44100;
-  double inFreq     =  1500;
+  double inFreq     =  1000;
   double inAmp      =     1.0;
   double preGain    = 90000;
   double alpha      = 0.0016;         // Mean field parameter
@@ -1624,6 +1624,12 @@ void tapeEmulationViaOdeSolver()
 
   // Let's try a central difference:
   centralDifference(&x[0], &xd[0], N, T);
+
+  // Compute 2nd derivative:
+  Vec xdd(N);
+  centralDifference(&xd[0], &xdd[0], N, T);
+  // ToDo: Maybe compute it directly from x using the formula 
+  // d2f/dx2 ~= (f(x-h) - Tx(2)*f(x) + f(x+h)) / (h*h);
 
 
 
@@ -1670,14 +1676,15 @@ void tapeEmulationViaOdeSolver()
   //   dt       1 - R * alpha
 
   using Func = std::function<void(const double* y, double* dy)>;
-  Func f = [&](const double* y, double* dy )
+  Func f = [&](const double* y, double* dy)
   {
     // Extract variables from state vector:
-    double M  = y[0];              // M(t)
-    double H  = y[1];              // H(t)
-    double Hd = y[2];              // H'(t) = dH/dt
+    double M   = y[0];              // M(t)
+    double H   = y[1];              // H(t)
+    double Hd  = y[2];              // H'(t) = dH/dt
+    double Hdd = y[3];              // H''(t) = (d^2 H) / (dt^2)
 
-    
+
     // Implement the model equations:
     double d   = rsSign(Hd);
     double Q   = (H + alpha*M) / a;
@@ -1693,12 +1700,9 @@ void tapeEmulationViaOdeSolver()
     double S   = ((1-c)*d_M*P) / ((1-c)*d*k - alpha*P);
     // ToDo: catch division by zero. But what should the value be?
 
-    double MdNew  = (S*Hd + R*Hd) / (1 - R*alpha) ;           // M'(t) = dM/dt
+    double MdNew  = (S*Hd + R*Hd) / (1 - R*alpha);           // M'(t) = dM/dt
     // ToDo: catch division by zero!
     // It seems like every other value is wrong and we may occasionally get NaNs
-
-
-
 
 
     // For the time being, we use Astrobear's implementation of the Jiles-Atherton model:
@@ -1706,13 +1710,13 @@ void tapeEmulationViaOdeSolver()
     // Eventually, I want to make the code above work. But as long as it doesn't we keep this for
     // reference
 
-
     // Store result of derivative computation in dy:
     dy[0] = Md;
-    dy[1] = 0;   // H is only an input, so we treat it as constant with derivative zero
-    dy[2] = 0;   // same for H'
-
+    //dy[1] = 0;   // H is only an input, so we treat it as constant with derivative zero
+    //dy[2] = 0;   // same for H'
     dy[1] = Hd;  // New, Test - seems to improve results
+    dy[2] = Hdd;
+    dy[3] = 0;
 
     // Maybe we shouldn't do that and instead somehow use estimates obtained from the input signal.
     // Basically, what we want is a numerical estimate of H and H' with respect to time t. So, that
@@ -1749,14 +1753,16 @@ void tapeEmulationViaOdeSolver()
     y[n] = (1./3) * M / preGain;
 
     // Get current input magnetic field and its derivative:
-    double H  = preGain * x[n];
-    double Hp = preGain * xd[n];
+    double H   = preGain * x[n];
+    double Hd  = preGain * xd[n];
+    double Hdd = preGain * xdd[n];
 
 
     // Do the step:
     p[0] = M;
     p[1] = H;
-    p[2] = Hp;
+    p[2] = Hd;
+    p[3] = Hdd;
     ODE::stepRungeKutta4(f, numDims, p, 1/sampleRate, wrk);
   }
   //rsPlotVectors(x, yt, y);
