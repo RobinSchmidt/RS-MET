@@ -1364,8 +1364,10 @@ public:
     // k3 =  T * JilesAtherton(M_n1 + k2/2,  H_n1 + k2/2,  H_d_n1 + k2/2,  ...);
     // k4 =  T * JilesAtherton(M_n1 + k3  ,  H_n1 + k3  ,  H_d_n1 + k3  ,  ...);
     //
-    // I guess, there is some rationale bhind using these other expressions. Maybe it works better
-    // for some reason? Figure out!
+    // I guess, there is some rationale behind using these other expressions. Maybe it works better
+    // for some reason? Figure out! But shouldn't the weights for H and H_n1 be different for k2 
+    // and k3? Currently, they are always 1/2 - but shouldn't they be more something like 1/3,2/3
+    // of k2 and 2/3,1/3 for k3?
 
     // Set up the state for the next sample:
     H_n1   = H;
@@ -1589,7 +1591,7 @@ void tapeEmulationViaOdeSolver()
 
   int    N          =   300;
   double sampleRate = 44100;
-  double inFreq     =  1500;
+  double inFreq     =   500;
   double inAmp      =     1.0;
   double preGain    = 90000;
   double alpha      = 0.0016;         // Mean field parameter
@@ -1728,7 +1730,10 @@ void tapeEmulationViaOdeSolver()
     // means, we want to estimate the 1st and 2nd time derivative of the input signal H. Actually,
     // It may make sense to set dy[1] = H' = Hp = y[2] because dy[1] is supposed to be the 
     // derivative of H with resepct to t. But for dy[2], we ma really need to compute something. 
-    // Maybe we should use a central difference etsimate of the 2nd derivative of h.
+    // Maybe we should use a central difference etsimate of the 2nd derivative of h. ...done
+    // ...but I think, it's still not quite right. Maybe we should give the system yet another 
+    // extra dimension which we interpret as time and then somehwo use that information to compute
+    // H, H' ...like ...err...I don't know...might be nonsense.
 
     // Is it allowed that d is zero? The paper says that it's 1 when h is increasing and -1 when 
     // it's decreasing but says nothing about what happens when H is doing neither. I translated 
@@ -1763,6 +1768,10 @@ void tapeEmulationViaOdeSolver()
 
     // Do the update step:
     ODE::stepRungeKutta4(f, numDims, p, 1/sampleRate, wrk);
+    //ODE::stepMidpoint(f, numDims, p, 1/sampleRate, wrk);
+    //ODE::stepForwardEuler(f, numDims, p, 1/sampleRate, wrk);
+
+
   }
   rsPlotVectors(x, yt, yt2, y);
   // I also tried to put the "Extract..." code as last instruction in the loop. I think, all that

@@ -46,6 +46,17 @@ std::vector<T> rsOdeCoeffs<T>::adamsMoulton(int s)
 // And for reference as they more clearly show what's going on math-wise.
 
 
+
+// Move to rsArrayTools:
+template<class T>
+void addWithWeight(const T* in1, const T* in2, T weight2, int N, T* result)
+{
+  for(int i = 0; i < N; i++)
+    result[i] = in1[i] + weight2 * in2[i];
+}
+
+
+
 template<class T>
 void rsInitialValueSolver2<T>::stepForwardEuler(const Func& f, int N, T* y, T h, T* v)
 {
@@ -72,14 +83,8 @@ void rsInitialValueSolver2<T>::stepMidpoint(const Func& f, int N, T* y, T h, T* 
   // Do update step with derivative calculated at midpoint:
   for(int n = 0; n < N; n++)
     y[n] += h * d[n];
-}
 
-// Move to rsArrayTools:
-template<class T>
-void addWithWeight(const T* in1, const T* in2, T weight2, int N, T* result)
-{
-  for(int i = 0; i < N; i++)
-    result[i] = in1[i] + weight2 * in2[i];
+  // ToDo: clean up, use addWithWeight() as we do in stepRungeKutta4
 }
 
 template<class T>
