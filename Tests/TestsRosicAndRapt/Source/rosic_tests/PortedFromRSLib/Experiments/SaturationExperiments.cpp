@@ -1370,6 +1370,10 @@ public:
   // Alternative implementation using the ODE solver:
   TSig getSample2(TSig in1)
   {
+    // Apply pre-gain to and estimate derivative of input:
+    TSig H   = gain * in1;
+    TSig H_d = Derivative(T, H, H_n1, H_d_n1);
+
     // Define derivative computation function for ODE solver:
     using Func = std::function<void(const double* y, double* dy)>;
     Func f = [&](const double* y, double* dy)
@@ -1390,9 +1394,7 @@ public:
     ODE::stepRungeKutta4(f, 3, p, T, wrk);
     TSig M = p[0];
 
-    //  Compute and up the state for the next sample:
-    TSig H   = gain * in1;
-    TSig H_d = Derivative(T, H, H_n1, H_d_n1);
+    //  Set up the state for the next sample:
     H_n1     = H;
     H_d_n1   = H_d;
     M_n1     = M;
