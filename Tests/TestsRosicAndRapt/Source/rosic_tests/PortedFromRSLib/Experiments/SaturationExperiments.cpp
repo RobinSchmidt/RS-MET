@@ -1730,7 +1730,7 @@ void tapeEmulationViaOdeSolver()
   using ODE = rsInitialValueSolver2<double>;
   static const int numDims = 3;      // M, H, H' where H, H' are only used for inputs
   double p[numDims];                 // Current position in phase space
-  double wrk[numDims];               // Workspace for the ODE solver
+  double wrk[5*numDims];             // Workspace for the ODE solver
   p[0] = p[1] = p[2] = 0;
 
   // Create output signal:
