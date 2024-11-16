@@ -1685,6 +1685,7 @@ void tapeEmulationViaOdeSolver()
     double Hdd = y[3];              // H''(t) = (d^2 H) / (dt^2)
 
 
+    /*
     // Implement the model equations:
     double d   = rsSign(Hd);
     double Q   = (H + alpha*M) / a;
@@ -1695,14 +1696,16 @@ void tapeEmulationViaOdeSolver()
     if(d*L > 0)
       d_M = 1;
 
-    //d_M = 1; P = 0.000001; // For debug
-
     double S   = ((1-c)*d_M*P) / ((1-c)*d*k - alpha*P);
     // ToDo: catch division by zero. But what should the value be?
 
     double MdNew  = (S*Hd + R*Hd) / (1 - R*alpha);           // M'(t) = dM/dt
-    // ToDo: catch division by zero!
-    // It seems like every other value is wrong and we may occasionally get NaNs
+    // ToDo: Catch division by zero!
+    // Sometimes, the MdNew value matches Md and sometimes it doesn't. Figure out why! Inspect
+    // intermediate variables in JilesAtherton in cases where they dont match. Figure out which 
+    // ones match and which ones don't match.
+    */
+
 
 
     // For the time being, we use Astrobear's implementation of the Jiles-Atherton model:
