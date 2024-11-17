@@ -1531,6 +1531,10 @@ bool stateVariableFilterUnitTest4()
   // doesn't work. Maybe let's try to approach the boundary. With a2 = -0.99, we are in the good 
   // range. With a2 = 1.01 we are actually also in the good case.
 
+  // The expression for T can be factored as T = (a1 - a2 - 1) * (a1 + a2 + 1). We want that to be
+  // less than zero. If we take x = a1 and y = a2, the allowed range is a double cone in the 
+  // xy-plane: https://www.desmos.com/calculator/hakfgeujet
+
   // OK - It seems like old implementation with the Wishnick formulas also doesn't work.
 
 
