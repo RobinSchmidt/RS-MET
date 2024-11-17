@@ -20,7 +20,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupFromBiquad(
   // ToDo:
   //
   // - Figure out what the condition T >= 0 means. Can we deal with it somehow? For T -> 0, we have
-  //   r -> inf
+  //   r -> inf, I think. 
 }
 
 template<class TSig, class TPar>
@@ -63,7 +63,7 @@ template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffs(
   TPar* b0, TPar* b1, TPar* b2) const
 {
-  TPar t0, t1, t2;                               // Temporaries
+  TPar t0, t1, t2;  // Temporaries
   getBiquadNumeratorCoeffsLP(&t0, &t1, &t2); *b0  = aL*t0; *b1  = aL*t1; *b2  = aL*t2;
   getBiquadNumeratorCoeffsBP(&t0, &t1, &t2); *b0 += aB*t0; *b1 += aB*t1; *b2 += aB*t2;
   getBiquadNumeratorCoeffsHP(&t0, &t1, &t2); *b0 += aH*t0; *b1 += aH*t1; *b2 += aH*t2;
