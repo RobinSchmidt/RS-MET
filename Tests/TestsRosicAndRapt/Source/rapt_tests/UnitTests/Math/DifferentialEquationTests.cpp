@@ -456,6 +456,17 @@ bool testNewOdeSolver()
   ok &= rsIsCloseTo(y2, y3, tol);
   ok &= rsIsCloseTo(z2, z3, tol);
 
+  // Now let's try the high level API of the new solver:
+  std::vector<double> state2(3);
+  rsSetZero(state2);
+  ODES2 odes2;
+  odes2.setDerivativeFunction(f, 3);
+  odes2.setStepSize(h);
+  odes2.initState(state2);
+
+
+
+
   //rsPlotVectors(x2, x3);
   //rsPlotVectors(x2-x3,y2-y3,z2-z3); 
   // The seem to diverge. Maybe there is some slight difference in the numerical roundoff behavior 

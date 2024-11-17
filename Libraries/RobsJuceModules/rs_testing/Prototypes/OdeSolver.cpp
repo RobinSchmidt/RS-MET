@@ -114,12 +114,14 @@ void rsInitialValueSolver2<T>::stepRungeKutta4(const Func& f, int N, T* y, T h, 
   // Or maybe not. 
 }
 
+/*
 template<class T>
 void rsInitialValueSolver2<T>::init(int dimensionality, T* initialPosition, T* initialVelocity)
 {
 
 
 }
+*/
 
 
 

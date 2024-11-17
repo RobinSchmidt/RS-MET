@@ -71,26 +71,91 @@ public:
   using Func = std::function<void(const T* y, T* dy)>;
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Lifetime
 
-  void init(int dimensionality, T* initialPosition, T* initialVelocity);
+  rsInitialValueSolver2()
+  {
+    // ToDo: Allocate workspace. Maybe the constructor should take some initializers.
+  }
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  void setStepSize(T newStepSize) { h = newStepSize; }
+
+  void setDerivativeFunction(const Func& newFunction, int newDimensionality)
+  {
+    f = newFunction;
+    N = newDimensionality;
+    allocateWorkspace();
+  }
+
+  void initState(const std::vector<T>& initialState)
+  {
+    rsAssert(initialState.size() == N, "Given initial state has wrong size");
+    for(int i = 0; i < N; i++)
+      wrk[i] = initialState[i];
+  }
+
+
+  // ToDo: void setSolverMethod();  // swithc between Euler, Runge-Kutta, etc.
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+
+  std::vector<T> getState() const
+  {
+    std::vector<T> s(N);
+    for(int i = 0; i < N; i++)
+      s[i] = wrk[i];
+    return s;
+  }
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Low Level API
+
+
+  //void init(int dimensionality, T* initialPosition, T* initialVelocity);
 
 
   // Low-level API (requires user to provide workspace variables - inconvenient and error-prone!)
   static void stepForwardEuler(const Func& f, int N, T* y, T h, T* workspace);
-
-  static void stepMidpoint(const Func& f, int N, T* y, T h, T* workspace);
-
+  static void stepMidpoint(    const Func& f, int N, T* y, T h, T* workspace);
   static void stepRungeKutta4( const Func& f, int N, T* y, T h, T* workspace);
-  // Rename v to wrk and make it the last parameter. Document for each function, how much workspace
-  // is needed. 
+  // ToDo: Document for each function, how much workspace is needed. 
 
 protected:
 
-  T*   y = nullptr; // current state vector, i.e. position in phase-space y = y(t)
-  T*   v = nullptr; // current derivative, i.e. velocity in phase-space, v = y' = dy/dt
-  T    h = 1;       // step size
-  int  N = 0;       // dimensionality of the system, length of y and v
-  Func f;           // function to compute y' = f(y)
+  void allocateWorkspace()
+  {
+    wrk.resize(6*N);
+    // The first N variables are the system state. The 4th order Runge-Kutta solver needs 
+    // additional 5 temporary (vector valued) intermediate variables and this is the highest number
+    // of all currently implemented solvers. So, that's 6 vectors and therefore 6*N scalars.
+  }
+
+  //T*   y = nullptr; // current state vector, i.e. position in phase-space y = y(t)
+  //T*   v = nullptr; // current derivative, i.e. velocity in phase-space, v = y' = dy/dt
+
+
+
+  std::vector<T> wrk;   // Workspace. The first N variables are the state.
+  T    h = 1;           // Step size
+  int  N = 0;           // Dimensionality of the system, length of y and v
+  Func f;               // Function to compute y' = f(y)
+  // ToDo: Figure out which order gives the best performance and/or smallest memory footprint (has 
+  // to do with alignment, padding, etc.)
 
 };
 
