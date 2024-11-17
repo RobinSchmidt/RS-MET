@@ -157,10 +157,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Low Level API
 
-
-  //void init(int dimensionality, T* initialPosition, T* initialVelocity);
-
-
   // Low-level API (requires user to provide workspace variables - inconvenient and error-prone but
   // might allow for some optimizations!)
   static void stepForwardEuler(const Func& f, int N, T* y, T h, T* workspace);
@@ -168,6 +164,7 @@ public:
   static void stepRungeKutta4( const Func& f, int N, T* y, T h, T* workspace);
   // ToDo: Document for each function, how much workspace is needed. I think, for Euler, it's just
   // N, for Midpoint, it's 2*N and for Runge-Kutta-4 it's 5*N
+
 
 protected:
 
@@ -180,7 +177,7 @@ protected:
     // scalars.
   }
 
-
+  // Data members:
   StepMethod method = StepMethod::forwardEuler;
   std::vector<T> wrk;   // Workspace. The first N variables are the state.
   T    h = 1;           // Step size
