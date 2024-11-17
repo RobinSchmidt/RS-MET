@@ -81,21 +81,30 @@ void rsStateVariableFilterOld<TSig, TPar>::setupFromBiquad(
   h  = 1 / (1 + R2*g + g*g);                  // factor for feedback precomputation
 
   // The formulas are taken from (Eq 16 a-e) here:
-  // http://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
+  //
+  //   http://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
+  //
+  // It seems liek they have similar problems as those that I derived myself and are implemented in
+  // new SVF implementation. The line  p = real(s1 * s2)  sometimes produces zero because the 
+  // product  s1*s2  is sometimes not real but rather purely imaginary.
+  //
   //
   // ToDo:
-  // -Figure out why we need the factor -1 for the cB coeff with respect to the formula 16d in the 
-  //  paper. Different conventions?
-  // -Try to avoid complex numbers: I think, if one of the values under the sqrt gets negative, the
-  //  other one must be negative, too and at the end of the day, this just results in a sign-flip
-  //  in some intermediate variable. Maybe keep the original formulas in a comment for reference.
-  //  But maybe one being positive and the other negative could occur for unstable filters and 
-  //  maybe we want to be able to match them, too? Sometimes, they are useful. It's rare but it 
-  //  happens so we'd better be prepared for it. ...OK yes - in one of the unit tests, we actually
-  //  have such a case. Adding an rsAssert(u1*u2 >= 0) would trigger in this unit test. ...hmm - 
-  //  but in that case p = 0  ->  s = inf, so that's not really an unstable filter but some even
-  //  more drastic error condition - so maybe we can indeed assume that either u1,u2 are both 
-  //  positive or both negative? Figure that out!
+  //
+  // - Figure out why we need the factor -1 for the cB coeff with respect to the formula 16d in the 
+  //   paper. Different conventions?
+  //
+  // - Try to avoid complex numbers: I think, if one of the values under the sqrt gets negative, 
+  //   the other one must be negative, too and at the end of the day, this just results in a 
+  //   sign-flip in some intermediate variable. Maybe keep the original formulas in a comment for 
+  //   reference. But maybe one being positive and the other negative could occur for unstable 
+  //   filters and maybe we want to be able to match them, too? Sometimes, they are useful. It's 
+  //   rare but it happens so we'd better be prepared for it. ...OK yes - in one of the unit tests,
+  //   we actually have such a case. Adding an rsAssert(u1*u2 >= 0) would trigger in this unit 
+  //   test. ...hmm - but in that case p = 0  ->  s = inf, so that's not really an unstable filter 
+  //   but some even more drastic error condition - so maybe we can indeed assume that either u1,u2 
+  //   are both positive or both negative? Figure that out! See my new implemetaion. It gets away 
+  //   without complex numbers.
 }
 // Maybe factor out into a static function - or maybe move the conversion into 
 // rsFilterCoefficientConverter.

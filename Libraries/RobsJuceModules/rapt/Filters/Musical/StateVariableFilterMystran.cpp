@@ -7,8 +7,8 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupFromBiquad(
   TPar T1 = a1 - a2 - 1;
   TPar T2 = a1 + a2 + 1;
   TPar T  = T1 * T2;
-  rsAssert(T < 0, "The formulas work only for T < 0.");
-  TPar S  = sqrt(-1/T);
+  rsAssert(T < 0, "The formulas work only for T < 0.");    // ...and I don't know why.
+  TPar S  = sqrt(-1 / T);
   TPar r  = 2*(a2 - 1) / (T*S);
 
   // Compute final coefficients:
@@ -22,7 +22,9 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupFromBiquad(
   // ToDo:
   //
   // - Figure out what the condition T >= 0 means. Can we deal with it somehow? For T -> 0, we have
-  //   r -> inf, I think. 
+  //   r -> inf, I think (verify!). Could it be that the SVF is subject to certain constraints that
+  //   a fully general biquad is not? Both have 5 coefficients, though - so the number of degrees 
+  //   of freedom matches.
 }
 
 template<class TSig, class TPar>
