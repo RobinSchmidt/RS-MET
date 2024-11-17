@@ -43,10 +43,10 @@ public:
 
   /** Evaluates the magnitude response of this filter at a given normalized radian frequency 
   omega. This is useful for plotting it on a GUI. */
-  TPar getMagnitudeAt(TPar omega);
+  TPar getMagnitudeAt(TPar omega) const;
 
   /** Evaluates the filter's z-domain transfer function H(z) value at the given value of z. */
-  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z);
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const;
 
   /** Produces the coefficients of an equivalent direct form biquad filter that implements the
   difference equation:
@@ -58,25 +58,25 @@ public:
     H(z) = (b0 + b1*z^-1 + b2*z^-2) / (1 + a1*z^-1 + a2*z^-2)
 
   The biquad is equivalent in the sense that it has the same transfer function as this filter. */
-  void convertToBiquad(TPar* b0, TPar* b1, TPar* b2, TPar* a1, TPar* a2);
+  void convertToBiquad(TPar* b0, TPar* b1, TPar* b2, TPar* a1, TPar* a2) const;
 
   /** Produces the denominator coefficients of an equivalent direct form biquad filter. */
-  void getBiquadDenominatorCoeffs(TPar* a1, TPar* a2);
+  void getBiquadDenominatorCoeffs(TPar* a1, TPar* a2) const;
 
   /** Produces the numerator coefficients of an equivalent direct form biquad filter. */
-  void getBiquadNumeratorCoeffs(TPar* b0, TPar* b1, TPar* b2);
+  void getBiquadNumeratorCoeffs(TPar* b0, TPar* b1, TPar* b2) const;
 
   /** Produces the numerator coefficients of the lowpass part of an equivalent direct form biquad 
   filter. */
-  void getBiquadNumeratorCoeffsLP(TPar* b0, TPar* b1, TPar* b2);
+  void getBiquadNumeratorCoeffsLP(TPar* b0, TPar* b1, TPar* b2) const;
 
   /** Produces the numerator coefficients of the bandpass part of an equivalent direct form biquad 
   filter. */
-  void getBiquadNumeratorCoeffsBP(TPar* b0, TPar* b1, TPar* b2);
+  void getBiquadNumeratorCoeffsBP(TPar* b0, TPar* b1, TPar* b2) const;
 
   /** Produces the numerator coefficients of the highpass part of an equivalent direct form biquad 
   filter. */
-  void getBiquadNumeratorCoeffsHP(TPar* b0, TPar* b1, TPar* b2);
+  void getBiquadNumeratorCoeffsHP(TPar* b0, TPar* b1, TPar* b2) const;
 
 
   //-----------------------------------------------------------------------------------------------
