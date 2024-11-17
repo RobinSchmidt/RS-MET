@@ -19,7 +19,8 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupFromBiquad(
 
   // ToDo:
   //
-  // - Figure out what the condition T > 0 means. Can we deal with it somehow?
+  // - Figure out what the condition T >= 0 means. Can we deal with it somehow? For T -> 0, we have
+  //   r -> inf
 }
 
 template<class TSig, class TPar>
