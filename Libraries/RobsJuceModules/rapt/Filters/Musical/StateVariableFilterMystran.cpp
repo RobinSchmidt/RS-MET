@@ -3,15 +3,19 @@ template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::setupFromBiquad(
   TPar b0, TPar b1, TPar b2, TPar a1, TPar a2)
 {
-  // Comput intermediates:
-  TPar T = (a1*a1 - a2*a2 - 2*a2 - 1);
+  // Compute intermediates:
+
+  TPar T1 = a1 - a2 - 1;
+  TPar T2 = a1 + a2 + 1;
+  TPar T  = T1 * T2;
+  //TPar T = (a1*a1 - a2*a2 - 2*a2 - 1);                     // == (a1 - a2 - 1) * (a1 + a2 + 1)
   rsAssert(T < 0, "The formulas work only for T < 0.");
   TPar S = sqrt(-1/T);
   TPar r = (2*(a2 - 1) / (T*S));
 
   // Compute final coefficients:
   aH = -(b0 - b1 + b2) / (a1 - a2 - 1);
-  aB =  (2*b0*S - 2*b2*S);
+  aB =  2*S*(b0 - b2);
   aL =  (b0 + b1 + b2) / (a1 + a2 + 1);
   g  = -(1/((a1 - a2 - 1)*S));
   c  =  g + r;
@@ -34,10 +38,10 @@ void rsStateVariableFilterMystran<TSig, TPar>::convertToBiquad(
 template<class TSig, class TPar>
 TPar rsStateVariableFilterMystran<TSig, TPar>::getMagnitudeAt(TPar w) const
 {
-  rsComplex<TPar> j(0, 1);                       // Imaginary unit
-  rsComplex<TPar> z = rsExp(j*w);                // Evaluation point in z-plane
-  rsComplex<TPar> H = getTransferFunctionAt(z);  // Complex frequency response at w
-  return rsAbs(H);                               // Absolute value of H is magnitude
+  rsComplex<TPar> j(0, 1);                                 // Imaginary unit
+  rsComplex<TPar> z = rsExp(j*w);                          // Evaluation point in z-plane
+  rsComplex<TPar> H = getTransferFunctionAt(z);            // Complex frequency response at w
+  return rsAbs(H);                                         // Absolute value of H is magnitude
 }
 
 template<class TSig, class TPar>
@@ -46,7 +50,7 @@ rsComplex<TPar> rsStateVariableFilterMystran<TSig, TPar>::getTransferFunctionAt(
 {
   TPar b0, b1, b2, a1, a2;
   convertToBiquad(&b0, &b1, &b2, &a1, &a2);
-  rsComplex<TPar> d = TPar(1)/z, d2 = d*d;       // d = z^-1, d2 = z^-2
+  rsComplex<TPar> d = TPar(1)/z, d2 = d*d;                 // d = z^-1, d2 = z^-2
   rsComplex<TPar> H = (b0 + b1*d + b2*d2) / (TPar(1) + a1*d + a2*d2);
   return H;
 }
