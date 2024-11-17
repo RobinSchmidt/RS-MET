@@ -93,11 +93,11 @@ public:
     allocateWorkspace();
   }
 
-  void initState(const std::vector<T>& initialState)
+  void setState(const std::vector<T>& newState)
   {
-    rsAssert(initialState.size() == N, "Given initial state has wrong size");
+    rsAssert(newState.size() == N, "Given initial state has wrong size");
     for(int i = 0; i < N; i++)
-      wrk[i] = initialState[i];
+      wrk[i] = newState[i];
   }
   // Maybe also have a function initStateToZero
 
@@ -130,7 +130,7 @@ public:
       s[i] = wrk[i];
     return s;
   }
-  // ToDo: Factor out  a function that just takes a pointer to T* that is provided by the caller 
+  // ToDo: Factor out a function that just takes a pointer to T* that is provided by the caller 
   // and writes the state ito this. Rationale: retrieving the state is an operation that should be
   // realtime save, so we want to be able to do it without memory allocation.
 

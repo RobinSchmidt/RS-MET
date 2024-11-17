@@ -458,19 +458,18 @@ bool testNewOdeSolver()
 
 
   // Now let's try the high level API of the new solver:
-  std::vector<double> state2(3);
-  //rsSetZero(state2);
-  rsSetAllValues(state2, 1.0);
+  std::vector<double> s(3);
+  rsSetAllValues(s, 1.0);
   std::vector<double> x4(N), y4(N), z4(N);
   ODES2 odes2;
   odes2.setDerivativeFunction(f, 3);
   odes2.setStepSize(h);
-  odes2.initState(state2);
+  odes2.setState(s);
   odes2.setStepMethod(ODES2::StepMethod::rungeKutta4);
   for(int n = 0; n < N; n++)
   {
     // Retrieve current state and write into output signals:
-    std::vector<double> s = odes2.getState();
+    s     = odes2.getState();
     x4[n] = s[0];
     y4[n] = s[1];
     z4[n] = s[2];
@@ -481,8 +480,8 @@ bool testNewOdeSolver()
   ok &= x4 == x3;
   ok &= y4 == y3;
   ok &= z4 == z3;
-  rsPlotVectors(x3, y3, z3);
-  rsPlotVectors(x4, y4, z4); 
+  //rsPlotVectors(x3, y3, z3);
+  //rsPlotVectors(x4, y4, z4); 
 
 
 
@@ -499,13 +498,12 @@ bool testNewOdeSolver()
 
   // ToDo:
   //
-  // - Implement and test a more convenient high-level API for the new solver. It should be used 
-  //   like solver.setDerivativeFunction(f); solver.setMethod(R); solver.doStep(); 
-  //   solver.setState(); solver.getState(); and it should manage its workspace memory internally.
-  //
   // - Maybe do some tests with a simple system that has an analytic solution such that we can 
   //   compare the results of different solvers with the analytic solution. Maybe a damped 
-  //   sinuosoid would be a good example system. The ODE is given by: ...
+  //   sinusoid would be a good example system. The ODE is given by: ...
+  //   We should also find a general way to feed in input signals. Maybe we whould treat an input
+  //   signal as additional dimension in the system whose time derivative is obtained by 
+  //   numerically differentiating the input signal?
 }
 
 
