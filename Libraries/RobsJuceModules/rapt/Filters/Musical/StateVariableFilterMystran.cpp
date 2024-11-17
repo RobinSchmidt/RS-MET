@@ -13,7 +13,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupFromBiquad(
 
   // Compute final coefficients:
   aH = -(b0 - b1 + b2) / T1;
-  aB =   2*S*(b0 - b2);
+  aB =  (b0      - b2) * 2*S;
   aL =  (b0 + b1 + b2) / T2;
   g  = -1 / (T1*S);
   c  =  g + r;

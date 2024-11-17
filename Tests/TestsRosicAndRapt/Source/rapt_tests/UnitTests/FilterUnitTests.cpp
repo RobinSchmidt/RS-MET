@@ -1514,8 +1514,10 @@ bool stateVariableFilterUnitTest4()
   b0 =  1; 
   b1 =  0; 
   b2 =  0;
-  a1 =  0.0;
-  a2 = -1.01;
+  //a1 =  0.0;
+  //a2 = -1.01;
+  a1 =  0.5;
+  a2 = -0.75;
   T  = (a1*a1 - a2*a2 - 2*a2 - 1);
   svf.setupFromBiquad( b0, b1, b2, a1, a2);
   svf2.setupFromBiquad(b0, b1, b2, a1, a2);  // This implements the Wishnick formulas
@@ -1524,7 +1526,7 @@ bool stateVariableFilterUnitTest4()
   svf.setupFromBiquad( b0, b1, b2, a1, a2);
   svf2.setupFromBiquad(b0, b1, b2, a1, a2);
   */
-
+  
   // If a1 = 0, the function T(a2) is the parabola -x^2 - 2x - 1  which touches the x-axis at 
   // x = -1. https://www.desmos.com/calculator/ycadkwni7d  So, with a1 = 0, T can never become 
   // positive. With a2 = -1, we get T = 0. This is the boundary case between  what works and what
@@ -1534,6 +1536,8 @@ bool stateVariableFilterUnitTest4()
   // The expression for T can be factored as T = (a1 - a2 - 1) * (a1 + a2 + 1). We want that to be
   // less than zero. If we take x = a1 and y = a2, the allowed range is a double cone in the 
   // xy-plane: https://www.desmos.com/calculator/hakfgeujet
+  // Some "nice" pairs outside the cone:        (a1,a2) = (0.5,-0.75), (0.8,-0.4)
+  // Some directly on the boudnary of the cone: (a1,a2) = (0.8,-0.2)
 
   // OK - It seems like old implementation with the Wishnick formulas also doesn't work.
 
