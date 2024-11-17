@@ -456,13 +456,34 @@ bool testNewOdeSolver()
   ok &= rsIsCloseTo(y2, y3, tol);
   ok &= rsIsCloseTo(z2, z3, tol);
 
+
   // Now let's try the high level API of the new solver:
   std::vector<double> state2(3);
-  rsSetZero(state2);
+  //rsSetZero(state2);
+  rsSetAllValues(state2, 1.0);
+  std::vector<double> x4(N), y4(N), z4(N);
   ODES2 odes2;
   odes2.setDerivativeFunction(f, 3);
   odes2.setStepSize(h);
   odes2.initState(state2);
+  odes2.setStepMethod(ODES2::StepMethod::rungeKutta4);
+  for(int n = 0; n < N; n++)
+  {
+    // Retrieve current state and write into output signals:
+    std::vector<double> s = odes2.getState();
+    x4[n] = s[0];
+    y4[n] = s[1];
+    z4[n] = s[2];
+
+    // Iterate state in phase space:
+    odes2.doStep();
+  };
+  ok &= x4 == x3;
+  ok &= y4 == y3;
+  ok &= z4 == z3;
+  rsPlotVectors(x3, y3, z3);
+  rsPlotVectors(x4, y4, z4); 
+
 
 
 

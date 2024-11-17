@@ -99,9 +99,25 @@ public:
     for(int i = 0; i < N; i++)
       wrk[i] = initialState[i];
   }
+  // Maybe also have a function initStateToZero
 
 
-  // ToDo: void setSolverMethod();  // swithc between Euler, Runge-Kutta, etc.
+  enum class StepMethod
+  {
+    forwardEuler,
+    midpoint,
+    rungeKutta4,
+
+    numMethods
+  };
+  // Note: When adding new methods and one of them needs more workspace than the currently 
+  // available ones, we need to adapt allocateWorkspace() accordingly.
+
+  void setStepMethod(StepMethod newMethod)
+  {
+    method = newMethod;
+  }
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
@@ -114,12 +130,28 @@ public:
       s[i] = wrk[i];
     return s;
   }
+  // ToDo: Factor out  a function that just takes a pointer to T* that is provided by the caller 
+  // and writes the state ito this. Rationale: retrieving the state is an operation that should be
+  // realtime save, so we want to be able to do it without memory allocation.
+
 
 
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
+
+  void doStep()
+  {
+    using SM = StepMethod;
+    switch(method)
+    {
+    case SM::forwardEuler: stepForwardEuler(f, N, &wrk[0], h, &wrk[N]); break;
+    case SM::midpoint:     stepMidpoint(    f, N, &wrk[0], h, &wrk[N]); break;
+    case SM::rungeKutta4:  stepRungeKutta4( f, N, &wrk[0], h, &wrk[N]); break;
+    default:               rsError("Unknown step method");              break;
+    }
+  }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -129,11 +161,13 @@ public:
   //void init(int dimensionality, T* initialPosition, T* initialVelocity);
 
 
-  // Low-level API (requires user to provide workspace variables - inconvenient and error-prone!)
+  // Low-level API (requires user to provide workspace variables - inconvenient and error-prone but
+  // might allow for some optimizations!)
   static void stepForwardEuler(const Func& f, int N, T* y, T h, T* workspace);
   static void stepMidpoint(    const Func& f, int N, T* y, T h, T* workspace);
   static void stepRungeKutta4( const Func& f, int N, T* y, T h, T* workspace);
-  // ToDo: Document for each function, how much workspace is needed. 
+  // ToDo: Document for each function, how much workspace is needed. I think, for Euler, it's just
+  // N, for Midpoint, it's 2*N and for Runge-Kutta-4 it's 5*N
 
 protected:
 
@@ -142,21 +176,18 @@ protected:
     wrk.resize(6*N);
     // The first N variables are the system state. The 4th order Runge-Kutta solver needs 
     // additional 5 temporary (vector valued) intermediate variables and this is the highest number
-    // of all currently implemented solvers. So, that's 6 vectors and therefore 6*N scalars.
+    // of all currently implemented solvers. So, that's 6 N-dimensional vectors and therefore 6*N 
+    // scalars.
   }
 
-  //T*   y = nullptr; // current state vector, i.e. position in phase-space y = y(t)
-  //T*   v = nullptr; // current derivative, i.e. velocity in phase-space, v = y' = dy/dt
 
-
-
+  StepMethod method = StepMethod::forwardEuler;
   std::vector<T> wrk;   // Workspace. The first N variables are the state.
   T    h = 1;           // Step size
-  int  N = 0;           // Dimensionality of the system, length of y and v
-  Func f;               // Function to compute y' = f(y)
+  int  N = 0;           // Dimensionality of the system, i.e. length of the state vector.
+  Func f;               // Function to compute y' = f(y). Both y and y' are N-vectors.
   // ToDo: Figure out which order gives the best performance and/or smallest memory footprint (has 
-  // to do with alignment, padding, etc.)
-
+  // to do with alignment, padding, etc.). Maybe initialize N = 1 instead of N = 0.
 };
 
 // ToDo:
