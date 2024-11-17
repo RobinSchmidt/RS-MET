@@ -208,7 +208,7 @@ public:
     }
   }
 
-
+  /*
   void setupFromBiquad(TPar b0, TPar b1, TPar b2, TPar a1, TPar a2)
   {
     TPar T = (a1*a1 - a2*a2 - 2*a2 - 1);
@@ -250,6 +250,7 @@ public:
     // The rest is the same. Maybe sometimes we need that solution? Maybe when the b-coeffs are
     // negative?
   }
+  */
   // ToDo: check what happens with the second solution. Maybe it's needed in certain cases when
   // the filter includes a sign inversion? Maybe make unit tests with random biquad coeffs and
   // make roundtrips. Maybe also try random SVF coeffs. I think, we can distinguish between the 

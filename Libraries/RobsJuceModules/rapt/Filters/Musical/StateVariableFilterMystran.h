@@ -35,18 +35,13 @@ public:
   void setupLowShelf(     TPar omega, TPar Q, TPar A);
   void setupHighShelf(    TPar omega, TPar Q, TPar A);
 
+  void setupFromBiquad(TPar b0, TPar b1, TPar b2, TPar a1, TPar a2);
+
   // ToDo: setupFromBiquad(TPar b0, TPar b1, TPar b2, TPar a1, TPar a2);
 
 
   //-----------------------------------------------------------------------------------------------
-  // \name Inquiry  (ToDo: make them const!)
-
-  /** Evaluates the magnitude response of this filter at a given normalized radian frequency 
-  omega. This is useful for plotting it on a GUI. */
-  TPar getMagnitudeAt(TPar omega) const;
-
-  /** Evaluates the filter's z-domain transfer function H(z) value at the given value of z. */
-  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const;
+  // \name Inquiry
 
   /** Produces the coefficients of an equivalent direct form biquad filter that implements the
   difference equation:
@@ -59,6 +54,13 @@ public:
 
   The biquad is equivalent in the sense that it has the same transfer function as this filter. */
   void convertToBiquad(TPar* b0, TPar* b1, TPar* b2, TPar* a1, TPar* a2) const;
+
+  /** Evaluates the magnitude response of this filter at a given normalized radian frequency 
+  omega. This is useful for plotting it on a GUI. */
+  TPar getMagnitudeAt(TPar omega) const;
+
+  /** Evaluates the filter's z-domain transfer function H(z) value at the given value of z. */
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const;
 
   /** Produces the denominator coefficients of an equivalent direct form biquad filter. */
   void getBiquadDenominatorCoeffs(TPar* a1, TPar* a2) const;

@@ -411,3 +411,74 @@ a0, a1, a2
 
 For a0, we just evaluated the expression at zero. Trying to retrieve the a0 coefficient via 
 a0 = D.coefficient(1) or a0 = D.coefficient(d^0) returns 0 (Why?).
+
+OK - so now we have formulas to compute the coefficients for an equivalent direct form biquad filter
+with transfer function:
+
+           b0 + b1*z^-1 + b2*z^-2
+   H(z) = ------------------------
+           1  + a1*z^-1 + a2*z^-2
+
+from our SVF coeffs s,c,g,aH,aB,aL. They are given by:
+
+  b0 =  aL*s*g*g    + aB*g*s + aH*s
+  b1 =  aL*s*g*g*2           - aH*s*2
+  b2 =  aL*s*g*g    - aB*g*s + aH*s
+  a1 =  2*(c*g + g*g)*s - 2
+  a2 = -2*(c*g - g*g)*s + 1
+
+Next, we may be interested in doing it the other way around, i.e. starting from biquad coeffs and 
+trying to find the coeffs of an equivalent SVF. Trying to solve the set of equations with SageMath:
+
+var("b0 b1 b2 a1 a2  aL aB aH g r")
+s = 1 / (1 + g*(g+r))
+e1 = b0 == aL*s*g*g    + aB*g*s + aH*s
+e2 = b1 == aL*s*g*g*2           - aH*s*2
+e3 = b2 == aL*s*g*g    - aB*g*s + aH*s
+e4 = a1 ==  2*((g+r)*g + g*g)*s - 2
+e5 = a2 == -2*((g+r)*g - g*g)*s + 1
+solve([e1,e2,e3,e4,e5],[aL,aB,aH,g,r])
+
+produces two solutions:
+
+  Intermediate:
+  T  =         (a1^2 - a2^2 - 2*a2 - 1)
+  S  = sqrt(-1/(a1^2 - a2^2 - 2*a2 - 1)) = sqrt(-1/T)
+
+  1st solution:
+  aB ==  2*b0*S - 2*b2*S
+  g  == -1/((a1 - a2 - 1)*S)
+  r  ==  2*(a2 - 1)/(T * S) 
+
+  2nd solution:
+  aB == -2*b0*S + 2*b2*S
+  g  ==  1/((a1 - a2 - 1)*S)
+  r  == -2*(a2 - 1) / (T * S)
+
+  Common computations:
+  aH = -(b0 - b1 + b2) / (a1 - a2 - 1);
+  aL =  (b0 + b1 + b2) / (a1 + a2 + 1);
+  c  =  g + r;
+  s  =  1 / (1 + g*c);
+
+
+I'm not sure what to do with that result, though. It seems to work only when T < 0 but I think the 
+case with T >= can correspond to totally legitimate biquad filters. I think, it's not even related 
+to (in)stability even though instability shouldn't even be a problem for these formulas anyway. For 
+the common RBJ filters, the formula seem to work, though. It also seems that the formulas given by 
+Aaron Wishnick in this paper (in Eq. 16):
+
+  https://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
+
+do have similar problems.
+
+
+
+
+
+
+
+
+
+
+

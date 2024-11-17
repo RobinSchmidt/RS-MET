@@ -1,5 +1,36 @@
 
 template<class TSig, class TPar>
+void rsStateVariableFilterMystran<TSig, TPar>::setupFromBiquad(
+  TPar b0, TPar b1, TPar b2, TPar a1, TPar a2)
+{
+  // Comput intermediates:
+  TPar T = (a1*a1 - a2*a2 - 2*a2 - 1);
+  rsAssert(T < 0, "The formulas work only for T < 0.");
+  TPar S = sqrt(-1/T);
+  TPar r = (2*(a2 - 1) / (T*S));
+
+  // Compute final coefficients:
+  aH = -(b0 - b1 + b2) / (a1 - a2 - 1);
+  aB =  (2*b0*S - 2*b2*S);
+  aL =  (b0 + b1 + b2) / (a1 + a2 + 1);
+  g  = -(1/((a1 - a2 - 1)*S));
+  c  =  g + r;
+  s  =  1 / (1 + g*c);
+
+  // ToDo:
+  //
+  // - Figure out what the condition T > 0 means. Can we deal with it somehow?
+}
+
+template<class TSig, class TPar>
+void rsStateVariableFilterMystran<TSig, TPar>::convertToBiquad(
+  TPar* b0, TPar* b1, TPar* b2, TPar* a1, TPar* a2) const
+{
+  getBiquadNumeratorCoeffs(b0, b1, b2);
+  getBiquadDenominatorCoeffs(  a1, a2);
+}
+
+template<class TSig, class TPar>
 TPar rsStateVariableFilterMystran<TSig, TPar>::getMagnitudeAt(TPar w) const
 {
   rsComplex<TPar> j(0, 1);                       // Imaginary unit
@@ -20,14 +51,6 @@ rsComplex<TPar> rsStateVariableFilterMystran<TSig, TPar>::getTransferFunctionAt(
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::convertToBiquad(
-  TPar* b0, TPar* b1, TPar* b2, TPar* a1, TPar* a2) const
-{
-  getBiquadNumeratorCoeffs(b0, b1, b2);
-  getBiquadDenominatorCoeffs(  a1, a2);
-}
-
-template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::getBiquadDenominatorCoeffs(
   TPar* a1, TPar* a2) const
 {
@@ -40,21 +63,9 @@ void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffs(
   TPar* b0, TPar* b1, TPar* b2) const
 {
   TPar t0, t1, t2;                               // Temporaries
-
-  getBiquadNumeratorCoeffsLP(&t0, &t1, &t2);
-  *b0 = aL*t0;
-  *b1 = aL*t1;
-  *b2 = aL*t2;
-
-  getBiquadNumeratorCoeffsBP(&t0, &t1, &t2);
-  *b0 += aB*t0;
-  *b1 += aB*t1;
-  *b2 += aB*t2;
-
-  getBiquadNumeratorCoeffsHP(&t0, &t1, &t2);
-  *b0 += aH*t0;
-  *b1 += aH*t1;
-  *b2 += aH*t2;
+  getBiquadNumeratorCoeffsLP(&t0, &t1, &t2); *b0  = aL*t0; *b1  = aL*t1; *b2  = aL*t2;
+  getBiquadNumeratorCoeffsBP(&t0, &t1, &t2); *b0 += aB*t0; *b1 += aB*t1; *b2 += aB*t2;
+  getBiquadNumeratorCoeffsHP(&t0, &t1, &t2); *b0 += aH*t0; *b1 += aH*t1; *b2 += aH*t2;
 }
 
 template<class TSig, class TPar>
@@ -113,7 +124,8 @@ ToDo:
 
 - In the prototype folder in MiscFilters.h, there is some subclass  rsStateVariableFilterMystran2
   that extends this class by some add-on functionality. Maybe someday, some of it should be
-  dragged over.
+  dragged over. It has also a preliminary setupFromBiquad() function. But it doesn't always work.
+  I think, it works only when T = (a1*a1 - a2*a2 - 2*a2 - 1) < 0.
 
 - Figure out if there is a more direct way to evaluate the transfer function, i.e. one that 
   doesn't go through a conversion to a direct form biquad.
