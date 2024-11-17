@@ -35,9 +35,14 @@ public:
   void setupLowShelf(     TPar omega, TPar Q, TPar A);
   void setupHighShelf(    TPar omega, TPar Q, TPar A);
 
-  void setupFromBiquad(TPar b0, TPar b1, TPar b2, TPar a1, TPar a2);
+  /** Sets up the SVF coefficients such that the filter realizes the biquad transfer function 
 
-  // ToDo: setupFromBiquad(TPar b0, TPar b1, TPar b2, TPar a1, TPar a2);
+    H(z) = (b0 + b1*z^-1 + b2*z^-2) / (1 + a1*z^-1 + a2*z^-2). 
+  
+  However, the formula doesn't seem to work for all possible sets of biquad coeffs. It works only
+  when  (a1*a1 - a2*a2 - 2*a2 - 1) < 0, so it's not recommended to use it blindly. It may fail. I 
+  have not yet figured out why that is and if something can be to fix it. */
+  void setupFromBiquad(TPar b0, TPar b1, TPar b2, TPar a1, TPar a2);
 
 
   //-----------------------------------------------------------------------------------------------
