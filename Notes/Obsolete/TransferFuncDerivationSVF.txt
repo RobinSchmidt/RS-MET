@@ -1,0 +1,234 @@
+This is my (semi)manual derivation for the SVF transfer function that I did before figuring out how
+to let the SageMath CAS do it. The CAS way is described in FilterTransferFunctions.txt, so this
+manual derivation is now obsolete.
+
+
+
+Let's first solve the last 2 equations for U and V:
+
+  U = 2*B - U*d  ->  U + U*d = 2*B  ->  U*(1+d) = 2*B  ->  U = (2*B/(1+d))                      (6)
+  V = 2*L - V*d  ->    ....the very same stuff.....    ->  V = (2*L/(1+d))                      (7)
+
+And plug the results into the first 3 equations:
+
+  H = s*X - s*c*(2*B/(1+d))*d - s*(2*L/(1+d))*d                                                 (8)
+  B = g*H + (2*B/(1+d))*d                                                                       (9)
+  L = g*B + (2*L/(1+d))*d                                                                      (10)
+
+Now let's solve the 3rd one for B. We just need to subtract (2*L/(1+d))*d from both sides and 
+divide by g:
+
+  B = (L - (2*L/(1+d))*d)/g                                                                    (11)
+
+and plug that into the 2nd:
+
+  ((L - (2*L/(1 + d))*d)/g) = g*H + (2*((L - (2*L/(1 + d))*d)/g)/(1 + d))*d                    (12)
+
+Now let's solve this one for H:
+
+  H = ((((L - (2*L/(1 + d))*d)/g) - (2*((L - (2*L/(1 + d))*d)/g)/(1 + d))*d)/g)                (13)
+
+and plug it into the equation (8):
+
+  ((((L - (2*L/(1 + d))*d)/g) - (2*((L - (2*L/(1 + d))*d)/g)/(1 + d))*d)/g) 
+  = s*X - s*c*(2*B/(1 + d))*d - s*(2*L/(1 + d))*d
+ 
+This is already a mess - but it gets even messier: We now replace B by the expression 
+((L - (2*L/(1 + d))*d)/g) that we calculated before:
+
+  ((((L - (2*L/(1 + d))*d)/g) - (2*((L - (2*L/(1 + d))*d)/g)/(1 + d))*d)/g) 
+  = s*X - s*c*(2*((L - (2*L/(1 + d))*d)/g)/(1 + d))*d - s*(2*L/(1 + d))*d
+
+Let's try to simplify both sides with Sage:
+
+var("d g L") 
+lhs = ((((L - (2*L/(1 + d))*d)/g) - (2*((L - (2*L/(1 + d))*d)/g)/(1 + d))*d)/g) 
+lhs.simplify_full()
+ 
+  ->  (L*d^2 - 2*L*d + L)/((d^2 + 2*d + 1)*g^2)
+
+var("d g s c L X") 
+rhs = s*X - s*c*(2*((L - (2*L/(1 + d))*d)/g)/(1 + d))*d - s*(2*L/(1 + d))*d
+rhs.simplify_full()
+
+  ->  (2*L*c*d^2 - 2*L*c*d - ((2*L - X)*d^2 + 2*(L - X)*d - X)*g)*s/((d^2 + 2*d + 1)*g)
+  
+We have now whittled the whole system down to a single equation that contains only  L,X  and the 
+constants  g,s,c  and the delay operator  d  and its square  d^2  indicating a 2-sample delay. The 
+equation is quite messy:
+
+                    (L*d^2 - 2*L*d + L)/((d^2 + 2*d + 1)*g^2)
+
+                                       =
+
+        (2*L*c*d^2 - 2*L*c*d - ((2*L - X)*d^2 + 2*(L - X)*d - X)*g)*s/((d^2 + 2*d + 1)*g)
+
+This is now the single equation that we need to bring into the form  L/X = "something"
+where that "something" is a 2nd order rational function in d that contains only g,s,c and d, d^2.
+This will then be the transfer function that is applied the lowpass signal. Looking at the 
+denominators of both sides, we see that we can actually cancel  (d^2 + 2*d + 1)*g  from both 
+denominators. Only on the left hand side a g remains becuase it has a g^2 in it. So, the equation 
+simplifies to:
+
+  (L*d^2 - 2*L*d + L) / g = (2*L*c*d^2 - 2*L*c*d - ((2*L - X)*d^2 + 2*(L - X)*d - X)*g)*s
+
+That looks a whole lot better already. Now let's expand the right hand side:
+
+var("X L g c s d")
+expr = (2*L*c*d^2 - 2*L*c*d - ((2*L - X)*d^2 + 2*(L - X)*d - X)*g)*s
+expr.expand()
+
+  ->  2*L*c*d^2*s - 2*L*d^2*g*s + X*d^2*g*s - 2*L*c*d*s - 2*L*d*g*s + 2*X*d*g*s + X*g*s
+
+and write our equation as:
+
+  L*d^2/g - 2*L*d/g + L/g 
+  = 
+  2*L*c*d^2*s - 2*L*d^2*g*s + X*d^2*g*s - 2*L*c*d*s - 2*L*d*g*s + 2*X*d*g*s + X*g*s
+
+and bring all L-terms to the left (i.e. top):
+
+  L*d^2/g - 2*L*d/g + L/g - 2*L*c*d^2*s + 2*L*d^2*g*s + 2*L*c*d*s + 2*L*d*g*s 
+  = 
+  X*d^2*g*s + 2*X*d*g*s + X*g*s
+
+Factor out L on the left and X on the right:
+
+  L * (d^2/g - 2*d/g + 1/g - 2*c*d^2*s + 2*d^2*g*s + 2*c*d*s + 2*d*g*s)
+  = 
+  X * (d^2*g*s + 2*d*g*s + g*s)
+
+And this can now easily be rearranged into L/X = "something" form as:
+
+   L                   d^2*g*s + 2*d*g*s + g*s
+  --- = -----------------------------------------------------------------
+   X     d^2/g - 2*d/g + 1/g - 2*c*d^2*s + 2*d^2*g*s + 2*c*d*s + 2*d*g*s
+
+
+   L                   d^2*g*s + 2*d*g*s + g*s
+  --- = ----------------------------------------------------------------------                 (14)
+   X     1/g   - 2*d/g + 2*c*d*s + 2*d*g*s  +  d^2/g - 2*c*d^2*s + 2*d^2*g*s 
+
+This is our desired final form of:
+
+   L/X = (b0 + b1*d + b2*d^2) / (a0 + a1*d + a2*d^2)
+
+with 
+
+  ┌───────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ b0 = g*s, b1 = 2*g*s, b2 = g*s, a0 = 1/g, a1 = -2/g + 2*c*s + 2*g*s, a2 = 1/g - 2*c*s + 2*g*s │
+  └───────────────────────────────────────────────────────────────────────────────────────────────┘
+
+For the highpass and bandpass transfer function, we need to do something similar to end up with 
+expressions for B/X and H/X ...or maybe we could backsubstitute our lowpass result somewhere?
+Let's look back at equation (13) which is repeated here:
+
+  H = ((((L - (2*L/(1 + d))*d)/g) - (2*((L - (2*L/(1 + d))*d)/g)/(1 + d))*d)/g)   
+
+Maybe let's try to express L as X times the right hand side of equation (14) and substitute it in.
+But this is something we really don't want to do by hand, so:
+
+var("X H d g s c")
+num = X * (d^2*g*s + 2*d*g*s + g*s)
+den = d^2/g - 2*d/g + 1/g - 2*c*d^2*s + 2*d^2*g*s + 2*c*d*s + 2*d*g*s
+L   = num / den
+H   = ((((L - (2*L/(1 + d))*d)/g) - (2*((L - (2*L/(1 + d))*d)/g)/(1 + d))*d)/g) 
+H.simplify_full()
+
+  -> (X*d^2 - 2*X*d + X)*s/(d^2 + 2*((d^2 + d)*g^2 - (c*d^2 - c*d)*g)*s - 2*d + 1)
+
+so we have established that:
+
+  H = (X*d^2 - 2*X*d + X)*s / (d^2 + 2*((d^2 + d)*g^2 - (c*d^2 - c*d)*g)*s - 2*d + 1)
+
+We factor out X on the right hand side:
+
+  H = X(d^2 - 2*d + 1)*s / (d^2 + 2*((d^2 + d)*g^2 - (c*d^2 - c*d)*g)*s - 2*d + 1)
+
+and bring it over to the left:
+
+   H                 (d^2 - 2*d + 1)*s
+  --- = ---------------------------------------------------------
+   X     (d^2 + 2*((d^2 + d)*g^2 - (c*d^2 - c*d)*g)*s - 2*d + 1)
+
+var("d g s c")
+expr = (d^2 + 2*((d^2 + d)*g^2 - (c*d^2 - c*d)*g)*s - 2*d + 1)
+expr.expand()
+
+  -> -2*c*d^2*g*s + 2*d^2*g^2*s + 2*c*d*g*s + 2*d*g^2*s + d^2 - 2*d + 1
+
+So:
+
+   H                        s - s*2*d + s*d^2
+  --- = -----------------------------------------------------------------------
+   X      1  +  2*c*d*g*s + 2*d*g^2*s - 2*d  - 2*c*d^2*g*s + 2*d^2*g^2*s + d^2
+
+We read off:
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ b0 = s, b1 = -2*s, b2 = s, a0 = 1, a1 = 2*c*g*s + 2*g*g*s - 2, a2 = -2*c*g*s + 2*g*g*s + 1 │
+  └────────────────────────────────────────────────────────────────────────────────────────────┘
+
+OK - and now finally for the bandpass. For this, we go back to equation (12) which is repeated here:
+
+  B = (L - (2*L/(1+d))*d)/g  
+
+and do the same procedure.
+
+var("X B d g s c")
+num = X * (d^2*g*s + 2*d*g*s + g*s)
+den = d^2/g - 2*d/g + 1/g - 2*c*d^2*s + 2*d^2*g*s + 2*c*d*s + 2*d*g*s
+L   = num / den
+B   = (L - (2*L/(1+d))*d)/g  
+B.simplify_full()
+ 
+  ->  -(X*d^2 - X)*g*s/(d^2 + 2*((d^2 + d)*g^2 - (c*d^2 - c*d)*g)*s - 2*d + 1)
+
+so we have established that:
+
+  B = -(X*d^2 - X)*g*s / (d^2 + 2*((d^2 + d)*g^2 - (c*d^2 - c*d)*g)*s - 2*d + 1)
+
+We factor out X on the right hand side:
+
+  B = -X(d^2 - 1)*g*s / (d^2 + 2*((d^2 + d)*g^2 - (c*d^2 - c*d)*g)*s - 2*d + 1)
+
+and bring it over to the left:
+
+   B                   -(d^2 - 1)*g*s                                  g*s - g*s*d^2
+  --- = --------------------------------------------------------- = -------------------
+   X     (d^2 + 2*((d^2 + d)*g^2 - (c*d^2 - c*d)*g)*s - 2*d + 1)        Denominator
+
+We recognize that the denominator is the same as in the highpass case, so our a0,a1,a2 coeffs will
+be the same as for highpass. The b-coeffs are: 
+
+  ┌────────────────────────────────────────────────────────────┐
+  │ b0 = g*s, b1 = 0, b2 = -g*s, a-coeffs same as for highpass │
+  └────────────────────────────────────────────────────────────┘
+
+That was quite a messy derivation. Later, I figured out how to let Sage do it.
+
+
+...........SageMath code and results.....
+
+
+These solutions do not look exactly like what I have found manually - but I guess, they are 
+equivalent and can brought into the forms given above by further manipulations. Checking it for the 
+denominator of the highpass found earlier:
+
+   H                 (d^2 - 2*d + 1)*s
+  --- = ---------------------------------------------------------
+   X     (d^2 + 2*((d^2 + d)*g^2 - (c*d^2 - c*d)*g)*s - 2*d + 1)
+
+we see that the numerator already matches. Let's check if the denominators are equivalent with Sage:
+
+var("d c g s")
+d1 = (d^2 - 2*((c*g - g^2)*d^2 - (c*g + g^2)*d)*s - 2*d + 1)
+d2 = (d^2 + 2*((d^2 + d)*g^2 - (c*d^2 - c*d)*g)*s - 2*d + 1)
+diff = d1 - d2
+diff.simplify_full()
+
+  ->  0
+
+OK. The difference of both denominators is zero. We notice that the denominators of all3 transfer 
+functions are the same. That means all 3 transfer functions have the same poles. They differ only
+in the zeros which determine whether it's a lowpass, bandpass or highpass response. 

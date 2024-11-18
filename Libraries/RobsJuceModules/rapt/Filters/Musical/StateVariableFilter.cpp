@@ -248,7 +248,7 @@ References:
 
 - https://github.com/RobinSchmidt/RS-MET/blob/work/Notes/FilterTransferFunctions.txt
   My (Robin Schmidt's) derivations for the formulas to convert from our coeffs here to direct form 
-  biquad coeffs.
+  biquad coeffs and vice versa.
 
 - https://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
   Aaron Wishnick's paper has formulas (equation 16 a-c) for converting from direct form biquad 

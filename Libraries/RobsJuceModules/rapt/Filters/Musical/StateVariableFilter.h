@@ -1,7 +1,5 @@
-#ifndef RAPT_STATEVARIABLEFILTERMYSTRAN_H
-#define RAPT_STATEVARIABLEFILTERMYSTRAN_H
-
-// ToDo: rename file
+#ifndef RAPT_STATEVARIABLEFILTER_H
+#define RAPT_STATEVARIABLEFILTER_H
 
 /** A zero delay feedback (ZDF) state variable filter (SVF). It offers all the frequency responses
 from the RBJ biquad cookbook. The filter is parameterized in terms of the normalized radian 
