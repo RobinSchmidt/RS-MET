@@ -22,7 +22,7 @@ References:
 
 Notes:
 
-This implementation is superseded by the newer implementation in rsStateVariabelFilterMystran.
+This implementation is superseded by the newer implementation in rsStateVariabelFilter.
 If the features of that other class are what you need, you should really use that. This class here 
 may be deprecated. It was my first attempt and the newer code is much cleaner. */
 
