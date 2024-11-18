@@ -1486,13 +1486,13 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/Musical/StateVariableFilterMystran.cpp">
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/Musical/StateVariableFilter.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/Musical/StateVariableFilterMystran.h">
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/Musical/StateVariableFilter.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>

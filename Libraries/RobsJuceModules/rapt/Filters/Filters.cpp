@@ -29,6 +29,6 @@ namespace RAPT
 #include "Musical/LadderFilter.cpp"
 #include "Musical/PhasorFilter.cpp"
 #include "Musical/StateVariableFilterOld.cpp"
-#include "Musical/StateVariableFilterMystran.cpp"
+#include "Musical/StateVariableFilter.cpp"
 
 }

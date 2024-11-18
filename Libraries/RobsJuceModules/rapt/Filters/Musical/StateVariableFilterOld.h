@@ -1,6 +1,8 @@
 #ifndef RAPT_STATEVARIABLEFILTEROLD_H_INCLUDED
 #define RAPT_STATEVARIABLEFILTEROLD_H_INCLUDED
 
+// ToDo: move file to _Deprecated folder
+
 /** This is an implementation of a state variable filter using topology-preserving transform (TPT)
 and zero-delay feedback (ZDF) technology. You can either use 3 outputs (lowpass, bandpass, 
 highpass) from the SVF core by calling getOutputs() or let the filter itself form a linear 
