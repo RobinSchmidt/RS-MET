@@ -18,17 +18,6 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   g  = -1 / (T1*S);
   c  =  g + r;
   s  =  1 / (1 + g*c);
-
-  // ToDo:
-  //
-  // - Figure out what the condition T >= 0 means. The argument of the square root becomes negative
-  //   in this case. So, the damping coeff r becomes imaginary? Can we deal with it somehow? For 
-  //   T -> 0, we have r -> inf, I think (verify!). Could it be that the SVF is subject to certain 
-  //   constraints that a fully general biquad is not? Both have 5 coefficients, though - so the 
-  //   number of degrees of freedom matches.
-  //
-  // - Maybe the number of divisions can be reduced by defining  T1 = 1/(a1-a2-1), T2 = 1/(a1+a2+1)
-  //   and adapting the following code accordingly?
 }
 
 template<class TSig, class TPar>
@@ -134,5 +123,14 @@ ToDo:
 
 - Add an experiment that looks at the DC-response when switching the cutoff freq. The Wishnick 
   paper says that this is a good test for modulation response.
+
+- Figure out what the condition T >= 0 means. The argument of the square root becomes negative
+  in this case. So, the damping coeff r becomes imaginary? Can we deal with it somehow? For 
+  T -> 0, we have r -> inf, I think (verify!). Could it be that the SVF is subject to certain 
+  constraints that a fully general biquad is not? Both have 5 coefficients, though - so the 
+  number of degrees of freedom matches.
+
+- Maybe the number of divisions can be reduced by defining  T1 = 1/(a1-a2-1), T2 = 1/(a1+a2+1)
+  and adapting the following code accordingly?
 
 */

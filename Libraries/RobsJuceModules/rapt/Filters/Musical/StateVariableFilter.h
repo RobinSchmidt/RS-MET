@@ -11,7 +11,13 @@ You can produce these 3 signals using the getPartialOutputs() function. Alternat
 getSample() which produces a single signal that is a mix of these 3 signals using some mixing 
 coefficients that are determined by the desired filter mode. Consider getSample() as the high level
 API and getPartialOutputs() as a lower level API. Most of the time, client code will want to use 
-getSample() but the 3 separate outputs are made available as well, just in case you want them. */
+getSample() but the 3 separate outputs are made available as well, just in case you want them. 
+
+For more details about where all the formulas that we implement here come from, see:
+
+  https://github.com/RobinSchmidt/RS-MET/blob/work/Notes/StateVariableFilter.txt
+
+*/
 
 template<class TSig, class TPar>       // Data types for signals and parameters
 class rsStateVariableFilter
