@@ -1,8 +1,12 @@
+This file contains some technical details about my SVF implementation here:
+
+https://github.com/RobinSchmidt/RS-MET/blob/master/Libraries/RobsJuceModules/rapt/Filters/Musical/StateVariableFilter.h
+
 ---------------------------------------------------------------------------------------------------
 Algorithm for computing the mixing coefficients aL, aB, aH for achieving the RBJ cookbook transfer
 functions:
 
-As mystran explains, the analog prototype response of this SVF is:
+As mystran explains on KVR, the analog prototype response of the SVF is:
 
           aL + aB s + aH s^2
   H(s) = --------------------
@@ -84,9 +88,7 @@ lowpass gain, already came out as 1 as it should for high-shelving filter.
 ---------------------------------------------------------------------------------------------------
 Algorithms to compute transfer function and convert from/to direct form biquad:
 
-Now we want to look into a more complicated filter and try to write down the z-domain transfer 
-function for that. Namely, the zero delay feedback (ZDF) state variable filter (SVF). For this 
-filter, we have the equations:
+We want to find the z-domain transfer function for the SVF. We have the equations:
 
          Time domain                                       z-domain
 
@@ -199,7 +201,7 @@ produces two solutions:
 I'm not sure what to do with that result, though. It seems to work only when T < 0 but I think the 
 case with T >= can correspond to totally legitimate biquad filters. I think, it's not even related 
 to (in)stability even though instability shouldn't even be a problem for these formulas anyway. For 
-the common RBJ filters, the formula for the first solutions seems to work, though. With some manual
+the common RBJ filters, the formulas of the first solution seem to work, though. With some manual
 simplifications, we can bring that into the following form:
 
   ┌────────────────────────────┐
@@ -219,7 +221,10 @@ simplifications, we can bring that into the following form:
   │ s  =  1 / (1 + g*c)        │
   └────────────────────────────┘
 
-It also seems that the formulas given by Aaron Wishnick in this paper (in Eq. 16):
+I have implemented these formulas in rsStateVariableFilter::setupFromBiquad(). If T is positive, 
+then  S = sqrt(-1/T)  becomes imaginary. Therefore, r becomes imaginary, too. I think, r is supposed
+to be some sort of damping coefficient. What does it mean when a damping coefficient becomes 
+imaginary? It also seems that the formulas given by Aaron Wishnick in this paper (in Eq. 16):
 
   https://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
 
@@ -243,14 +248,9 @@ References:
   final output not from highpass, bandpass and lowpass parts but rather from input, bandpass and 
   lowpass. These are two variations of the same filter.
 
-- https://github.com/RobinSchmidt/RS-MET/blob/work/Notes/FilterTransferFunctions.txt
-  My (Robin Schmidt's) derivations for the formulas to convert from our coeffs here to direct form 
-  biquad coeffs and vice versa.
-
 - https://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
   Aaron Wishnick's paper has formulas (equation 16 a-c) for converting from direct form biquad 
-  coefficients to SVF coeffs that can be used here. (This is not yet implemented but may be added 
-  later.)
+  coefficients to SVF coeffs. They are similar to the formulas given above.
 
 - https://github.com/RobinSchmidt/RS-MET/blob/work/Notes/OtherAuthors/Audio-EQ-Cookbook.txt
   Robert Bristow Johnson's classic biquad filter cookbook. The response types realized here are

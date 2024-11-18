@@ -7,9 +7,9 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   TPar T1 = a1 - a2 - 1;
   TPar T2 = a1 + a2 + 1;
   TPar T  = T1 * T2;
-  rsAssert(T < 0, "The formulas work only for T < 0.");
   TPar S  = sqrt(-1 / T);
   TPar r  = 2*(a2 - 1) / (T*S);
+  rsAssert(T < 0, "The formulas work only for T < 0.");    // For T > 0, S and r are NaN
 
   // Compute final coefficients:
   aH = -(b0 - b1 + b2) / T1;
