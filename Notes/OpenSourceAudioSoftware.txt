@@ -271,6 +271,10 @@ Elements
 https://github.com/cycfi/elements
 -Lightweight GUI framework
 
+ikiGUI:
+https://github.com/logos-maker/ikiGUI
+-"The smallest cross platform GUI library for applications and audio plugins availible. "
+
 https://github.com/robbert-vdh/nih-plug/
 -API-agnostic audio plugin framework written in Rust, as well as a small collection of plugins.
 
@@ -362,10 +366,6 @@ https://github.com/aaronaanderson/ofxATK
 DaisySP
 https://github.com/xiashj24/DaisySP
 
-
-
-
-
 ----------------------------------------------------------------------------------------------------
 Other Libraries
 
@@ -405,11 +405,6 @@ https://equalizerapo.com/
 https://sourceforge.net/projects/equalizerapo/
 -System wide equalizer for Windows. Allows hosting of VST plugins, too.
 
-CLAP-SDK and related stuff:
-https://github.com/free-audio
--Liberally licensed audio plugin format.
--Tutorial: https://www.kvraudio.com/forum/viewtopic.php?t=589258
-
 Avendish:
 https://github.com/celtera/avendish/
 -Solution to the quadratic glue MxN problem: With M plugin formats and N plugins we need to write 
@@ -423,6 +418,27 @@ https://github.com/googlecreativelab/open-nsynth-super
 StudioRack:
 https://github.com/studiorack
 -Audio project manager for handling DAW VST plugin dependencies
+
+CLAP-SDK and related stuff:
+https://github.com/free-audio
+-Liberally licensed audio plugin format.
+-Tutorial: https://www.kvraudio.com/forum/viewtopic.php?t=589258
+
+FST:
+https://github.com/pierreguillot/FTS
+-Free Studio Technology (VST2 Replacement)
+
+RST:
+https://github.com/logos-maker/RST-Framework
+-Replacement for VST2
+
+Xaymar vst2sdk:
+https://github.com/Xaymar/vst2sdk
+-"clean room" untainted reverse engineered "SDK" for the VST 2.x interface
+
+Vestige:
+https://github.com/LMMS/lmms/blob/master/plugins/Vestige/Vestige.h
+-Vestige.h - replacement for VST2
 
 ----------------------------------------------------------------------------------------------------
 Audio AI projects and related stuff
