@@ -7,7 +7,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupFromBiquad(
   TPar T1 = a1 - a2 - 1;
   TPar T2 = a1 + a2 + 1;
   TPar T  = T1 * T2;
-  rsAssert(T < 0, "The formulas work only for T < 0.");    // ...and I don't know why.
+  rsAssert(T < 0, "The formulas work only for T < 0.");
   TPar S  = sqrt(-1 / T);
   TPar r  = 2*(a2 - 1) / (T*S);
 
@@ -21,10 +21,14 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupFromBiquad(
 
   // ToDo:
   //
-  // - Figure out what the condition T >= 0 means. Can we deal with it somehow? For T -> 0, we have
-  //   r -> inf, I think (verify!). Could it be that the SVF is subject to certain constraints that
-  //   a fully general biquad is not? Both have 5 coefficients, though - so the number of degrees 
-  //   of freedom matches.
+  // - Figure out what the condition T >= 0 means. The argument of the square root becomes negative
+  //   in this case. So, the damping coeff r becomes imaginary? Can we deal with it somehow? For 
+  //   T -> 0, we have r -> inf, I think (verify!). Could it be that the SVF is subject to certain 
+  //   constraints that a fully general biquad is not? Both have 5 coefficients, though - so the 
+  //   number of degrees of freedom matches.
+  //
+  // - Maybe the number of divisions can be reduced by defining  T1 = 1/(a1-a2-1), T2 = 1/(a1+a2+1)
+  //   and adapting the following code accordingly?
 }
 
 template<class TSig, class TPar>

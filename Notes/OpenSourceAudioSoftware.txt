@@ -125,6 +125,11 @@ https://github.com/christophhart/HISE/
 -Mostly a sampler but has also synthesizer features. Well, actually it's more like a framework to 
  build ones own (sample-based) instruments.
 
+JC-303
+https://github.com/midilab/jc303
+-A Cmake JUCE port of Robin Schmidt`s Open303, a Roland TB-303 clone plugin.
+
+
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
 
@@ -197,9 +202,6 @@ https://github.com/Chowdhury-DSP/PitchShift
 https://github.com/je3928/RE201models
 -Digital model of the Roland RE-201 taype delay
 
-Florian Mrugalla's stuff:
-https://github.com/Mrugalla
-
 AnalogTapeModel
 https://github.com/jatinchowdhury18/AnalogTapeModel
 -CHOW Tape Model is a physical model of an analog tape machine
@@ -217,6 +219,9 @@ SmartGuitarAmp
 https://github.com/GuitarML/SmartGuitarAmp
 -Neural network model based guitar amp emulation
 
+NeuralPi
+https://github.com/GuitarML/NeuralPi
+-Yet another neural amp sim
 
 ----------------------------------------------------------------------------------------------------
 Frameworks
@@ -255,7 +260,7 @@ https://github.com/skei/SA_Toolkit
 
 Dust-Toolkit:
 https://github.com/signaldust/dust-toolkit
--Application and GUI toolkit by mystran, includes font rendering 
+-Application and GUI toolkit by mystran (Teemu Voipio), includes font rendering 
 
 Dear ImGUI
 https://www.dearimgui.com/
@@ -415,6 +420,10 @@ Open NSynth Super:
 https://github.com/googlecreativelab/open-nsynth-super
 -Experimental physical interface for NSynth, a machine learning algorithm developed by Google
 
+StudioRack:
+https://github.com/studiorack
+-Audio project manager for handling DAW VST plugin dependencies
+
 ----------------------------------------------------------------------------------------------------
 Audio AI projects and related stuff
 
@@ -433,7 +442,8 @@ Cristian J. Steinmetz
 https://github.com/csteinmetz1
 -Developer of a number of audio and ML packages
 
-
+Florian Mrugalla
+https://github.com/Mrugalla
 
 
 ----------------------------------------------------------------------------------------------------
