@@ -109,18 +109,11 @@ void rsStateVariableFilter<TSig, TPar>::getBiquadNumeratorCoeffsHP(
 
 ToDo:
 
-- Add a setupFromBiquad(TPar b0, ...) function. See older implementation and Wishnick paper in the
-  references. When done, make unit tests that test roundtrips for various settings. Maybe use also 
-  random biquad coeffs in these tests (maybe with some stability constraints).
-
 - Try to achieve more general responses. Maybe also add responses of 1st order LP, HP, LS, HS, AP
   types. I think, these make only use of the first filter/integrator stage. Having these modes 
   available in a class for a 2nd order filter can be convenient when a multimode filter should 
   also provide these 1st order modes but one doesn't want to dispatch to a different filter object 
   for getting them.
-
-- Maybe implement a getPartialMagnitudesAt(complex z, TPar* low, TPar* band, TPar* high)
-  function that produces the 3 magnitude responses for lowpass, bandpass and highpass
 
 - Figure out how to morph between LP/BP/HP, LP/AP/HP, LS/PK/HS, ...
 
@@ -141,9 +134,6 @@ ToDo:
 
 - Add an experiment that looks at the DC-response when switching the cutoff freq. The Wishnick 
   paper says that this is a good test for modulation response.
-
-- Maybe rename the old implementation to rsStateVariableFilterOld and this class to 
-  rsStateVariableFilter. The old code is kinda rubbish and should be deprecated.
 
 - Maybe move the desription of the algorithm below into a separate text file.
 

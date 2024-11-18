@@ -219,7 +219,7 @@ solve([e1,e2,e3,e4,e5],[aL,aB,aH,g,r])
 
 produces two solutions:
 
-  Intermediate:
+  Intermediates:
   T  =         (a1^2 - a2^2 - 2*a2 - 1)
   S  = sqrt(-1/(a1^2 - a2^2 - 2*a2 - 1)) = sqrt(-1/T)
 
@@ -239,16 +239,37 @@ produces two solutions:
   c  =  g + r;
   s  =  1 / (1 + g*c);
 
-
 I'm not sure what to do with that result, though. It seems to work only when T < 0 but I think the 
 case with T >= can correspond to totally legitimate biquad filters. I think, it's not even related 
 to (in)stability even though instability shouldn't even be a problem for these formulas anyway. For 
-the common RBJ filters, the formula seem to work, though. It also seems that the formulas given by 
-Aaron Wishnick in this paper (in Eq. 16):
+the common RBJ filters, the formula for the first solutions seems to work, though. With some manual
+simplifications, we can bring that into the following form:
+
+  ┌────────────────────────────┐
+  │ // Intermediates:          │
+  │ T1 = a1 - a2 - 1           │
+  │ T2 = a1 + a2 + 1           │
+  │ T  = T1 * T2               │
+  │ S  = sqrt(-1 / T)          │    T needs to be < 0 for this to work
+  │ r  = 2*(a2 - 1) / (T*S)    │
+  │                            │
+  │ // Coefficients:           │
+  │ aH = -(b0 - b1 + b2) / T1  │
+  │ aB =  (b0      - b2) * 2*S │
+  │ aL =  (b0 + b1 + b2) / T2  │
+  │ g  = -1 / (T1*S)           │
+  │ c  =  g + r                │
+  │ s  =  1 / (1 + g*c)        │
+  └────────────────────────────┘
+
+It also seems that the formulas given by Aaron Wishnick in this paper (in Eq. 16):
 
   https://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
 
-do have similar problems.
+do have similar problems. Obviously, the formulas ought to be equivalent - they are just written 
+down a little bit differently.
+
+
 
 
 
