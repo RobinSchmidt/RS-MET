@@ -158,7 +158,7 @@ rather useless functionality - if something like that is desired, it would make 
 just store it in additional member variables in some wrapper subclass. */
 
 template<class TSig, class TPar>
-class rsStateVariableFilterMystran2 : public rsStateVariableFilterMystran<TSig, TPar>
+class rsStateVariableFilterMystran2 : public rsStateVariableFilter<TSig, TPar>
 {
 
 public:

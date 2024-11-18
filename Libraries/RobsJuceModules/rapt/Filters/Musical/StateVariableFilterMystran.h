@@ -1,6 +1,7 @@
 #ifndef RAPT_STATEVARIABLEFILTERMYSTRAN_H
 #define RAPT_STATEVARIABLEFILTERMYSTRAN_H
 
+// ToDo: rename file
 
 /** A zero delay feedback (ZDF) state variable filter (SVF). It offers all the frequency responses
 from the RBJ biquad cookbook. The filter is parameterized in terms of the normalized radian 
@@ -15,7 +16,7 @@ API and getPartialOutputs() as a lower level API. Most of the time, client code 
 getSample() but the 3 separate outputs are made available as well, just in case you want them. */
 
 template<class TSig, class TPar>       // Data types for signals and parameters
-class rsStateVariableFilterMystran
+class rsStateVariableFilter
 {
 
 public:
@@ -120,7 +121,7 @@ protected:
 // Setup:
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::setupBypass()
+void rsStateVariableFilter<TSig, TPar>::setupBypass()
 {
   // H(s) = 1 
 
@@ -133,7 +134,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBypass()
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::setupLowpass(TPar w, TPar Q)
+void rsStateVariableFilter<TSig, TPar>::setupLowpass(TPar w, TPar Q)
 {
   // H(s) = 1 / (s^2 + s/Q + 1)
 
@@ -147,7 +148,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupLowpass(TPar w, TPar Q)
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::setupHighpass(TPar w, TPar Q)
+void rsStateVariableFilter<TSig, TPar>::setupHighpass(TPar w, TPar Q)
 {
   // H(s) = s^2 / (s^2 + s/Q + 1)
 
@@ -161,7 +162,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupHighpass(TPar w, TPar Q)
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::setupBandpassSkirt(TPar w, TPar Q)
+void rsStateVariableFilter<TSig, TPar>::setupBandpassSkirt(TPar w, TPar Q)
 {
   // H(s) = s / (s^2 + s/Q + 1)   (constant skirt gain, peak gain = Q)
 
@@ -175,7 +176,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBandpassSkirt(TPar w, TPar Q
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::setupBandpassPeak(TPar w, TPar Q)
+void rsStateVariableFilter<TSig, TPar>::setupBandpassPeak(TPar w, TPar Q)
 {
   // H(s) = (s/Q) / (s^2 + s/Q + 1)   (constant 0 dB peak gain)
 
@@ -189,7 +190,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBandpassPeak(TPar w, TPar Q)
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::setupBandstop(TPar w, TPar Q)
+void rsStateVariableFilter<TSig, TPar>::setupBandstop(TPar w, TPar Q)
 {
   // H(s) = (s^2 + 1) / (s^2 + s/Q + 1)
 
@@ -203,7 +204,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBandstop(TPar w, TPar Q)
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::setupAllpass(TPar w, TPar Q)
+void rsStateVariableFilter<TSig, TPar>::setupAllpass(TPar w, TPar Q)
 {
   // H(s) = (s^2 - s/Q + 1) / (s^2 + s/Q + 1)
 
@@ -217,7 +218,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupAllpass(TPar w, TPar Q)
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::setupBell(TPar w, TPar Q, TPar A)
+void rsStateVariableFilter<TSig, TPar>::setupBell(TPar w, TPar Q, TPar A)
 {
   // H(s) = (s^2 + s*(A/Q) + 1) / (s^2 + s/(A*Q) + 1)
 
@@ -231,7 +232,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBell(TPar w, TPar Q, TPar A)
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::setupLowShelf(TPar w, TPar Q, TPar A)
+void rsStateVariableFilter<TSig, TPar>::setupLowShelf(TPar w, TPar Q, TPar A)
 {
   // H(s) = A * (s^2 + (sqrt(A)/Q)*s + A)/(A*s^2 + (sqrt(A)/Q)*s + 1)
 
@@ -245,7 +246,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupLowShelf(TPar w, TPar Q, TPa
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::setupHighShelf(TPar w, TPar Q, TPar A)
+void rsStateVariableFilter<TSig, TPar>::setupHighShelf(TPar w, TPar Q, TPar A)
 {
   // H(s) = A * (A*s^2 + (sqrt(A)/Q)*s + 1)/(s^2 + (sqrt(A)/Q)*s + A)
 
@@ -261,7 +262,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupHighShelf(TPar w, TPar Q, TP
 // Processing:
 
 template<class TSig, class TPar>
-inline void rsStateVariableFilterMystran<TSig, TPar>::getPartialOutputs(
+inline void rsStateVariableFilter<TSig, TPar>::getPartialOutputs(
   TSig in, TSig* yL, TSig* yB, TSig* yH)
 {
   // Compute outputs:
@@ -275,7 +276,7 @@ inline void rsStateVariableFilterMystran<TSig, TPar>::getPartialOutputs(
 }
 
 template<class TSig, class TPar>
-inline TSig rsStateVariableFilterMystran<TSig, TPar>::getSample(TSig in)
+inline TSig rsStateVariableFilter<TSig, TPar>::getSample(TSig in)
 {
   TSig yL, yB, yH;
   getPartialOutputs(in, &yL, &yB, &yH);  // Produce LP, BP and HP signals

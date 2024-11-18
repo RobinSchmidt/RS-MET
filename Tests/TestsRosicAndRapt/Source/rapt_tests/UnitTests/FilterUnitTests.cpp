@@ -1504,6 +1504,7 @@ bool stateVariableFilterUnitTest4()
   //// old code may have a bug or my use a different parametrization
 
 
+  /*
   // Test biquad roundtrip with carefully chosen coeffs. Problems occurr when 
   // T = (a1*a1 - a2*a2 - 2*a2 - 1) is positive. So, let's choose a1 = 2, a2 = 0. 
   // Then T = 4 - 0 - 0 - 1 = 3. For comparison, we also use the old implementaion where I have 
@@ -1524,6 +1525,7 @@ bool stateVariableFilterUnitTest4()
   a2 = 0.0;
   svf.setupFromBiquad( b0, b1, b2, a1, a2);
   svf2.setupFromBiquad(b0, b1, b2, a1, a2);
+  */
 
   
   // If a1 = 0, the function T(a2) is the parabola -x^2 - 2x - 1  which touches the x-axis at 

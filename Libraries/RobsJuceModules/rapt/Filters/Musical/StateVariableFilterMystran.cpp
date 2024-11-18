@@ -1,6 +1,6 @@
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::setupFromBiquad(
+void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   TPar b0, TPar b1, TPar b2, TPar a1, TPar a2)
 {
   // Compute intermediates:
@@ -32,7 +32,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupFromBiquad(
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::convertToBiquad(
+void rsStateVariableFilter<TSig, TPar>::convertToBiquad(
   TPar* b0, TPar* b1, TPar* b2, TPar* a1, TPar* a2) const
 {
   getBiquadNumeratorCoeffs(b0, b1, b2);
@@ -40,7 +40,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::convertToBiquad(
 }
 
 template<class TSig, class TPar>
-TPar rsStateVariableFilterMystran<TSig, TPar>::getMagnitudeAt(TPar w) const
+TPar rsStateVariableFilter<TSig, TPar>::getMagnitudeAt(TPar w) const
 {
   rsComplex<TPar> j(0, 1);                                 // Imaginary unit
   rsComplex<TPar> z = rsExp(j*w);                          // Evaluation point in z-plane
@@ -49,7 +49,7 @@ TPar rsStateVariableFilterMystran<TSig, TPar>::getMagnitudeAt(TPar w) const
 }
 
 template<class TSig, class TPar>
-rsComplex<TPar> rsStateVariableFilterMystran<TSig, TPar>::getTransferFunctionAt(
+rsComplex<TPar> rsStateVariableFilter<TSig, TPar>::getTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
   TPar b0, b1, b2, a1, a2;
@@ -60,7 +60,7 @@ rsComplex<TPar> rsStateVariableFilterMystran<TSig, TPar>::getTransferFunctionAt(
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::getBiquadDenominatorCoeffs(
+void rsStateVariableFilter<TSig, TPar>::getBiquadDenominatorCoeffs(
   TPar* a1, TPar* a2) const
 {
   *a1 =  2*(c*g + g*g)*s - 2;
@@ -68,7 +68,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::getBiquadDenominatorCoeffs(
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffs(
+void rsStateVariableFilter<TSig, TPar>::getBiquadNumeratorCoeffs(
   TPar* b0, TPar* b1, TPar* b2) const
 {
   TPar t0, t1, t2;  // Temporaries
@@ -78,7 +78,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffs(
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffsLP(
+void rsStateVariableFilter<TSig, TPar>::getBiquadNumeratorCoeffsLP(
   TPar* b0, TPar* b1, TPar* b2) const
 {
   *b0 =   s*g*g;
@@ -87,7 +87,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffsLP(
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffsBP(
+void rsStateVariableFilter<TSig, TPar>::getBiquadNumeratorCoeffsBP(
   TPar* b0, TPar* b1, TPar* b2) const
 {
   *b0 =  g*s;
@@ -96,7 +96,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffsBP(
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffsHP(
+void rsStateVariableFilter<TSig, TPar>::getBiquadNumeratorCoeffsHP(
   TPar* b0, TPar* b1, TPar* b2) const
 {
   *b0 =  s;
