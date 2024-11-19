@@ -37,6 +37,8 @@
 #define RS_EPS(T) (std::numeric_limits<T>::epsilon())
 #define RS_NAN(T) (std::numeric_limits<T>::quiet_NaN())  // rename to RS_QUIET_NAN
 #define RS_SIGNALING_NAN(T) (std::numeric_limits<T>::signaling_NaN())
+// ToDo: deprecate them. Use templated functions instead. See definition of rsEpsilon below. That's
+// the way, it should be done.
 
 // powers of two:
 #define RS_POW2_0 1          // 2^0 = 1

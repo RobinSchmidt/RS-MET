@@ -303,25 +303,11 @@ inline bool rsIsCloseTo(rsComplex<T> x, rsComplex<T> targetValue, rsComplex<T> t
     return false;
 }
 
-
-
 template<class T>
 rsComplex<T> rsEpsilon(rsComplex<T> x)
 {
   return rsComplex<T>(std::numeric_limits<T>::epsilon(), T(0));
 }
-
-//template<class T>
-//rsComplex<T> rsEpsilon()
-//{
-//  return rsComplex<T>(std::numeric_limits<T>::epsilon(), 0);
-//}
-
-//template<class T>
-//std::numeric_limits<rsComplex<T>>::epsilon()
-//{
-//  return std::numeric_limits<T>::epsilon();
-//}
 
 
 

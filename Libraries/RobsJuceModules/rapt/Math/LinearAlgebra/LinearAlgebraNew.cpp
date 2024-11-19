@@ -223,9 +223,7 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B, i
   *numSwaps = 0;
 
   //T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
-
   T tooSmall = T(1000) * rsEpsilon(T(0)) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
-
 
   int i, numRows = A.getNumRows();
   for(i = 0; i < rsMin(numRows, A.getNumColumns()); i++) {
