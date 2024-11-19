@@ -979,11 +979,6 @@ bool testLinearAlgebra()
 {
   bool ok = true;
 
-  // For Development:
-  ok &= testStdComplexLinAlg();
-
-
-
   // LAPACK based solvers:
   ok &= testBandDiagonalSolver();  // fails with gcc
 
@@ -1006,11 +1001,9 @@ bool testLinearAlgebra()
   ok &= testIterativeLinearSolvers();
   ok &= testPowerIterationDense();
 
-
-  ok &= testStdComplexLinAlg();
-  ok &= testRsComplexLinAlg();
-
-
+  // Linear algebra on complex matrices:
+  ok &= testStdComplexLinAlg();            // uses std::complex
+  ok &= testRsComplexLinAlg();             // uses RAPT::rsComplex
 
   return ok;
 }
