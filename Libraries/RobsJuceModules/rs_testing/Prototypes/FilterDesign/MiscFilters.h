@@ -288,6 +288,14 @@ public:
     *s = this->s;
   }
 
+  void getMixCoeffs_l_b_h(TPar* l, TPar* b, TPar* h) const
+  {
+    *l = this->aL;
+    *b = this->aB;
+    *h = this->aH;
+  }
+
+
   // ToDo: check, if we really need the aL > 0 condition for LS and aH > 0 condition for HS
 
   // I think there's an edge case of Q = 1 where constant peak and constant skirt bandpasses are
