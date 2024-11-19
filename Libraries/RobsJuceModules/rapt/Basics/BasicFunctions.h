@@ -168,6 +168,8 @@ return x*x;
 */
 
 
+
+
 template<class T> bool rsGreater(const T& a, const T& b) { return a > b; }
 template<class T> bool rsLess(const T& a, const T& b)    { return a < b; }
 

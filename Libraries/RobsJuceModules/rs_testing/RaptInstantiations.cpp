@@ -338,6 +338,14 @@ template void RAPT::rsLinearAlgebraNew::makeTriangularNoPivot(
 template RAPT::rsMatrix<double> RAPT::rsLinearAlgebraNew::inverse(
   const RAPT::rsMatrixView<double>& A);
 
+//template RAPT::rsMatrix<rsComplex<double>> RAPT::rsLinearAlgebraNew::inverse(
+//  const RAPT::rsMatrixView<rsComplex<double>>& A);
+// Doesn't compile. There seem to be a problem with the > operator on rsComplex when it gets 
+// invoked from rsArrayTools::maxAbs. I think, it gets called from
+// rsLinearAlgebraNew::makeTriangular in the line 
+// T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum();
+
+
 template double RAPT::rsLinearAlgebraNew::determinant(const RAPT::rsMatrixView<double>& A);
 
 template int RAPT::rsLinearAlgebraNew::makeDiagonal(

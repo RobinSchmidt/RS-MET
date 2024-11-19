@@ -42,6 +42,18 @@ public:
   bool operator==(const rsComplex& z) const { return re == z.re && im == z.im; }
   bool operator!=(const rsComplex& z) const { return !(*this == z); }
 
+  // Ad hoc:
+  //bool operator>(const rsComplex& z) const 
+  //{ 
+  //  if(re > z.re)
+  //    return true;
+  //  if(z.re > re)
+  //    return false;
+  //  return im > z.im;
+  //}
+
+
+
   rsComplex operator+() const { return rsComplex(+re, +im); }
   rsComplex operator-() const { return rsComplex(-re, -im); }
 
@@ -278,6 +290,17 @@ inline void rsSolveQuadraticEquation(
   rsComplex<T> tmp = rsSqrt(T(0.25)*p*p - q);
   root1 = T(-0.5)*p + tmp;
   root2 = T(-0.5)*p - tmp;
+}
+
+template<class T>
+inline bool rsIsCloseTo(rsComplex<T> x, rsComplex<T> targetValue, rsComplex<T> tolerance)
+{
+  rsAssert(tolerance.imag() == T(0), "tolerance is assumed to be a real number");
+  rsAssert(tolerance.real() >= T(0), "tolerance must be non-negative");
+  if( rsAbs(x - targetValue) <= tolerance.real() )
+    return true;
+  else
+    return false;
 }
 
 
