@@ -158,7 +158,7 @@ rather useless functionality - if something like that is desired, it would make 
 just store it in additional member variables in some wrapper subclass. */
 
 template<class TSig, class TPar>
-class rsStateVariableFilterMystran2 : public rsStateVariableFilter<TSig, TPar>
+class rsStateVariableFilterMystran2 : public rsStateVariableFilter<TSig, TPar>  // Rename!
 {
 
 public:
@@ -280,6 +280,13 @@ public:
   bool isHighShelf() const { return aL == 1 && aB >  0 && /* aH >  0 && */ aH != 1; } // a2=A^2, a1=A/Q
 
 
+
+  void getCoeffs_g_c_s(TPar* g, TPar* c, TPar* s) const
+  {
+    *g = this->g;
+    *c = this->c;
+    *s = this->s;
+  }
 
   // ToDo: check, if we really need the aL > 0 condition for LS and aH > 0 condition for HS
 
