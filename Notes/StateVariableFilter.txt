@@ -103,11 +103,11 @@ the integrator states and H(z), etc. are the corresponding z-transforms of these
 in this notation, H(z) is *not* a transfer function but the z-trafo of the highpass signal h[n]).
 In terse form:
 
-  H = s*X - s*c*U*d - s*V*d                                                                     (1)
-  B = g*H + U*d                                                                                 (2)
-  L = g*B + V*d                                                                                 (3)
-  U = 2*B - U*d                                                                                 (4)
-  V = 2*L - V*d                                                                                 (5)
+  H = s*X - s*c*U*d - s*V*d                                                                      (1)
+  B = g*H + U*d                                                                                  (2)
+  L = g*B + V*d                                                                                  (3)
+  U = 2*B - U*d                                                                                  (4)
+  V = 2*L - V*d                                                                                  (5)
 
 What we eventually want are expressions for the highpass transfer function H/X, the bandpass
 transfer function B/X and the lowpass transfer function L/X. Here is the SageMath code that solves 
@@ -159,7 +159,7 @@ from our SVF coeffs s,c,g,aH,aB,aL. They are given by:
   ┌─────────────────────────────────────┐
   │ b0 =  aL*s*g*g    + aB*g*s + aH*s   │
   │ b1 =  aL*s*g*g*2           - aH*s*2 │
-  │ b2 =  aL*s*g*g    - aB*g*s + aH*s   │
+  │ b2 =  aL*s*g*g    - aB*g*s + aH*s   │                                                        (6)
   │ a1 =  2*(c*g + g*g)*s - 2           │
   │ a2 = -2*(c*g - g*g)*s + 1           │
   └─────────────────────────────────────┘
@@ -211,7 +211,7 @@ simplifications, we can bring that into the following form:
   │ T  = T1 * T2               │
   │ S  = sqrt(-1 / T)          │    T needs to be < 0 for this to work
   │ r  = 2*(a2 - 1) / (T*S)    │
-  │                            │
+  │                            │                                                                 (7)
   │      Coefficients:         │
   │ aH = -(b0 - b1 + b2) / T1  │
   │ aB =  (b0      - b2) * 2*S │
