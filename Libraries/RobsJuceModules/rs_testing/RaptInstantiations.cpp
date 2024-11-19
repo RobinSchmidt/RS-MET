@@ -338,6 +338,9 @@ template void RAPT::rsLinearAlgebraNew::makeTriangularNoPivot(
 template RAPT::rsMatrix<double> RAPT::rsLinearAlgebraNew::inverse(
   const RAPT::rsMatrixView<double>& A);
 
+template RAPT::rsMatrix<std::complex<double>> RAPT::rsLinearAlgebraNew::inverse(
+  const RAPT::rsMatrixView<std::complex<double>>& A);
+
 //template RAPT::rsMatrix<rsComplex<double>> RAPT::rsLinearAlgebraNew::inverse(
 //  const RAPT::rsMatrixView<rsComplex<double>>& A);
 // Doesn't compile. There seem to be a problem with the > operator on rsComplex when it gets 
