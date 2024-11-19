@@ -341,8 +341,8 @@ template RAPT::rsMatrix<double> RAPT::rsLinearAlgebraNew::inverse(
 template RAPT::rsMatrix<std::complex<double>> RAPT::rsLinearAlgebraNew::inverse(
   const RAPT::rsMatrixView<std::complex<double>>& A);
 
-//template RAPT::rsMatrix<rsComplex<double>> RAPT::rsLinearAlgebraNew::inverse(
-//  const RAPT::rsMatrixView<rsComplex<double>>& A);
+template RAPT::rsMatrix<rsComplex<double>> RAPT::rsLinearAlgebraNew::inverse(
+  const RAPT::rsMatrixView<rsComplex<double>>& A);
 // Doesn't compile. There seem to be a problem with the > operator on rsComplex when it gets 
 // invoked from rsArrayTools::maxAbs. I think, it gets called from
 // rsLinearAlgebraNew::makeTriangular in the line 

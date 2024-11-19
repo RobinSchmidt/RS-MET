@@ -38,8 +38,6 @@
 #define RS_NAN(T) (std::numeric_limits<T>::quiet_NaN())  // rename to RS_QUIET_NAN
 #define RS_SIGNALING_NAN(T) (std::numeric_limits<T>::signaling_NaN())
 
-
-
 // powers of two:
 #define RS_POW2_0 1          // 2^0 = 1
 #define RS_POW2_1 2          // 2^1 = 2
@@ -85,6 +83,12 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 //  ..nope...but i think, it was somewhere "near"
 // see also:
 // https://graphics.stanford.edu/~seander/bithacks.html
+
+template<class T>
+T rsEpsilon(T x)
+{
+  return std::numeric_limits<T>::epsilon();
+}
 
 
 #endif
