@@ -951,10 +951,38 @@ bool testStdComplexLinAlg()
   return ok;
 }
 
+bool testRsComplexLinAlg()
+{
+  bool ok = true;
+
+  using Real    = double;
+  using Complex = rsComplex<Real>;
+  using Mat     = rsMatrix<Complex>;
+  using LinAlg  = RAPT::rsLinearAlgebraNew;
+
+  //Complex i(0,1);
+  //Mat A(2,2, {1,2.*i,3.+2.*i,4});
+  //Mat B = LinAlg::inverse(A);
+  //Mat I(2,2, {1,0,0,1});
+  //Mat AB = A*B;
+
+  //Real tol = 1.e-15;
+  //Complex tol = 1.e-15;
+  //ok &= AB.equals(I, tol);   // 
+  //ok &= rsIsCloseTo(AB, I, tol);
+
+  return ok;
+}
+
 
 bool testLinearAlgebra()
 {
   bool ok = true;
+
+  // For Development:
+  ok &= testStdComplexLinAlg();
+
+
 
   // LAPACK based solvers:
   ok &= testBandDiagonalSolver();  // fails with gcc
@@ -980,6 +1008,7 @@ bool testLinearAlgebra()
 
 
   ok &= testStdComplexLinAlg();
+  ok &= testRsComplexLinAlg();
 
 
 

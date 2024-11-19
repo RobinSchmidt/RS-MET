@@ -25,6 +25,7 @@ bool runUnitTestsRapt()
   // because some of the test take longer to perfom. So this line is volatile:
   //ok &= runUnitTest(&colorUnitTest,  "rsColor");
   //ok &= runUnitTest(&ladderUnitTest, "rsLadder");
+  ok &= runUnitTest(&testLinearAlgebra,              "rsLinearAlgebra");
 
   //// these tests should go into UnitTestsRosic.cpp:
   //ok &= runUnitTest(&testDifferentialEquationSystem, "rsDifferentialEquationSystem");

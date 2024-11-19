@@ -31,6 +31,10 @@ todo:
  encode "not found" (although, std::find uses v.size() and not max(size_t)) - so it *may* just work 
  fine without any further ado (unit tests would be needed)  */
 
+//template<class T>
+//class rsComplex<T>;
+//class rsComplex;
+
 class rsArrayTools
 {
 
@@ -562,6 +566,10 @@ public:
 
   template <class T>
   static T maxAbs(const std::complex<T> *buffer, int length);
+
+  //template <class T>
+  //static T maxAbs(const rsComplex<T> *buffer, int length);
+  // Doesn't compile. I think, rsComplex<T> is not yet defined.
 
 
   /** Finds and returns the index with the maximum absolute value of the buffer. */
