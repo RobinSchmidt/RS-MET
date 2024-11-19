@@ -44,9 +44,11 @@ public:
 
     H(z) = (b0 + b1*z^-1 + b2*z^-2) / (1 + a1*z^-1 + a2*z^-2). 
   
-  However, the formula doesn't seem to work for all possible sets of biquad coeffs. It works only
-  when  (a1*a1 - a2*a2 - 2*a2 - 1) < 0, so it's not recommended to use it blindly. It may fail. I 
-  have not yet figured out why that is and if something can be to fix it. */
+  However, the formula that is implemented doesn't seem to work for all possible sets of biquad 
+  coeffs. It works only when  (a1*a1 - a2*a2 - 2*a2 - 1) < 0, so it's not recommended to use it 
+  blindly. It may fail. I have not yet figured out why that is and if something can be done to fix
+  it. Maybe not. Maybe there's some inherent limitation in the SVF with regard to what biquads it 
+  can simulate. Be careful! If it fails, it will trigger an rsAssert. */
   void setupFromBiquad(TPar b0, TPar b1, TPar b2, TPar a1, TPar a2);
 
 
@@ -108,13 +110,13 @@ public:
 protected:
 
   // State:
-  TSig z1 = 0, z2 = 0;          // Maybe rename to u,v for consistency with derivation
+  TSig z1 = 0, z2 = 0;          // Integrator states. Maybe rename to u,v for consistency with derivation
 
   // Coeffs:
   TPar aL = 0, aB = 0, aH = 0;  // Mixing coeffs for lowpass, bandpass and highpass signals
   TPar g = 0;                   // Integrator gain
   TPar c = 0;                   // g + r (r is 2*R in Vadim's book, R is the damping coeff)
-  TPar s = 1;                   // Scaler given by 1 / (1 + g*(g+r));
+  TPar s = 1;                   // Scaler given by 1 / (1 + g*(g+r))
 
 };
 

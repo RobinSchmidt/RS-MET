@@ -18,6 +18,12 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   g  = -1 / (T1*S);
   c  =  g + r;
   s  =  1 / (1 + g*c);
+
+  // ToDo:
+  //
+  // - Maybe in cases of T > 0, set the filter coeffs in such a way to produce a zero output 
+  //   signal. At the moment, we just accept that some of our coeffs (and therefore the output) 
+  //   will be NaN in such cases of failure. That might be a bit harsh.
 }
 
 template<class TSig, class TPar>
