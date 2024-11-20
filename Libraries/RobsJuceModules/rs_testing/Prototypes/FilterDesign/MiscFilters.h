@@ -676,3 +676,58 @@ void stateVariableToStateSpace(T g, T c, T s,
 // Maybe make this a static member funtion of rsStateSpaceFilter. Rename it to 
 // fromStateVariableFilter or something. ...or maybe the name is ok. Dunno. Or maybe it should
 // go into class rsFilterCoefficientConverter
+
+
+/** Converts a direct form filter into state space form. The formulas are taken from Julius Smith's
+book about filters, pages 351-352. ...TBC... */
+template<class T>
+void directFormToStateSpace(std::vector<T> b, std::vector<T> a,
+  rsMatrix<T>* A, rsMatrix<T>* B, rsMatrix<T>* C, rsMatrix<T>* D)
+{
+  using Vec = std::vector<T>;
+
+  // Normalize to a[0] = 1:
+  if(a[0] != T(1))
+  {
+    T s = T(1) / a[0];
+    rsScale(b, s);
+    rsScale(a, s);
+  }
+
+  // Zero-pad the shorter array, if needed:
+  rsPadToSameSize(b, a, T(0));
+
+  // Compute some intermediate variables:
+  int N = b.size() - 1;     // Filter order
+  T   b0 = b[0];
+  Vec beta(b.size());
+  beta[0] = 0;              // Not used
+  for(int k = 1; k < beta.size(); k++)
+    beta[k] = b[k] - b0*a[k];
+
+  // Compute SSF matrices:
+  A->setShape(N,N); A->setToZero(b0);
+  B->setShape(N,1); B->setToZero(b0);
+  C->setShape(1,N); C->setToZero(b0);
+  D->setShape(1,1); D->setToZero(b0);
+  for(int i = 1; i <= N; i++)
+    (*A)(0,i-1) = -a[i];
+  for(int i = 1; i < N; i++)
+    (*A)(i,i-1) = 1;
+  (*B)(0,0) = 1;
+  for(int i = 1; i <= N; i++)
+    (*C)(0,i-1) = beta[i];
+  (*D)(0,0) = b0;
+
+
+  // Notes and ToDo:
+  //
+  //
+  // - We deliberately pass b,a by value rather than by const reference because we may modify 
+  //   them here.
+  //
+  // - Maybe try to avoid creation of the beta array. We can use the formula directly in the
+  //   loop that assigns the C-matrix.
+  //
+  // - Create unit tests that also test some edge cases like empty a and/or b, a[0] != 1, etc.
+}
