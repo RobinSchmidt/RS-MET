@@ -402,31 +402,221 @@ public:
   }
 
 
+};
+
+//=================================================================================================
+
+/** A class for implementing digital filters in state space form. It implements the (vector/MIMO)
+difference equation:
+
+  y[n]   = C * x[n] + D * u[n]           output generation for sample index n
+  x[n+1] = A * x[n] + B * u[n]           state update to prepare for the next sample
+
+where x is a length N state vector, u is a length p input vector, y is a length q output vector, A
+is an N-by-N state transition matrix, B is an N-by-p injection matrix, C is an q-by-N output matrix 
+and D is a q-by-p feedthrough matrix. (verify sizes and terminology - I made some of them up. Edit:
+on page 357, in a code comment JOS calls B,C,D the input, output, feed-around matrices 
+respectively)
+
+The system has the q-by-p MIMO transfer function matrix:
+
+  H(z) = D + C * (z*I - A)^(-1) * B     (1) Eq G.5
+
+The H(i,j) element of this matrix gives the transfer function from the j-th input to the i-th 
+output [VERIFY!].
+
+
+References:
+
+  (1) Introduction to Digital Filters with Audio Application (Julius O. Smith)
+
+*/
+
+
+template<class T>     // ToDo: have TSig and TPar
+class rsStateSpaceFilter
+{
+
+public:
+
+  /** Sets up the shapes of our matrices to allow for the desired number of ins/outs/states but 
+  doesn't initialize the contents of those matrices. If you expect to change these sizes later 
+  during realtime processing, this function can also be used once with the maximum epxected sizes
+  to reserve enough memory to avoid need ing re-allocations later when the size changes dynamically
+  during processing. */
+  void setDimensions(int numIns, int numOuts, int numStates);
+
+  /** Sets up our A,B,C,D matrices. This may reshape our member matrices and will copy the data 
+  from the given argument matrices into them. Reshaping may re-allocate memory unless our member 
+  matrices already have (more than) enough space, which you can ensure using setDimensions(). */
+  void setup(const rsMatrixView<T>& A, const rsMatrixView<T>& B, const rsMatrixView<T>& C,
+    const rsMatrixView<T>& D);
+  // ToDo:
+  // -Maybe we should keep only references or pointers to these matrices here? The way we do it now
+  //  requires redundant existence of these matrices in memory which is bad. But maybe the state 
+  //  vector x and its temporary storage t should nevertheless stay non-reference members?
+  //  ...hmmm...
+
+  /** Computes the transfer function matrix at the given complex number z. The (i,j)-th element
+  of this matrix is the point-to-point transfer function from input j to output i. ...I think...
+  or maybe it's the other way around? ...Figure out!  */
+  rsMatrix<rsComplex<T>> getTransferFunctionAt(rsComplex<T> z);
 
 
 
-  /*
-  // New - needs test:
-  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z)
+  /** Processes a single MIMO output frame at a time. */
+  void processFrame(T* ins, T* outs)
   {
-    //// New:
-    TPar b0, b1, b2, a1, a2;
-    getBiquadCoeffs(&b0, &b1, &b2, &a1, &a2);
-    rsComplex<TPar> d = TPar(1)/z, d2 = d*d;                  // d = z^-1, d2 = z^-2
-    rsComplex<TPar> H = (b0 + b1*d + b2*d2) / (TPar(1) + a1*d + a2*d2);
-    return H;
+    using AT = rsArrayTools;
+    using MV = rsMatrixView<T>;
+
+    // Wrap some matrix-view objects around inputs and output to view them as p-by-1 and q-by-1 
+    // column-vectors:
+    MV u(p, 1, ins);                             // u = input vector
+    MV y(q, 1, outs);                            // y = output vector
+
+    // Compute output y = C*x + D*u:
+    MV::matrixMultiply(          C, x, &y);      // y = C*x
+    MV::matrixMultiplyAccumulate(D, u, &y);      // y = C*x + D*u
+
+    // Update the state x = A*x + B*u:
+    MV::matrixMultiply(          A, x, &t);      // t = A*x
+    MV::matrixMultiplyAccumulate(B, u, &t);      // t = A*x + B*u
+    AT::copy(&t(0,0), &x(0,0), N);               // x = t
   }
-  */
+  // Notes:
+  // -Needs more tests, if it does the right thing.
+  // -We currently have no safeguards against the client passing too short arrays - should we? We 
+  //  already know, that ins should have length q and outs have length p and expect the caller to
+  //  know and respect that, too. After all, the client code must have set us up that way at some 
+  //  previous point via calling e.g. setup(). Safeguarding here would require otherwise useless 
+  //  and redundant function parameters like numIns, numOuts. Not sure, if that's a good idea.
+  //  ...but maybe...we'll see....
+  // -Maybe try to shorten the code. instead of AT::copy(...) we could use something like
+  //  x.copyDataFrom(t). But calling AT::copy may be more efficient because it bypasses the
+  //  setShape() call in copyDataFrom(). The function names matrixMultiply/Accumulate could be 
+  //  shortened to something like mul/Accum ...the matrix prefix is redundant because we already 
+  //  are in class rsMatrixView
 
 
+  /** Resets out internal state vector to all zeros. */
+  void reset() { x.setToZero(T(0)); }
+  // ToDo: 
+  // -Maybe have a function setState(T* newState) that lets the client explicitly set up any 
+  //  desired initial state/condition.
 
 
-  // New: needs tests:
+protected:
 
 
+  int N = 0;  // number of internal states
+  int p = 0;  // number of inputs
+  int q = 0;  // number of outputs
+  // These are actually redundant but convenient. They could be inferred from certain row- and 
+  // column settings in our matrices below if saving that little amount of extra space seems 
+  // worthwhile. Maybe rename them into numStates, numIns, numOuts.
 
 
+  rsMatrix<T> x, t, A, B, C, D;
+  // Meaning of those matrices
+  //   x: state vector, N-by-1 column vector
+  //   t: temporary storage for x during state update
+  //   A: state transition matrix, N-by-N matrix
+  //   B: injection matrix, N-by-p matrix (verify!)
+  //   C: output matrix, q-by-N matrix (verify!)
+  //   D: passthrough matrix, q-by-p (verify!)
+  // We also use the notation:
+  //   u: input vector, p-by-1
+  //   y: output vector, q-by-1
+  // but we don't need any class members for these I/O variables. See (1) pg 345, Appendix G.
 
+  // ToDo: 
+  // -Check terminology. I made some of it up myself (feedthrough, injection). The book (1) 
+  //  doesn't give them special names.
+  // -Perhaps production code should use sparse matrices? I think, the state update matrices are
+  //  typically sparse, right? But what about the other matrices? Are they also typically sparse?
+  //  Maybe only A should be sparse but B,C,D dense? ...figure out!
+  // -Implement a getTransferFunction() function that returns an rsMatrix of type
+  //  rsRationalFunction
 
 };
+
+template<class T> 
+void rsStateSpaceFilter<T>::setDimensions(int numIns, int numOuts, int numStates)
+{
+  p = numIns;
+  q = numOuts;
+  N = numStates;
+  x.setShape(N, 1);
+  t.setShape(N, 1);
+  A.setShape(N, N);
+  B.setShape(N, p);
+  C.setShape(q, N);
+  D.setShape(q, p);
+  reset();
+}
+
+template<class T> 
+void rsStateSpaceFilter<T>::setup(const rsMatrixView<T>& newA, const rsMatrixView<T>& newB,
+  const rsMatrixView<T>& newC, const rsMatrixView<T>& newD)
+{
+  // Retrieve and set up desired dimensions:
+  N = newA.getNumRows();     // number of states
+  p = newB.getNumColumns();  // number of inputs
+  q = newC.getNumRows();     // number of outputs
+  setDimensions(p, q, N);
+  // ToDo: Verify and document that no allocations take place here, when already enough memory was
+  // allcoated previously. See rsMatrix::setShape - it calls resize on a std::vector which should
+  // reallocate only in case of growth.
+
+  // Perform some sanity checks on the input matrices:
+  rsAssert(newA.isSquare(), "State transition matrices must be square");
+  // ...more checks to come: Make sure, that all the desired relations between the shapes of the 
+  // given  matrices are satisfied. Maybe factor these checks out into a function checkSanity()
+  // or something.
+
+  // Copy the new matrix data into our members:
+  A.copyDataFrom(newA);
+  B.copyDataFrom(newB);
+  C.copyDataFrom(newC);
+  D.copyDataFrom(newD);
+  // Hmm...copyDataFrom also calls setShape. These calls are redundant with those in setDimensions.
+  // Maybe it doesn't matter but perhaps it would be nicer to avoid it...we'll see...
+  // Maybe we should just keep references to some A,B,C,D matrices owned by cleint code anyway.
+  // That avoids redundancies and makes it easier to implement time-variant operation. Client code
+  // could just vary the matrices. Maybe we should have a 2-level API. A lower level that avoids
+  // redundancies and a higher level for convenience. Then, one can start with the high-level API
+  // and optimize later.
+
+  //rsError("Not yet implemented");
+}
+
+template<class T> 
+rsMatrix<rsComplex<T>> rsStateSpaceFilter<T>::getTransferFunctionAt(rsComplex<T> z)
+{
+  using Comp = rsComplex<T>;
+  using Mat  = rsMatrix<Comp>;
+
+  // Complexify our matrices:
+  Mat Ac = rsConvert<T, Comp>(A);
+  Mat Bc = rsConvert<T, Comp>(B);
+  Mat Cc = rsConvert<T, Comp>(C);
+  Mat Dc = rsConvert<T, Comp>(D);
+
+  // Form the matrix M = (z*I - A)^(-1):
+  Mat M = -Ac;                                           // M =      - A
+  for(int i = 0; i < M.getNumRows(); i++) M(i,i) += z;   // M = (z*I - A)
+  M = rsLinearAlgebraNew::inverse(M);                    // M = (z*I - A)^(-1)
+
+  // Evaluate the transfer function:
+  Mat H = Dc + Cc*M*Bc;                                  // H(z) = D + C * (z*I - A)^(-1) * B 
+  return H;
+
+  // This can probably be optimized a lot. Firstly, we may want to have a lower level API that lets
+  // the caller pass pre-allocated pointers to rsMatrixView to get around the internal memory 
+  // allocations. Secondly, maybe we can get away without the inversion and formulate it as a 
+  // solution to a linear system? Thirdly, not all matrices need to be complex. We just do it that
+  // way because the operators +,* need matrices of the same element type so we just complexify all
+  // our matrices.
+}
 
