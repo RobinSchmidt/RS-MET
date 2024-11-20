@@ -612,6 +612,19 @@ T rsMean(const std::vector<T>& x)
   return rsSum(x) / T(x.size());
 }
 
+/** Pads the shorter of the two vectors to the length of the longer, filling up the created space
+by the given padValue. */
+template<class T>
+void rsPadToSameSize(std::vector<T>& a, std::vector<T>& b, T padValue = T(0))
+{
+  size_t Na = a.size();
+  size_t Nb = b.size();
+  if(Na > Nb)
+    b.resize(Na, padValue);
+  else if(Nb > Na)
+    a.resize(Nb, padValue);
+}
+
 template<class T>
 void rsScale(std::vector<T>& x, T scaler)
 {

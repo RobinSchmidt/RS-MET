@@ -754,8 +754,6 @@ public:
   // what's best here. Or maybe let it take the predicate as na old school C-style function 
   // pointer. ...but that's a bit unflexible...hmmm...we'll seee....
 
-
-
   /** Returns the product of the elements in the buffer for types which define the
   multiplication operator (the *= version thereof) and a constructor which can take an int
   paramater as argument and initializes to the multiplicative neutral element of that class when 1

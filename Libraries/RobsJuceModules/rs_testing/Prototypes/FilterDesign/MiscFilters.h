@@ -426,6 +426,13 @@ The H(i,j) element of this matrix gives the transfer function from the j-th inpu
 output [VERIFY!].
 
 
+ToDo: 
+
+- Give expression for impulse response (see (1) page 346)
+
+- Add conversions from/to direct forms
+
+
 References:
 
   (1) Introduction to Digital Filters with Audio Application (Julius O. Smith)
@@ -666,3 +673,6 @@ void stateVariableToStateSpace(T g, T c, T s,
   (*D)(1,0) =  gs;
   (*D)(2,0) = ggs;
 }
+// Maybe make this a static member funtion of rsStateSpaceFilter. Rename it to 
+// fromStateVariableFilter or something. ...or maybe the name is ok. Dunno. Or maybe it should
+// go into class rsFilterCoefficientConverter
