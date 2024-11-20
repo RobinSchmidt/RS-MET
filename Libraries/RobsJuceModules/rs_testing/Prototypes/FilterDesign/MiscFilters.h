@@ -158,7 +158,7 @@ rather useless functionality - if something like that is desired, it would make 
 just store it in additional member variables in some wrapper subclass. */
 
 template<class TSig, class TPar>
-class rsStateVariableFilterMystran2 : public rsStateVariableFilter<TSig, TPar>  // Rename!
+class rsStateVariableFilter2 : public rsStateVariableFilter<TSig, TPar>  // Rename!
 {
 
 public:
@@ -303,7 +303,7 @@ public:
   // I think. We need to check that in any case one and only one of them returns true, i.e. that
   // the conditions are disjoint or mutually exclusive - except in edge cases maybe.
 
-  bool hasSameCoeffsAs(const rsStateVariableFilterMystran2<TSig, TPar>& f, TPar tol)
+  bool hasSameCoeffsAs(const rsStateVariableFilter2<TSig, TPar>& f, TPar tol)
   {
     if(!rsIsCloseTo(aL, f.aL, tol)) return false;
     if(!rsIsCloseTo(aB, f.aB, tol)) return false;

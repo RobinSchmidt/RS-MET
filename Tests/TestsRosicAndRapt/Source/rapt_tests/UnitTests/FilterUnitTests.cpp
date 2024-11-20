@@ -1100,7 +1100,7 @@ bool stateVariableFilterUnitTest4()
   using Real  = double;
   using Vec   = std::vector<Real>;
   using Mode  = rsStateVariableFilterSimper<Real, Real>::Mode;
-  using ModeM = rsStateVariableFilterMystran2<Real, Real>::Mode;
+  using ModeM = rsStateVariableFilter2<Real, Real>::Mode;
 
   // Setup:
   int  N          =   512;    // Number of samples to produce
@@ -1117,7 +1117,7 @@ bool stateVariableFilterUnitTest4()
     rsStateVariableFilterSimper<Real, Real>  svf_s;
     svf_s.setup(mode, w, Q, A);
 
-    rsStateVariableFilterMystran2<Real, Real> svf_m;
+    rsStateVariableFilter2<Real, Real> svf_m;
     ModeM mode_m = (ModeM)(int)mode;
     svf_m.setup(mode_m, w, Q, A);
 
@@ -1158,7 +1158,7 @@ bool stateVariableFilterUnitTest4()
   Real res;
   tol = 1.e-15;
 
-  rsStateVariableFilterMystran2<Real, Real> svf;
+  rsStateVariableFilter2<Real, Real> svf;
 
   svf.setupLowpass(w, Q);
   ok &= svf.isLowpass()       == true;
@@ -1308,7 +1308,7 @@ bool stateVariableFilterUnitTest4()
     Real A = pow(10, gainDb/40);
 
     // Create and set up filter:
-    rsStateVariableFilterMystran2<Real, Real> svf;
+    rsStateVariableFilter2<Real, Real> svf;
     ModeM mode_m = (ModeM)(int)mode;
     svf.setup(mode_m, w, Q, A);
 
@@ -1331,7 +1331,7 @@ bool stateVariableFilterUnitTest4()
       rsPlotVectors(h_s, h_b, h_b - h_s);
 
     // Test conversion from biquad coeffs back to svf-coeffs:
-    rsStateVariableFilterMystran2<Real, Real> svf2;
+    rsStateVariableFilter2<Real, Real> svf2;
     svf2.setupFromBiquad(b0, b1, b2, a1, a2);
     ok &= svf2.hasSameCoeffsAs(svf, tol);
 
@@ -1396,7 +1396,7 @@ bool stateVariableFilterUnitTest4()
     Real A = pow(10, gainDb/40);
 
     // Create and set up filter:
-    rsStateVariableFilterMystran2<Real, Real> svf;
+    rsStateVariableFilter2<Real, Real> svf;
     ModeM mode_m = (ModeM)(int)mode;
     svf.setup(mode_m, w, Q, A);
 
