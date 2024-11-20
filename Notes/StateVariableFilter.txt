@@ -232,6 +232,75 @@ do have similar problems. Obviously, the formulas ought to be equivalent - they 
 down a little bit differently.
 
 ---------------------------------------------------------------------------------------------------
+Conversion to state space form:
+
+We now want to find the state space filter (SSF) formulation of a given SVF filter. As explained 
+here:
+
+  https://www.dsprelated.com/freebooks/filters/State_Space_Filters.html
+
+the general form a of an SSF is given by:
+
+  y[n]   = C * x[n] + D * u[n]           // Compute output
+  x[n+1] = A * x[n] + B * u[n]           // Update state
+
+with:
+ 
+  x: length N state vector 
+  u: length p input vector
+  y: length q output vector 
+  A: N-by-N state transition matrix, 
+  B: N-by-p input matrix, 
+  C: q-by-N output matrix 
+  D: q-by-p feed-around matrix. (verify sizes and terminology, see JOS' Filters book, page 357)
+
+We start with the SVF difference equation:
+
+  h[n] = s*x[n] - s*c*u[n-1] - s*v[n-1]
+  b[n] = g*h[n] + u[n-1] = g*(s*x[n] - s*c*u[n-1] - s*v[n-1]) + u[n-1]
+  l[n] = g*b[n] + v[n-1]
+  u[n] = 2*b[n] - u[n-1]
+  v[n] = 2*l[n] - v[n-1]
+
+To translate that into state space form, We first need to express all the right hand sides in terms 
+of the state given by u,v and the input given by x. For h[n], there's nothing to do. For b[n], l[n],
+u[n], v[n], we need to substitute in the expressions ofr h[n], etc. and then expand:
+
+  h[n] = s*x[n] - s*c*u[n-1] - s*v[n-1]
+
+  b[n] = g*h[n] + u[n-1] 
+       = g*s*x[n] + (1 - g*s*c)*u[n-1] - g*s*v[n-1]
+
+  l[n] = g*b[n] + v[n-1]
+       = g*g*s*x[n] + (g - g*g*s*c)*u[n-1] + (1 - g*g*s)*v[n-1]
+
+  u[n] = 2*(g*s*x[n] + (1 - g*s*c)*u[n-1] - g*s*v[n-1]) - u[n-1]
+       = 2*g*s*x[n] + (1 - 2*g*s*c)*u[n-1] - 2*g*s*v[n-1]
+
+  v[n] = 2*l[n] - v[n-1]
+       = 2*g*g*s*x[n] + (2*g - 2*g*g*s*c)*u[n-1] + (1 - 2*g*g*s)*v[n-1]
+
+
+So the state space form of the SVF is given by:
+
+Output computation:
+
+  [h[n]]   [-sc         -s] * [u[n]]  +  [  s] * [x[n]]
+  [b[n]] = [1-gsc      -gs]   [v[n]]     [ gs]
+  [l[n]]   [g-ggsc   1-ggs]              [ggs]
+
+State update:
+
+  [u[n+1]] = [1-2gsc      -2gs] * [u[n]]  +  [2gs ] * [x[n]]
+  [v[n+1]]   [2g-2ggsc  1-2ggs]   [v[n]]     [2ggs]  
+
+We can read off the matrices of the state space formulation as:
+
+  A = [1-2gsc     -2gs ],  B = [2gs ],  C = [-sc        -s],  D = [  s]
+      [2g-2ggsc  1-2ggs]       [2ggs]       [1-gsc     -gs]       [ gs]
+                                            [g-ggsc  1-ggs]       [ggs]
+
+---------------------------------------------------------------------------------------------------
 References:
 
 - https://www.kvraudio.com/forum/viewtopic.php?p=8992653#p8992653  
