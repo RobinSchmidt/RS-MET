@@ -257,7 +257,7 @@ with:
 We start with the SVF difference equation:
 
   h[n] = s*x[n] - s*c*u[n-1] - s*v[n-1]
-  b[n] = g*h[n] + u[n-1] = g*(s*x[n] - s*c*u[n-1] - s*v[n-1]) + u[n-1]
+  b[n] = g*h[n] + u[n-1] 
   l[n] = g*b[n] + v[n-1]
   u[n] = 2*b[n] - u[n-1]
   v[n] = 2*l[n] - v[n-1]
@@ -274,7 +274,7 @@ u[n], v[n], we need to substitute in the expressions ofr h[n], etc. and then exp
   l[n] = g*b[n] + v[n-1]
        = g*g*s*x[n] + (g - g*g*s*c)*u[n-1] + (1 - g*g*s)*v[n-1]
 
-  u[n] = 2*(g*s*x[n] + (1 - g*s*c)*u[n-1] - g*s*v[n-1]) - u[n-1]
+  u[n] = 2*b[n] - u[n-1]
        = 2*g*s*x[n] + (1 - 2*g*s*c)*u[n-1] - 2*g*s*v[n-1]
 
   v[n] = 2*l[n] - v[n-1]
@@ -295,16 +295,23 @@ State update:
 
 We can read off the matrices of the state space formulation as:
 
- ┌───────────────────────────────────────────────────────────────────────┐
- │ A = [1-2gsc     -2gs ],  B = [2gs ],  C = [-sc        -s],  D = [  s] │
- │     [2g-2ggsc  1-2ggs]       [2ggs]       [1-gsc     -gs]       [ gs] │
- │                                           [g-ggsc  1-ggs]       [ggs] │
- └───────────────────────────────────────────────────────────────────────┘
+ ┌─────────────────────────────────────────────────────────────────────────────┐
+ │ A = [1-2gsc     -2gs ]     B = [2gs ]     C = [-sc        -s]     D = [  s] │
+ │     [2g-2ggsc  1-2ggs]         [2ggs]         [1-gsc     -gs]         [ gs] │
+ │                                               [g-ggsc  1-ggs]         [ggs] │
+ └─────────────────────────────────────────────────────────────────────────────┘
 
 Note that in the general state space equation and our special SVF state space equation, the variable
 names do not match. In the general formulation, u is the input and x is the state whereas in the SVF
 x is the input and u is one of the integrator states. But that doesn't really matter because 
-ultimately, we are only interested in the matrices A,B,C,D anyway.
+ultimately, we are only interested in the matrices A,B,C,D anyway and the end result contains no u 
+or x anyway. The state space formulation gives us an alternative way to evaluate the transfer 
+function. It's generally given by:
+
+  H(z) = D + C * (z*I - A)^(-1) * B 
+
+But it's arguably more expensive to evaluate H(z) via the state space formulation compared to using
+the direct form biquad formulation. 
 
 ---------------------------------------------------------------------------------------------------
 References:
