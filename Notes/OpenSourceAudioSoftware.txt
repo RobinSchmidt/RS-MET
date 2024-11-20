@@ -461,6 +461,9 @@ https://github.com/csteinmetz1
 Florian Mrugalla
 https://github.com/Mrugalla
 
+Jordie Shier
+https://github.com/jorshi
+-Does DSP and ML/AI stuff
 
 ----------------------------------------------------------------------------------------------------
 Online Tools
