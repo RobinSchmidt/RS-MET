@@ -554,6 +554,9 @@ void rsArrayTools::fillWithRange(T* x, int N, T min, T max, T p)
 template <class T>
 void rsArrayTools::filter(const T *x, int xLength, T *y, int yLength, const T *b, int bOrder, const T *a, int aOrder)
 {
+  rsAssert(a[0] == T(1), "a[0] != 1 in rsArrayTools::filter.");
+  // We assume the filter coefficient arrays to be normalized such that a[0] == 1.
+
   // allocate and intitialize memory for the filters internal state:
   int i, n;
   T *xOld = new T[bOrder+1];
@@ -594,7 +597,11 @@ void rsArrayTools::filter(const T *x, int xLength, T *y, int yLength, const T *b
     y[n]    = tmp;
   }
 
-  // ToDo: maybe we should divide the final value by a[0], if it's not 1
+  // ToDo: maybe we should divide the final value by a[0], if it's not 1:
+  //if(a[0] != 1)
+  //  scale(y, yLength, T(1)/a[0]);
+  // ...but wait - no - is that even the right thing to do? It would be equivalent to scaling all
+  // b-coeffs by 1/a[0] but we actually would want to scale all coeffs, a- and b-coeffs, by 1/a[0].
 
   // clean up memory:
   delete[] xOld;
