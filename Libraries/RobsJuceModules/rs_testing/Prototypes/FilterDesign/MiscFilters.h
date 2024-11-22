@@ -673,7 +673,7 @@ void stateVariableToStateSpace(T g, T c, T s,
   (*D)(1,0) =  gs;
   (*D)(2,0) = ggs;
 }
-// Maybe make this a static member funtion of rsStateSpaceFilter. Rename it to 
+// Maybe make this a static member function of rsStateSpaceFilter. Rename it to 
 // fromStateVariableFilter or something. ...or maybe the name is ok. Dunno. Or maybe it should
 // go into class rsFilterCoefficientConverter
 
