@@ -199,9 +199,6 @@ https://github.com/ZL-Audio/ZLSplitter
 https://github.com/Chowdhury-DSP/PitchShift
 -Pitch-shifter based on Bungee algorithm
 
-https://github.com/je3928/RE201models
--Digital model of the Roland RE-201 taype delay
-
 AnalogTapeModel
 https://github.com/jatinchowdhury18/AnalogTapeModel
 -CHOW Tape Model is a physical model of an analog tape machine
@@ -222,6 +219,14 @@ https://github.com/GuitarML/SmartGuitarAmp
 NeuralPi
 https://github.com/GuitarML/NeuralPi
 -Yet another neural amp sim
+
+RE201models:
+https://github.com/je3928/RE201models
+-Digital models of the Roland RE-201 tape delay
+
+JEPluginsAudioDSP:
+https://github.com/je3928/JEPluginsAudioDSP
+-Code that is presented as part of the JEPlugins Audio DSP video series.
 
 ----------------------------------------------------------------------------------------------------
 Frameworks
@@ -281,6 +286,21 @@ https://github.com/robbert-vdh/nih-plug/
 https://github.com/Torsion-Audio/nn-inference-template
 https://www.youtube.com/watch?v=z_RKgHU59r0
 -A Template Audio Plugin for Real-time Neural Network Inference
+
+
+JUCE Add-Ons:
+
+JUCE6 and 7 Unofficial CLAP Plugin Support:
+https://github.com/free-audio/clap-juce-extensions
+-code which, combined with a JUCE 6 or JUCE 7 plugin project, allows you to build a CLAP plugin
+
+juce_clap_hosting:
+https://github.com/jatinchowdhury18/juce_clap_hosting
+-a JUCE module, which allows the user to host CLAP plugins within a JUCE app/plugin.
+
+foleys_gui_magic:
+https://github.com/ffAudio/foleys_gui_magic
+-This module allows to create GUIs without any coding.
 
 ----------------------------------------------------------------------------------------------------
 DSP-Libraries
@@ -365,6 +385,10 @@ https://github.com/aaronaanderson/ofxATK
 
 DaisySP
 https://github.com/xiashj24/DaisySP
+
+FFTConvolver:
+https://github.com/HiFi-LoFi/FFTConvolver
+-Partitioned convolution algorithm
 
 ----------------------------------------------------------------------------------------------------
 Other Libraries
@@ -464,6 +488,10 @@ https://github.com/Mrugalla
 Jordie Shier
 https://github.com/jorshi
 -Does DSP and ML/AI stuff
+
+Keith Bloemer
+https://github.com/guitarml
+-develops guitar distortion/amp simulations based on machine learning
 
 ----------------------------------------------------------------------------------------------------
 Online Tools
