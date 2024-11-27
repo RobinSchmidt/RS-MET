@@ -29,6 +29,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
+  void setupMuted();
   void setupBypass();
   void setupLowpass(      TPar omega, TPar Q);
   void setupHighpass(     TPar omega, TPar Q);
@@ -96,11 +97,12 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
-  /** Computes one sample at a time. Calls getOutputs() and mixes the produced lowpass, bandpass
-  and highpass ouptuts according to the desired filter mode. */
+  /** Computes one sample at a time. Calls getPartialOutputs() and mixes the produced lowpass, 
+  bandpass and highpass ouptuts according to the desired filter mode. */
   inline TSig getSample(TSig in);
 
-  /** Returns the 3 outputs (lowpass, bandpass, highpass) of the core SVF. */
+  /** Returns the 3 outputs (lowpass, bandpass, highpass) of the core SVF in the output parameters 
+  yL, yB, yH. */
   inline void getPartialOutputs(TSig in, TSig* yL, TSig* yB, TSig* yH);
 
   /** Resets the internal state. */
@@ -127,11 +129,24 @@ protected:
 // Setup:
 
 template<class TSig, class TPar>
+void rsStateVariableFilter<TSig, TPar>::setupMuted()
+{
+  // H(s) = 0
+
+  g  = 0;
+  c  = 0;
+  s  = 0;
+  aL = 0;
+  aB = 0;
+  aH = 0;
+}
+
+template<class TSig, class TPar>
 void rsStateVariableFilter<TSig, TPar>::setupBypass()
 {
   // H(s) = 1 
 
-  g  = 0; 
+  g  = 0;
   c  = 0;
   s  = 1;
   aL = 0;

@@ -229,7 +229,15 @@ imaginary? It also seems that the formulas given by Aaron Wishnick in this paper
   https://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
 
 do have similar problems. Obviously, the formulas ought to be equivalent - they are just written 
-down a little bit differently.
+down a little bit differently. It could actually be plausible that the SVF puts some additional 
+constraints on what biquad transfer functions can be achieved because both integrators use the same
+integrator gain coefficient g which may reduce the actual number of degrees of freedom by one 
+compared to having two independent integrator gains. We have the coefficients aH, aB, aL, g, r at 
+the low level. c,s are just for optimization purposes. Maybe instead of g, we could have different
+values g1, g2 for the two integrators and thereby increase the space of realizable filters? 
+Hmm...not sure. Maybe try to realize a filter that corresponds to two 1-pole lowpasses in series 
+with two independent cutoffs. I'm not sure if that is possible with the current SVF setup. If it 
+isn't, we have proven that the SVF in its current form cannot replace a fully general biquad.
 
 ---------------------------------------------------------------------------------------------------
 Conversion to state space form:

@@ -287,6 +287,10 @@ https://github.com/Torsion-Audio/nn-inference-template
 https://www.youtube.com/watch?v=z_RKgHU59r0
 -A Template Audio Plugin for Real-time Neural Network Inference
 
+RtAudio:
+https://github.com/thestk/rtaudio
+-Realtime audio I/O abstraction layer for Linux/Mac/Windows (JACK, CoreAudio, ASIO, WASAPI, etc.)
+
 
 JUCE Add-Ons:
 
@@ -499,6 +503,12 @@ Online Tools
 CarveToy:
 https://www.carvetoy.online/
 -Wavetable generator
+
+----------------------------------------------------------------------------------------------------
+Unsorted:
+
+https://github.com/chmaha/RCverb
+https://github.com/SpotlightKid/dfzitarev1
 
 ----------------------------------------------------------------------------------------------------
 Resources

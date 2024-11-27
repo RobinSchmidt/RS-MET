@@ -9,7 +9,12 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   TPar T  = T1 * T2;
   TPar S  = sqrt(-1 / T);
   TPar r  = 2*(a2 - 1) / (T*S);
-  rsAssert(T < 0, "The formulas work only for T < 0.");    // For T > 0, S and r are NaN
+  if(T >= 0)
+  {
+    rsError("The formulas work only for T < 0.");          // For T > 0, S and r are NaN
+    setupMuted();                                          // We produce muted output in this case.
+    return;
+  }
 
   // Compute final coefficients:
   aH = -(b0 - b1 + b2) / T1;
@@ -21,9 +26,15 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
 
   // ToDo:
   //
-  // - Maybe in cases of T > 0, set the filter coeffs in such a way to produce a zero output 
-  //   signal. At the moment, we just accept that some of our coeffs (and therefore the output) 
-  //   will be NaN in such cases of failure. That might be a bit harsh.
+  // - Check what happens in the limit as T -> 0 from below. The T in the denominator of the 
+  //   formula for r approaches 0 as well, but S approaches infinity but more slowly due to the 
+  //   sqrt. So, I guess, overall r should approach infinity but sublinearly, namely as sqrt. 
+  //   Verify that and give an interpretation for what that means. Perhaps rather than going into
+  //   muted mode, we should go into bypass mode? And what if T > 0?
+  //
+  // - Check if we need some tolerance, i.e. if  T < 0  is not good enough but we rather need 
+  //   something like  T < -tol  where tol is some small positive number like the machine espilon
+  //   or some multiple of it or its sqrt.
 }
 
 template<class TSig, class TPar>
@@ -117,12 +128,9 @@ ToDo:
   formula is wrong for shelf filters. But maybe we can infer in which mode we are and then dispatch
   to the appropriate formula. The mode could be figured out by looking at the pattern of the mixing
   the mixing coeffs. I think, we have  LP: 1,0,0  HP: 0,0,1  BPS: 0,1,0  BPP: 0,+,0  BS: 1,0,1  
-  AP: 1,-,1  PK: 1,+,1  LS: +,+,1  HS: 1,+,+.
-
-- In the prototype folder in MiscFilters.h, there is some subclass  rsStateVariableFilterMystran2
-  that extends this class by some add-on functionality. Maybe someday, some of it should be
-  dragged over. It has also a preliminary setupFromBiquad() function. But it doesn't always work.
-  I think, it works only when T = (a1*a1 - a2*a2 - 2*a2 - 1) < 0.
+  AP: 1,-,1  PK: 1,+,1  LS: +,+,1  HS: 1,+,+. In the prototype folder in MiscFilters.h, there is 
+  some subclass  rsStateVariableFilter2 that extends this class by some add-on functionality that
+  includes things like that. Maybe someday, some of it should be dragged over. 
 
 - Figure out if there is a more direct way to evaluate the transfer function, i.e. one that 
   doesn't go through a conversion to a direct form biquad.
@@ -138,5 +146,24 @@ ToDo:
 
 - Maybe the number of divisions can be reduced by defining  T1 = 1/(a1-a2-1), T2 = 1/(a1+a2+1)
   and adapting the following code accordingly?
+
+- Maybe try to use two independent integrator gains g1, g2 like this:
+
+  template<class TSig, class TPar>
+  inline void rsStateVariableFilter<TSig, TPar>::getPartialOutputs(
+    TSig in, TSig* yL, TSig* yB, TSig* yH)  
+  {
+    // Compute outputs:
+    *yH = (in - c*z1 - z2) * s;            // == (in - (g+r)*z1 - z2) / (1 + g*(g+r))
+    *yB = z1 + g1 * *yH; 
+    *yL = z2 + g2 * *yB;
+
+    // State variable update:
+    z1 += 2 * g1 * *yH;
+    z2 += 2 * g2 * *yB;
+  }
+
+  and see, if this increases the space of realizable biquad transfer functions, i.e. solves the
+  T >= 0 problem in setupFromBiquad().
 
 */
