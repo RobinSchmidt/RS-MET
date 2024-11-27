@@ -1564,6 +1564,10 @@ void tapeEmulationChow()
 template<class T>
 void centralDifference(const T* y, T* yd, int N, T h = 1) /*, bool extrapolateEnds = true)*/
 {
+  rsAssert(y != yd, "centralDifference can't be used in place.");
+  // Actually, we should make sure that y and yd don't overlap which is an even stricter condition.
+  // We need to implement a function rsArrayTools::haveOverlap(T* buf1, T* buf2, int N)
+
   T s = T(1) / (T(2)*h);               // Scaler 1/(2h)
 
   for(int n = 1; n < N-1; n++)
@@ -1574,8 +1578,8 @@ void centralDifference(const T* y, T* yd, int N, T h = 1) /*, bool extrapolateEn
   yd[0]   = s*(y[1]   - y[0]);         // Forward difference
   yd[N-1] = s*(y[N-1] - y[N-2]);       // Backward difference
 
-  // ToDo: optionally use linear extrapolation or maybe use a 2nd order forward- and backward 
-  // difference respectivly
+  // ToDo: Optionally use linear extrapolation or maybe use a 2nd order forward- and backward 
+  // difference respectively. Make an implementation that can work in place, i.e. allows yd == y.
 }
 
 
@@ -1783,5 +1787,5 @@ void tapeEmulationViaOdeSolver()
 void tapeEmulation()
 {
   //tapeEmulationChow();
-  tapeEmulationViaOdeSolver();   // This is in early stages. It does not yet work at all
+  tapeEmulationViaOdeSolver();   // This is in early stages. It does not yet well
 }
