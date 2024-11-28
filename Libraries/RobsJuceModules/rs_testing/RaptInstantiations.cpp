@@ -409,8 +409,9 @@ template class RAPT::rsModularInteger<int>;
 
 
 //template void RAPT::rsNextPascalTriangleLine(const double* x, double* y, int N);
-template void RAPT::rsPascalTriangleLine(double* y, int N);
-template void RAPT::rsPascalTriangleLine(float*  y, int N);
+template void RAPT::rsPascalTriangleLine(rsUint64*             y, int N);
+template void RAPT::rsPascalTriangleLine(double*               y, int N);
+template void RAPT::rsPascalTriangleLine(float*                y, int N);
 template void RAPT::rsPascalTriangleLine(std::complex<double>* y, int N);
 
 // deprecate them:

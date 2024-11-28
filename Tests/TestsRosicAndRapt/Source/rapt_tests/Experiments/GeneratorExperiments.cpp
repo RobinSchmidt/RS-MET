@@ -2820,7 +2820,7 @@ void shepardTone()
   int dummy = 0;
 }
 
-void additiveEngine()
+void additiveEngine1()
 {
   // under construction
 
@@ -2988,6 +2988,13 @@ void additiveEngine()
 
   int dummy = 0;
 }
+
+
+void additiveEngine()
+{
+  additiveEngine1();
+}
+
 
 void multiplicativeSynth()
 {

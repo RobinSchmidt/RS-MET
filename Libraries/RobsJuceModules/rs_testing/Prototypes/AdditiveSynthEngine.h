@@ -4,8 +4,8 @@
 
 //=================================================================================================
 
-/** Under construction. Should provide an API and functionaliyt similar to rsSineSweepIterator, but 
-use a phasor and direct computaion (either exact or by using approximations). The amplitude 
+/** Under construction. Should provide an API and functionality similar to rsSineSweepIterator, but 
+use a phasor and direct computation (either exact or by using approximations). The amplitude 
 envelope should probably be cubic in the raw amplitude domain rather than in log-amplitude domain
 here...we'll see...  */
 
@@ -63,7 +63,7 @@ public:
   virtual void reset() = 0;
 
 };
-// i think this needs a template parameter N for th simd-size, then init should take simd-vector
+// I think this needs a template parameter N for th simd-size, then init should take simd-vector
 // parameters and the "index" parameter can go away
 
 //=================================================================================================
@@ -187,7 +187,7 @@ protected:
 //=================================================================================================
 
 /** Single voice for the additive synthesis engine based on oscillator banks using SIMD 
-processing. It the plural "banks" because different implementations are available with different 
+processing. Its the plural "banks" because different implementations are available with different 
 tradeoffs with respect to accuracy and efficiency. */
 
 template<int N>             // N: size of the SIMD vectors use NSimd
