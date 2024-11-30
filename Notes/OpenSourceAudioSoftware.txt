@@ -397,17 +397,22 @@ https://github.com/HiFi-LoFi/FFTConvolver
 ----------------------------------------------------------------------------------------------------
 Other Libraries
 
-Anti Grain Geometry
-https://github.com/ghaerr/agg-2.6
--Rasterization based 2D graphics rendering library.
-
 Farbot (FAbian's Realtime Box o' Tricks)
 https://github.com/hogliux/farbot
 -Library for thread-sync tasks typical in audio software programming
 
+NI MEDIA:
+https://github.com/NativeInstruments/ni-media
+-Library for reading from / writing to audio streams in "direct from disk" (DFD) mode, I guess. 
+ Seems to support also video formats. Useful for samplers and DAWs.
+
 https://github.com/nothings/stb/
 -Single-file public domain (or MIT licensed) libraries for C/C++ for various tasks.
 -Has image (.png,etc.) read/write, .ttf-rendering
+
+Anti Grain Geometry
+https://github.com/ghaerr/agg-2.6
+-Rasterization based 2D graphics rendering library.
 
 ----------------------------------------------------------------------------------------------------
 Misc
@@ -422,6 +427,19 @@ https://bitbucket.org/Mayae/ape/src/master/
 Cmajor:
 https://github.com/cmajor-lang
 -A C/C++ like domain specific language (DSL) for audio DSP.
+
+Faust: 
+https://github.com/grame-cncm/faust
+https://faust.grame.fr/
+-A functional DSL for audio DSP, applications and plugins
+
+SuperCollider:
+https://github.com/supercollider/supercollider
+-platform for audio synthesis and algorithmic composition
+
+CSound:
+https://csound.com/
+-sound and music computing system
 
 Tracktion Engine
 https://www.tracktion.com/develop/tracktion-engine

@@ -147,6 +147,14 @@ ToDo:
 - Maybe the number of divisions can be reduced by defining  T1 = 1/(a1-a2-1), T2 = 1/(a1+a2+1)
   and adapting the following code accordingly?
 
+- Implement functions like getMagnitudeResponse(const TPar* omegas, TPar* magnitudes, int N) that
+  computes the magnitudes at a whole array of frequencies. Rationale: If one wants to compute the
+  magnitude response for an array of frequencies using the existing getMagnitudeAt() function for 
+  each of the frequencies, there will be a lot of redundant calculations because the SVF -> DF
+  conversion will be done for each frequency anew even though the resulting coeffs will always be 
+  the same. A similar function could be done for the phase response. Or maybe make a function that
+  computes the complex frequency response
+
 - Maybe try to use two independent integrator gains g1, g2 like this:
 
   template<class TSig, class TPar>
