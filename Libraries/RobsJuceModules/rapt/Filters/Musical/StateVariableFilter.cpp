@@ -43,7 +43,8 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   //   T = T1*T2 stays the same; S = sqrt(-T); r = 2*(a2 - 1) * (T*S); aH =  (b1 - B ) * T1;
   //   (b0 - b2) * 2/S; (b1 + B ) * T2; g = -1 * (T1*S); ...I think. That would be 3 divisions
   //   instead of 5 (not counting the one in s = ..., because that's unaffected). Hmm - I tried but
-  //   it doesn't seem to work -> check the math!
+  //   it doesn't seem to work -> check the math! Wait: I think, the computation of S still needs
+  //   the reciprocation - but then we would save only one division, I think.
 }
 
 template<class TSig, class TPar>
@@ -147,15 +148,6 @@ ToDo:
 - Add an experiment that looks at the DC-response when switching the cutoff freq. The Wishnick 
   paper says that this is a good test for modulation response.
 
-- Figure out what the condition T >= 0 means. The argument of the square root becomes negative
-  in this case. So, the damping coeff r becomes imaginary? Can we deal with it somehow? For 
-  T -> 0, we have r -> inf, I think (verify!). Could it be that the SVF is subject to certain 
-  constraints that a fully general biquad is not? Both have 5 coefficients, though - so the 
-  number of degrees of freedom matches.
-
-- Maybe the number of divisions can be reduced by defining  T1 = 1/(a1-a2-1), T2 = 1/(a1+a2+1)
-  and adapting the following code accordingly?
-
 - Implement functions like getMagnitudeResponse(const TPar* omegas, TPar* magnitudes, int N) that
   computes the magnitudes at a whole array of frequencies. Rationale: If one wants to compute the
   magnitude response for an array of frequencies using the existing getMagnitudeAt() function for 
@@ -182,5 +174,8 @@ ToDo:
 
   and see, if this increases the space of realizable biquad transfer functions, i.e. solves the
   T >= 0 problem in setupFromBiquad().
+
+- Maybe rename the occurences of variable r to R2 = 2*R to make the naming consistent with Vadim's 
+  book.
 
 */

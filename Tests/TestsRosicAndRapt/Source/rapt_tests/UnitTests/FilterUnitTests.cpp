@@ -1374,6 +1374,7 @@ bool stateVariableFilterUnitTest4()
       BD::calculateCookbookBandpassConstSkirtCoeffsViaQ(b0, b1, b2, a1, a2, fsr, freq, Q); break;
     //case Mode::BandpassPeak: 
     //  BD::calculateCookbookBandpassConstPeakCoeffsViaQ(b0, b1, b2, a1, a2, fsr, freq, Q); break;
+    //  ...such a function does not exist - maybe we should add it.
     case Mode::Notch: 
       BD::calculateCookbookBandrejectCoeffsViaQ(b0, b1, b2, a1, a2, fsr, freq, Q); break;
     case Mode::Allpass: 
@@ -1428,7 +1429,7 @@ bool stateVariableFilterUnitTest4()
   ok &= runTransferFuncTest(Mode::Lowpass,       1000, 8.0, 0.0, 1.e-9);
   ok &= runTransferFuncTest(Mode::Highpass,      1000, 8.0, 0.0, 1.e-6);
   ok &= runTransferFuncTest(Mode::BandpassSkirt, 1000, 8.0, 0.0, 1.e-9);
-  //ok &= runTransferFuncTest(Mode::BandpassPeak,  1000, 8.0, 0.0, tol); // No reference available
+  //ok &= runTransferFuncTest(Mode::BandpassPeak,  1000, 8.0, 0.0, tol); // Not implemented
   ok &= runTransferFuncTest(Mode::Notch,         1000, 8.0, 0.0, 1.e-10);
   ok &= runTransferFuncTest(Mode::Allpass,       1000, 8.0, 0.0, 1.e-12);
 
@@ -1526,7 +1527,7 @@ bool stateVariableFilterUnitTest4()
   
   // If a1 = 0, the function T(a2) is the parabola -x^2 - 2x - 1  which touches the x-axis at 
   // x = -1. https://www.desmos.com/calculator/ycadkwni7d  So, with a1 = 0, T can never become 
-  // positive. With a2 = -1, we get T = 0. This is the boundary case between  what works and what
+  // positive. With a2 = -1, we get T = 0. This is the boundary case between what works and what
   // doesn't work. Maybe let's try to approach the boundary. With a2 = -0.99, we are in the good 
   // range. With a2 = 1.01 we are actually also in the good case.
 
@@ -1565,12 +1566,9 @@ bool stateVariableFilterUnitTest4()
   // -a1/2 +- sqrt(a1^2/4 - a2)
   //
   // (-x/2 + sqrt(x^2/4 - y)) * (-x/2 - sqrt(x^2/4 - y))  <  1
-
-
-
-
-
-  // OK - It seems like old implementation with the Wishnick formulas also doesn't work.
+  //
+  // OK - It seems like old implementation with the Wishnick formulas also doesn't work and I think
+  // The conditions for when it does and doesn't work are the same. 
 
 
   /*

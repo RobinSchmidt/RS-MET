@@ -287,7 +287,7 @@ u[n], v[n], we need to substitute in the expressions ofr h[n], etc. and then exp
   v[n] = 2*l[n] - v[n-1]
        = 2*g*g*s*x[n] + (2*g - 2*g*g*s*c)*u[n-1] + (1 - 2*g*g*s)*v[n-1]
 
-So the state space form of the SVF is given by:
+So the state space form of the SVF is given by (things like 2gsc mean 2*g*s*c etc.):
 
 Output computation:
 
@@ -327,6 +327,14 @@ References:
   Teemu Voipio (aka mystran) explains how to set up the mixing coefficients to achieve the well 
   known RBJ cookbook transfer functions. This discussion was what prompted me to re-implement the 
   SVF using these ideas to compute the mixing coefficients. 
+
+- In this reply: https://www.kvraudio.com/forum/viewtopic.php?p=8994126#p8994126 Solo gives the 
+  following expression for the lowpass transfer function in terms the integrator gain g and the 
+  damping coeff R (as used in Vadim's book):
+  H(z) = (g^2 * (1 + 2*z^-1 + z^-2)) / (4+4*R*g+g^2 + (2*g^2-8)*z-^1 + (4-4*R*g+g^2)*z^-2)
+  Compare that to what we have and maybe use that to try to get an interpretation of what goes wrong
+  when T >= 0 in the biquad -> svf conversion. Does the form of the denominator put some constraints
+  on what configurations of poles are possible?
 
 - The Art of Virtual Analog Filter Design
   Vadim Zavalishin's excellent book has a chapter about ZDF-SVF filters (and much more good stuff).

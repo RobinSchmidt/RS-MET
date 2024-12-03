@@ -286,12 +286,12 @@ template<class TSig, class TPar>
 inline void rsStateVariableFilter<TSig, TPar>::getPartialOutputs(
   TSig in, TSig* yL, TSig* yB, TSig* yH)
 {
-  // Compute outputs:
+  // Compute HP, BP and LP outputs:
   *yH = (in - c*z1 - z2) * s;            // == (in - (g+r)*z1 - z2) / (1 + g*(g+r))
   *yB = z1 + g * *yH; 
   *yL = z2 + g * *yB;
 
-  // State variable update:
+  // Update integrator state variables:
   z1 = 2 * *yB - z1;                     // Equivalent to: z1 += 2 * g * *yH
   z2 = 2 * *yL - z2;                     // Equivalent to: z2 += 2 * g * *yB
 }
