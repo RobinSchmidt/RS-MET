@@ -1,0 +1,40 @@
+
+
+- Line width limit is 100 characters. Exceptions are possible when vertical alignment improves
+  readability.
+
+- Indentation depth is 2, using spaces.
+
+- Names for classes and enums use upper CamelCase.
+
+- Names for (member)functions, variables and enum entries use lowerCamelCase (that's the goal - not 
+  yet realized consistently).
+
+- Variable names should be chosen close to common mathematical and scientific notation, where 
+  applicable. For example, use "c" rather than "speedOfLight". Well, it depends - the rule should 
+  apply mostly to names that are used a lot in formulas which tend to become messy with long 
+  descriptive names. Sometimes it may make sense to have members with descriptive names and define
+  local shorthands for them before using them in formulas: 
+  Example: float c = speedOfLight; float m = mass; float E = m * c*c;
+  The goal is to make formulas readable and recognizable.
+
+- Classes should be organized from top to bottom according likelihood of user interest. The public
+  stuff comes first, then protected, then private. Within the public section, we should generally
+  follow the pattern: Lifetime (constructors, destructors, factories), Setup (setters), Inquiry 
+  (getters), Processing (getSample(), reset(), noteOn(), ...), ...
+
+- Macros should be avoided. Use constants and inlined functions instead wherever possible (not yet 
+  realized).
+
+- What about abbreviations? Should it be FFT, IIR, FIR, etc. or Fft, Iir, Fir? I've not yet settled 
+  that.
+
+
+
+
+
+For inspiration of some rules, see the JUCE style guidelines:
+
+  https://juce.com/feature/coding-standards/
+
+I can agree with many of those guidelines - but not with all of them.

@@ -235,9 +235,8 @@ integrator gain coefficient g which may reduce the actual number of degrees of f
 compared to having two independent integrator gains. We have the coefficients aH, aB, aL, g, r at 
 the low level. c,s are just for optimization purposes. Maybe instead of g, we could have different
 values g1, g2 for the two integrators and thereby increase the space of realizable filters? 
-Hmm...not sure. Maybe try to realize a filter that corresponds to two 1-pole lowpasses in series 
-with two independent cutoffs. I'm not sure if that is possible with the current SVF setup. If it 
-isn't, we have proven that the SVF in its current form cannot replace a fully general biquad.
+Hmm...not sure. See also stateVariableFilterUnitTest4() in FilterUnitTests.cpp that explores this 
+stuff a bit.
 
 ---------------------------------------------------------------------------------------------------
 Conversion to state space form:
