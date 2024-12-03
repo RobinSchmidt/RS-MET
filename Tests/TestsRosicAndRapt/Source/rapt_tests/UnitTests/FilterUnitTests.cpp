@@ -1593,9 +1593,9 @@ bool stateVariableFilterUnitTest4()
 
   
   // Test biquad roundtrip conversions with random coeffs:
-  int numTests = 100000;
+  int numTests = 1000000;
   RAPT::rsNoiseGenerator<Real> prng;
-  prng.setRange(-1.0, +1.0);
+  prng.setRange(-2.0, +2.0);
   for(int n = 0; n < numTests; n++)
   {
     // Create random biaud coeffs:
@@ -1606,14 +1606,18 @@ bool stateVariableFilterUnitTest4()
     a1 = prng.getSample();
     a2 = prng.getSample();
 
+    // Check that stability implies that the formulas work, i.e. if it's stabel, it should be 
+    // allowed (but not necessarily the other way around, i.e. some unstable biquads may be 
+    // allowed, too):
     bool stable  = isStable(a1, a2);
     bool allowed = (a1*a1 - a2*a2 - 2*a2 - 1) < 0.0;
     bool same    = stable == allowed;
-    ok &= same;
-    //
-
-
     if(stable)
+      ok &= allowed;
+    //ok &= same;
+    rsAssert(ok);
+    
+    if(allowed)
     {
       // Set up an SVF from them:
       svf.setupFromBiquad(b0, b1, b2, a1, a2);
@@ -1643,7 +1647,8 @@ bool stateVariableFilterUnitTest4()
   // condition indeed seems to be necessary and sufficient, i.e. (a1*a1 - a2*a2 - 2*a2 - 1) >= 0.0
   // does indeed happen if and only if the filter is unstable! Verify that! Try to find a 
   // mathematical argument why T >= 0 means instability. That will give us actually a much simpler
-  // stability test for biquads than the one we currently have.
+  // stability test for biquads than the one we currently have. ...Wait - no! When increasing the
+  // range of the prng, we actually do get filters that are unstable but not allowed!
  
   // Maybe compare the formulas to the Wishnick formulas
 
