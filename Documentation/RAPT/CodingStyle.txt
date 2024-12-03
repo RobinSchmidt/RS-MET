@@ -54,7 +54,11 @@
   padding.
 
 - In the low-level code, frequencies should be represented as normalized radian frequencies 
-  omega = 2*pi*freq/sampleRate. That meshes best with the math that we usually do with them.
+  omega = 2*pi*freq/sampleRate. That meshes best with the math that we usually do with them. In 
+  higher level code, having functions like setSampleRate(), setFrequency() are convenient but in
+  lower level code something like setOmega() is usually more efficient and avoids data redundancies.
+  Frequency and sample rate should really just require one member variable like "omega" - if any at 
+  all (sometimes we can also just compute algorithm coeffs immediately).
 
 - Macros should be avoided. Use constants and inlined functions instead wherever possible (not yet 
   realized).
