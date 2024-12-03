@@ -56,7 +56,7 @@ public:
   // work, i.e. stability implies workability but not necessarily the other way around. That means,
   // there might be some unstable biquads that the SVF can also realize. Stability seems to be a
   // sufficient but not necessary condition for the formulas to work. So, for the filters that we 
-  // usually are about, namely the stable ones, the formulas should be fine. Some more thorough 
+  // usually care about, namely the stable ones, the formulas should be fine. Some more thorough 
   // research should be done on this, though. I once tried it with a billion random biquads. The 
   // unit test does only 1000 because it needs to be fast, but I once did the test with a billion
   // and it still passed.
