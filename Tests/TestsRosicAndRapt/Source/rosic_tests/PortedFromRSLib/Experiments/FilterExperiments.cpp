@@ -943,13 +943,15 @@ void biquadDesignVicanek()
 void biquadStability()
 {
   // We plot the region of stability for biquad filters in the (a1,a2)-plane. We map a1 to the 
-  // x-coordinate and a2 to the y-coordinate. ...TBC...
+  // x-coordinate and a2 to the y-coordinate. We also check, if the filter is convertible to
+  // state variable form. These are a superset of the stable ones. ...TBC...
 
   using Real = double;
   using Vec  = std::vector<Real>;
+  using Mat  = rsMatrix<Real>;
+
 
   int N     =  51;
-
   Real xMin = -2.5;
   Real xMax = +2.5;
   Real yMin = -2.5;
@@ -969,30 +971,47 @@ void biquadStability()
   };
   // Move to class rsFilterAnalyzer
 
+  // Helper function to test convertibility to SVF:
+  auto isBiquadConvertibleToSVF = [](Real a1, Real a2)
+  {
+    return (a1*a1 - a2*a2 - 2*a2 - 1) < 0.0;
+  };
+
+
 
   Vec x = rsLinearRangeVector(N, xMin, xMax);
   Vec y = rsLinearRangeVector(N, yMin, yMax);
-  rsMatrix<Real> z(N, N);
+
+
+  Mat stable(N, N);
   for(int i = 0; i < N; i++)
     for(int j = 0; j < N; j++)
-      z(i,j) = isBiquadStable(x[i], y[j]);
+      stable(i, j) = isBiquadStable(x[i], y[j]);
+
+  Mat convertible(N, N);
+  for(int i = 0; i < N; i++)
+    for(int j = 0; j < N; j++)
+      convertible(i, j) = isBiquadConvertibleToSVF(x[i], y[j]);
+
+  Mat z = stable + convertible;
+
+  plotMatrix(z,           x, y);
+  plotMatrix(stable,      x, y);
+  plotMatrix(convertible, x, y);
 
 
-  plotMatrix(z, x, y);
-
-
-
-
-
-
-
-
-
-
-
-  int dummy = 0;
-
-
+  // Observations:
+  //
+  // - The convertible filters lie in an infinite double "cone" (well, the 2D version of it). The 
+  //   stable ones lie inside a triangle that is part of this double cone.
+  //
+  //
+  // Conclusions:
+  //
+  // - The convertible filters are a superset of the stable filters. That means all stable filters
+  //   are convertible to SVF and some unstable ones are also convertible to SVF.
+  //
+  //
   // ToDo:
   //
   // - Maybe rename to twoPoleStability. We really only care about the poles here. The zeros are 
