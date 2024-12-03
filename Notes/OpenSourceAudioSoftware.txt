@@ -23,6 +23,7 @@ https://github.com/kushview/element
 
 Giada:
 https://www.giadamusic.com/
+https://github.com/monocasual/giada
 -Not sure...seems to be some sort of tracker like music software with focus on live performance?
 
 Carla:
@@ -362,7 +363,7 @@ SoundTouch
 https://github.com/VinMing/soundtouch
 https://codeberg.org/soundtouch/soundtouch.git
 -Time domain pitch shift / time stretch algorithm (granular, PSOLA, I think)
--There are variuos repos and I don't know, which is official and most recent
+-There are various repos and I don't know, which is official and most recent
 -I think, the latest version is v2.3.2 
  -> figure that out before grabbing the library from somewhere
 
@@ -393,6 +394,20 @@ https://github.com/xiashj24/DaisySP
 FFTConvolver:
 https://github.com/HiFi-LoFi/FFTConvolver
 -Partitioned convolution algorithm
+
+SPUC:
+https://github.com/audiofilter/spuc/
+-Signal Processing Using C++
+
+Signalsmith's IIR Hilbert:
+https://github.com/Signalsmith-Audio/hilbert-iir
+-IIR Hilbert filter
+
+Signalsmith Audio's DSP Library:
+https://signalsmith-audio.co.uk/code/dsp/
+https://signalsmith-audio.co.uk/code/dsp/html/modules.html
+https://github.com/Signalsmith-Audio/dsp
+
 
 ----------------------------------------------------------------------------------------------------
 Other Libraries
@@ -431,7 +446,8 @@ https://github.com/cmajor-lang
 Faust: 
 https://github.com/grame-cncm/faust
 https://faust.grame.fr/
--A functional DSL for audio DSP, applications and plugins
+-Faust (Functional Audio Stream) is a functional programming language for sound synthesis and audio 
+ processing with a strong focus on the design of synthesizers, musical instruments, audio effects
 
 SuperCollider:
 https://github.com/supercollider/supercollider
@@ -515,6 +531,11 @@ Keith Bloemer
 https://github.com/guitarml
 -develops guitar distortion/amp simulations based on machine learning
 
+SignalSmith:
+https://signalsmith-audio.co.uk/
+https://github.com/Signalsmith-Audio
+
+
 ----------------------------------------------------------------------------------------------------
 Online Tools
 
@@ -547,4 +568,7 @@ https://github.com/AllenDowney/ThinkDSP
 -Introduction to Digital Signal Processing in Python. Has lots of notebooks. Has also a pdf book:
  https://greenteapress.com/thinkdsp/thinkdsp.pdf
 
+MusicDSP:
 https://www.musicdsp.org/en/latest/
+https://github.com/bdejong/musicdsp
+-Website with a lot of code snippets for musical DSP tasks

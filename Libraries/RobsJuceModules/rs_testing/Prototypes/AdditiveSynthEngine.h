@@ -58,13 +58,14 @@ public:
 
 
   virtual void processFrame(float* left, float* right) = 0;
-  // maybe have a double variant, too
+  // Maybe have a double variant, too - or the parameters should be pointers to T rather than 
+  // float.
 
   virtual void reset() = 0;
 
 };
-// I think this needs a template parameter N for th simd-size, then init should take simd-vector
-// parameters and the "index" parameter can go away
+// I think this needs a template parameter N for the simd-size, then init should take simd-vector
+// parameters and the "index" parameter can go away (comment may be obsolete?)
 
 //=================================================================================================
 
@@ -218,7 +219,7 @@ public:
       double fade  = 0;  // derivative of gain
     };
 
-    struct Breakpoint  // maybe mae it a class
+    struct Breakpoint  // maybe make it a class
     {
       double time = 0;   // in seconds (user), samples (algo)
       void addSine(const SineParams& newSine) { params.push_back(newSine); }
@@ -253,7 +254,7 @@ public:
     int getNumPartials() const;
 
     bool isWellFormed() const;
-    // -time-stamps of breakpoints miust start at zero and be strictly increasing
+    // -time-stamps of breakpoints must start at zero and be strictly increasing
     // -all breakpoints must have the same number of partials
 
     const Breakpoint* getBreakpoint(int i) const { return &breakpoints[i]; }
@@ -307,12 +308,14 @@ public:
   // \name Setup
 
   void setPatch(PlayablePatch* newPatch) { patch = newPatch; }
+  // ToDo: Document why it's a pointer and why we don't provide such a function for an 
+  // EditablePatch
 
   void setSweeperBank(rsSineSweeperBank<float, N>* newBank) { sweeperBank = newBank; }
 
   /** Controls the shape of the amp envelope between the breakpoints. If true, we will make the 
   amp-derivative match at the breakpoints using a two-sided finite difference for the target 
-  values. If false, we'll a linear ramp in the log-amp domain between two breakpoints. */
+  values. If false, we'll use a linear ramp in the log-amp domain between two breakpoints. */
   void setSmoothAmpEnvelope(bool smooth) { smoothAmpEnv = smooth; }
 
   /** Selects whether the self-correction of instantaneous amplitude and phase to counteract 
@@ -337,14 +340,13 @@ public:
   void startPlaying();
 
   void processFrame(float* left, float* right);
-  // maybe just return a float...rename to getSample. output is mono anyway
+  // ToDo: maybe just return a float...rename to getSample. output is mono anyway
 
   void reset();
 
 protected:
 
   void handleBreakpoint(int index, bool reInitAmpAndPhase); 
-  // maybe move to protected
 
   void initSweepers(int startBreakpointIndex, int endBreakpointIndex, bool reInitAmpAndPhase);
 

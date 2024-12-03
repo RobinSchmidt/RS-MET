@@ -1380,10 +1380,6 @@ bool stateVariableFilterUnitTest4()
       BD::calculateCookbookAllpassCoeffs(b0, b1, b2, a1, a2, fsr, freq, Q); break;
     case Mode::Bell: 
       BD::calculateCookbookPeakFilterCoeffsViaQ(b0, b1, b2, a1, a2, fsr, freq, Q, A); break;
-
-
-
-
     };
   };
   
@@ -1438,7 +1434,7 @@ bool stateVariableFilterUnitTest4()
 
   //ok &= runTransferFuncTest(Mode::Bell,          1000, 8.0, 6.0, 1.e-10); // Fails!
   // One of the filters has the wrong gain. I think, it's the old one. Is this parameterized
-  // differently? But that seems strange
+  // differently? But that seems strange.
 
   // We need a rather high tolerance for some types. The error is greatest around the resonance 
   // peak for the lowpass. For the highpass, the error is big at DC.
@@ -1507,7 +1503,7 @@ bool stateVariableFilterUnitTest4()
   /*  
   // Test biquad roundtrip with carefully chosen coeffs. Problems occur when 
   // T = (a1*a1 - a2*a2 - 2*a2 - 1) is positive. So, let's choose a1 = 2, a2 = 0. 
-  // Then T = 4 - 0 - 0 - 1 = 3. For comparison, we also use the old implementaion where I have 
+  // Then T = 4 - 0 - 0 - 1 = 3. For comparison, we also use the old implementation where I have 
   // implemented the formulas from the Wishnick paper
   rsStateVariableFilterOld<Real, Real> svf2;
   Real T;
@@ -1537,8 +1533,42 @@ bool stateVariableFilterUnitTest4()
   // The expression for T can be factored as T = (a1 - a2 - 1) * (a1 + a2 + 1). We want that to be
   // less than zero. If we take x = a1 and y = a2, the allowed range is a double cone in the 
   // xy-plane: https://www.desmos.com/calculator/hakfgeujet
+  //
   // Some "nice" pairs outside the cone:        (a1,a2) = (0.5,-0.75), (0.8,-0.4)
-  // Some directly on the boudnary of the cone: (a1,a2) = (0.8,-0.2)
+  // Some directly on the boundary of the cone: (a1,a2) = (0.8,-0.2)
+  //
+  // If we assume that a2 = 0, that means we require (a1 - 1) * (a1 + 1) < 0. I think, that means 
+  // we need to have -1 < a1 < +1. That seems to correspond to the condition of stability. If we 
+  // assume a1 = 0, we require (-a2 - 1) * (a2 + 1) < 0 which seems to always hold unless a2 = -1 
+  // in which case we get exactly 0. With A := a2 + 1, this expression basically means -A * A < 0.
+  // That's always the case except when A = 0. With that definition, the general condition for the
+  // formula to work can be written as:  (a1 - A) * (a1 + A) < 0  or  (A - a1) * (A + a1) > 0
+  //
+  // Let's try  H(z) = (1/(1 - 0.8*d)) *  (1/(1 - 0.5*d))  where d = z^-1. That's a chain of two
+  // 1-pole filters. It expands to
+  // H(z) = 1 / (1 - 0.8*d - 0.5*d + 0.4*d^2) = 1 / (1 - 1.3*d + 0.4*d^2), so we have 
+  // a1 = -1.3, a2 = 0.4. Therefore, T = (-1.3 - 0.4 - 1) * (-1.3 + 0.4 + 1) = -2.7 * 0.1 = -0.27
+  // which is < 0, so it should work.
+  //
+  // Let's try  H(z) = (1/(1 + 0.8*d)) * (1/(1 + 0.5*d)). It expands to 
+  // H(z) = 1 / (1 + 0.8*d + 0.5*d + 0.4*d^2) = 1 / (1 + 1.3*d + 0.4*d^2), so we have 
+  // a1 = 1.3, a2 = 0.4. Therefore, T = (1.3 - 0.4 - 1) * (1.3 + 0.4 + 1) = -0.1 * 2.7 = -0.27 
+  // which the same, so it's also < 0, so that should work, too.
+  //
+  // Let's try  H(z) = (1/(1 + 0.8*d)) * (1/(1 - 0.5*d)). It expands to 
+  // H(z) = 1 / (1 + 0.8*d - 0.5*d - 0.4*d^2) = 1 / (1 + 0.3*d - 0.4*d^2), so we have 
+  // a1 = 0.3, a2 = -0.4. Therefore, T = (0.3 + 0.4 - 1) * (0.3 - 0.4 + 1) = -0.3 * 0.9 = -0.27.
+  // Again, the same result.
+  //
+  // Let's write down the stability condition: The poles, i.e. solutions of 1 + a1/z + a2/z^2 = 0
+  // must be inside the unit circle. We can write this as z^2 + a1*z + a2 = 0 which has solutions
+  // -a1/2 +- sqrt(a1^2/4 - a2)
+  //
+  // (-x/2 + sqrt(x^2/4 - y)) * (-x/2 - sqrt(x^2/4 - y))  <  1
+
+
+
+
 
   // OK - It seems like old implementation with the Wishnick formulas also doesn't work.
 
@@ -1579,6 +1609,7 @@ bool stateVariableFilterUnitTest4()
   }
   */
   // Maybe compare the formulas to the Wishnick formulas
+
 
 
 

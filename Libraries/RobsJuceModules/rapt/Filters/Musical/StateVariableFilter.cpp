@@ -4,8 +4,10 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   TPar b0, TPar b1, TPar b2, TPar a1, TPar a2)
 {
   // Compute intermediates:
-  TPar T1 = a1 - a2 - 1;
-  TPar T2 = a1 + a2 + 1;
+  TPar A  = a2 + 1;
+  TPar B  = b2 + b0;
+  TPar T1 = a1 - A;                                        // == a1 - a2 - 1
+  TPar T2 = a1 + A;                                        // == a1 + a2 + 1
   TPar T  = T1 * T2;
   TPar S  = sqrt(-1 / T);
   TPar r  = 2*(a2 - 1) / (T*S);
@@ -17,9 +19,9 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   }
 
   // Compute final coefficients:
-  aH = -(b0 - b1 + b2) / T1;
-  aB =  (b0      - b2) * 2*S;
-  aL =  (b0 + b1 + b2) / T2;
+  aH =  (b1 - B ) / T1;
+  aB =  (b0 - b2) * 2*S;
+  aL =  (b1 + B ) / T2;
   g  = -1 / (T1*S);
   c  =  g + r;
   s  =  1 / (1 + g*c);
@@ -30,11 +32,17 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   //   formula for r approaches 0 as well, but S approaches infinity but more slowly due to the 
   //   sqrt. So, I guess, overall r should approach infinity but sublinearly, namely as sqrt. 
   //   Verify that and give an interpretation for what that means. Perhaps rather than going into
-  //   muted mode, we should go into bypass mode? And what if T > 0?
+  //   muted mode, we should go into bypass mode? And what if T > 0? But we also have a2 in the 
+  //   numerator and if the approaches 1, the numerator approaches 0.
   //
   // - Check if we need some tolerance, i.e. if  T < 0  is not good enough but we rather need 
   //   something like  T < -tol  where tol is some small positive number like the machine espilon
   //   or some multiple of it or its sqrt.
+  //
+  // - We may be able to reduce the number of divisions by defining T1 = 1/(a1-A); T2 = 1/(a1+A).
+  //   T = T1*T2 stays the same; S = sqrt(-T); r = 2*(a2 - 1) * (T*S); aH =  (b1 - B ) * T1;
+  //   (b0 - b2) * 2/S; (b1 + B ) * T2; g = -1 * (T1*S); ...I think. That would be 3 divisions
+  //   instead of 5 (not counting the one in s = ..., because that's unaffected)
 }
 
 template<class TSig, class TPar>
