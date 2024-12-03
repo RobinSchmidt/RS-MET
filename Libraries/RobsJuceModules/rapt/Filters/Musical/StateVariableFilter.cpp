@@ -42,7 +42,8 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   // - We may be able to reduce the number of divisions by defining T1 = 1/(a1-A); T2 = 1/(a1+A).
   //   T = T1*T2 stays the same; S = sqrt(-T); r = 2*(a2 - 1) * (T*S); aH =  (b1 - B ) * T1;
   //   (b0 - b2) * 2/S; (b1 + B ) * T2; g = -1 * (T1*S); ...I think. That would be 3 divisions
-  //   instead of 5 (not counting the one in s = ..., because that's unaffected)
+  //   instead of 5 (not counting the one in s = ..., because that's unaffected). Hmm - I tried but
+  //   it doesn't seem to work -> check the math!
 }
 
 template<class TSig, class TPar>
