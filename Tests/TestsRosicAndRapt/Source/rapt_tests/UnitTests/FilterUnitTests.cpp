@@ -1502,7 +1502,7 @@ bool stateVariableFilterUnitTest4()
 
 
   // Helper function to test stability of a biquad with denominator coeffs a1, a2:
-  auto isStable = [](Real a1, Real a2)
+  auto isBiquadStable = [](Real a1, Real a2)
   {
     using Poly = rsPolynomial<Real>;
     bool stable = Poly::areRootsOnOrInsideUnitCircle(a2, a1, 1.0);
@@ -1536,14 +1536,13 @@ bool stateVariableFilterUnitTest4()
   //svf2.setupFromBiquad(b0, b1, b2, a1, a2);
   a1 =  0.8; 
   a2 = -0.4;
-  bool stable = isStable(a1, a2); // is false -> unstable!
+  bool stable = isBiquadStable(a1, a2); // is false -> unstable!
   svf.setupFromBiquad( b0, b1, b2, a1, a2);
   //svf2.setupFromBiquad(b0, b1, b2, a1, a2);
   dummy = 0;
   // ...This hints that the workability of the formulas may have something to do with stability,
   // after all.
   */
-  
   
   // If a1 = 0, the function T(a2) is the parabola -x^2 - 2x - 1  which touches the x-axis at 
   // x = -1. https://www.desmos.com/calculator/ycadkwni7d  So, with a1 = 0, T can never become 
@@ -1598,18 +1597,17 @@ bool stateVariableFilterUnitTest4()
   prng.setRange(-2.0, +2.0);
   for(int n = 0; n < numTests; n++)
   {
-    // Create random biaud coeffs:
-    //Real b0, b1, b2, a1, a2;
+    // Create random biquad coeffs:
     b0 = prng.getSample();
     b1 = prng.getSample();
     b2 = prng.getSample();
     a1 = prng.getSample();
     a2 = prng.getSample();
 
-    // Check that stability implies that the formulas work, i.e. if it's stabel, it should be 
-    // allowed (but not necessarily the other way around, i.e. some unstable biquads may be 
-    // allowed, too):
-    bool stable  = isStable(a1, a2);
+    // Check that stability implies that the formulas work, i.e. if it's stable, it should be 
+    // allowed but not necessarily the other way around, i.e. some unstable biquads may be 
+    // allowed, too:
+    bool stable  = isBiquadStable(a1, a2);
     bool allowed = (a1*a1 - a2*a2 - 2*a2 - 1) < 0.0;
     bool same    = stable == allowed;
     //ok &= same;                       // Nope! Sometimes allowed == true  and  stable == false 
@@ -1619,43 +1617,27 @@ bool stateVariableFilterUnitTest4()
     
     if(allowed)
     {
-      // Set up an SVF from them:
-      svf.setupFromBiquad(b0, b1, b2, a1, a2);
-
-      // Retrieve the biquad coeffs again:
-      //Real b0r, b1r, b2r, a1r, a2r;
+      // Set up an SVF from the biquad coeffs and then retrieve the biquad coeffs again, i.e. make
+      // a DF -> SVF -> DF roundtrip and check that it worked:
+      svf.setupFromBiquad( b0,   b1,   b2,   a1,   a2 );
       svf.convertToBiquad(&b0s, &b1s, &b2s, &a1s, &a2s);
-
       ok &= rsIsCloseTo(b0, b0s, tol);
       ok &= rsIsCloseTo(b1, b1s, tol);
       ok &= rsIsCloseTo(b2, b2s, tol);
       ok &= rsIsCloseTo(a1, a1s, tol);
       ok &= rsIsCloseTo(a2, a2s, tol);
-
-      // It sometimes works and sometimes produces NaN. I guess, we need to switch between the two
-      // solutions based on some condition.
     }
-
-    int dummy = 0;
   }
-
   // It seems the formulas always work for stable biquads. For unstable biquads, they may or may 
   // not work, I think. I think, stability is a sufficient but not necessary condition for the 
-  // formulas to work. When we call  svf.setupFromBiquad(b0, b1, b2, a1, a2);  without first 
-  // checking for stability, we sometimes do and sometimes don't trigger the assertion.
-  // ToDo: Figure out, what the condition really means! Wait! It actually seems that the stability
-  // condition indeed seems to be necessary and sufficient, i.e. (a1*a1 - a2*a2 - 2*a2 - 1) >= 0.0
-  // does indeed happen if and only if the filter is unstable! Verify that! Try to find a 
-  // mathematical argument why T >= 0 means instability. That will give us actually a much simpler
-  // stability test for biquads than the one we currently have. ...Wait - no! When increasing the
-  // range of the prng, we actually do get filters that are unstable but not allowed!
- 
-  // Maybe compare the formulas to the Wishnick formulas
+  // formulas to work. Try to find a mathematical argument why T >= 0 implies instability. Try
+  // to figure out when an unstable filter is realizable by the SVF. Maybe it has to do with the
+  // poles being real? Compare the formulas to the Wishnick formulas.
 
 
 
 
-  // Compare the two way of evaluating H(z)
+  // Compare the two way of evaluating H(z):
 
   tol = 1.e-13;
   svf.setupLowpass(0.5, 4.0);

@@ -152,6 +152,6 @@ Ideas:
  them by clicks on a button. Maybe there should be copy/paste functionality such that the current
  pattern can be copied into a temporary "clipboard" and then pasted into another pattern. There is
  some infrastructure for that in place already.
-
+-Add a row that can lengthen or shorten individual steps - containing a + or - on the GUI
 
 */
