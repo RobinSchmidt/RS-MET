@@ -3,12 +3,24 @@
 - Line width limit is 100 characters. Exceptions are possible when vertical alignment improves
   readability.
 
-- Indentation depth is 2, using spaces.
+- Indentation depth is 2, using spaces. Entering a namespace does not trigger an indentation.
 
-- Names for classes and enums use upper CamelCase.
+- I tend use classes with static functions to create function collections that group together 
+  functions of similar kind (examples: rsArrayTools, rsNormalizedSigmoids, ...). Some prefer a 
+  nested namespace for such a purpose but I'm not a fan of nested namespaces. Somehow, I think of a
+  namespace as being too big of a gun for such a small purpose. There are also still a lot of free 
+  functions that should someday maybe grouped by putting them into such function collection classes.
 
-- Names for (member)functions, variables and enum entries use lowerCamelCase (that's the goal - not 
-  yet realized consistently).
+- Names for classes and free functions should use the rs prefix. Examples: rsLadderFilter, rsExp.
+  Rationale: We want to avoid name clashes when some client codebase uses things like 
+  "using namespace RAPT". Functions often rsExp() are usually zero-cost wrappers around std::exp 
+  etc. but because of the templatized nature, we sometimes need special implementations (which we
+  realize by giving explicit template isntantiations).
+
+- Names for classes and enums should use upper CamelCase.
+
+- Names for member-functions, variables and enum entries should use lowerCamelCase (that's the goal
+  but not yet realized consistently).
 
 - Variable names should be chosen close to common mathematical and scientific notation, where 
   applicable. For example, use "c" rather than "speedOfLight". Well, it depends - the rule should 
@@ -22,6 +34,27 @@
   stuff comes first, then protected, then private. Within the public section, we should generally
   follow the pattern: Lifetime (constructors, destructors, factories), Setup (setters), Inquiry 
   (getters), Processing (getSample(), reset(), noteOn(), ...), ...
+
+- Signal processing classes are often templatized by two template parameters called TSig and TPar
+  which stands for the signal type and parameter type. The rationale is that a filter may use float
+  for the parameter type and something like rsFloat32x4 for this signal type (which is a simd 
+  wrapper class). Such a filter could process 4 streams of signals with the same coefficients. Later
+  we may want to introduce C++20 concepts for signals and parameters. They should be numerical, they
+  should support arithmetic operations like "Signal = Parameter * Signal", etc.
+
+- Functions that are likely to be called per sample should be defined the header file for inlining 
+  (and maybe also be declared as inline or even some sort of "forceinline"). If they are very short, 
+  they can be defined directly in the class. For longer ones, they should be defined below the class 
+  declaration. Functions that are unlikely to be called per sample should generally go into the cpp 
+  file, unless they are very short. If per-sample functions are so long or so expensive that the 
+  function call overhead is negligible compared to the work of the function, they should also go 
+  into the cpp file.
+
+- Member variables should be declared in an order that facilitates alignment, caching and avoids 
+  padding.
+
+- In the low-level code, frequencies should be represented as normalized radian frequencies 
+  omega = 2*pi*freq/sampleRate. That meshes best with the math that we usually do with them.
 
 - Macros should be avoided. Use constants and inlined functions instead wherever possible (not yet 
   realized).
