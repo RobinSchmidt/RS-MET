@@ -1513,6 +1513,7 @@ bool stateVariableFilterUnitTest4()
   };
 
   
+  /*
   // Test biquad roundtrip with carefully chosen coeffs. Problems occur when 
   // T = (a1*a1 - a2*a2 - 2*a2 - 1) is positive. So, let's choose a1 = 2, a2 = 0. 
   // Then T = 4 - 0 - 0 - 1 = 3. For comparison, we also use the old implementation where I have 
@@ -1541,9 +1542,8 @@ bool stateVariableFilterUnitTest4()
   dummy = 0;
   // ...This hints that the workability of the formulas may have something to do with stability,
   // after all.
+  */
   
-
-
   
   // If a1 = 0, the function T(a2) is the parabola -x^2 - 2x - 1  which touches the x-axis at 
   // x = -1. https://www.desmos.com/calculator/ycadkwni7d  So, with a1 = 0, T can never become 
@@ -1591,9 +1591,9 @@ bool stateVariableFilterUnitTest4()
   // The conditions for when it does and doesn't work are the same. 
 
 
-  /*
+  
   // Test biquad roundtrip conversions with random coeffs:
-  int numTests = 1000;
+  int numTests = 100000;
   RAPT::rsNoiseGenerator<Real> prng;
   prng.setRange(-1.0, +1.0);
   for(int n = 0; n < numTests; n++)
@@ -1606,26 +1606,37 @@ bool stateVariableFilterUnitTest4()
     a1 = prng.getSample();
     a2 = prng.getSample();
 
-    // Set up an SVF from them:
-    rsStateVariableFilterMystran2<Real, Real> svf;  // may not be needed - we can use the one from outer scope
-    svf.setupFromBiquad(b0, b1, b2, a1, a2);
+    bool stable = isStable(a1, a2);
 
-    // Retrieve the biquad coeffs again:
-    //Real b0r, b1r, b2r, a1r, a2r;
-    svf.convertToBiquad(&b0s, &b1s, &b2s, &a1s, &a2s);
+    if(stable)
+    {
 
-    ok &= rsIsCloseTo(b0, b0s, tol);
-    ok &= rsIsCloseTo(b1, b1s, tol);
-    ok &= rsIsCloseTo(b2, b2s, tol);
-    ok &= rsIsCloseTo(a1, a1s, tol);
-    ok &= rsIsCloseTo(a2, a2s, tol);
 
-    // It sometimes works and sometimes produces NaN. I guess, we need to switch between the two
-    // solutions based on some condition.
+      // Set up an SVF from them:
+      svf.setupFromBiquad(b0, b1, b2, a1, a2);
+
+      // Retrieve the biquad coeffs again:
+      //Real b0r, b1r, b2r, a1r, a2r;
+      svf.convertToBiquad(&b0s, &b1s, &b2s, &a1s, &a2s);
+
+      ok &= rsIsCloseTo(b0, b0s, tol);
+      ok &= rsIsCloseTo(b1, b1s, tol);
+      ok &= rsIsCloseTo(b2, b2s, tol);
+      ok &= rsIsCloseTo(a1, a1s, tol);
+      ok &= rsIsCloseTo(a2, a2s, tol);
+
+      // It sometimes works and sometimes produces NaN. I guess, we need to switch between the two
+      // solutions based on some condition.
+    }
 
     int dummy = 0;
   }
-  */
+
+  // It seems the formulas always work for stable biquads. For unstable biquads, they may or may 
+  // not work, I think. I think, stability is a sufficient but not necessary condition for the 
+  // formulas to work. When we call  svf.setupFromBiquad(b0, b1, b2, a1, a2);  without first 
+  // checking for stability, we sometimes do and sometimes don't trigger the assertion.
+ 
   // Maybe compare the formulas to the Wishnick formulas
 
 
