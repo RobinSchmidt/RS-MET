@@ -1606,12 +1606,15 @@ bool stateVariableFilterUnitTest4()
     a1 = prng.getSample();
     a2 = prng.getSample();
 
-    bool stable = isStable(a1, a2);
+    bool stable  = isStable(a1, a2);
+    bool allowed = (a1*a1 - a2*a2 - 2*a2 - 1) < 0.0;
+    bool same    = stable == allowed;
+    ok &= same;
+    //
+
 
     if(stable)
     {
-
-
       // Set up an SVF from them:
       svf.setupFromBiquad(b0, b1, b2, a1, a2);
 
@@ -1636,6 +1639,11 @@ bool stateVariableFilterUnitTest4()
   // not work, I think. I think, stability is a sufficient but not necessary condition for the 
   // formulas to work. When we call  svf.setupFromBiquad(b0, b1, b2, a1, a2);  without first 
   // checking for stability, we sometimes do and sometimes don't trigger the assertion.
+  // ToDo: Figure out, what the condition really means! Wait! It actually seems that the stability
+  // condition indeed seems to be necessary and sufficient, i.e. (a1*a1 - a2*a2 - 2*a2 - 1) >= 0.0
+  // does indeed happen if and only if the filter is unstable! Verify that! Try to find a 
+  // mathematical argument why T >= 0 means instability. That will give us actually a much simpler
+  // stability test for biquads than the one we currently have.
  
   // Maybe compare the formulas to the Wishnick formulas
 
