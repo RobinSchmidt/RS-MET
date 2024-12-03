@@ -271,12 +271,12 @@ inline void plotMatrix(const rsMatrix<T>& A, bool asHeatMap = true)  // use cons
 {
   GNUPlotter plt;
 
-  // old:
+  // Old:
   ////plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getDataPointerConst());
   //plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getRowPointer(0));
 
 
-  // new:
+  // New:
   rsMatrix<T> B = A;
   plt.addDataMatrixFlat(B.getNumRows(), B.getNumColumns(), B.getRowPointer(0));
   // This is ugly - we need to make a copy because GNUPlotter is not yet const correct but we want
@@ -284,7 +284,7 @@ inline void plotMatrix(const rsMatrix<T>& A, bool asHeatMap = true)  // use cons
   // data of A directly
   // Strange: If we just write rsMatrix B = ... instead of rsMatrix<T> B = ... we get a compilation 
   // error in the TestsRosicAndRapt project (that's not so strange) but the Experiments project in 
-  // the research codbase builds just fine (that's the strange thing). Maybe the compiler settings
+  // the research codebase builds just fine (that's the strange thing). Maybe the compiler settings
   // for tolerating standard C++ syntax errors are set different there? Maybe with certain 
   // settings, the MS compiler can figure out the template parameters of B in an assignment B = A. 
   // They obviously must be the same as in A - even I can figure them out.

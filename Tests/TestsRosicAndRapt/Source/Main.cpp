@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRapt();
   //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
@@ -171,7 +171,9 @@ int main(int argc, char* argv[])
   //bandSplitFreqResponses();
   //biDirectionalStateInit();
   //biquadDesignVicanek();         // maybe rename to biquadMatchVicanek
-  //biquadTail();
+  biquadStability();
+  biquadTail();
+  //biquadModulation();            // compares modulation properties of various biquad structures
   //brickwallAndAllpass();         // stub
   //complementaryFiltersIIR();
   //engineersFilterRingResp();         // ringing response (experimental idea)
@@ -396,7 +398,7 @@ int main(int argc, char* argv[])
   //sallenKeyFilterSimper();
   //stateVariableFilters();          // Tests with various SVF implementations
   //stateVectorFilter();           // Stub
-  //biquadModulation();            // compares modulation properties of various biquad structures
+
 
   //transistorLadder();    // triggers assert
   //phonoFilterPrototypePlot();

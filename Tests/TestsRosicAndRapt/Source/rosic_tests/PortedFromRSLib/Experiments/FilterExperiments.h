@@ -7,6 +7,7 @@ void biquadResoGainToQ();
 void butterworthEnergy();
 void biDirectionalStateInit();
 void biquadDesignVicanek();
+void biquadStability();
 void biquadTail();
 void biquadModulation();
 void brickwallAndAllpass();

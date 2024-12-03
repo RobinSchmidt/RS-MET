@@ -940,6 +940,65 @@ void biquadDesignVicanek()
   int dummy = 0;
 }
 
+void biquadStability()
+{
+  // We plot the region of stability for biquad filters in the (a1,a2)-plane. We map a1 to the 
+  // x-coordinate and a2 to the y-coordinate. ...TBC...
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+
+  int N     =  51;
+
+  Real xMin = -2.5;
+  Real xMax = +2.5;
+  Real yMin = -2.5;
+  Real yMax = +2.5;
+
+
+
+  // Helper function to test stability of a biquad with denominator coeffs a1, a2:
+  auto isBiquadStable = [](Real a1, Real a2)
+  {
+    using Poly = rsPolynomial<Real>;
+    bool stable = Poly::areRootsOnOrInsideUnitCircle(a2, a1, 1.0);
+    return stable;
+
+    // ToDo: Document why the coeffs must be passed in reverse order. It's because the polynomial 
+    // is in z^-1 rather than z, I think.
+  };
+  // Move to class rsFilterAnalyzer
+
+
+  Vec x = rsLinearRangeVector(N, xMin, xMax);
+  Vec y = rsLinearRangeVector(N, yMin, yMax);
+  rsMatrix<Real> z(N, N);
+  for(int i = 0; i < N; i++)
+    for(int j = 0; j < N; j++)
+      z(i,j) = isBiquadStable(x[i], y[j]);
+
+
+  plotMatrix(z, x, y);
+
+
+
+
+
+
+
+
+
+
+
+  int dummy = 0;
+
+
+  // ToDo:
+  //
+  // - Maybe rename to twoPoleStability. We really only care about the poles here. The zeros are 
+  //   irrelevant
+}
+
 void biquadTail()
 {
   // We check the explicit formula for a biquad tail against the tail computed by the actual 

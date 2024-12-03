@@ -41,25 +41,16 @@ public:
   void setupLowShelf(     TPar omega, TPar Q, TPar A);
   void setupHighShelf(    TPar omega, TPar Q, TPar A);
 
-  /** Sets up the SVF coefficients such that the filter realizes the biquad transfer function 
+  /** Sets up the SVF coefficients such that the filter realizes the biquad transfer function:
 
     H(z) = (b0 + b1*z^-1 + b2*z^-2) / (1 + a1*z^-1 + a2*z^-2). 
-  
+
   However, the formula that is implemented doesn't seem to work for all possible sets of biquad 
-  coeffs. It works only when  (a1*a1 - a2*a2 - 2*a2 - 1) < 0, so it's not recommended to use it 
-  blindly. It may fail. I have not yet figured out why that is and if something can be done to fix
-  it. Maybe not. Maybe there's some inherent limitation in the SVF with regard to what biquads it 
-  can simulate. Be careful! If it fails, it will trigger an rsAssert. */
+  coeffs. It works only when the condition  (a1*a1 - a2*a2 - 2*a2 - 1) < 0  holds true. It appears
+  empirically, that all stable biquads will satisfy this condition. So, the conversion may fail
+  only for (some, not all) unstable biquads. In such a case, the function will trigger a debug 
+  assertion and the filter will be set up to produce a muted output. */
   void setupFromBiquad(TPar b0, TPar b1, TPar b2, TPar a1, TPar a2);
-  // Update:
-  // Empirically, it seems to be the case that whenever a biquad is stable, then the formulas will
-  // work, i.e. stability implies workability but not necessarily the other way around. That means,
-  // there might be some unstable biquads that the SVF can also realize. Stability seems to be a
-  // sufficient but not necessary condition for the formulas to work. So, for the filters that we 
-  // usually care about, namely the stable ones, the formulas should be fine. Some more thorough 
-  // research should be done on this, though. I once tried it with a billion random biquads. The 
-  // unit test does only 1000 because it needs to be fast, but I once did the test with a billion
-  // and it still passed.
 
 
   //-----------------------------------------------------------------------------------------------

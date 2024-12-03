@@ -1632,9 +1632,13 @@ bool stateVariableFilterUnitTest4()
   // not work, I think. I think, stability is a sufficient but not necessary condition for the 
   // formulas to work. Try to find a mathematical argument why T >= 0 implies instability. Try
   // to figure out when an unstable filter is realizable by the SVF. Maybe it has to do with the
-  // poles being real? Compare the formulas to the Wishnick formulas.
-
-
+  // poles being real? Compare the formulas to the Wishnick formulas. I once tried it with 
+  // numTests = 1000000000, i.e. one billion random biquads. The unit test does only 1000 because 
+  // it needs to be fast, but I once did the test with a billion and it still passed. So, we have 
+  // strong empirical evidence that stability implies convertibility. A mathematical proof would be
+  // better, though. So, try to find one!
+  // Try drawing the regions of stability and convertibility in the a1, a2 plane, i.e. use a1 = x, 
+  // a2 = y.
 
 
   // Compare the two way of evaluating H(z):
