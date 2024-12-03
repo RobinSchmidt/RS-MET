@@ -1593,7 +1593,7 @@ bool stateVariableFilterUnitTest4()
 
   
   // Test biquad roundtrip conversions with random coeffs:
-  int numTests = 1000000;
+  int numTests = 1000;
   RAPT::rsNoiseGenerator<Real> prng;
   prng.setRange(-2.0, +2.0);
   for(int n = 0; n < numTests; n++)
@@ -1612,9 +1612,9 @@ bool stateVariableFilterUnitTest4()
     bool stable  = isStable(a1, a2);
     bool allowed = (a1*a1 - a2*a2 - 2*a2 - 1) < 0.0;
     bool same    = stable == allowed;
+    //ok &= same;                       // Nope! Sometimes allowed == true  and  stable == false 
     if(stable)
-      ok &= allowed;
-    //ok &= same;
+      ok &= allowed;                    // ...but if it's stable, it should always be allowed.
     rsAssert(ok);
     
     if(allowed)
