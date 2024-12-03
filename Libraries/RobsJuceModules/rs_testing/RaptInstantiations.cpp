@@ -269,6 +269,11 @@ template void RAPT::rsPolynomial<float>::rootsCubicComplex(
 template void RAPT::rsPolynomial<std::complex<double>>::roots(
   const std::complex<double>* a, int degree, std::complex<double>* roots);
 
+template bool rsPolynomial<double>::areRootsOnOrInsideUnitCircle(
+  const double& a0, const double& a1, const double& a2);
+  // Used in stateVariableFilterUnitTest4()
+
+
 // ToDo: Verify, if they are still needed. Document why they are needed.
 
 

@@ -1137,16 +1137,16 @@ bool stateVariableFilterUnitTest4()
 
   // Test if outputs match the Simper SVF:
   Real tol = 1.e-13;
-  ok &= runImpRespTest(Mode::Bypass,        1000.0, 5.0, 0.0, tol);
-  ok &= runImpRespTest(Mode::Lowpass,       1000.0, 5.0, 0.0, tol);
-  ok &= runImpRespTest(Mode::Highpass,      1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::Bypass, 1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::Lowpass, 1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::Highpass, 1000.0, 5.0, 0.0, tol);
   ok &= runImpRespTest(Mode::BandpassSkirt, 1000.0, 5.0, 0.0, tol);
-  ok &= runImpRespTest(Mode::BandpassPeak,  1000.0, 5.0, 0.0, tol);
-  ok &= runImpRespTest(Mode::Notch,         1000.0, 5.0, 0.0, tol);
-  ok &= runImpRespTest(Mode::Allpass,       1000.0, 5.0, 0.0, tol);
-  ok &= runImpRespTest(Mode::Bell,          1000.0, 5.0, 8.0, tol);
-  ok &= runImpRespTest(Mode::LowShelf,      1000.0, 5.0, 8.0, tol);
-  ok &= runImpRespTest(Mode::HighShelf,     1000.0, 5.0, 8.0, tol);
+  ok &= runImpRespTest(Mode::BandpassPeak, 1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::Notch, 1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::Allpass, 1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::Bell, 1000.0, 5.0, 8.0, tol);
+  ok &= runImpRespTest(Mode::LowShelf, 1000.0, 5.0, 8.0, tol);
+  ok &= runImpRespTest(Mode::HighShelf, 1000.0, 5.0, 8.0, tol);
 
 
   // Test the inquiry functions
@@ -1340,15 +1340,15 @@ bool stateVariableFilterUnitTest4()
   };
 
   tol = 1.e-13;
-  ok &= runBiquadConversionTest(Mode::Lowpass,       1000, 8.0, 0.0, tol);
-  ok &= runBiquadConversionTest(Mode::Highpass,      1000, 8.0, 0.0, tol);
+  ok &= runBiquadConversionTest(Mode::Lowpass, 1000, 8.0, 0.0, tol);
+  ok &= runBiquadConversionTest(Mode::Highpass, 1000, 8.0, 0.0, tol);
   ok &= runBiquadConversionTest(Mode::BandpassSkirt, 1000, 8.0, 0.0, tol);
-  ok &= runBiquadConversionTest(Mode::BandpassPeak,  1000, 8.0, 0.0, tol);
-  ok &= runBiquadConversionTest(Mode::Notch,         1000, 8.0, 0.0, tol);
-  ok &= runBiquadConversionTest(Mode::Allpass,       1000, 8.0, 0.0, tol);
-  ok &= runBiquadConversionTest(Mode::Bell,          1000, 8.0, 6.0, tol);
-  ok &= runBiquadConversionTest(Mode::LowShelf,      1000, 8.0, 6.0, tol);
-  ok &= runBiquadConversionTest(Mode::HighShelf,     1000, 8.0, 6.0, tol);
+  ok &= runBiquadConversionTest(Mode::BandpassPeak, 1000, 8.0, 0.0, tol);
+  ok &= runBiquadConversionTest(Mode::Notch, 1000, 8.0, 0.0, tol);
+  ok &= runBiquadConversionTest(Mode::Allpass, 1000, 8.0, 0.0, tol);
+  ok &= runBiquadConversionTest(Mode::Bell, 1000, 8.0, 6.0, tol);
+  ok &= runBiquadConversionTest(Mode::LowShelf, 1000, 8.0, 6.0, tol);
+  ok &= runBiquadConversionTest(Mode::HighShelf, 1000, 8.0, 6.0, tol);
 
 
 
@@ -1358,7 +1358,7 @@ bool stateVariableFilterUnitTest4()
 
   // Helper function to design a cookbook biquad. We need this to produce the reference magnitude 
   // responses
-  auto designBiquad = [&](Mode mode, Real freq, Real Q, Real gainDb, 
+  auto designBiquad = [&](Mode mode, Real freq, Real Q, Real gainDb,
     Real& b0, Real& b1, Real& b2, Real& a1, Real& a2)
   {
     Real A = rsDbToAmp(gainDb);
@@ -1366,24 +1366,24 @@ bool stateVariableFilterUnitTest4()
     Real fsr = 1/sampleRate;
     switch(mode)
     {
-    case Mode::Lowpass: 
+    case Mode::Lowpass:
       BD::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, fsr, freq, Q); break;
-    case Mode::Highpass: 
+    case Mode::Highpass:
       BD::calculateCookbookHighpassCoeffs(b0, b1, b2, a1, a2, fsr, freq, Q); break;
-    case Mode::BandpassSkirt: 
+    case Mode::BandpassSkirt:
       BD::calculateCookbookBandpassConstSkirtCoeffsViaQ(b0, b1, b2, a1, a2, fsr, freq, Q); break;
     //case Mode::BandpassPeak: 
     //  BD::calculateCookbookBandpassConstPeakCoeffsViaQ(b0, b1, b2, a1, a2, fsr, freq, Q); break;
     //  ...such a function does not exist - maybe we should add it.
-    case Mode::Notch: 
+    case Mode::Notch:
       BD::calculateCookbookBandrejectCoeffsViaQ(b0, b1, b2, a1, a2, fsr, freq, Q); break;
-    case Mode::Allpass: 
+    case Mode::Allpass:
       BD::calculateCookbookAllpassCoeffs(b0, b1, b2, a1, a2, fsr, freq, Q); break;
-    case Mode::Bell: 
+    case Mode::Bell:
       BD::calculateCookbookPeakFilterCoeffsViaQ(b0, b1, b2, a1, a2, fsr, freq, Q, A); break;
     };
   };
-  
+
   // Helper function to compare the calculated transfer functions between the SVF and some 
   // reference filter
   auto runTransferFuncTest = [&](Mode mode, Real freq, Real Q, Real gainDb, Real tol)
@@ -1426,12 +1426,12 @@ bool stateVariableFilterUnitTest4()
 
   N = 1024;
   tol = 1.e-9;
-  ok &= runTransferFuncTest(Mode::Lowpass,       1000, 8.0, 0.0, 1.e-9);
-  ok &= runTransferFuncTest(Mode::Highpass,      1000, 8.0, 0.0, 1.e-6);
+  ok &= runTransferFuncTest(Mode::Lowpass, 1000, 8.0, 0.0, 1.e-9);
+  ok &= runTransferFuncTest(Mode::Highpass, 1000, 8.0, 0.0, 1.e-6);
   ok &= runTransferFuncTest(Mode::BandpassSkirt, 1000, 8.0, 0.0, 1.e-9);
   //ok &= runTransferFuncTest(Mode::BandpassPeak,  1000, 8.0, 0.0, tol); // Not implemented
-  ok &= runTransferFuncTest(Mode::Notch,         1000, 8.0, 0.0, 1.e-10);
-  ok &= runTransferFuncTest(Mode::Allpass,       1000, 8.0, 0.0, 1.e-12);
+  ok &= runTransferFuncTest(Mode::Notch, 1000, 8.0, 0.0, 1.e-10);
+  ok &= runTransferFuncTest(Mode::Allpass, 1000, 8.0, 0.0, 1.e-12);
 
   //ok &= runTransferFuncTest(Mode::Bell,          1000, 8.0, 6.0, 1.e-10); // Fails!
   // One of the filters has the wrong gain. I think, it's the old one. Is this parameterized
@@ -1447,44 +1447,44 @@ bool stateVariableFilterUnitTest4()
   // of the runTest() functions):
 
   // Test the conversion to biquad coeffs:
-  Real b0,  b1,  b2,  a1,  a2;
+  Real b0, b1, b2, a1, a2;
   Real b0s, b1s, b2s, a1s, a2s;
   tol = 1.e-12;
 
   designBiquad(Mode::Lowpass, 1000, 5, 0, b0, b1, b2, a1, a2);
   svf.setupLowpass(2*PI*1000/sampleRate, 5);
-  svf.convertToBiquad(&b0s, &b1s, &b2s, &a1s, &a2s); 
-  ok &= rsIsCloseTo( b0, b0s, tol);
-  ok &= rsIsCloseTo( b1, b1s, tol);
-  ok &= rsIsCloseTo( b2, b2s, tol);
+  svf.convertToBiquad(&b0s, &b1s, &b2s, &a1s, &a2s);
+  ok &= rsIsCloseTo(b0, b0s, tol);
+  ok &= rsIsCloseTo(b1, b1s, tol);
+  ok &= rsIsCloseTo(b2, b2s, tol);
   ok &= rsIsCloseTo(-a1, a1s, tol);
   ok &= rsIsCloseTo(-a2, a2s, tol);
   // The a-coeffs have a different sign but that's ok. The old code uses the other sign convention.
 
   designBiquad(Mode::BandpassSkirt, 1000, 5, 0, b0, b1, b2, a1, a2);
   svf.setupBandpassSkirt(2*PI*1000/sampleRate, 5);
-  svf.convertToBiquad(&b0s, &b1s, &b2s, &a1s, &a2s); 
-  ok &= rsIsCloseTo( b0, b0s, tol);
-  ok &= rsIsCloseTo( b1, b1s, tol);
-  ok &= rsIsCloseTo( b2, b2s, tol);
+  svf.convertToBiquad(&b0s, &b1s, &b2s, &a1s, &a2s);
+  ok &= rsIsCloseTo(b0, b0s, tol);
+  ok &= rsIsCloseTo(b1, b1s, tol);
+  ok &= rsIsCloseTo(b2, b2s, tol);
   ok &= rsIsCloseTo(-a1, a1s, tol);
   ok &= rsIsCloseTo(-a2, a2s, tol);
 
   designBiquad(Mode::Highpass, 1000, 5, 0, b0, b1, b2, a1, a2);
   svf.setupHighpass(2*PI*1000/sampleRate, 5);
-  svf.convertToBiquad(&b0s, &b1s, &b2s, &a1s, &a2s); 
-  ok &= rsIsCloseTo( b0, b0s, tol);
-  ok &= rsIsCloseTo( b1, b1s, tol);
-  ok &= rsIsCloseTo( b2, b2s, tol);
+  svf.convertToBiquad(&b0s, &b1s, &b2s, &a1s, &a2s);
+  ok &= rsIsCloseTo(b0, b0s, tol);
+  ok &= rsIsCloseTo(b1, b1s, tol);
+  ok &= rsIsCloseTo(b2, b2s, tol);
   ok &= rsIsCloseTo(-a1, a1s, tol);
   ok &= rsIsCloseTo(-a2, a2s, tol);
 
   designBiquad(Mode::Notch, 1000, 5, 0, b0, b1, b2, a1, a2);
   svf.setupBandstop(2*PI*1000/sampleRate, 5);
-  svf.convertToBiquad(&b0s, &b1s, &b2s, &a1s, &a2s); 
-  ok &= rsIsCloseTo( b0, b0s, tol);
-  ok &= rsIsCloseTo( b1, b1s, tol);
-  ok &= rsIsCloseTo( b2, b2s, tol);
+  svf.convertToBiquad(&b0s, &b1s, &b2s, &a1s, &a2s);
+  ok &= rsIsCloseTo(b0, b0s, tol);
+  ok &= rsIsCloseTo(b1, b1s, tol);
+  ok &= rsIsCloseTo(b2, b2s, tol);
   ok &= rsIsCloseTo(-a1, a1s, tol);
   ok &= rsIsCloseTo(-a2, a2s, tol);
 
@@ -1501,7 +1501,18 @@ bool stateVariableFilterUnitTest4()
   //// old code may have a bug or my use a different parametrization
 
 
-  /*  
+  // Helper function to test stability of a biquad with denominator coeffs a1, a2:
+  auto isStable = [](Real a1, Real a2)
+  {
+    using Poly = rsPolynomial<Real>;
+    bool stable = Poly::areRootsOnOrInsideUnitCircle(a2, a1, 1.0);
+    return stable;
+
+    // ToDo: Document why the coeffs must be passed in reverse order. It's because the polynomial 
+    // is in z^-1 rather than z, I think.
+  };
+
+  
   // Test biquad roundtrip with carefully chosen coeffs. Problems occur when 
   // T = (a1*a1 - a2*a2 - 2*a2 - 1) is positive. So, let's choose a1 = 2, a2 = 0. 
   // Then T = 4 - 0 - 0 - 1 = 3. For comparison, we also use the old implementation where I have 
@@ -1516,14 +1527,23 @@ bool stateVariableFilterUnitTest4()
   a1 =  0.5;
   a2 = -0.75;
   T  = (a1*a1 - a2*a2 - 2*a2 - 1);
-  svf.setupFromBiquad( b0, b1, b2, a1, a2);
-  svf2.setupFromBiquad(b0, b1, b2, a1, a2);  // This implements the Wishnick formulas
+  //svf.setupFromBiquad( b0, b1, b2, a1, a2);
+  //svf2.setupFromBiquad(b0, b1, b2, a1, a2);  // This implements the Wishnick formulas
   a1 = 2.0; 
   a2 = 0.0;
+  //svf.setupFromBiquad( b0, b1, b2, a1, a2);
+  //svf2.setupFromBiquad(b0, b1, b2, a1, a2);
+  a1 =  0.8; 
+  a2 = -0.4;
+  bool stable = isStable(a1, a2); // is false -> unstable!
   svf.setupFromBiquad( b0, b1, b2, a1, a2);
-  svf2.setupFromBiquad(b0, b1, b2, a1, a2);
-  */
+  //svf2.setupFromBiquad(b0, b1, b2, a1, a2);
+  dummy = 0;
+  // ...This hints that the workability of the formulas may have something to do with stability,
+  // after all.
   
+
+
   
   // If a1 = 0, the function T(a2) is the parabola -x^2 - 2x - 1  which touches the x-axis at 
   // x = -1. https://www.desmos.com/calculator/ycadkwni7d  So, with a1 = 0, T can never become 
