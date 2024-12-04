@@ -1594,7 +1594,9 @@ bool stateVariableFilterUnitTest4()
   // Test biquad roundtrip conversions with random coeffs:
   int numTests = 1000;
   RAPT::rsNoiseGenerator<Real> prng;
-  prng.setRange(-2.0, +2.0);
+  prng.setRange(-2.5, +2.5);
+  int numStable  = 0;
+  int numAllowed = 0;
   for(int n = 0; n < numTests; n++)
   {
     // Create random biquad coeffs:
@@ -1609,11 +1611,11 @@ bool stateVariableFilterUnitTest4()
     // allowed, too:
     bool stable  = isBiquadStable(a1, a2);
     bool allowed = (a1*a1 - a2*a2 - 2*a2 - 1) < 0.0;
-    bool same    = stable == allowed;
-    //ok &= same;                       // Nope! Sometimes allowed == true  and  stable == false 
     if(stable)
-      ok &= allowed;                    // ...but if it's stable, it should always be allowed.
-    rsAssert(ok);
+    {
+      numStable++;
+      ok &= allowed;                    // If it's stable, it should always be allowed.
+    }
     
     if(allowed)
     {
@@ -1626,6 +1628,7 @@ bool stateVariableFilterUnitTest4()
       ok &= rsIsCloseTo(b2, b2s, tol);
       ok &= rsIsCloseTo(a1, a1s, tol);
       ok &= rsIsCloseTo(a2, a2s, tol);
+      numAllowed++;
     }
   }
   // It seems the formulas always work for stable biquads. For unstable biquads, they may or may 
@@ -1639,6 +1642,11 @@ bool stateVariableFilterUnitTest4()
   // better, though. So, try to find one!
   // Try drawing the regions of stability and convertibility in the a1, a2 plane, i.e. use a1 = x, 
   // a2 = y.
+  //
+  // In the biquadStability() experiment, it turned out that stable biquads lie in a triangle. We 
+  // use a random range of -2.5...+2.5 that contains this triangle and has a bit of margin. With
+  // numTests = 1000, we end up with numStable = 168 and numAllowed = 528. So we get 528 allowed
+  // filters and 168 stable biquads with these settings.
 
 
   // Compare the two way of evaluating H(z):

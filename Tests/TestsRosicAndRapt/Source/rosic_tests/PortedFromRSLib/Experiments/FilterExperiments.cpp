@@ -979,9 +979,9 @@ void biquadStability()
 
 
 
+  // Create and plot the data:
   Vec x = rsLinearRangeVector(N, xMin, xMax);
   Vec y = rsLinearRangeVector(N, yMin, yMax);
-
 
   Mat stable(N, N);
   for(int i = 0; i < N; i++)
@@ -1009,13 +1009,18 @@ void biquadStability()
   // Conclusions:
   //
   // - The convertible filters are a superset of the stable filters. That means all stable filters
-  //   are convertible to SVF and some unstable ones are also convertible to SVF.
+  //   are convertible to SVF and some unstable ones are also convertible to SVF. That's good! We 
+  //   don't really need to worry too much about rsStateVariableFilter::setupFromBiquad() to fail.
+  //   It will happen only for some unstable biquads - not even for all of them.
   //
   //
   // ToDo:
   //
   // - Maybe rename to twoPoleStability. We really only care about the poles here. The zeros are 
   //   irrelevant
+  //
+  // - Maybe use the observed fact that stable biquads lie in a triangle to simplify the 
+  //   implementation of the stability test. 
 }
 
 void biquadTail()

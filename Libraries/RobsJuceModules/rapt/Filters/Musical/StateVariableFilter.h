@@ -46,10 +46,10 @@ public:
     H(z) = (b0 + b1*z^-1 + b2*z^-2) / (1 + a1*z^-1 + a2*z^-2). 
 
   However, the formula that is implemented doesn't seem to work for all possible sets of biquad 
-  coeffs. It works only when the condition  (a1*a1 - a2*a2 - 2*a2 - 1) < 0  holds true. It appears
-  empirically, that all stable biquads will satisfy this condition. So, the conversion may fail
-  only for (some, not all) unstable biquads. In such a case, the function will trigger a debug 
-  assertion and the filter will be set up to produce a muted output. */
+  coeffs. It works only when the condition  (a1*a1 - a2*a2 - 2*a2 - 1) < 0  holds true. All stable 
+  biquads satisfy this condition (and some unstable ones also do). So, the conversion may fail only
+  for (some, not all) unstable biquads. In such a case, the function will trigger a debug assertion
+  and the filter will be set up to produce a muted output. */
   void setupFromBiquad(TPar b0, TPar b1, TPar b2, TPar a1, TPar a2);
 
 
