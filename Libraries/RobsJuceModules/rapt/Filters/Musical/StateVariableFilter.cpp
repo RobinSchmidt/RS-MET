@@ -50,6 +50,11 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   //   instead of 5 (not counting the one in s = ..., because that's unaffected). Hmm - I tried but
   //   it doesn't seem to work -> check the math! Wait: I think, the computation of S still needs
   //   the reciprocation - but then we would save only one division, I think.
+  //
+  // - What about those biquads that have poles exactly on the unit circle? I guess, those are the
+  //   ones with T = 0? Can we realize them, too? Filters with poles on the unit circle can be 
+  //   useful as sinusoidal oscillators. Maybe set up some tests with bandpasses with very high Q.
+  //   Check what happens to the coefficients.
 }
 
 template<class TSig, class TPar>
@@ -134,7 +139,8 @@ ToDo:
   types. I think, these make only use of the first filter/integrator stage. Having these modes 
   available in a class for a 2nd order filter can be convenient when a multimode filter should 
   also provide these 1st order modes but one doesn't want to dispatch to a different filter object 
-  for getting them.
+  for getting them. Try also to realize a 2-pole resonator. Maybe that's what the "peak" mode in 
+  Andy Simper's SVF is?
 
 - Figure out how to morph between LP/BP/HP, LP/AP/HP, LS/PK/HS, ...
 
