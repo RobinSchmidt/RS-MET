@@ -1137,16 +1137,16 @@ bool stateVariableFilterUnitTest4()
 
   // Test if outputs match the Simper SVF:
   Real tol = 1.e-13;
-  ok &= runImpRespTest(Mode::Bypass, 1000.0, 5.0, 0.0, tol);
-  ok &= runImpRespTest(Mode::Lowpass, 1000.0, 5.0, 0.0, tol);
-  ok &= runImpRespTest(Mode::Highpass, 1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::Bypass,        1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::Lowpass,       1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::Highpass,      1000.0, 5.0, 0.0, tol);
   ok &= runImpRespTest(Mode::BandpassSkirt, 1000.0, 5.0, 0.0, tol);
-  ok &= runImpRespTest(Mode::BandpassPeak, 1000.0, 5.0, 0.0, tol);
-  ok &= runImpRespTest(Mode::Notch, 1000.0, 5.0, 0.0, tol);
-  ok &= runImpRespTest(Mode::Allpass, 1000.0, 5.0, 0.0, tol);
-  ok &= runImpRespTest(Mode::Bell, 1000.0, 5.0, 8.0, tol);
-  ok &= runImpRespTest(Mode::LowShelf, 1000.0, 5.0, 8.0, tol);
-  ok &= runImpRespTest(Mode::HighShelf, 1000.0, 5.0, 8.0, tol);
+  ok &= runImpRespTest(Mode::BandpassPeak,  1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::Notch,         1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::Allpass,       1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::Bell,          1000.0, 5.0, 8.0, tol);
+  ok &= runImpRespTest(Mode::LowShelf,      1000.0, 5.0, 8.0, tol);
+  ok &= runImpRespTest(Mode::HighShelf,     1000.0, 5.0, 8.0, tol);
 
 
   // Test the inquiry functions
@@ -1667,12 +1667,26 @@ bool stateVariableFilterUnitTest4()
   H2 = svf.getTransferFunctionAt(z);
   ok &= rsAbs(H2 - H1) <= tol;
 
+
+  // Try to make a sine oscillator using filters with infinite Q:
+  Real inf = RS_INF(Real);
+  svf.setupBandpassSkirt(0.1, inf);
+  plotImpulseResponse(svf, 500, 1.0);
+  // Looks ok but has a gain of w = 0.1 rather than 1.0, so the output needs to be scaled by 1/w.
+  // What about the start phase? The output starts at 0 but then immediately jumps up to a cosine
+  // phase. Maybe to achieve a desired start phase, we need to init the integrator states 
+  // accordingly. Try switching the frequency in the middle of the signal.
+
+
+
   rsAssert(ok);
   return ok;
 
   // ToDo:
   //
   // - Figure out why the runTransferFuncTest(Mode::Bell, ..) fails. Test also shelving filters.
+  //
+  // - Try creating filters with infinite Q and roundtrip the coeffs through a biquad.
 }
 
 bool stateVariableFilterUnitTest()
