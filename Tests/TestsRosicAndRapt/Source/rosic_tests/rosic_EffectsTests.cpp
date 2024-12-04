@@ -1088,7 +1088,7 @@ bool rotes::testFastGeneralizedHadamardTransform()
 {
   // ToDo: move the old implementation FDN::fastGeneralizedHadamardTransform into prototypes..maybe
   // it can eventually be deleted completely when it's clear that the new implementation does
-  // the smae thing and is more efficient
+  // the smae thing and is more efficient. Renam to testFastKroneckerTransform
 
   bool ok = true;
 
