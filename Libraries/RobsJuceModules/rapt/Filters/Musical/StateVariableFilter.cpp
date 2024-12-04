@@ -189,4 +189,8 @@ ToDo:
 - Maybe rename the occurences of variable r to R2 = 2*R to make the naming consistent with Vadim's 
   book.
 
+- Try to implement a function setupFromAnalogBiquad. The goal is to realize a filter with s-domain
+  transfer function H(s) = (B0 + B1*s + B2*s^2) / (A0 + A1*s + A2*s^2) maybe normalized to A0 = 1.
+  It may use BLT or MZT - or maybe we should have two separate functions for these purposes.
+
 */
