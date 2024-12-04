@@ -643,13 +643,15 @@ int main(int argc, char* argv[])
   //testWindowFunctions();
   //testInterpolation();
 
-  // Effects:
-  //allpassDisperser();                  // Maybe rename to allpassDiffusor
-  //allpassDelay();
-  //allpassDelayChain();
-  //allpassDelayChainVsNest();
+  // Reverb:
+  allpassDisperser();                  // Maybe rename to allpassDiffusor
+  allpassDelay();
+  allpassDelayChain();
+  allpassDelayChainVsNest();
   feedbackDelayNetwork();            // writes wave file
   algoVerb();                        // writes wave file
+
+  // Spectral effects:
   //spectralFilter();                  // Maybe move into a file for spectral processors
   //formantShifter();
   //spectralShifter();
