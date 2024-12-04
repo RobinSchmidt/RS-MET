@@ -260,6 +260,10 @@ https://github.com/DISTRHO/DISTRHO-Ports
 -open source project with the goal of making cross-platform audio plugins and GNU/Linux + LV2 ports.
 -Includes Vitalium: https://github.com/DISTRHO/DISTRHO-Ports/tree/master/ports-juce6.0/vitalium
 
+Dplug:
+https://github.com/AuburnSounds/Dplug
+-Plug-in Framework for D programming language
+
 SA-Toolkit:
 https://github.com/skei/SA_Toolkit
 -Plugin framework by Tor Helge Skei
