@@ -188,7 +188,7 @@ void rsStateVariableFilter<TSig, TPar>::setupBandpassSkirt(TPar w, TPar Q)
   // H(s) = s / (s^2 + s/Q + 1)   (constant skirt gain, peak gain = Q)
 
   TPar r = 1/Q;
-  g  = tan(0.5*w); 
+  g  = tan(0.5*w);
   c  = g + r;
   s  = 1 / (1 + g*c);
   aL = 0;

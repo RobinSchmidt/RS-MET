@@ -54,7 +54,9 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   // - What about those biquads that have poles exactly on the unit circle? I guess, those are the
   //   ones with T = 0? Can we realize them, too? Filters with poles on the unit circle can be 
   //   useful as sinusoidal oscillators. Maybe set up some tests with bandpasses with very high Q.
-  //   Check what happens to the coefficients.
+  //   Check what happens to the coefficients. Using setupBandpassSkirt(TPar w, TPar Q) with 
+  //   infinite Q should lead to r = 0; c = g; s = 1/(1+g^2); That looks reasonable. Try it! Maybe
+  //   try also lowpass and highpass with infinite Q.
 }
 
 template<class TSig, class TPar>
