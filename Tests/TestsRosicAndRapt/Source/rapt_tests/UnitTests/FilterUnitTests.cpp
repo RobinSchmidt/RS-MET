@@ -1671,12 +1671,14 @@ bool stateVariableFilterUnitTest4()
   // Try to make a sine oscillator using filters with infinite Q:
   Real inf = RS_INF(Real);
   svf.setupBandpassSkirt(0.1, inf);
-  plotImpulseResponse(svf, 500, 1.0);
+  //plotImpulseResponse(svf, 500, 1.0);
   // Looks ok but has a gain of w = 0.1 rather than 1.0, so the output needs to be scaled by 1/w.
   // What about the start phase? The output starts at 0 but then immediately jumps up to a cosine
   // phase. Maybe to achieve a desired start phase, we need to init the integrator states 
   // accordingly. Try switching the frequency in the middle of the signal.
 
+  svf.convertToBiquad(&b0, &b1, &b2, &a1, &a2);  // a2 == 1
+  svf.setupFromBiquad( b0,  b1,  b2,  a1,  a2);
 
 
   rsAssert(ok);
