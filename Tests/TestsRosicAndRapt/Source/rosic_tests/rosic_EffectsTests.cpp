@@ -1254,44 +1254,71 @@ bool rotes::feedbackDelayNetwork()
   delete[] hR;
   return result;
 
-  // Observations:
-  // -With diffusion set to 100, we indeed get some sort of exponentially decaying white noise, as
-  //  it should be
-  // -with D=200, the left channel is generally louder than the right - maybe our output vector
-  //  is bad for the given distribution of delaytimes? if no soultion can be found, we can also
-  //  just use the two output channels as mid and side wet signal...that might be a good idea 
-  //  anyway because it makes the whole thing more robust aginst such things...and then we can also
-  //  adjust the gain for mid/side separately
-  // -The diffusion parameter seems to need a nonlinear mapping that gives more precision towards
-  //  higher values - between D=60 and D=100, there is not so much difference
 
+  // Observations:
+  //
+  // - With diffusion set to 100, we indeed get some sort of exponentially decaying white noise, as
+  //   it should be
+  //
+  // - with D=200, the left channel is generally louder than the right - maybe our output vector
+  //   is bad for the given distribution of delaytimes? if no soultion can be found, we can also
+  //   just use the two output channels as mid and side wet signal...that might be a good idea 
+  //   anyway because it makes the whole thing more robust aginst such things...and then we can 
+  //   also adjust the gain for mid/side separately
+  //
+  // - The diffusion parameter seems to need a nonlinear mapping that gives more precision towards
+  //   higher values - between D=60 and D=100, there is not so much difference
+  //
+  //
   // ToDo:
-  // -Figure out the distribution of the noise (we need an infinite decay-time for this). It is 
-  //  written in the literature that exponentially decaying Gaussian white noise sounds best for
-  //  a reverb impulse response. Figure out, if it is indeed Gaussian. Maybe it's an Irwin-Hall 
-  //  distribution of order equal to the number of the delaylines? That would seem to make some 
-  //  sense.
-  // -Maybe we can render Gaussian white noise impulse responses with time-variant slope filters
-  //  whose slope increases over time. Maybe we can make a convolution reverb that internally 
-  //  renders impulse response according to that idea.
-  // -Try diffusion less than zero and greater than 100
-  // -modulate the diffusion, using a filtered (and maybe levelled) version of the output signal
-  // -make an APE project to experiment with the algo and its parameters
-  // -figure out the amplitude distribution of the white noise when decay time is infinite
-  //  is it Gaussian? if not, can we make it so, maybe by adding outputs of multiple FDNs with
-  //  different settings? or maybe just some low order allpass filter could do the job? -> figure
-  //  out, what an allpass does to the amplitude distribution of uniform white noise and/or
-  //  look at the impulse response
-  // -Try running two networks in parallel with exact same settings except for the reverb time. 
-  //  That allows us to mix two different exponential decays for early and late stage and mix them
-  //  to taste, similar to the way it is done withe modal filters. If done via SIMD, it doesn't 
-  //  even need to make the processing much more expensive. the ratio of both outputs can be used 
-  //  to measure time which in turn can be used to further shape the envelope
-  // -Try to use a different set of a,b,c,d parameters in the kronekcer trafe for each level, i.e.
-  //  a different diffusion coeff for each level. Figure out, what difference it makes if high
-  //  coeffs are at lower or higher levels. Maybe define 2 2x2 matrices M1 = a1,b1,c1,d1 and 
-  //  M2 = a2,b2,c2,d2 and visualize their Kronecker products kron(M1,M2) and kron(M2,M1) as 
-  //  heatmaps
+  //
+  // - Figure out the distribution of the noise (we need an infinite decay-time for this). It is 
+  //   written in the literature that exponentially decaying Gaussian white noise sounds best for
+  //   a reverb impulse response. Figure out, if it is indeed Gaussian. Maybe it's an Irwin-Hall 
+  //   distribution of order equal to the number of the delaylines? That would seem to make some 
+  //   sense.
+  //
+  // - Maybe we can render Gaussian white noise impulse responses with time-variant slope filters
+  //   whose slope increases over time. Maybe we can make a convolution reverb that internally 
+  //   renders impulse response according to that idea.
+  //
+  // - Try diffusion less than zero and greater than 100
+  //
+  // - Modulate the diffusion, using a filtered (and maybe levelled) version of the output signal.
+  //   Maybe the input should be turned into noise before using something like 
+  //   noise = k * fmod(x, k) for some smallish number k.
+  //
+  // - Make an APE project to experiment with the algo and its parameters
+  //
+  // - Figure out the amplitude distribution of the white noise when decay time is infinite
+  //   is it Gaussian? if not, can we make it so, maybe by adding outputs of multiple FDNs with
+  //   different settings? or maybe just some low order allpass filter could do the job? -> figure
+  //   out, what an allpass does to the amplitude distribution of uniform white noise and/or
+  //   look at the impulse response
+  //
+  // - Try running two networks in parallel with exact same settings except for the reverb time. 
+  //   That allows us to mix two different exponential decays for early and late stage and mix them
+  //   to taste, similar to the way it is done withe modal filters. If done via SIMD, it doesn't 
+  //   even need to make the processing much more expensive. the ratio of both outputs can be used 
+  //   to measure time which in turn can be used to further shape the envelope
+  //
+  // - Try to use a different set of a,b,c,d parameters in the Kronecker trafo for each level, i.e.
+  //   a different diffusion coeff for each level. Figure out, what difference it makes if high
+  //   coeffs are at lower or higher levels. Maybe define 2 2x2 matrices M1 = a1,b1,c1,d1 and 
+  //   M2 = a2,b2,c2,d2 and visualize their Kronecker products kron(M1,M2) and kron(M2,M1) as 
+  //   heatmaps
+  //
+  // - Try a wide distribution of delayline lengths (say 10ms...100ms) and let them be sorted by 
+  //   length. Then when using a small scattering parameter in the fast Kronecker trafo (FKT), 
+  //   short delayines would primarialy feed into other short delaylines and long ones into long 
+  //   ones because the feedback matrix would be dominated by the main diagonal. But if we include
+  //   a reversal step after (or before) the FKT, then the short delaylines would feed into the 
+  //   long ones and vice versa. That seems to be desirable. Maybe make the reversal switch a user
+  //   parameter
+  //
+  // - Maybe after computing the FKT (and possibly reversing), apply allpass diffusor filters 
+  //   (along with the usual damping filters). That will further "mess stuff up".
+
 }
 
 bool rotes::testAllpassDelay()

@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRapt();
   //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
@@ -171,7 +171,7 @@ int main(int argc, char* argv[])
   //bandSplitFreqResponses();
   //biDirectionalStateInit();
   //biquadDesignVicanek();         // maybe rename to biquadMatchVicanek
-  biquadStability();
+  //biquadStability();
   //biquadTail();
   //biquadModulation();            // compares modulation properties of various biquad structures
   //brickwallAndAllpass();         // stub
@@ -249,7 +249,7 @@ int main(int argc, char* argv[])
   //triSawOscAntiAlias();
   //xoxosOsc();
   //shepardTone();
-  additiveEngine();
+  //additiveEngine();
   //multiplicativeSynth();
   //pulseWidthModulationViaTwoSaws();  // just a stub at the moment
   //flatZapper();
@@ -648,8 +648,8 @@ int main(int argc, char* argv[])
   //allpassDelay();
   //allpassDelayChain();
   //allpassDelayChainVsNest();
-  //feedbackDelayNetwork();            // writes wave file
-  //algoVerb();                        // writes wave file
+  feedbackDelayNetwork();            // writes wave file
+  algoVerb();                        // writes wave file
   //spectralFilter();                  // Maybe move into a file for spectral processors
   //formantShifter();
   //spectralShifter();

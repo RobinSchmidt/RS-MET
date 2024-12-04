@@ -1677,6 +1677,7 @@ bool stateVariableFilterUnitTest4()
   // phase. Maybe to achieve a desired start phase, we need to init the integrator states 
   // accordingly. Try switching the frequency in the middle of the signal.
 
+  // Try the roundtrip between SVF and DF with the oscillator:
   svf.convertToBiquad(&b0, &b1, &b2, &a1, &a2);  // a2 == 1
   svf.setupFromBiquad( b0,  b1,  b2,  a1,  a2);
 
@@ -1688,7 +1689,8 @@ bool stateVariableFilterUnitTest4()
   //
   // - Figure out why the runTransferFuncTest(Mode::Bell, ..) fails. Test also shelving filters.
   //
-  // - Try creating filters with infinite Q and roundtrip the coeffs through a biquad.
+  // - Try creating filters with infinite Q and roundtrip the coeffs through a biquad. Done with
+  //   bandpass. Try also lowpass, highpass.
 }
 
 bool stateVariableFilterUnitTest()
