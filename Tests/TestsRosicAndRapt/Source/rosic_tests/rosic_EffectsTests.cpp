@@ -1220,7 +1220,7 @@ bool rotes::feedbackDelayNetwork()
   //FeedbackDelayNetwork16 *fdn16 = new FeedbackDelayNetwork16;
 
   double amplitude = 0.5;       // amplitude of the input impulse
-  double diffusion = 100.0;     // diffusion parameter in percent
+  double diffusion = 100.0;     // diffusion parameter in percent - maybe rename to scatter
 
 
   using AT = RAPT::rsArrayTools;
@@ -1314,7 +1314,14 @@ bool rotes::feedbackDelayNetwork()
   //   ones because the feedback matrix would be dominated by the main diagonal. But if we include
   //   a reversal step after (or before) the FKT, then the short delaylines would feed into the 
   //   long ones and vice versa. That seems to be desirable. Maybe make the reversal switch a user
-  //   parameter
+  //   parameter. 
+  
+  // - Maybe user parameters to set up the delay-line length distribution should be "average 
+  //   length" and "length range". Maybe the avarage should be a geometric one. Average length 
+  //   would correspond to "room size" and length range to a broad "room shape" like "elongated 
+  //   vs cubic". The exact distribution of lengths would correspond to finer details of the room
+  //   geometry. So yeah - that could be presented as "Size", "Shape", "Geometry". But these names
+  //   are confusing. Maybe "Shape" should be something like "AspectRatio" or "Elongation"
   //
   // - Maybe after computing the FKT (and possibly reversing), apply allpass diffusor filters 
   //   (along with the usual damping filters). That will further "mess stuff up".

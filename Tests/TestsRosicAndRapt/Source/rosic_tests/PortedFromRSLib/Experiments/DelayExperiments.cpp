@@ -47,17 +47,23 @@ void algoVerb()
   delete fdn;
 
   // Observations:
-  // -With the current settings, it sounds rather metallic. I guess this is due to the settings of 
-  //  the delayline lengths. In the testFeedbackDelayNetwork, we get a far better result also with
-  //  16 delaylines. -> Figure that out!
-  // -After some nice delayline setting has been figured out, implement a diffusor and put it in 
-  //  front. Maybe that diffusor should be optional so save CPU.
-
-  // ToDo: 
-  // -set up an APE project, where we can manually enter the relative delay times
-  // -start with 2 delaylines and tweak the 2nd delay-time until it sounds least tonal
-  // -then add in a 3rd and tweak its delaytim also until it sounds leats tonal
-  // -...and so on
+  //
+  // - With the current settings, it sounds rather metallic. I guess this is due to the settings of 
+  //   the delayline lengths. In the testFeedbackDelayNetwork, we get a far better result also with
+  //   16 delaylines. -> Figure that out!
+  //
+  // - After some nice delayline setting has been figured out, implement a diffusor and put it in 
+  //   front. Maybe that diffusor should be optional so save CPU.
+  //
+  //
+  // ToDo:
+  //
+  // - Set up an APE project, where we can manually enter the relative delay times
+  //
+  // - Start with 2 delaylines and tweak the 2nd delay-time until it sounds least tonal
+  //
+  // - Then add in a 3rd and tweak its delaytime also until it sounds least tonal
+  //   and so on
 }
 
 void basicIntegerDelayLine()
