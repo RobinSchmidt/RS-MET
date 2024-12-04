@@ -130,6 +130,10 @@ void rotes::allpassDisperser()
 
   // Plot the signal:
   rsPlotVector(z);
+  // There always seems to be some sort of small scale transient later in the signal. What is this?
+  // Why does that happen? For delays = { 13, 17, 23, 29, 37, 47 }, it appears at around 1000. Or
+  // is that an artifact in the plotting? It behaves strangely when zooming in on it. And in the 
+  // wavefile, I also don't really see it.
 
   // OK - now let's try a 4-stage nested allpass structure:
   rsAllpassDelayNested<double, double> apdn;
