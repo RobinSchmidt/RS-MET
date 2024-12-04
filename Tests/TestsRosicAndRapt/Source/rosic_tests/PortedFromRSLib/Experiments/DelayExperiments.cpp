@@ -15,8 +15,9 @@ void algoVerb()
   FDN* fdn = new FDN; 
   // Trying to allocate rosic::FeedbackDelayNetwork16 on the stack gives a stack overflow. 
   // Apparently, it's too data-heavy. ToDo: fix that by allocating the memory for the delaylines on
-  // the heap within the class by using std::vector instead of raw arrays. This will also allow to
-  // change the maxDelay at runtime, if necessary.
+  // the heap within the class by using std::vector instead of raw arrays. Maybe rsMatrix, if 
+  // needed for the 2D array. This will also allow to change the maxDelay at runtime, if necessary.
+  // This may be needed when the sample rate changes at runtime.
 
   fdn->setAllpassMode(false);
   fdn->setFeedbackMatrix(FDN::HADAMARD);
