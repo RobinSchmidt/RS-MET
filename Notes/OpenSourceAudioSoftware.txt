@@ -261,6 +261,7 @@ https://github.com/DISTRHO/DISTRHO-Ports
 -Includes Vitalium: https://github.com/DISTRHO/DISTRHO-Ports/tree/master/ports-juce6.0/vitalium
 
 Dplug:
+https://dplug.org/
 https://github.com/AuburnSounds/Dplug
 -Plug-in Framework for D programming language
 
