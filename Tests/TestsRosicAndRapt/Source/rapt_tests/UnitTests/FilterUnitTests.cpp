@@ -1640,8 +1640,6 @@ bool stateVariableFilterUnitTest4()
   // it needs to be fast, but I once did the test with a billion and it still passed. So, we have 
   // strong empirical evidence that stability implies convertibility. A mathematical proof would be
   // better, though. So, try to find one!
-  // Try drawing the regions of stability and convertibility in the a1, a2 plane, i.e. use a1 = x, 
-  // a2 = y.
   //
   // In the biquadStability() experiment, it turned out that stable biquads lie in a triangle. We 
   // use a random range of -2.5...+2.5 that contains this triangle and has a bit of margin. With
@@ -1649,7 +1647,7 @@ bool stateVariableFilterUnitTest4()
   // filters and 168 stable biquads with these settings.
 
 
-  // Compare the two way of evaluating H(z):
+  // Compare the two ways of evaluating H(z):
 
   tol = 1.e-13;
   svf.setupLowpass(0.5, 4.0);
