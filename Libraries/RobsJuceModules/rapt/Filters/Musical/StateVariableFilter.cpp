@@ -19,8 +19,8 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
     // For T > 0, S and r are NaN because we are trying to take a square root of a negative number. 
     // If this happens, it means your biquad coeffs were unstable. We produce muted output in this 
     // case. It doesn't happen for all unstable biquads, though. For some unstable biquads, the 
-    // formulas still work. In these cases, we'll just use them anyway and you'll get an unstable 
-    // SVF. I'm not sure, if that behavior is best, though.
+    // formulas still work. In these cases, we'll just use them anyway and you'll get a 
+    // corresponding unstable SVF. I'm not sure, if that behavior is best, though.
   }
 
   // Compute final coefficients:
