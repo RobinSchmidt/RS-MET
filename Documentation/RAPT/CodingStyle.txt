@@ -74,4 +74,20 @@ For inspiration of some rules, see the JUCE style guidelines:
 
   https://juce.com/feature/coding-standards/
 
-I can agree with many of those guidelines - but not with all of them.
+I can agree with many of those guidelines - but not with all of them. See also clean_code.md:
+
+  https://gist.github.com/wojteklu/73c6914cc446146b8b533c0988cf8d29
+
+I aggree with most of them. But some I disaggree with are: "Don't comment out code. Just remove.".
+Sometimes, it may be ok to leave in commented out code of a previous implementation - to be able  to 
+go back to it if the newer turns out to cause problems later. And don't say: "That's what version 
+control is for". For that to work out, you first have to *know* that there even was a previous 
+version of the implementaion - which you don't when it's gone - unless you check the version 
+history. But who does this during browsing code in dozens of files in a debugging session? Right. 
+Nobody. But that should be used sparingly - and eventually, the old version may be deleted after 
+all. But it may be good to keep it around for a while. And "Don't use horizontal alignment." I 
+think, horizontal alignment can greatly improve redability. But the rest seems fine.
+
+Here is more:
+
+  https://github.com/victorcorcos/clean-code
