@@ -191,6 +191,12 @@ ToDo:
 - Maybe rename the occurences of variable r to R2 = 2*R to make the naming consistent with Vadim's 
   book.
 
+- How could we adapt this filter to non-uniformly sampled data? Could we just scale the g-coeffs in 
+  the update equations? Or maybe we would need to call setup...() before each sample with 
+  w = 2*pi*freq*dt where dt is the time increment at that sample? But should that be t[n]-t[n-1]
+  or t[n+1]-t[n] or maybe the (weighted?) average of both? I assume that the t-array gives 
+  timestamps for the corresponding samples x[n].
+
 - Try to implement a function setupFromAnalogBiquad. The goal is to realize a filter with s-domain
   transfer function H(s) = (B0 + B1*s + B2*s^2) / (A0 + A1*s + A2*s^2) maybe normalized to A0 = 1.
   It may use BLT or MZT - or maybe we should have two separate functions for these purposes.

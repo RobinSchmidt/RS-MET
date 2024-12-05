@@ -1328,7 +1328,15 @@ bool rotes::feedbackDelayNetwork()
   //   are confusing. Maybe "Shape" should be something like "AspectRatio" or "Elongation"
   //
   // - Maybe after computing the FKT (and possibly reversing), apply allpass diffusor filters 
-  //   (along with the usual damping filters). That will further "mess stuff up".
+  //   along with the usual damping filters. That will further "mess stuff up". Maybe also try 
+  //   allpass dispersers. By diffusor, I mean a filter that turns an impulse into a noise burst. 
+  //   By disperser, i mean a filter that turns an impulse into a zap/chirp/sweepdown. The latter
+  //   could be interesting on drums.
+  //
+  // - Experiment with placing diffusors and dispersers at the input, feedback, output. In an LTI
+  //   setting, there should be no difference between placement at input and output - but we may 
+  //   want modulation in which case it may make a difference.
+
 
 }
 
