@@ -1849,7 +1849,7 @@ bool allpassUnitTest()
 
   // Set up the general implementation in such a way that it produces the same result:
   rsAllpassDelayNested<  Real, Real> nestedN;
-  nestedN.setMaxNumStages(3);
+  nestedN.setMaxNumStages(4);
   nestedN.setNumStages(2);               // 2 stages means a nesting level of 1
   nestedN.setAllpassCoeff(  0, +0.8);
   nestedN.setAllpassCoeff(  1, -0.9);
@@ -1857,16 +1857,36 @@ bool allpassUnitTest()
   nestedN.setDelayInSamples(1, 17);
   Vec hN = impulseResponse(nestedN, numSamples, 1.0);
   ok &= h1 == hN;
-
   //rsPlotVectors(h1, hN);
 
 
+  // Now with a nesting level of 2:
+  rsAllpassDelayNestedL2<Real, Real> nested2;
+  nested2.setAllpassCoeff(  0, +0.8);
+  nested2.setAllpassCoeff(  1, -0.9);
+  nested2.setAllpassCoeff(  2, +0.7);
+  nested2.setDelayInSamples(0, 11);
+  nested2.setDelayInSamples(1, 17);
+  nested2.setDelayInSamples(2, 23);
+  Vec h2 = impulseResponse(nested2, numSamples, 1.0);
+  //rsPlotVectors(h2);
+
+  // For the general filter, we only need to ramp up the number of stages by one and set the 
+  // parameters for the new stage because the first two stages of the 2-level nested filter above
+  // use exactly the same lengths and coeffs for the first two stages as in the previous test:
+  nestedN.setNumStages(3);
+  nestedN.setAllpassCoeff(  2, +0.7);
+  nestedN.setDelayInSamples(2, 23);
+  hN = impulseResponse(nestedN, numSamples, 1.0);
+  ok &= h2 == hN;
+  rsPlotVectors(h2, hN);
 
 
 
 
 
-  //rsAllpassDelayNestedL2<Real, Real> nested2;
+
+
   //rsAllpassDelayNestedL3<Real, Real> nested3;
 
 
