@@ -288,6 +288,11 @@ public:
     // The final output is in the 2N-th slot of the temp-buffer:
     return t[2*N];
   }
+  // Maybe at some point, we should make getSample a dispatcher method that dispatches between the
+  // unrolled versions for specific number of stages cases and the general case. The implementation
+  // above could then be renamed into getSampleNStages. But then the allpassUnitTest() needs to be 
+  // adapted, too to make sure to also test calling the new getSampleNStages method for the cases
+  // with the lower number of stages
 
   /** An unrolled (and therefore potentially optimized) getSample function that can be used 
   alternatively to the general getSample() when there are two allpass stages. It was initially 

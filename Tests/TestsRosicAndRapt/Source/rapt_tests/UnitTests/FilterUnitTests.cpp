@@ -1832,6 +1832,9 @@ bool allpassUnitTest()
 
   int numSamples = 300;
 
+
+  // Factor out into nestedAllpassUnitTest:
+
   // We compare impulse responses of rsAllpassDelayNestedL1/2/3 which implement special cases in a
   // naive way with those of rsAllpassDelayNested which implements the general case in a sensible 
   // way:
@@ -1879,18 +1882,37 @@ bool allpassUnitTest()
   nestedN.setDelayInSamples(2, 23);
   hN = impulseResponse(nestedN, numSamples, 1.0);
   ok &= h2 == hN;
-  rsPlotVectors(h2, hN);
+  //rsPlotVectors(h2, hN);
 
+  // Now with a nesting level of 3:
+  rsAllpassDelayNestedL3<Real, Real> nested3;
+  nested3.setAllpassCoeff(  0, +0.8);
+  nested3.setAllpassCoeff(  1, -0.9);
+  nested3.setAllpassCoeff(  2, +0.7);
+  nested3.setAllpassCoeff(  3, -0.6);
+  nested3.setDelayInSamples(0, 11);
+  nested3.setDelayInSamples(1, 17);
+  nested3.setDelayInSamples(2, 23);
+  nested3.setDelayInSamples(3, 29);
+  Vec h3 = impulseResponse(nested3, numSamples, 1.0);
+  //rsPlotVectors(h3);
 
-
-
-
-
-
-  //rsAllpassDelayNestedL3<Real, Real> nested3;
-
-
-
+  nestedN.setNumStages(4);
+  nestedN.setAllpassCoeff(  3, -0.6);
+  nestedN.setDelayInSamples(3, 29);
+  hN = impulseResponse(nestedN, numSamples, 1.0);
+  ok &= h3 == hN;
+  //rsPlotVectors(h3, hN);
 
   return ok;
+
+
+  // ToDo:
+  //
+  // - Test also the functions getSample2Stages/getSample3Stages of the nestedN object. They are 
+  //   unrolled versions for these special cases. Maybe we shouldn't use impulseResponse() to 
+  //   produce the outputs of the nestedN object. We want more control over which "getSample" 
+  //   function is being called - especially later when we turn getSample into a dispatcher 
+  //   function that dispatches to the unrolled (i.e. optimized?) variants form small N and 
+  //   defaults to the general implementation for large N.
 }
