@@ -1902,6 +1902,10 @@ bool nestedAllpassUnitTest()
 
   int numSamples = 300;
 
+  // Create Dirac delta function to be sued as input:
+  int N = numSamples;
+  Vec d(N);
+  d[0] = 1;
 
   // Set up a nested allpass with one level of nesting and get its impulse response:
   rsAllpassDelayNestedL1<Real, Real> nested1;
@@ -1914,15 +1918,23 @@ bool nestedAllpassUnitTest()
 
 
   // Set up the general implementation in such a way that it produces the same result:
-  rsAllpassDelayNested<  Real, Real> nestedN;
+  rsAllpassDelayNested<  Real, Real> nestedN;  // rename to nested
   nestedN.setMaxNumStages(4);
   nestedN.setNumStages(2);               // 2 stages means a nesting level of 1
   nestedN.setAllpassCoeff(  0, +0.8);
   nestedN.setAllpassCoeff(  1, -0.9);
   nestedN.setDelayInSamples(0, 11);
   nestedN.setDelayInSamples(1, 17);
-  Vec hN = impulseResponse(nestedN, numSamples, 1.0);
+
+  Vec hN(N);                                  // rename to h
+  for(int n = 0; n < N; n++)
+    hN[n] = nestedN.getSample(d[n]);
+
   ok &= h1 == hN;
+
+
+  //Vec hN = impulseResponse(nestedN, numSamples, 1.0);
+  //ok &= h1 == hN;
   //rsPlotVectors(h1, hN);
 
 
