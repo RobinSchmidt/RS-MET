@@ -11,9 +11,10 @@ template<class TSig, class TPar>
 class rsQuadratureNetwork
 {
 
-  // preliminary:
-  typedef std::complex<TPar> ComplexPar; 
+  // Preliminary:
+  typedef std::complex<TPar> ComplexPar;
   typedef std::complex<TSig> ComplexSig;
+  // Maybe use rsComplex instead.
 
 public:
 

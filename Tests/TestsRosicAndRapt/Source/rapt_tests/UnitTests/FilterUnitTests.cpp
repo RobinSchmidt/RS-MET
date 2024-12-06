@@ -1821,3 +1821,56 @@ bool hilbertFilterUnitTest()
 
   return ok;
 }
+
+
+bool allpassUnitTest()
+{
+  bool ok = true;
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+
+  int numSamples = 300;
+
+  // We compare impulse responses of rsAllpassDelayNestedL1/2/3 which implement special cases in a
+  // naive way with those of rsAllpassDelayNested which implements the general case in a sensible 
+  // way:
+
+
+  // Set up a nested allpass with one level of nesting and get its impulse response:
+  rsAllpassDelayNestedL1<Real, Real> nested1;
+  nested1.setAllpassCoeff(  0, +0.8);
+  nested1.setAllpassCoeff(  1, -0.9);
+  nested1.setDelayInSamples(0, 11);
+  nested1.setDelayInSamples(1, 17);
+  Vec h1 = impulseResponse(nested1, numSamples, 1.0);
+  //rsPlotVectors(h1);
+
+
+  // Set up the general implementation in such a way that it produces the same result:
+  rsAllpassDelayNested<  Real, Real> nestedN;
+  nestedN.setMaxNumStages(3);
+  nestedN.setNumStages(2);               // 2 stages means a nesting level of 1
+  nestedN.setAllpassCoeff(  0, +0.8);
+  nestedN.setAllpassCoeff(  1, -0.9);
+  nestedN.setDelayInSamples(0, 11);
+  nestedN.setDelayInSamples(1, 17);
+  Vec hN = impulseResponse(nestedN, numSamples, 1.0);
+  ok &= h1 == hN;
+
+  //rsPlotVectors(h1, hN);
+
+
+
+
+
+
+
+  //rsAllpassDelayNestedL2<Real, Real> nested2;
+  //rsAllpassDelayNestedL3<Real, Real> nested3;
+
+
+
+
+  return ok;
+}

@@ -100,7 +100,7 @@ the same time serve as input delayline for stage i+1 such that we can get rid of
 delaylines in an optimized implementation. But we don't do that here. Well - when the 
 rsAllpassDelay is implemented so as to use only one delayline (e.g. switch from DF1 to DF2 or TDF2, 
 see https://www.dsprelated.com/freebooks/filters/Four_Direct_Forms.html), then this optimization 
-here won't be needed anymore.
+here won't be needed anymore. ...Hmm...I think, this is done
 
 
 See:
@@ -384,7 +384,7 @@ public:
   // ToDo:
   // -Write a getSample4Stages (and a unit test for it). Write performance test and check, if it's
   //  better to use our tmp array or stack-allocated variables for the temporary signals.
-  //  Check, if it's possible to get a way with less temporary variables by overwriting them when
+  //  Check, if it's possible to get away with less temporary variables by overwriting them when
   //  they are not needed anymore.
 
 
@@ -411,10 +411,12 @@ protected:
 
 
 //#################################################################################################
+//
 // From here, we have implementations that are really only for prototyping and as reference for 
 // unit testing because they are very suboptimal and/or awkwardly/naively implemented. The 
 // implementations here show more clearly, what is going on though, so their value is mostly 
-// educational.
+// educational. And they can be used for unit testing purposes for producing reference output 
+// signals to test the better implementations against.
 
 
 
@@ -520,9 +522,6 @@ void rsAllpassDelayNaive<TSig, TPar>::reset()
 
 // ToDo:
 // -Build a nested allpass in which the z^(-M) term has been replaced by another allpass filter.
-
-
-
 
 
 //=================================================================================================

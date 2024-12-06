@@ -38,7 +38,7 @@ bool rsIsUnitMagnitudeWhite(const std::vector<T>& x, T decibelTolerance)
 
 
 
-// rename to allpassDiffusor
+// rename to allpassDiffusor - a disperser is something like "FlatZapper"
 void rotes::allpassDisperser()
 {
   // We plot some impulse responses of allpass filters. The goal is to build some intuition for
