@@ -1934,6 +1934,11 @@ bool nestedAllpassUnitTest()
 
   nestedN.reset();
   for(int n = 0; n < N; n++)
+    hN[n] = nestedN.getSampleNStages(d[n]);
+  ok &= h1 == hN;
+
+  nestedN.reset();
+  for(int n = 0; n < N; n++)
     hN[n] = nestedN.getSample2Stages(d[n]);
   ok &= h1 == hN;
 

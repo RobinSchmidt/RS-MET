@@ -265,8 +265,53 @@ public:
   // Maybe move the implementations out of the class like in rsAllpassDelayChain. They have grown 
   // quite big. Maybe do it for the setters, too.
 
+
+
+
   /** Needs more tests */
   inline TSig getSample(TSig x)
+  {
+    switch(numStages)
+    {
+    case 0:  return x;
+    case 2:  return getSample2Stages(x);
+    case 3:  return getSample3Stages(x);
+    default: return getSampleNStages(x);
+    }
+    // We should also have a special function for 1 stage and maybe one for 4. Maybe the functions 
+    // we dispatch to should be protected. For the unit test, we can then make a subclass that 
+    // allows acces to the via delegating public functions
+
+    /*
+    // Shorthands for convenience:
+    int N = numStages;
+    TSig* t = &tmp[0];
+
+    // Compute the signals in the upper row of the lattice:
+    t[0] = x;
+    for(int i = 0; i < N; i++)
+      t[i+1] = t[i] - allpassCoeffs[i] * delayLines[i].readOutput();
+
+    // Compute the signals in the lower row of the lattice:
+    for(int i = 0; i < N; i++)
+      t[N+i+1] = delayLines[N-i-1].readOutput() + allpassCoeffs[N-i-1] * t[N-i];
+
+    // Update the content of the delaylines:
+    for(int i = 0; i < N; i++)
+      delayLines[i].writeInputAndUpdate(t[2*N-i-1]);
+
+    // The final output is in the 2N-th slot of the temp-buffer:
+    return t[2*N];
+    */
+  }
+  // Maybe at some point, we should make getSample a dispatcher method that dispatches between the
+  // unrolled versions for specific number of stages cases and the general case. The implementation
+  // above could then be renamed into getSampleNStages. But then the allpassUnitTest() needs to be 
+  // adapted, too to make sure to also test calling the new getSampleNStages method for the cases
+  // with the lower number of stages
+
+
+  inline TSig getSampleNStages(TSig x)
   {
     // Shorthands for convenience:
     int N = numStages;
@@ -288,11 +333,8 @@ public:
     // The final output is in the 2N-th slot of the temp-buffer:
     return t[2*N];
   }
-  // Maybe at some point, we should make getSample a dispatcher method that dispatches between the
-  // unrolled versions for specific number of stages cases and the general case. The implementation
-  // above could then be renamed into getSampleNStages. But then the allpassUnitTest() needs to be 
-  // adapted, too to make sure to also test calling the new getSampleNStages method for the cases
-  // with the lower number of stages
+
+
 
   /** An unrolled (and therefore potentially optimized) getSample function that can be used 
   alternatively to the general getSample() when there are two allpass stages. It was initially 
