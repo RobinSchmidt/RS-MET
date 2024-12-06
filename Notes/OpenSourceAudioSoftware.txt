@@ -415,6 +415,22 @@ https://github.com/Signalsmith-Audio/dsp
 
 
 ----------------------------------------------------------------------------------------------------
+Research and Education Code
+
+FDNTB - The Feedback Delay Network Toolbox:
+https://www.sebastianjiroschlecht.com/project/fdntb/
+https://github.com/SebastianJiroSchlecht/fdnToolbox
+
+DAFX Book Stuff:
+https://www.dafx.de/DAFX_Book_Page_2nd_edition/matlab.html
+https://github.com/zeloe/DAFX
+https://github.com/slegroux/DAFX
+
+Universal audio synthesizer control with normalizing flows:
+https://github.com/acids-ircam/flow_synthesizer
+
+
+----------------------------------------------------------------------------------------------------
 Other Libraries
 
 Farbot (FAbian's Realtime Box o' Tricks)
