@@ -9,6 +9,7 @@ namespace RAPT
 #include "Basic/MovingWindowFilters.h"
 #include "Basic/OnePoleFilter.h"
 #include "Basic/SmoothingFilter.h"   // maybe move to a Tool
+#include "Basic/Interpolator.h" 
 //#include "Basic/OnePoleOneZero.h"
 //#include "Basic/TwoPoleOneZero.h"  // decaying sine, etc.
 //#include "Basic/Biquad.h"
@@ -41,6 +42,8 @@ namespace RAPT
 #include "Musical/PhasorFilter.h"
 #include "Musical/StateVariableFilterOld.h"
 #include "Musical/StateVariableFilter.h"
+#include "Musical/DelayLine.h"
+#include "Musical/Allpasses.h"
 //include "Musical/AttackDecaySineFilter.h" // maybe get rid of writing "Filter" all the time
 //#include "Basic/Equalizer.h"
 

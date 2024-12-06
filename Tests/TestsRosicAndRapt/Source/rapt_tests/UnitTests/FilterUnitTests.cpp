@@ -1864,7 +1864,7 @@ bool allpassChainUnitTest()
 
 
   // Now let's see if we can produce the same result with the class rsAllpassDelayChain:
-  rsAllpassDelayChain<Real, Real> allpassChain;
+  RAPT::rsAllpassDelayChain<Real, Real> allpassChain;
   allpassChain.setMaxNumStages(numStages);
   allpassChain.setNumStages(   numStages);
   for(int i = 0; i < numStages; i++)

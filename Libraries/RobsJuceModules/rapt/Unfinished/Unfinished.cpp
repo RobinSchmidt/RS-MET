@@ -14,8 +14,6 @@ namespace RAPT
 #include "Math/Statistics.cpp"
 #include "Math/GeometricFunctions.cpp"
 
-#include "MiscAudio/Interpolator.cpp"
-#include "MiscAudio/DelayLine.cpp"
 #include "MiscAudio/MiscAudio.cpp"  // may have to be included later (needs higher level stuff)
 #include "MiscAudio/Saturator.cpp"
 #include "MiscAudio/AudioFunctions.cpp"

@@ -29,8 +29,6 @@ namespace RAPT
 
 // still missing math files from RSLib:  BigInt/BigFloat (should go into rosic)
 
-#include "MiscAudio/Interpolator.h"
-#include "MiscAudio/DelayLine.h"
 #include "MiscAudio/MiscAudio.h"  // may have to be included later (needs higher level stuff)
 #include "MiscAudio/Saturator.h"
 #include "MiscAudio/AudioFunctions.h" // merge with other AudioFunctions.h file
