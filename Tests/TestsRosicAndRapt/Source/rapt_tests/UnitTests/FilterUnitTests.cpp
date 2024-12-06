@@ -1823,21 +1823,20 @@ bool hilbertFilterUnitTest()
 }
 
 
-bool allpassUnitTest()
+
+bool nestedAllpassUnitTest()
 {
+  // We compare impulse responses of rsAllpassDelayNestedL1/2/3 which implement special cases in a
+  // naive way with those of rsAllpassDelayNested which implements the general case in a sensible 
+  // way.
+
+
   bool ok = true;
 
   using Real = double;
   using Vec  = std::vector<Real>;
 
   int numSamples = 300;
-
-
-  // Factor out into nestedAllpassUnitTest:
-
-  // We compare impulse responses of rsAllpassDelayNestedL1/2/3 which implement special cases in a
-  // naive way with those of rsAllpassDelayNested which implements the general case in a sensible 
-  // way:
 
 
   // Set up a nested allpass with one level of nesting and get its impulse response:
@@ -1904,9 +1903,6 @@ bool allpassUnitTest()
   ok &= h3 == hN;
   //rsPlotVectors(h3, hN);
 
-  return ok;
-
-
   // ToDo:
   //
   // - Test also the functions getSample2Stages/getSample3Stages of the nestedN object. They are 
@@ -1915,4 +1911,17 @@ bool allpassUnitTest()
   //   function is being called - especially later when we turn getSample into a dispatcher 
   //   function that dispatches to the unrolled (i.e. optimized?) variants form small N and 
   //   defaults to the general implementation for large N.
+
+  return ok;
+}
+
+
+bool allpassUnitTest()
+{
+  bool ok = true;
+
+  ok &= nestedAllpassUnitTest();
+
+
+  return ok;
 }
