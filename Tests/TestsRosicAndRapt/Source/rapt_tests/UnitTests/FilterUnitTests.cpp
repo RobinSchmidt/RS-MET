@@ -1833,7 +1833,7 @@ bool allpassChainUnitTest()
   using VecR = std::vector<Real>;
   using VecI = std::vector<int>;
 
-  int numSamples = 300;
+  int numSamples = 128;
 
   VecI delays = { 1,    2,    3,    5,    7   };
   VecR coeffs = { 0.9, -0.8, +0.7, -0.6, +0.5 };
@@ -1859,12 +1859,28 @@ bool allpassChainUnitTest()
       tmp = literalAllpassChain[i].getSample(tmp);
     h[n] = tmp;
   }
-  rsPlotVectors(h);
+  //rsPlotVectors(h);
 
 
-
-
-  
+  // Now let's see if we can produce the same result with the class rsAllpassDelayChain:
+  rsAllpassDelayChain<Real, Real> allpassChain;
+  allpassChain.setMaxNumStages(numStages);
+  allpassChain.setNumStages(   numStages);
+  for(int i = 0; i < numStages; i++)
+  {
+    allpassChain.setMaxDelayInSamples(i, delays[i]);
+    allpassChain.setDelayInSamples(   i, delays[i]);
+    allpassChain.setAllpassCoeff(     i, coeffs[i]);
+  }
+  VecR h2(N);
+  for(int n = 0; n < N; n++)
+    h2[n] = allpassChain.getSample(d[n]);
+  //ok &= h2 == h;                   // Nope - we cant't expect an exact match...
+  ok &= rsIsCloseTo(h2, h, 1.e-15);  // ...we need some numeric tolerance
+  rsPlotVectors(h, h2);
+  rsPlotVectors(h - h2);
+  // I think, they do not match exactly because one implementation use direct form 1 and the other
+  // direct form 2 which introduce different rounding errors.
 
 
   return ok;
