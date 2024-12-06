@@ -1902,11 +1902,11 @@ bool nestedAllpassUnitTest()
 
   int numSamples = 300;
 
-  // Create Dirac delta function to be sued as input:
+  // Create Dirac delta function d[n] to be used as input and h[n] to be used for the impulse 
+  // response outputs:
   int N = numSamples;
-  Vec d(N);
+  Vec d(N), h(N);
   d[0] = 1;
-  Vec hN(N);                                  // rename to h
 
   // Set up a nested allpass with one level of nesting and get its impulse response:
   rsAllpassDelayNestedL1<Real, Real> nested1;
@@ -1918,33 +1918,33 @@ bool nestedAllpassUnitTest()
   //rsPlotVectors(h1);
 
 
-  // Set up the general implementation in such a way that it produces the same result:
-  rsAllpassDelayNested<  Real, Real> nestedN;  // rename to nested
-  nestedN.setMaxNumStages(4);
-  nestedN.setNumStages(2);               // 2 stages means a nesting level of 1
-  nestedN.setAllpassCoeff(  0, +0.8);
-  nestedN.setAllpassCoeff(  1, -0.9);
-  nestedN.setDelayInSamples(0, 11);
-  nestedN.setDelayInSamples(1, 17);
+  // Set up the general implementation in such a way that it produces the same result. We test 3 
+  // different getSample functions. The low level implementations for the general N-stage case and
+  // the unrolled implementation for the 2-stage case and finally the high-level dispatcher 
+  // function which should dispatch to the unrolled implementation:
+  rsAllpassDelayNested<  Real, Real> nested;
+  nested.setMaxNumStages(4);
+  nested.setNumStages(2);                   // 2 stages means a nesting level of 1
+  nested.setAllpassCoeff(  0, +0.8);
+  nested.setAllpassCoeff(  1, -0.9);
+  nested.setDelayInSamples(0, 11);
+  nested.setDelayInSamples(1, 17);
 
-  nestedN.reset();
+  nested.reset();
   for(int n = 0; n < N; n++)
-    hN[n] = nestedN.getSample(d[n]);
-  ok &= h1 == hN;
+    h[n] = nested.getSampleNStages(d[n]);   // General N-stage implementation
+  ok &= h1 == h;
 
-  nestedN.reset();
+  nested.reset();
   for(int n = 0; n < N; n++)
-    hN[n] = nestedN.getSampleNStages(d[n]);
-  ok &= h1 == hN;
+    h[n] = nested.getSample2Stages(d[n]);   // Unrolled 2-stage implementation
+  ok &= h1 == h;
 
-  nestedN.reset();
+  nested.reset();
   for(int n = 0; n < N; n++)
-    hN[n] = nestedN.getSample2Stages(d[n]);
-  ok &= h1 == hN;
+    h[n] = nested.getSample(d[n]);          // High level dispatcher (dispatches to unrolled)
+  ok &= h1 == h;
 
-  //Vec hN = impulseResponse(nestedN, numSamples, 1.0);
-  //ok &= h1 == hN;
-  //rsPlotVectors(h1, hN);
 
 
   // Now with a nesting level of 2:
@@ -1958,14 +1958,16 @@ bool nestedAllpassUnitTest()
   Vec h2 = impulseResponse(nested2, numSamples, 1.0);
   //rsPlotVectors(h2);
 
+
+
   // For the general filter, we only need to ramp up the number of stages by one and set the 
   // parameters for the new stage because the first two stages of the 2-level nested filter above
   // use exactly the same lengths and coeffs for the first two stages as in the previous test:
-  nestedN.setNumStages(3);
-  nestedN.setAllpassCoeff(  2, +0.7);
-  nestedN.setDelayInSamples(2, 23);
-  hN = impulseResponse(nestedN, numSamples, 1.0);
-  ok &= h2 == hN;
+  nested.setNumStages(3);
+  nested.setAllpassCoeff(  2, +0.7);
+  nested.setDelayInSamples(2, 23);
+  h = impulseResponse(nested, numSamples, 1.0);
+  ok &= h2 == h;
   //rsPlotVectors(h2, hN);
 
   // Now with a nesting level of 3:
@@ -1981,11 +1983,11 @@ bool nestedAllpassUnitTest()
   Vec h3 = impulseResponse(nested3, numSamples, 1.0);
   //rsPlotVectors(h3);
 
-  nestedN.setNumStages(4);
-  nestedN.setAllpassCoeff(  3, -0.6);
-  nestedN.setDelayInSamples(3, 29);
-  hN = impulseResponse(nestedN, numSamples, 1.0);
-  ok &= h3 == hN;
+  nested.setNumStages(4);
+  nested.setAllpassCoeff(  3, -0.6);
+  nested.setDelayInSamples(3, 29);
+  h = impulseResponse(nested, numSamples, 1.0);
+  ok &= h3 == h;
   //rsPlotVectors(h3, hN);
 
   return ok;
@@ -2006,6 +2008,10 @@ bool nestedAllpassUnitTest()
   //   Tolerance is needed because we cut off the infinite impulse response. So, when using less 
   //   samples we expect to need higher tolerances. These tests can be applied to all sorts of 
   //   allpass filters.
+  //
+  // - Add benchmarks to compare the performance of the general and specialized unrolled 
+  //   implementations. I assume that the unrolled ones will be more performant but did not yet 
+  //   measure it.
 }
 
 bool allpassUnitTest()
