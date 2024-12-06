@@ -1906,6 +1906,7 @@ bool nestedAllpassUnitTest()
   int N = numSamples;
   Vec d(N);
   d[0] = 1;
+  Vec hN(N);                                  // rename to h
 
   // Set up a nested allpass with one level of nesting and get its impulse response:
   rsAllpassDelayNestedL1<Real, Real> nested1;
@@ -1926,12 +1927,15 @@ bool nestedAllpassUnitTest()
   nestedN.setDelayInSamples(0, 11);
   nestedN.setDelayInSamples(1, 17);
 
-  Vec hN(N);                                  // rename to h
+  nestedN.reset();
   for(int n = 0; n < N; n++)
     hN[n] = nestedN.getSample(d[n]);
-
   ok &= h1 == hN;
 
+  nestedN.reset();
+  for(int n = 0; n < N; n++)
+    hN[n] = nestedN.getSample2Stages(d[n]);
+  ok &= h1 == hN;
 
   //Vec hN = impulseResponse(nestedN, numSamples, 1.0);
   //ok &= h1 == hN;
