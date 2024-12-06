@@ -408,6 +408,14 @@ void rotes::allpassDelayChain()
   //  A negative coeff gives a "smoother" response because it's not alternating. But we want the 
   //  overall impulse repsone to alternate - but it should be enough when one of the alpasses 
   //  creates alternations to have the overall respone alternate.
+  // -Maybe it would make sense to have the allpass coeff be chosen in such a way as to equalize 
+  //  the decay-times of the allpasses? That means that longer filters should use smaller coeffs.
+  //  But it's not as simple as being inversely proportional. I think, exp or pow needs to be 
+  //  involved. Look up the code of ResoShape/ResoFake/ResoReplacer/etc. There (or somewhere near
+  //  there), I have derived formulas for achieving that for the ladder filter. If I remember 
+  //  correctly, I computed the roundtrip time for the resonant frequency and adjusted the feedback
+  //  filter accordingly. A similar strategy could be used here - just that the "roundtrip time" is
+  //  just simply the delayline length.
 }
 
 void rotes::allpassDelayChainVsNest()

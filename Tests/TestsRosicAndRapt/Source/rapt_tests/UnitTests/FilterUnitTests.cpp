@@ -1822,7 +1822,57 @@ bool hilbertFilterUnitTest()
   return ok;
 }
 
+bool allpassChainUnitTest()
+{
+  // We compare impulse responses produced by a literal chain of rsAllpassDelayNaive with those of
+  // class rsAllpassDelayChain which should produce the same result with less memory usage.
 
+  bool ok = true;
+
+  using Real = double;
+  using VecR = std::vector<Real>;
+  using VecI = std::vector<int>;
+
+  int numSamples = 300;
+
+  VecI delays = { 1,    2,    3,    5,    7   };
+  VecR coeffs = { 0.9, -0.8, +0.7, -0.6, +0.5 };
+
+  // Create and set up a literal chain of allpass filters:
+  int numStages = (int) delays.size();
+  std::vector<rsAllpassDelayNaive<Real, Real>> literalAllpassChain(numStages);
+  for(int i = 0; i < numStages; i++)
+  {
+    literalAllpassChain[i].setMaxDelayInSamples(delays[i]);
+    literalAllpassChain[i].setDelayInSamples(   delays[i]);
+    literalAllpassChain[i].setAllpassCoeff(     coeffs[i]);
+  }
+
+  // Produce the impulse response of the literal allpass chain:
+  int N = numSamples;
+  VecR d(N), h(N);
+  d[0] = 1;
+  for(int n = 0; n < N; n++)
+  {
+    Real tmp = d[n];
+    for(int i = 0; i < numStages; i++)
+      tmp = literalAllpassChain[i].getSample(tmp);
+    h[n] = tmp;
+  }
+  rsPlotVectors(h);
+
+
+
+
+  
+
+
+  return ok;
+
+  // Notes:
+  //
+  // 
+}
 
 bool nestedAllpassUnitTest()
 {
@@ -1911,7 +1961,15 @@ bool nestedAllpassUnitTest()
   //   function is being called - especially later when we turn getSample into a dispatcher 
   //   function that dispatches to the unrolled (i.e. optimized?) variants form small N and 
   //   defaults to the general implementation for large N.
+  //
+  // - Maybe add tests that verify the the filters are actually allpasses. Do this by using an FFT
+  //   and checking that the frequency response is flat. Maybe we can make a helper function
+  //   isAllpass similar to impulseResponse. It should take a number of samples and a tolerance.
+  //   Tolerance is needed because we cut off the infinite impulse response. So, when using less 
+  //   samples we expect to need higher tolerances. These tests can be applied to all sorts of 
+  //   allpass filters.
 
+ 
   return ok;
 }
 
@@ -1920,8 +1978,8 @@ bool allpassUnitTest()
 {
   bool ok = true;
 
+  ok &= allpassChainUnitTest();
   ok &= nestedAllpassUnitTest();
-
 
   return ok;
 }
