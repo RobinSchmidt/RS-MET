@@ -229,6 +229,18 @@ JEPluginsAudioDSP:
 https://github.com/je3928/JEPluginsAudioDSP
 -Code that is presented as part of the JEPlugins Audio DSP video series.
 
+IEM Plug-in Suite:
+https://plugins.iem.at/#tab-GranularEncoder
+https://git.iem.at/audioplugins/IEMPluginSuite
+
+
+SPARTA
+https://leomccormack.github.io/sparta-site/docs/sourcecode/overview/
+
+Dragonfly reverb 
+https://michaelwillis.github.io/dragonfly-reverb/
+https://github.com/michaelwillis/dragonfly-reverb
+
 ----------------------------------------------------------------------------------------------------
 Frameworks
 
@@ -413,6 +425,14 @@ https://signalsmith-audio.co.uk/code/dsp/
 https://signalsmith-audio.co.uk/code/dsp/html/modules.html
 https://github.com/Signalsmith-Audio/dsp
 
+Essentia:
+https://github.com/MTG/essentia
+-audio analysis and audio-based music information retrieval 
+
+TrackAnalyzer:
+https://github.com/tfriedel/trackanalyzer
+-java based command line tool that estimates the musical key and bpm 
+
 
 ----------------------------------------------------------------------------------------------------
 Research and Education Code
@@ -429,6 +449,12 @@ https://github.com/slegroux/DAFX
 Universal audio synthesizer control with normalizing flows:
 https://github.com/acids-ircam/flow_synthesizer
 
+High-Order Digital Parametric Equalizer Design - MATLAB Toolbox
+https://eceweb1.rutgers.edu/~orfanidi/hpeq/
+
+BeatRoot:
+https://code.soundsoftware.ac.uk/projects/beatroot
+-interactive beat tracking and visualisation system
 
 ----------------------------------------------------------------------------------------------------
 Other Libraries
@@ -570,6 +596,13 @@ Unsorted:
 https://github.com/chmaha/RCverb
 https://github.com/SpotlightKid/dfzitarev1
 
+
+https://aubio.org/download
+https://github.com/chrisguttandin/web-audio-beat-detector
+
+
+
+
 ----------------------------------------------------------------------------------------------------
 Resources
 
@@ -593,3 +626,13 @@ MusicDSP:
 https://www.musicdsp.org/en/latest/
 https://github.com/bdejong/musicdsp
 -Website with a lot of code snippets for musical DSP tasks
+
+https://github.com/twinysam/FreeAudioPluginList
+
+https://openaudio.webprofusion.com/
+https://github.com/webprofusion/OpenAudio
+
+https://studiorack.github.io/studiorack-site/
+
+
+https://www.joehagenmusic.com/post/a-comprehensive-guide-to-high-quality-free-plugins-that-you-ll-actually-use
