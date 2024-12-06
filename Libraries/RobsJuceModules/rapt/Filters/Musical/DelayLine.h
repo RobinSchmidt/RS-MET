@@ -125,8 +125,10 @@ protected:
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  T* delayLine;  // maybe use std::vector
+  T* delayLine;  
   int tapIn, tapOut, maxDelay;
+  // ToDo: use std::vector for the delayLine. We may then get rid of maxDelay because it's stored
+  // in the vector's size. ...or maybe capacity - depends on how we implement it.
 
 };
 
@@ -173,7 +175,7 @@ RS_INLINE void rsBasicDelayLine<T>::incrementTapPointers()
 Extends BasicDelayLine by keeping information about the sample rate and the delay in
 seconds.
 
-\todo: facilitate temp-sync by maintaining a bpm-value and a sync-flag
+\todo: facilitate tempo-sync by maintaining a bpm-value and a sync-flag
 ...maybe do this in a subclass...
 
 */
@@ -335,10 +337,11 @@ protected:
 
 private:
 
-  // make assignment operator and copy constructor unavailable because this class contains 
+  // Make assignment operator and copy constructor unavailable because this class contains 
   // pointer members:
   rsFractionalDelayLine& operator=(const rsFractionalDelayLine& /*other*/) { return *this; }
   rsFractionalDelayLine(const rsFractionalDelayLine& /*other*/) { }
+  // ToDo: use a macro for this
 
 };
 

@@ -232,3 +232,16 @@ void rsFractionalDelayLine<TSig, TPar>::setupDelayInSamples()
   }
   tapOut = wrapAround(tapOut);
 }
+
+
+//=================================================================================================
+/*
+
+
+ToDo:
+
+- Refactor the code in such a way that delayline classes never know about sample-rates and delay
+  times in seconds. They should just know about the delay in samples. This kind of information 
+  should really be held at a higher level.
+
+*/
