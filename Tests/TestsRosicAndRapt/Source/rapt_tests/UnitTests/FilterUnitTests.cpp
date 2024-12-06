@@ -1929,7 +1929,7 @@ bool nestedAllpassUnitTest()
   nested.setAllpassCoeff(  1, -0.9);
   nested.setDelayInSamples(0, 11);
   nested.setDelayInSamples(1, 17);
-  h = impulseResponse(nested, numSamples, 1.0);   // High level dispatcher (dispatches to unrolled)
+  h = impulseResponse(nested, numSamples, 1.0);   // Uses high level dispatcher getSample()
   ok &= h1 == h; 
 
   nested.reset();
@@ -1942,10 +1942,7 @@ bool nestedAllpassUnitTest()
     h[n] = nested.getSample2Stages(d[n]);         // Unrolled 2-stage implementation
   ok &= h1 == h;
 
-  //nested.reset();
-  //for(int n = 0; n < N; n++)
-  //  h[n] = nested.getSample(d[n]);          // High level dispatcher (dispatches to unrolled)
-  //ok &= h1 == h;
+
 
 
 
@@ -1961,7 +1958,6 @@ bool nestedAllpassUnitTest()
   //rsPlotVectors(h2);
 
 
-
   // For the general filter, we only need to ramp up the number of stages by one and set the 
   // parameters for the new stage because the first two stages of the 2-level nested filter above
   // use exactly the same lengths and coeffs for the first two stages as in the previous test:
@@ -1969,12 +1965,21 @@ bool nestedAllpassUnitTest()
   nested.setAllpassCoeff(  2, +0.7);
   nested.setDelayInSamples(2, 23);
   h = impulseResponse(nested, numSamples, 1.0);
-
-
-
-
   ok &= h2 == h;
   //rsPlotVectors(h2, hN);
+
+  nested.reset();
+  for(int n = 0; n < N; n++)
+    h[n] = nested.getSampleNStages(d[n]);         // General N-stage implementation
+  ok &= h2 == h;
+
+  nested.reset();
+  for(int n = 0; n < N; n++)
+    h[n] = nested.getSample3Stages(d[n]);         // Unrolled 3-stage implementation
+  ok &= h2 == h;
+
+
+
 
   // Now with a nesting level of 3:
   rsAllpassDelayNestedL3<Real, Real> nested3;
