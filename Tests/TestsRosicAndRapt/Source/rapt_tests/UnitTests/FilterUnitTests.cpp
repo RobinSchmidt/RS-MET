@@ -1825,7 +1825,8 @@ bool hilbertFilterUnitTest()
 bool allpassChainUnitTest()
 {
   // We compare impulse responses produced by a literal chain of rsAllpassDelayNaive with those of
-  // class rsAllpassDelayChain which should produce the same result with less memory usage.
+  // class rsAllpassDelayChain. The latter should produce the same result with less memory usage 
+  // and with a more convenient API.
 
   bool ok = true;
 
@@ -1875,19 +1876,16 @@ bool allpassChainUnitTest()
   VecR h2(N);
   for(int n = 0; n < N; n++)
     h2[n] = allpassChain.getSample(d[n]);
-  //ok &= h2 == h;                   // Nope - we cant't expect an exact match...
-  ok &= rsIsCloseTo(h2, h, 1.e-15);  // ...we need some numeric tolerance
-  rsPlotVectors(h, h2);
-  rsPlotVectors(h - h2);
-  // I think, they do not match exactly because one implementation use direct form 1 and the other
-  // direct form 2 which introduce different rounding errors.
-
+  ok &= rsIsCloseTo(h2, h, 1.e-15);
+  //rsPlotVectors(h, h2);
+  //rsPlotVectors(h - h2);  // Plot error 
 
   return ok;
 
   // Notes:
   //
-  // 
+  // - I think, we cannot expect an exact match because one implementation use direct form 1 and 
+  //   the other direct form 2 which introduce different rounding errors.
 }
 
 bool nestedAllpassUnitTest()
@@ -1969,6 +1967,9 @@ bool nestedAllpassUnitTest()
   ok &= h3 == hN;
   //rsPlotVectors(h3, hN);
 
+  return ok;
+
+
   // ToDo:
   //
   // - Test also the functions getSample2Stages/getSample3Stages of the nestedN object. They are 
@@ -1984,11 +1985,7 @@ bool nestedAllpassUnitTest()
   //   Tolerance is needed because we cut off the infinite impulse response. So, when using less 
   //   samples we expect to need higher tolerances. These tests can be applied to all sorts of 
   //   allpass filters.
-
- 
-  return ok;
 }
-
 
 bool allpassUnitTest()
 {
