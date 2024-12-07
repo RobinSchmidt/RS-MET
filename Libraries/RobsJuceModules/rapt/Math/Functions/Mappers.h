@@ -35,22 +35,34 @@ public:
     this->outMin = outMin;
     this->outMax = outMax;
 
+    inScale  = T(1) / (inMax-inMin);
+    argScale = log(outMax / outMin);
+
+
     // ToDo:  precompute 1/(inMax-inMin) and log(outMax/outMin)
   }
 
 
   T map(T x) const override
   {
-    T tmp = (x - inMin) / (inMax - inMin);
-    return outMin * std::exp(tmp * (log(outMax / outMin)));
+    T tmp = (x - inMin) * inScale;
+    return outMin * std::exp(tmp * argScale);
+
+
+    //T tmp = (x - inMin) / (inMax - inMin);
+    //return outMin * std::exp(tmp * (log(outMax / outMin)));
   };
 
 public:
 
-  T inMin  = 0;
-  T inMax  = 1;
-  T outMin = 1;
-  T outMax = 2;
+  T inMin    = 0;
+  T inMax    = 1;
+  T outMin   = 1;
+  T outMax   = 2;
+
+  T inScale  = 1;
+  T argScale = 1;
+
 
   // Maybe get rid of members that arent used in the computations. Only keep inMin, exponentScale,
   // resultScale
