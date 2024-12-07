@@ -123,6 +123,19 @@ T rsPow(const T& base, int exponent);
 // double. That means that in this case the exponent gets truncated to an integer and a wrong 
 // result is produced. A possible solution could be to rename it to rsPowInt.
 
+// But maybe this code fixes it - it will better fit the pattern of parameters for 
+// double/double:
+//template<class T>
+//T rsPow(T base, T exponent)
+//{
+//  return std::pow(base, exponent);
+//}
+// Yeah - nope - with that code, the library doesn't even compile anymore. We get "ambiguous call
+// to overloaded function"" errors.
+
+
+
+
 /** Generates a random number that is uniformly distributed between min and max (inclusive). The
 underlying integer pseudo random number generator is a linear congruential with period length of
 2^32. It is based on Numerical Recipies in C (2nd edition), page 284. You may pass a seed to the
