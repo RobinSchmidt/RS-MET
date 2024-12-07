@@ -329,6 +329,13 @@ public:
     delayLines[stageIndex].setMaximumDelayInSamples(newMaxDelay);
   }
 
+  void setMaxDelayInSamples(int newMaxDelay)
+  {
+    RAPT::rsAssert(newMaxDelay > 0);             // Or maybe we should allow 0?
+    for(int i = 0; i < getMaxNumStages(); i++)
+      setMaxDelayInSamples(i, newMaxDelay);
+  }
+
   void setDelayInSamples(int stageIndex, int newDelay)
   {
     RAPT::rsAssert(stageIndex < getMaxNumStages());

@@ -603,6 +603,7 @@ template class rsStateVariableFilterChain<float, float>;
 template class rsStateVariableFilterChain<float, double>; 
 template class rsStateVariableFilterChain<long double, long double>; 
 
+template class rsBasicDelayLine<double>;
 
 
 // Physics:

@@ -124,6 +124,12 @@ public:
       nestedAllpass.setMaxDelayInSamples(newMaxDelay);
   }
 
+  void setMaxDelayInSamples(int newMaxDelay)
+  {
+    setMaxDelayInSamples(0, newMaxDelay);
+    setMaxDelayInSamples(1, newMaxDelay);
+  }
+
   void setDelayInSamples(int nestLevel, int newDelay) 
   { 
     if(nestLevel == 0)
@@ -206,6 +212,13 @@ public:
       nestedAllpass.setMaxDelayInSamples(nestLevel-1, newMaxDelay);
   }
 
+  void setMaxDelayInSamples(int newMaxDelay)
+  {
+    setMaxDelayInSamples(0, newMaxDelay);
+    setMaxDelayInSamples(1, newMaxDelay);
+    setMaxDelayInSamples(2, newMaxDelay);
+  }
+
   void setDelayInSamples(int nestLevel, int newDelay) 
   { 
     if(nestLevel == 0)
@@ -283,6 +296,14 @@ public:
       delayLine.setMaximumDelayInSamples(newMaxDelay);
     else
       nestedAllpass.setMaxDelayInSamples(nestLevel-1, newMaxDelay);
+  }
+
+  void setMaxDelayInSamples(int newMaxDelay)
+  {
+    setMaxDelayInSamples(0, newMaxDelay);
+    setMaxDelayInSamples(1, newMaxDelay);
+    setMaxDelayInSamples(2, newMaxDelay);
+    setMaxDelayInSamples(3, newMaxDelay);
   }
 
   void setDelayInSamples(int nestLevel, int newDelay) 

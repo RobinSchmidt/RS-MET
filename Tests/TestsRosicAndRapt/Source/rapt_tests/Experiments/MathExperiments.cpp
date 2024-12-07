@@ -4040,18 +4040,29 @@ void fmodTest()  // rename to wrapAroundTest
 
 void mathErrorsTest()
 {
+  // Just a stub at the moment
+
   // We test the behavior of C++ in cases of certain invalid math operations.
+  float denF, fracF;
+  denF = +0.f; fracF = +1.f / denF;  // +1 / +0 == +inf
+  // ToDo: +1 / -0, -1 / +0, -1 / -0
 
-  float numF  = 2.f;
-  float denF  = 0.f;
-  float fracF = numF/denF;  // fracF == +inf
+  // We can't just write 1.f/0.f because the compiler catches this as error and refuses to compile.
+  // But when we assign variables, it works
 
-  int numI = 2;
+  //int numI = 2;
   int denI = 0;
-  //int fracI = numI/denI;
-  // This actually throws an exception. If we don't handle it, we cannot get passed this point.
-  // What happens in a release build? Maybe move into math unit test or inot a mathErrors
-  // experiment
+  //int fracI = 1 / denI;
+  // This actually throws an exception. If we don't handle it, we cannot get passed this point in
+  // the debugger. When clicking "continue", it just throws the execption again. What will happen 
+  // in a release build?
+
+  // ToDo:
+  //
+  // - Add tests for overflow behavior for signed and unsigned integers, square-root of negative
+  //   numbers, 0.f/0.f etc.
+  //
+  // - Maybe move this into the research repo. It doesn't really fit here.
 }
 
 void gaussBellProduct()

@@ -1985,6 +1985,7 @@ bool nestedAllpassUnitTest()
 
   // Set up a nested allpass with one level of nesting and get its impulse response:
   rsAllpassDelayNestedL1<Real, Real> nested1;
+  nested1.setMaxDelayInSamples(17);
   nested1.setAllpassCoeff(  0, +0.8);
   nested1.setAllpassCoeff(  1, -0.9);
   nested1.setDelayInSamples(0, 11);
@@ -1999,13 +2000,17 @@ bool nestedAllpassUnitTest()
   // function which should dispatch to the unrolled implementation:
   rsAllpassDelayNested<  Real, Real> nested;
   nested.setMaxNumStages(4);
+  nested.setMaxDelayInSamples(31);
   nested.setNumStages(2);                         // 2 stages means a nesting level of 1
   nested.setAllpassCoeff(  0, +0.8);
   nested.setAllpassCoeff(  1, -0.9);
   nested.setDelayInSamples(0, 11);
   nested.setDelayInSamples(1, 17);
   h = impulseResponse(nested, numSamples, 1.0);   // Uses high level dispatcher getSample()
-  ok &= h1 == h; 
+  ok &= h1 == h;
+  // I think, it may be important to call setMaxNumStages() *before*  calling 
+  // setMaxDelayInSamples(). ToDo: Fix this: both calling orders should work the same way!
+
 
   nested.reset();
   for(int n = 0; n < N; n++)
@@ -2020,6 +2025,7 @@ bool nestedAllpassUnitTest()
 
   // Now with a nesting level of 2:
   rsAllpassDelayNestedL2<Real, Real> nested2;
+  nested2.setMaxDelayInSamples(23);
   nested2.setAllpassCoeff(  0, +0.8);
   nested2.setAllpassCoeff(  1, -0.9);
   nested2.setAllpassCoeff(  2, +0.7);
@@ -2052,6 +2058,7 @@ bool nestedAllpassUnitTest()
 
   // Now with a nesting level of 3:
   rsAllpassDelayNestedL3<Real, Real> nested3;
+  nested3.setMaxDelayInSamples(29);
   nested3.setAllpassCoeff(  0, +0.8);
   nested3.setAllpassCoeff(  1, -0.9);
   nested3.setAllpassCoeff(  2, +0.7);
