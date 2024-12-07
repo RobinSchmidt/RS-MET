@@ -97,6 +97,7 @@ template<class T> inline T rsSqrt( T x) { return std::sqrt( x); }
 template<class T> inline T rsExp(  T x) { return std::exp(  x); }
 template<class T> inline T rsExp2( T x) { return std::exp2( x); }
 template<class T> inline T rsLog(  T x) { return std::log(  x); }
+template<class T> inline T rsLog2( T x) { return std::log2( x); }
 template<class T> inline T rsSin(  T x) { return std::sin(  x); }
 template<class T> inline T rsCos(  T x) { return std::cos(  x); }
 template<class T> inline T rsTan(  T x) { return std::tan(  x); }

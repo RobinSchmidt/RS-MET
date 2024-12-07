@@ -33,12 +33,12 @@ public:
   {
     this->inMin  = inMin;
     this->outMin = outMin;
-    argScale = std::log2(outMax / outMin) / (inMax-inMin);
+    argScale = rsLog2(outMax / outMin) / (inMax-inMin);
   }
 
   T map(T x) const override
   {
-    return outMin * std::exp2((x - inMin) * argScale);
+    return outMin * rsExp2((x - inMin) * argScale);
   };
 
 public:
