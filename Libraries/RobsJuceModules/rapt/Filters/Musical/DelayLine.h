@@ -84,18 +84,21 @@ public:
 
   // New functions - more convenient in certain situations:
 
+  /** Reads the content of the delayline at the current tapOut pointer which is always M samples
+  behind the tapIn pointer where M is the delay in samples. This readout triggers no update action.
+  It's sometimes convenient to control the read/write/update steps from outside. That's why this
+  function exists. */
   inline T readOutput() const { return delayLine[tapOut]; }
 
-  /** UNDER CONSTRUCTION. Not yet tested. */
+  /** Reads the content of the delayline at an arbitrary delay, i.e. at a position that is 
+  independent from our current tapOut pointer. This can be used to implement multitap delaylines.
+  We can just read the delayline whereever we want. */
   inline T readOutputAt(int delay) const 
   { 
     int readPos = tapIn - delay;   // Compute nominal read index
     readPos = readPos & maxDelay;  // Apply bit masking for wrap-around behavior
     return delayLine[readPos];     // Read out the delayline
   }
-  // This needs thorough unit tests!
-  // ...OK...now there is a unti test - it seems to work
-
 
 
 
