@@ -2114,11 +2114,22 @@ bool twoPoleAllpassDelayUnitTest()
   naive.setMaxDelayInSamples(16);
   naive.setDelayInSamples(10);
   naive.setAllpassCoeffs(-0.7, +0.5);
-  Vec ht   = impulseResponse(naive, numSamples, 1.0);
+  Vec ht = impulseResponse(naive, numSamples, 1.0);
   Vec mags = rsSpectralMagnitudes(ht);
   //rsPlotVectors(ht);
   //rsPlotVectors(mags);
   ok &= isAllpass(ht, 1.e-7);
+
+
+  rsTwoPoleAllpassDelayUnfinished<double, double> optimized;
+  optimized.setMaxDelayInSamples(16);
+  optimized.setDelayInSamples(10);
+  optimized.setAllpassCoeffs(-0.7, +0.5);
+  Vec h = impulseResponse(optimized, numSamples, 1.0);
+  ok &= rsIsCloseTo(h, ht, 1.e-13);
+
+
+
 
   return ok;
 
