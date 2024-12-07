@@ -336,15 +336,12 @@ protected:
 
 //=================================================================================================
 
-/** This is a naive implementation of an idea that I call 2-pole allpass delay. The regular allpass
-delay can be obtained by starting with a first order (i.e. 1-pole-1-zero filter) and replacing the 
-unit delay by a delayline of some length M in samples. That amounts to replacing z^-1 by z^-M in 
-the transfer function. This here applies the same idea to a 2-pole allpass. The implementation is
-horribly wasteful with memory though. Switching to direct form 2 should reduce the required delay
-memory by a factor of two and using a 2-tap delayline instead of two separate delaylines for the
-z^-M and z^-2M terms should reduce it by another another factor of 1.5. So, overall, we use 3 times
-as much delay memory as a sensible implementation should. But the code can be verified to be 
-correct by inspection more easily. That's why this is a naive prototype. */
+/** This is a naive implementation of rsTwoPoleAllpassDelay. The implementation is "correct by 
+inspection" but horribly wasteful with memory. Switching to direct form 2 should reduce the 
+required delay memory by a factor of two and using a 2-tap delayline instead of two separate 
+delaylines for the z^-M and z^-2M terms should reduce it by another another factor of 1.5. So, 
+overall, we use 3 times as much delay memory as a sensible implementation should. That's why this 
+is a naive prototype. */
 
 template<class TSig, class TPar>
 class rsTwoPoleAllpassDelayNaive 
@@ -436,9 +433,11 @@ Can we then also build nested structure from these units?  */
 
 //=================================================================================================
 
-/** This attempts to be a better implementattion...First, I have just copied the naive 
-implementation, the set up a unit test that ensures that both implementations produce the same 
-results and then started optimizing... */
+/** This is an idea that I call 2-pole allpass delay. The regular allpass delay (aka Schroeder 
+allpass) can be obtained by starting with a first order (i.e. 1-pole-1-zero filter) and replacing 
+the unit delay by a delayline of some length M in samples. That amounts to replacing z^-1 by z^-M 
+in the transfer function. This filter here here applies the same idea to a 2-pole allpass. We 
+replace z^-1 by z^-M and z^-2 by z^-2M. */
 
 template<class TSig, class TPar>
 class rsTwoPoleAllpassDelay
@@ -456,7 +455,7 @@ public:
     delay = newDelay;
     delayLine.setDelayInSamples(2*newDelay);
     // The multiplication by 2 is deliberate. It arises from deriving the filter from a 2-pole 
-    // filter. What is a delay of 2 in the 2-pole becomes a delay of 2*M here.
+    // filter. The delay of 2 in the 2-pole becomes a delay of 2*M here.
   }
 
   void setAllpassCoeffs(TPar newCoeff1, TPar newCoeff2) 
