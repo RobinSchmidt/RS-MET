@@ -1839,13 +1839,21 @@ bool isAllpass(const std::vector<T>& h, T tol)
 
   std::vector<T> mags(N/2), phases(N/2);
   fft.getRealSignalMagnitudesAndPhases(&h[0], &mags[0], &phases[0]);
-  //rsPlotVectors(mags);  // Can be uncommented to investigate problems
 
   // Check if the maximum deviation from unit frequency response is within the tolerance:
   T maxErr = T(0);
   for(int k = 0; k < N/2; k++)
     maxErr = rsMax(maxErr, rsAbs(T(1) - mags[k]));
-  return maxErr <= tol;
+  bool ok = maxErr <= tol;
+
+  // This can be uncommented in debug sessions to investigate problems when the test fails:
+  if(!ok)
+  {
+    rsError("Filter is not allpass!");
+    rsPlotVectors(mags);  
+  }
+
+  return ok;
 
   // ToDo:
   //
@@ -1868,7 +1876,6 @@ bool allpassChainUnitTest()
   using VecR = std::vector<Real>;
   using VecI = std::vector<int>;
 
-  //int numSamples = 128;
   int numSamples = 256;
 
   VecI delays = { 1,    2,    3,    5,    7   };
@@ -1935,7 +1942,7 @@ bool nestedAllpassUnitTest()
   using Real = double;
   using Vec  = std::vector<Real>;
 
-  int numSamples = 300;
+  int numSamples = 512;
 
   // Create Dirac delta function d[n] to be used as input and h[n] to be used for the impulse 
   // response outputs:
@@ -1950,7 +1957,11 @@ bool nestedAllpassUnitTest()
   nested1.setDelayInSamples(0, 11);
   nested1.setDelayInSamples(1, 17);
   Vec h1 = impulseResponse(nested1, numSamples, 1.0);
+  //ok &= isAllpass(h1, 1.e-7);
   //rsPlotVectors(h1);
+  // The isAllpass test fails because it seems that the truncation causes really severe artifacts
+  // in the case of the nested allpass structure. ToDo make a test case with a more quickly 
+  // decaying allpass
 
 
   // Set up the general implementation in such a way that it produces the same result. We test 3 
@@ -1976,9 +1987,6 @@ bool nestedAllpassUnitTest()
   for(int n = 0; n < N; n++)
     h[n] = nested.getSample2Stages(d[n]);         // Unrolled 2-stage implementation
   ok &= h1 == h;
-
-
-
 
 
   // Now with a nesting level of 2:
@@ -2145,7 +2153,10 @@ bool allpassUnitTest()
   bool ok = true;
 
   ok &= allpassChainUnitTest();
+
   ok &= nestedAllpassUnitTest();
+
+
   ok &= allpassDisperserUnitTest();
   ok &= twoPoleAllpassDelayUnitTest();
 
