@@ -454,6 +454,7 @@ public:
 
   void setDelayInSamples(int newDelay)
   {
+    delay = newDelay;
     delayLine1. setDelayInSamples(  newDelay);
     delayLine2. setDelayInSamples(2*newDelay);
   }
@@ -469,13 +470,16 @@ public:
     TPar c1 = coeff1, c2 = coeff2;
 
     // Retrieve delayed states:
-    TSig vM  = delayLine1.readOutput();    // Read vM  = v[n-M]   from the 1st delayline.
-    TSig v2M = delayLine2.readOutput();    // Read v2M = v[n-2*M] from the 2nd delayline.
+    //TSig vM  = delayLine1.readOutput();    // Read vM  = v[n-M]   from the 1st delayline.
+    TSig vM  = delayLine1.readOutputAt(delay); // Read vM  = v[n-M]   from the 1st delayline.
+    TSig v2M = delayLine2.readOutput();        // Read v2M = v[n-2*M] from the 2nd delayline.
+
 
     // Compute new state v[n] and write into the delaylines:
     TSig v  = x - c1 * vM - c2 * v2M;      // Compute v[n] = x[n] - c1 * v[n-M] - c2 * v[n-2M]
     delayLine1.writeInputAndUpdate(v);     // Write v[n] into delayline1.
     delayLine2.writeInputAndUpdate(v);     // Write v[n] into delayline1.
+
 
     return c2 * v + c1 * vM + v2M;         // Return y[n] = c2 * v[n] + c1 * v[n-M] + v[n-2M].
   }
@@ -502,6 +506,8 @@ protected:
 
   TPar coeff1 = 0.0;
   TPar coeff2 = 0.0;
+
+  int delay = 0;
 };
 
 #endif
