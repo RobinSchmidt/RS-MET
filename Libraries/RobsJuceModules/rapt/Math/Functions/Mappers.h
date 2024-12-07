@@ -13,7 +13,9 @@ public:
 };
 
 
-
+/** Realizes the same mapping as the free function rsLinToExp but it is more efficient to use such 
+an object if you want to map many values where the range stays the same. See
+rsAllpassDisperser::setupWithTwoPoles for a use case. ...TBC... */
 
 template<class T>
 class rsMapperLinToExp : public rsMapper<T>
