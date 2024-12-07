@@ -750,47 +750,52 @@ public:
     filters.resize(maxNumStages);
   }
 
-
-
-  //void setupWithOnePoles(int numStages, TPar wLo, TPar wHi, TPar wShape);
-
   void setupWithTwoPoles(int numStages, TPar wLo, TPar wHi, TPar wShape, TPar Q);
 
-  // ToDo: setupWithDualOnePoles
+  // ToDo: setupWithOnePoles, setupWithDualOnePoles
 
 
-  TSig getSample(TSig in)
-  {
-    for(int i = 0; i < numStages; i++)
-      in = filters[i].getSample(in);
-    return in;
-    // We re-use "in" also for the temporaries and for the output
-  }
+  TSig getSample(TSig in);
 
-
-  void reset()
-  {
-    for(int i = 0; i < numStages; i++)
-      filters[i].reset();
-  }
+  void reset();
 
 
 protected:
 
+  /** The rational map that we use as shaping function for the frequency parameters of the 
+  individual allpass stages. */
   TPar applyShape(TPar x, TPar shapeParam)
   {
     TPar s = rsExp2(shapeParam);
     return s*x / ((s-1)*x + 1);
-    // See rsLinearFractionalInterpolator::simpleMap() for what this formula means and wher it 
+
+    // See rsLinearFractionalInterpolator::simpleMap() for what this formula means and where it 
     // comes from
   };
 
 
   std::vector<rsStateVariableFilter<TSig, TPar>> filters;
-
   int numStages = 0;
 
 };
+
+template<class TSig, class TPar>
+TSig rsAllpassDisperser<TSig, TPar>::getSample(TSig tmp)
+{
+  for(int i = 0; i < numStages; i++)
+    tmp = filters[i].getSample(tmp);
+  return tmp;
+
+  // As the input is is passed by value, we can use it for temporary results and the output as 
+  // well.
+}
+
+template<class TSig, class TPar>
+void rsAllpassDisperser<TSig, TPar>::reset()
+{
+  for(int i = 0; i < numStages; i++)
+    filters[i].reset();
+}
 
 template<class TSig, class TPar>
 void rsAllpassDisperser<TSig, TPar>::setupWithTwoPoles(
@@ -800,10 +805,13 @@ void rsAllpassDisperser<TSig, TPar>::setupWithTwoPoles(
 
   if(numStages == 1)
   {
+    // The case numStages == 1 needs to be treated separately as edge case. The code in the else 
+    // branch below would produce a division by zero error in this case.
     filters[0].setupAllpass(wLo, Q);
   }
   else
   {
+    // This branch works also fine for numStages == 0. In this case, the loop is not even entered.
     TPar scl = TPar(1) / TPar(numStages-1); 
     RAPT::rsMapperLinToExp<TPar> mapper(TPar(0), TPar(1), wLo, wHi);
     for(int i = 0; i < numStages; i++)
@@ -814,12 +822,11 @@ void rsAllpassDisperser<TSig, TPar>::setupWithTwoPoles(
     }
   }
 
-
   // ToDo:
   //
   // - See rosic::rsFlatZapper::updateCoeffs(). It has similar code. It may eventually be 
-  //   refactored to use rsAllpassDisperser. There, we also use potentially different Q-values for
-  //   each filter. Maybe add a function for different Qs per filter here, too. It didn't seem to be
-  //   too useful though - that's why I left it out for the time being and juts use the same Q for 
-  //   all stages. This also saves computations.
+  //   refactored to use rsAllpassDisperser. But There, we also support usage potentially different
+  //   Q-values for each filter. Maybe add a function for different Qs per filter here, too. It 
+  //   didn't seem to be too useful though - that's why I left it out for the time being and just 
+  //   use the same Q for all stages. This also saves computations.
 }
