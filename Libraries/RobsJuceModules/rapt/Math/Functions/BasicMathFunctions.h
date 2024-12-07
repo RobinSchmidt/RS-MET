@@ -118,6 +118,10 @@ can also be a float, complex, rsModularInteger, rsPolynomial, rsMatrix - whateve
 an appropriate multiplication operator. */
 template <class T>
 T rsPow(const T& base, int exponent);
+// BUG!!!
+// This function is problematic! Sometimes it seems to get called when both parameters are a 
+// double. That means that in this case the exponent gets truncated to an integer and a wrong 
+// result is produced. A possible solution could be to rename it to rsPowInt.
 
 /** Generates a random number that is uniformly distributed between min and max (inclusive). The
 underlying integer pseudo random number generator is a linear congruential with period length of

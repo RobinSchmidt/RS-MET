@@ -2069,8 +2069,14 @@ bool allpassDisperserUnitTest()
 
   double test1 = std::pow(2.0, 3.0);
   double test2 = std::exp2(    3.0);
+  double test3 = std::pow(2.0, 0.0);
+  double test4 = std::exp2(    0.0);
+
+
 
   return ok;
+
+
 }
 
 
