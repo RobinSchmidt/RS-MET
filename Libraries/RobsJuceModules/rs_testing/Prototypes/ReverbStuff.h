@@ -103,7 +103,15 @@ protected:
 
 //=================================================================================================
 
-
+/** This is a naive implementation of an idea that I call 2-pole allpass delay. The regular allpass
+delay can be obtained by starting with a first order (i.e. 1-pole-1-zero filter) and replacing the 
+unit delay by a delayline of some length M in samples. That amounts to replacing z^-1 by z^-M in 
+the transfer function. This here applies the same idea to a 2-pole allpass. The implementation is
+horribly wasteful with memory though. Switching to direct form 2 should reduce the required delay
+memory by a factor of two and using a 2-tap delayline instead of two separate delaylines for the
+z^-M and z^-2M terms should reduce it by another another factor of 1.5. So, overall, we use 3 times
+as much delay memory as a sensible implementation should. But the code can be verified to be 
+correct by inspection more easily. That's why this is a naive prototype. */
 
 
 template<class TSig, class TPar>
