@@ -448,22 +448,12 @@ public:
 
   void setMaxDelayInSamples(int newMaxDelay)
   {
-    inputDelayLine1. setMaximumDelayInSamples(  newMaxDelay);
-    outputDelayLine1.setMaximumDelayInSamples(  newMaxDelay);
-    inputDelayLine2. setMaximumDelayInSamples(2*newMaxDelay);
-    outputDelayLine2.setMaximumDelayInSamples(2*newMaxDelay);
-
     delayLine1. setMaximumDelayInSamples(  newMaxDelay);
     delayLine2. setMaximumDelayInSamples(2*newMaxDelay);
   }
 
   void setDelayInSamples(int newDelay)
   {
-    inputDelayLine1.setDelayInSamples(   newDelay);
-    outputDelayLine1.setDelayInSamples(  newDelay);
-    inputDelayLine2.setDelayInSamples( 2*newDelay);
-    outputDelayLine2.setDelayInSamples(2*newDelay);
-
     delayLine1. setDelayInSamples(  newDelay);
     delayLine2. setDelayInSamples(2*newDelay);
   }
@@ -472,25 +462,6 @@ public:
   { 
     coeff1 = newCoeff1;
     coeff2 = newCoeff2;
-  }
-
-  inline TSig getSampleOld(TSig x)
-  {
-    // Retrieve delayed inputs and outputs:
-    TSig xM  = inputDelayLine1.getSample(x);                             // x[n-M]
-    TSig yM  = outputDelayLine1.getSampleSuppressTapIncrements(TSig(0)); // y[n-M]
-    TSig x2M = inputDelayLine2.getSample(x);                             // x[n-2*M]
-    TSig y2M = outputDelayLine2.getSampleSuppressTapIncrements(TSig(0)); // y[n-2*M]
-
-    // Compute current output:
-    TSig y = coeff2 * x + coeff1*xM + x2M - coeff1 * yM - coeff2 * y2M; // y[n], our current output
-
-    // Update the output delaylines and return result:
-    outputDelayLine1.addToInput(y);
-    outputDelayLine1.incrementTapPointers();
-    outputDelayLine2.addToInput(y);
-    outputDelayLine2.incrementTapPointers();
-    return y;
   }
 
   inline TSig getSample(TSig x)
@@ -510,27 +481,8 @@ public:
   }
 
 
-
-  /*
-  // from rsAllpassDelay - i.e. for a 1st order version - or one-pole based
-  inline TSig getSample(TSig x)
-  {
-    const TPar c = allpassCoeff;         // For convenience.
-    TSig vM = delayLine.readOutput();    // Read vM = v[n-M] from the delayline.
-    TSig v  = x - c * vM;                // Compute v[n] = x[n] - c * v[n-M].
-    delayLine.writeInputAndUpdate(v);    // Write v[n] into the delayline.
-    return c * v + vM;                   // Return y[n] = c * v[n] + v[n-M].
-  }
-  */
-
-
   void reset()
   {
-    inputDelayLine1.reset();
-    outputDelayLine1.reset();
-    inputDelayLine2.reset();
-    outputDelayLine2.reset();
-
     delayLine1.reset();
     delayLine2.reset();
   }
@@ -538,16 +490,13 @@ public:
 
 protected:
 
-  // Soon obsolete:
-  RAPT::rsBasicDelayLine<TSig> inputDelayLine1;
-  RAPT::rsBasicDelayLine<TSig> inputDelayLine2;
-  RAPT::rsBasicDelayLine<TSig> outputDelayLine1;
-  RAPT::rsBasicDelayLine<TSig> outputDelayLine2;
-
   // As first step, we replace the separate in/out delaylines with delaylines for intermediate
   // signals:
   RAPT::rsBasicDelayLine<TSig> delayLine1;
   RAPT::rsBasicDelayLine<TSig> delayLine2;
+
+  // As second step, replace the two delaylines with a single 2-tap delayline. Maybe we should use
+  // rsRingBuffer for that
 
 
   TPar coeff1 = 0.0;
