@@ -2070,6 +2070,42 @@ bool allpassDisperserUnitTest()
 }
 
 
+// Tests if a given impulse response h is allpass in nature - up to some tolerance because it's
+// necessarily truncated to finite length.
+template<class T>
+bool isAllpass(const std::vector<T>& h, T tol)
+{
+  int N = h.size();
+
+  rsAssert(rsIsPowerOfTwo(N), "This function currently only works for powers of 2." );
+  
+  // Create and set up an FFT object:
+  using FFT = rsFourierTransformerRadix2<T>;
+  FFT fft;
+  fft.setBlockSize(N);
+  fft.setDirection(FFT::directions::FORWARD);
+  fft.setNormalizationMode(FFT::normalizationModes::NEVER_NORMALIZE);
+
+
+  std::vector<T> mags(N), phases(N);
+  fft.getRealSignalMagnitudesAndPhases(&h[0], &mags[0], &phases[0]);
+
+
+  rsPlotVectors(mags);
+
+
+
+  return false;  // preliminary
+
+  // ToDo:
+  //
+  // - It's a bit inelegant to have to use an object of type rsFourierTransformerRadix2<T>. Such
+  //   an object is good when one wants to make mayn FFTs of the same size for a spectrogram or for
+  //   realtime processing. However, to just compute one FFT, a simple function call would be
+  //   more convenient. Maybe factor out a function fftMagnitudes(h) or something like that.
+}
+
+
 bool twoPoleAllpassDelayUnitTest()
 {
   // Under construction
@@ -2086,6 +2122,9 @@ bool twoPoleAllpassDelayUnitTest()
   naive.setDelayInSamples(10);
   naive.setAllpassCoeffs(-0.7, +0.5);
   Vec ht = impulseResponse(naive, numSamples, 1.0);
+
+  ok &= isAllpass(ht, 1.e-12);
+
   rsPlotVectors(ht);
 
 

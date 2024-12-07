@@ -16,6 +16,7 @@ public:
     FORWARD,
     INVERSE
   };
+  // Rename to Direction, the entries should use lowerCamelCase
 
   /** These are the possible normalization modes. */
   enum normalizationModes
@@ -25,6 +26,8 @@ public:
     ORTHONORMAL_TRAFO,          // divide by sqrt(blockSize) on both transforms
     NEVER_NORMALIZE             // no normalization at all
   };
+  // Rename to Direction, the entries should use lowerCamelCase
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Static Member Functions */
@@ -130,7 +133,7 @@ public:
   magnitudes[0] is the (purely real) DC and phases[0] is the (purely real) coefficient for the
   Nyquist frequency. */
   void getRealSignalMagnitudesAndPhases(const T *signal, T *magnitudes, T *phases);
-    // hmm...this is a somewhat odd convention
+  // Hmm...this is a somewhat odd convention - or maybe it makes sense?
 
   /** Calculates the magnitudes only from a signal (useful for analyzer-stuff). */
   void getRealSignalMagnitudes(const T *signal, T *magnitudes);
