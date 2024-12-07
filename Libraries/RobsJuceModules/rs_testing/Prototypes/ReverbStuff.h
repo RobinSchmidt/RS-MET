@@ -429,78 +429,9 @@ ToDo: generalize this idea to arbitrary order filters with arbitrary delays, i.e
                   - c_1     y[n-d_1] - c_2     y[n-d_2] - ... - c_M y[n-d_M]
 
 This formula needs to be verified. This could perhaps be realized with a multitap delayline.
-Can we then also build nested structure from these units?  */
-
-//=================================================================================================
-
-/** This is an idea that I call 2-pole allpass delay. The regular allpass delay (aka Schroeder 
-allpass) can be obtained by starting with a first order (i.e. 1-pole-1-zero filter) and replacing 
-the unit delay by a delayline of some length M in samples. That amounts to replacing z^-1 by z^-M 
-in the transfer function. This filter here here applies the same idea to a 2-pole allpass. We 
-replace z^-1 by z^-M and z^-2 by z^-2M. */
-
-/*
-template<class TSig, class TPar>
-class rsTwoPoleAllpassDelay
-{
-
-public:
-
-  void setMaxDelayInSamples(int newMaxDelay)
-  {
-    delayLine.setMaximumDelayInSamples(2*newMaxDelay);
-  }
-
-  void setDelayInSamples(int newDelay)
-  {
-    delay = newDelay;
-    delayLine.setDelayInSamples(2*newDelay);
-    // The multiplication by 2 is deliberate. It arises from deriving the filter from a 2-pole 
-    // filter. The delay of 2 in the 2-pole becomes a delay of 2*M here.
-  }
-
-  void setAllpassCoeffs(TPar newCoeff1, TPar newCoeff2) 
-  { 
-    coeff1 = newCoeff1;
-    coeff2 = newCoeff2;
-  }
-
-  inline TSig getSample(TSig x)
-  {
-    const TPar c1 = coeff1, c2 = coeff2;       // Shorthands for convenience
-    TSig vM  = delayLine.readOutputAt(delay);  // Read vM  = v[n-M]   from delayline
-    TSig v2M = delayLine.readOutput();         // Read v2M = v[n-2*M] from delayline
-    TSig v   = x - c1 * vM - c2 * v2M;         // Compute v[n] = x[n] - c1 * v[n-M] - c2 * v[n-2M]
-    delayLine.writeInputAndUpdate(v);          // Write v[n] into delayline
-    return c2 * v + c1 * vM + v2M;             // Return y[n] = c2 * v[n] + c1 * v[n-M] + v[n-2M]
-
-    // Overall, this algorithm produces:
-    //
-    //   y[n] = c2 * x[n] + c1 * x[n-M] + x[n-2M] - c1 * y[n-M] - c2 * y[n-2M]
-    //
-    // But it's implemented in direct form 2 and uses the intermediate signal v that goes into the 
-    // delayline such that we don't need separate delaylines for input and output.
-  }
-
-  void reset()
-  {
-    delayLine.reset();
-  }
-
-
-protected:
-
-  RAPT::rsBasicDelayLine<TSig> delayLine;
-  TPar coeff1 = 0.0;
-  TPar coeff2 = 0.0;
-  int  delay  = 0;
-
-};
+Can we then also build nested structure from these units?  
 */
 
-// Code moved to RAPT
 
-// ToDo: implement a more general variant that doesn't assume the 2-pole prototype to be an 
-// allpass.
 
 #endif
