@@ -1847,11 +1847,11 @@ bool isAllpass(const std::vector<T>& h, T tol)
   bool ok = maxErr <= tol;
 
   // This can be uncommented in debug sessions to investigate problems when the test fails:
-  if(!ok)
-  {
-    rsError("Filter is not allpass!");
-    rsPlotVectors(mags);  
-  }
+  //if(!ok)
+  //{
+  //  rsError("Filter is not allpass!");
+  //  rsPlotVectors(mags);  
+  //}
 
   return ok;
 
@@ -1957,11 +1957,7 @@ bool nestedAllpassUnitTest()
   nested1.setDelayInSamples(0, 11);
   nested1.setDelayInSamples(1, 17);
   Vec h1 = impulseResponse(nested1, numSamples, 1.0);
-  //ok &= isAllpass(h1, 1.e-7);
   //rsPlotVectors(h1);
-  // The isAllpass test fails because it seems that the truncation causes really severe artifacts
-  // in the case of the nested allpass structure. ToDo make a test case with a more quickly 
-  // decaying allpass
 
 
   // Set up the general implementation in such a way that it produces the same result. We test 3 
@@ -2021,9 +2017,6 @@ bool nestedAllpassUnitTest()
     h[n] = nested.getSample3Stages(d[n]);         // Unrolled 3-stage implementation
   ok &= h2 == h;
 
-
-
-
   // Now with a nesting level of 3:
   rsAllpassDelayNestedL3<Real, Real> nested3;
   nested3.setAllpassCoeff(  0, +0.8);
@@ -2043,6 +2036,17 @@ bool nestedAllpassUnitTest()
   h = impulseResponse(nested, numSamples, 1.0);
   ok &= h3 == h;
   //rsPlotVectors(h3, hN);
+
+  // Now we make a test to ensure that the resulting impulse response is actually allpass. For 
+  // this we need to use smaller coefficients such that the response decays down more quickly. 
+  // Otherwise, the truncation artifacts would severly disturb the test:
+  nested.setAllpassCoeff(  0, +0.08);
+  nested.setAllpassCoeff(  1, -0.09);
+  nested.setAllpassCoeff(  2, +0.07);
+  nested.setAllpassCoeff(  3, -0.06);
+  h = impulseResponse(nested, numSamples, 1.0);
+  ok &= isAllpass(h, 1.e-4);
+  //rsPlotVectors(h);
 
   return ok;
 
@@ -2134,7 +2138,7 @@ bool twoPoleAllpassDelayUnitTest()
 
   //ok &= isAllpass(ht, 1.e-12);
 
-  rsPlotVectors(ht);
+  //rsPlotVectors(ht);
 
 
   return ok;
@@ -2153,7 +2157,6 @@ bool allpassUnitTest()
   bool ok = true;
 
   ok &= allpassChainUnitTest();
-
   ok &= nestedAllpassUnitTest();
 
 
