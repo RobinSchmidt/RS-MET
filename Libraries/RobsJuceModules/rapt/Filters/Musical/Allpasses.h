@@ -249,7 +249,6 @@ public:
   int getMaxNumStages() const { return (int) allpassDelays.size(); }
 
 
-
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
@@ -274,61 +273,6 @@ protected:
   int numStages = 0;
 
 };
-
-
-/*
-// Implementation:
-
-template<class TSig, class TPar>
-void rsAllpassDelayChain<TSig, TPar>::setMaxNumStages(int newMaxNumStages)
-{
-  allpassDelays.resize(newMaxNumStages);
-}
-
-template<class TSig, class TPar>
-void rsAllpassDelayChain<TSig, TPar>::setNumStages(int newNumStages)
-{
-  RAPT::rsAssert(newNumStages <= getMaxNumStages());
-  numStages = newNumStages;
-}
-
-template<class TSig, class TPar>
-void rsAllpassDelayChain<TSig, TPar>::setMaxDelayInSamples(int stageIndex, int newMaxDelay)
-{
-  RAPT::rsAssert(stageIndex < getMaxNumStages());
-  allpassDelays[stageIndex].setMaxDelayInSamples(newMaxDelay);
-}
-
-template<class TSig, class TPar>
-void rsAllpassDelayChain<TSig, TPar>::setDelayInSamples(int stageIndex, int newDelay)
-{
-  RAPT::rsAssert(stageIndex < getMaxNumStages());
-  allpassDelays[stageIndex].setDelayInSamples(newDelay);
-}
-
-template<class TSig, class TPar>
-void rsAllpassDelayChain<TSig, TPar>::setAllpassCoeff(int stageIndex, TPar newCoeff)
-{
-  RAPT::rsAssert(stageIndex < getMaxNumStages());
-  allpassDelays[stageIndex].setAllpassCoeff(newCoeff);
-}
-
-template<class TSig, class TPar>
-TSig rsAllpassDelayChain<TSig, TPar>::getSample(TSig in)
-{
-  TSig tmp = in;
-  for(int i = 0; i < numStages; i++)
-    tmp = allpassDelays[i].getSample(tmp);
-  return tmp;
-}
-
-template<class TSig, class TPar>
-void rsAllpassDelayChain<TSig, TPar>::reset()
-{
-  for(int i = 0; i < getMaxNumStages(); i++)
-    allpassDelays[i].reset();
-}
-*/
 
 
 //=================================================================================================
