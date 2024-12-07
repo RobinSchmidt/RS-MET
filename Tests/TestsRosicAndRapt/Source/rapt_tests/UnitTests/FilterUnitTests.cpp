@@ -1806,14 +1806,8 @@ bool hilbertFilterUnitTest()
     complexifier.processSampleFrame(&re[n], &im[n]);
 
 
-
   //rsPlotVectors(re, im);
   // Looks correct! ToDo: Include programmatic test. Maybe that can be best done with a sine input
-
-
-    
-
-
 
   // ToDo:
   // -Check the behavior with regard to delay compensation
@@ -2114,7 +2108,9 @@ bool nestedAllpassUnitTest()
 
 bool allpassDisperserUnitTest()
 {
-  // We compare the new implementation rsAllpassDisperser with rosic::rsFlatZapper
+  // We compare the new implementation rsAllpassDisperser with rosic::rsFlatZapper. The 
+  // rsAllpassDisperser is meant to provide a lower level API and gets away with less member
+  // variables.
 
   bool ok = true;
 
@@ -2159,14 +2155,14 @@ bool allpassDisperserUnitTest()
 
 bool twoPoleAllpassDelayUnitTest()
 {
-  // Under construction
+  // We test the class rsTwoPoleAllpassDelay against the naive prototype implementation 
+  // rsTwoPoleAllpassDelayNaive which is horribly wasteful with memory but can be verified
+  // more easily by inspection. We also verify that the classes actually produce an allpass output.
 
   bool ok = true;
 
   using Vec = std::vector<double>;
-
-  int    numSamples = 512;
-
+  int numSamples = 512;
 
   rsTwoPoleAllpassDelayNaive<double, double> naive;
   naive.setMaxDelayInSamples(16);
@@ -2177,7 +2173,6 @@ bool twoPoleAllpassDelayUnitTest()
   //rsPlotVectors(ht);
   //rsPlotVectors(mags);
   ok &= isAllpass(ht, 1.e-7);
-
 
   rsTwoPoleAllpassDelay<double, double> optimized;
   optimized.setMaxDelayInSamples(16);
