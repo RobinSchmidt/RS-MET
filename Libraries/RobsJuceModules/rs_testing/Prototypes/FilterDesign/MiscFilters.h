@@ -777,6 +777,14 @@ public:
 
 protected:
 
+  TPar applyShape(TPar x, TPar shapeParam)
+  {
+    TPar s = rsExp2(shapeParam);
+    return s*x / ((s-1)*x + 1);
+    // See rsLinearFractionalInterpolator::simpleMap() for what this formula means and wher it 
+    // comes from
+  };
+
 
   std::vector<rsStateVariableFilter<TSig, TPar>> filters;
 
@@ -790,50 +798,6 @@ void rsAllpassDisperser<TSig, TPar>::setupWithTwoPoles(
 {
   this->numStages = newNumStages;
 
-
-  /*
-  // Helper function to map the unit interval 0..1 to itself via a curve determined by our shape
-  // parameter. This is used in the computation of the stage-index dependent tuning frequency and
-  // Q for the allpass stage at the given index:
-  auto shape = [](TPar x, TPar shapeParam) 
-  { 
-    TPar s = RAPT::rsPow(2.0, shapeParam);  // Slope at x = 0
-    TPar a = (s-1)/(s+1);                   // Function parameter for rational map in -1..+1
-    return RAPT::rsRationalMap_01(x, a);
-  }; // For convenience
-  // ToDo: 
-  // -Avoid conversion from s to a. Using s directly leads to a simpler formula.
-  */
-
-
-
-  auto shape = [](TPar x, TPar shapeParam) 
-  { 
-    //TPar s = RAPT::rsPow(2.0, shapeParam);  // Slope at x = 0
-    // use exp2, if something like that is available
-    // Calls  rsPow(const T& base, int exponent); This is a BUG!!!
-    // To avoid it, we should rename it to rsPowInt. Apparently, the 2nd double parameter gets 
-    // implicitly converted to int!
-
-    //TPar s = std::exp2(shapeParam);
-    TPar s = rsExp2(shapeParam);
-    // ToDo: implement and use rsExp2
-
-    //TPar s = std::exp2(shapeParam);  // Wrap into RAPT rsExp2
-      //RAPT::rsPow(2.0, shapeParam);  // Slope at x = 0
-    // WTF exp2(0) returns 1.6...
-
-
-    return s*x / ((s-1)*x + 1);
-    // See rsLinearFractionalInterpolator::simpleMap() for what this formula means and wher it 
-    // comes from
-  };
-  // -Make this a static member function. It will be used by other setupWith... functions as well
-
-
-
-
-
   if(numStages == 1)
   {
     filters[0].setupAllpass(wLo, Q);
@@ -844,7 +808,7 @@ void rsAllpassDisperser<TSig, TPar>::setupWithTwoPoles(
     for(int i = 0; i < numStages; i++)
     {
       TPar p = scaler * i;                                        // Goes from 0 to 1
-      TPar w = rsLinToExp(shape(p, wShape), 0.0, 1.0, wLo, wHi);
+      TPar w = rsLinToExp(applyShape(p, wShape), 0.0, 1.0, wLo, wHi);
       filters[i].setupAllpass(w, Q);
     }
   }
@@ -855,7 +819,7 @@ void rsAllpassDisperser<TSig, TPar>::setupWithTwoPoles(
   // - Optimize the calls to rsLinToExp. Create a class that precomputes all the values that depend
   //   only on inMin, inMax, outMin, outMax. It should be used like this:
   //   auto mapper = rsLinToExpMapper(0.0, 1.0, wLo, wHi); // Init - outside the loop
-  //   and in the loop, we call w = mapper.map(shape(p, wShape));
+  //   and in the loop, we call w = mapper.map(applyShape(p, wShape));
   //
   // - See rosic::rsFlatZapper::updateCoeffs(). It has similar code. It may eventually be 
   //   refactored to use rsAllpassDisperser. There, we also use potentially different Q-values for
