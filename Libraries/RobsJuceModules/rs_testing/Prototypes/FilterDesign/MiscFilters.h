@@ -759,6 +759,22 @@ public:
   // ToDo: setupWithDualOnePoles
 
 
+  TSig getSample(TSig in)
+  {
+    for(int i = 0; i < numStages; i++)
+      in = filters[i].getSample(in);
+    return in;
+    // We re-use "in" also for the temporaries and for the output
+  }
+
+
+  void reset()
+  {
+    for(int i = 0; i < numStages; i++)
+      filters[i].reset();
+  }
+
+
 protected:
 
 

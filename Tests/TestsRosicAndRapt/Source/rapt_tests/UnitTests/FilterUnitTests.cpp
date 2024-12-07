@@ -2043,6 +2043,7 @@ bool allpassDisperserUnitTest()
   double fShape     =     0.7;
   double Q          =     2;
 
+  // Set up a rosic::rsFlatZapper and let it generate the reference signal:
   using Mode = rosic::rsFlatZapper::Mode;
   rosic::rsFlatZapper flatZapper;
   flatZapper.setMode(Mode::biquad);
@@ -2055,9 +2056,16 @@ bool allpassDisperserUnitTest()
   flatZapper.setHighQ(Q);
   flatZapper.setQShape(0.0);        // Irrelevant when qLo and qHi are the same
   Vec ht = impulseResponse(flatZapper, numSamples, 1.0);
-  rsPlotVectors(ht);
 
-
+  // Set up an rsAllpassDisperser and see, if it can produce the same output:
+  rsAllpassDisperser<double, double> disperser;
+  double wLo = 2*PI*fLo/sampleRate;
+  double wHi = 2*PI*fHi/sampleRate;
+  disperser.setupWithTwoPoles(numStages, wLo, wHi, fShape, Q);
+  Vec h = impulseResponse(disperser, numSamples, 1.0);
+  //rsPlotVectors(ht, h);
+  //rsPlotVectors(ht - h);
+  ok &= rsIsCloseTo(ht, h, 1.e-13);
 
   return ok;
 }
