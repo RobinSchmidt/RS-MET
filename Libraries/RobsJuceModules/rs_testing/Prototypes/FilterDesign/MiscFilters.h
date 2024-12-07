@@ -804,19 +804,12 @@ void rsAllpassDisperser<TSig, TPar>::setupWithTwoPoles(
   }
   else
   {
-    TPar scaler = TPar(1) / TPar(numStages-1); 
+    TPar scl = TPar(1) / TPar(numStages-1); 
     RAPT::rsMapperLinToExp<TPar> mapper(TPar(0), TPar(1), wLo, wHi);
-
     for(int i = 0; i < numStages; i++)
     {
-      TPar p = scaler * i;                                        // Goes from 0 to 1
-
-
-      //TPar w = rsLinToExp(applyShape(p, wShape), 0.0, 1.0, wLo, wHi);
-
-      TPar w = mapper.map(applyShape(p, wShape));
-
-
+      TPar p = applyShape(scl*i, wShape);  // Goes from 0 to 1, mapped via our desired shape.
+      TPar w = mapper.map(p);              // Goes from wLo to wHi, mapped exponentially.
       filters[i].setupAllpass(w, Q);
     }
   }
@@ -824,14 +817,9 @@ void rsAllpassDisperser<TSig, TPar>::setupWithTwoPoles(
 
   // ToDo:
   //
-  // - Optimize the calls to rsLinToExp. Create a class that precomputes all the values that depend
-  //   only on inMin, inMax, outMin, outMax. It should be used like this:
-  //   auto mapper = rsLinToExpMapper(0.0, 1.0, wLo, wHi); // Init - outside the loop
-  //   and in the loop, we call w = mapper.map(applyShape(p, wShape));
-  //
   // - See rosic::rsFlatZapper::updateCoeffs(). It has similar code. It may eventually be 
   //   refactored to use rsAllpassDisperser. There, we also use potentially different Q-values for
-  //   each filter. Maybe add a function fo different Qs per filter here, too. It didn't seem to be
+  //   each filter. Maybe add a function for different Qs per filter here, too. It didn't seem to be
   //   too useful though - that's why I left it out for the time being and juts use the same Q for 
   //   all stages. This also saves computations.
 }
