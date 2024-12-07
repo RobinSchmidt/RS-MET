@@ -16,6 +16,17 @@ ToDo:
   implements a chain of a given number of equal SVFs. ...but actually, the limitation of the 
   filters to be all equal takes a lot of the potential fun away
 
+- Implement creation of allpass filters from a given set of complex poles. The zeros are just the
+  reciprocals of the poles (maybe with conjugation, not sure - but complex poles come pairwise 
+  anyway). Use that to create Butterworth, Bessel, Papoulis, etc. allpases, i.e. allpases based on
+  well known allpole lowpass designs.
+
+- Implement a phaser like allpass - maybe one in which all stages have the same coeffs.
+
+- Maybe make versions of the classes that allow for fractional delaylines. Maybe that can be solved
+  by templatizing on the delay-type (e.g. int vs double) and delayline type (basic, fractional, 
+  etc.). Or maybe just allow that a fractional delayline can be used like an integer one, i.e. give
+  it an "integer mode".
 
 
 */

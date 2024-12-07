@@ -1343,6 +1343,11 @@ bool rotes::feedbackDelayNetwork()
   // - Experiment with placing diffusors and dispersers at the input, feedback, output. In an LTI
   //   setting, there should be no difference between placement at input and output - but we may 
   //   want modulation in which case it may make a difference.
+  //
+  // - Maybe use complex valued delaylines and use an FFT as feedback matrix. The complex valued
+  //   inputs could be taken either from a stereo input or by applying a Hilbert-filter pair to a
+  //   mon signal. We could also try a complex FKT, i.e. and FKT with a complex seed matrix.
+
 
 
 }

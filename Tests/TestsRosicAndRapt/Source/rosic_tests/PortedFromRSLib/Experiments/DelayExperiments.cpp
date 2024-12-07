@@ -88,6 +88,41 @@ void twoPoleAllpassDelay()
 {
   // Under construction
 
+  using Real = double;
+  using VecI = std::vector<int>;
+  using VecR = std::vector<Real>;
+
+
+  auto create = [](const VecI& delays, const VecR& omegas, const VecR& Qs, int N)
+  {
+    size_t numStages = delays.size();
+    rsAssert(omegas.size() == numStages);
+    rsAssert(Qs.size()     == numStages);
+
+    rsStateVariableFilter<Real, Real> svf;
+    Real b0, b1, b2, a1, a2;
+    for(size_t i = 0; i < numStages; i++)
+    {
+      svf.setupAllpass(omegas[i], Qs[i]);
+      svf.convertToBiquad(&b0, &b1, &b2, &a1, &a2);
+
+      int dummy = 0;
+
+      //...TBC...
+    }
+
+
+  
+    int dummy = 0;
+
+    // ToDo:
+    //
+    // - It's a bit silly to use the state variable filter for the purpose of designing biquad 
+    //   coeffs so maybe replace this code later with the direct RBJ biquad design formulas.
+  };
+
+
+  create({ 5 }, { 0.2 }, { 3.5 }, 500);
 
   int dummy = 0;
 }
