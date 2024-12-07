@@ -109,7 +109,7 @@ void rotes::allpassDisperser()
 
 
   // Create and set up the allpass chain:
-  RAPT::rsAllpassDelayChain<double, double> apdc;
+  rsAllpassDelayChain<double, double> apdc;
   apdc.setMaxNumStages(numStages);
   apdc.setNumStages(numStages);
   for(int i = 0; i < numStages; i++)
@@ -360,7 +360,7 @@ void rotes::allpassDelayChain()
 
 
   // Now do the same thing with the class rsAllpassDelayChain
-  RAPT::rsAllpassDelayChain<double, double> apdc;
+  rsAllpassDelayChain<double, double> apdc;
   apdc.setMaxNumStages(numStages);
   apdc.setNumStages(numStages);
   for(int i = 0; i < numStages; i++)

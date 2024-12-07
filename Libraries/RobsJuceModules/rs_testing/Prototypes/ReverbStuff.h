@@ -9,8 +9,94 @@
 
 //=================================================================================================
 
+/** This implements a chain (i.e. series connection) of allpass delays. To achieve this effect, you
+could just use a std::vector of rsAllpassDelay which are applied one after the other. This class 
+here is a convenience class that does this for you. Series connections of allpass filters can be 
+used for allpass diffusors, for example, as building blocks of a reverb algorithm.
+
+Hmm...maybe it's actually not such a great idea to provide such a convenience class. If we do this,
+we may want to have similar convenience classes for other types of allpass filter chains which 
+would look very similar - i.e. a lot code duplication and boilerplate. I actually had this class
+already in the RAPT library but backed off again and moved it back into the prototypes for this 
+reason. 
+
+See:
+
+  https://ccrma.stanford.edu/~jos/pasp/Schroeder_Allpass_Sections.html
+  https://www.dsprelated.com/freebooks/pasp/Schroeder_Allpass_Sections.html
+
+*/
+
+template<class TSig, class TPar>
+class rsAllpassDelayChain
+{
+
+public:
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  void setMaxNumStages(int newMaxNumStages)
+  {
+    allpassDelays.resize(newMaxNumStages);
+  }
+
+  void setNumStages(int newNumStages)
+  {
+    RAPT::rsAssert(newNumStages <= getMaxNumStages());
+    numStages = newNumStages;
+  }
+
+  void setMaxDelayInSamples(int stageIndex, int newMaxDelay)
+  {
+    RAPT::rsAssert(stageIndex < getMaxNumStages());
+    allpassDelays[stageIndex].setMaxDelayInSamples(newMaxDelay);
+  }
+
+  void setDelayInSamples(int stageIndex, int newDelay)
+  {
+    RAPT::rsAssert(stageIndex < getMaxNumStages());
+    allpassDelays[stageIndex].setDelayInSamples(newDelay);
+  }
+
+  void setAllpassCoeff(int stageIndex, TPar newCoeff)
+  {
+    RAPT::rsAssert(stageIndex < getMaxNumStages());
+    allpassDelays[stageIndex].setAllpassCoeff(newCoeff);
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  int getMaxNumStages() const { return (int) allpassDelays.size(); }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  inline TSig getSample(TSig in)
+  {
+    TSig tmp = in;
+    for(int i = 0; i < numStages; i++)
+      tmp = allpassDelays[i].getSample(tmp);
+    return tmp;
+  }
+
+  void reset()
+  {
+    for(int i = 0; i < getMaxNumStages(); i++)
+      allpassDelays[i].reset();
+  }
+
+
+protected:
+
+  std::vector<rsAllpassDelay<TSig, TPar>> allpassDelays;
+  int numStages = 0;
+
+};
 
 
 
