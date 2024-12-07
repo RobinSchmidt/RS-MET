@@ -33,12 +33,12 @@ public:
   {
     this->inMin  = inMin;
     this->outMin = outMin;
-    argScale = log(outMax / outMin) / (inMax-inMin);
+    argScale = std::log2(outMax / outMin) / (inMax-inMin);
   }
 
   T map(T x) const override
   {
-    return outMin * std::exp((x - inMin) * argScale);
+    return outMin * std::exp2((x - inMin) * argScale);
   };
 
 public:
@@ -47,10 +47,11 @@ public:
   T outMin   = 1;
   T argScale = 1;
 
-  // Maybe use log2 and exp2 instead of log and exp. That might be a bit faster. See:
-  // https://cs.stackexchange.com/questions/27832/is-2x-faster-to-compute-than-expx
-  // https://stackoverflow.com/questions/30222836/should-exp2-be-faster-than-exp
-
+  // Notes:
+  //
+  // - We use log2 and exp2 instead of log and exp because that might be a bit faster. See:
+  //   https://cs.stackexchange.com/questions/27832/is-2x-faster-to-compute-than-expx
+  //   https://stackoverflow.com/questions/30222836/should-exp2-be-faster-than-exp
 };
 
 
