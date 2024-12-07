@@ -27,49 +27,23 @@ public:
     setRanges(inMin, inMax, outMin, outMax);
   }
 
-
   void setRanges(T inMin, T inMax, T outMin, T outMax)
   {
     this->inMin  = inMin;
-    //this->inMax  = inMax;
     this->outMin = outMin;
-    //this->outMax = outMax;
-
-    //inScale  = T(1) / (inMax-inMin);
     argScale = log(outMax / outMin) / (inMax-inMin);
-
-
-    // ToDo:  precompute 1/(inMax-inMin) and log(outMax/outMin)
   }
-
 
   T map(T x) const override
   {
-    T tmp = (x - inMin);
-    return outMin * std::exp(tmp * argScale);
-
-
-    //T tmp = (x - inMin) / (inMax - inMin);
-    //return outMin * std::exp(tmp * (log(outMax / outMin)));
+    return outMin * std::exp((x - inMin) * argScale);
   };
 
 public:
 
   T inMin    = 0;
-  //T inMax    = 1;
   T outMin   = 1;
-  //T outMax   = 2;
-
-  //T inScale  = 1;
   T argScale = 1;
-
-
-  // Maybe get rid of members that arent used in the computations. Only keep inMin, exponentScale,
-  // resultScale
-
-
-  // See rsLinToExp(T in, T inMin, T inMax, T outMin, T outMax)
-
 
   // Maybe use log2 and exp2 instead of log and exp. That might be a bit faster. See:
   // https://cs.stackexchange.com/questions/27832/is-2x-faster-to-compute-than-expx
