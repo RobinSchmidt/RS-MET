@@ -31,9 +31,9 @@ public:
   void setRanges(T inMin, T inMax, T outMin, T outMax)
   {
     this->inMin  = inMin;
-    this->inMax  = inMax;
+    //this->inMax  = inMax;
     this->outMin = outMin;
-    this->outMax = outMax;
+    //this->outMax = outMax;
 
     //inScale  = T(1) / (inMax-inMin);
     argScale = log(outMax / outMin) / (inMax-inMin);
@@ -56,9 +56,9 @@ public:
 public:
 
   T inMin    = 0;
-  T inMax    = 1;
+  //T inMax    = 1;
   T outMin   = 1;
-  T outMax   = 2;
+  //T outMax   = 2;
 
   //T inScale  = 1;
   T argScale = 1;
