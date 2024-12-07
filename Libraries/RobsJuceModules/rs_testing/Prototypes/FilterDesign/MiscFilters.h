@@ -791,6 +791,7 @@ void rsAllpassDisperser<TSig, TPar>::setupWithTwoPoles(
   this->numStages = newNumStages;
 
 
+  /*
   // Helper function to map the unit interval 0..1 to itself via a curve determined by our shape
   // parameter. This is used in the computation of the stage-index dependent tuning frequency and
   // Q for the allpass stage at the given index:
@@ -802,7 +803,28 @@ void rsAllpassDisperser<TSig, TPar>::setupWithTwoPoles(
   }; // For convenience
   // ToDo: 
   // -Avoid conversion from s to a. Using s directly leads to a simpler formula.
+  */
+
+
+
+  auto shape = [](TPar x, TPar shapeParam) 
+  { 
+    TPar s = RAPT::rsPow(2.0, shapeParam);  // Slope at x = 0
+    // use exp2, if something like that is available
+
+
+    //TPar s = std::exp2(shapeParam);  // Wrap into RAPT rsExp2
+      //RAPT::rsPow(2.0, shapeParam);  // Slope at x = 0
+    // Hmm...exp2 doesn't seem to mean 2^x
+
+
+    return s*x / ((s-1)*x + 1);
+    // See rsLinearFractionalInterpolator::simpleMap() for what this formula means.
+  };
   // -Make this a static member function. It will be used by other setupWith... functions as well
+
+
+
 
 
   if(numStages == 1)
