@@ -61,6 +61,12 @@ public:
     // of two minus one.
   };
 
+  /** Returns the maximum delay that this delayline can produce */
+  int getMaxDelayInSamples() const
+  {
+    return maxDelay;
+  }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */

@@ -40,37 +40,25 @@ class rsAllpassDelay
 public:
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Lifetime */
-
-  rsAllpassDelay() {}
-
-
-  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
-
 
   void setMaxDelayInSamples(int newMaxDelay) { delayLine.setMaximumDelayInSamples(newMaxDelay); }
 
   void setDelayInSamples(int newDelay) { delayLine.setDelayInSamples(newDelay); }
 
-  void setAllpassCoeff(TPar newCoeff) { allpassCoeff = newCoeff; }
+  void setAllpassCoeff(TPar newCoeff) { c = newCoeff; }
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-
   inline TSig getSample(TSig x)
   {
-    const TPar c = allpassCoeff;         // For convenience.
     TSig vM = delayLine.readOutput();    // Read vM = v[n-M] from the delayline.
     TSig v  = x - c * vM;                // Compute v[n] = x[n] - c * v[n-M].
     delayLine.writeInputAndUpdate(v);    // Write v[n] into the delayline.
     return c * v + vM;                   // Return y[n] = c * v[n] + v[n-M].
-
-    // See: https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
   }
-
 
   void reset() { delayLine.reset(); }
 
@@ -78,7 +66,7 @@ public:
 protected:
 
   RAPT::rsBasicDelayLine<TSig> delayLine;
-  TPar allpassCoeff = TPar(0);           // Rename to coeff or just c
+  TPar c = TPar(0);
 
 };
 
@@ -106,8 +94,8 @@ public:
 
   void setDelayInSamples(int newDelay)
   {
-    delay = newDelay;
-    delayLine.setDelayInSamples(2*newDelay);
+    M = newDelay;
+    delayLine.setDelayInSamples(2*M);
 
     // The multiplication by 2 is not an error. It arises from deriving the filter from a 2-pole 
     // prototype filter. The delay of 2 in the 2-pole becomes a delay of 2*M here, so we need a 
@@ -116,12 +104,14 @@ public:
     // M = 2M/2. It's a bit redundant, though. We could also reconstruct the value at any time
     // via using M == delay == delayLine.getDelayInSamples()/2. But that would be inconvenient and
     // inefficient.
+
+    // ToDo: handle out of range arguments
   }
 
   void setAllpassCoeffs(TPar newCoeff1, TPar newCoeff2) 
   { 
-    coeff1 = newCoeff1;
-    coeff2 = newCoeff2;
+    c1 = newCoeff1;
+    c2 = newCoeff2;
   }
 
 
@@ -130,12 +120,11 @@ public:
 
   inline TSig getSample(TSig x)
   {
-    const TPar c1 = coeff1, c2 = coeff2;       // Shorthands for convenience
-    TSig vM  = delayLine.readOutputAt(delay);  // Read vM  = v[n-M]   from delayline
-    TSig v2M = delayLine.readOutput();         // Read v2M = v[n-2*M] from delayline
-    TSig v   = x - c1 * vM - c2 * v2M;         // Compute v[n] = x[n] - c1 * v[n-M] - c2 * v[n-2M]
-    delayLine.writeInputAndUpdate(v);          // Write v[n] into delayline and increment taps
-    return c2 * v + c1 * vM + v2M;             // Return y[n] = c2 * v[n] + c1 * v[n-M] + v[n-2M]
+    TSig vM  = delayLine.readOutputAt(M);   // Read vM  = v[n-M]   from delayline
+    TSig v2M = delayLine.readOutput();      // Read v2M = v[n-2*M] from delayline
+    TSig v   = x - c1 * vM - c2 * v2M;      // Compute v[n] = x[n] - c1 * v[n-M] - c2 * v[n-2M]
+    delayLine.writeInputAndUpdate(v);       // Write v[n] into delayline and increment taps
+    return c2 * v + c1 * vM + v2M;          // Return y[n] = c2 * v[n] + c1 * v[n-M] + v[n-2M]
 
     // Overall, this algorithm produces:
     //
@@ -156,9 +145,9 @@ public:
 protected:
 
   RAPT::rsBasicDelayLine<TSig> delayLine;
-  TPar coeff1 = 0.0;  // Maybe rename to c1
-  TPar coeff2 = 0.0;  // Maybe rename to c2
-  int  delay  = 0;    // Maybe rename to M
+  TPar c1 = 0.0;
+  TPar c2 = 0.0;
+  int  M  = 0;
 
 };
 

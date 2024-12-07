@@ -32,13 +32,13 @@ void rsBasicDelayLine<T>::setMaximumDelayInSamples(int newMaxDelay)
 }
 
 template<class T>
-void rsBasicDelayLine<T>::setDelayInSamples(int newDelay)
+void rsBasicDelayLine<T>::setDelayInSamples(int delay)
 {
-  int delay = rsMax(0, newDelay);
-  if( delay > maxDelay )
-    setMaximumDelayInSamples(delay);
+  rsAssert(delay >= 0 && delay <= maxDelay, 
+           "Delay out of range in rsBasicDelayLine::setDelayInSamples");
 
-  // adjust tapOut-pointer:
+  // Sanitize input argument and adjust tapOut pointer:
+  delay = rsClip(delay, 0, maxDelay); 
   tapOut = tapIn - delay;
   if( tapOut < 0 )
     tapOut += maxDelay+1;
