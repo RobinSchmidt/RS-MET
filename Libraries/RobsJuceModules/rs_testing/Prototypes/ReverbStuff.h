@@ -471,13 +471,13 @@ public:
 
     // Retrieve delayed states:
     //TSig vM  = delayLine1.readOutput();    // Read vM  = v[n-M]   from the 1st delayline.
-    TSig vM  = delayLine1.readOutputAt(delay); // Read vM  = v[n-M]   from the 1st delayline.
+    TSig vM  = delayLine2.readOutputAt(delay); // Read vM  = v[n-M]   from the 1st delayline.
     TSig v2M = delayLine2.readOutput();        // Read v2M = v[n-2*M] from the 2nd delayline.
 
 
     // Compute new state v[n] and write into the delaylines:
     TSig v  = x - c1 * vM - c2 * v2M;      // Compute v[n] = x[n] - c1 * v[n-M] - c2 * v[n-2M]
-    delayLine1.writeInputAndUpdate(v);     // Write v[n] into delayline1.
+    //delayLine1.writeInputAndUpdate(v);     // Write v[n] into delayline1.
     delayLine2.writeInputAndUpdate(v);     // Write v[n] into delayline1.
 
 
