@@ -439,6 +439,7 @@ the unit delay by a delayline of some length M in samples. That amounts to repla
 in the transfer function. This filter here here applies the same idea to a 2-pole allpass. We 
 replace z^-1 by z^-M and z^-2 by z^-2M. */
 
+/*
 template<class TSig, class TPar>
 class rsTwoPoleAllpassDelay
 {
@@ -495,6 +496,9 @@ protected:
   int  delay  = 0;
 
 };
+*/
+
+// Code moved to RAPT
 
 // ToDo: implement a more general variant that doesn't assume the 2-pole prototype to be an 
 // allpass.
