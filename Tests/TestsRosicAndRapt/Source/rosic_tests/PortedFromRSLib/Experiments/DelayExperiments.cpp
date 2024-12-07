@@ -91,9 +91,21 @@ void twoPoleAllpassDelay()
   using Real = double;
   using VecI = std::vector<int>;
   using VecR = std::vector<Real>;
+  using APF  = rsTwoPoleAllpassDelay<Real, Real>;
 
 
-  rsTwoPoleAllpassDelay<Real, Real> allpass;  // Ah - we need a chain!
+  int maxNumStages = 10;
+  int maxDelay     = 100;
+
+  // Create the chain of filters and allocate their delay memory:
+  std::vector<APF> filters(maxNumStages);
+  for(APF& f : filters)
+    f.setMaxDelayInSamples(maxDelay);
+
+
+
+
+  //rsTwoPoleAllpassDelay<Real, Real> allpass;  // Ah - we need a chain!
   //allpass.setM
 
 
@@ -104,6 +116,10 @@ void twoPoleAllpassDelay()
     rsAssert(omegas.size() == numStages);
     rsAssert(Qs.size()     == numStages);
 
+    // Reset the filters:
+    //...
+
+    // Set up the filters:
     rsStateVariableFilter<Real, Real> svf;
     Real b0, b1, b2, a1, a2;
     for(size_t i = 0; i < numStages; i++)
@@ -116,6 +132,9 @@ void twoPoleAllpassDelay()
       //...TBC...
     }
 
+
+    // Generate impulse response:
+    // ...
 
   
     int dummy = 0;

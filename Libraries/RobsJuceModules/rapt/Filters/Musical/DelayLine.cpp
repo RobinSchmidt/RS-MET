@@ -8,12 +8,21 @@ rsBasicDelayLine<T>::rsBasicDelayLine()
   tapIn     = 0;
   tapOut    = 0;
   reset();
+
+  // Maybe avoid this allocation of a buffer with 3 samples. It will most certainly be wasted 
+  // because soon the client will request an allocation of a more sensible size. But then we must
+  // deal with the possibility of having a nullptr. That's the tradeoff here: either always do 
+  // wasted allocations or accept that pointer could initially be null. Or maybe a trick could be 
+  // used: just let pointer initially point to some static member variable. We might apply a sort
+  // of "null object" pattern to the pointer variable. But I'm not sure, if that's workable. And 
+  // why 3. If anything, we should use 1. Or maybe even 0. But verify if the bit-maksing will work
+  // or if this is a weird edge case.
 }
 
 template<class T>
 rsBasicDelayLine<T>::~rsBasicDelayLine()
 {
-  if( delayLine != NULL )
+  if( delayLine != nullptr )
     delete[] delayLine;
 }
 
@@ -38,7 +47,7 @@ void rsBasicDelayLine<T>::setDelayInSamples(int delay)
            "Delay out of range in rsBasicDelayLine::setDelayInSamples");
 
   // Sanitize input argument and adjust tapOut pointer:
-  delay = rsClip(delay, 0, maxDelay); 
+  delay = rsClip(delay, 0, maxDelay);
   tapOut = tapIn - delay;
   if( tapOut < 0 )
     tapOut += maxDelay+1;
@@ -128,10 +137,10 @@ rsFractionalDelayLine<TSig, TPar>::rsFractionalDelayLine(int maximumDelayInSampl
 template<class TSig, class TPar>
 rsFractionalDelayLine<TSig, TPar>::~rsFractionalDelayLine()
 {
-  if( delayBuffer != NULL )
+  if( delayBuffer != nullptr )
   {
     delete[] delayBuffer;
-    delayBuffer = NULL;
+    delayBuffer = nullptr;
   }
 }
 

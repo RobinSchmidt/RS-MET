@@ -153,8 +153,8 @@ protected:
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  T* delayLine;  
-  int tapIn, tapOut, maxDelay;
+  T* delayLine = nullptr;
+  int tapIn = 0, tapOut = 0, maxDelay = 0;
   // ToDo: use std::vector for the delayLine. We may then get rid of maxDelay because it's stored
   // in the vector's size. ...or maybe capacity - depends on how we implement it.
 
