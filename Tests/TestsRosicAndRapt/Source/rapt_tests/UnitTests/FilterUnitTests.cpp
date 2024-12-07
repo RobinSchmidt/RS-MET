@@ -2033,6 +2033,31 @@ bool allpassDisperserUnitTest()
 
   bool ok = true;
 
+  using Vec = std::vector<double>;
+
+  int    numSamples =   500;
+  int    numStages  =    30;
+  double sampleRate = 44100;
+  double fLo        =    50;
+  double fHi        =  8000;
+  double fShape     =     0.7;
+  double Q          =     2;
+
+  using Mode = rosic::rsFlatZapper::Mode;
+  rosic::rsFlatZapper flatZapper;
+  flatZapper.setMode(Mode::biquad);
+  flatZapper.setNumStages(numStages);
+  flatZapper.setSampleRate(sampleRate);
+  flatZapper.setLowFreq( fLo);
+  flatZapper.setHighFreq(fHi);
+  flatZapper.setFreqShape(fShape);
+  flatZapper.setLowQ( Q);
+  flatZapper.setHighQ(Q);
+  flatZapper.setQShape(0.0);        // Irrelevant when qLo and qHi are the same
+  Vec ht = impulseResponse(flatZapper, numSamples, 1.0);
+  rsPlotVectors(ht);
+
+
 
   return ok;
 }
