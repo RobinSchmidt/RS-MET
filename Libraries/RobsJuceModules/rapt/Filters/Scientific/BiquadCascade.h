@@ -11,7 +11,7 @@ does not do the filter-design. The coefficients can be calculated by one of the 
 such as for example the BiquadDesigner class. */
 
 template<class TSig, class TCoef>  // types for signal and coefficients
-class rsBiquadCascade // rename to BiquadChain because that's shorter
+class rsBiquadCascade // rename to rsBiquadChain because that's shorter
 {
   typedef const TSig&  CRSig;   // const reference to a signal value
   typedef const TCoef& CRCoef;  // const reference to a coefficient value

@@ -201,4 +201,7 @@ ToDo:
   transfer function H(s) = (B0 + B1*s + B2*s^2) / (A0 + A1*s + A2*s^2) maybe normalized to A0 = 1.
   It may use BLT or MZT - or maybe we should have two separate functions for these purposes.
 
+- Add classes for chains of state variable filters - with equal and with different coeffs per 
+  stage.
+
 */

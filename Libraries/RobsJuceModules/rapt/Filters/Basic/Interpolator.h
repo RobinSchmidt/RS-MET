@@ -142,6 +142,9 @@ protected:
   T previousOutput;       // previous output sample (for the allpass interpolator)
   int    interpolationMethod;
 
+  // ToDo: Maybe drag the previousOutput out into a subclass. The Interpolator baseclass should be
+  // stateless.
+
 };
 
 //-----------------------------------------------------------------------------------------------
