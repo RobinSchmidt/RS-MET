@@ -437,13 +437,22 @@ class rsAllpassDisperser
 
 public:
 
-
-
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
 
   void setMaxNumStages(int newMaxNumStages) { filters.resize(newMaxNumStages); }
 
   void setupWithTwoPoles(int numStages, TPar wLo, TPar wHi, TPar wShape, TPar Q);
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  int getMaxNumStages() const { return (int) filters.size(); }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
 
   TSig getSample(TSig in);
 
@@ -466,6 +475,9 @@ protected:
 
   std::vector<rsStateVariableFilter<TSig, TPar>> filters;
   int numStages = 0;
+
+  // We could actually get rid of numStages by using filters.size() for the current number and
+  // filters.capacity() for the maximum number.
 
 };
 
