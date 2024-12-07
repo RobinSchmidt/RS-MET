@@ -2,6 +2,8 @@
 #define RS_DELAYEXPERIMENTS_H
 
 void algoVerb();
+
 void basicIntegerDelayLine();
+void twoPoleAllpassDelay();
 
 #endif

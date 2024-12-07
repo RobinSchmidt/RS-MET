@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRapt();
   //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
@@ -389,6 +389,7 @@ int main(int argc, char* argv[])
 
   // Delay:
   //basicIntegerDelayLine();
+  twoPoleAllpassDelay();           // stub
 
   // Filter:
   //allpassFDN();                  // Under construction
@@ -645,12 +646,17 @@ int main(int argc, char* argv[])
   //testInterpolation();
 
   // Reverb:
-  allpassDisperser();                  // Maybe rename to allpassDiffusor
+  allpassDisperser();                // Rename to allpassDiffusor
   allpassDelay();
   allpassDelayChain();
   allpassDelayChainVsNest();
+  // These 4 are actually experiments but they ended up in file (an namespace) for unit tests. 
+  // Move them to a better place. Maybe to DelayExperiments.h/cpp
+
   feedbackDelayNetwork();            // writes wave file
   algoVerb();                        // writes wave file
+
+
 
   // Spectral effects:
   //spectralFilter();                  // Maybe move into a file for spectral processors

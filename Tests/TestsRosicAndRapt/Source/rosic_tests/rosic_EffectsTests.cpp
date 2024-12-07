@@ -562,7 +562,6 @@ void rotes::allpassDelayChainVsNest()
   //  diffusor.
 }
 
-
 bool rotes::testAllpassDelayNested()
 {
   using Real = double;

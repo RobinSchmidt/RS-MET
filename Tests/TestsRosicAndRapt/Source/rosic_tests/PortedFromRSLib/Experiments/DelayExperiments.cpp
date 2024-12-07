@@ -73,8 +73,21 @@ void basicIntegerDelayLine()
   double t[N], h[N];
   RAPT::rsArrayTools::fillWithIndex(t, N);
   rsBasicDelayLineD dl;
+  dl.setMaximumDelayInSamples(5);
   dl.setDelayInSamples(5);
   RAPT::getImpulseResponse(dl, h, N);
   plotData(N, t, h);
+
+  // Observations:
+  //
+  // - The impulse response is an impulse shifted by 5 samples, i.e. centered at sample index 5
+  //   rather than 0. That's the expected result.
 }
 
+void twoPoleAllpassDelay()
+{
+  // Under construction
+
+
+  int dummy = 0;
+}
