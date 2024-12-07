@@ -1,6 +1,9 @@
 #ifndef RAPT_MAPPERS_H_INCLUDED
 #define RAPT_MAPPERS_H_INCLUDED
 
+/** Baseclass for mappers that are supposed to map a value from one range to another in a 
+particular way such as linearly, exponentially, logarithmically, etc. */
+
 template<class T>
 class rsMapper
 {
@@ -12,6 +15,8 @@ public:
   // Maybe implement () operator (invokes map)
 };
 
+
+//=================================================================================================
 
 /** Realizes the same mapping as the free function rsLinToExp but it is more efficient to use such 
 an object if you want to map many values where the range stays the same. See
@@ -53,8 +58,6 @@ public:
   //   https://cs.stackexchange.com/questions/27832/is-2x-faster-to-compute-than-expx
   //   https://stackoverflow.com/questions/30222836/should-exp2-be-faster-than-exp
 };
-
-
 
 //=================================================================================================
 

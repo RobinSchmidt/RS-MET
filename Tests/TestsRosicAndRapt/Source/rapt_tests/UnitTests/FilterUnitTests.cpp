@@ -2027,9 +2027,7 @@ bool nestedAllpassUnitTest()
 
 bool allpassDisperserUnitTest()
 {
-  // Stub
-  // We want to compare the new implementation rsAllpassDisperser with rosic::rsFlatZapper
-
+  // We compare the new implementation rsAllpassDisperser with rosic::rsFlatZapper
 
   bool ok = true;
 
@@ -2067,19 +2065,8 @@ bool allpassDisperserUnitTest()
   //rsPlotVectors(ht - h);
   ok &= rsIsCloseTo(ht, h, 1.e-13);
 
-  //double test1 = std::pow(2.0, 3.0);
-  //double test2 = std::exp2(    3.0);
-  //double test3 = std::pow(2.0, 0.0);
-  //double test4 = std::exp2(    0.0);
-
-
-
   return ok;
-
-
 }
-
-
 
 bool allpassUnitTest()
 {

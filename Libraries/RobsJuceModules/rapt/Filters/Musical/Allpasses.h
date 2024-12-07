@@ -1,15 +1,6 @@
 #ifndef RAPT_ALLPASSES_H_INCLUDED
 #define RAPT_ALLPASSES_H_INCLUDED
 
-
-// This file is currently under construction. It should be filled with some classes that are 
-// currently located in ReverbStuff.h in the Prototypes folder. This includes allpass chains and 
-// nested allpass structures that are used as building blocks for reverbs. Maybe we should also 
-// drag the code from rosic::FlatZapper in and call it rsAllpassDisperser or something like that. 
-// Maybe we should also implement Thiran allpass filters here. They are used for allpass 
-// interpolation.
-
-
 // This file contains various allpass filter structures such as the Schroeder allpass, a series
 // connection of them, a nested allpass structure, etc. These are usefula as building blocks for
 // reverb algorithms.
@@ -97,7 +88,8 @@ protected:
 
 /** This implements a chain (i.e. series connection) of allpass delays. To achieve this effect, you
 could just use a std::vector of rsAllpassDelay which are applied one after the other. This class 
-here is a convenience class that does this for you. 
+here is a convenience class that does this for you. Series connections of allpass filters can be 
+used for allpass diffusors, for example, as building blocks of a reverb algorithm.
 
 See:
 
@@ -205,7 +197,10 @@ void rsAllpassDelayChain<TSig, TPar>::reset()
 
 //=================================================================================================
 
-/** Implements a filter structure of nested allpass delays using a lattice ...TBC... */
+/** Implements a lattice like filter structure of nested allpass delays. It can be used for allpass
+diffusors. With the right settings for the delay times and coefficients, the impulse responses are
+bursts of white noise. ...TBC... ToDo: explain differences to the rsAllpassDelayChain. I think, the
+nested structure builds up echo density even more quickly, but I'm not totally sure. */
 
 template<class TSig, class TPar>
 class rsAllpassDelayNested
@@ -426,14 +421,113 @@ protected:
 
 };
 
+//=================================================================================================
+
+/** This class implements a chain of second order allpass filters whose characteristic frequencies
+are spaced out on the frequency axis in a particular way. Basically, the spacing is exponential 
+between some user provided lower and upper normalized radian frequency. But before mapping to 
+exponential, we may also apply a rational map to alter the frequency spacing to skew them more
+towards lower or higher frequencies. The impulse response of these allpass filters are sinusoidal
+sweepdowns. They are actually well suited as raw material for kickdrum synthesis as is realized
+in rosic::rsFlatZapper. ...TBC...  */
+
+template<class TSig, class TPar>
+class rsAllpassDisperser
+{
+
+public:
 
 
+  rsAllpassDisperser(int maxNumStages = 256)
+  {
+    filters.resize(maxNumStages);
+  }
+
+  void setupWithTwoPoles(int numStages, TPar wLo, TPar wHi, TPar wShape, TPar Q);
+
+  // ToDo: add setMaxNumStages, maybe 256 is a bit much as default for maxNumStages. Maybe reduce
+  // it to something smaller. Or maybe provide a deault constructor that does not allocate 
+  // anything. The idea is that when we use these in the context of reverb algorithms we may not 
+  // want a default construction with such large memory requirements.
 
 
+  TSig getSample(TSig in);
+
+  void reset();
 
 
+protected:
+
+  /** The rational map that we use as shaping function for the frequency parameters of the 
+  individual allpass stages. */
+  TPar applyShape(TPar x, TPar shapeParam)
+  {
+    TPar s = rsExp2(shapeParam);
+    return s*x / ((s-1)*x + 1);
+
+    // See rsLinearFractionalInterpolator::simpleMap() for what this formula means and where it 
+    // comes from
+  };
 
 
+  std::vector<rsStateVariableFilter<TSig, TPar>> filters;
+  int numStages = 0;
 
+};
+
+template<class TSig, class TPar>
+TSig rsAllpassDisperser<TSig, TPar>::getSample(TSig tmp)
+{
+  for(int i = 0; i < numStages; i++)
+    tmp = filters[i].getSample(tmp);
+  return tmp;
+
+  // As the input is is passed by value, we can use it for temporary results and the output as 
+  // well.
+}
+
+template<class TSig, class TPar>
+void rsAllpassDisperser<TSig, TPar>::reset()
+{
+  for(int i = 0; i < numStages; i++)
+    filters[i].reset();
+}
+
+template<class TSig, class TPar>
+void rsAllpassDisperser<TSig, TPar>::setupWithTwoPoles(
+  int newNumStages, TPar wLo, TPar wHi, TPar wShape, TPar Q)
+{
+  this->numStages = newNumStages;
+
+  if(numStages == 1)
+  {
+    // The case numStages == 1 needs to be treated separately as edge case. The code in the else 
+    // branch below would produce a division by zero error in this case.
+    filters[0].setupAllpass(wLo, Q);
+  }
+  else
+  {
+    // This branch works also fine for numStages == 0. In this case, the loop is not even entered.
+    TPar scl = TPar(1) / TPar(numStages-1); 
+    RAPT::rsMapperLinToExp<TPar> mapper(TPar(0), TPar(1), wLo, wHi);
+    for(int i = 0; i < numStages; i++)
+    {
+      TPar p = applyShape(scl*i, wShape);  // Goes from 0 to 1, mapped via our desired shape.
+      TPar w = mapper.map(p);              // Goes from wLo to wHi, mapped exponentially.
+      filters[i].setupAllpass(w, Q);
+    }
+  }
+
+  // ToDo:
+  //
+  // - See rosic::rsFlatZapper::updateCoeffs(). It has similar code. It may eventually be 
+  //   refactored to use rsAllpassDisperser. But There, we also support usage potentially different
+  //   Q-values for each filter. Maybe add a function for different Qs per filter here, too. It 
+  //   didn't seem to be too useful though - that's why I left it out for the time being and just 
+  //   use the same Q for all stages. This also saves computations.
+  //
+  // - Add setupWithOnePoles, setupWithDualOnePoles. But for thsi, we first need suitable functions
+  //   in rsStateVariableFilter
+}
 
 #endif
