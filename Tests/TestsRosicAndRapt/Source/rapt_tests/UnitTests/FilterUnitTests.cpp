@@ -1853,7 +1853,6 @@ bool delayLineUnitTest()
   int delay = 5;
 
   rsBasicDelayLine<double> dl;
-
   dl.setMaximumDelayInSamples(16);
   // Will be rounded up to the next power of two minus 1, i.e. if we pass 16, the max delay will
   // actually be 31. If we pass 15, it will be used as is, if we pass a value between 16 and 31,
@@ -1861,7 +1860,6 @@ bool delayLineUnitTest()
   dl.setDelayInSamples(delay);
 
   int N = 100;  // Number of samples
-
 
 
   for(int i = 0; i < N; i++)
@@ -1875,7 +1873,6 @@ bool delayLineUnitTest()
     else
       ok &= y == double(i-delay);
 
-
     // Test readOutput(). This should just read the same output again without triggering any other 
     // action, so we can test the exact same condition afterwards:
     y = dl.readOutput();
@@ -1884,15 +1881,17 @@ bool delayLineUnitTest()
     else
       ok &= y == double(i-delay);
 
-
-
-
+    // Test readOutputAt(). This should read the delayline at an arbitrary delay without triggering 
+    // any further action:
+    int readDelay = 8;
+    y = dl.readOutputAt(readDelay);
+    if(i < readDelay)
+      ok &= y == 0.0;
+    else
+      ok &= y == double(i-readDelay);
 
     int dummy = 0;
   }
-
-
-
 
   return ok;
 }

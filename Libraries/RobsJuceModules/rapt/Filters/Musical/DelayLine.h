@@ -94,6 +94,7 @@ public:
     return delayLine[readPos];     // Read out the delayline
   }
   // This needs thorough unit tests!
+  // ...OK...now there is a unti test - it seems to work
 
 
 
