@@ -49,12 +49,45 @@ public:
 
   rsAllpassDelayNaive() {}
 
-  void setMaxDelayInSamples(int newMaxDelay);
-  void setDelayInSamples(int newDelay);
+  void setMaxDelayInSamples(int newMaxDelay)
+  {
+    inputDelayLine.setMaximumDelayInSamples(newMaxDelay);
+    outputDelayLine.setMaximumDelayInSamples(newMaxDelay);
+  }
+
+  void setDelayInSamples(int newDelay)
+  {
+    inputDelayLine.setDelayInSamples(newDelay);
+    outputDelayLine.setDelayInSamples(newDelay);
+  }
+
   void setAllpassCoeff(TPar newCoeff) { allpassCoeff = newCoeff; }
 
-  inline TSig getSample(TSig in);
-  void reset();
+  inline TSig getSample(TSig x)
+  {
+    TSig xM = inputDelayLine.getSample(x);                             // x[n-M]
+    TSig yM = outputDelayLine.getSampleSuppressTapIncrements(TSig(0)); // y[n-M]
+    TSig y  = allpassCoeff * x + xM - allpassCoeff * yM;               // y[n], our current output
+    outputDelayLine.addToInput(y);
+    outputDelayLine.incrementTapPointers();
+    return y;
+    // ToDo: verify that this does the right thing with respect to the order of reading, writing and
+    // incrementing the taps of the outputDelayLine. Maybe write a unit test that uses a delay of 
+    // M = 1 and compare output to a regular first order allpass filter.
+    //
+    // We want to realize:
+    //
+    //          c +     z^(-M)
+    //  H(z) = ----------------,    y[n] = c * x[n] + x[n-M] - c * y[n-M]
+    //          1 + c * z^(-M)
+  }
+
+
+  void reset()
+  {
+    inputDelayLine.reset();
+    outputDelayLine.reset();
+  }
 
 
 protected:
@@ -65,6 +98,7 @@ protected:
 };
 
 
+/*
 template<class TSig, class TPar>
 void rsAllpassDelayNaive<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 {
@@ -105,9 +139,14 @@ void rsAllpassDelayNaive<TSig, TPar>::reset()
   inputDelayLine.reset();
   outputDelayLine.reset();
 }
+*/
 
 // ToDo:
 // -Build a nested allpass in which the z^(-M) term has been replaced by another allpass filter.
+
+
+//=================================================================================================
+
 
 
 
