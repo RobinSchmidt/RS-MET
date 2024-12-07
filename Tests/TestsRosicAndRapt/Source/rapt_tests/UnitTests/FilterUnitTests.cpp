@@ -2059,6 +2059,7 @@ bool allpassDisperserUnitTest()
   rsAllpassDisperser<double, double> disperser;
   double wLo = 2*PI*fLo/sampleRate;
   double wHi = 2*PI*fHi/sampleRate;
+  disperser.setMaxNumStages(100);
   disperser.setupWithTwoPoles(numStages, wLo, wHi, fShape, Q);
   Vec h = impulseResponse(disperser, numSamples, 1.0);
   //rsPlotVectors(ht, h);

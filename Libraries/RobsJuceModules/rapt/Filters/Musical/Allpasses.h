@@ -438,17 +438,11 @@ class rsAllpassDisperser
 public:
 
 
-  rsAllpassDisperser(int maxNumStages = 256)
-  {
-    filters.resize(maxNumStages);
-  }
+
+
+  void setMaxNumStages(int newMaxNumStages) { filters.resize(newMaxNumStages); }
 
   void setupWithTwoPoles(int numStages, TPar wLo, TPar wHi, TPar wShape, TPar Q);
-
-  // ToDo: add setMaxNumStages, maybe 256 is a bit much as default for maxNumStages. Maybe reduce
-  // it to something smaller. Or maybe provide a deault constructor that does not allocate 
-  // anything. The idea is that when we use these in the context of reverb algorithms we may not 
-  // want a default construction with such large memory requirements.
 
 
   TSig getSample(TSig in);
