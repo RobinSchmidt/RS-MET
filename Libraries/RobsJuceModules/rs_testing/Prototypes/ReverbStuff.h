@@ -44,41 +44,23 @@ template<class TSig, class TPar>
 class rsAllpassDelayNaive         // Maybe rename to rsAllpassDelayDF1
 {
 
-public:
 
-  //-----------------------------------------------------------------------------------------------
-  /** \name Lifetime */
+public:
 
   rsAllpassDelayNaive() {}
 
-
-  //-----------------------------------------------------------------------------------------------
-  /** \name Setup */
-
-
   void setMaxDelayInSamples(int newMaxDelay);
-
   void setDelayInSamples(int newDelay);
-
   void setAllpassCoeff(TPar newCoeff) { allpassCoeff = newCoeff; }
 
-
-  //-----------------------------------------------------------------------------------------------
-  /** \name Processing */
-
-
   inline TSig getSample(TSig in);
-
-
   void reset();
-
 
 
 protected:
 
-  TPar allpassCoeff = 0.0;
-
   RAPT::rsBasicDelayLine<TSig> inputDelayLine, outputDelayLine;
+  TPar allpassCoeff = 0.0;
 
 };
 
@@ -126,6 +108,11 @@ void rsAllpassDelayNaive<TSig, TPar>::reset()
 
 // ToDo:
 // -Build a nested allpass in which the z^(-M) term has been replaced by another allpass filter.
+
+
+
+
+
 
 
 //=================================================================================================
