@@ -441,7 +441,7 @@ implementation, the set up a unit test that ensures that both implementations pr
 results and then started optimizing... */
 
 template<class TSig, class TPar>
-class rsTwoPoleAllpassDelayUnfinished
+class rsTwoPoleAllpassDelay
 {
 
 public:
@@ -455,6 +455,8 @@ public:
   {
     delay = newDelay;
     delayLine.setDelayInSamples(2*newDelay);
+    // The multiplication by 2 is deliberate. It arises from deriving the filter from a 2-pole 
+    // filter. What is a delay of 2 in the 2-pole becomes a delay of 2*M here.
   }
 
   void setAllpassCoeffs(TPar newCoeff1, TPar newCoeff2) 
@@ -466,16 +468,23 @@ public:
   inline TSig getSample(TSig x)
   {
     const TPar c1 = coeff1, c2 = coeff2;       // Shorthands for convenience
-    TSig vM  = delayLine.readOutputAt(delay);  // Read vM  = v[n-M]   from the delayline.
-    TSig v2M = delayLine.readOutput();         // Read v2M = v[n-2*M] from the delayline.
+    TSig vM  = delayLine.readOutputAt(delay);  // Read vM  = v[n-M]   from delayline
+    TSig v2M = delayLine.readOutput();         // Read v2M = v[n-2*M] from delayline
     TSig v   = x - c1 * vM - c2 * v2M;         // Compute v[n] = x[n] - c1 * v[n-M] - c2 * v[n-2M]
-    delayLine.writeInputAndUpdate(v);          // Write v[n] into delayline1.
-    return c2 * v + c1 * vM + v2M;             // Return y[n] = c2 * v[n] + c1 * v[n-M] + v[n-2M].
+    delayLine.writeInputAndUpdate(v);          // Write v[n] into delayline
+    return c2 * v + c1 * vM + v2M;             // Return y[n] = c2 * v[n] + c1 * v[n-M] + v[n-2M]
+
+    // Overall, this algorithm produces:
+    //
+    //   y[n] = c2 * x[n] + c1 * x[n-M] + x[n-2M] - c1 * y[n-M] - c2 * y[n-2M]
+    //
+    // But it's implemented in direct form 2 and uses the intermediate signal v that goes into the 
+    // delayline such that we don't need separate delaylines for input and output.
   }
 
   void reset()
   {
-    delayLine2.reset();
+    delayLine.reset();
   }
 
 
@@ -487,5 +496,8 @@ protected:
   int  delay  = 0;
 
 };
+
+// ToDo: implement a more general variant that doesn't assume the 2-pole prototype to be an 
+// allpass.
 
 #endif

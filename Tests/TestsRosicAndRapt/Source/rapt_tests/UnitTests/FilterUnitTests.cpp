@@ -2171,7 +2171,7 @@ bool twoPoleAllpassDelayUnitTest()
   ok &= isAllpass(ht, 1.e-7);
 
 
-  rsTwoPoleAllpassDelayUnfinished<double, double> optimized;
+  rsTwoPoleAllpassDelay<double, double> optimized;
   optimized.setMaxDelayInSamples(16);
   optimized.setDelayInSamples(10);
   optimized.setAllpassCoeffs(-0.7, +0.5);
