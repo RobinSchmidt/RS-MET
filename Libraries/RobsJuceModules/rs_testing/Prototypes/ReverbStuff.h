@@ -448,15 +448,13 @@ public:
 
   void setMaxDelayInSamples(int newMaxDelay)
   {
-    //delayLine1. setMaximumDelayInSamples(  newMaxDelay);
-    delayLine2. setMaximumDelayInSamples(2*newMaxDelay);
+    delayLine.setMaximumDelayInSamples(2*newMaxDelay);
   }
 
   void setDelayInSamples(int newDelay)
   {
     delay = newDelay;
-    //delayLine1. setDelayInSamples(  newDelay);
-    delayLine2. setDelayInSamples(2*newDelay);
+    delayLine.setDelayInSamples(2*newDelay);
   }
 
   void setAllpassCoeffs(TPar newCoeff1, TPar newCoeff2) 
@@ -467,47 +465,27 @@ public:
 
   inline TSig getSample(TSig x)
   {
-    TPar c1 = coeff1, c2 = coeff2;
-
-    // Retrieve delayed states:
-    //TSig vM  = delayLine1.readOutput();    // Read vM  = v[n-M]   from the 1st delayline.
-    TSig vM  = delayLine2.readOutputAt(delay); // Read vM  = v[n-M]   from the 1st delayline.
-    TSig v2M = delayLine2.readOutput();        // Read v2M = v[n-2*M] from the 2nd delayline.
-
-
-    // Compute new state v[n] and write into the delaylines:
-    TSig v  = x - c1 * vM - c2 * v2M;      // Compute v[n] = x[n] - c1 * v[n-M] - c2 * v[n-2M]
-    //delayLine1.writeInputAndUpdate(v);     // Write v[n] into delayline1.
-    delayLine2.writeInputAndUpdate(v);     // Write v[n] into delayline1.
-
-
-    return c2 * v + c1 * vM + v2M;         // Return y[n] = c2 * v[n] + c1 * v[n-M] + v[n-2M].
+    const TPar c1 = coeff1, c2 = coeff2;       // Shorthands for convenience
+    TSig vM  = delayLine.readOutputAt(delay);  // Read vM  = v[n-M]   from the delayline.
+    TSig v2M = delayLine.readOutput();         // Read v2M = v[n-2*M] from the delayline.
+    TSig v   = x - c1 * vM - c2 * v2M;         // Compute v[n] = x[n] - c1 * v[n-M] - c2 * v[n-2M]
+    delayLine.writeInputAndUpdate(v);          // Write v[n] into delayline1.
+    return c2 * v + c1 * vM + v2M;             // Return y[n] = c2 * v[n] + c1 * v[n-M] + v[n-2M].
   }
-
 
   void reset()
   {
-    //delayLine1.reset();
     delayLine2.reset();
   }
 
 
 protected:
 
-  // As first step, we replace the separate in/out delaylines with delaylines for intermediate
-  // signals:
-  //RAPT::rsBasicDelayLine<TSig> delayLine1;
-  RAPT::rsBasicDelayLine<TSig> delayLine2;
-
-  // As second step, replace the two delaylines with a single 2-tap delayline. Maybe we should use
-  // rsRingBuffer for that. Or maybe we should add a function readOutputAt(int delay) to 
-  // rsBasicDelayLine
-
-
+  RAPT::rsBasicDelayLine<TSig> delayLine;
   TPar coeff1 = 0.0;
   TPar coeff2 = 0.0;
+  int  delay  = 0;
 
-  int delay = 0;
 };
 
 #endif
