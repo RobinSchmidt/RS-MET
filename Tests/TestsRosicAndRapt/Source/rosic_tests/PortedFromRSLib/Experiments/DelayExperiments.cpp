@@ -93,6 +93,11 @@ void twoPoleAllpassDelay()
   using VecR = std::vector<Real>;
 
 
+  rsTwoPoleAllpassDelay<Real, Real> allpass;  // Ah - we need a chain!
+  //allpass.setM
+
+
+
   auto create = [](const VecI& delays, const VecR& omegas, const VecR& Qs, int N)
   {
     size_t numStages = delays.size();
