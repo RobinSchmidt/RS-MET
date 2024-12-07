@@ -1822,17 +1822,12 @@ bool hilbertFilterUnitTest()
   return ok;
 }
 
-
-
-
-
 // Tests if a given impulse response h is allpass in nature - up to some tolerance because it's
 // necessarily truncated to finite length.
 template<class T>
 bool isAllpass(const std::vector<T>& h, T tol)
 {
   int N = h.size();
-
   rsAssert(rsIsPowerOfTwo(N), "This function currently only works for powers of 2." );
   
   // Create and set up an FFT object:
@@ -1842,17 +1837,15 @@ bool isAllpass(const std::vector<T>& h, T tol)
   fft.setDirection(FFT::directions::FORWARD);
   fft.setNormalizationMode(FFT::normalizationModes::NEVER_NORMALIZE);
 
-  std::vector<T> mags(N), phases(N);
+  std::vector<T> mags(N/2), phases(N/2);
   fft.getRealSignalMagnitudesAndPhases(&h[0], &mags[0], &phases[0]);
-  //rsPlotVectors(mags);
+  //rsPlotVectors(mags);  // Can be uncommented to investigate problems
 
   // Check if the maximum deviation from unit frequency response is within the tolerance:
   T maxErr = T(0);
   for(int k = 0; k < N/2; k++)
     maxErr = rsMax(maxErr, rsAbs(T(1) - mags[k]));
   return maxErr <= tol;
-
-  
 
   // ToDo:
   //
@@ -1861,12 +1854,7 @@ bool isAllpass(const std::vector<T>& h, T tol)
   //   realtime processing. However, to just compute one FFT, a simple function call would be
   //   more convenient. Maybe factor out a function fftMagnitudes(h) or something like that and 
   //   move it to the test tools.
-  //
-  // - Figure out why the magnitudes of frequencies >= N/2 are zero. Shouldn't we see a completely
-  //   flat spectrum also for the negative frequencies? Ah! I know! The magnitudes and phases 
-  //   arrays are actually just N/2 long. The rest of the length is not even used.
 }
-
 
 bool allpassChainUnitTest()
 {
@@ -1907,11 +1895,8 @@ bool allpassChainUnitTest()
       tmp = literalAllpassChain[i].getSample(tmp);
     h[n] = tmp;
   }
-
   ok &= isAllpass(h, 1.e-7);
-
   //rsPlotVectors(h);
-
 
   // Now let's see if we can produce the same result with the class rsAllpassDelayChain:
   RAPT::rsAllpassDelayChain<Real, Real> allpassChain;
