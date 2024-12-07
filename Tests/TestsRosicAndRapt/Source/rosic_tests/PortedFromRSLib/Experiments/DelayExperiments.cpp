@@ -94,13 +94,13 @@ void twoPoleAllpassDelay()
   using APF  = rsTwoPoleAllpassDelay<Real, Real>;
 
 
-  int maxNumStages = 10;
-  int maxDelay     = 100;
+  //int maxNumStages = 10;
+  //int maxDelay     = 100;
 
-  // Create the chain of filters and allocate their delay memory:
-  std::vector<APF> filters(maxNumStages);
-  for(APF& f : filters)
-    f.setMaxDelayInSamples(maxDelay);
+  //// Create the chain of filters and allocate their delay memory:
+  //std::vector<APF> filters(maxNumStages);
+  //for(APF& f : filters)
+  //  f.setMaxDelayInSamples(maxDelay);
 
 
 
@@ -117,7 +117,17 @@ void twoPoleAllpassDelay()
     rsAssert(Qs.size()     == numStages);
 
     // Reset the filters:
+    //for(size_t i = 0; i < filters.size(); i++)
     //...
+
+    using APF = rsTwoPoleAllpassDelay<Real, Real>;
+    std::vector<APF> filters(numStages);
+
+
+    //for(size_t i = 0; i < filters.size(); i++)
+    //{
+    //
+    //}
 
     // Set up the filters:
     rsStateVariableFilter<Real, Real> svf;
@@ -126,6 +136,10 @@ void twoPoleAllpassDelay()
     {
       svf.setupAllpass(omegas[i], Qs[i]);
       svf.convertToBiquad(&b0, &b1, &b2, &a1, &a2);
+
+      filters[i].setMaxDelayInSamples(delays[i]);
+      filters[i].setDelayInSamples(   delays[i]);
+      filters[i].setAllpassCoeffs(a1, a2); // Or should we include a minus? But I don't think so.
 
       int dummy = 0;
 
