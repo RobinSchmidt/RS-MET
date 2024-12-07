@@ -34,7 +34,8 @@
 
 so it's like a first order allpass filter with coefficient c in which the unit delay was replaced
 by a delay line of length M. This is also known as a Schroeder allpass section. Such allpass delays 
-can be used as building blocks for reverbs, for example. 
+can be used as building blocks for reverbs, for example. A "non-naive" implementation can be found 
+in RAPT::rsAllpassDelay. It uses only half of the delay memory.
 
 See:
 https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html  */
@@ -46,8 +47,6 @@ class rsAllpassDelayNaive         // Maybe rename to rsAllpassDelayDF1
 
 
 public:
-
-  rsAllpassDelayNaive() {}
 
   void setMaxDelayInSamples(int newMaxDelay)
   {
@@ -97,52 +96,6 @@ protected:
 
 };
 
-
-/*
-template<class TSig, class TPar>
-void rsAllpassDelayNaive<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
-{
-  inputDelayLine.setMaximumDelayInSamples(newMaxDelay);
-  outputDelayLine.setMaximumDelayInSamples(newMaxDelay);
-}
-
-template<class TSig, class TPar>
-void rsAllpassDelayNaive<TSig, TPar>::setDelayInSamples(int newDelay)
-{
-  inputDelayLine.setDelayInSamples(newDelay);
-  outputDelayLine.setDelayInSamples(newDelay);
-}
-
-template<class TSig, class TPar>
-TSig rsAllpassDelayNaive<TSig, TPar>::getSample(TSig x)
-{
-  TSig xM = inputDelayLine.getSample(x);                             // x[n-M]
-  TSig yM = outputDelayLine.getSampleSuppressTapIncrements(TSig(0)); // y[n-M]
-  TSig y  = allpassCoeff * x + xM - allpassCoeff * yM;               // y[n], our current output
-  outputDelayLine.addToInput(y);
-  outputDelayLine.incrementTapPointers();
-  return y;
-  // ToDo: verify that this does the right thing with respect to the order of reading, writing and
-  // incrementing the taps of the outputDelayLine. Maybe write a unit test that uses a delay of 
-  // M = 1 and compare output to a regular first order allpass filter.
-  //
-  // We want to realize:
-  //
-  //          c +     z^(-M)
-  //  H(z) = ----------------,    y[n] = c * x[n] + x[n-M] - c * y[n-M]
-  //          1 + c * z^(-M)
-}
-
-template<class TSig, class TPar>
-void rsAllpassDelayNaive<TSig, TPar>::reset()
-{
-  inputDelayLine.reset();
-  outputDelayLine.reset();
-}
-*/
-
-// ToDo:
-// -Build a nested allpass in which the z^(-M) term has been replaced by another allpass filter.
 
 
 //=================================================================================================
