@@ -60,13 +60,13 @@ public:
     outputDelayLine.setDelayInSamples(newDelay);
   }
 
-  void setAllpassCoeff(TPar newCoeff) { allpassCoeff = newCoeff; }
+  void setAllpassCoeff(TPar newCoeff) { coeff = newCoeff; }
 
   inline TSig getSample(TSig x)
   {
     TSig xM = inputDelayLine.getSample(x);                             // x[n-M]
     TSig yM = outputDelayLine.getSampleSuppressTapIncrements(TSig(0)); // y[n-M]
-    TSig y  = allpassCoeff * x + xM - allpassCoeff * yM;               // y[n], our current output
+    TSig y  = coeff * x + xM - coeff * yM;                             // y[n], our current output
     outputDelayLine.addToInput(y);
     outputDelayLine.incrementTapPointers();
     return y;
@@ -92,13 +92,15 @@ public:
 protected:
 
   RAPT::rsBasicDelayLine<TSig> inputDelayLine, outputDelayLine;
-  TPar allpassCoeff = 0.0;
+  TPar coeff = 0.0;
 
 };
 
 
 
 //=================================================================================================
+
+
 
 
 
