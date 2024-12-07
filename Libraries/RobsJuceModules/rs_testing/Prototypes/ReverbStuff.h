@@ -448,14 +448,14 @@ public:
 
   void setMaxDelayInSamples(int newMaxDelay)
   {
-    delayLine1. setMaximumDelayInSamples(  newMaxDelay);
+    //delayLine1. setMaximumDelayInSamples(  newMaxDelay);
     delayLine2. setMaximumDelayInSamples(2*newMaxDelay);
   }
 
   void setDelayInSamples(int newDelay)
   {
     delay = newDelay;
-    delayLine1. setDelayInSamples(  newDelay);
+    //delayLine1. setDelayInSamples(  newDelay);
     delayLine2. setDelayInSamples(2*newDelay);
   }
 
@@ -487,7 +487,7 @@ public:
 
   void reset()
   {
-    delayLine1.reset();
+    //delayLine1.reset();
     delayLine2.reset();
   }
 
@@ -496,7 +496,7 @@ protected:
 
   // As first step, we replace the separate in/out delaylines with delaylines for intermediate
   // signals:
-  RAPT::rsBasicDelayLine<TSig> delayLine1;
+  //RAPT::rsBasicDelayLine<TSig> delayLine1;
   RAPT::rsBasicDelayLine<TSig> delayLine2;
 
   // As second step, replace the two delaylines with a single 2-tap delayline. Maybe we should use
