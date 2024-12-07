@@ -2127,7 +2127,7 @@ bool twoPoleAllpassDelayUnitTest()
   optimized.setAllpassCoeffs(-0.7, +0.5);
   Vec h = impulseResponse(optimized, numSamples, 1.0);
   ok &= rsIsCloseTo(h, ht, 1.e-13);
-
+  rsPlotVectors(ht, h);
 
 
 

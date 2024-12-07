@@ -464,8 +464,8 @@ public:
     inputDelayLine2.setDelayInSamples( 2*newDelay);
     outputDelayLine2.setDelayInSamples(2*newDelay);
 
-    delayLine1. setMaximumDelayInSamples(  newDelay);
-    delayLine2. setMaximumDelayInSamples(2*newDelay);
+    delayLine1. setDelayInSamples(  newDelay);
+    delayLine2. setDelayInSamples(2*newDelay);
   }
 
   void setAllpassCoeffs(TPar newCoeff1, TPar newCoeff2) 
@@ -474,7 +474,7 @@ public:
     coeff2 = newCoeff2;
   }
 
-  inline TSig getSample(TSig x)
+  inline TSig getSampleOld(TSig x)
   {
     // Retrieve delayed inputs and outputs:
     TSig xM  = inputDelayLine1.getSample(x);                             // x[n-M]
@@ -492,6 +492,36 @@ public:
     outputDelayLine2.incrementTapPointers();
     return y;
   }
+
+  inline TSig getSample(TSig x)
+  {
+    TPar c1 = coeff1, c2 = coeff2;
+
+    // Retrieve delayed states:
+    TSig vM  = delayLine1.readOutput();    // Read vM  = v[n-M]   from the 1st delayline.
+    TSig v2M = delayLine2.readOutput();    // Read v2M = v[n-2*M] from the 2nd delayline.
+
+    // Compute new state v[n] and write into the delaylines:
+    TSig v  = x - c1 * vM - c2 * v2M;      // Compute v[n] = x[n] - c1 * v[n-M] - c2 * v[n-2M]
+    delayLine1.writeInputAndUpdate(v);     // Write v[n] into delayline1.
+    delayLine2.writeInputAndUpdate(v);     // Write v[n] into delayline1.
+
+    return c2 * v + c1 * vM + v2M;         // Return y[n] = c2 * v[n] + c1 * v[n-M] + v[n-2M].
+  }
+
+
+
+  /*
+  // from rsAllpassDelay - i.e. for a 1st order version - or one-pole based
+  inline TSig getSample(TSig x)
+  {
+    const TPar c = allpassCoeff;         // For convenience.
+    TSig vM = delayLine.readOutput();    // Read vM = v[n-M] from the delayline.
+    TSig v  = x - c * vM;                // Compute v[n] = x[n] - c * v[n-M].
+    delayLine.writeInputAndUpdate(v);    // Write v[n] into the delayline.
+    return c * v + vM;                   // Return y[n] = c * v[n] + v[n-M].
+  }
+  */
 
 
   void reset()
