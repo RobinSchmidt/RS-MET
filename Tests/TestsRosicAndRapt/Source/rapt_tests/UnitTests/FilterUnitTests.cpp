@@ -1827,6 +1827,7 @@ bool hilbertFilterUnitTest()
 template<class T>
 bool isAllpass(const std::vector<T>& h, T tol)
 {
+  /*
   int N = h.size();
   rsAssert(rsIsPowerOfTwo(N), "This function currently only works for powers of 2." );
   
@@ -1839,10 +1840,15 @@ bool isAllpass(const std::vector<T>& h, T tol)
 
   std::vector<T> mags(N/2), phases(N/2);
   fft.getRealSignalMagnitudesAndPhases(&h[0], &mags[0], &phases[0]);
+  */
+
+
+  // Compute magnitude spectrum:
+  std::vector<T> mags = rsSpectralMagnitudes(h);
 
   // Check if the maximum deviation from unit frequency response is within the tolerance:
   T maxErr = T(0);
-  for(int k = 0; k < N/2; k++)
+  for(size_t k = 0; k < mags.size(); k++)
     maxErr = rsMax(maxErr, rsAbs(T(1) - mags[k]));
   bool ok = maxErr <= tol;
 
@@ -2133,10 +2139,13 @@ bool twoPoleAllpassDelayUnitTest()
   naive.setDelayInSamples(10);
   naive.setAllpassCoeffs(-0.7, +0.5);
   Vec ht = impulseResponse(naive, numSamples, 1.0);
+  //rsPlotVectors(ht);
+
+  //plotMagnitudeResponse(ht);
 
   //ok &= isAllpass(ht, 1.e-12);
 
-  //rsPlotVectors(ht);
+
 
 
   return ok;

@@ -161,9 +161,25 @@ bool isInverseFunction(F1 forwardFunc, F2 maybeInverseFunc, T minValue, T maxVal
   return true;
 }
 
+// Produces spectral magnitudes of given signal x.
+template<class T>
+std::vector<T> rsSpectralMagnitudes(const std::vector<T>& x)
+{
+  int N = x.size();
+  rsAssert(rsIsPowerOfTwo(N), "This function currently only works for powers of 2." );
 
+  // Create and set up an FFT object:
+  using FFT = rsFourierTransformerRadix2<T>;
+  FFT fft;
+  fft.setBlockSize(N);
+  fft.setDirection(FFT::directions::FORWARD);
+  fft.setNormalizationMode(FFT::normalizationModes::NEVER_NORMALIZE);
 
+  std::vector<T> mags(N/2), phases(N/2);
+  fft.getRealSignalMagnitudesAndPhases(&x[0], &mags[0], &phases[0]);
 
+  return mags;
+}
 
 // for testing the callback performance (this is actually in jura, but anyway):
 #define JUCE_API

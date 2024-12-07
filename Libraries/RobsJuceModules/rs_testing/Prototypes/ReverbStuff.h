@@ -113,7 +113,6 @@ z^-M and z^-2M terms should reduce it by another another factor of 1.5. So, over
 as much delay memory as a sensible implementation should. But the code can be verified to be 
 correct by inspection more easily. That's why this is a naive prototype. */
 
-
 template<class TSig, class TPar>
 class rsTwoPoleAllpassDelayNaive 
 {
@@ -193,11 +192,15 @@ protected:
   TPar coeff2 = 0.0;
 };
 
+/*
+ToDo: generalize this idea to arbitrary order filters with arbitrary delays, i.e. realize:
 
+  y[n] = c_M x[n] + c_{M-1} x[n-d_1] + c_{M-2} x[n-d_2] + ... +     x[n-d_M]
+                  - c_1     y[n-d_1] - c_2     y[n-d_2] - ... - c_M y[n-d_M]
 
-
-
-
+...I think - but this formula needs to be verified. Can we then also build nested structure from
+these units? This could perhaps be realized with a multitap delayline
+*/
 
 
 //=================================================================================================
