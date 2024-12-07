@@ -1846,7 +1846,7 @@ bool isAllpass(const std::vector<T>& h, T tol)
     maxErr = rsMax(maxErr, rsAbs(T(1) - mags[k]));
   bool ok = maxErr <= tol;
 
-  // This can be uncommented in debug sessions to investigate problems when the test fails:
+  //// This can be uncommented in debug sessions to investigate problems when the test fails:
   //if(!ok)
   //{
   //  rsError("Filter is not allpass!");
@@ -2080,10 +2080,10 @@ bool allpassDisperserUnitTest()
 
   using Vec = std::vector<double>;
 
-  int    numSamples =   500;
+  int    numSamples =   512;
   int    numStages  =    30;
   double sampleRate = 44100;
-  double fLo        =    50;
+  double fLo        =  1000;
   double fHi        =  8000;
   double fShape     =     0.7;
   double Q          =     2;
@@ -2101,6 +2101,7 @@ bool allpassDisperserUnitTest()
   flatZapper.setHighQ(Q);
   flatZapper.setQShape(0.0);        // Irrelevant when qLo and qHi are the same
   Vec ht = impulseResponse(flatZapper, numSamples, 1.0);
+  ok &= isAllpass(ht, 1.e-5);
 
   // Set up an rsAllpassDisperser and see, if it can produce the same output:
   rsAllpassDisperser<double, double> disperser;
@@ -2115,9 +2116,6 @@ bool allpassDisperserUnitTest()
 
   return ok;
 }
-
-
-
 
 bool twoPoleAllpassDelayUnitTest()
 {
@@ -2149,17 +2147,12 @@ bool twoPoleAllpassDelayUnitTest()
   //   think maybe not because the coeffs are used in both feedforward and feedback path.
 }
 
-
-// rsTwoPoleAllpassDelayNaive
-
 bool allpassUnitTest()
 {
   bool ok = true;
 
   ok &= allpassChainUnitTest();
   ok &= nestedAllpassUnitTest();
-
-
   ok &= allpassDisperserUnitTest();
   ok &= twoPoleAllpassDelayUnitTest();
 
