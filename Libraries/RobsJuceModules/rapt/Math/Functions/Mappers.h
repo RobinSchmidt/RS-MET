@@ -16,13 +16,13 @@ public:
 
 
 template<class T>
-class rsLinToExpMapper : public rsMapper<T>
+class rsMapperLinToExp : public rsMapper<T>
 {
 
 public:
 
 
-  rsLinToExpMapper(T inMin = 0, T inMax = 1, T outMin = 1, T outMax = 2)
+  rsMapperLinToExp(T inMin = 0, T inMax = 1, T outMin = 1, T outMax = 2)
   {
     setRanges(inMin, inMax, outMin, outMax);
   }
@@ -41,7 +41,7 @@ public:
 
   T map(T x) const override
   {
-    T tmp = (in - inMin) / (inMax - inMin);
+    T tmp = (x - inMin) / (inMax - inMin);
     return outMin * std::exp(tmp * (log(outMax / outMin)));
   };
 

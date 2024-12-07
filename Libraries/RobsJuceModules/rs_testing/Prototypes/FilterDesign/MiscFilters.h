@@ -805,10 +805,18 @@ void rsAllpassDisperser<TSig, TPar>::setupWithTwoPoles(
   else
   {
     TPar scaler = TPar(1) / TPar(numStages-1); 
+    RAPT::rsMapperLinToExp<TPar> mapper(TPar(0), TPar(1), wLo, wHi);
+
     for(int i = 0; i < numStages; i++)
     {
       TPar p = scaler * i;                                        // Goes from 0 to 1
-      TPar w = rsLinToExp(applyShape(p, wShape), 0.0, 1.0, wLo, wHi);
+
+
+      //TPar w = rsLinToExp(applyShape(p, wShape), 0.0, 1.0, wLo, wHi);
+
+      TPar w = mapper.map(applyShape(p, wShape));
+
+
       filters[i].setupAllpass(w, Q);
     }
   }
