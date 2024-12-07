@@ -809,20 +809,24 @@ void rsAllpassDisperser<TSig, TPar>::setupWithTwoPoles(
 
   auto shape = [](TPar x, TPar shapeParam) 
   { 
-    TPar s = RAPT::rsPow(2.0, shapeParam);  // Slope at x = 0
+    //TPar s = RAPT::rsPow(2.0, shapeParam);  // Slope at x = 0
     // use exp2, if something like that is available
     // Calls  rsPow(const T& base, int exponent); This is a BUG!!!
     // To avoid it, we should rename it to rsPowInt. Apparently, the 2nd double parameter gets 
     // implicitly converted to int!
 
-    s = std::exp2(shapeParam);
+    //TPar s = std::exp2(shapeParam);
+    TPar s = rsExp2(shapeParam);
+    // ToDo: implement and use rsExp2
+
     //TPar s = std::exp2(shapeParam);  // Wrap into RAPT rsExp2
       //RAPT::rsPow(2.0, shapeParam);  // Slope at x = 0
     // WTF exp2(0) returns 1.6...
 
 
     return s*x / ((s-1)*x + 1);
-    // See rsLinearFractionalInterpolator::simpleMap() for what this formula means.
+    // See rsLinearFractionalInterpolator::simpleMap() for what this formula means and wher it 
+    // comes from
   };
   // -Make this a static member function. It will be used by other setupWith... functions as well
 

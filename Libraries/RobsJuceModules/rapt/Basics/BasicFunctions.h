@@ -1,6 +1,9 @@
 #ifndef RAPT_BASICFUNCTIONS_H_INCLUDED
 #define RAPT_BASICFUNCTIONS_H_INCLUDED
 
+// In Math/Functions/BasicMathFunctions.h/cpp, there is some stuff that overlaps with the stuff 
+// here. Consolidate that code into one file!
+
 /** Swaps x and y via copy assignment operator. */
 template<class T>
 inline void rsSwapNaive(T& x, T& y)
@@ -92,6 +95,7 @@ template<class T> inline bool rsIsFiniteNumbers(T* x, int N)
 // etc.):
 template<class T> inline T rsSqrt( T x) { return std::sqrt( x); }
 template<class T> inline T rsExp(  T x) { return std::exp(  x); }
+template<class T> inline T rsExp2( T x) { return std::exp2( x); }
 template<class T> inline T rsLog(  T x) { return std::log(  x); }
 template<class T> inline T rsSin(  T x) { return std::sin(  x); }
 template<class T> inline T rsCos(  T x) { return std::cos(  x); }
