@@ -94,20 +94,6 @@ void twoPoleAllpassDelay()
   using APF  = rsTwoPoleAllpassDelay<Real, Real>;
 
 
-  //int maxNumStages = 10;
-  //int maxDelay     = 100;
-
-  //// Create the chain of filters and allocate their delay memory:
-  //std::vector<APF> filters(maxNumStages);
-  //for(APF& f : filters)
-  //  f.setMaxDelayInSamples(maxDelay);
-
-
-
-
-  //rsTwoPoleAllpassDelay<Real, Real> allpass;  // Ah - we need a chain!
-  //allpass.setM
-
 
 
   auto create = [](const VecI& delays, const VecR& omegas, const VecR& Qs, int N)
@@ -116,20 +102,11 @@ void twoPoleAllpassDelay()
     rsAssert(omegas.size() == numStages);
     rsAssert(Qs.size()     == numStages);
 
-    // Reset the filters:
-    //for(size_t i = 0; i < filters.size(); i++)
-    //...
+  
 
+    // Create and set up the filters:
     using APF = rsTwoPoleAllpassDelay<Real, Real>;
     std::vector<APF> filters(numStages);
-
-
-    //for(size_t i = 0; i < filters.size(); i++)
-    //{
-    //
-    //}
-
-    // Set up the filters:
     rsStateVariableFilter<Real, Real> svf;
     Real b0, b1, b2, a1, a2;
     for(size_t i = 0; i < numStages; i++)
@@ -142,13 +119,25 @@ void twoPoleAllpassDelay()
       filters[i].setAllpassCoeffs(a1, a2); // Or should we include a minus? But I don't think so.
 
       int dummy = 0;
-
-      //...TBC...
     }
+
+    // Create helper function to apply the filters:
+    auto applyFilters = [&](Real x)
+    {
+      for(size_t i = 0; i < numStages; i++)
+        x = filters[i].getSample(x);
+      return x;
+    };
 
 
     // Generate impulse response:
-    // ...
+    std::vector<Real> h(N);
+    h[0] = applyFilters(1.0);
+    for(size_t n = 1; n < numStages; n++)
+      h[n] = applyFilters(0.0);
+
+    
+    rsPlotVectors(h);
 
   
     int dummy = 0;
