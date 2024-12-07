@@ -29,6 +29,7 @@ structure.
 See:
 
   https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
+  https://ccrma.stanford.edu/~jos/pasp/Schroeder_Allpass_Sections.html
   https://valhalladsp.com/2011/01/21/reverbs-diffusion-allpass-delays-and-metallic-artifacts/  
 
 */
@@ -73,10 +74,29 @@ protected:
 //=================================================================================================
 
 /** This is an idea that I call 2-pole allpass delay. The regular allpass delay (aka Schroeder 
-allpass) that is implemented in rsAllpassDelay can be constructed by starting with a first order 
-(i.e. 1-pole-1-zero filter) and replacing the unit delay by a delayline of some length M in 
-samples. That amounts to replacing z^-1 by z^-M in the transfer function. This filter here here 
-applies the same idea to a 2-pole allpass. We replace z^-1 by z^-M and z^-2 by z^-2M. */
+allpass section) that is implemented in rsAllpassDelay can be constructed by starting with a first 
+order (i.e. 1-pole-1-zero filter) and replacing the unit delay by a delayline of some length M in 
+samples. That amounts to replacing z^-1 by z^-M in the transfer function. This filter here applies 
+the same idea to a 2-pole allpass. We replace z^-1 by z^-M and z^-2 by z^-2M. We realize the 
+transfer function:
+
+          c2  +  c1 * z^(-M)  +       z^(-2M)
+  H(z) = -------------------------------------
+          1   +  c1 * z^(-M)  +  c2 * z^(-2M)
+
+corresponding to the difference equation:
+
+  y[n] = c2 * x[n] + c1 * x[n-M] + x[n-2M] - c1 * y[n-M] - c2 * y[n-2M]
+
+although the difference equation is not literally implemented this way. As written down, this would
+be a direct form 1 (DF1) implementation that would need two delaylines  -  one for input and one for 
+output. To save memory, we instead use a DF2 implementation: 
+
+  v[n] = x[n]       -  c1 * v[n-M]  -  c2 * v[n-2M]
+  y[n] = c2 * v[n]  +  c1 * v[n-M]  +       v[n-2M]
+
+which lets us get a away with just a single delayline. That means, we save half of the delay 
+memory. */
 
 template<class TSig, class TPar>
 class rsTwoPoleAllpassDelay
@@ -90,6 +110,8 @@ public:
   void setMaxDelayInSamples(int newMaxDelay)
   {
     delayLine.setMaximumDelayInSamples(2*newMaxDelay);
+
+    // ToDo: if the new max delay is less than the current M, reduce the current M accordingly
   }
 
   void setDelayInSamples(int newDelay)
@@ -125,15 +147,6 @@ public:
     TSig v   = x - c1 * vM - c2 * v2M;      // Compute v[n] = x[n] - c1 * v[n-M] - c2 * v[n-2M]
     delayLine.writeInputAndUpdate(v);       // Write v[n] into delayline and increment taps
     return c2 * v + c1 * vM + v2M;          // Return y[n] = c2 * v[n] + c1 * v[n-M] + v[n-2M]
-
-    // Overall, this algorithm produces:
-    //
-    //   y[n] = c2 * x[n] + c1 * x[n-M] + x[n-2M] - c1 * y[n-M] - c2 * y[n-2M]
-    //
-    // where c1, c2 are our coefficients and M is the amount of delay that replaces the unit delay.
-    // But the implementation uses direct form 2 (the formula shows direct form 1). This produces 
-    // an intermediate signal v that goes into the delayline such that we don't need separate 
-    // delaylines for input and output.
   }
 
   void reset()

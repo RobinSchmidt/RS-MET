@@ -119,6 +119,7 @@ int main(int argc, char* argv[])
   //expBipolar();
   //expGaussBell();
   //fmodTest();                      // Tests for wrap-around functions
+  mathErrorsTest();
   //gaussBellProduct();
   //iteratedNumDiff();
 

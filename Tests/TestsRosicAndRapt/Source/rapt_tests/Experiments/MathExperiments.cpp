@@ -4038,6 +4038,22 @@ void fmodTest()  // rename to wrapAroundTest
 
 }
 
+void mathErrorsTest()
+{
+  // We test the behavior of C++ in cases of certain invalid math operations.
+
+  float numF  = 2.f;
+  float denF  = 0.f;
+  float fracF = numF/denF;  // fracF == +inf
+
+  int numI = 2;
+  int denI = 0;
+  //int fracI = numI/denI;
+  // This actually throws an exception. If we don't handle it, we cannot get passed this point.
+  // What happens in a release build? Maybe move into math unit test or inot a mathErrors
+  // experiment
+}
+
 void gaussBellProduct()
 {
   // The product of two Gaussian bell curves y1(x) = (1/sqrt(2*pi*s1^2)) * exp(-(x-m1)^2/s1^2)
