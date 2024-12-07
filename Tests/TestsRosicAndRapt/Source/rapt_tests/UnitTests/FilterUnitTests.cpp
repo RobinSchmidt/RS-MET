@@ -1862,14 +1862,29 @@ bool delayLineUnitTest()
 
   int N = 100;  // Number of samples
 
+
+
   for(int i = 0; i < N; i++)
   {
-    double y = dl.getSample(double(i));
+    double y;
 
+    // Test getSample(). This triggers an update of the tapIn/tapOut pointers:
+    y = dl.getSample(double(i));
     if(i < delay)
       ok &= y == 0.0;
     else
       ok &= y == double(i-delay);
+
+
+    // Test readOutput(). This should just read the same output again without triggering any other 
+    // action, so we can test the exact same condition afterwards:
+    y = dl.readOutput();
+    if(i < delay)
+      ok &= y == 0.0;
+    else
+      ok &= y == double(i-delay);
+
+
 
 
 
