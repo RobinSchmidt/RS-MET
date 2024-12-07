@@ -86,6 +86,18 @@ public:
 
   inline T readOutput() const { return delayLine[tapOut]; }
 
+  /** UNDER CONSTRUCTION. Not yet tested. */
+  inline T readOutputAt(int delay) const 
+  { 
+    int readPos = tapIn - delay;   // Compute nominal read index
+    readPos = readPos & maxDelay;  // Apply bit masking for wrap-around behavior
+    return delayLine[readPos];     // Read out the delayline
+  }
+  // This needs thorough unit tests!
+
+
+
+
   inline void writeInputNoUpdate(T in) { delayLine[tapIn] = in; }
 
   inline void writeInputAndUpdate(T in)

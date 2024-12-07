@@ -496,7 +496,8 @@ protected:
   RAPT::rsBasicDelayLine<TSig> delayLine2;
 
   // As second step, replace the two delaylines with a single 2-tap delayline. Maybe we should use
-  // rsRingBuffer for that
+  // rsRingBuffer for that. Or maybe we should add a function readOutputAt(int delay) to 
+  // rsBasicDelayLine
 
 
   TPar coeff1 = 0.0;
