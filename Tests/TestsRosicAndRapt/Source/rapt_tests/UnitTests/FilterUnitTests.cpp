@@ -2069,6 +2069,23 @@ bool allpassDisperserUnitTest()
   return ok;
 }
 
+
+bool twoPoleAllpassDelayUnitTest()
+{
+  // Under construction
+
+  bool ok = true;
+
+  //using Vec = std::vector<double>;
+
+  //int    numSamples = 512;
+
+  return ok;
+}
+
+
+// rsTwoPoleAllpassDelayNaive
+
 bool allpassUnitTest()
 {
   bool ok = true;
@@ -2076,6 +2093,7 @@ bool allpassUnitTest()
   ok &= allpassChainUnitTest();
   ok &= nestedAllpassUnitTest();
   ok &= allpassDisperserUnitTest();
+  ok &= twoPoleAllpassDelayUnitTest();
 
   return ok;
 }

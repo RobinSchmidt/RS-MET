@@ -35,7 +35,9 @@
 so it's like a first order allpass filter with coefficient c in which the unit delay was replaced
 by a delay line of length M. This is also known as a Schroeder allpass section. Such allpass delays 
 can be used as building blocks for reverbs, for example. A "non-naive" implementation can be found 
-in RAPT::rsAllpassDelay. It uses only half of the delay memory.
+in RAPT::rsAllpassDelay. It uses only half of the delay memory. The point to keep this prototype 
+class around is to have an implementation that can be verified to be correct by inspection more
+easily.
 
 See:
 https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html  */
@@ -91,7 +93,8 @@ public:
 
 protected:
 
-  RAPT::rsBasicDelayLine<TSig> inputDelayLine, outputDelayLine;
+  RAPT::rsBasicDelayLine<TSig> inputDelayLine;
+  RAPT::rsBasicDelayLine<TSig> outputDelayLine;
   TPar coeff = 0.0;
 
 };
@@ -101,6 +104,86 @@ protected:
 //=================================================================================================
 
 
+
+
+template<class TSig, class TPar>
+class rsTwoPoleAllpassDelayNaive 
+{
+
+
+public:
+
+  void setMaxDelayInSamples(int newMaxDelay)
+  {
+    inputDelayLine1. setMaximumDelayInSamples(  newMaxDelay);
+    outputDelayLine1.setMaximumDelayInSamples(  newMaxDelay);
+    inputDelayLine2. setMaximumDelayInSamples(2*newMaxDelay);
+    outputDelayLine2.setMaximumDelayInSamples(2*newMaxDelay);
+  }
+
+  void setDelayInSamples(int newDelay)
+  {
+    inputDelayLine1.setDelayInSamples(   newDelay);
+    outputDelayLine1.setDelayInSamples(  newDelay);
+    inputDelayLine2.setDelayInSamples( 2*newDelay);
+    outputDelayLine2.setDelayInSamples(2*newDelay);
+  }
+
+  void setAllpassCoeffs(TPar newCoeff1, TPar newCoeff2) 
+  { 
+    coeff1 = newCoeff1;
+    coeff2 = newCoeff2;
+  }
+
+  inline TSig getSample(TSig x)
+  {
+    // Retrieve delayed inputs and outputs:
+    TSig xM  = inputDelayLine1.getSample(x);                             // x[n-M]
+    TSig yM  = outputDelayLine1.getSampleSuppressTapIncrements(TSig(0)); // y[n-M]
+    TSig x2M = inputDelayLine2.getSample(x);                             // x[n-2*M]
+    TSig y2M = outputDelayLine2.getSampleSuppressTapIncrements(TSig(0)); // y[n-2*M]
+
+    // Compute current output:
+    TSig y = coeff2 * x + coeff1*xM + x2M - coeff1 * yM - coeff2 * y2M; // y[n], our current output
+
+    // Update the output delaylines and return result:
+    outputDelayLine1.addToInput(y);
+    outputDelayLine1.incrementTapPointers();
+    outputDelayLine2.addToInput(y);
+    outputDelayLine2.incrementTapPointers();
+    return y;
+    // ToDo: verify that this does the right thing with respect to the order of reading, writing and
+    // incrementing the taps of the outputDelayLine. Maybe write a unit test that uses a delay of 
+    // M = 1 and compare output to a regular first order allpass filter.
+    //
+    // We want to realize:
+    //
+    //          c2  +  c1 * z^(-M)  +       z^(-2M)
+    //  H(z) = -------------------------------------
+    //          1   +  c1 * z^(-M)  +  c2 * z^(-2M)
+    //
+    //  y[n] = c2 * x[n] + c1 * x[n-M] + x[n-2M] - c1 * y[n-M] - c2 * y[n-2M]
+  }
+
+
+  void reset()
+  {
+    inputDelayLine1.reset();
+    outputDelayLine1.reset();
+    inputDelayLine2.reset();
+    outputDelayLine2.reset();
+  }
+
+
+protected:
+
+  RAPT::rsBasicDelayLine<TSig> inputDelayLine1;
+  RAPT::rsBasicDelayLine<TSig> inputDelayLine2;
+  RAPT::rsBasicDelayLine<TSig> outputDelayLine1;
+  RAPT::rsBasicDelayLine<TSig> outputDelayLine2;
+  TPar coeff1 = 0.0;
+  TPar coeff2 = 0.0;
+};
 
 
 
