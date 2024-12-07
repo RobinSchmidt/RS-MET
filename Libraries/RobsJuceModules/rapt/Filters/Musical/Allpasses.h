@@ -550,6 +550,9 @@ class rsTwoPoleAllpassDelay
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
   void setMaxDelayInSamples(int newMaxDelay)
   {
     delayLine.setMaximumDelayInSamples(2*newMaxDelay);
@@ -559,8 +562,14 @@ public:
   {
     delay = newDelay;
     delayLine.setDelayInSamples(2*newDelay);
-    // The multiplication by 2 is deliberate. It arises from deriving the filter from a 2-pole 
-    // filter. The delay of 2 in the 2-pole becomes a delay of 2*M here.
+
+    // The multiplication by 2 is not an error. It arises from deriving the filter from a 2-pole 
+    // prototype filter. The delay of 2 in the 2-pole becomes a delay of 2*M here, so we need a 
+    // delay of 2M. We use that as our delayline length but we stored also the newDelay in a 
+    // member delay so we can also conveniently read out the delayline at half of its length 
+    // M = 2M/2. It's a bit redundant, though. We could also reconstruct the value at any time
+    // via using M == delay == delayLine.getDelayInSamples()/2. But that would be inconvenient and
+    // inefficient.
   }
 
   void setAllpassCoeffs(TPar newCoeff1, TPar newCoeff2) 
@@ -569,21 +578,27 @@ public:
     coeff2 = newCoeff2;
   }
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
   inline TSig getSample(TSig x)
   {
     const TPar c1 = coeff1, c2 = coeff2;       // Shorthands for convenience
     TSig vM  = delayLine.readOutputAt(delay);  // Read vM  = v[n-M]   from delayline
     TSig v2M = delayLine.readOutput();         // Read v2M = v[n-2*M] from delayline
     TSig v   = x - c1 * vM - c2 * v2M;         // Compute v[n] = x[n] - c1 * v[n-M] - c2 * v[n-2M]
-    delayLine.writeInputAndUpdate(v);          // Write v[n] into delayline
+    delayLine.writeInputAndUpdate(v);          // Write v[n] into delayline and increment taps
     return c2 * v + c1 * vM + v2M;             // Return y[n] = c2 * v[n] + c1 * v[n-M] + v[n-2M]
 
     // Overall, this algorithm produces:
     //
     //   y[n] = c2 * x[n] + c1 * x[n-M] + x[n-2M] - c1 * y[n-M] - c2 * y[n-2M]
     //
-    // But it's implemented in direct form 2 and uses the intermediate signal v that goes into the 
-    // delayline such that we don't need separate delaylines for input and output.
+    // where c1, c2 are our coefficients and M is the amount of delay that replaces the unit delay.
+    // But the implementation uses direct form 2 (the formula shows direct form 1). This produces 
+    // an intermediate signal v that goes into the delayline such that we don't need separate 
+    // delaylines for input and output.
   }
 
   void reset()
@@ -595,13 +610,23 @@ public:
 protected:
 
   RAPT::rsBasicDelayLine<TSig> delayLine;
-  TPar coeff1 = 0.0;
-  TPar coeff2 = 0.0;
-  int  delay  = 0;
+  TPar coeff1 = 0.0;  // Maybe rename to c1
+  TPar coeff2 = 0.0;  // Maybe rename to c2
+  int  delay  = 0;    // Maybe rename to M
 
 };
 
-// ToDo: implement a more general variant that doesn't assume the 2-pole prototype to be an 
-// allpass.
+// ToDo: 
+//
+// - Implement a more general variant that doesn't assume the 2-pole prototype to be an 
+//   allpass. Instead, start with a general biquad prototype filter. Then, the resulting filter 
+//   after replacing unit delays with delays of M samples, will take the form:
+//
+//     y[n] = b0 * x[n] + b1 * x[n-M] + b2 * x[n-2M] - a1 * y[n-M] - a2 * y[n-2M]
+//
+//   Of course, again we won't implement the filter literally this way but instead use direct form
+//   2 to save half of the delay memory. Within this broader context, our filter here would be the
+//   special case where b0 = a2 = c2, b1 = a1 = c1, b2 = a0 = 1. Maybe even implement a delayline 
+//   based filter from arbitrary order direct form filters.
 
 #endif

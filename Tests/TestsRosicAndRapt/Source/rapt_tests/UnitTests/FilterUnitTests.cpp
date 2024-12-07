@@ -1864,10 +1864,11 @@ bool delayLineUnitTest()
 
   for(int i = 0; i < N; i++)
   {
-    double y;
+    // Test computing the delay time from the taps:
+    ok &= dl.getDelayInSamples() == delay;
 
     // Test getSample(). This triggers an update of the tapIn/tapOut pointers:
-    y = dl.getSample(double(i));
+    double y = dl.getSample(double(i));
     if(i < delay)
       ok &= y == 0.0;
     else

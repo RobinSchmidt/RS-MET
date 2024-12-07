@@ -47,12 +47,18 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
+  /** Returns the delay in samples that this delayline produces. */
   int getDelayInSamples() const
   {
     int delay = tapIn - tapOut;
     if(delay < 0)
       delay += maxDelay+1;
     return delay;
+
+    // ToDo: Document why we need to add maxDelay+1. One might expect that we should add maxDelay 
+    // and suspect a bug here. But apparently, it's actually correct that way. There's a unit test
+    // for this and it passes just fine. I think it's related to the maxDelay always being a power 
+    // of two minus one.
   };
 
 
