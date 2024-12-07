@@ -452,6 +452,9 @@ public:
     outputDelayLine1.setMaximumDelayInSamples(  newMaxDelay);
     inputDelayLine2. setMaximumDelayInSamples(2*newMaxDelay);
     outputDelayLine2.setMaximumDelayInSamples(2*newMaxDelay);
+
+    delayLine1. setMaximumDelayInSamples(  newMaxDelay);
+    delayLine2. setMaximumDelayInSamples(2*newMaxDelay);
   }
 
   void setDelayInSamples(int newDelay)
@@ -460,6 +463,9 @@ public:
     outputDelayLine1.setDelayInSamples(  newDelay);
     inputDelayLine2.setDelayInSamples( 2*newDelay);
     outputDelayLine2.setDelayInSamples(2*newDelay);
+
+    delayLine1. setMaximumDelayInSamples(  newDelay);
+    delayLine2. setMaximumDelayInSamples(2*newDelay);
   }
 
   void setAllpassCoeffs(TPar newCoeff1, TPar newCoeff2) 
@@ -494,15 +500,26 @@ public:
     outputDelayLine1.reset();
     inputDelayLine2.reset();
     outputDelayLine2.reset();
+
+    delayLine1.reset();
+    delayLine2.reset();
   }
 
 
 protected:
 
+  // Soon obsolete:
   RAPT::rsBasicDelayLine<TSig> inputDelayLine1;
   RAPT::rsBasicDelayLine<TSig> inputDelayLine2;
   RAPT::rsBasicDelayLine<TSig> outputDelayLine1;
   RAPT::rsBasicDelayLine<TSig> outputDelayLine2;
+
+  // As first step, we replace the separate in/out delaylines with delaylines for intermediate
+  // signals:
+  RAPT::rsBasicDelayLine<TSig> delayLine1;
+  RAPT::rsBasicDelayLine<TSig> delayLine2;
+
+
   TPar coeff1 = 0.0;
   TPar coeff2 = 0.0;
 };
