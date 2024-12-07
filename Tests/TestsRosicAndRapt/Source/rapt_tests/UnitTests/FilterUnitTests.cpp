@@ -1846,6 +1846,42 @@ bool isAllpass(const std::vector<T>& h, T tol)
   return ok;
 }
 
+bool delayLineUnitTest()
+{
+  bool ok = true;
+
+  int delay = 5;
+
+  rsBasicDelayLine<double> dl;
+
+  dl.setMaximumDelayInSamples(16);
+  // Will be rounded up to the next power of two minus 1, i.e. if we pass 16, the max delay will
+  // actually be 31. If we pass 15, it will be used as is, if we pass a value between 16 and 31,
+  // 21 will be used, etc. 
+  dl.setDelayInSamples(delay);
+
+  int N = 100;  // Number of samples
+
+  for(int i = 0; i < N; i++)
+  {
+    double y = dl.getSample(double(i));
+
+    if(i < delay)
+      ok &= y == 0.0;
+    else
+      ok &= y == double(i-delay);
+
+
+
+    int dummy = 0;
+  }
+
+
+
+
+  return ok;
+}
+
 bool allpassChainUnitTest()
 {
   // We compare impulse responses produced by a literal chain of rsAllpassDelayNaive with those of
@@ -2141,6 +2177,7 @@ bool allpassUnitTest()
 {
   bool ok = true;
 
+  ok &= delayLineUnitTest();
   ok &= allpassChainUnitTest();
   ok &= nestedAllpassUnitTest();
   ok &= allpassDisperserUnitTest();
