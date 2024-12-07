@@ -2076,11 +2076,25 @@ bool twoPoleAllpassDelayUnitTest()
 
   bool ok = true;
 
-  //using Vec = std::vector<double>;
+  using Vec = std::vector<double>;
 
-  //int    numSamples = 512;
+  int    numSamples = 512;
+
+
+  rsTwoPoleAllpassDelayNaive<double, double> naive;
+  naive.setMaxDelayInSamples(16);
+  naive.setDelayInSamples(10);
+  naive.setAllpassCoeffs(-0.7, +0.5);
+  Vec ht = impulseResponse(naive, numSamples, 1.0);
+  rsPlotVectors(ht);
+
 
   return ok;
+
+  // ToDo:
+  //
+  // - Figure out, if it's possible to negate the sign of the output by using negated coeffs. I 
+  //   think maybe not because the coeffs are used in both feedforward and feedback path.
 }
 
 
