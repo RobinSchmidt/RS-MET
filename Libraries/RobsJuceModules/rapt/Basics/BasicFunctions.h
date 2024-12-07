@@ -110,10 +110,12 @@ template<class T> inline T rsRound(T x) { return std::round(x); }
 // ToDo: Try to declare them as constexpr.
 
 template<class T> inline T rsAtan2(T y, T x) { return std::atan2(y, x); }
+template<class T> inline T rsPow(  T a, T b) { return std::pow(  a, b); }
 
 //template<class T> inline T rsPow(  T x, T y) { return std::pow(  x, y); }
 // Defining this gives compilation error "ambiguous call ..." because of rsPow(T, int). This is 
 // bad. Try to fix this! Maybe the version with integer exponent should be renamed to rsPowInt.
+// ...OK - done (?)
 
 
 // todo: 

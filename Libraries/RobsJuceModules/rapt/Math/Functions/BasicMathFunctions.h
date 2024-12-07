@@ -117,11 +117,13 @@ repeated squaring which has a complexity of O(log(exponent)). The base need not 
 can also be a float, complex, rsModularInteger, rsPolynomial, rsMatrix - whatever type implements 
 an appropriate multiplication operator. */
 template <class T>
-T rsPow(const T& base, int exponent);
+T rsPowI(const T& base, int exponent);
 // BUG!!!
 // This function is problematic! Sometimes it seems to get called when both parameters are a 
 // double. That means that in this case the exponent gets truncated to an integer and a wrong 
-// result is produced. A possible solution could be to rename it to rsPowInt.
+// result is produced. A possible solution could be to rename it to rsPowInt. But then it clashes
+// with a function that is defined for integers only. Maybe use rsPowI as temporary solution and 
+// then try finding a true solution later
 
 // But maybe this code fixes it - it will better fit the pattern of parameters for 
 // double/double:

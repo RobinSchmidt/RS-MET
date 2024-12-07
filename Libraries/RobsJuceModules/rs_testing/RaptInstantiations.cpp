@@ -425,7 +425,7 @@ template void RAPT::rsDFT(std::complex<double> *buffer, int N);
 template void RAPT::rsFFT(std::complex<double> *buffer, int N);
 template void RAPT::rsIFFT(std::complex<double> *buffer, int N);
 
-template RAPT::rsModularInteger<rsUint64> RAPT::rsPow(
+template RAPT::rsModularInteger<rsUint64> RAPT::rsPowI(
   const RAPT::rsModularInteger<rsUint64>& x, int n);
 
 template void RAPT::rsLinearTransforms::fourierRadix2DIF(

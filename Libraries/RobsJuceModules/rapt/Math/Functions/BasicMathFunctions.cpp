@@ -263,12 +263,12 @@ inline T rsNextPowerOfTwo(T x)
 */
 
 template <class T>
-T rsPow(const T& base, int exponent)
+T rsPowI(const T& base, int exponent)
 {
   //rsAssert(exponent >= 0, "Doesn't work yet for negative exponents");
   // ToDo: fix this. maybe something like:
   if(exponent < 0)
-    return rsPow(rsInv(base), -exponent);  
+    return rsPowI(rsInv(base), -exponent);  
     // Recursive call with inversed base and positive exponent: x^(-a) = (1/x)^a
 
   T result = rsUnityValue(base);

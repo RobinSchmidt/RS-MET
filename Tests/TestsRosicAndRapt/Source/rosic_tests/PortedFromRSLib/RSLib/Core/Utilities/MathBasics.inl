@@ -244,7 +244,7 @@ namespace RSLib
   }
 
   template <class T>
-  T rsPow(const T& base, rsUint64 exponent)
+  T rsPowI(const T& base, rsUint64 exponent)
   {
     T result = rsUnityValue(base);
     T square(base);

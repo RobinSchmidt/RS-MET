@@ -510,7 +510,8 @@ void rsFlatZapper::updateCoeffs()
   // Q for the allpass stage at the given index:
   auto shape = [](double x, double shapeParam) 
   { 
-    double s = RAPT::rsPow(2.0, shapeParam);  // Slope at x = 0
+    //double s = RAPT::rsPowI(2.0, shapeParam);  // Slope at x = 0 - old, buggy
+    double s = RAPT::rsPow(2.0, shapeParam); 
     double a = (s-1)/(s+1);                   // Function parameter for rational map in -1..+1
     return RAPT::rsRationalMap_01(x, a);
   }; // For convenience

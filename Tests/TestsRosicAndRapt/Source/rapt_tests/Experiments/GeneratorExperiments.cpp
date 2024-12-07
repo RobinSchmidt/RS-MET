@@ -4214,7 +4214,9 @@ void sineSweepBassdrum1()
   { 
     // A linear fractional mapping with a parameter p in -inf..+inf where p = 0 is linear. Uses the
     // same parameter mapping as in rsFlatZapper.
-    double s = RAPT::rsPow(2.0, p);       // Slope at x = 0
+    //double s = RAPT::rsPowI(2.0, p);       // Slope at x = 0 - buggy
+
+    double s = RAPT::rsPow(2.0, p);  
     double a = (s-1)/(s+1);               // Function parameter for rational map in -1..+1
     return RAPT::rsRationalMap_01(x, a);
   };

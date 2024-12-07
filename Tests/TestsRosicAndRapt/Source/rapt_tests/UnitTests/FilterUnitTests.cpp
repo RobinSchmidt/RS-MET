@@ -2064,13 +2064,13 @@ bool allpassDisperserUnitTest()
   disperser.setupWithTwoPoles(numStages, wLo, wHi, fShape, Q);
   Vec h = impulseResponse(disperser, numSamples, 1.0);
   //rsPlotVectors(ht, h);
-  rsPlotVectors(ht - h);
+  //rsPlotVectors(ht - h);
   ok &= rsIsCloseTo(ht, h, 1.e-13);
 
-  double test1 = std::pow(2.0, 3.0);
-  double test2 = std::exp2(    3.0);
-  double test3 = std::pow(2.0, 0.0);
-  double test4 = std::exp2(    0.0);
+  //double test1 = std::pow(2.0, 3.0);
+  //double test2 = std::exp2(    3.0);
+  //double test3 = std::pow(2.0, 0.0);
+  //double test4 = std::exp2(    0.0);
 
 
 

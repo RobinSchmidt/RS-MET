@@ -39,6 +39,7 @@ public:
   /** Per-sample computation function for non-equidistant data. */
   T getSample(T x, T dt)
   {
+    //return y = rsMax(y * rsPowI(c, dt), x); // old, buggy
     return y = rsMax(y * rsPow(c, dt), x);
   }
 

@@ -93,7 +93,7 @@ template void RAPT::rsFindPrimesUpTo(std::vector<RAPT::rsUint64>& primes, RAPT::
 template void RAPT::rsPrimeFactors(RAPT::rsUint32 x, std::vector<RAPT::rsUint32>& factors,
   std::vector<RAPT::rsUint32>& exponents, std::vector<RAPT::rsUint32>* primeTable);
 
-template int RAPT::rsPow(const int& base, int exponent);
+template int RAPT::rsPowI(const int& base, int exponent);
 
 //template RAPT::rsUint64 RAPT::rsBinomialCoefficient(RAPT::rsUint64, RAPT::rsUint64);
 

@@ -122,7 +122,7 @@ namespace RSLib
   efficient), in rsPow, switch between rsPowSmall, rsPowBig depending on the size of the exponent
   */
   template <class T>
-  T rsPow(const T& base, rsUint64 exponent);
+  T rsPowI(const T& base, rsUint64 exponent);
 
   /** Generates a random number that is uniformly distributed between min and max (inclusive). The
   underlying integer pseudo random number generator is a linear congruential with period length of
