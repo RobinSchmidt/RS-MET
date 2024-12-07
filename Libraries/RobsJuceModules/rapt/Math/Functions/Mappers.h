@@ -9,8 +9,63 @@ public:
   /** Subclasses need to override this function to perform the mapping. */
   virtual T map(T x) const = 0;
 
-  // maybe implement () operator (invkoes map)
+  // Maybe implement () operator (invokes map)
 };
+
+
+
+
+template<class T>
+class rsLinToExpMapper : public rsMapper<T>
+{
+
+public:
+
+
+  rsLinToExpMapper(T inMin = 0, T inMax = 1, T outMin = 1, T outMax = 2)
+  {
+    setRanges(inMin, inMax, outMin, outMax);
+  }
+
+
+  void setRanges(T inMin, T inMax, T outMin, T outMax)
+  {
+    this->inMin  = inMin;
+    this->inMax  = inMax;
+    this->outMin = outMin;
+    this->outMax = outMax;
+
+    // ToDo:  precompute 1/(inMax-inMin) and log(outMax/outMin)
+  }
+
+
+  T map(T x) const override
+  {
+    T tmp = (in - inMin) / (inMax - inMin);
+    return outMin * std::exp(tmp * (log(outMax / outMin)));
+  };
+
+public:
+
+  T inMin  = 0;
+  T inMax  = 1;
+  T outMin = 1;
+  T outMax = 2;
+
+  // Maybe get rid of members that arent used in the computations. Only keep inMin, exponentScale,
+  // resultScale
+
+
+  // See rsLinToExp(T in, T inMin, T inMax, T outMin, T outMax)
+
+
+  // Maybe use log2 and exp2 instead of log and exp. That might be a bit faster. See:
+  // https://cs.stackexchange.com/questions/27832/is-2x-faster-to-compute-than-expx
+  // https://stackoverflow.com/questions/30222836/should-exp2-be-faster-than-exp
+
+};
+
+
 
 //=================================================================================================
 
