@@ -505,8 +505,8 @@ void rsFlatZapper::updateCoeffs()
   double *a1 = allpassChain.getAddressA1();
   double *a2 = allpassChain.getAddressA2();
 
-  // Helper function to map the unit interval 0..1 to istelf via a curve determined by our shape
-  // parameter. This is used in the computation of the stage-index dependent tunign frequency and
+  // Helper function to map the unit interval 0..1 to itself via a curve determined by our shape
+  // parameter. This is used in the computation of the stage-index dependent tuning frequency and
   // Q for the allpass stage at the given index:
   auto shape = [](double x, double shapeParam) 
   { 
@@ -515,7 +515,7 @@ void rsFlatZapper::updateCoeffs()
     return RAPT::rsRationalMap_01(x, a);
   }; // For convenience
   // ToDo: 
-  // -Avoid conversion from s to a. Using s directly leads ot a simpler formula.
+  // -Avoid conversion from s to a. Using s directly leads to a simpler formula.
   // -Use the more flexible 3-parametric shape from rsLinearFractionalInterpolator. Have 3 
   //  parameters 
   //  -slope: -inf...+inf - this is the current one
@@ -541,7 +541,7 @@ void rsFlatZapper::updateCoeffs()
   // Error handler:
   auto handleUnknownMode = [&]()
   {
-    RAPT::rsError("Unknown mode in rsWhiteZapper::updateCoeffs");
+    RAPT::rsError("Unknown mode in rsFlatZapper::updateCoeffs");
     allpassChain.resetAllCoeffs();
   };
 
@@ -598,7 +598,6 @@ void rsFlatZapper::updateCoeffs()
   dirty = false;
 
   // ToDo:
-  // -Implement first order mode
   // -Optimize the calls to rsLinToExp. There are certain things can be precomputed which are
   //  recomputed there multiple times, I think. Maybe create a class rsLinToExpMapper that has
   //  a setup(T inMin, T inMax, T outMin, T outMax) function and a map(T x) function. See 

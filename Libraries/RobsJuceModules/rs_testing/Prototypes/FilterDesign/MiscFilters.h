@@ -731,3 +731,90 @@ void directFormToStateSpace(std::vector<T> b, std::vector<T> a,
   //
   // - Create unit tests that also test some edge cases like empty a and/or b, a[0] != 1, etc.
 }
+
+
+//=================================================================================================
+
+/** This class is meant to replicate the lower level stuff of rosic::rsFlatZapper, i.e. the stuff
+that is suitable to eventually integrate into RAPT. ...TBC...  */
+
+template<class TSig, class TPar>
+class rsAllpassDisperser
+{
+
+public:
+
+
+  rsAllpassDisperser(int maxNumStages = 256)
+  {
+    filters.resize(maxNumStages);
+  }
+
+
+
+  //void setupWithOnePoles(int numStages, TPar wLo, TPar wHi, TPar wShape);
+
+  void setupWithTwoPoles(int numStages, TPar wLo, TPar wHi, TPar wShape, TPar Q);
+
+  // ToDo: setupWithDualOnePoles
+
+
+protected:
+
+
+  std::vector<rsStateVariableFilter<TSig, TPar>> filters;
+
+  int numStages = 0;
+
+};
+
+template<class TSig, class TPar>
+void rsAllpassDisperser<TSig, TPar>::setupWithTwoPoles(
+  int newNumStages, TPar wLo, TPar wHi, TPar wShape, TPar Q)
+{
+  this->numStages = newNumStages;
+
+
+  // Helper function to map the unit interval 0..1 to itself via a curve determined by our shape
+  // parameter. This is used in the computation of the stage-index dependent tuning frequency and
+  // Q for the allpass stage at the given index:
+  auto shape = [](TPar x, TPar shapeParam) 
+  { 
+    TPar s = RAPT::rsPow(2.0, shapeParam);  // Slope at x = 0
+    TPar a = (s-1)/(s+1);                   // Function parameter for rational map in -1..+1
+    return RAPT::rsRationalMap_01(x, a);
+  }; // For convenience
+  // ToDo: 
+  // -Avoid conversion from s to a. Using s directly leads to a simpler formula.
+  // -Make this a static member function. It will be used by other setupWith... functions as well
+
+
+  if(numStages == 1)
+  {
+    filters[0].setupAllpass(wLo, Q);
+  }
+  else
+  {
+    TPar scaler = TPar(1) / TPar(numStages-1); 
+    for(int i = 0; i < numStages; i++)
+    {
+      TPar p = scaler * i;                                        // Goes from 0 to 1
+      TPar w = rsLinToExp(shape(p, wShape), 0.0, 1.0, wLo, wHi);
+      filters[i].setupAllpass(w, Q);
+    }
+  }
+
+
+  // ToDo:
+  //
+  // - Optimize the calls to rsLinToExp. Create a class that precomputes all the values that depend
+  //   only on inMin, inMax, outMin, outMax. It should be used like this:
+  //   auto mapper = rsLinToExpMapper(0.0, 1.0, wLo, wHi); // Init - outside the loop
+  //   and in the loop, we call w = mapper.map(shape(p, wShape));
+  //
+  // - See rosic::rsFlatZapper::updateCoeffs(). It has similar code. It may eventually be 
+  //   refactored to use rsAllpassDisperser. There, we also use potentially different Q-values for
+  //   each filter. Maybe add a function fo different Qs per filter here, too. It didn't seem to be
+  //   too useful though - that's why I left it out for the time being and juts use the same Q for 
+  //   all stages. This also saves computations.
+}

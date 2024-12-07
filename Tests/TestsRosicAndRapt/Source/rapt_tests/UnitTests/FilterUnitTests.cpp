@@ -2025,12 +2025,27 @@ bool nestedAllpassUnitTest()
   //   measure it.
 }
 
+bool allpassDisperserUnitTest()
+{
+  // Stub
+  // We want to compare the new implementation rsAllpassDisperser with rosic::rsFlatZapper
+
+
+  bool ok = true;
+
+
+  return ok;
+}
+
+
+
 bool allpassUnitTest()
 {
   bool ok = true;
 
   ok &= allpassChainUnitTest();
   ok &= nestedAllpassUnitTest();
+  ok &= allpassDisperserUnitTest();
 
   return ok;
 }
