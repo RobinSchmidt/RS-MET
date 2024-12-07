@@ -35,8 +35,8 @@ public:
     this->outMin = outMin;
     this->outMax = outMax;
 
-    inScale  = T(1) / (inMax-inMin);
-    argScale = log(outMax / outMin);
+    //inScale  = T(1) / (inMax-inMin);
+    argScale = log(outMax / outMin) / (inMax-inMin);
 
 
     // ToDo:  precompute 1/(inMax-inMin) and log(outMax/outMin)
@@ -45,7 +45,7 @@ public:
 
   T map(T x) const override
   {
-    T tmp = (x - inMin) * inScale;
+    T tmp = (x - inMin);
     return outMin * std::exp(tmp * argScale);
 
 
@@ -60,7 +60,7 @@ public:
   T outMin   = 1;
   T outMax   = 2;
 
-  T inScale  = 1;
+  //T inScale  = 1;
   T argScale = 1;
 
 
