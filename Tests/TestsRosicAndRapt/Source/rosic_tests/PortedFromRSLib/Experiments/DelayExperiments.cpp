@@ -91,7 +91,8 @@ void twoPoleAllpassDelay()
   using Real = double;
   using VecI = std::vector<int>;
   using VecR = std::vector<Real>;
-  using APF  = rsTwoPoleAllpassDelay<Real, Real>;
+  //using APF  = rsTwoPoleAllpassDelay<Real, Real>;
+  using APF  = rsTwoPoleAllpassDelayNaive<Real, Real>;
 
 
 
@@ -133,7 +134,7 @@ void twoPoleAllpassDelay()
     // Generate impulse response:
     std::vector<Real> h(N);
     h[0] = applyFilters(1.0);
-    for(size_t n = 1; n < numStages; n++)
+    for(size_t n = 1; n < N; n++)
       h[n] = applyFilters(0.0);
 
     
@@ -149,7 +150,7 @@ void twoPoleAllpassDelay()
   };
 
 
-  create({ 5 }, { 0.2 }, { 3.5 }, 500);
+  create({ 5 }, { 0.2 }, { 2.5 }, 500);
 
   int dummy = 0;
 }
