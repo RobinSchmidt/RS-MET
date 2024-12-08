@@ -689,7 +689,7 @@ public:
   // needs test
 
 
-
+  /*
   // Get rid:
   void setAllpassCoeffs(const std::vector<TPar>& newCoeffs)
   { 
@@ -701,6 +701,7 @@ public:
   }
   // ToDo: change this signature later to work with a raw pointer and a length N. But during 
   // development, it's more convenient this way.
+  */
 
 
   //-----------------------------------------------------------------------------------------------
@@ -737,7 +738,10 @@ protected:
   void allocateMemory()
   {
     delayLine.setMaximumDelayInSamples(N * maxM);
-    c.resize(N+1);
+    c.resize(N);
+
+
+    //c.resize(N+1);
     // Later we will want to use N
   }
 
