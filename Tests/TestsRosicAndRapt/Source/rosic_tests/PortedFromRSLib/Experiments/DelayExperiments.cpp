@@ -224,6 +224,8 @@ void feedbackFilterAllpass()
   // arbitrary given feedback filter that sits in a feedback loop with unit delay around that 
   // allpass. I try to design a compensation filter that can be applied in series to this setup
   // such that the overall transfer function is allpass in nature...TBC...
+  //
+  // In the private repo, there's a filter AllpassStuff.txt where it's explained a bit more
 
   using Real = double;
   using Vec  = std::vector<Real>;
@@ -236,7 +238,7 @@ void feedbackFilterAllpass()
   double sampleRate = 44100;
   double dampFreq   =  1000;     // Frequency of the low shelf for damping.
   double dampGain   =     0.7;   // Linear high freq damping gain
-  double k          =     0.95;  // Feedback gain factor
+  double k          =     1.0;   // Feedback gain factor
 
   APF apf;
   apf.setMaximumDelayInSamples(M);
@@ -294,16 +296,11 @@ void feedbackFilterAllpass()
 
   rsPlotVectors(hu, hc);
 
+  // Test the unit delay:
+  //Vec hud = impulseResponse(ud, 20, 1.0);
+  //rsPlotVectors(hud);
+  // Yeah - it's ok - so that's not the problem
 
-
-  
-
-
-  // ..TBC...
-
-
-
-  int dummy = 0;
 
   // Observations:
   //
@@ -316,5 +313,9 @@ void feedbackFilterAllpass()
   // - With dampGain < 1 (like 0.7), the spikes will progressively turn more and more into a 
   //   spike-with-tail sort of shape. With dampGain = 0.7, we can even use a feedback gain k of 1
   //   and the overall trend is still decaying. It might be unstable at DC, though. Maybe test with
-  //   longer N
+  //   longer N.
+  //
+  // - The compensated output looks strange. I think, it's wrong. I think, it should actually be a
+  //   single spike at M = 100 because the compensation filter should actually totally undo the 
+  //   effect of the feedback loop. Or should it? I think so, though. The math seems to say so.
 }
