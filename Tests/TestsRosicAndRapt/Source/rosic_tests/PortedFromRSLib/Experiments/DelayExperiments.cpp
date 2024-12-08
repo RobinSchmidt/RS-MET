@@ -235,8 +235,8 @@ void feedbackFilterAllpass()
   int    N          = 1000;     // Number of samples to generate
   double sampleRate = 44100;
   double cutoff     =  1000;
-  double dampGain   =     0.5;  // Linear high freq damping gain
-  double k          =     0.9;  // Feedback gain factor
+  double dampGain   =     1.0;  // Linear high freq damping gain
+  double k          =     1.0;  // Feedback gain factor
 
   APF apf;
   apf.setMaximumDelayInSamples(M);
@@ -259,8 +259,9 @@ void feedbackFilterAllpass()
 
   auto getSample = [&](Real in)
   {
-    u = apf.getSample(in + k*u);  // Feedback loop with unit delay without feedback filter
-    //u = apf.getSample(in + k * fbf.getSample(u)); // ...same with feedback filter
+    //u = apf.getSample(in + k*u);  // Feedback loop with unit delay without feedback filter
+
+    u = apf.getSample(in + k * fbf.getSample(u)); // ...same with feedback filter
     return u;
   };
 
@@ -275,4 +276,13 @@ void feedbackFilterAllpass()
 
 
   int dummy = 0;
+
+  // Observations:
+  //
+  // - Without feedback damping (i.e. dampGain == 1), we see a spike train as impulse response.
+  //   the first spike occurs at 100 (== M), the second at 201 (== M + (M+1)), the third at 302
+  //   (== M + (M+1) + (M+1)), etc. If the feedback gain k is less than 1, the spikes decay. The 
+  //   fact that the spikes after the first ares spaced out by M+1 rtaher than M is due the fact
+  //   that there is this additional unit delay in the feedback loop.
+  //  
 }
