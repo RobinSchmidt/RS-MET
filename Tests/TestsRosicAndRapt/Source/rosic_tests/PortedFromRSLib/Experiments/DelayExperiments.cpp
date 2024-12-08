@@ -269,10 +269,37 @@ void feedbackFilterAllpass()
   hu[0] = getSample(1.0);
   for(int n = 1; n < N; n++)
     hu[n] = getSample(0.0);
-  rsPlotVectors(hu);
+  //rsPlotVectors(hu);
 
 
-  // ToDo: Design the compensation filter and apply it to hu...TBC...
+
+  // Design the compensation filter and apply it to hu to produce the compensated impulse response
+  // hc:
+  
+  FBF cf;               // Compensation filter
+  cf = fbf;             // Copy the settings from the feedback filter
+  cf.reset();           // Zero out the state - it was copied, too but this not what we want.
+  rsUnitDelay<Real> ud; // A unit delay object for convenience.
+
+  // Helper function that implements the compensation filter
+  auto getSampleComp = [&](Real in)
+  {
+    // C(z) = 1 + z^-1 * F(z) / k
+    return in + ud.getSample(cf.getSample(in)) / k;
+  };
+
+  Vec hc(N);
+  for(int n = 0; n < N; n++)
+    hc[n] = getSampleComp(hu[n]);
+
+  rsPlotVectors(hu, hc);
+
+
+
+  
+
+
+  // ..TBC...
 
 
 

@@ -733,6 +733,29 @@ Can we then also build nested structure from these units?
 */
 
 
+/** A super simple unit delay class. Might be convenient for implementing certain prototypes. */
+
+template<class T>
+class rsUnitDelay
+{
+
+public:
+
+  T getSample(T x)
+  {
+    T y = x1;   // Output computation
+    x1  = x;    // State update
+    return y;
+  }
+
+  void reset() { x1 = 0; }
+
+protected:
+
+  T x1 = 0;
+
+};
+
 
 
 #endif
