@@ -610,7 +610,7 @@ public:
       y += c[i] * v[N-i];
 
     // Write v[n] into delayline, increment taps and return result:
-    delayLine.writeInputAndUpdate(v);
+    delayLine.writeInputAndUpdate(v[0]);
     return y;
   }
   // Needs tests! Compare it with N = 2 to the result of rsTwoPoleAllpassDelay.

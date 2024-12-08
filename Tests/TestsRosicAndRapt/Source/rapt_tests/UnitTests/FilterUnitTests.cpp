@@ -2211,12 +2211,9 @@ bool multiPoleAllpassDelayUnitTest()
   multiPole.setDelayInSamples(10);
   Vec coeffs({1.0, -0.7, +0.5});
   multiPole.setAllpassCoeffs(coeffs);
-
-
-
-
+  Vec h = impulseResponse(multiPole, numSamples, 1.0);
   //ok &= rsIsCloseTo(h, ht, 1.e-13);
-  //rsPlotVectors(ht, h);
+  rsPlotVectors(ht, h); // Nope! No match!
 
   return ok;
 
