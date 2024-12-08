@@ -2190,6 +2190,33 @@ bool twoPoleAllpassDelayUnitTest()
   //   think maybe not because the coeffs are used in both feedforward and feedback path.
 }
 
+bool multiPoleAllpassDelayUnitTest()
+{
+  // We test the class rsMultiPoleAllpassDelay against rsTwoPoleAllpassDelay etc.
+
+  bool ok = true;
+
+  using Vec = std::vector<double>;
+  int numSamples = 512;
+
+  rsTwoPoleAllpassDelay<double, double> twoPole;
+  twoPole.setMaxDelayInSamples(16);
+  twoPole.setDelayInSamples(10);
+  twoPole.setAllpassCoeffs(-0.7, +0.5);
+  Vec ht = impulseResponse(twoPole, numSamples, 1.0);
+  rsPlotVectors(ht);
+
+  //ok &= rsIsCloseTo(h, ht, 1.e-13);
+  //rsPlotVectors(ht, h);
+
+  return ok;
+
+  // ToDo:
+  //
+  // - Figure out, if it's possible to negate the sign of the output by using negated coeffs. I 
+  //   think maybe not because the coeffs are used in both feedforward and feedback path.
+}
+
 bool allpassUnitTest()
 {
   bool ok = true;
@@ -2199,6 +2226,7 @@ bool allpassUnitTest()
   ok &= nestedAllpassUnitTest();
   ok &= allpassDisperserUnitTest();
   ok &= twoPoleAllpassDelayUnitTest();
+  ok &= multiPoleAllpassDelayUnitTest();
 
   return ok;
 }

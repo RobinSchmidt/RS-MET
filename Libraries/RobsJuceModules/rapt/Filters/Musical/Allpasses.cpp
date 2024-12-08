@@ -29,4 +29,14 @@ ToDo:
   it an "integer mode".
 
 
+Interesting Resources:
+
+  Frequency-Dependent Schroeder Allpass Filters (Sebastian Schlecht)
+  https://www.mdpi.com/2076-3417/10/1/187
+
+  ENERGY-PRESERVING TIME-VARYING SCHROEDER ALLPASS FILTERS (Kurt James Werner)
+  https://dafx2020.mdw.ac.at/proceedings/papers/DAFx2020_paper_59.pdf
+
+
+
 */

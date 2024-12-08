@@ -334,7 +334,9 @@ https://github.com/ValdemarOrn/CloudSeed
 Brickworks:
 https://www.orastron.com/brickworks
 https://www.kvraudio.com/forum/viewtopic.php?t=589519
+https://github.com/sdangelo/brickworks 
 -Audio DSP library available for licensing under GPL or commercially
+-It looks like only the headers are public so that actually doesn't count as open source. :-(
 
 Synthesis Toolkit (STK):
 https://ccrma.stanford.edu/software/stk/

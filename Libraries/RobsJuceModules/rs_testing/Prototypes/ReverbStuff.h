@@ -529,6 +529,136 @@ protected:
   TPar coeff2 = 0.0;
 };
 
+
+//=================================================================================================
+
+/** With this class, we try to generalize from the two pole to the N-pole case. So, what we want 
+to realize is:
+
+
+          c_N  +  c_{N-1} * z^(-M)  +  c_{N-2} * z^(-2M)  + ... +       z^(-NM)
+  H(z) = -----------------------------------------------------------------------
+          1    +  c_1     * z^(-M)  +  c_2     * z^(-2M)  + ... + c_N * z^(-NM)
+
+
+  y[n] = c_N * x[n] + c_{N-1} * x[n-M] + c_{N-2} * x[n-2M] + ... +       x[n-NM] 
+                    - c_1     * y[n-M] - c_2     * y[n-2M] - ... - c_N * y[n-NM]
+
+This time, we start from the implementation of 2-pole case in rsTwoPoleAllpassDelay and try to 
+mold it into an N-pole case.
+
+...TBC... */
+
+template<class TSig, class TPar>
+class rsMultiPoleAllpassDelay
+{
+
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  void setMaxDelayInSamples(int newMaxDelay)
+  {
+    maxM = newMaxDelay;
+    allocateMemory();
+  }
+
+  void setDelayInSamples(int newDelay)
+  {
+    M = newDelay;
+    delayLine.setDelayInSamples(N*M);
+  }
+
+  void setAllpassCoeffs(const std::vector<TPar>& newCoeffs)
+  { 
+    N = (int) newCoeffs.size();
+    allocateMemory();
+    for(int i = 0; i < N; i++)
+      c[i] = newCoeffs[i];  // Maybe use rsArrayTools::copy
+
+    c[0] = 1;  // This shopuld always be the case
+  }
+  // ToDo: change this signature later to work with a raw pointer and a length N. But during 
+  // development, it's more convenient this way.
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+
+  inline TSig getSample(TSig x)
+  {
+    // Read delayed states from delayline:
+    for(int i = 1; i <= N; i++)
+      v[i] = delayLine.readOutputAt(i*M); // Read v_iM = v[n-i*M] from delayline
+    // Actually, that step could be merged with the one below, I think. We don't really need to 
+    // copy these out. Optimize this later! ..or maybe we do because we need the cvalues in the 
+    // output computation. But actually the values are all still in the delay-line. But maybe it's
+    // more efficient that way because readOutput at might be more expensive than a simple array
+    // access
+
+    // Compute current state:
+    v[0] = x;
+    for(int i = 1; i <= N; i++)
+      v[0] -= c[i] * v[i];
+
+    // Compute output:
+    TSig y = v[N];
+    for(int i = 1; i <= N; i++)
+      y += c[i] * v[N-i];
+
+    // Write v[n] into delayline, increment taps and return result:
+    delayLine.writeInputAndUpdate(v);
+    return y;
+  }
+  // Needs tests! Compare it with N = 2 to the result of rsTwoPoleAllpassDelay.
+
+  /*
+  // 2-pole implementation for reference:
+  inline TSig getSample(TSig x)
+  {
+    TSig v1M = delayLine.readOutputAt(M);   // Read v1M = v[n-1*M] from delayline
+    TSig v2M = delayLine.readOutput();      // Read v2M = v[n-2*M] from delayline
+    TSig v   = x - c1 * vM - c2 * v2M;      // Compute v[n] = x[n] - c1 * v[n-M] - c2 * v[n-2M]
+    delayLine.writeInputAndUpdate(v);       // Write v[n] into delayline and increment taps
+    return c2 * v + c1 * vM + v2M;          // Return y[n] = c2 * v[n] + c1 * v[n-M] + v[n-2M]
+  }
+  */
+
+  void reset()
+  {
+    delayLine.reset();
+  }
+
+
+protected:
+
+  void allocateMemory()
+  {
+    delayLine.setMaximumDelayInSamples(N * maxM);
+    c.resize(N+1);
+    v.resize(N+1);
+
+    // We actually need only N, not N+1. We don't really use v[0] and c[0]. But it's easier to
+    // write the code this way because we don't have to worry about a lot of -1s.
+  }
+
+  RAPT::rsBasicDelayLine<TSig> delayLine;
+  std::vector<TPar> c;
+  std::vector<TSig> v;
+
+  int N    = 0;  // Prototype order
+  int M    = 0;  // Delay amount
+  int maxM = 1;  // Maximum for M
+};
+
+
+
+
+
+
 /*
 ToDo: generalize this idea to arbitrary order filters with arbitrary delays, i.e. realize:
 
@@ -538,6 +668,7 @@ ToDo: generalize this idea to arbitrary order filters with arbitrary delays, i.e
 This formula needs to be verified. This could perhaps be realized with a multitap delayline.
 Can we then also build nested structure from these units?  
 */
+
 
 
 
