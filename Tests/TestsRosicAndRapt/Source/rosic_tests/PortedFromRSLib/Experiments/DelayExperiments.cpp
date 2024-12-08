@@ -264,14 +264,14 @@ void feedbackFilterAllpass()
   fbf.setShelvingGain(dampGain);
 
   // Helper variables and functions to implement the feedback loop filter:
-  double u;            // Uncompensated filter output. State variable of the filter.
+  double u = 0;          // Uncompensated filter output. State variable of the filter. Maybe rename to y
   auto reset = [&]()
   { 
     apf.reset();
     fbf.reset();
     u = 0; 
   };
-  auto getSample = [&](Real in)
+  auto getSampleU = [&](Real in)
   {
     // This implements the feedback loop with unit delay without feedback filter:
     u = apf.getSample(in + k * fbf.getSample(u));
@@ -283,9 +283,9 @@ void feedbackFilterAllpass()
   // Produce the uncompensated impulse response:
   Vec hu(N);
   reset();
-  hu[0] = getSample(1.0);
+  hu[0] = getSampleU(1.0);
   for(int n = 1; n < N; n++)
-    hu[n] = getSample(0.0);
+    hu[n] = getSampleU(0.0);
   rsPlotVectors(hu);
 
 
@@ -298,7 +298,7 @@ void feedbackFilterAllpass()
   fbf.reset();
 
   // Helper function that implements the compensation filter:
-  auto getSampleComp = [&](Real in)
+  auto getSampleC = [&](Real in)
   {
     return in - k * ud.getSample(fbf.getSample(apf.getSample(in)));
     // C(z) = 1 + k * z^-1 * F(z) * A(z). The order in which we apply k, ud, fbf, apf should not 
@@ -310,7 +310,7 @@ void feedbackFilterAllpass()
   // This should produce a single spike at M like a delayine without feedback:
   Vec hc(N);
   for(int n = 0; n < N; n++)
-    hc[n] = getSampleComp(hu[n]);
+    hc[n] = getSampleC(hu[n]);
   rsPlotVectors(hc);   // ...yes - looks good!
   
 
