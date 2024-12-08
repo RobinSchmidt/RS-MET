@@ -550,7 +550,7 @@ mold it into an N-pole case.
 ...TBC... */
 
 template<class TSig, class TPar>
-class rsMultiPoleAllpassDelay
+class rsMultiPoleAllpassDelayProto
 {
 
 
@@ -577,7 +577,6 @@ public:
     allocateMemory();
     for(int i = 1; i <= N; i++)
       c[i] = newCoeffs[i];  // Maybe use rsArrayTools::copy
-
     c[0] = 1;  // This shopuld always be the case
   }
   // ToDo: change this signature later to work with a raw pointer and a length N. But during 
@@ -607,11 +606,7 @@ public:
     // Compute output:
     TSig y = v[N];
     for(int i = 1; i <= N; i++)
-    {
       y += c[i] * v[N-i];
-      //y += c[i] * v[N-i-1];  // access violation
-      //y += c[i] * v[N-i+1];
-    }
 
     // Write v[n] into delayline, increment taps and return result:
     delayLine.writeInputAndUpdate(v[0]);
@@ -658,9 +653,98 @@ protected:
   int maxM = 1;  // Maximum for M
 };
 
+//=================================================================================================
+
+/** Optimized version */
+
+template<class TSig, class TPar>
+class rsMultiPoleAllpassDelay
+{
 
 
+public:
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  void setMaxDelayInSamples(int newMaxDelay)
+  {
+    maxM = newMaxDelay;
+    allocateMemory();
+  }
+
+  void setDelayInSamples(int newDelay)
+  {
+    M = newDelay;
+    delayLine.setDelayInSamples(N*M);
+  }
+
+  void setAllpassCoeffs(const std::vector<TPar>& newCoeffs)
+  { 
+    N = (int) newCoeffs.size() - 1;
+    allocateMemory();
+    for(int i = 1; i <= N; i++)
+      c[i] = newCoeffs[i];  // Maybe use rsArrayTools::copy
+    c[0] = 1;  
+  }
+  // ToDo: change this signature later to work with a raw pointer and a length N. But during 
+  // development, it's more convenient this way.
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+
+  inline TSig getSample(TSig x)
+  {
+    // Read delayed states from delayline:
+    for(int i = 1; i <= N; i++)
+      v[i] = delayLine.readOutputAt(i*M); // Read v_iM = v[n-i*M] from delayline
+    // Actually, that step could be merged with the one below, I think. We don't really need to 
+    // copy these out. Optimize this later! ..or maybe we do because we need the cvalues in the 
+    // output computation. But actually the values are all still in the delay-line. But maybe it's
+    // more efficient that way because readOutput at might be more expensive than a simple array
+    // access
+
+    // Compute current state:
+    v[0] = x;
+    for(int i = 1; i <= N; i++)
+      v[0] -= c[i] * v[i];
+
+    // Compute output:
+    TSig y = v[N];
+    for(int i = 1; i <= N; i++)
+      y += c[i] * v[N-i];
+
+    // Write v[n] into delayline, increment taps and return result:
+    delayLine.writeInputAndUpdate(v[0]);
+    return y;
+  }
+  // Needs tests! Compare it with N = 2 to the result of rsTwoPoleAllpassDelay.
+
+  void reset()
+  {
+    delayLine.reset();
+  }
+
+
+protected:
+
+  void allocateMemory()
+  {
+    delayLine.setMaximumDelayInSamples(N * maxM);
+    c.resize(N+1);
+    v.resize(N+1);
+  }
+
+  RAPT::rsBasicDelayLine<TSig> delayLine;
+  std::vector<TPar> c;
+  std::vector<TSig> v;
+
+  int N    = 0;  // Prototype order
+  int M    = 0;  // Delay amount
+  int maxM = 1;  // Maximum for M
+};
 
 
 /*

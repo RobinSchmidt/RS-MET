@@ -2199,27 +2199,45 @@ bool multiPoleAllpassDelayUnitTest()
   using Vec = std::vector<double>;
   int numSamples = 512;
 
+  Vec c({1.0, -0.7, +0.5});
+  // The first 1 is a dummy that is always one. We inlcude it to have the array indices match the 
+  // math notation
+
   rsTwoPoleAllpassDelay<double, double> twoPole;
   twoPole.setMaxDelayInSamples(16);
   twoPole.setDelayInSamples(10);
-  twoPole.setAllpassCoeffs(-0.7, +0.5);
+  //twoPole.setAllpassCoeffs(-0.7, +0.5);
+  twoPole.setAllpassCoeffs(c[1], c[2]);
   Vec ht = impulseResponse(twoPole, numSamples, 1.0);
   //rsPlotVectors(ht);
 
+  rsMultiPoleAllpassDelayProto<double, double> multiPoleProto;
+  multiPoleProto.setMaxDelayInSamples(16);
+  multiPoleProto.setDelayInSamples(10);
+  multiPoleProto.setAllpassCoeffs(c);
+  Vec hp = impulseResponse(multiPoleProto, numSamples, 1.0);
+  ok &= rsIsCloseTo(hp, ht, 1.e-16);
+  //rsPlotVectors(ht, hp); // Looks good!
+  //rsPlotVectors(hp-ht);
+  // ok &= hp == ht;  
+  // I actually expected an exact match  becaus I though the algos should be exactly equivalent, 
+  // but there seems to be a numerical difference. Figure out why!
+
+
+  
   rsMultiPoleAllpassDelay<double, double> multiPole;
   multiPole.setMaxDelayInSamples(16);
   multiPole.setDelayInSamples(10);
-  Vec coeffs({1.0, -0.7, +0.5});
-  multiPole.setAllpassCoeffs(coeffs);
+  multiPole.setAllpassCoeffs(c);
   Vec h = impulseResponse(multiPole, numSamples, 1.0);
   ok &= rsIsCloseTo(h, ht, 1.e-16);
+  ok &= h == hp;  // ...but these should be really the same, right?
+  //ok &= rsIsCloseTo(h, ht, 1.e-16);
 
-  //rsPlotVectors(ht, h); // Looks good!
-  //rsPlotVectors(h-ht);
 
-  // ok &= h == ht;  
-  // I actually expected an exact match  becaus I though the algos should be exactly equivalent, 
-  // but there seems to be a numerical difference. Figure out why!
+
+
+
 
 
   return ok;
