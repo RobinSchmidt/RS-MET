@@ -235,7 +235,7 @@ void feedbackFilterAllpass()
   int    N          = 1000;     // Number of samples to generate
   double sampleRate = 44100;
   double cutoff     =  1000;
-  double dampGain   =     1.0;  // Linear high freq damping gain
+  double dampGain   =     0.7;  // Linear high freq damping gain
   double k          =     1.0;  // Feedback gain factor
 
   APF apf;
@@ -285,4 +285,8 @@ void feedbackFilterAllpass()
   //   fact that the spikes after the first ares spaced out by M+1 rtaher than M is due the fact
   //   that there is this additional unit delay in the feedback loop.
   //  
+  // - With dampGain < 1 (like 0.7), the spikes will progressively turn more and more into a 
+  //   spike-with-tail sort of shape. With dampGain = 0.7, we can even use a feedback gain k of 1
+  //   and the overall trend is still decaying. It might be unstable at DC, though. Maybe test with
+  //   longer N
 }
