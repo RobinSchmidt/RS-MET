@@ -49,6 +49,11 @@ Ideas:
   to do allpass interpolation on the delayline. We must read it once and store it in another temp
   variable.
 
+- What are the things we can do with allpasses that retain the allpass property? Some are:
+  (1) put them in a series connection, (2) nest them (I think that means replacing the unit delay
+  in one by the other allpass), (3) maybe using oen in the feedback loop around the other...but 
+  maybe not...nah...that seems rubbish. But it may be possible to set up a feedback loop that is 
+  not allpass and then put a compensation filter after it that restores the allpass property.
 
 See also:
 https://ccrma.stanford.edu/~jos/fp/Allpass_Filters.html
