@@ -91,19 +91,15 @@ void twoPoleAllpassDelay()
   using Real = double;
   using VecI = std::vector<int>;
   using VecR = std::vector<Real>;
-  //using APF  = rsTwoPoleAllpassDelay<Real, Real>;
-  using APF  = rsTwoPoleAllpassDelayNaive<Real, Real>;
+  using APF  = rsTwoPoleAllpassDelay<Real, Real>;
 
-
-
-
+  // Helper function to generate the output of a chain of rsTwoPoleAllpassDelay filters with the
+  // given delays, normalized radian frequencies and Qs:
   auto create = [](const VecI& delays, const VecR& omegas, const VecR& Qs, int N)
   {
     size_t numStages = delays.size();
     rsAssert(omegas.size() == numStages);
     rsAssert(Qs.size()     == numStages);
-
-  
 
     // Create and set up the filters:
     using APF = rsTwoPoleAllpassDelay<Real, Real>;
@@ -117,9 +113,7 @@ void twoPoleAllpassDelay()
 
       filters[i].setMaxDelayInSamples(delays[i]);
       filters[i].setDelayInSamples(   delays[i]);
-      filters[i].setAllpassCoeffs(a1, a2); // Or should we include a minus? But I don't think so.
-
-      int dummy = 0;
+      filters[i].setAllpassCoeffs(a1, a2);
     }
 
     // Create helper function to apply the filters:
@@ -147,6 +141,10 @@ void twoPoleAllpassDelay()
     // - It's a bit silly to use the state variable filter for the purpose of designing biquad 
     //   coeffs so maybe replace this code later with the direct RBJ biquad design formulas.
   };
+  // Maybe this should become a library function someday. But as such, it should not plot or write 
+  // wavefiles but rather return the resulting signal
+
+
 
 
   int N = 500;
@@ -165,13 +163,7 @@ void twoPoleAllpassDelay()
 
   create({ 5,   9,   14  }, 
          { 0.2, 0.3, 0.5 }, 
-         { 2.5, 2.5, 2.5 }, N);
-
-  //create({ 5 }, { -0.2 }, { 2.5 }, 500);  // Unstable!
-  //create({ 5 }, {  0.2 }, { -2.5 }, 500);   // Unstable!
-
-  // 
-
+         { 2.5, 7.5, 2.5 }, N);
 
   int dummy = 0;
 
