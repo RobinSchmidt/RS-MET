@@ -285,25 +285,22 @@ void feedbackFilterAllpass()
   rsPlotVectors(hu);
 
 
+
   // Try to cancel the effect of the feedback loop. For this, we re-use the existing filter 
   // objects. We can do this because they re not needed anymore for other purposes because the 
   // uncompensated output as been generated already:
+
   rsUnitDelay<Real> ud; // A unit delay object for convenience.
   apf.reset();
   fbf.reset();
-  // Helper function that implements the compensation filter
+
+  // Helper function that implements the compensation filter:
   auto getSampleComp = [&](Real in)
   {
-    // C(z) = 1 + k * z^-1 * F(z) * A(z)
-    //return in + k * ud.getSample(fbf.getSample(apf.getSample(in)));
-    //return in + k * ud.getSample(apf.getSample(fbf.getSample(in)));
-
-    //return in - k * ud.getSample(apf.getSample(fbf.getSample(in)));
-
     return in - k * ud.getSample(fbf.getSample(apf.getSample(in)));
-
-
-    // The order in which we apply k, ud, fbf, apf should not matter, I think.
+    // C(z) = 1 + k * z^-1 * F(z) * A(z). The order in which we apply k, ud, fbf, apf should not 
+    // matter because everything is linear. ToDo: implement () operators such that we can write:
+    // return in - k * ud(fbf(apf(in)));
   };
 
   Vec hc(N);
