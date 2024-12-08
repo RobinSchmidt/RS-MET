@@ -2206,7 +2206,6 @@ bool multiPoleAllpassDelayUnitTest()
   rsTwoPoleAllpassDelay<double, double> twoPole;
   twoPole.setMaxDelayInSamples(16);
   twoPole.setDelayInSamples(10);
-  //twoPole.setAllpassCoeffs(-0.7, +0.5);
   twoPole.setAllpassCoeffs(c[1], c[2]);
   Vec ht = impulseResponse(twoPole, numSamples, 1.0);
   //rsPlotVectors(ht);
@@ -2223,32 +2222,19 @@ bool multiPoleAllpassDelayUnitTest()
   // I actually expected an exact match because I thought the algos should be exactly equivalent, 
   // but there seems to be a numerical difference. Figure out why!
 
-
-  
   rsMultiPoleAllpassDelay<double, double> multiPole;
   multiPole.setMaxDelayInSamples(16);
   multiPole.setDelayInSamples(10);
-
-  //multiPole.setAllpassCoeffs(c);
   multiPole.setAllpassCoeffs(&c[1], 2);
-
   Vec h = impulseResponse(multiPole, numSamples, 1.0);
-  ok &= rsIsCloseTo(h, ht, 1.e-16);
-  ok &= h == hp;  // ...but these should be really the same, right?
-  //ok &= rsIsCloseTo(h, ht, 1.e-16);
-  rsPlotVectors(h, hp);
-
-
-
-
-
+  ok &= h == hp;                   // These should really be exactly equal the same
+  //rsPlotVectors(h, hp);
 
   return ok;
 
   // ToDo:
   //
-  // - Figure out, if it's possible to negate the sign of the output by using negated coeffs. I 
-  //   think maybe not because the coeffs are used in both feedforward and feedback path.
+  // - Figure out, why we need a tolerance for the first test
 }
 
 bool allpassUnitTest()
