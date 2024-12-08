@@ -231,12 +231,12 @@ void feedbackFilterAllpass()
   using FBF  = RAPT::rsOnePoleFilter<Real, Real>; // We use a one pole as feedback filter
 
 
-  int    M          =  100;     // Delay
-  int    N          = 1000;     // Number of samples to generate
+  int    M          =   100;     // Delay
+  int    N          = 10000;     // Number of samples to generate
   double sampleRate = 44100;
-  double cutoff     =  1000;
-  double dampGain   =     0.7;  // Linear high freq damping gain
-  double k          =     1.0;  // Feedback gain factor
+  double dampFreq   =  1000;     // Frequency of the low shelf for damping.
+  double dampGain   =     0.7;   // Linear high freq damping gain
+  double k          =     0.95;  // Feedback gain factor
 
   APF apf;
   apf.setMaximumDelayInSamples(M);
@@ -244,34 +244,35 @@ void feedbackFilterAllpass()
 
   FBF fbf;
   fbf.setMode(FBF::modes::HIGHSHELV_BLT);
-  fbf.setCutoff(cutoff);
+  fbf.setCutoff(dampFreq);
   fbf.setShelvingGain(dampGain);
 
   // Helper variables and functions to implement the feedback loop filter:
-  double u;  // Uncompensated filter output. State variable of the filter.
-
+  double u;            // Uncompensated filter output. State variable of the filter.
   auto reset = [&]()
   { 
     apf.reset();
     fbf.reset();
     u = 0; 
   };
-
   auto getSample = [&](Real in)
   {
-    //u = apf.getSample(in + k*u);  // Feedback loop with unit delay without feedback filter
-
-    u = apf.getSample(in + k * fbf.getSample(u)); // ...same with feedback filter
+    // This implements the feedback loop with unit delay without feedback filter:
+    u = apf.getSample(in + k * fbf.getSample(u));
     return u;
+    // The current value of u will used in the next call. This is the unit-delay feedback loop.
   };
 
-  Vec h(N);
+  // Produce the uncompensated impulse response:
+  Vec hu(N);
   reset();
-  h[0] = getSample(1.0);
+  hu[0] = getSample(1.0);
   for(int n = 1; n < N; n++)
-    h[n] = getSample(0.0);
+    hu[n] = getSample(0.0);
+  rsPlotVectors(hu);
 
-  rsPlotVectors(h);
+
+  // ToDo: Design the compensation filter and apply it to hu...TBC...
 
 
 
