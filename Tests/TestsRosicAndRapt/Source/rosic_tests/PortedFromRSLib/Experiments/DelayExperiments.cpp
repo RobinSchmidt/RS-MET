@@ -220,8 +220,8 @@ void twoPoleAllpassDelay()
 
 void feedbackFilterAllpass()
 {
-  // Stub. I try to implement an idea for starting with and arbitrary give allpass filter and 
-  // arbitrary given feedback filter that sits in a feedback loop with unit delay around that 
+  // Stub. I try to implement an idea for starting with an arbitrary given allpass filter A(z) and 
+  // arbitrary given feedback filter F(z) that sits in a feedback loop with unit delay around that 
   // allpass. I try to design a compensation filter that can be applied in series to this setup
   // such that the overall transfer function is allpass in nature. Without the compensation 
   // filter, this setup has the uncompensated transfer funcion:
@@ -230,8 +230,10 @@ void feedbackFilterAllpass()
   //  U(z) = ----------------------------
   //          1 + k * z^-1 * F(z) * A(z)  
   //
-  // To completely cancel the effect of the feedback loop, we could use the following compensation
-  // filter:
+  // I have introduced also a feedback gain k for convenient parametrization although for 
+  // derivations, we may want to just absorb that into F(z) to have one variable less to carry 
+  // around. To completely cancel the effect of the feedback loop, we could use the following 
+  // compensation filter:
   //
   //   C(z) = 1 + k * z^-1 * F(z) * A(z)
   //
@@ -248,7 +250,7 @@ void feedbackFilterAllpass()
   int    M          =   100;     // Delay
   int    N          = 10000;     // Number of samples to generate
   double sampleRate = 44100;
-  double dampFreq   =  1000;     // Frequency of the low shelf for damping.
+  double dampFreq   =  1000;     // Frequency of the low shelf for feedback damping
   double dampGain   =     0.8;   // Linear high freq damping gain
   double k          =     0.9;   // Feedback gain factor
 
@@ -276,6 +278,7 @@ void feedbackFilterAllpass()
     return u;
     // The current value of u will used in the next call. This is the unit-delay feedback loop.
   };
+  // Maybe rename to resetU, getSampleU ...or maybe get rid of the reset function. Just init u = 0.
 
   // Produce the uncompensated impulse response:
   Vec hu(N);
@@ -302,6 +305,7 @@ void feedbackFilterAllpass()
     // matter because everything is linear. ToDo: implement () operators such that we can write:
     // return in - k * ud(fbf(apf(in)));
   };
+  // Maybe rename to getSampleC
 
   // This should produce a single spike at M like a delayine without feedback:
   Vec hc(N);
