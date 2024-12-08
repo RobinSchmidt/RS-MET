@@ -655,7 +655,7 @@ protected:
 
 //=================================================================================================
 
-/** Optimized version */
+/** Optimized version - Document and move to the library...but first add some more unit tests */
 
 template<class TSig, class TPar>
 class rsMultiPoleAllpassDelay
@@ -679,53 +679,43 @@ public:
     delayLine.setDelayInSamples(N*M);
   }
 
-  void setAllpassCoeffs(const TPar* newCoeffs, int numCoeffsExlcudingC0)
+  /** The a-array of coefficients should look like as follows:
+
+    a[0]  a[1]  a[2] ... a[N-1]
+    c_1   c_2   c_3  ... c_N
+
+  That is, the implicit a[0] = 1 coeff shall *not* be included in the array as a convenience 
+  dummy. So the length of the passed array must be equal to the order of the prototype allpass 
+  which is equal to N in the table above. */
+  void setAllpassCoeffs(const TPar* a, int order)
   {
-    N = numCoeffsExlcudingC0;
+    N = order;
     allocateMemory();
     for(int i = 0; i < N; i++)
-      c[i] = newCoeffs[i];
+      c[i] = a[i];
   }
-  // needs test
-
-
-  /*
-  // Get rid:
-  void setAllpassCoeffs(const std::vector<TPar>& newCoeffs)
-  { 
-    N = (int) newCoeffs.size() - 1;
-    allocateMemory();
-    for(int i = 1; i <= N; i++)
-      c[i] = newCoeffs[i];  // Maybe use rsArrayTools::copy
-    c[0] = 1;  
-  }
-  // ToDo: change this signature later to work with a raw pointer and a length N. But during 
-  // development, it's more convenient this way.
-  */
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-
   inline TSig getSample(TSig x)
   {
     // Compute current state:
-    TSig vNew = x;
+    TSig v = x;
     for(int i = 1; i <= N; i++)
-      vNew -= c[i-1] * delayLine.readOutputAt(i*M);
+      v -= c[i-1] * delayLine.readOutputAt(i*M);
 
     // Compute output:
     TSig y = delayLine.readOutputAt(N*M);
     for(int i = 1; i < N; i++)
       y += c[i-1] * delayLine.readOutputAt((N-i)*M);
-    y += c[N-1] * vNew;
+    y += c[N-1] * v;
 
     // Write vNew into delayline, increment taps and return result:
-    delayLine.writeInputAndUpdate(vNew);
+    delayLine.writeInputAndUpdate(v);
     return y;
   }
-  // Needs tests! Compare it with N = 2 to the result of rsTwoPoleAllpassDelay.
 
   void reset()
   {
@@ -739,10 +729,6 @@ protected:
   {
     delayLine.setMaximumDelayInSamples(N * maxM);
     c.resize(N);
-
-
-    //c.resize(N+1);
-    // Later we will want to use N
   }
 
   RAPT::rsBasicDelayLine<TSig> delayLine;
