@@ -709,12 +709,18 @@ public:
     // Compute current state:
     v[0] = x;
     for(int i = 1; i <= N; i++)
-      v[0] -= c[i] * v[i];
+    {
+      //v[0] -= c[i] * v[i];
+      v[0] -= c[i] * delayLine.readOutputAt(i*M);
+    }
 
     // Compute output:
     TSig y = v[N];
     for(int i = 1; i <= N; i++)
+    {
       y += c[i] * v[N-i];
+      //y += c[i] * delayLine.readOutputAt((N-i)*M);
+    }
 
     // Write v[n] into delayline, increment taps and return result:
     delayLine.writeInputAndUpdate(v[0]);

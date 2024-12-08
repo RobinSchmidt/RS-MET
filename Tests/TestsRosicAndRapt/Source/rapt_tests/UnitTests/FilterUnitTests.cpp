@@ -2220,7 +2220,7 @@ bool multiPoleAllpassDelayUnitTest()
   //rsPlotVectors(ht, hp); // Looks good!
   //rsPlotVectors(hp-ht);
   // ok &= hp == ht;  
-  // I actually expected an exact match  becaus I though the algos should be exactly equivalent, 
+  // I actually expected an exact match because I thought the algos should be exactly equivalent, 
   // but there seems to be a numerical difference. Figure out why!
 
 
@@ -2233,7 +2233,7 @@ bool multiPoleAllpassDelayUnitTest()
   ok &= rsIsCloseTo(h, ht, 1.e-16);
   ok &= h == hp;  // ...but these should be really the same, right?
   //ok &= rsIsCloseTo(h, ht, 1.e-16);
-
+  rsPlotVectors(h, hp);
 
 
 
