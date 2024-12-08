@@ -223,7 +223,19 @@ void feedbackFilterAllpass()
   // Stub. I try to implement an idea for starting with and arbitrary give allpass filter and 
   // arbitrary given feedback filter that sits in a feedback loop with unit delay around that 
   // allpass. I try to design a compensation filter that can be applied in series to this setup
-  // such that the overall transfer function is allpass in nature...TBC...
+  // such that the overall transfer function is allpass in nature. Without the compensation 
+  // filter, this setup has the uncompensated transfer funcion:
+  //
+  //                   A(z)
+  //  U(z) = ----------------------------
+  //          1 + k * z^-1 * F(z) * A(z)  
+  //
+  // To completely cancel the effect of the feedback loop, we could use the following compensation
+  // filter:
+  //
+  //   C(z) = 1 + k * z^-1 * F(z) * A(z)
+  //
+  // We try, if that indeed works. ..TBC...
   //
   // In the private repo, there's a filter AllpassStuff.txt where it's explained a bit more
 
@@ -238,7 +250,7 @@ void feedbackFilterAllpass()
   double sampleRate = 44100;
   double dampFreq   =  1000;     // Frequency of the low shelf for damping.
   double dampGain   =     0.8;   // Linear high freq damping gain
-  double k          =     0.9;   // Feedback gain factor
+  double k          =     1.0;   // Feedback gain factor
 
   APF apf;
   apf.setMaximumDelayInSamples(M);
@@ -271,10 +283,41 @@ void feedbackFilterAllpass()
   hu[0] = getSample(1.0);
   for(int n = 1; n < N; n++)
     hu[n] = getSample(0.0);
-  //rsPlotVectors(hu);
+  rsPlotVectors(hu);
 
 
+  // Try to cancel the effect of the feedback loop. For this, we re-use the existing filter 
+  // objects. We can do this because they re not needed anymore for other purposes because the 
+  // uncompensated output as been generated already:
+  rsUnitDelay<Real> ud; // A unit delay object for convenience.
+  apf.reset();
+  fbf.reset();
+  // Helper function that implements the compensation filter
+  auto getSampleComp = [&](Real in)
+  {
+    // C(z) = 1 + k * z^-1 * F(z) * A(z)
+    //return in + k * ud.getSample(fbf.getSample(apf.getSample(in)));
+    //return in + k * ud.getSample(apf.getSample(fbf.getSample(in)));
 
+    return in - k * ud.getSample(apf.getSample(fbf.getSample(in)));
+
+
+    // The order should not matter, I think.
+  };
+
+  Vec hc(N);
+  for(int n = 0; n < N; n++)
+    hc[n] = getSampleComp(hu[n]);
+  rsPlotVectors(hc);
+
+  //rsPlotVectors(hu, hc);
+
+  //rsPlotVectors(hu, hc, 2.0*hu);
+  // hc should show a single spike at M - but that doesn't work! But: after the initial spike,
+  // hc look exctly like 2*hu. Maybe tha meas we have to flip a sign? Yes, that could make sense!
+
+
+  /*
   // Design the compensation filter and apply it to hu to produce the compensated impulse response
   // hc:
   
@@ -295,6 +338,7 @@ void feedbackFilterAllpass()
     hc[n] = getSampleComp(hu[n]);
 
   rsPlotVectors(hu, hc);
+  */
 
 
   // Observations:
@@ -313,8 +357,8 @@ void feedbackFilterAllpass()
   // - The compensated output looks strange. I think, it's wrong. I think, it should actually be a
   //   single spike at M = 100 because the compensation filter should actually totally undo the 
   //   effect of the feedback loop. Or should it? I think so, though. The math seems to say so. 
-  //   Maybe Try it with the trivial allpass, i.e. with A(z) = 1. We can achive theis by setting 
+  //   Maybe Try it with the trivial allpass, i.e. with A(z) = 1. We can achieve theis by setting 
   //   M = 0. ...hmmm...yeah...the results of this also look wrong. Why does the filter
-  //   C(z) = 1 + k * z^-1 * F(z)  not compensate for the feedback denomitor in
+  //   C(z) = 1 + k * z^-1 * F(z)  not compensate for the feedback denominator in
   //   U(z) = A(z) / (1 + k * z^-1 * F(z)) ?
 }
