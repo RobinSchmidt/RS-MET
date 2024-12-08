@@ -130,8 +130,10 @@ void twoPoleAllpassDelay()
     for(size_t n = 1; n < N; n++)
       h[n] = applyFilters(0.0);
 
+    return h;
+
     // Plot:
-    rsPlotVectors(h);
+    //rsPlotVectors(h);
 
     // Write to wavefile:
     // ...
@@ -145,25 +147,31 @@ void twoPoleAllpassDelay()
   // wavefiles but rather return the resulting signal
 
 
+  auto plot = [&](const VecI& delays, const VecR& omegas, const VecR& Qs, int N)
+  {
+    std::vector<Real> h = create(delays, omegas, Qs, N);
+    rsPlotVectors(h);
+  };
 
 
-  int N = 500;
 
-  create({ 1   }, 
-         { 0.2 }, 
-         { 2.5 }, N);
+  //int N = 500;
 
-  create({ 5   }, 
-         { 0.2 }, 
-         { 2.5 }, N);
+  plot({ 1   }, 
+       { 0.2 }, 
+       { 2.5 }, 100);
 
-  create({ 5,   9   }, 
-         { 0.2, 0.3 }, 
-         { 2.5, 2.5 }, N);
+  plot({ 5   }, 
+       { 0.2 }, 
+       { 2.5 }, 500);
 
-  create({ 5,   9,   14  }, 
-         { 0.2, 0.3, 0.5 }, 
-         { 2.5, 7.5, 2.5 }, N);
+  plot({ 5,   9   }, 
+       { 0.2, 0.3 }, 
+       { 2.5, 2.5 }, 500);
+
+  plot({ 5,   9,   14  }, 
+       { 0.2, 0.3, 0.5 }, 
+       { 2.5, 9.5, 2.5 }, 1000);
 
   int dummy = 0;
 
