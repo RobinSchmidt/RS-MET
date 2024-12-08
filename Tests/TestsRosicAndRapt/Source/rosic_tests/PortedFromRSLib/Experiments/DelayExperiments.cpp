@@ -244,13 +244,12 @@ void feedbackFilterAllpass()
   using APF  = RAPT::rsBasicDelayLine<Real>;      // We use a simple delay as allpass
   using FBF  = RAPT::rsOnePoleFilter<Real, Real>; // We use a one pole as feedback filter
 
-
   int    M          =   100;     // Delay
   int    N          = 10000;     // Number of samples to generate
   double sampleRate = 44100;
   double dampFreq   =  1000;     // Frequency of the low shelf for damping.
   double dampGain   =     0.8;   // Linear high freq damping gain
-  double k          =     1.0;   // Feedback gain factor
+  double k          =     0.9;   // Feedback gain factor
 
   APF apf;
   apf.setMaximumDelayInSamples(M);
@@ -299,46 +298,21 @@ void feedbackFilterAllpass()
     //return in + k * ud.getSample(fbf.getSample(apf.getSample(in)));
     //return in + k * ud.getSample(apf.getSample(fbf.getSample(in)));
 
-    return in - k * ud.getSample(apf.getSample(fbf.getSample(in)));
+    //return in - k * ud.getSample(apf.getSample(fbf.getSample(in)));
+
+    return in - k * ud.getSample(fbf.getSample(apf.getSample(in)));
 
 
-    // The order should not matter, I think.
+    // The order in which we apply k, ud, fbf, apf should not matter, I think.
   };
 
   Vec hc(N);
   for(int n = 0; n < N; n++)
     hc[n] = getSampleComp(hu[n]);
-  rsPlotVectors(hc);
-
-  //rsPlotVectors(hu, hc);
-
-  //rsPlotVectors(hu, hc, 2.0*hu);
-  // hc should show a single spike at M - but that doesn't work! But: after the initial spike,
-  // hc look exctly like 2*hu. Maybe tha meas we have to flip a sign? Yes, that could make sense!
+  rsPlotVectors(hc);   // Should be a single spike at M like without feedback. Looks good!
 
 
-  /*
-  // Design the compensation filter and apply it to hu to produce the compensated impulse response
-  // hc:
-  
-  FBF cf;               // Compensation filter
-  cf = fbf;             // Copy the settings from the feedback filter
-  cf.reset();           // Zero out the state - it was copied, too but this not what we want.
-  rsUnitDelay<Real> ud; // A unit delay object for convenience.
 
-  // Helper function that implements the compensation filter
-  auto getSampleComp = [&](Real in)
-  {
-    // C(z) = 1 + k * z^-1 * F(z) 
-    return in + k * ud.getSample(cf.getSample(in));
-  };
-
-  Vec hc(N);
-  for(int n = 0; n < N; n++)
-    hc[n] = getSampleComp(hu[n]);
-
-  rsPlotVectors(hu, hc);
-  */
 
 
   // Observations:
