@@ -2230,6 +2230,16 @@ bool multiPoleAllpassDelayUnitTest()
   ok &= h == hp;                   // These should really be exactly equal the same
   //rsPlotVectors(h, hp);
 
+  // Now compare the multiPoleProto with the multiPole for a setup with a higher order prototype:
+  c = Vec({1.0, -0.3, +0.2, -0.4, +0.1, -0.1});  // 5th order
+  multiPoleProto.setAllpassCoeffs(c);
+  multiPole.setAllpassCoeffs(&c[1], 5);
+  hp = impulseResponse(multiPoleProto, numSamples, 1.0);
+  h  = impulseResponse(multiPole, numSamples, 1.0);
+  ok &= h == hp;
+  rsPlotVectors(h, hp);
+
+
   return ok;
 
   // ToDo:
