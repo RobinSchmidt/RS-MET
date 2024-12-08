@@ -697,16 +697,6 @@ public:
 
   inline TSig getSample(TSig x)
   {
-    // Read delayed states from delayline:
-    //for(int i = 1; i <= N; i++)
-    //  v[i] = delayLine.readOutputAt(i*M); // Read v_iM = v[n-i*M] from delayline
-    // Actually, that step could be merged with the one below, I think. We don't really need to 
-    // copy these out. Optimize this later! ..or maybe we do because we need the cvalues in the 
-    // output computation. But actually the values are all still in the delay-line. But maybe it's
-    // more efficient that way because readOutput at might be more expensive than a simple array
-    // access
-
-
     // Compute current state:
     TSig vNew = x;
     for(int i = 1; i <= N; i++)
@@ -736,12 +726,12 @@ protected:
   {
     delayLine.setMaximumDelayInSamples(N * maxM);
     c.resize(N+1);
-    v.resize(N+1);
+    //v.resize(N+1);
   }
 
   RAPT::rsBasicDelayLine<TSig> delayLine;
   std::vector<TPar> c;
-  std::vector<TSig> v;
+  //std::vector<TSig> v;
 
   int N    = 0;  // Prototype order
   int M    = 0;  // Delay amount
