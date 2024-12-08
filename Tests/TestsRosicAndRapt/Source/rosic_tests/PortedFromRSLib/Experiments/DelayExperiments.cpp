@@ -286,9 +286,8 @@ void feedbackFilterAllpass()
   rsPlotVectors(hu);
 
 
-
   // Try to cancel the effect of the feedback loop. For this, we re-use the existing filter 
-  // objects. We can do this because they re not needed anymore for other purposes because the 
+  // objects. We can do this because they are not needed anymore for other purposes because the 
   // uncompensated output as been generated already:
 
   rsUnitDelay<Real> ud; // A unit delay object for convenience.
@@ -330,4 +329,15 @@ void feedbackFilterAllpass()
   //
   // - The compensation filter as implemented does indeed undo the effect of the feedback loop. The
   //   compensated output is a single unit spike at M as we expect from a length M delayline.
+  //
+  //
+  //  ToDo:
+  //
+  // - Try to find the zeros of the filter C(z) and reflect them in the unit circle. If we have a 
+  //   direct form expression of C(z), this can be achieved by reversing the array of b-coeffs, I 
+  //   think. Do this under the assumption A(z) = z^-M first before trying to attempt the 
+  //   general case. The idea is that we don't really gain anything by just undoing the effect of
+  //   the feedback. What we actually want is to undo only the effect of the feedback on the 
+  //   magnitude response. But we want to retain effects on the phase response. Let's also assume
+  //   a 1-pole/1-zero feedback filter F(z) = (b0 + b1*d) / (1 + a1*d) with d = z^-1.
 }
