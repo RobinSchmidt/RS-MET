@@ -679,6 +679,18 @@ public:
     delayLine.setDelayInSamples(N*M);
   }
 
+  void setAllpassCoeffs(const TPar* newCoeffs, int numCoeffsExlcudingC0)
+  {
+    N = numCoeffsExlcudingC0;
+    allocateMemory();
+    for(int i = 1; i <= N; i++)
+      c[i] = newCoeffs[i];
+  }
+  // needs test
+
+
+
+  // Get rid:
   void setAllpassCoeffs(const std::vector<TPar>& newCoeffs)
   { 
     N = (int) newCoeffs.size() - 1;
@@ -726,12 +738,11 @@ protected:
   {
     delayLine.setMaximumDelayInSamples(N * maxM);
     c.resize(N+1);
-    //v.resize(N+1);
+    // Later we will want to use N
   }
 
   RAPT::rsBasicDelayLine<TSig> delayLine;
   std::vector<TPar> c;
-  //std::vector<TSig> v;
 
   int N    = 0;  // Prototype order
   int M    = 0;  // Delay amount
