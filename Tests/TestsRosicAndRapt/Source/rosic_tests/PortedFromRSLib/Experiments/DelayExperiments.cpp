@@ -86,7 +86,8 @@ void basicIntegerDelayLine()
 
 void twoPoleAllpassDelay()
 {
-  // Under construction
+  // We experiment with a chain of rsTwoPoleAllpassDelay filters to see what sort of impulse 
+  // responses we can achieve with it.
 
   using Real = double;
   using VecI = std::vector<int>;
@@ -132,31 +133,31 @@ void twoPoleAllpassDelay()
 
     return h;
 
-    // Plot:
-    //rsPlotVectors(h);
-
-    // Write to wavefile:
-    // ...
-
     // ToDo:
     //
     // - It's a bit silly to use the state variable filter for the purpose of designing biquad 
     //   coeffs so maybe replace this code later with the direct RBJ biquad design formulas.
   };
-  // Maybe this should become a library function someday. But as such, it should not plot or write 
-  // wavefiles but rather return the resulting signal
+  // Maybe this should become a library function someday. 
 
 
+  // Helper function to plot impulse response of filter with given settings:
   auto plot = [&](const VecI& delays, const VecR& omegas, const VecR& Qs, int N)
   {
     std::vector<Real> h = create(delays, omegas, Qs, N);
     rsPlotVectors(h);
   };
 
+  // Helper function to write impulse response of filter with given settings to a wave file
+  auto write = [&](const VecI& delays, const VecR& omegas, const VecR& Qs, int N, 
+                   const std::string& path)
+  {
+    std::vector<Real> h = create(delays, omegas, Qs, N);
+    rosic::writeToMonoWaveFile(path, &h[0], N, 44100);
+  };
 
 
-  //int N = 500;
-
+  // Show some plots:
   plot({ 1   }, 
        { 0.2 }, 
        { 2.5 }, 100);
@@ -173,7 +174,15 @@ void twoPoleAllpassDelay()
        { 0.2, 0.3, 0.5 }, 
        { 2.5, 9.5, 2.5 }, 1000);
 
-  int dummy = 0;
+
+  // Render some wave files:
+  write({ 7   }, 
+        { 0.2 }, 
+        { 25  }, 4096, "TwoPoleAllpass_7_0.2_25.wav");
+
+  write({ 7,   5   }, 
+        { 0.2, 0.3 }, 
+        { 25,  25  }, 16384, "TwoPoleAllpass_7_0.2_25__5_0.3_25.wav");
 
 
   // Observations:
@@ -192,7 +201,8 @@ void twoPoleAllpassDelay()
   //   should still be satisfied.
   //
   // - Can we use the undulation frequencies to deliberately colorize the sound, i.e. give it some
-  //   deliberate tonal character? That seems plausible.
+  //   deliberate tonal character? That seems plausible. Maybe we could use slightly detuned
+  //   omegas for left and right channel.
   //
   //
   // ToDo:
