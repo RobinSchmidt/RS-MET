@@ -225,6 +225,53 @@ void feedbackFilterAllpass()
   // allpass. I try to design a compensation filter that can be applied in series to this setup
   // such that the overall transfer function is allpass in nature...TBC...
 
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  using APF  = RAPT::rsBasicDelayLine<Real>;      // We use a simple delay as allpass
+  using FBF  = RAPT::rsOnePoleFilter<Real, Real>; // We use a one pole as feedback filter
+
+
+  int    M          =  100;     // Delay
+  int    N          = 1000;     // Number of samples to generate
+  double sampleRate = 44100;
+  double cutoff     =  1000;
+  double dampGain   =     0.5;  // Linear high freq damping gain
+  double k          =     0.9;  // Feedback gain factor
+
+  APF apf;
+  apf.setMaximumDelayInSamples(M);
+  apf.setDelayInSamples(M);
+
+  FBF fbf;
+  fbf.setMode(FBF::modes::HIGHSHELV_BLT);
+  fbf.setCutoff(cutoff);
+  fbf.setShelvingGain(dampGain);
+
+  // Helper variables and functions to implement the feedback loop filter:
+  double u;  // Uncompensated filter output. State variable of the filter.
+
+  auto reset = [&]()
+  { 
+    apf.reset();
+    fbf.reset();
+    u = 0; 
+  };
+
+  auto getSample = [&](Real in)
+  {
+    u = apf.getSample(in + k*u);  // Feedback loop with unit delay without feedback filter
+    //u = apf.getSample(in + k * fbf.getSample(u)); // ...same with feedback filter
+    return u;
+  };
+
+  Vec h(N);
+  reset();
+  h[0] = getSample(1.0);
+  for(int n = 1; n < N; n++)
+    h[n] = getSample(0.0);
+
+  rsPlotVectors(h);
+
 
 
   int dummy = 0;
