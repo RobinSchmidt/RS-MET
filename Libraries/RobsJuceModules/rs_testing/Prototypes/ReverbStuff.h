@@ -744,7 +744,8 @@ public:
     }
 
     // Compute output:
-    TSig y = v[N];
+    //TSig y = v[N];
+    TSig y = delayLine.readOutputAt(N*M);
     for(int i = 1; i < N; i++)
     {
       //y += c[i] * v[N-i];
@@ -752,11 +753,6 @@ public:
 
     }
     y += c[N] * vNew;
-
-    // Write v[n] into delayline, increment taps and return result:
-    delayLine.writeInputAndUpdate(vNew);
-    return y;
-
 
     // Write v[n] into delayline, increment taps and return result:
     delayLine.writeInputAndUpdate(vNew);
