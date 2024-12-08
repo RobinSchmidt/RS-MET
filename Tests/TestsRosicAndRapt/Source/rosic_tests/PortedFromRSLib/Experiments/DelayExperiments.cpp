@@ -220,7 +220,7 @@ void twoPoleAllpassDelay()
 
 void feedbackFilterAllpass()
 {
-  // Stub. I try to implement an idea for starting with an arbitrary given allpass filter A(z) and 
+  // I try to implement an idea for starting with an arbitrary given allpass filter A(z) and 
   // arbitrary given feedback filter F(z) that sits in a feedback loop with unit delay around that 
   // allpass. I try to design a compensation filter that can be applied in series to this setup
   // such that the overall transfer function is allpass in nature. Without the compensation 
@@ -238,9 +238,14 @@ void feedbackFilterAllpass()
   //   C(z) = 1 + k * z^-1 * F(z) * A(z)
   //
   // We try, if that indeed works. As A(z), we use simple delay of length M, i.e. A(z) = z^-M. 
-  // ...TBC...
   //
-  // In the private repo, there's a filter AllpassStuff.txt where it's explained a bit more
+  // Later, we want to try to modify the compensation filter C(z) into one that compensates only
+  // for the effect of the feedback on the magnitude response but retains features of the phase
+  // response. Maybe we should try to reflect (some of) the zeros of C(z) about the unit circle. 
+  // That will retain magnitude response and stability of C(z). ...TBC...
+  //
+  // In the private repo, there's a filter AllpassStuff.txt where it's explained a bit more. Maybe
+  // drag that into the main repo. But it's currently too messy for a public repo.
 
   using Real = double;
   using Vec  = std::vector<Real>;
@@ -250,9 +255,9 @@ void feedbackFilterAllpass()
   int    M          =   100;     // Delay
   int    N          = 10000;     // Number of samples to generate
   double sampleRate = 44100;
-  double dampFreq   =  1000;     // Frequency of the low shelf for feedback damping
-  double dampGain   =     0.8;   // Linear high freq damping gain
-  double k          =     0.9;   // Feedback gain factor
+  double dampFreq   =  3000;     // Frequency of the low shelf for feedback damping
+  double dampGain   =     0.7;   // Linear high freq damping gain
+  double k          =     1.0;   // Feedback gain factor
 
 
   // Create and set up the two given filters for A(z) and F(z):
@@ -330,6 +335,13 @@ void feedbackFilterAllpass()
   //
   // - The compensation filter as implemented does indeed undo the effect of the feedback loop. The
   //   compensated output is a single unit spike at M as we expect from a length M delayline.
+  //
+  // - The peak envelope of the impulse response shows a characteristic knee like in a two-stage
+  //   exponential decay. I think, this is because the peaks do not only decay but also smear out 
+  //   such that they are less peaky later. Try dampFreq = 3000, dampGain = 0.7, k = 1.0. At the
+  //   end, we see an almost sinusoidal wave with period = M+1 (I think). With k = 1.0, I guess,
+  //   we will finally settle at some nonzero DC. Only with k < 1, this DC will also decay away to
+  //   zero eventually (that's my prediction - not yet tried).
   //
   //
   //  ToDo:
