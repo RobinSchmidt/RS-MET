@@ -706,21 +706,48 @@ public:
     // more efficient that way because readOutput at might be more expensive than a simple array
     // access
 
+    /*
     // Compute current state:
     v[0] = x;
     for(int i = 1; i <= N; i++)
     {
-      //v[0] -= c[i] * v[i];
-      v[0] -= c[i] * delayLine.readOutputAt(i*M);
+      v[0] -= c[i] * v[i];
+      //v[0] -= c[i] * delayLine.readOutputAt(i*M);
     }
 
     // Compute output:
     TSig y = v[N];
     for(int i = 1; i <= N; i++)
     {
+      // For debug:
+      TSig oldVal = v[N-i];
+      TSig newVal = delayLine.readOutputAt((N-i)*M);
+     // rsAssert(newVal == oldVal);
+
       y += c[i] * v[N-i];
       //y += c[i] * delayLine.readOutputAt((N-i)*M);
     }
+    // Fails for i == 2 when we want to read v[0] in the old code - which is 1. The delayline 
+    // content is still zero. I think we need to replace both loops simultaneously by new code.
+    */
+
+
+    // Rolled back - try to avoid using v[0] for a temporary!
+
+    // Compute current state:
+    v[0] = x;
+    for(int i = 1; i <= N; i++)
+      v[0] -= c[i] * v[i];
+
+    // Compute output:
+    TSig y = v[N];
+    for(int i = 1; i <= N; i++)
+      y += c[i] * v[N-i];
+
+    // Write v[n] into delayline, increment taps and return result:
+    delayLine.writeInputAndUpdate(v[0]);
+    return y;
+
 
     // Write v[n] into delayline, increment taps and return result:
     delayLine.writeInputAndUpdate(v[0]);
