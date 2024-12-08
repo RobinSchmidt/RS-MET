@@ -701,20 +701,23 @@ public:
 
   inline TSig getSample(TSig x)
   {
-    // Compute current state:
+    // Compute current state v:
     TSig v = x;
     for(int i = 1; i <= N; i++)
       v -= c[i-1] * delayLine.readOutputAt(i*M);
 
-    // Compute output:
+    // Compute output y:
     TSig y = delayLine.readOutputAt(N*M);
     for(int i = 1; i < N; i++)
       y += c[i-1] * delayLine.readOutputAt((N-i)*M);
     y += c[N-1] * v;
 
-    // Write vNew into delayline, increment taps and return result:
+    // Write current state v into delayline, increment taps and return result:
     delayLine.writeInputAndUpdate(v);
     return y;
+
+    // Maybe make a helper function vDelayed such that we can write things like
+    // y += c[i-1] * vDelayed((N-i)*M);
   }
 
   void reset()
