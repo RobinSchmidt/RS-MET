@@ -732,12 +732,16 @@ public:
     */
 
 
-    // Rolled back - try to avoid using v[0] for a temporary!
+
 
     // Compute current state:
     TSig vNew = x;
     for(int i = 1; i <= N; i++)
-      vNew -= c[i] * v[i];
+    {
+      //vNew -= c[i] * v[i];
+      vNew -= c[i] * delayLine.readOutputAt(i*M);
+
+    }
 
     // Compute output:
     TSig y = v[N];
