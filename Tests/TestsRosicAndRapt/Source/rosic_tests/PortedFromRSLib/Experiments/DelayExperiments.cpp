@@ -217,3 +217,15 @@ void twoPoleAllpassDelay()
   //   really want to figure out the relationship between the omega parameter and the undulation 
   //   frequency. Maybe  omega*delay = 2*pi*f/fs  or  omega/delay = 2*pi*f/fs?
 }
+
+void feedbackFilterAllpass()
+{
+  // Stub. I try to implement an idea for starting with and arbitrary give allpass filter and 
+  // arbitrary given feedback filter that sits in a feedback loop with unit delay around that 
+  // allpass. I try to design a compensation filter that can be applied in series to this setup
+  // such that the overall transfer function is allpass in nature...TBC...
+
+
+
+  int dummy = 0;
+}
