@@ -235,7 +235,8 @@ void feedbackFilterAllpass()
   //
   //   C(z) = 1 + k * z^-1 * F(z) * A(z)
   //
-  // We try, if that indeed works. ..TBC...
+  // We try, if that indeed works. As A(z), we use simple delay of length M, i.e. A(z) = z^-M. 
+  // ...TBC...
   //
   // In the private repo, there's a filter AllpassStuff.txt where it's explained a bit more
 
@@ -303,10 +304,12 @@ void feedbackFilterAllpass()
     // return in - k * ud(fbf(apf(in)));
   };
 
+  // This should produce a single spike at M like a delayine without feedback:
   Vec hc(N);
   for(int n = 0; n < N; n++)
     hc[n] = getSampleComp(hu[n]);
-  rsPlotVectors(hc);   // Should be a single spike at M like without feedback. Looks good!
+  rsPlotVectors(hc);   // ...yes - looks good!
+  
 
 
 
@@ -325,11 +328,6 @@ void feedbackFilterAllpass()
   //   and the overall trend is still decaying. It might be unstable at DC, though. Maybe test with
   //   longer N.
   //
-  // - The compensated output looks strange. I think, it's wrong. I think, it should actually be a
-  //   single spike at M = 100 because the compensation filter should actually totally undo the 
-  //   effect of the feedback loop. Or should it? I think so, though. The math seems to say so. 
-  //   Maybe Try it with the trivial allpass, i.e. with A(z) = 1. We can achieve theis by setting 
-  //   M = 0. ...hmmm...yeah...the results of this also look wrong. Why does the filter
-  //   C(z) = 1 + k * z^-1 * F(z)  not compensate for the feedback denominator in
-  //   U(z) = A(z) / (1 + k * z^-1 * F(z)) ?
+  // - The compensation filter as implemented does indeed undo the effect of the feedback loop. The
+  //   compensated output is a single unit spike at M as we expect from a length M delayline.
 }
