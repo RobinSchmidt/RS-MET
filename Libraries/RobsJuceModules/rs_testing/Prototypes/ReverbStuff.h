@@ -683,7 +683,7 @@ public:
   {
     N = numCoeffsExlcudingC0;
     allocateMemory();
-    for(int i = 1; i <= N; i++)
+    for(int i = 0; i < N; i++)
       c[i] = newCoeffs[i];
   }
   // needs test
@@ -712,13 +712,13 @@ public:
     // Compute current state:
     TSig vNew = x;
     for(int i = 1; i <= N; i++)
-      vNew -= c[i] * delayLine.readOutputAt(i*M);
+      vNew -= c[i-1] * delayLine.readOutputAt(i*M);
 
     // Compute output:
     TSig y = delayLine.readOutputAt(N*M);
     for(int i = 1; i < N; i++)
-      y += c[i] * delayLine.readOutputAt((N-i)*M);
-    y += c[N] * vNew;
+      y += c[i-1] * delayLine.readOutputAt((N-i)*M);
+    y += c[N-1] * vNew;
 
     // Write vNew into delayline, increment taps and return result:
     delayLine.writeInputAndUpdate(vNew);
