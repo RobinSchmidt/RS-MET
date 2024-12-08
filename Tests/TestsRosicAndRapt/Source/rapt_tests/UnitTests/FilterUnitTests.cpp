@@ -2192,7 +2192,8 @@ bool twoPoleAllpassDelayUnitTest()
 
 bool multiPoleAllpassDelayUnitTest()
 {
-  // We test the class rsMultiPoleAllpassDelay against rsTwoPoleAllpassDelay etc.
+  // We test the class rsMultiPoleAllpassDelay against rsMultiPoleAllpassDelayProto and 
+  // rsTwoPoleAllpassDelay.
 
   bool ok = true;
 
@@ -2200,8 +2201,9 @@ bool multiPoleAllpassDelayUnitTest()
   int numSamples = 512;
 
   Vec c({1.0, -0.7, +0.5});
-  // The first 1 is a dummy that is always one. We inlcude it to have the array indices match the 
-  // math notation
+  // The first coeff 1 is a dummy that is always one. It's the a0 coeffient in biquad notation. We 
+  // inlcude it to have the array indices match the math notation in the prototype implementation.
+  // The production implementation doesn't need this, though.
 
   rsTwoPoleAllpassDelay<double, double> twoPole;
   twoPole.setMaxDelayInSamples(16);
@@ -2227,7 +2229,7 @@ bool multiPoleAllpassDelayUnitTest()
   multiPole.setDelayInSamples(10);
   multiPole.setAllpassCoeffs(&c[1], 2);
   Vec h = impulseResponse(multiPole, numSamples, 1.0);
-  ok &= h == hp;                   // These should really be exactly equal the same
+  ok &= h == hp;
   //rsPlotVectors(h, hp);
 
   // Now compare the multiPoleProto with the multiPole for a setup with a higher order prototype:
@@ -2237,14 +2239,16 @@ bool multiPoleAllpassDelayUnitTest()
   hp = impulseResponse(multiPoleProto, numSamples, 1.0);
   h  = impulseResponse(multiPole, numSamples, 1.0);
   ok &= h == hp;
-  rsPlotVectors(h, hp);
-
+  ok &= isAllpass(h, 1.e-5);
+  //rsPlotVectors(h, hp);
 
   return ok;
 
   // ToDo:
   //
-  // - Figure out, why we need a tolerance for the first test
+  // - Figure out, why we need a tolerance for the first test. I actually assumed that in this case
+  //   the algorithms should also be exactly equivalent, i.e. the two pole case just a special case
+  //   of the multi pole case. Maybe some order of operations is different or something?
 }
 
 bool allpassUnitTest()
