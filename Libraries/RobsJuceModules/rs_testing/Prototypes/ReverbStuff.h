@@ -577,7 +577,7 @@ public:
     allocateMemory();
     for(int i = 1; i <= N; i++)
       c[i] = newCoeffs[i];  // Maybe use rsArrayTools::copy
-    c[0] = 1;  // This shopuld always be the case
+    c[0] = 1;  // This should always be the case in the passed newCoeffs array anyway
   }
   // ToDo: change this signature later to work with a raw pointer and a length N. But during 
   // development, it's more convenient this way.
@@ -592,11 +592,6 @@ public:
     // Read delayed states from delayline:
     for(int i = 1; i <= N; i++)
       v[i] = delayLine.readOutputAt(i*M); // Read v_iM = v[n-i*M] from delayline
-    // Actually, that step could be merged with the one below, I think. We don't really need to 
-    // copy these out. Optimize this later! ..or maybe we do because we need the cvalues in the 
-    // output computation. But actually the values are all still in the delay-line. But maybe it's
-    // more efficient that way because readOutput at might be more expensive than a simple array
-    // access
 
     // Compute current state:
     v[0] = x;
@@ -612,19 +607,7 @@ public:
     delayLine.writeInputAndUpdate(v[0]);
     return y;
   }
-  // Needs tests! Compare it with N = 2 to the result of rsTwoPoleAllpassDelay.
 
-  /*
-  // 2-pole implementation for reference:
-  inline TSig getSample(TSig x)
-  {
-    TSig v1M = delayLine.readOutputAt(M);   // Read v1M = v[n-1*M] from delayline
-    TSig v2M = delayLine.readOutput();      // Read v2M = v[n-2*M] from delayline
-    TSig v   = x - c1 * vM - c2 * v2M;      // Compute v[n] = x[n] - c1 * v[n-M] - c2 * v[n-2M]
-    delayLine.writeInputAndUpdate(v);       // Write v[n] into delayline and increment taps
-    return c2 * v + c1 * vM + v2M;          // Return y[n] = c2 * v[n] + c1 * v[n-M] + v[n-2M]
-  }
-  */
 
   void reset()
   {
@@ -639,9 +622,8 @@ protected:
     delayLine.setMaximumDelayInSamples(N * maxM);
     c.resize(N+1);
     v.resize(N+1);
-
-    // We actually need only N, not N+1. We don't really use v[0] and c[0]. But it's easier to
-    // write the code this way because we don't have to worry about a lot of -1s.
+    // We use lengths of N+1 to better match the indices used in the math equations. This is just 
+    // a prototype so it the focus is on ease of recognition of the math concepts and formulas.
   }
 
   RAPT::rsBasicDelayLine<TSig> delayLine;
@@ -655,7 +637,7 @@ protected:
 
 //=================================================================================================
 
-/** Optimized version - Document and move to the library...but first add some more unit tests */
+/** Production version - Document and move to the library...but first add some more unit tests */
 
 template<class TSig, class TPar>
 class rsMultiPoleAllpassDelay
@@ -715,9 +697,6 @@ public:
     // Write current state v into delayline, increment taps and return result:
     delayLine.writeInputAndUpdate(v);
     return y;
-
-    // Maybe make a helper function vDelayed such that we can write things like
-    // y += c[i-1] * vDelayed((N-i)*M);
   }
 
   void reset()
