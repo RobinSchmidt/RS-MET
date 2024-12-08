@@ -735,22 +735,23 @@ public:
     // Rolled back - try to avoid using v[0] for a temporary!
 
     // Compute current state:
-    v[0] = x;
+    TSig vNew = x;
     for(int i = 1; i <= N; i++)
-      v[0] -= c[i] * v[i];
+      vNew -= c[i] * v[i];
 
     // Compute output:
     TSig y = v[N];
-    for(int i = 1; i <= N; i++)
+    for(int i = 1; i < N; i++)
       y += c[i] * v[N-i];
+    y += c[N] * vNew;
 
     // Write v[n] into delayline, increment taps and return result:
-    delayLine.writeInputAndUpdate(v[0]);
+    delayLine.writeInputAndUpdate(vNew);
     return y;
 
 
     // Write v[n] into delayline, increment taps and return result:
-    delayLine.writeInputAndUpdate(v[0]);
+    delayLine.writeInputAndUpdate(vNew);
     return y;
   }
   // Needs tests! Compare it with N = 2 to the result of rsTwoPoleAllpassDelay.
