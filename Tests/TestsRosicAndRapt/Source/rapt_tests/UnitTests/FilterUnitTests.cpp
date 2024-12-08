@@ -2212,8 +2212,15 @@ bool multiPoleAllpassDelayUnitTest()
   Vec coeffs({1.0, -0.7, +0.5});
   multiPole.setAllpassCoeffs(coeffs);
   Vec h = impulseResponse(multiPole, numSamples, 1.0);
-  //ok &= rsIsCloseTo(h, ht, 1.e-13);
-  rsPlotVectors(ht, h); // Nope! No match!
+  ok &= rsIsCloseTo(h, ht, 1.e-16);
+
+  //rsPlotVectors(ht, h); // Looks good!
+  //rsPlotVectors(h-ht);
+
+  // ok &= h == ht;  
+  // I actually expected an exact match  becaus I though the algos should be exactly equivalent, 
+  // but there seems to be a numerical difference. Figure out why!
+
 
   return ok;
 

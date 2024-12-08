@@ -575,7 +575,7 @@ public:
   { 
     N = (int) newCoeffs.size() - 1;
     allocateMemory();
-    for(int i = 1; i < N; i++)
+    for(int i = 1; i <= N; i++)
       c[i] = newCoeffs[i];  // Maybe use rsArrayTools::copy
 
     c[0] = 1;  // This shopuld always be the case
@@ -607,7 +607,11 @@ public:
     // Compute output:
     TSig y = v[N];
     for(int i = 1; i <= N; i++)
+    {
       y += c[i] * v[N-i];
+      //y += c[i] * v[N-i-1];  // access violation
+      //y += c[i] * v[N-i+1];
+    }
 
     // Write v[n] into delayline, increment taps and return result:
     delayLine.writeInputAndUpdate(v[0]);
