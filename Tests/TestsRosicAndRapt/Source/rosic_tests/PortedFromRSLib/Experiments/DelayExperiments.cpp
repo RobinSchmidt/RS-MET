@@ -254,64 +254,61 @@ void feedbackFilterAllpass()
   double dampGain   =     0.8;   // Linear high freq damping gain
   double k          =     0.9;   // Feedback gain factor
 
-  APF apf;
+
+  // Create and set up the two given filters for A(z) and F(z):
+  APF apf;                                  // Allpass filter
   apf.setMaximumDelayInSamples(M);
   apf.setDelayInSamples(M);
 
-  FBF fbf;
+  FBF fbf;                                  // Feedback filter
   fbf.setMode(FBF::modes::HIGHSHELV_BLT);
   fbf.setCutoff(dampFreq);
   fbf.setShelvingGain(dampGain);
 
-  // Helper variables and functions to implement the feedback loop filter:
-  double u = 0;          // Uncompensated filter output. State variable of the filter. Maybe rename to y
-  auto reset = [&]()
-  { 
-    apf.reset();
-    fbf.reset();
-    u = 0; 
-  };
-  auto getSampleU = [&](Real in)
+
+  // Helper variable and function to implement the feedback loop filter:
+  double s = 0;                             // Output and state of uncompensated filter
+  auto getSampleU = [&](Real x)
   {
     // This implements the feedback loop with unit delay without feedback filter:
-    u = apf.getSample(in + k * fbf.getSample(u));
-    return u;
-    // The current value of u will used in the next call. This is the unit-delay feedback loop.
+    s = apf.getSample(x + k * fbf.getSample(s));
+    return s;
+    // The current value of s will used in the next call. This is the unit-delay feedback loop.
   };
-  // Maybe rename to resetU, getSampleU ...or maybe get rid of the reset function. Just init u = 0.
 
   // Produce the uncompensated impulse response:
   Vec hu(N);
-  reset();
   hu[0] = getSampleU(1.0);
   for(int n = 1; n < N; n++)
     hu[n] = getSampleU(0.0);
-  rsPlotVectors(hu);
+  rsPlotVectors(hu);                        // Decaying spike train with progressive tail smear
 
 
-  // Try to cancel the effect of the feedback loop. For this, we re-use the existing filter 
-  // objects. We can do this because they are not needed anymore for other purposes because the 
-  // uncompensated output as been generated already:
-
-  rsUnitDelay<Real> ud; // A unit delay object for convenience.
-  apf.reset();
-  fbf.reset();
+  // Cancel the effect of the feedback loop. For this, we re-use the existing filter objects. We 
+  // can do this because they are not needed anymore for other purposes because the uncompensated 
+  // output as been generated already. in a realtime implementation, we would have to use another
+  // pair of filters that is identical to apf and fbf
 
   // Helper function that implements the compensation filter:
-  auto getSampleC = [&](Real in)
+  rsUnitDelay<Real> ud;                     // A unit delay object for convenience.
+  auto getSampleC = [&](Real x)
   {
-    return in - k * ud.getSample(fbf.getSample(apf.getSample(in)));
+    return x - k * ud.getSample(fbf.getSample(apf.getSample(x)));
     // C(z) = 1 + k * z^-1 * F(z) * A(z). The order in which we apply k, ud, fbf, apf should not 
     // matter because everything is linear. ToDo: implement () operators such that we can write:
-    // return in - k * ud(fbf(apf(in)));
+    // return x - k * ud(fbf(apf(x))); Maybe even rename the filter objects apf, fbf to A and F.
+    // Then the call would look like x - k * ud(F(A(x)))...but nah - that might suggest function 
+    // composition in the math equations - but there, it's actually multiplication.
   };
-  // Maybe rename to getSampleC
 
-  // This should produce a single spike at M like a delayine without feedback:
+  // This should produce a single spike at M like a delayline without feedback. That is, we compute
+  // U(z) * C(z) = A(z):
+  apf.reset();
+  fbf.reset();
   Vec hc(N);
   for(int n = 0; n < N; n++)
     hc[n] = getSampleC(hu[n]);
-  rsPlotVectors(hc);   // ...yes - looks good!
+  rsPlotVectors(hc);                        // Yes - that looks good! Single spike at M.
   
 
 
