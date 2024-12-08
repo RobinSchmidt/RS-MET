@@ -130,18 +130,17 @@ void twoPoleAllpassDelay()
       return x;
     };
 
-
     // Generate impulse response:
     std::vector<Real> h(N);
     h[0] = applyFilters(1.0);
     for(size_t n = 1; n < N; n++)
       h[n] = applyFilters(0.0);
 
-    
+    // Plot:
     rsPlotVectors(h);
 
-  
-    int dummy = 0;
+    // Write to wavefile:
+    // ...
 
     // ToDo:
     //
@@ -150,7 +149,61 @@ void twoPoleAllpassDelay()
   };
 
 
-  create({ 5 }, { 0.2 }, { 2.5 }, 500);
+  int N = 500;
+
+  create({ 1   }, 
+         { 0.2 }, 
+         { 2.5 }, N);
+
+  create({ 5   }, 
+         { 0.2 }, 
+         { 2.5 }, N);
+
+  create({ 5,   9   }, 
+         { 0.2, 0.3 }, 
+         { 2.5, 2.5 }, N);
+
+  create({ 5,   9,   14  }, 
+         { 0.2, 0.3, 0.5 }, 
+         { 2.5, 2.5, 2.5 }, N);
+
+  //create({ 5 }, { -0.2 }, { 2.5 }, 500);  // Unstable!
+  //create({ 5 }, {  0.2 }, { -2.5 }, 500);   // Unstable!
+
+  // 
+
 
   int dummy = 0;
+
+
+  // Observations:
+  //
+  // - For a single stage, the output looks like an initial spike followed by an undulating spike 
+  //   train. The distance between the spikes is given by the chosen delay. The undulation 
+  //   frequency is probably the filter's resonance frequency - maybe divided by the delay-length 
+  //   factor.
+  //
+  //
+  // Questions:
+  //
+  // - I think, we do not really need the delay lengths to ba all prime numbers. It should be 
+  //   sufficient if they are mutually coprime. This is a less restrictive condition but the effecr
+  //   having the first coincidence of spikes at the lowes common multiple of the delay lengths 
+  //   should still be satisfied.
+  //
+  // - Can we use the undulation frequencies to deliberately colorize the sound, i.e. give it some
+  //   deliberate tonal character? That seems plausible.
+  //
+  //
+  // ToDo:
+  //
+  // - Try to achieve sign flipping of the output by fliiping the signs of the omegas. This doesn't
+  //   fall out of the math. Trying to just use negative omegas (or negative Qs) just leads to 
+  //   unstable filters. It would just be a convention that we apply ourselves manually to allow 
+  //   the user to conveniently select the sign of a particular filter output. It would work by 
+  //   using abs(w) for the filter design and sign(w) to scale the output.
+  //
+  // - Try to parametrize the filter not in terms of omega but in terms of physical frequency. We 
+  //   really want to figure out the relationship between the omega parameter and the undulation 
+  //   frequency. Maybe  omega*delay = 2*pi*f/fs  or  omega/delay = 2*pi*f/fs?
 }
