@@ -2204,11 +2204,14 @@ bool multiPoleAllpassDelayUnitTest()
   twoPole.setDelayInSamples(10);
   twoPole.setAllpassCoeffs(-0.7, +0.5);
   Vec ht = impulseResponse(twoPole, numSamples, 1.0);
-  rsPlotVectors(ht);
+  //rsPlotVectors(ht);
 
   rsMultiPoleAllpassDelay<double, double> multiPole;
   multiPole.setMaxDelayInSamples(16);
   multiPole.setDelayInSamples(10);
+  Vec coeffs({1.0, -0.7, +0.5});
+  multiPole.setAllpassCoeffs(coeffs);
+
 
 
 

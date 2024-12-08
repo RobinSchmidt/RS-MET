@@ -573,9 +573,9 @@ public:
 
   void setAllpassCoeffs(const std::vector<TPar>& newCoeffs)
   { 
-    N = (int) newCoeffs.size();
+    N = (int) newCoeffs.size() - 1;
     allocateMemory();
-    for(int i = 0; i < N; i++)
+    for(int i = 1; i < N; i++)
       c[i] = newCoeffs[i];  // Maybe use rsArrayTools::copy
 
     c[0] = 1;  // This shopuld always be the case
