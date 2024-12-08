@@ -237,8 +237,8 @@ void feedbackFilterAllpass()
   int    N          = 10000;     // Number of samples to generate
   double sampleRate = 44100;
   double dampFreq   =  1000;     // Frequency of the low shelf for damping.
-  double dampGain   =     0.7;   // Linear high freq damping gain
-  double k          =     1.0;   // Feedback gain factor
+  double dampGain   =     0.8;   // Linear high freq damping gain
+  double k          =     0.9;   // Feedback gain factor
 
   APF apf;
   apf.setMaximumDelayInSamples(M);
@@ -286,8 +286,8 @@ void feedbackFilterAllpass()
   // Helper function that implements the compensation filter
   auto getSampleComp = [&](Real in)
   {
-    // C(z) = 1 + z^-1 * F(z) / k
-    return in + ud.getSample(cf.getSample(in)) / k;
+    // C(z) = 1 + k * z^-1 * F(z) 
+    return in + k * ud.getSample(cf.getSample(in));
   };
 
   Vec hc(N);
@@ -295,11 +295,6 @@ void feedbackFilterAllpass()
     hc[n] = getSampleComp(hu[n]);
 
   rsPlotVectors(hu, hc);
-
-  // Test the unit delay:
-  //Vec hud = impulseResponse(ud, 20, 1.0);
-  //rsPlotVectors(hud);
-  // Yeah - it's ok - so that's not the problem
 
 
   // Observations:
@@ -317,5 +312,9 @@ void feedbackFilterAllpass()
   //
   // - The compensated output looks strange. I think, it's wrong. I think, it should actually be a
   //   single spike at M = 100 because the compensation filter should actually totally undo the 
-  //   effect of the feedback loop. Or should it? I think so, though. The math seems to say so.
+  //   effect of the feedback loop. Or should it? I think so, though. The math seems to say so. 
+  //   Maybe Try it with the trivial allpass, i.e. with A(z) = 1. We can achive theis by setting 
+  //   M = 0. ...hmmm...yeah...the results of this also look wrong. Why does the filter
+  //   C(z) = 1 + k * z^-1 * F(z)  not compensate for the feedback denomitor in
+  //   U(z) = A(z) / (1 + k * z^-1 * F(z)) ?
 }
