@@ -2206,6 +2206,12 @@ bool multiPoleAllpassDelayUnitTest()
   Vec ht = impulseResponse(twoPole, numSamples, 1.0);
   rsPlotVectors(ht);
 
+  rsMultiPoleAllpassDelay<double, double> multiPole;
+  multiPole.setMaxDelayInSamples(16);
+  multiPole.setDelayInSamples(10);
+
+
+
   //ok &= rsIsCloseTo(h, ht, 1.e-13);
   //rsPlotVectors(ht, h);
 
