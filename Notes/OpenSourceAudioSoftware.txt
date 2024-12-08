@@ -443,6 +443,9 @@ FDNTB - The Feedback Delay Network Toolbox:
 https://www.sebastianjiroschlecht.com/project/fdntb/
 https://github.com/SebastianJiroSchlecht/fdnToolbox
 
+Frequency-Dependent Schroeder Allpass Filters
+https://github.com/SebastianJiroSchlecht/FrequencyDependentSchroederAllpass
+
 DAFX Book Stuff:
 https://www.dafx.de/DAFX_Book_Page_2nd_edition/matlab.html
 https://github.com/zeloe/DAFX
