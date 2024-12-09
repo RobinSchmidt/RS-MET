@@ -221,7 +221,8 @@ void twoPoleAllpassDelay()
 void dampedAllpassComb1()
 {
   // This experiment is basically my initial step by step derivation of what later became the class
-  // rsDampedAllpassCombNaive.
+  // rsDampedAllpassCombNaive. It's based on the idea that I explain in the dcoument:
+  // Notes/DSP/DampedAllpassComb.txt
   //
   // I implement an idea for starting with an arbitrary given allpass filter A(z) and arbitrary 
   // given feedback filter F(z) that sits in a feedback loop with unit delay around that allpass. I 
@@ -264,9 +265,7 @@ void dampedAllpassComb1()
   // Then, finally we actually do the reversal of the FIR part of the correction filter. Using that
   // instead of the original correction filter, we obtain an overall allpass filter but one that 
   // does not cancel out the effect of the feedback path.
-  //
-  // In the private repo, there's a filter AllpassStuff.txt where it's explained a bit more. Maybe
-  // drag that into the main repo. But it's currently too messy for a public repo.
+
 
   using Real    = double;
   using Vec     = std::vector<Real>;
