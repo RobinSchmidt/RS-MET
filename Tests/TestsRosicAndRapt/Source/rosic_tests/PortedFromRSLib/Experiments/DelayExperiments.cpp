@@ -518,25 +518,36 @@ void dampedAllpassComb2()
   using Allpass = rsDampedAllpassCombNaive<Real, Real>;
 
   // User parameters:
-  int  delay1     =    53;     // Main delay roundtrip length in samples. Is M-1 in the algo
-  int  numSamples = 16384;     // Number of samples to generate
+  int  delay1     =    53;     // 1st main delay roundtrip length in samples. Is M-1 in the algo
+  int  delay2     =    67;
+  int  delay3     =    83;
+  int  delay4     =   101;
+  int  numSamples =  2000;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
   Real dampFreq   =  1000;     // Frequency of the low shelf for feedback damping
-  Real dampGain   =     0.7;   // Linear high freq damping gain
-  Real feedback   =     0.9;   // Feedback gain factor
+  Real dampGain   =     0.6;   // Linear high freq damping gain
+  Real feedback   =     0.99;  // Feedback gain factor
 
 
-  // Set up a damped allpass comb for operation mode where the high frequencies are progressively
-  // damped over time:
-  Real w = 2*PI*dampFreq/sampleRate;
-  Real g = dampGain;
-  Real k = feedback;
+  // Set up the 4 damped allpass comb filters:
+  Real w  = 2*PI*dampFreq/sampleRate;
+  Real g  = dampGain;
+  Real k  = feedback;
+  int  d1 = delay1, d2 = delay2, d3 = delay3, d4 = delay4;
+  int delaySum = d1 + d2 + d3 + d4;
+  Allpass apf1; apf1.setupMaxDelayInSamples(d1); apf1.setupHighDamp(d1, k, w, g);
+  Allpass apf2; apf2.setupMaxDelayInSamples(d2); apf2.setupHighDamp(d2, k, w, g);
+  Allpass apf3; apf3.setupMaxDelayInSamples(d3); apf3.setupHighDamp(d3, k, w, g);
+  Allpass apf4; apf4.setupMaxDelayInSamples(d4); apf4.setupHighDamp(d4, k, w, g);
 
-  Allpass apf1; apf1.setupMaxDelayInSamples(delay1); apf1.setupHighDamp(delay1, k, w, g);
+  // Generate impulse response of the allpass chain:
+  int N  = numSamples;
+  Vec h1 = impulseResponse(apf1, N, 1.0);
+  Vec h2 = filterResponse( apf2, N, h1);
+  Vec h3 = filterResponse( apf3, N, h2);
+  Vec h4 = filterResponse( apf4, N, h3);
+  rsPlotVectors(h1, h2, h3, h4);
 
-  // Generate impulse response of the allpass:
-  Vec h1 = impulseResponse(apf1, numSamples, 1.0);
-  rsPlotVectors(h1);
 
 
 
@@ -548,6 +559,14 @@ void dampedAllpassComb2()
   //
   // Maybe try a chain of 53,67,83,101
 
+  // Observations:
+  //
+  // - The first spike in the output seems to occur at the sum off all (delay-1) values, i.e. at 
+  //   delaySum - numDelays. 
+  //
+  // - The outputs become progressively more complex
+  //
+  //
   // ToDo:
   //
   // - Maybe try to apply it to other signals to see what it does to them. Maybe noise, sawtooth,
@@ -557,6 +576,9 @@ void dampedAllpassComb2()
   //
   // - Compute the required feedback factor and dampGain from a desired decay time that the user
   //   specifies. Look up the formulas in the FDN implementation or literature.
+  //
+  // - Figure out what is different between ordering the combs from short to long anf long to 
+  //   short. Is ther any difference? No - this can't be the case because they are all LTI!
 }
 
 void dampedAllpassComb()
