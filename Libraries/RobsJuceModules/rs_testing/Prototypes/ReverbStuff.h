@@ -772,6 +772,10 @@ class rsDampedAllpassCombNaive
 
 public:
 
+
+  void setupMaxDelayInSamples(int newMaxDelay);
+
+
   void setupHighDamp(int delay, TPar feedback, TPar dampOmega, TPar dampGain);
   // Maybe it should be more flexible to allow also modes in which the low freqs are progressively
   // dampened. It would actually be pretty nice to have a full blown biquad available for damping
@@ -805,15 +809,23 @@ protected:
   rsBasicDelayLine<TSig>             corDelayM2;
   rsFirstOrderFilterBase<TSig, TPar> corOnePole;
 
+  // State for the unit delay feedback loop:
+  TSig out = TSig(0);
+
   // Coefficients:
   TPar k;
   TPar r0, r1, rM1, rM2;
 
-  // State for the unit delay feedback loop:
-  TSig out = TSig(0);
-
 };
 
+template<class TSig, class TPar>
+void rsDampedAllpassCombNaive<TSig, TPar>::setupMaxDelayInSamples(int newMaxDelay)
+{
+  int maxM = newMaxDelay - 1;
+  mainDelay .setMaximumDelayInSamples(maxM);
+  corDelayM1.setMaximumDelayInSamples(maxM+1);
+  corDelayM2.setMaximumDelayInSamples(maxM+2);
+}
 
 template<class TSig, class TPar>
 void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
@@ -844,7 +856,7 @@ template<class TSig, class TPar>
 void rsDampedAllpassCombNaive<TSig, TPar>::reset()
 {
   mainDelay.reset();
-  feedbackFilter.reset();
+  feedbackDamper.reset();
   unitDelay.reset();
   corDelayM1.reset();
   corDelayM2.reset();
@@ -870,7 +882,7 @@ template<class TSig, class TPar>
 TSig rsDampedAllpassCombNaive<TSig, TPar>::applyCorrectionFilter(TSig in)
 {
   // Apply 1-pole:
-  TSig t = corOnePole.getSample();
+  TSig t = corOnePole.getSample(in);
 
   // Apply the FIR part:
   TSig y = 0;

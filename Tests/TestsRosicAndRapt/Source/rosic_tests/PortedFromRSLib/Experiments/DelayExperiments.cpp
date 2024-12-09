@@ -530,13 +530,30 @@ void dampedAllpassComb2()
   // damped over time:
   Real dampOmega = 2*PI*dampFreq/sampleRate;
   Allpass apf;
+  apf.setupMaxDelayInSamples(delay);
   apf.setupHighDamp(delay, feedback, dampOmega, dampGain);
 
+  // Generate impulse response of the allpass:
+  Vec h = impulseResponse(apf, numSamples, 1.0);
+  rsPlotVectors(h);
 
+  //int N = numSamples;
+  //Vec h(N);
+  //h[0] = apf.getSample(1.0);
+  //for(int n = 0; n < N; n++)
+  //  h[n] = apf.getSample(0.0);
+
+
+
+
+  // ToDo:
+  //
+  // - Maybe try to apply it to other signals to see what it does to them. Maybe noise, sawtooth,
+  //   guitar, etc.
 }
 
 void dampedAllpassComb()
 {
-  dampedAllpassComb1();
+  //dampedAllpassComb1();
   dampedAllpassComb2();
 }
