@@ -951,6 +951,21 @@ public:
 
 protected:
 
+  TSig applyDamper(TSig x)
+  {
+    TSig y = b0 * x + b1 * x1d + a1 * y1d;
+    x1d = x;
+    y1d = y;
+    return y;
+  }
+
+  TSig applyCorrectorOnePole(TSig x)
+  {
+    TSig y = b0 * x + b1 * x1c + a1 * y1c;
+    x1c = x;
+    y1c = y;
+    return y;
+  }
 
 
 
