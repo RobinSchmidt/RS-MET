@@ -510,22 +510,23 @@ void dampedAllpassComb1()
 
 void dampedAllpassComb2()
 {
-  // Now, we use the class for the same purpose.
+  // Now, we use the class rsDampedAllpassComb which encapsulates the algorithm derived above into a 
+  // class. We use that class here to create a chain of 4 such allpass comb filters and produce its
+  // impulse response.
 
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
-  //using Allpass = rsDampedAllpassCombNaive<Real, Real>;
   using Allpass = rsDampedAllpassComb<Real, Real>;
 
   // User parameters:
   int  delay1     =    53;     // 1st main delay roundtrip length in samples. Is M-1 in the algo
-  int  delay2     =    67;
-  int  delay3     =    83;
-  int  delay4     =   101;
+  int  delay2     =    67;     // Same for 2nd comb
+  int  delay3     =    83;     // ..3rd
+  int  delay4     =   101;     // ..and finally 4th
   int  numSamples =  8192;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
-  Real dampFreq   =   500;     // Frequency of the low shelf for feedback damping
+  Real dampFreq   =   500;     // Frequency (in Hz) of the low shelf for feedback damping
   Real dampGain   =     0.9;   // Linear high freq damping gain
   Real feedback   =     0.99;  // Feedback gain factor
 
@@ -541,7 +542,7 @@ void dampedAllpassComb2()
   Real g  = dampGain;
   Real k  = feedback;
   int  d1 = delay1, d2 = delay2, d3 = delay3, d4 = delay4;
-  int delaySum = d1 + d2 + d3 + d4;
+  int  delaySum = d1 + d2 + d3 + d4;
   Allpass apf1; setupComb(apf1, d1, k, w, g);
   Allpass apf2; setupComb(apf2, d2, k, w, g);
   Allpass apf3; setupComb(apf3, d3, k, w, g);
@@ -600,6 +601,11 @@ void dampedAllpassComb2()
   //   2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 47, 53, 59, 67, 71, 83, 89, 101, 107, 109, 
   //   113, 127, 131, 137, 139, 149, 157, 167, 179, 181, 191, 197, 199, 211, 227, 233, 239, 251, 
   //   257, 263, 269, 281, 293, 307, 311, 317, 337, 347, 353, 359, 379, 389, 401, 409
+  //
+  // - The setupComb function should not directly take a feedback and highFreqGain parameter but
+  //   instead a desired decay time and maybe a decaytime scaler for the high frequencies. These
+  //   should then be used to compute the feedback gain and the shelver gain. This is a 
+  //   parametrization closer to what we might present to a user.
 }
 
 void dampedAllpassComb()
