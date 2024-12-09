@@ -497,4 +497,11 @@ void feedbackFilterAllpass()
   //   something more complex, the whole derivation has to be redone for the more complex case.
   //
   // - Maybe write about the filter on GitHub or maybe make a pdf.
+  //
+  // - Generalize to higher order feedback filters and maybe more complicated allpass filters. But
+  //   I guess, when we do this, the direct form representations won't be sparse anymore. 
+  //
+  // - To optimze the delaylines, use one for both correction delays and call getSample once and 
+  //   use the implict tap-move within getSample to call a second readout after getSample to get
+  //   the other value.
 }

@@ -732,6 +732,7 @@ This formula needs to be verified. This could perhaps be realized with a multita
 Can we then also build nested structure from these units?  
 */
 
+//=================================================================================================
 
 /** A super simple unit delay class. Might be convenient for implementing certain prototypes. */
 
@@ -756,6 +757,57 @@ protected:
 
 };
 
+//=================================================================================================
+
+/** We encapsulate into a class the code implemented in  feedbackFilterAllpass()  in 
+DelayExperiments.cpp  ...TBC...
+
+*/
+
+template<class TSig, class TPar>
+class rsFeedbackFilterAllpassNaive
+{
+
+public:
+
+
+
+  void reset();
+
+
+protected:
+
+  // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
+  // filter with filtered unit delay feedback:
+  rsBasicDelayLine<TSig>      mainDelay;
+  rsOnePoleFilter<TSig, TPar> feedbackDamper;
+
+  // Objects for the correction filter:
+  rsUnitDelay<TSig>           unitDelay;
+  rsBasicDelayLine<TSig>      corDelayM1;
+  rsBasicDelayLine<TSig>      corDelayM2;
+  rsOnePoleFilter<TSig, TPar> corOnePole;
+
+  // Coefficients:
+  TPar k;
+  TPar r0, r1, rM1, rM2;
+
+  // State for the unit delay feedback loop:
+  TSig prevOut = TSig(0);
+
+};
+
+template<class TSig, class TPar>
+void rsFeedbackFilterAllpassNaive<TSig, TPar>::reset()
+{
+  mainDelay.reset();
+  feedbackFilter.reset();
+  unitDelay.reset();
+  corDelayM1.reset();
+  corDelayM2.reset();
+  corOnePole.reset();
+  prevOut = TSig(0);
+}
 
 
 #endif
