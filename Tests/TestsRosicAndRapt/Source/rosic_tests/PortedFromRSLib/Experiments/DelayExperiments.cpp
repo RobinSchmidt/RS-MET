@@ -261,10 +261,10 @@ void feedbackFilterAllpass()
   // In the private repo, there's a filter AllpassStuff.txt where it's explained a bit more. Maybe
   // drag that into the main repo. But it's currently too messy for a public repo.
 
-  using Real = double;
-  using Vec  = std::vector<Real>;
-  using APF  = RAPT::rsBasicDelayLine<Real>;      // We use a simple delay as allpass
-  using FBF  = RAPT::rsOnePoleFilter<Real, Real>; // We use a one pole as feedback filter
+  using Real    = double;
+  using Vec     = std::vector<Real>;
+  using Delay   = RAPT::rsBasicDelayLine<Real>;      // We use a simple delay as allpass
+  using OnePole = RAPT::rsOnePoleFilter<Real, Real>; // We use a one pole as feedback filter
 
   int    M          =   100;     // Delay
   int    N          = 10000;     // Number of samples to generate
@@ -275,12 +275,12 @@ void feedbackFilterAllpass()
 
 
   // Create and set up the two given filters for A(z) and F(z):
-  APF apf;                                  // Allpass filter
+  Delay apf;                                // Allpass filter
   apf.setMaximumDelayInSamples(M);
   apf.setDelayInSamples(M);
 
-  FBF fbf;                                  // Feedback filter
-  fbf.setMode(FBF::modes::HIGHSHELV_BLT);
+  OnePole fbf;                              // Feedback filter
+  fbf.setMode(OnePole::modes::HIGHSHELV_BLT);
   fbf.setCutoff(dampFreq);
   fbf.setShelvingGain(dampGain);
 
