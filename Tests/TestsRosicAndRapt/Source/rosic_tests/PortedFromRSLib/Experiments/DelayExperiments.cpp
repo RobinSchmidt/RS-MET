@@ -330,6 +330,14 @@ void feedbackFilterAllpass()
   rsPlotVectors(hc);                        // Yes - that looks good! Single spike at M.
   
 
+  // Now we try to implement the correction filter in a different way that is more amenable to 
+  // reflecting the zeros.
+
+  OnePole op;   // Should have same poles as fbf and 1 as denominator
+  op.setCoefficients(1.0, 0.0, fbf.getA1());
+
+
+  //op = fbf;     // take over
 
 
 
