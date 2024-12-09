@@ -702,10 +702,10 @@ void dampedAllpassCombComplex()
 
   // Define types to be used:
   using Real    = double;
-  using Complex = rsComplex<Real>;
+  //using Complex = rsComplex<Real>;
+  using Complex = std::complex<Real>;
   using VecR    = std::vector<Real>;
   using VecC    = std::vector<Complex>;
-  //using Allpass = rsDampedAllpassComb<Complex, Complex>;
   using Allpass = rsDampedAllpassComb<Complex, Real>;
 
   Complex j(0,1);
@@ -722,21 +722,21 @@ void dampedAllpassCombComplex()
   Allpass ap;
   Real w  = 2*PI*dampFreq/sampleRate;
   ap.setMaxDelayInSamples(delay);
-
   ap.setupHighDamp(delay, feedback, w, dampGain, false);
-  // This doesn't compile! I think, we need to use TSig in a couple of more places instead of TPar
-
-  // rsDampedAllpassComb<Complex, Complex>;
-  // and define the k parameter as TSig.
-
-  //VecC h = impulseResponse(ap, numSamples, Complex(1));
-  // doesn't compile
+  //VecC h = impulseResponse(ap, numSamples, Real(1));   // Nope!
+  VecC h = impulseResponse(ap, numSamples, Complex(1));  // Yep!
 
 
+  //rsPlotComplexArray(numSamples, &h[0]);
+  plotComplexVectorReIm(h);  // Doesn't accept rsComplex - fix that!
+  
 
   Real fbAbs = rsAbs(feedback);  // For a check
 
 
+  // ToDo:
+  //
+  // - Make a unit test that ensures that it works with rsComplex and std::complex
 
 }
 
