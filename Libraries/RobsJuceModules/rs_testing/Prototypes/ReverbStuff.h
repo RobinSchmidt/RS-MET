@@ -962,7 +962,6 @@ protected:
   TSig applyCorrectorOnePole(TSig x)
   {
     TSig y = x + a1 * y1c;
-    x1c = x;
     y1c = y;
     return y;
   }
@@ -972,19 +971,19 @@ protected:
   // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
   // filter with filtered unit delay feedback:
   rsBasicDelayLine<TSig>             mainDelay;
-  rsFirstOrderFilterBase<TSig, TPar> damper;  // rename to damper
+  //rsFirstOrderFilterBase<TSig, TPar> damper;  // rename to damper
 
   // Objects for the correction filter:
   rsUnitDelay<TSig>                  unitDelay;
   rsBasicDelayLine<TSig>             corrDelay;
-  rsFirstOrderFilterBase<TSig, TPar> corOnePole;
+  //rsFirstOrderFilterBase<TSig, TPar> corOnePole;
 
   // State for the unit delay feedback loop:
   TSig out = TSig(0);
 
   // States for the two one pole filters:
   TSig x1d = 0, y1d = 0;   // x[n-1], y[n-1] for damper
-  TSig x1c = 0, y1c = 0;   // x[n-1], y[n-1] for corrector one pole  ..x1c not needed
+  TSig y1c = 0;            // y[n-1] for corrector one pole
   // ToDo use DF2 or TDF2 implementation
 
 
@@ -1022,8 +1021,11 @@ void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   // Set up one pole filters:
   //TPar b0, b1, a1;
   rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(dampOmega, dampGain, &b0, &b1, &a1);
-  damper.setCoefficients(    b0,  b1,  a1);
-  corOnePole.setCoefficients(1.0, 0.0, a1);
+  //damper.setCoefficients(    b0,  b1,  a1);
+  //corOnePole.setCoefficients(1.0, 0.0, a1);
+
+  // Maybe use magnitude match rather than BLT. Might be nicer
+
 
   // Set up delaylines:
   M = delay - 1;                            // -1 corrects for unit delay in feedback path
@@ -1041,15 +1043,14 @@ template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::reset()
 {
   mainDelay.reset();
-  damper.reset();
+  //damper.reset();
   unitDelay.reset();
   corrDelay.reset();
-  corOnePole.reset();
+  //corOnePole.reset();
 
   out = TSig(0);
   x1d = TSig(0);
   y1d = TSig(0);
-  x1c = TSig(0);
   y1c = TSig(0);
 }
 
