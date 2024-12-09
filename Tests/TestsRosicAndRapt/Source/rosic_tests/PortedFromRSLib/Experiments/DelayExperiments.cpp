@@ -486,5 +486,7 @@ void feedbackFilterAllpass()
   // - To use it for decorrelation purposes, use a series connection of a bunch of them for left 
   //   and right channel with different delays for left and right but in such a way that the sum
   //   of the delays is equal. The parametrization of each such delay unit should be in terms of 
-  //   the delay and the decay time.
+  //   the delay and the decay time. The decay times for all the filters in the chain should be
+  //   equal, I think. Maybe wite a class rsAllpassDecorrelator. Maybe it should support more than
+  //   two channels.
 }
