@@ -775,6 +775,16 @@ public:
   void reset();
 
 
+  TSig getSample(TSig in);
+
+
+
+
+  TSig getSampleUncorrected(TSig in);
+
+  TSig applyCorrectionFilter(TSig in);
+
+
 protected:
 
   // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
@@ -793,7 +803,7 @@ protected:
   TPar r0, r1, rM1, rM2;
 
   // State for the unit delay feedback loop:
-  TSig prevOut = TSig(0);
+  TSig out = TSig(0);
 
 };
 
@@ -806,8 +816,40 @@ void rsFeedbackFilterAllpassNaive<TSig, TPar>::reset()
   corDelayM1.reset();
   corDelayM2.reset();
   corOnePole.reset();
-  prevOut = TSig(0);
+  out = TSig(0);
 }
+
+
+template<class TSig, class TPar>
+TSig rsFeedbackFilterAllpassNaive<TSig, TPar>::getSample(TSig in)
+{
+  return applyCorrectionFilter(getSampleUncorrected(in));
+}
+
+template<class TSig, class TPar>
+TSig rsFeedbackFilterAllpassNaive<TSig, TPar>::getSampleUncorrected(TSig in)
+{
+  out = mainDelay.getSample(in + k * feedbackDamper.getSample(out));
+  return out;
+}
+
+template<class TSig, class TPar>
+TSig rsFeedbackFilterAllpassNaive<TSig, TPar>::applyCorrectionFilter(TSig in)
+{
+  // Apply 1-pole:
+  TSig t = corOnePole.getSample();
+
+  // Apply the FIR part:
+  TSig y = 0;
+  y += r0  * t;
+  y += r1  * unitDelay.getSample(t);
+  y += rM1 * corDelayM1.getSample(t);
+  y += rM2 * corDelayM2.getSample(t);
+
+  return y;
+}
+
+
 
 
 #endif
