@@ -696,9 +696,38 @@ void dampedAllpassComb3()
   //   and negative and positive k.
 }
 
+void dampedAllpassCombComplex()
+{
+  // We try to instantiate the 
+
+  // Define types to be used:
+  using Real    = double;
+  using Complex = rsComplex<Real>;
+  using VecR    = std::vector<Real>;
+  using VecC    = std::vector<Complex>;
+  using Allpass = rsDampedAllpassComb<Complex, Complex>;
+
+  Complex j(0,1);
+
+  // User parameters:
+  int     delay      =   100;
+  int     numSamples =  8192;
+  Real    sampleRate = 44100;
+  Real    dampFreq   =   500;
+  Real    dampGain   =     0.8;
+  Complex feedback   =  0.99*(0.8 + 0.6*j);  // A complex feedback gain
+
+  Allpass ap;
+
+
+}
+
 void dampedAllpassComb()
 {
+  dampedAllpassCombComplex();
+
   dampedAllpassComb1();
   dampedAllpassComb2();
   dampedAllpassComb3();
+  dampedAllpassCombComplex();
 }
