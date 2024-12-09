@@ -526,10 +526,14 @@ void dampedAllpassComb2()
   Real dampFreq   =  3000;     // Frequency (in Hz) of the low shelf for feedback damping
   Real dampGain   =     0.7;   // Linear high freq damping gain
   Real feedback   =     0.99;  // Feedback gain factor
+  int  mode       =     0;     // 0: high-damp, 1: low-damp, 2: allpass
+
+
+  Allpass comb; // maybe make local to impResp
 
   // Helper function to set up the given flt object with the given settings:
   auto setupComb = [&](Allpass& flt, int delay, Real feedback, Real omega, Real hiGain, 
-    bool preDelay)
+    bool preDelay, int mode)
   {
     flt.setMaxDelayInSamples(delay); 
     flt.setupHighDamp(delay, feedback, omega, hiGain, preDelay);
@@ -537,21 +541,34 @@ void dampedAllpassComb2()
   // Add predelay mode parameter. For the feedback sign, we don't add a parameter - we just use 
   // either positive or negative sign.
 
+  // Helper function to produce the impulse response for given settings:
+  auto impResp = [&](int delay, Real feedback, Real omega, Real hiGain, bool preDelay, int mode)
+  {
+    setupComb(comb, delay, feedback, omega, hiGain, preDelay, mode); 
+    Vec h = impulseResponse(comb, numSamples, 1.0);
+    return h;
+  };
+
   // Set up the 4 damped allpass comb filters:
   int  N  = numSamples;
   int  d  = delay;
   Real w  = 2*PI*dampFreq/sampleRate;
   Real g  = dampGain;
   Real k  = feedback;
-  Allpass comb; 
 
   // We have 4 different modes: unipolar/bipolar (selected by sign of k) and predelay or not 
   // (selected by bool parameter):                                             
-  //                                                                            //  polar  predelay
-  setupComb(comb, d, +k, w, g, false); Vec h1 = impulseResponse(comb, N, 1.0);  //   uni      no
-  setupComb(comb, d, -k, w, g, false); Vec h2 = impulseResponse(comb, N, 1.0);  //   bi       no
-  setupComb(comb, d, +k, w, g, true ); Vec h3 = impulseResponse(comb, N, 1.0);  //   uni      yes
-  setupComb(comb, d, -k, w, g, true ); Vec h4 = impulseResponse(comb, N, 1.0);  //   bi       yes
+  //                                                                              // polar predelay
+  setupComb(comb, d, +k, w, g, false, 0); Vec h1 = impulseResponse(comb, N, 1.0); //  uni     no
+  setupComb(comb, d, -k, w, g, false, 0); Vec h2 = impulseResponse(comb, N, 1.0); //  bi      no
+  setupComb(comb, d, +k, w, g, true,  0); Vec h3 = impulseResponse(comb, N, 1.0); //  uni     yes
+  setupComb(comb, d, -k, w, g, true,  0); Vec h4 = impulseResponse(comb, N, 1.0); //  bi      yes
+
+                                            // polar  predelay 
+  //Vec h1 = impResp(d, +k, w, g, false, 0);  //  uni     no
+  //Vec h2 = impResp(d, -k, w, g, false, 0);  //  bi      no
+  //Vec h3 = impResp(d, +k, w, g, true,  0);  //  uni     yes
+  //Vec h4 = impResp(d, -k, w, g, true,  0);  //  bi      yes
 
 
   // Plot them all together and then one at a time:
@@ -560,6 +577,10 @@ void dampedAllpassComb2()
   rsPlotVectors(h2);
   rsPlotVectors(h3);
   rsPlotVectors(h4);
+
+  // Now let's do the same with low-damp mode:
+
+
 
 
   // Observations:
@@ -765,7 +786,8 @@ void dampedAllpassCombComplex()
 
 void dampedAllpassComb()
 {
-  //dampedAllpassCombComplex();
+  dampedAllpassComb2();
+
 
   dampedAllpassComb1();
   dampedAllpassComb2();
