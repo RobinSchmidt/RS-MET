@@ -961,7 +961,7 @@ protected:
 
                                                       // Objects for the correction filter:
   rsUnitDelay<TSig>                  unitDelay;
-  rsBasicDelayLine<TSig>             corDelayM1;
+  //rsBasicDelayLine<TSig>             corDelayM1;
   rsBasicDelayLine<TSig>             corDelayM2;
   rsFirstOrderFilterBase<TSig, TPar> corOnePole;
 
@@ -989,7 +989,7 @@ void rsDampedAllpassComb<TSig, TPar>::setupMaxDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
   mainDelay .setMaximumDelayInSamples(maxM);
-  corDelayM1.setMaximumDelayInSamples(maxM+1);
+  //corDelayM1.setMaximumDelayInSamples(maxM+1);
   corDelayM2.setMaximumDelayInSamples(maxM+2);
 }
 
@@ -1008,7 +1008,7 @@ void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   // Set up delaylines:
   M = delay - 1;                            // -1 corrects for unit delay in feedback path
   mainDelay.setDelayInSamples(M);
-  corDelayM1.setDelayInSamples(M+1);
+  //corDelayM1.setDelayInSamples(M+1);
   corDelayM2.setDelayInSamples(M+2);
 
   // Compute correction coefficients:
@@ -1024,7 +1024,7 @@ void rsDampedAllpassComb<TSig, TPar>::reset()
   mainDelay.reset();
   damper.reset();
   unitDelay.reset();
-  corDelayM1.reset();
+  //corDelayM1.reset();
   corDelayM2.reset();
   corOnePole.reset();
   out = TSig(0);
@@ -1050,22 +1050,6 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   // Apply 1-pole:
   TSig t = corOnePole.getSample(in);
 
-  //// Apply the FIR part:
-  //TSig y = 0;
-  //y += r0  * t;
-  //y += r1  * unitDelay.getSample(t);
-  //y += rM1 * corDelayM1.getSample(t);
-  //y += rM2 * corDelayM2.getSample(t);
-
-  //// Nope:
-  //// Apply the FIR part:
-  //TSig y = 0;
-  //y += r0  * t;
-  //y += r1  * unitDelay.getSample(t);
-  //y += rM2 * corDelayM2.getSample(t);  // Check order
-  //y += rM1 * corDelayM2.readOutput();
-
-
   // Apply the FIR part:
   TSig y = 0;
   y += r0  * t;
@@ -1073,16 +1057,9 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   y += rM1 * corDelayM2.readOutputAt(M+1);
   y += rM2 * corDelayM2.readOutputAt(M+2);
   corDelayM2.writeInputAndUpdate(t);
-
-
-
-  //y += rM2 * corDelayM2.getSample(t);  // Check order
-
-
-
-
-
-
+  // Maybe at least one for the calls to readOutputAt can be replaced by a call that just uses the
+  // tapOut pointer. Maybe if we organize the calling order right, we can even retrieve the other
+  // then by readOutput
 
 
 
