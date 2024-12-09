@@ -462,6 +462,10 @@ void feedbackFilterAllpass()
   //   we will finally settle at some nonzero DC. Only with k < 1, this DC will also decay away to
   //   zero eventually (that's my prediction - not yet tried).
   //
+  // - When listening to the wavefiles, the uncorrected one has a clear tonal character. It's a bit
+  //   similar to a Karplus strong algo initialized with a unit impulse. The spectrum of it has a
+  //   clearly harmonic structure. In the corrected one, the tonal character is much less present 
+  //   and the spectrum is indeed flat! It wöööörks!!!! YAY!!!! This filter could be very useful!
   //
   //  ToDo:
   //
@@ -476,4 +480,11 @@ void feedbackFilterAllpass()
   // - In a production implemenation, we may use a single delayline to realize d^(M+2), d^(M+1), d.
   //   but maybe d should not be realized by the delyline. Maybe using a unit delay is more 
   //   efficient for this
+  //
+  // - Wrap the filter into a class for convecient use. Make more unit tests.
+  //
+  // - To use it for decorrelation purposes, use a series connection of a bunch of them for left 
+  //   and right channel with different delays for left and right but in such a way that the sum
+  //   of the delays is equal. The parametrization of each such delay unit should be in terms of 
+  //   the delay and the decay time.
 }
