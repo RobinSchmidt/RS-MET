@@ -847,6 +847,7 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
   rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(dampOmega, dampGain, &b0, &b1, &a1);
   damper.setCoefficients(    b0,  b1,  a1);
   corOnePole.setCoefficients(1.0, 0.0, a1);
+  a1 = -a1; // We want to use the y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] sign convention here
 
   // Set up delaylines:
   int M = delay - 1;                        // -1 corrects for unit delay in feedback path
@@ -855,10 +856,10 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
   corDelayM2.setDelayInSamples(M+2);
 
   // Compute correction coefficients:
-  r0  = -k*b1;
-  r1  = -k*b0;
-  rM1 = -a1;
-  rM2 =  1;                                 // Get rid in production code!
+  r0  = k*b1;
+  r1  = k*b0;
+  rM1 = a1;
+  rM2 = 1;                                  // Get rid in production code!
 }
 
 template<class TSig, class TPar>
@@ -882,7 +883,7 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::getSample(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleComb(TSig in)
 {
-  out = mainDelay.getSample(in + k * damper.getSample(out));
+  out = mainDelay.getSample(in - k * damper.getSample(out));
   return out;
 
   // In the dampedAllpassComb1() experiment where I derived all of this, I actually use a negative
@@ -1019,7 +1020,7 @@ void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   // Compute the pole filters coefficients:
   rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(
     dampOmega, dampGain, &b0, &b1, &a1);
-  a1 = -a1; // The rsFirstOrderFilterBase uses the other sign convention, so we mus flip it.
+  a1 = -a1; // The rsFirstOrderFilterBase uses the other sign convention, so we must flip it.
   // Maybe use magnitude match rather than BLT. Might be nicer. But then we need to make the same
   // change in the naive implementation to make the unit test still pass. Maybe use another 
   // function that uses the other sign convention for the a-coeffs.
@@ -1033,9 +1034,6 @@ void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   r0  = k*b1;
   r1  = k*b0;
   rM1 = a1;
-
-  // I think, the reasons for the minus signs in r0, r1 have to do with the fact that we use
-  // 
 }
 
 template<class TSig, class TPar>
@@ -1065,8 +1063,8 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
   combOut = mainDelay.getSample(in - k * applyDamper(combOut)); 
   return combOut;
 
-  // Use -k * ... because we use the convention that in difference equations, the feedback
-  // coeffs get a minus sign
+  // We need to use use -k * ... because when translating from transfer function to difference 
+  // equation, coefficients in feedback paths accrue a negative sign. 
 }
 
 template<class TSig, class TPar>
