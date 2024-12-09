@@ -33,6 +33,9 @@ ToDo:
   etc.). Or maybe just allow that a fractional delayline can be used like an integer one, i.e. give
   it an "integer mode".
 
+- Maybe add a module to ToolChain called AllpassZoo. Or maybe the different allpasses should be
+  separate modules. But we may want to make a folder Allpass.
+
 
 Interesting Resources:
 
