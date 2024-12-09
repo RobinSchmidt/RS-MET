@@ -628,6 +628,8 @@ void dampedAllpassComb2()
   //   alternating mode. So, maybe revert to using + k * ... This then requires to re-introduce the
   //   minusses in the r-coeffs as well.
   //   
+  // - I think, we can provide 4 different modes and they all sound different: w/o predelay
+  //   and negative and positive k.
 }
 
 void dampedAllpassComb()
