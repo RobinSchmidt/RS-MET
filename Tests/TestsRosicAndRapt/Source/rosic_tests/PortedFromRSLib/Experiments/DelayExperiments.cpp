@@ -529,16 +529,24 @@ void dampedAllpassComb2()
   Real feedback   =     0.99;  // Feedback gain factor
 
 
+  auto setupComb = [&](Allpass& flt, int delay, Real feedback, Real omega, Real hiGain)
+  {
+    flt.setupMaxDelayInSamples(delay); 
+    flt.setupHighDamp(delay, feedback, omega, hiGain);
+  };
+
+
   // Set up the 4 damped allpass comb filters:
   Real w  = 2*PI*dampFreq/sampleRate;
   Real g  = dampGain;
   Real k  = feedback;
   int  d1 = delay1, d2 = delay2, d3 = delay3, d4 = delay4;
   int delaySum = d1 + d2 + d3 + d4;
-  Allpass apf1; apf1.setupMaxDelayInSamples(d1); apf1.setupHighDamp(d1, k, w, g);
-  Allpass apf2; apf2.setupMaxDelayInSamples(d2); apf2.setupHighDamp(d2, k, w, g);
-  Allpass apf3; apf3.setupMaxDelayInSamples(d3); apf3.setupHighDamp(d3, k, w, g);
-  Allpass apf4; apf4.setupMaxDelayInSamples(d4); apf4.setupHighDamp(d4, k, w, g);
+  Allpass apf1; setupComb(apf1, d1, k, w, g);
+  Allpass apf2; setupComb(apf2, d2, k, w, g);
+  Allpass apf3; setupComb(apf3, d3, k, w, g);
+  Allpass apf4; setupComb(apf4, d4, k, w, g);
+
 
   // Generate impulse response of the allpass chain:
   int N  = numSamples;
