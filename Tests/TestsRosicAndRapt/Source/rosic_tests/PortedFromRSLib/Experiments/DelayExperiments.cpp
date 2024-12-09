@@ -698,7 +698,9 @@ void dampedAllpassComb3()
 
 void dampedAllpassCombComplex()
 {
-  // We try to instantiate the 
+  // We instantiate rsDampedAllpassComb with a complex datatype for the signals. The feedbakc gain
+  // is also complex. Using a complex feedback gain further increases the space of the things that 
+  // we can do with this filter. 
 
   // Define types to be used:
   using Real    = double;
@@ -708,33 +710,27 @@ void dampedAllpassCombComplex()
   using VecC    = std::vector<Complex>;
   using Allpass = rsDampedAllpassComb<Complex, Real>;
 
-  Complex j(0,1);
-
   // User parameters:
-  int     delay      =   100;
-  int     numSamples = 16384;
-  Real    sampleRate = 44100;
-  Real    dampFreq   =   500;
-  Real    dampGain   =     0.8;
-  Real    fbGain     =     0.99;
-  Real    fbPhase    =    PI/4;   // 0.7,1.7
+  int  delay      =   100;
+  int  numSamples = 16384;
+  Real sampleRate = 44100;
+  Real dampFreq   =   500;
+  Real dampGain   =     0.8;
+  Real fbGain     =     0.99;
+  Real fbPhase    =    PI/4;   // Try: pi/4, 0.7, 1.7
 
-
-  fbGain = 0.9;
-
-
-  Complex fb = fbGain * rsExp(j*fbPhase);
-
-
+  // Create and set up the complex allpass and plot real and imaginary part of output:
   Allpass ap;
-  Real w = 2*PI*dampFreq/sampleRate;
-  int  N = numSamples;
+  Complex j(0,1);
+  Complex fb = fbGain * rsExp(j*fbPhase);
+  Real    w  = 2*PI*dampFreq/sampleRate;
+  int     N  = numSamples;
   ap.setMaxDelayInSamples(delay);
   ap.setupHighDamp(delay, fb, w, dampGain, false);
   VecC h = impulseResponse(ap, N, Complex(1));
-  plotComplexVectorReIm(h);  // Doesn't accept rsComplex - fix that!
+  plotComplexVectorReIm(h);                      // Doesn't accept rsComplex - fix that!
 
-
+  // Extract real and imaginary parts:
   VecR hr(N), hi(N);
   for(int n = 0; n < N; n++)
   {
@@ -742,30 +738,29 @@ void dampedAllpassCombComplex()
     hi[n] = imag(h[n]);
   }
 
-
-  //bool ok = isAllpass(hr, 1.e-4);
-  // Nope! The spectrum is very much not allpass! It's more comb-like!
+  // Plot spectra:
+  using SpecPlot = SpectrumPlotter<Real>;
+  SpecPlot plt;
+  plt.setFftSize(N);
+  plt.plotSpectra(N, &hr[0], &hi[0]);
 
 
   // Observations:
   //
   // - Using complex numbers imprints and undulation onto the impulse reponses.
   //
+  // - The spectra of real and imaginary part by themselves are not allpass like. They are more
+  //   of a strange comb like structure. One has zeros between the peaks, the other doesn't. 
+  //
   // - Feedback phases of 0 and pi give purely real outputs. With 0, it's unipolar, with pi its
   //   bipolar. That's how it has to be - we expect to get back to behavior of positive and
   //   negative signs. pi/2 gives a bipolar spike train both real and imaginary part. Same 
   //   for 3*pi/2.
   //
-  // - The spectra of real and imaginary part by themselves are not allpass like. They are more
-  //   of a strange comb like structure. But may it could be interesting and useful. Maybe the 
-  //   combs are complementary for real and imag? Figure out!
-  //
   //
   // ToDo:
   //
   // - Make sure that everything works with rsComplex and std::complex for Complex
-  //
-  // - Check if the real and imaginary parts of the output are both allpass in nature
   //
   // - I think, the feedback phase should scale with the delay to achieve a uniform undulation
   //   frequency. Figure this out!
