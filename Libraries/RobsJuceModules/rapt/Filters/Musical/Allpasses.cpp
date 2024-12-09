@@ -19,7 +19,12 @@ ToDo:
 - Implement creation of allpass filters from a given set of complex poles. The zeros are just the
   reciprocals of the poles (maybe with conjugation, not sure - but complex poles come pairwise 
   anyway). Use that to create Butterworth, Bessel, Papoulis, etc. allpases, i.e. allpases based on
-  well known allpole lowpass designs.
+  well known allpole lowpass designs. This is a general recipe for creating an allpass filter from
+  any filter: just take its poles and use as zeros the reflected poles.
+
+- Another general recipe (applicable to stable, minimum phase filters) could be: invert the filter 
+  (swap numertaor and denominator), reverse the FIR part, take the product (i.e. series connection) 
+  of the original and the invert-reversed one.
 
 - Implement a phaser like allpass - maybe one in which all stages have the same coeffs.
 
