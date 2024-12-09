@@ -2267,11 +2267,11 @@ bool dampedAllpassCombUnitTest()
   // between the spikes given by our desired delay. The first spike occurs at sample index  
   // n == delay - 1. 
   int N = numSamples;
-  naive.reset();
-  naive.setupHighDamp(delay, 1.0, 0.5, 1.0);
-  h[0] = naive.getSampleComb(1.0);
+  comb.reset();
+  comb.setupHighDamp(delay, 1.0, 0.5, 1.0);
+  h[0] = comb.getSampleComb(1.0);
   for(int n = 1; n < N; n++)
-    h[n] = naive.getSampleComb(0.0);
+    h[n] = comb.getSampleComb(0.0);
   for(int i = 0; i < N; i++)
   {
     if( (i+1) % delay == 0 )            // Triggers at 49, 99, 149, 199, ... if delay == 50
