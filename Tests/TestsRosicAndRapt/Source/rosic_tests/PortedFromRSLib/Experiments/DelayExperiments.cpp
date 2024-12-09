@@ -336,12 +336,6 @@ void feedbackFilterAllpass()
   //   C(z) = ----------------------------------------
   //                   1 + a1*d
 
-
-  //       b1*d^2*d^M*k + b0*d*d^M*k + a1*d + 1     1 + a1*d + k*b0*d^(M+1) + k*b1*d^(M+2)
-  //  C = -------------------------------------- = ----------------------------------------
-  //                  a1*d + 1                                   1 + a1*d
-
-
   Real b0 = fbf.getB0();
   Real b1 = fbf.getB1();
   Real a1 = fbf.getA1();
@@ -349,9 +343,15 @@ void feedbackFilterAllpass()
   OnePole op;                               // For the denominator
   op.setCoefficients(1.0, 0.0, a1);         // Should have same poles as fbf and 1 as denominator
 
-  a1 = -a1;  
   // rsOnePoleFilter uses the other sign convention for the feedback coeffs, so if we 
-  // want to use the a1 coeff directly, we have to negate it...but it doesn't help.
+  // want to use the a1 coeff directly, we have to negate it:
+  a1 = -a1;  
+
+  // For some reason that I don't quite understand, we need to negate the b-coeffs, too:
+  b0 = -b0;
+  b1 = -b1;
+  // Maybe what really happens that we need to negate k when it moves into a numerator? I'm not
+  // quite sure - but it works!
 
   // Naive implementation using for each desired delay its own delayline:
   ud.reset();
@@ -368,18 +368,11 @@ void feedbackFilterAllpass()
     // Apply 1-pole:
     Real t = op.getSample(x);
 
-    // Apply the FIR multitap delay to 1-pole output:
-    //Real y = t;                             // 1 + ...
-    //y +=   a1*ud.getSample(t);              // a1*d + ...
-    //y += k*b0*dlM1.getSample(t);            // b0*k*d^(M+1)
-    //y += k*b1*dlM2.getSample(t);            // b1*k*d^(M+2)
-    //return y;
-
-
-    Real y = t;                             // 1 + ...
-    y +=   a1*ud.getSample(t);              // a1*d + ...
-    y -= k*b0*dlM1.getSample(t);            // b0*k*d^(M+1)
-    y -= k*b1*dlM2.getSample(t);            // b1*k*d^(M+2)
+    // Apply the FIR part:
+    Real y = t;                             // 1
+    y +=   a1*ud.getSample(t);              // a1*d
+    y += k*b0*dlM1.getSample(t);            // b0*k*d^(M+1)
+    y += k*b1*dlM2.getSample(t);            // b1*k*d^(M+2)
     return y;
     // This works! But why?! The b-coeffs are not supposed to flip signs between transfer function
     // and difference equation! Ah! I think, it's because the involve the factor k, which does 
@@ -392,6 +385,11 @@ void feedbackFilterAllpass()
     hc2[n] = getSampleC2(hu[n]);
 
   rsPlotVectors(hc, hc2); 
+
+
+  // OK. Now we have an implementation structure of C(z) that is amenable to reflecting the zeros
+  // in the unit circle. When expressing the FIR part as coefficient array, we need to just reverse
+  // it. ...TBC...
 
 
 
