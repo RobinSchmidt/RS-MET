@@ -244,7 +244,7 @@ void feedbackFilterAllpass()
   // for the effect of the feedback on the magnitude response but retains features of the phase
   // response. Maybe we should try to reflect (some of) the zeros of C(z) about the unit circle. 
   // That will retain magnitude response and stability of C(z). 
-  
+  //
   // Consider our special case here with  A(z) = z^-M  and  F(z) = (b0 + b1*z^-1) / (1 + a1*z^-1). 
   // So we have:
   //
@@ -255,8 +255,10 @@ void feedbackFilterAllpass()
   // With d := z^-1 for convenience. In a second step, we try to implement C(z) in this form using
   // a delaline to implement the denominator the one-pole filter 1 / (1 + a1*z^-1) for the 
   // denominator. Having the filter in this form makes it amenable for manipulating the zeros by 
-  // reflecting them in the unit circle. We just need to reverse the array of numerator coeffs, I 
-  // think.
+  // reflecting them in the unit circle. We just need to reverse the array of numerator coeffs.
+  //
+  // Then, finally we actually do the reversal of the FIR part of the correction filter. Using that
+  // instead of the original correction filter, we obtain an overall allpass filter.
   //
   // In the private repo, there's a filter AllpassStuff.txt where it's explained a bit more. Maybe
   // drag that into the main repo. But it's currently too messy for a public repo.
@@ -271,7 +273,7 @@ void feedbackFilterAllpass()
   double sampleRate = 44100;
   double dampFreq   =  1000;     // Frequency of the low shelf for feedback damping
   double dampGain   =     0.7;   // Linear high freq damping gain
-  double k          =     1.0;   // Feedback gain factor
+  double k          =     0.9;   // Feedback gain factor
 
 
   // Create and set up the two given filters for A(z) and F(z):
@@ -381,7 +383,7 @@ void feedbackFilterAllpass()
   Vec hc2(N);
   for(int n = 0; n < N; n++)
     hc2[n] = getSampleC2(hu[n]);
-  //rsPlotVectors(hc, hc2);
+  rsPlotVectors(hc, hc2);
 
 
   // OK. Now we have an implementation structure of C(z) that is amenable to reflecting the zeros
@@ -467,6 +469,7 @@ void feedbackFilterAllpass()
   //   clearly harmonic structure. In the corrected one, the tonal character is much less present 
   //   and the spectrum is indeed flat! It wöööörks!!!! YAY!!!! This filter could be very useful!
   //
+  //
   //  ToDo:
   //
   // - Try to find the zeros of the filter C(z) and reflect them in the unit circle. If we have a 
@@ -479,7 +482,7 @@ void feedbackFilterAllpass()
   //
   // - In a production implemenation, we may use a single delayline to realize d^(M+2), d^(M+1), d.
   //   but maybe d should not be realized by the delyline. Maybe using a unit delay is more 
-  //   efficient for this
+  //   efficient for this.
   //
   // - Wrap the filter into a class for convecient use. Make more unit tests.
   //
@@ -488,5 +491,10 @@ void feedbackFilterAllpass()
   //   of the delays is equal. The parametrization of each such delay unit should be in terms of 
   //   the delay and the decay time. The decay times for all the filters in the chain should be
   //   equal, I think. Maybe wite a class rsAllpassDecorrelator. Maybe it should support more than
-  //   two channels.
+  //   two channels. Maybe we should also support fractional delays...but maybe not. That sounds
+  //   complicated. I don't think, we can jsut shove in a fractional delayline instead of z^-M 
+  //   because the formulas that I derived relied on these z^-M terms. If they get replaced by
+  //   something more complex, the whole derivation has to be redone for the more complex case.
+  //
+  // - Maybe write about the filter on GitHub or maybe make a pdf.
 }
