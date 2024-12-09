@@ -2247,7 +2247,7 @@ bool dampedAllpassCombUnitTest()
   // Create an instance of the naive prototype implemention, generate its impulse response and 
   // check that it is allpass in nature:
   CombNaive naive;
-  naive.setupMaxDelayInSamples(delay);
+  naive.setMaxDelayInSamples(delay);
   naive.setupHighDamp(delay, feedback, dampOmega, dampGain);
   Vec h = impulseResponse(naive, numSamples, 1.0);
   //rsPlotVectors(h);
@@ -2255,7 +2255,7 @@ bool dampedAllpassCombUnitTest()
 
   // Now try to generate the same output with the production version:
   Comb comb;
-  comb.setupMaxDelayInSamples(delay);
+  comb.setMaxDelayInSamples(delay);
   comb.setupHighDamp(delay, feedback, dampOmega, dampGain);
   Vec h2 = impulseResponse(comb, numSamples, 1.0);
   ok &= h2 == h;

@@ -533,7 +533,7 @@ void dampedAllpassComb2()
   // Helper function to set up the given flt object with the given settings:
   auto setupComb = [&](Allpass& flt, int delay, Real feedback, Real omega, Real hiGain)
   {
-    flt.setupMaxDelayInSamples(delay); 
+    flt.setMaxDelayInSamples(delay); 
     flt.setupHighDamp(delay, feedback, omega, hiGain);
   };
 

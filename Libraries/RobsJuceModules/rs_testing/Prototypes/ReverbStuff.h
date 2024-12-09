@@ -773,7 +773,7 @@ class rsDampedAllpassCombNaive
 public:
 
 
-  void setupMaxDelayInSamples(int newMaxDelay);
+  void setMaxDelayInSamples(int newMaxDelay);
 
 
   void setupHighDamp(int delay, TPar feedback, TPar dampOmega, TPar dampGain);
@@ -828,7 +828,7 @@ protected:
 };
 
 template<class TSig, class TPar>
-void rsDampedAllpassCombNaive<TSig, TPar>::setupMaxDelayInSamples(int newMaxDelay)
+void rsDampedAllpassCombNaive<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
   mainDelay .setMaximumDelayInSamples(maxM);
@@ -927,8 +927,8 @@ public:
   first spike appears at delay - 1 and from there, the subsequent ones are spaced apart by delay
   itself. The fact that first spike appears at delay - 1 rather than delay itself has to do with 
   the unit delay in the feedback loop. */
-  void setupMaxDelayInSamples(int newMaxDelay);
-  // RENAME to setMaxDelayInSamples. The "up" in "setup" is a copy/paste error
+  void setMaxDelayInSamples(int newMaxDelay);
+
 
   /** Sets up the filter in such a way that high frequencies are damped more and more after more
   roundtrips around the delayline. The dampOmega and dampGain parameters set up the normalized 
@@ -1004,7 +1004,7 @@ protected:
 };
 
 template<class TSig, class TPar>
-void rsDampedAllpassComb<TSig, TPar>::setupMaxDelayInSamples(int newMaxDelay)
+void rsDampedAllpassComb<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
   mainDelay .setMaximumDelayInSamples(maxM);
