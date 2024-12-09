@@ -976,11 +976,10 @@ protected:
 
   TSig applyDamper(TSig x)
   {
-    TSig y = b0 * x + b1 * x1d - a1 * y1d;
+    TSig y = b0 * x + b1 * x1d - a1 * y1d;  // ToDo: maybe use DF2 or TDF2 implementation
     x1d = x;
     y1d = y;
     return y;
-    // ToDo use DF2 or TDF2 implementation
   }
 
   TSig applyCorrectorOnePole(TSig x)
@@ -989,6 +988,19 @@ protected:
     y1c = y;
     return y;
   }
+
+  void updateDelaysAndCorrectorCoeffs()
+  {
+    // Set up delaylines:
+    mainDelay.setDelayInSamples(M);
+    corrDelay.setDelayInSamples(M+2);
+
+    // Compute correction coefficients:
+    r0  = -k*b1;                        // See getSampleComb() for why we have a minus sign here.
+    r1  = -k*b0;
+    rM1 = a1;
+  }
+
 
   // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
   // filter with filtered unit delay feedback:
@@ -1029,10 +1041,11 @@ template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay)
 {
+  M = delay - 1;                            // -1 corrects for unit delay in feedback path
   k = feedback;
   this->preDelay = preDelay;
 
-  // Compute the pole filters coefficients:
+  // Compute the 1-pole filters coefficients:
   rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(
     dampOmega, dampGain, &b0, &b1, &a1);
   a1 = -a1; // The rsFirstOrderFilterBase uses the other sign convention, so we must flip it.
@@ -1040,44 +1053,25 @@ void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   // change in the naive implementation to make the unit test still pass. Maybe use another 
   // function that uses the other sign convention for the a-coeffs.
 
-  // Set up delaylines:
-  M = delay - 1;                            // -1 corrects for unit delay in feedback path
-  mainDelay.setDelayInSamples(M);
-  corrDelay.setDelayInSamples(M+2);
+  // ToDo: Use filter design functions that return the filter coeffs directly with the right 
+  // convention used. 
 
-  // Compute correction coefficients:
-  r0  = -k*b1;
-  r1  = -k*b0;
-  rM1 = a1;
+
+  updateDelaysAndCorrectorCoeffs();
 }
 
 template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::setupLowDamp(
   int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay)
 {
+  M = delay - 1;
   k = feedback;
   this->preDelay = preDelay;
-
-  // Compute the pole filters coefficients:
   rsFirstOrderFilterBase<TSig, TPar>::coeffsLowShelfBLT(
     dampOmega, dampGain, &b0, &b1, &a1);
   a1 = -a1;
-
-
-  // Set up delaylines:
-  M = delay - 1;                            // -1 corrects for unit delay in feedback path
-  mainDelay.setDelayInSamples(M);
-  corrDelay.setDelayInSamples(M+2);
-
-  // Compute correction coefficients:
-  r0  = -k*b1;
-  r1  = -k*b0;
-  rM1 = a1;
-
-  // ToDo: refactor to get rid of the code duplication between setupHighDamp/setupLowDamp. Use 
-  // filter design functions that return the filter coeffs directly with the right convention used.
+  updateDelaysAndCorrectorCoeffs();
 }
-
 
 template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::reset()
@@ -1113,14 +1107,16 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
   //   it's the current comb output.
   //
   // - Applying the mainDelay as inner filter and the damper as outer filter gives us a filter 
-  //   without any predelay/latency. Most of the time, this is more desirable. In principle, we 
-  //   could also offer a mode with predelay. The commented line combOut = mainDelay.getSample(...
-  //   also works - but has a latency/predelay of M samples (== delay-1, I think - verify). Maybe
-  //   let's later make the mode switchable. I actually don't like the predelay, but maybe it could
-  //   be useful for something after all.
+  //   without any predelay/latency. Most of the time, this is more desirable, but maybe it could
+  //   be useful for something to have predelay built in after all. Also, it sounds different in 
+  //   both modes. I think, with predelay sounds somewhat better because it's less tonal.
   //
-  // - We need to use use -k * ... because when translating from transfer function to difference 
-  //   equation, coefficients in feedback paths accrue a negative sign. 
+  // - I think, we actually should have used -k * ... because when translating from transfer 
+  //   function to difference equation, coefficients in feedback paths accrue a negative sign. 
+  //   However, when we do this, we would have the situation that positive k stands for alternating
+  //   spikes which is counterintuitive. So we use + k * ... This has the other consequence that
+  //   in the computation of r0, r1 we have to introduce minus signs as well. These are not present
+  //   in the formulas in DampedAllpasComb.txt.
 }
 
 template<class TSig, class TPar>
