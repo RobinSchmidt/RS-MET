@@ -884,6 +884,10 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleComb(TSig in)
 {
   out = mainDelay.getSample(in + k * damper.getSample(out));
   return out;
+
+  // In the dampedAllpassComb1() experiment where I derived all of this, I actually use a negative
+  // sign for the feedback signal. There's some comment about why, but I'm a bit shaky on this. But 
+  // this might explain why we have ot
 }
 
 template<class TSig, class TPar>
@@ -961,7 +965,7 @@ protected:
 
   TSig applyDamper(TSig x)
   {
-    TSig y = b0 * x + b1 * x1d + a1 * y1d;
+    TSig y = b0 * x + b1 * x1d - a1 * y1d;
     x1d = x;
     y1d = y;
     return y;
@@ -970,7 +974,7 @@ protected:
 
   TSig applyCorrectorOnePole(TSig x)
   {
-    TSig y = x + a1 * y1c;
+    TSig y = x - a1 * y1c;
     y1c = y;
     return y;
   }
@@ -984,7 +988,7 @@ protected:
   rsBasicDelayLine<TSig> corrDelay;
 
   // State for the unit delay feedback loop:
-  TSig out = TSig(0);      // Rename to combOut
+  TSig combOut = TSig(0);
 
   // States for the two one pole filters:
   TSig x1d = 0, y1d = 0;   // x[n-1], y[n-1] for damper
@@ -1015,6 +1019,7 @@ void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   // Compute the pole filters coefficients:
   rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(
     dampOmega, dampGain, &b0, &b1, &a1);
+  a1 = -a1; // The rsFirstOrderFilterBase uses the other sign convention, so we mus flip it.
   // Maybe use magnitude match rather than BLT. Might be nicer. But then we need to make the same
   // change in the naive implementation to make the unit test still pass. Maybe use another 
   // function that uses the other sign convention for the a-coeffs.
@@ -1027,7 +1032,10 @@ void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   // Compute correction coefficients:
   r0  = -k*b1;
   r1  = -k*b0;
-  rM1 = -a1;
+  rM1 =  a1;
+
+  // I think, the reasons for the minus signs in r0, r1 have to do with the fact that we use
+  // 
 }
 
 template<class TSig, class TPar>
@@ -1036,10 +1044,10 @@ void rsDampedAllpassComb<TSig, TPar>::reset()
   mainDelay.reset();
   unitDelay.reset();
   corrDelay.reset();
-  out = TSig(0);
-  x1d = TSig(0);
-  y1d = TSig(0);
-  y1c = TSig(0);
+  combOut = TSig(0);
+  x1d     = TSig(0);
+  y1d     = TSig(0);
+  y1c     = TSig(0);
 }
 
 template<class TSig, class TPar>
@@ -1051,8 +1059,14 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSample(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 {
-  out = mainDelay.getSample(in + k * applyDamper(out));
-  return out;
+  // This computation has an implicit unit delay applied to apperance of combOut on the right hand
+  // side. On the right hand side, it's the previous comb output. On the left hand side, it's the
+  // current comb output:
+  combOut = mainDelay.getSample(in + k * applyDamper(combOut)); 
+  return combOut;
+
+  // Use -k * ... because we use the convention that in difference equations, the feedback
+  // coeffs get a minus sign
 }
 
 template<class TSig, class TPar>
