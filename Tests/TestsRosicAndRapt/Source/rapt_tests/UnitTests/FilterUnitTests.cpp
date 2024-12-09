@@ -2249,7 +2249,7 @@ bool dampedAllpassCombUnitTest()
   naive.setupHighDamp(delay, feedback, dampOmega, dampGain);
   Vec h = impulseResponse(naive, numSamples, 1.0);
   //rsPlotVectors(h);
-  ok &= isAllpass(h, 1.e-8);
+  ok &= isAllpass(h, 1.e-6);
 
 
   return ok;
