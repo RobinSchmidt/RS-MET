@@ -712,7 +712,7 @@ void dampedAllpassCombComplex()
 
   // User parameters:
   int     delay      =   100;
-  int     numSamples =  8192;
+  int     numSamples = 16834;
   Real    sampleRate = 44100;
   Real    dampFreq   =   500;
   Real    dampGain   =     0.8;
@@ -734,9 +734,18 @@ void dampedAllpassCombComplex()
   Real fbAbs = rsAbs(feedback);  // For a check
 
 
+  // Observations:
+  //
+  // - Using complex numbers imprints and undulation onto the impulse reponses.
+  //
+  //
   // ToDo:
   //
   // - Make a unit test that ensures that it works with rsComplex and std::complex
+  //
+  // - Check if the real and imaginary parts of the output are both allpass in nature
+  //
+  // - Let the user specify feedbackAbs, feedbackArg
 
 }
 
