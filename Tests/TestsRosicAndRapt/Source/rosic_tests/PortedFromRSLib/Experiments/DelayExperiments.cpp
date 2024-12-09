@@ -538,7 +538,7 @@ void dampedAllpassComb2()
   //rsPlotVectors(h);
 
   bool ok = true;
-  ok &= isAllpass(h, 1.e-5);
+  ok &= isAllpass(h, 1.e-6);
   // ToDo: implement a unit test
 
 
