@@ -726,11 +726,19 @@ void dampedAllpassCombComplex()
 
 
   Allpass ap;
-  Real w  = 2*PI*dampFreq/sampleRate;
+  Real w = 2*PI*dampFreq/sampleRate;
+  int  N = numSamples;
   ap.setMaxDelayInSamples(delay);
   ap.setupHighDamp(delay, fb, w, dampGain, false);
-  //VecC h = impulseResponse(ap, numSamples, Real(1));   // Nope!
-  VecC h = impulseResponse(ap, numSamples, Complex(1));  // Yep!
+  //VecC h = impulseResponse(ap, N, Real(1));      // Nope!
+  VecC h = impulseResponse(ap, N, Complex(1));     // Yep!
+
+  VecR hr(N), hi(N);
+  for(int n = 0; n < N; n++)
+  {
+    hr[n] = real(h[n]);
+    hi[n] = imag(h[n]);
+  }
 
 
   //rsPlotComplexArray(numSamples, &h[0]);
