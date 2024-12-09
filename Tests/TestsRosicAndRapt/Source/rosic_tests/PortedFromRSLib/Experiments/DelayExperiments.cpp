@@ -567,6 +567,11 @@ void dampedAllpassComb2()
 
 
   int dummy = 0;
+
+  // Observations:
+  //
+  // - The variants with the predelay have stronger initial spike than those without.
+
 }
 
 void dampedAllpassComb3()

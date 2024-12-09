@@ -1,0 +1,178 @@
+ 
+                                  Damped Allpass Comb Filters
+                               =================================
+                                          Robin Schmidt
+                                            
+ 
+In this document, I describe an idea that I had for creating a particular type of allpass filter 
+that could serve as a useful building block in DSP algorithms for reverberation or drum synthesis.
+It allows the user to control the frequency dependent decay rate of the allpass by way of allowing 
+the user to specify a feedback filter that is used in a Karplus-Strong like feedback loop.
+
+Let's assume that we have a given allpass filter with transfer function A(z) and some given feedback
+filter with transfer function F(z) that we intend to use in a feedback loop with a unit delay. The 
+feedback path may also contain a scalar feedback gain k. Although this gain could in principle be 
+absorbed into F, we'll keep it here because it's a convenient parameter, so we want our resulting
+formulas to contain it. We set out to figure out the transfer function C(z) of a correction filter 
+that is required to make the following filter structure allpass in nature:
+
+                   ┌──────┐              ┌──────┐
+  X(z) ───> + ────>│ A(z) │──────┬──────>│ C(z) │────> Y(z)	
+            ^      └──────┘      │       └──────┘
+            │                    v
+            │      ┌──────┐    ┌───┐
+            └──k───│ F(z) │<───│ d │
+                   └──────┘    └───┘
+
+In this drawing, we used d = z^-1 for the unit delay. By inspection of the diagram, we see that the
+uncorrected transfer function U(z), i.e. the one of the left part of the diagram (everything before 
+C(z) is given by:
+
+                  A(z)
+  U(z) = ---------------------------
+          1 + k * z^-1 * F(z) * A(z)
+
+To make the overall transfer function H(z) := X(z) / Y(z) = U(z) * C(z) allpass in nature, we may 
+make the following attempt. We'll use a tilde to denote that this is not our final filter, i.e. we
+call our first attempt C~(z). We could obvioulsy and trivially choose:
+
+  C~(z) = 1 + k * z^-1 * F(z) * A(z)
+
+But that choice looks like cheating. I would completely cancel out the effect of the feedback path 
+and we would be back at A(z) itself. That ticks the box of being allpass but it's actually not 
+useful at all. Well, it might be useful to know that it's actually possible to completely undo a 
+feedback path but in our setup where we have everything under our own control, we might as well just 
+not apply the feedback in the first place and get the same result. What is more interesting is that 
+we can now apply some modifications to C~(z). As we want to produce an allpass filter in the end, 
+our modifications to C~(z) shall leave its magnitude response intact. Really the only thing we can 
+do to a filter that leaves its magnitude response intact is to reflect some or all of its zeros 
+about the unit circle. Well, if only the magnitude is of concern, we could actually also do the same 
+with the poles but then we would turn stable filters into unstable ones, so that is no option. 
+Retaining stability is of course also required. So then, let's reflect zeros. Reflecting all zeros 
+at once in the unit circle is actually a simple operation: We just need to reverse the coefficient 
+array of the numerator, i.e. the FIR part. Reversing an impulse response clearly has no impact on 
+its magnitude response (it has the same shape, after all - just reflected). So, we obtain our final 
+correction filter C(z) from C~(z) by reversing its FIR part.
+
+To get a first concrete working example, lets take as A(z) a simple delay of M samples and as F(z)
+a 1-pole/1-zero filter. So we have:
+
+                              b0 + b1*z^-1
+  A(z) = z^-M   and   F(z) = --------------
+                              1  + a1*z^-1
+
+Thus we have for our attempted compensation filter:
+
+                          b0 + b1*z^-1                k * z^-1 * z^-M * (b0 + b1*z^-1)
+  C~(z) = 1 + k * z^-1 * -------------- * z^-M = 1 + ----------------------------------
+                          1 +  a1*z^-1                           1 + a1*z^-1
+
+Let's use the following little SageMath script to express C~(z) in standard direct form:
+
+var("d a1 b0 b1 M k")            # d    := z^-1
+A = d^M                          # A(z)  = z^-M
+F = (b0 + b1*d) / (1 + a1*d)     # F(z)  = (b0 + b1*z^-1) / (1 + a1*z^-1)
+C = 1 + k*d*F*A                  # C~(z) = 1 + k * z^-1 * F(z) * A(z)
+C.simplify_rational()
+N = C.numerator()
+D = C.denominator()
+N, D
+
+  ->  (b1*d^2*d^M*k + b0*d*d^M*k + a1*d + 1, a1*d + 1)
+
+so, with d := z^-1, we have:
+
+        1 + a1*d + k*b0*d^(M+1) + k*b1*d^(M+2)
+  C~ = ---------------------------------------- 
+                   1 + a1*d
+
+Now, to obtain our actual correction filter, we must reverse the array of polynomial coefficients
+of the numerator. We obtain:
+
+  ┌──────────────────────────────────────────────┐
+  │      k*b1 + k*b0*d  +  a1*d^(M+1) + d^(M+2)  │
+  │ C = ---------------------------------------- │
+  │                   1 + a1*d                   │
+  └──────────────────────────────────────────────┘
+
+as our final result for the correction filter. Implementing this filter and using the F(z) filter in 
+high-shelving mode with a high frequency reduction setting results in a filter whose comb-part 
+(everything before the corrector) is reminiscent of a Karplus-Strong filter. When activating the 
+corrector filter, the whole thing turns into an allpass. When turning off the corrector and turning 
+off the feedback damping filter and using a feedback gain of k = 1, the impulse response is a spike 
+train. The first spike occurs at sample index n = M and the subsequent spikes are spaced apart by a 
+distance of M+1 samples. The +1 is a result of the implicit unit delay in the feedback path which 
+lengthens the whole roundtrip time by one sample.
+
+The fact that the first spike occurs at M means that the filter can be thought of introducing a 
+latency or predelay of M samples. This might be undesirable in certain contexts. We can get rid of
+this predelay by swapping A(z) and F(z) in the block diagram. Consider the following variation of 
+the setup:
+
+                   ┌──────┐              ┌──────┐
+  X(z) ───> + ────>│ F(z) │──────┬──────>│ C(z) │────> Y(z)	
+            ^      └──────┘      │       └──────┘
+            │                    v
+            │      ┌──────┐    ┌───┐
+            └──k───│ A(z) │<───│ d │
+                   └──────┘    └───┘
+
+The only difference is that now F(z) is in the feedforward path and A(z) in the feedback path. 
+Again, we obtain the transfer function of the filter without the corrector C(z) by inspection. This
+time, it's:
+
+                  F(z)
+  U(z) = ----------------------------
+          1 + k * z^-1 * F(z) * A(z)
+
+The only thing that changed is that now the numerator is F(z) rather than A(z). If A(z) is a delay
+and F(z) is the damping filter, we will now expect the first spike at sample zero, possibly slightly
+time smeared by the damping filter. As this is literally the only difference, everything remains 
+valid. So, with this small change, we can provide two different modes of operation - with and 
+without predelay. I think, aside from the predelay, they also sound different. I think, the versions
+with predelay sounds a bit more colorless (verify!), so there seems to be some tradeoff between 
+wanting no coloration and wanting no latency.
+
+By the way, the feedback factor k could also be negative. That gives us another mode switch. It 
+switches the embedded comb filter U(z) between unipolar and bipolar mode, i.e. the spike train 
+produced as impulse response of the comb can either have spikes of all the same sign or with 
+alternating signs. This corresponds to producing a full series of harmonics or only odd harmonics 
+respectivley.
+
+Let's now use a full blown biquad as feedback filter F(z). A one-pole might not be flexible enough.
+To find the corrector filter in direct form, we use the modified SageMath script:
+
+var("d a1 a2 b0 b1 b2 M k") 
+A = d^M 
+F = (b0 + b1*d + b2*d^2) / (1 + a1*d + a2*d^2)  
+C = 1 + k*d*F*A   
+C.simplify_rational()
+N = C.numerator()
+D = C.denominator()
+N, D
+
+  ->  (b2*d^3*d^M*k + b1*d^2*d^M*k + b0*d*d^M*k + a2*d^2 + a1*d + 1, a2*d^2 + a1*d + 1)
+
+We get:
+
+        1 + a1*d + a2*d^2 + k*b0*d^(M+1) + k*b1*d^(M+2) + k*b2*d^(M+3)
+  C~ = ----------------------------------------------------------------
+                         1 + a1*d + a2*d^2
+
+A general pattern seems to emerge. I think, it looks like (this is still unverified!):
+
+        sum_{i=0}^np a_i d^i + sum_{i=0}^nz k b_i d^(M+1+i)
+  C~ = -----------------------------------------------------     where in the a_i sum, a_0 = d^0 = 1
+                    sum_{i=0}^np a_i d^i
+
+when the feedback filter F(z) is given by:
+
+       sum_{i=0}^nz b_i d^i
+  F = -------------------------
+       sum_{i=0}^np a_i d^i
+
+where nz, np are the numbers of zeros and poles of the feedback filter, i.e. the orders of numerator
+and denomniator polynomial. If that is correct, then we can use arbitrary feedback filters! We just
+need to evaluate the formula for C~ and then apply the flip operation.
+
+
