@@ -2248,7 +2248,7 @@ bool dampedAllpassCombUnitTest()
   // check that it is allpass in nature:
   CombNaive naive;
   naive.setMaxDelayInSamples(delay);
-  naive.setupHighDamp(delay, feedback, dampOmega, dampGain, false);
+  naive.setupHighDamp(delay, feedback, dampOmega, dampGain, true);
   Vec h = impulseResponse(naive, numSamples, 1.0);
   //rsPlotVectors(h);
   ok &= isAllpass(h, 1.e-6);
@@ -2256,7 +2256,7 @@ bool dampedAllpassCombUnitTest()
   // Now try to generate the same output with the production version:
   Comb comb;
   comb.setMaxDelayInSamples(delay);
-  comb.setupHighDamp(delay, feedback, dampOmega, dampGain, false);
+  comb.setupHighDamp(delay, feedback, dampOmega, dampGain, true);
   Vec h2 = impulseResponse(comb, numSamples, 1.0);
   ok &= h2 == h;
   //rsPlotVectors(h, h2);
@@ -2269,7 +2269,7 @@ bool dampedAllpassCombUnitTest()
   // n == delay - 1. 
   int N = numSamples;
   comb.reset();
-  comb.setupHighDamp(delay, 1.0, 0.5, 1.0, false);
+  comb.setupHighDamp(delay, 1.0, 0.5, 1.0, true);
   h[0] = comb.getSampleComb(1.0);
   for(int n = 1; n < N; n++)
     h[n] = comb.getSampleComb(0.0);
@@ -2281,6 +2281,8 @@ bool dampedAllpassCombUnitTest()
       ok &= h[i] == 0.0;
   }
   //rsPlotVectors(h);
+
+
 
   return ok;
 

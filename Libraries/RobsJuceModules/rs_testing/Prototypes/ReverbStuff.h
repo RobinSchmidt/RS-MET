@@ -843,6 +843,7 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
   int delay, TPar feedback, TPar dampOmega, TPar dampGain, bool preDelay)
 {
   k = feedback;
+  this->preDelay = preDelay;
 
   // Set up one pole filters:
   TPar b0, b1, a1;
@@ -885,8 +886,10 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::getSample(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleComb(TSig in)
 {
-  out = mainDelay.getSample(in + k * damper.getSample(out));
-  //out = damper.getSample(in + k * mainDelay.getSample(out));
+  if(preDelay)
+    out = mainDelay.getSample(in + k * damper.getSample(out));
+  else
+    out = damper.getSample(in + k * mainDelay.getSample(out));
   return out;
 
   // In the dampedAllpassComb1() experiment where I derived all of this, I actually use a negative
@@ -1021,6 +1024,7 @@ void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   int delay, TPar feedback, TPar dampOmega, TPar dampGain, bool preDelay)
 {
   k = feedback;
+  this->preDelay = preDelay;
 
   // Compute the pole filters coefficients:
   rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(
@@ -1062,8 +1066,10 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSample(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 {
-  combOut = mainDelay.getSample(in + k * applyDamper(combOut));  // Predelay of M samples
-  //combOut = applyDamper(in + k * mainDelay.getSample(combOut));    // No predelay
+  if(preDelay)
+    combOut = mainDelay.getSample(in + k * applyDamper(combOut));  // Predelay of M samples
+  else
+    combOut = applyDamper(in + k * mainDelay.getSample(combOut));  // No predelay
   return combOut;
 
   // Notes:
