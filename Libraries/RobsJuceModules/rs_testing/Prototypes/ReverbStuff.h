@@ -789,19 +789,33 @@ public:
 
   void reset();
 
+  /** This is the normal getSample funtion to be used when you want to produce the allpass output.
+  It calls getSampleComb() and then applyCorrectionFilter() on the result of that. You may
+  be interested in using the object without the correction filter to produce only the pure comb 
+  filter output. That's why I have split it that way so you can also call getSampleComb if that's
+  what you want. You can then just ignore the correction filter - or you can apply it yourself but
+  maybe after messing with comb output. I don't know, if that's useful though, but you can do it. 
+  ...TBC...   */
   TSig getSample(TSig in);
 
-  TSig getSampleUncorrected(TSig in);
-
-  TSig applyCorrectionFilter(TSig in);
-
+  /** This implements producing samples for the damped delay feedback loop alone, i.e. without the
+  correction filter applied. */
+  TSig getSampleComb(TSig in);
+  
+  /** This function is supposed to be called with the output produced by getSampleComb to apply the
+  correction filter. */
+  TSig applyCorrectionFilter(TSig combOutput);
+  // rename to applyCorrector
 
 protected:
+
+
+
 
   // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
   // filter with filtered unit delay feedback:
   rsBasicDelayLine<TSig>             mainDelay;
-  rsFirstOrderFilterBase<TSig, TPar> feedbackDamper;
+  rsFirstOrderFilterBase<TSig, TPar> feedbackDamper;  // rename to damper
 
   // Objects for the correction filter:
   rsUnitDelay<TSig>                  unitDelay;
@@ -868,11 +882,11 @@ void rsDampedAllpassCombNaive<TSig, TPar>::reset()
 template<class TSig, class TPar>
 TSig rsDampedAllpassCombNaive<TSig, TPar>::getSample(TSig in)
 {
-  return applyCorrectionFilter(getSampleUncorrected(in));
+  return applyCorrectionFilter(getSampleComb(in));
 }
 
 template<class TSig, class TPar>
-TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleUncorrected(TSig in)
+TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleComb(TSig in)
 {
   out = mainDelay.getSample(in + k * feedbackDamper.getSample(out));
   return out;

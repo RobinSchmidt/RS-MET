@@ -2251,6 +2251,14 @@ bool dampedAllpassCombUnitTest()
   //rsPlotVectors(h);
   ok &= isAllpass(h, 1.e-6);
 
+  // Check the spacing of the spikes:
+  int N = numSamples;
+  naive.reset();
+  naive.setupHighDamp(delay, 1.0, 0.5, 1.0);
+  h[0] = naive.getSampleComb(1.0);
+  for(int n = 1; n < N; n++)
+    h[n] = naive.getSampleComb(0.0);
+  rsPlotVectors(h);
 
   return ok;
 
