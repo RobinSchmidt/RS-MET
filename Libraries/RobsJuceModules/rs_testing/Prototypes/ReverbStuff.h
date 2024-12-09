@@ -917,15 +917,22 @@ class rsDampedAllpassComb
 
 public:
 
-
+  /** Sets the maximum desired roundtrip delay around the comb. This determines the spacing of the
+  spikes in the impulse response in a setting without any decay or damping. In such a case, the 
+  first spike appears at delay - 1 and from there, the subsequent ones are spaced apart by delay
+  itself. The fact that first spike appears at delay - 1 rather than delay itself has to do with 
+  the unit delay in the feedback loop. */
   void setupMaxDelayInSamples(int newMaxDelay);
 
-
+  /** Sets up the filter in such a way that high frequencies are damped more and more after more
+  roundtrips around the delayline. The dampOmega and dampGain parameters set up the normalized 
+  radian frequency and linear high frequency gain for a high shelving filter. A typical call with
+  reasonable values could look like setupHighDamp(100, 0.9, 0.2, 0.7). This spaces the spikes out
+  at 100 sample intervals, the feedback gain is 0.9 the shelving frequency is somewhere in the 
+  middle frequency range (at fs = 44.1 kHz) and the high frequency gain of the damping shelver 
+  is 0.7. */
   void setupHighDamp(int delay, TPar feedback, TPar dampOmega, TPar dampGain);
 
-  // We use the convention that we use  M = delay - 1  for the delayline to compensate for the unit
-  // delay. This makes more sense from a user's perspective because then, the spike spacing is 
-  // exactly given by delay.
 
 
   /** Resets the state. */
@@ -988,10 +995,6 @@ protected:
   TPar b0, b1, a1;
   int  M;
 
-  // Optimizations:
-  // 
-  // - Maybe implement the unit delay inline. Although I don't think that this causes overhead.
-
 };
 
 template<class TSig, class TPar>
@@ -1024,7 +1027,6 @@ void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   r0  = -k*b1;
   r1  = -k*b0;
   rM1 = -a1;
-  //rM2 =  1;                                 // Get rid in production code!
 }
 
 template<class TSig, class TPar>
@@ -1065,12 +1067,20 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   y += rM1 * corrDelay.readOutputAt(M+1);
   y +=       corrDelay.readOutputAt(M+2);
   corrDelay.writeInputAndUpdate(t);
-  // Maybe at least one for the calls to readOutputAt can be replaced by a call that just uses the
-  // tapOut pointer. Maybe if we organize the calling order right, we can even retrieve the other
-  // then by readOutput
-
   return y;
 }
+
+// More Optimization ideas:
+// 
+// - Maybe implement the unit delay inline. Although I don't think that this causes overhead.
+//
+// - Maybe the two calls to corrDelay.readOutputAt(M+1); corrDelay.readOutputAt(M+2); can be
+//   replaced by a clever arrangement of calling getSample() and readOutput(). The readOutpuAt
+//   function is slightly more expensive because it computes the offset taking care of 
+//   wrapraounds etc whereas the others just use stored member variables.But I have not yet 
+//   figured out how to do it or if it's even possible. Maybe we don't even need the M member
+//   anymore then.
+
 
 
 
