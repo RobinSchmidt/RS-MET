@@ -1,7 +1,7 @@
  
                                   Damped Allpass Comb Filters
                                =================================
-                                          Robin Schmidt
+                                         Robin Schmidt
                                             
  
 In this document, I describe an idea that I had for creating a particular type of allpass filter 
@@ -24,9 +24,10 @@ that is required to make the following filter structure allpass in nature:
             └──k───│ F(z) │<───│ d │
                    └──────┘    └───┘
 
-In this drawing, we used d = z^-1 for the unit delay. By inspection of the diagram, we see that the
-uncorrected transfer function U(z), i.e. the one of the left part of the diagram (everything before 
-C(z) is given by:
+In this drawing, we used d = z^-1 for the unit delay. So, A(z) and F(z) are given and we want to 
+find a suitable C(z). By inspection of the diagram, we see that the uncorrected transfer function 
+which we denote by U(z), i.e. the one of the left part of the diagram (everything before C(z) is 
+given by:
 
                   A(z)
   U(z) = ---------------------------
@@ -139,8 +140,9 @@ produced as impulse response of the comb can either have spikes of all the same 
 alternating signs. This corresponds to producing a full series of harmonics or only odd harmonics 
 respectivley.
 
-Let's now use a full blown biquad as feedback filter F(z). A one-pole might not be flexible enough.
-To find the corrector filter in direct form, we use the modified SageMath script:
+A one-pole filter for the feedback path is a nice start but it might not be flexible enough. Let's 
+now use a full blown biquad as feedback filter F(z). To find the corrector filter in direct form, we 
+use the modified SageMath script:
 
 var("d a1 a2 b0 b1 b2 M k") 
 A = d^M 
@@ -159,7 +161,11 @@ We get:
   C~ = ----------------------------------------------------------------
                          1 + a1*d + a2*d^2
 
-A general pattern seems to emerge. I think, it looks like (this is still unverified!):
+
+----------------------------------------------------------------------------------------------------
+The stuff from here is still unverified:
+
+A general pattern seems to emerge. I think, it looks like :
 
         sum_{i=0}^np a_i d^i + sum_{i=0}^nz k b_i d^(M+1+i)
   C~ = -----------------------------------------------------     where in the a_i sum, a_0 = d^0 = 1
