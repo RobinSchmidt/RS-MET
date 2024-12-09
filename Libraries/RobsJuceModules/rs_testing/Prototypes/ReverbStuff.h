@@ -959,10 +959,9 @@ protected:
   rsBasicDelayLine<TSig>             mainDelay;
   rsFirstOrderFilterBase<TSig, TPar> damper;  // rename to damper
 
-                                                      // Objects for the correction filter:
+  // Objects for the correction filter:
   rsUnitDelay<TSig>                  unitDelay;
-  //rsBasicDelayLine<TSig>             corDelayM1;
-  rsBasicDelayLine<TSig>             corDelayM2;
+  rsBasicDelayLine<TSig>             corrDelay;
   rsFirstOrderFilterBase<TSig, TPar> corOnePole;
 
   // State for the unit delay feedback loop:
@@ -989,8 +988,7 @@ void rsDampedAllpassComb<TSig, TPar>::setupMaxDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
   mainDelay .setMaximumDelayInSamples(maxM);
-  //corDelayM1.setMaximumDelayInSamples(maxM+1);
-  corDelayM2.setMaximumDelayInSamples(maxM+2);
+  corrDelay.setMaximumDelayInSamples(maxM+2);
 }
 
 template<class TSig, class TPar>
@@ -1008,8 +1006,7 @@ void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   // Set up delaylines:
   M = delay - 1;                            // -1 corrects for unit delay in feedback path
   mainDelay.setDelayInSamples(M);
-  //corDelayM1.setDelayInSamples(M+1);
-  corDelayM2.setDelayInSamples(M+2);
+  corrDelay.setDelayInSamples(M+2);
 
   // Compute correction coefficients:
   r0  = -k*b1;
@@ -1024,8 +1021,7 @@ void rsDampedAllpassComb<TSig, TPar>::reset()
   mainDelay.reset();
   damper.reset();
   unitDelay.reset();
-  //corDelayM1.reset();
-  corDelayM2.reset();
+  corrDelay.reset();
   corOnePole.reset();
   out = TSig(0);
 }
@@ -1054,9 +1050,9 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   TSig y = 0;
   y += r0  * t;
   y += r1  * unitDelay.getSample(t);
-  y += rM1 * corDelayM2.readOutputAt(M+1);
-  y += rM2 * corDelayM2.readOutputAt(M+2);
-  corDelayM2.writeInputAndUpdate(t);
+  y += rM1 * corrDelay.readOutputAt(M+1);
+  y += rM2 * corrDelay.readOutputAt(M+2);
+  corrDelay.writeInputAndUpdate(t);
   // Maybe at least one for the calls to readOutputAt can be replaced by a call that just uses the
   // tapOut pointer. Maybe if we organize the calling order right, we can even retrieve the other
   // then by readOutput
