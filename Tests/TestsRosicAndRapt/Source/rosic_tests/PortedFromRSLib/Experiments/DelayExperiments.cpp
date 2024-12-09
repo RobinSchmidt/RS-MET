@@ -616,6 +616,18 @@ void dampedAllpassComb2()
   //   needs to be scaled by the k factor because the high freqs, actually both gain factors are 
   //   applied, i.e. the product of both. We should have asetup function like
   //   setupComb = [&](Allpass& flt, int delay, Real decayTime, Real omega, Real hiDecayTimeScale)
+  //
+  // - Wait! I think, the sound has changed after switching from:
+  //
+  //     out = mainDelay.getSample(in + k * damper.getSample(out));  to
+  //     out = mainDelay.getSample(in - k * damper.getSample(out));
+  //
+  //   We really want to offer both modes! I think, the one with the - sounds more metallic. When 
+  //   using the minus, the spikes are altenrting up and down. When using the plus, they are all
+  //   upward. Well - from a user perspective, it makes more sense if passing a negative k leads to
+  //   alternating mode. So, maybe revert to using + k * ... This then requires to re-introduce the
+  //   minusses in the r-coeffs as well.
+  //   
 }
 
 void dampedAllpassComb()

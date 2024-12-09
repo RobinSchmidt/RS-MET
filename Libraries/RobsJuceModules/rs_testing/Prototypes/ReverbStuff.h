@@ -883,8 +883,8 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::getSample(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleComb(TSig in)
 {
-  //out = mainDelay.getSample(in - k * damper.getSample(out));
-  out = damper.getSample(in - k * mainDelay.getSample(out));
+  out = mainDelay.getSample(in - k * damper.getSample(out));
+  //out = damper.getSample(in - k * mainDelay.getSample(out));
   return out;
 
   // Try swapping delay and damping filter. I think, it can be achieved by using:
@@ -1062,16 +1062,25 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSample(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 {
-  // This computation has an implicit unit delay applied to apperance of combOut on the right hand
-  // side. On the right hand side, it's the previous comb output. On the left hand side, it's the
-  // current comb output:
-
-  //combOut = mainDelay.getSample(in - k * applyDamper(combOut)); 
-  combOut = applyDamper(in - k * mainDelay.getSample(combOut)); 
+  combOut = mainDelay.getSample(in - k * applyDamper(combOut));  // Predelay of M samples
+  //combOut = applyDamper(in - k * mainDelay.getSample(combOut));    // No predelay
   return combOut;
 
-  // We need to use use -k * ... because when translating from transfer function to difference 
-  // equation, coefficients in feedback paths accrue a negative sign. 
+  // Notes:
+  //
+  // - This computation has an implicit unit delay applied to the apperance of combOut on the right
+  //   hand side. On the right hand side, it's the previous comb output. On the left hand side, 
+  //   it's the current comb output.
+  //
+  // - Applying the mainDelay as inner filter and the damper as outer filter gives us a filter 
+  //   without any predelay/latency. Most of the time, this is more desirable. In principle, we 
+  //   could also offer a mode with predelay. The commented line combOut = mainDelay.getSample(...
+  //   also works - but has a latency/predelay of M samples (== delay-1, I think - verify). Maybe
+  //   let's later make the mode switchable. I actually don't like the predelay, but maybe it could
+  //   be useful for something after all.
+  //
+  // - We need to use use -k * ... because when translating from transfer function to difference 
+  //   equation, coefficients in feedback paths accrue a negative sign. 
 }
 
 template<class TSig, class TPar>
