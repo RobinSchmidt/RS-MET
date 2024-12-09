@@ -716,13 +716,19 @@ void dampedAllpassCombComplex()
   Real    sampleRate = 44100;
   Real    dampFreq   =   500;
   Real    dampGain   =     0.8;
-  Complex feedback   =  0.99*(0.8 + 0.6*j);  // A complex feedback gain
+  Real    fbGain     =     0.99;
+  Real    fbPhase    =     1.7;   // 0.7
+
+
+  //Complex feedback   =  0.99*(0.8 + 0.6*j);  // A complex feedback gain
+
+  Complex fb = fbGain * rsExp(j*fbPhase);
 
 
   Allpass ap;
   Real w  = 2*PI*dampFreq/sampleRate;
   ap.setMaxDelayInSamples(delay);
-  ap.setupHighDamp(delay, feedback, w, dampGain, false);
+  ap.setupHighDamp(delay, fb, w, dampGain, false);
   //VecC h = impulseResponse(ap, numSamples, Real(1));   // Nope!
   VecC h = impulseResponse(ap, numSamples, Complex(1));  // Yep!
 
@@ -731,7 +737,7 @@ void dampedAllpassCombComplex()
   plotComplexVectorReIm(h);  // Doesn't accept rsComplex - fix that!
   
 
-  Real fbAbs = rsAbs(feedback);  // For a check
+  Real fbAbs = rsAbs(fb);  // For a check
 
 
   // Observations:
@@ -745,7 +751,8 @@ void dampedAllpassCombComplex()
   //
   // - Check if the real and imaginary parts of the output are both allpass in nature
   //
-  // - Let the user specify feedbackAbs, feedbackArg
+  // - I think, the feedbakc phase should scale with the delay to achieve a uniform undulation
+  //   frequency. Figure this out!
 
 }
 
