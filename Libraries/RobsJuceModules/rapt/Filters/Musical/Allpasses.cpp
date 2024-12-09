@@ -36,6 +36,9 @@ ToDo:
 - Maybe add a module to ToolChain called AllpassZoo. Or maybe the different allpasses should be
   separate modules. But we may want to make a folder Allpass.
 
+- Add getTransferFunctionAt functions. Do this also for the prototypes. Their implementations of it
+  may look very different.
+
 
 Interesting Resources:
 
