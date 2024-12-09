@@ -390,7 +390,7 @@ int main(int argc, char* argv[])
   // Delay:
   //basicIntegerDelayLine();
   //twoPoleAllpassDelay();
-  feedbackFilterAllpass();
+  dampedAllpassComb();
 
   // Filter:
   //allpassFDN();                  // Under construction

@@ -218,7 +218,7 @@ void twoPoleAllpassDelay()
   //   frequency. Maybe  omega*delay = 2*pi*f/fs  or  omega/delay = 2*pi*f/fs?
 }
 
-void feedbackFilterAllpass()
+void dampedAllpassComb()
 {
   // I try to implement an idea for starting with an arbitrary given allpass filter A(z) and 
   // arbitrary given feedback filter F(z) that sits in a feedback loop with unit delay around that 
@@ -383,7 +383,7 @@ void feedbackFilterAllpass()
   Vec hc2(N);
   for(int n = 0; n < N; n++)
     hc2[n] = getSampleC2(hu[n]);
-  rsPlotVectors(hc, hc2);
+  //rsPlotVectors(hc, hc2);
 
 
   // OK. Now we have an implementation structure of C(z) that is amenable to reflecting the zeros

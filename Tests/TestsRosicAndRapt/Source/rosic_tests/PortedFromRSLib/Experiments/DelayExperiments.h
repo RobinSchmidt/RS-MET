@@ -5,6 +5,6 @@ void algoVerb();
 
 void basicIntegerDelayLine();
 void twoPoleAllpassDelay();
-void feedbackFilterAllpass();
+void dampedAllpassComb();
 
 #endif
