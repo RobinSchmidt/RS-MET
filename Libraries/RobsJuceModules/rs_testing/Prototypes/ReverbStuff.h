@@ -1117,6 +1117,10 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 //   wrapraounds etc whereas the others just use stored member variables.But I have not yet 
 //   figured out how to do it or if it's even possible. Maybe we don't even need the M member
 //   anymore then.
+//
+// - Check the contents of the delaylines. Do we even need two or do they have the same contents
+//   or simply realted ones? ...but I don't think so. I don't see any reason why this should be 
+//   the case
 
 
 
