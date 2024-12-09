@@ -535,11 +535,7 @@ void dampedAllpassComb2()
 
   // Generate impulse response of the allpass:
   Vec h = impulseResponse(apf, numSamples, 1.0);
-  //rsPlotVectors(h);
-
-  bool ok = true;
-  ok &= isAllpass(h, 1.e-6);
-  // ToDo: implement a unit test
+  rsPlotVectors(h);
 
 
 
@@ -547,6 +543,8 @@ void dampedAllpassComb2()
   //
   // - Maybe try to apply it to other signals to see what it does to them. Maybe noise, sawtooth,
   //   guitar, etc.
+  //
+  // - It looks like the spike spacing is not equal to delay but one sample less - check that!
 }
 
 void dampedAllpassComb()

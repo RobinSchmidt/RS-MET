@@ -2227,6 +2227,40 @@ bool multiPoleAllpassDelayUnitTest()
   //   of the multi pole case. Maybe some order of operations is different or something?
 }
 
+bool dampedAllpassCombUnitTest()
+{
+  bool ok = true;
+
+  using Real      = double;
+  using Vec       = std::vector<Real>;
+  using CombNaive = rsDampedAllpassCombNaive<Real, Real>;
+
+  // Test parameters:
+  int  delay      =   50;   // Main delay roundtrip length in samples
+  int  numSamples = 8192;   // Number of samples to generate
+  Real dampOmega  =  0.1;   // Normalized radian frequency of the low shelf for feedback damping
+  Real dampGain   =  0.7;   // Linear high freq damping gain
+  Real feedback   =  0.9;   // Feedback gain factor
+
+  // Create an instance of the naive prototype implemention, generate its impulse response and 
+  // check that it is allpass in nature:
+  CombNaive naive;
+  naive.setupMaxDelayInSamples(delay);
+  naive.setupHighDamp(delay, feedback, dampOmega, dampGain);
+  Vec h = impulseResponse(naive, numSamples, 1.0);
+  //rsPlotVectors(h);
+  ok &= isAllpass(h, 1.e-8);
+
+
+  return ok;
+
+  // ToDo:
+  //
+  // - Add a unit test that verifies the spike spacing. Implement it by using the 
+  //   getSampleUncorrected function. Set the dampGain to 1.0 and feedback to 0.5. We should see
+  //   a first spike at delay-1 and from there, they should be spaced out by the given delay.
+}
+
 bool allpassUnitTest()
 {
   bool ok = true;
@@ -2237,6 +2271,7 @@ bool allpassUnitTest()
   ok &= allpassDisperserUnitTest();
   ok &= twoPoleAllpassDelayUnitTest();
   ok &= multiPoleAllpassDelayUnitTest();
+  ok &= dampedAllpassCombUnitTest();
 
   return ok;
 }
