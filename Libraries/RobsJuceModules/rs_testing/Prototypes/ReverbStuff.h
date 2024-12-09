@@ -923,6 +923,7 @@ public:
   itself. The fact that first spike appears at delay - 1 rather than delay itself has to do with 
   the unit delay in the feedback loop. */
   void setupMaxDelayInSamples(int newMaxDelay);
+  // RENAME to setMaxDelayInSamples. The "up" in "setup" is a copy/paste error
 
   /** Sets up the filter in such a way that high frequencies are damped more and more after more
   roundtrips around the delayline. The dampOmega and dampGain parameters set up the normalized 
