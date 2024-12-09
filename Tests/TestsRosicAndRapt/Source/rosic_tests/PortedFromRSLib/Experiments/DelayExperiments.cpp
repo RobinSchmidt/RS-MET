@@ -267,9 +267,9 @@ void feedbackFilterAllpass()
   using OnePole = RAPT::rsOnePoleFilter<Real, Real>; // We use a one pole as feedback filter
 
   int    M          =   100;     // Delay
-  int    N          = 10000;     // Number of samples to generate
+  int    N          =  8192;     // Number of samples to generate
   double sampleRate = 44100;
-  double dampFreq   =  3000;     // Frequency of the low shelf for feedback damping
+  double dampFreq   =  1000;     // Frequency of the low shelf for feedback damping
   double dampGain   =     0.7;   // Linear high freq damping gain
   double k          =     1.0;   // Feedback gain factor
 
@@ -300,7 +300,7 @@ void feedbackFilterAllpass()
   hu[0] = getSampleU(1.0);
   for(int n = 1; n < N; n++)
     hu[n] = getSampleU(0.0);
-  rsPlotVectors(hu);                        // Decaying spike train with progressive tail smear
+  //rsPlotVectors(hu);                        // Decaying spike train with progressive tail smear
 
 
   // Cancel the effect of the feedback loop. For this, we re-use the existing filter objects. We 
@@ -326,7 +326,7 @@ void feedbackFilterAllpass()
   Vec hc(N);
   for(int n = 0; n < N; n++)
     hc[n] = getSampleC(hu[n]);
-  rsPlotVectors(hc);                        // Yes - that looks good! Single spike at M.
+  //rsPlotVectors(hc);                        // Yes - that looks good! Single spike at M.
   
 
   // Now we try to implement the correction filter in a different way that is more amenable to 
@@ -381,9 +381,7 @@ void feedbackFilterAllpass()
   Vec hc2(N);
   for(int n = 0; n < N; n++)
     hc2[n] = getSampleC2(hu[n]);
-  rsPlotVectors(hc, hc2);
-
-
+  //rsPlotVectors(hc, hc2);
 
 
   // OK. Now we have an implementation structure of C(z) that is amenable to reflecting the zeros
@@ -402,7 +400,6 @@ void feedbackFilterAllpass()
   Real rM1 = c1;
   Real rM2 = c0;
 
-  //
   // Helper function to reversed correction filter:
   auto getSampleR = [&](Real x)
   {
@@ -428,7 +425,17 @@ void feedbackFilterAllpass()
   Vec hr(N);
   for(int n = 0; n < N; n++)
     hr[n] = getSampleR(hu[n]);
-  rsPlotVectors(hc, hr);
+  //rsPlotVectors(hr);                        // Bipolar spike that gets progressively smeared
+
+
+  // Write outputs to wavefiles for listening:
+  rosic::writeToMonoWaveFile("FeedbackAllpassUncorrected.wav", &hu[0], N, sampleRate);
+  rosic::writeToMonoWaveFile("FeedbackAllpassCorrected.wav",   &hr[0], N, sampleRate);
+
+  // Plot uncorrected and reverse corrected output. These are the most interesting things:
+  rsPlotVectors(hu, hr);
+
+
 
 
 
