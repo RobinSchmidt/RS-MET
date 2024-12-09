@@ -333,9 +333,15 @@ void feedbackFilterAllpass()
   // Now we try to implement the correction filter in a different way that is more amenable to 
   // reflecting the zeros. Namely, in the form:
   //
-  //           1 + a1*d + b0*k*d^(M+1) + b1*k*d^(M+2)
+  //           1 + a1*d + k*b0*d^(M+1) + k*b1*d^(M+2)
   //   C(z) = ----------------------------------------
   //                   1 + a1*d
+
+
+  //       b1*d^2*d^M*k + b0*d*d^M*k + a1*d + 1     1 + a1*d + k*b0*d^(M+1) + k*b1*d^(M+2)
+  //  C = -------------------------------------- = ----------------------------------------
+  //                  a1*d + 1                                   1 + a1*d
+
 
   Real b0 = fbf.getB0();
   Real b1 = fbf.getB1();
@@ -350,12 +356,15 @@ void feedbackFilterAllpass()
   {
     Real t = op.getSample(x);               // Apply 1-pole
 
-    Real y = x;                             // 1 + ...
-    y -= a1*dl.readOutputAt(1);             // a1*d + ...
-    y -= b0*k*dl.readOutputAt(M+1);         // b0*k*d^(M+1)
-    y -= b1*k*dl.readOutputAt(M+2);         // b1*k*d^(M+2)
 
-    dl.writeInputAndUpdate(t);              // Or should we do this first?
+
+    Real y = t;                             // 1 + ...
+    y +=   a1*dl.readOutputAt(1);           // a1*d + ...
+    y += k*b0*dl.readOutputAt(M+1);         // b0*k*d^(M+1)
+    y += k*b1*dl.readOutputAt(M+2);         // b1*k*d^(M+2)
+
+    dl.writeInputAndUpdate(t);              // Should we do this before or after the readings?
+
 
     return y;
   };
@@ -365,16 +374,7 @@ void feedbackFilterAllpass()
   for(int n = 0; n < N; n++)
     hc2[n] = getSampleC2(hu[n]);
 
-  rsPlotVectors(hc, hc2);
-
-
-
-
-
-
-
-  //op = fbf;     // take over
-
+  rsPlotVectors(hc, hc2);  // Nope! Not the same!
 
 
 
