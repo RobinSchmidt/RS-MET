@@ -511,8 +511,60 @@ void dampedAllpassComb1()
 void dampedAllpassComb2()
 {
   // Now, we use the class rsDampedAllpassComb which encapsulates the algorithm derived above into a 
-  // class. We use that class here to create a chain of 4 such allpass comb filters and produce its
-  // impulse response.
+  // class. We use that class here to test some different options for the sign of the feedback gain
+  // and the swapping of damper and delay. This leads to 4 different modes that all have different
+  // properties and sound different.
+
+  // Define types to be used:
+  using Real    = double;
+  using Vec     = std::vector<Real>;
+  using Allpass = rsDampedAllpassComb<Real, Real>;
+
+  // User parameters:
+  int  delay      =   100;     // Main delay roundtrip length in samples. Is M-1 in the algo
+  int  numSamples =  8192;     // Number of samples to generate
+  Real sampleRate = 44100;     // Sample rate for writing the wavefiles
+  Real dampFreq   =  3000;     // Frequency (in Hz) of the low shelf for feedback damping
+  Real dampGain   =     0.8;   // Linear high freq damping gain
+  Real feedback   =     0.99;  // Feedback gain factor
+
+  // Helper function to set up the given flt object with the given settings:
+  auto setupComb = [&](Allpass& flt, int delay, Real feedback, Real omega, Real hiGain)
+  {
+    flt.setMaxDelayInSamples(delay); 
+    flt.setupHighDamp(delay, feedback, omega, hiGain);
+  };
+  // Add predelay mode parameter. For the feedback sign, we don't add a parameter - we just use 
+  // either positive or negative sign.
+
+  // Set up the 4 damped allpass comb filters:
+  int N  = numSamples;
+  Real w  = 2*PI*dampFreq/sampleRate;
+  Real g  = dampGain;
+  Real k  = feedback;
+  Allpass comb; 
+
+
+  setupComb(comb, delay, +k, w, g);
+  Vec h1 = impulseResponse(comb, N, 1.0);
+
+
+  setupComb(comb, delay, -k, w, g);
+  Vec h2 = impulseResponse(comb, N, 1.0);
+
+
+  rsPlotVectors(h1, h2);
+
+
+
+
+
+  int dummy = 0;
+}
+
+void dampedAllpassComb3()
+{
+  // Now, we create a chain of 4 such allpass comb filters and produce its impulse response.
 
   // Define types to be used:
   using Real    = double;
@@ -636,4 +688,5 @@ void dampedAllpassComb()
 {
   //dampedAllpassComb1();
   dampedAllpassComb2();
+  dampedAllpassComb3();
 }
