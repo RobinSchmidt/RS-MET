@@ -237,12 +237,26 @@ void feedbackFilterAllpass()
   //
   //   C(z) = 1 + k * z^-1 * F(z) * A(z)
   //
-  // We try, if that indeed works. As A(z), we use simple delay of length M, i.e. A(z) = z^-M. 
+  // In a first experiment, we try, if that indeed works. As A(z), we use simple delay of 
+  // length M, i.e. A(z) = z^-M. 
   //
   // Later, we want to try to modify the compensation filter C(z) into one that compensates only
   // for the effect of the feedback on the magnitude response but retains features of the phase
   // response. Maybe we should try to reflect (some of) the zeros of C(z) about the unit circle. 
-  // That will retain magnitude response and stability of C(z). ...TBC...
+  // That will retain magnitude response and stability of C(z). 
+  
+  // Consider our special case here with  A(z) = z^-M  and  F(z) = (b0 + b1*z^-1) / (1 + a1*z^-1). 
+  // So we have:
+  //
+  //               k * z^-1 * z^-M * (b0 + b1*z^-1)     1 + a1*d + b0*k*d^(M+1) + b1*k*d^(M+2)
+  //   C(z) = 1 + ---------------------------------- = -----------------------------------------
+  //                      1 + a1*z^-1                                 1 + a1*d
+  //
+  // With d := z^-1 for convenience. In a second step, we try to implement C(z) in this form using
+  // a delaline to implement the denominator the one-pole filter 1 / (1 + a1*z^-1) for the 
+  // denominator. Having the filter in this form makes it amenable for manipulating the zeros by 
+  // reflecting them in the unit circle. We just need to reverse the array of numerator coeffs, I 
+  // think.
   //
   // In the private repo, there's a filter AllpassStuff.txt where it's explained a bit more. Maybe
   // drag that into the main repo. But it's currently too messy for a public repo.
