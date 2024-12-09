@@ -712,15 +712,16 @@ void dampedAllpassCombComplex()
 
   // User parameters:
   int     delay      =   100;
-  int     numSamples = 16834;
+  int     numSamples = 16384;
   Real    sampleRate = 44100;
   Real    dampFreq   =   500;
   Real    dampGain   =     0.8;
   Real    fbGain     =     0.99;
-  Real    fbPhase    =    3*PI/2;   // 0.7,1.7
+  Real    fbPhase    =    PI/4;   // 0.7,1.7
 
 
-  //Complex feedback   =  0.99*(0.8 + 0.6*j);  // A complex feedback gain
+  fbGain = 0.9;
+
 
   Complex fb = fbGain * rsExp(j*fbPhase);
 
@@ -730,8 +731,9 @@ void dampedAllpassCombComplex()
   int  N = numSamples;
   ap.setMaxDelayInSamples(delay);
   ap.setupHighDamp(delay, fb, w, dampGain, false);
-  //VecC h = impulseResponse(ap, N, Real(1));      // Nope!
-  VecC h = impulseResponse(ap, N, Complex(1));     // Yep!
+  VecC h = impulseResponse(ap, N, Complex(1));
+  plotComplexVectorReIm(h);  // Doesn't accept rsComplex - fix that!
+
 
   VecR hr(N), hi(N);
   for(int n = 0; n < N; n++)
@@ -741,11 +743,8 @@ void dampedAllpassCombComplex()
   }
 
 
-  //rsPlotComplexArray(numSamples, &h[0]);
-  plotComplexVectorReIm(h);  // Doesn't accept rsComplex - fix that!
-  
-
-  Real fbAbs = rsAbs(fb);  // For a check
+  //bool ok = isAllpass(hr, 1.e-4);
+  // Nope! The spectrum is very much not allpass! It's more comb-like!
 
 
   // Observations:
@@ -754,12 +753,17 @@ void dampedAllpassCombComplex()
   //
   // - Feedback phases of 0 and pi give purely real outputs. With 0, it's unipolar, with pi its
   //   bipolar. That's how it has to be - we expect to get back to behavior of positive and
-  //   negative signs. pi/2 gives a bipolar spike train both real and imaginary part
+  //   negative signs. pi/2 gives a bipolar spike train both real and imaginary part. Same 
+  //   for 3*pi/2.
+  //
+  // - The spectra of real and imaginary part by themselves are not allpass like. They are more
+  //   of a strange comb like structure. But may it could be interesting and useful. Maybe the 
+  //   combs are complementary for real and imag? Figure out!
   //
   //
   // ToDo:
   //
-  // - Make a unit test that ensures that it works with rsComplex and std::complex
+  // - Make sure that everything works with rsComplex and std::complex for Complex
   //
   // - Check if the real and imaginary parts of the output are both allpass in nature
   //
