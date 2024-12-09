@@ -218,13 +218,16 @@ void twoPoleAllpassDelay()
   //   frequency. Maybe  omega*delay = 2*pi*f/fs  or  omega/delay = 2*pi*f/fs?
 }
 
-void dampedAllpassComb()
+void dampedAllpassComb1()
 {
-  // I try to implement an idea for starting with an arbitrary given allpass filter A(z) and 
-  // arbitrary given feedback filter F(z) that sits in a feedback loop with unit delay around that 
-  // allpass. I try to design a compensation filter that can be applied in series to this setup
-  // such that the overall transfer function is allpass in nature. Without the compensation 
-  // filter, this setup has the uncompensated transfer funcion:
+  // This experiment is basically my initial step by step derivation of what later became the class
+  // rsDampedAllpassCombNaive.
+  //
+  // I implement an idea for starting with an arbitrary given allpass filter A(z) and arbitrary 
+  // given feedback filter F(z) that sits in a feedback loop with unit delay around that allpass. I 
+  // design a compensation filter that can be applied in series to this setup such that the overall
+  // transfer function is allpass in nature. Without the compensation filter, this setup has the 
+  // uncompensated transfer funcion:
   //
   //                   A(z)
   //  U(z) = ----------------------------
@@ -245,20 +248,22 @@ void dampedAllpassComb()
   // response. Maybe we should try to reflect (some of) the zeros of C(z) about the unit circle. 
   // That will retain magnitude response and stability of C(z). 
   //
-  // Consider our special case here with  A(z) = z^-M  and  F(z) = (b0 + b1*z^-1) / (1 + a1*z^-1). 
-  // So we have:
+  // Consider our special case here with  A(z) = z^-M  and a one pole filter in the feedback loop,
+  // i.e.  F(z) = (b0 + b1*z^-1) / (1 + a1*z^-1). Sustituting that into the formula for C(z) we 
+  // get:
   //
   //               k * z^-1 * z^-M * (b0 + b1*z^-1)     1 + a1*d + b0*k*d^(M+1) + b1*k*d^(M+2)
   //   C(z) = 1 + ---------------------------------- = -----------------------------------------
   //                      1 + a1*z^-1                                 1 + a1*d
   //
   // With d := z^-1 for convenience. In a second step, we try to implement C(z) in this form using
-  // a delaline to implement the denominator the one-pole filter 1 / (1 + a1*z^-1) for the 
+  // a delayline to implement the denominator the one-pole filter 1 / (1 + a1*z^-1) for the 
   // denominator. Having the filter in this form makes it amenable for manipulating the zeros by 
   // reflecting them in the unit circle. We just need to reverse the array of numerator coeffs.
   //
   // Then, finally we actually do the reversal of the FIR part of the correction filter. Using that
-  // instead of the original correction filter, we obtain an overall allpass filter.
+  // instead of the original correction filter, we obtain an overall allpass filter but one that 
+  // does not cancel out the effect of the feedback path.
   //
   // In the private repo, there's a filter AllpassStuff.txt where it's explained a bit more. Maybe
   // drag that into the main repo. But it's currently too messy for a public repo.
@@ -268,12 +273,12 @@ void dampedAllpassComb()
   using Delay   = RAPT::rsBasicDelayLine<Real>;      // We use a simple delay as allpass
   using OnePole = RAPT::rsOnePoleFilter<Real, Real>; // We use a one pole as feedback filter
 
-  int    M          =   100;     // Delay
-  int    N          =  8192;     // Number of samples to generate
-  double sampleRate = 44100;
-  double dampFreq   =  1000;     // Frequency of the low shelf for feedback damping
-  double dampGain   =     0.7;   // Linear high freq damping gain
-  double k          =     0.9;   // Feedback gain factor
+  int  M          =   100;     // Delay
+  int  N          =  8192;     // Number of samples to generate
+  Real sampleRate = 44100;     // Sample rate for writing the wavefiles
+  Real dampFreq   =  1000;     // Frequency of the low shelf for feedback damping
+  Real dampGain   =     0.7;   // Linear high freq damping gain
+  Real k          =     0.9;   // Feedback gain factor
 
 
   // Create and set up the two given filters for A(z) and F(z):
@@ -288,7 +293,7 @@ void dampedAllpassComb()
 
 
   // Helper variable and function to implement the feedback loop filter:
-  double s = 0;                             // Output and state of uncompensated filter
+  Real s = 0;                               // Output and state of uncompensated filter
   auto getSampleU = [&](Real x)
   {
     // This implements the feedback loop with unit delay without feedback filter:
@@ -302,12 +307,12 @@ void dampedAllpassComb()
   hu[0] = getSampleU(1.0);
   for(int n = 1; n < N; n++)
     hu[n] = getSampleU(0.0);
-  //rsPlotVectors(hu);                        // Decaying spike train with progressive tail smear
+  //rsPlotVectors(hu);                      // Decaying spike train with progressive tail smear
 
 
   // Cancel the effect of the feedback loop. For this, we re-use the existing filter objects. We 
   // can do this because they are not needed anymore for other purposes because the uncompensated 
-  // output as been generated already. in a realtime implementation, we would have to use another
+  // output as been generated already. In a realtime implementation, we would have to use another
   // pair of filters that is identical to apf and fbf
 
   // Helper function that implements the compensation filter:
@@ -402,7 +407,7 @@ void dampedAllpassComb()
   Real rM1 = c1;
   Real rM2 = c0;
 
-  // Helper function to reversed correction filter:
+  // Helper function to apply the reversed correction filter:
   auto getSampleR = [&](Real x)
   {
     // Apply 1-pole:
@@ -436,9 +441,6 @@ void dampedAllpassComb()
 
   // Plot uncorrected and reverse corrected output. These are the most interesting things:
   rsPlotVectors(hu, hr);
-
-
-
 
 
   // Observations:
@@ -504,4 +506,37 @@ void dampedAllpassComb()
   // - To optimze the delaylines, use one for both correction delays and call getSample once and 
   //   use the implict tap-move within getSample to call a second readout after getSample to get
   //   the other value.
+}
+
+void dampedAllpassComb2()
+{
+  // Now, we use the class for the same purpose.
+
+  // Define types to be used:
+  using Real    = double;
+  using Vec     = std::vector<Real>;
+  using Allpass = rsDampedAllpassCombNaive<Real, Real>;
+
+  // User parameters:
+  int  delay      =   100;     // Main delay roundtrip length in samples. Is M-1 in the algo
+  int  numSamples =  8192;     // Number of samples to generate
+  Real sampleRate = 44100;     // Sample rate for writing the wavefiles
+  Real dampFreq   =  1000;     // Frequency of the low shelf for feedback damping
+  Real dampGain   =     0.7;   // Linear high freq damping gain
+  Real feedback   =     0.9;   // Feedback gain factor
+
+
+  // Set up a damped allpass comb for operation mode where the high frequencies are progressively
+  // damped over time:
+  Real dampOmega = 2*PI*dampFreq/sampleRate;
+  Allpass apf;
+  apf.setupHighDamp(delay, feedback, dampOmega, dampGain);
+
+
+}
+
+void dampedAllpassComb()
+{
+  dampedAllpassComb1();
+  dampedAllpassComb2();
 }
