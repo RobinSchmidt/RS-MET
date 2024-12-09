@@ -810,7 +810,7 @@ protected:
   // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
   // filter with filtered unit delay feedback:
   rsBasicDelayLine<TSig>             mainDelay;
-  rsFirstOrderFilterBase<TSig, TPar> damper;  // rename to damper
+  rsFirstOrderFilterBase<TSig, TPar> damper;
 
   // Objects for the correction filter:
   rsUnitDelay<TSig>                  unitDelay;
@@ -823,7 +823,7 @@ protected:
 
   // Coefficients:
   TSig k;
-  TPar r0, r1, rM1, rM2;
+  TSig r0, r1, rM1, rM2;
 
   bool preDelay = false;
 
@@ -862,7 +862,7 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
   r0  = -k*b1;
   r1  = -k*b0;
   rM1 = a1;
-  rM2 = 1;                                  // Get rid in production code!
+  rM2 = 1;
 }
 
 template<class TSig, class TPar>
@@ -945,6 +945,10 @@ public:
   is 0.7. */
   void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay);
 
+
+  void setupLowDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay);
+
+  // Try also a dispersive allpass in the feedback loop
 
 
   /** Resets the state. */
@@ -1046,6 +1050,34 @@ void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   r1  = -k*b0;
   rM1 = a1;
 }
+
+template<class TSig, class TPar>
+void rsDampedAllpassComb<TSig, TPar>::setupLowDamp(
+  int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay)
+{
+  k = feedback;
+  this->preDelay = preDelay;
+
+  // Compute the pole filters coefficients:
+  rsFirstOrderFilterBase<TSig, TPar>::coeffsLowShelfBLT(
+    dampOmega, dampGain, &b0, &b1, &a1);
+  a1 = -a1;
+
+
+  // Set up delaylines:
+  M = delay - 1;                            // -1 corrects for unit delay in feedback path
+  mainDelay.setDelayInSamples(M);
+  corrDelay.setDelayInSamples(M+2);
+
+  // Compute correction coefficients:
+  r0  = -k*b1;
+  r1  = -k*b0;
+  rM1 = a1;
+
+  // ToDo: refactor to get rid of the code duplication between setupHighDamp/setupLowDamp. Use 
+  // filter design functions that return the filter coeffs directly with the right convention used.
+}
+
 
 template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::reset()
