@@ -523,7 +523,7 @@ void dampedAllpassComb2()
   int  delay      =   100;     // Main delay roundtrip length in samples. Is M-1 in the algo
   int  numSamples =  8192;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
-  Real dampFreq   =  3000;     // Frequency (in Hz) of the low shelf for feedback damping
+  Real dampFreq   =  1000;     // Frequency (in Hz) of the low shelf for feedback damping
   Real dampGain   =     0.7;   // Linear high freq damping gain
   Real feedback   =     0.99;  // Feedback gain factor
   int  mode       =     0;     // 0: high-damp, 1: low-damp, 2: allpass
@@ -535,8 +535,12 @@ void dampedAllpassComb2()
   auto setupComb = [&](Allpass& flt, int delay, Real feedback, Real omega, Real hiGain, 
     bool preDelay, int mode)
   {
-    flt.setMaxDelayInSamples(delay); 
-    flt.setupHighDamp(delay, feedback, omega, hiGain, preDelay);
+    flt.setMaxDelayInSamples(delay);
+    switch(mode)
+    {
+    case 0: flt.setupHighDamp(delay, feedback, omega, hiGain, preDelay); break;
+    case 1: flt.setupLowDamp( delay, feedback, omega, hiGain, preDelay); break;
+    }
   };
   // Add predelay mode parameter. For the feedback sign, we don't add a parameter - we just use 
   // either positive or negative sign.
@@ -558,27 +562,22 @@ void dampedAllpassComb2()
 
   // We have 4 different modes: unipolar/bipolar (selected by sign of k) and predelay or not 
   // (selected by bool parameter):                                             
-  ////                                                                              // polar predelay
-  //setupComb(comb, d, +k, w, g, false, 0); Vec h1 = impulseResponse(comb, N, 1.0); //  uni     no
-  //setupComb(comb, d, -k, w, g, false, 0); Vec h2 = impulseResponse(comb, N, 1.0); //  bi      no
-  //setupComb(comb, d, +k, w, g, true,  0); Vec h3 = impulseResponse(comb, N, 1.0); //  uni     yes
-  //setupComb(comb, d, -k, w, g, true,  0); Vec h4 = impulseResponse(comb, N, 1.0); //  bi      yes
-
                                             // polar  predelay 
   Vec h1 = impResp(d, +k, w, g, false, 0);  //  uni     no
   Vec h2 = impResp(d, -k, w, g, false, 0);  //  bi      no
   Vec h3 = impResp(d, +k, w, g, true,  0);  //  uni     yes
   Vec h4 = impResp(d, -k, w, g, true,  0);  //  bi      yes
 
-
   // Plot them all together and then one at a time:
   rsPlotVectors(h1, h2, h3, h4);
-  rsPlotVectors(h1);
-  rsPlotVectors(h2);
-  rsPlotVectors(h3);
-  rsPlotVectors(h4);
+  //rsPlotVectors(h1);
+  //rsPlotVectors(h2);
+  //rsPlotVectors(h3);
+  //rsPlotVectors(h4);
 
-  // Now let's do the same with low-damp mode:
+  // Now let's try a low-damp mode and compare it to the corresponding high-damp setting:
+  Vec h5 = impResp(d, +k, w, g, false, 1);
+  rsPlotVectors(h1, h5);
 
 
 
