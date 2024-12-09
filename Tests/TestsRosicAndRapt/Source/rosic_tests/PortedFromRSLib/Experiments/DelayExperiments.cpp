@@ -605,7 +605,17 @@ void dampedAllpassComb2()
   // - The setupComb function should not directly take a feedback and highFreqGain parameter but
   //   instead a desired decay time and maybe a decaytime scaler for the high frequencies. These
   //   should then be used to compute the feedback gain and the shelver gain. This is a 
-  //   parametrization closer to what we might present to a user.
+  //   parametrization closer to what we might present to a user. The formula is in
+  //   FeedbackDelayNetwork16::updateDampingAndCorrectionFilters(). I think the formula for the 
+  //   feedback gain is:
+  //
+  //     gain = pow(10.0, -3.0*delay / (time * sampleRate));
+  //
+  //   we need this formula as is for computing the feedback gain k and to compute the damping 
+  //   gain, we use the same formula but with the desired decay time for high freqs. But maybe it 
+  //   needs to be scaled by the k factor because the high freqs, actually both gain factors are 
+  //   applied, i.e. the product of both. We should have asetup function like
+  //   setupComb = [&](Allpass& flt, int delay, Real decayTime, Real omega, Real hiDecayTimeScale)
 }
 
 void dampedAllpassComb()
