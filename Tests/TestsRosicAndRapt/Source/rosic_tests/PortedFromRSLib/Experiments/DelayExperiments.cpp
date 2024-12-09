@@ -519,7 +519,7 @@ void dampedAllpassComb2()
 
   // User parameters:
   int  delay      =   100;     // Main delay roundtrip length in samples. Is M-1 in the algo
-  int  numSamples =  8192;     // Number of samples to generate
+  int  numSamples = 16384;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
   Real dampFreq   =  1000;     // Frequency of the low shelf for feedback damping
   Real dampGain   =     0.7;   // Linear high freq damping gain
@@ -535,14 +535,11 @@ void dampedAllpassComb2()
 
   // Generate impulse response of the allpass:
   Vec h = impulseResponse(apf, numSamples, 1.0);
-  rsPlotVectors(h);
+  //rsPlotVectors(h);
 
-  //int N = numSamples;
-  //Vec h(N);
-  //h[0] = apf.getSample(1.0);
-  //for(int n = 0; n < N; n++)
-  //  h[n] = apf.getSample(0.0);
-
+  bool ok = true;
+  ok &= isAllpass(h, 1.e-5);
+  // ToDo: implement a unit test
 
 
 
