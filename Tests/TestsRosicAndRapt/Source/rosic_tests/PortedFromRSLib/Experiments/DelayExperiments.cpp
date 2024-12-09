@@ -562,15 +562,10 @@ void dampedAllpassComb2()
   rsPlotVectors(h4);
 
 
-
-
-
-  int dummy = 0;
-
   // Observations:
   //
-  // - The variants with the predelay have stronger initial spike than those without.
-
+  // - The variants with the predelay have stronger initial spike than those without. I think, that
+  //   makes them sound less tonal.
 }
 
 void dampedAllpassComb3()
@@ -760,16 +755,17 @@ void dampedAllpassCombComplex()
   //
   // ToDo:
   //
-  // - Make sure that everything works with rsComplex and std::complex for Complex
+  // - Make sure that everything works with rsComplex and std::complex for Complex. We need to
+  //   implement real/imag for rsComplex or rsReal/rsImag for both. I think, the latter way is the
+  //   right way. It's consistent with how the rest of the library works.
   //
   // - I think, the feedback phase should scale with the delay to achieve a uniform undulation
   //   frequency. Figure this out!
-
 }
 
 void dampedAllpassComb()
 {
-  dampedAllpassCombComplex();
+  //dampedAllpassCombComplex();
 
   dampedAllpassComb1();
   dampedAllpassComb2();
