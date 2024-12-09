@@ -768,17 +768,24 @@ template<class TSig, class TPar>
 class rsFeedbackFilterAllpassNaive
 {
 
+  // Maybe rename to rsDampedAllpassComb. 
+
 public:
+
+  void setupHighDamp(int delay, TPar feedback, TPar dampOmega, TPar dampGain);
+  // Maybe it should be more flexible to allow also modes in which the low freqs are progressively
+  // dampened. It would actually be pretty nice to have a full blown biquad available for damping
+  // Way may want high and lwo damping etc. ....but for this proto
+  //
+  // We use the convention that we use  M = delay - 1  for the delayline to compensate for the unit
+  // delay. This makes more sense from a user's perspective because then, the spike spacing is 
+  // exactly given by delay.
 
 
 
   void reset();
 
-
   TSig getSample(TSig in);
-
-
-
 
   TSig getSampleUncorrected(TSig in);
 
@@ -789,14 +796,14 @@ protected:
 
   // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
   // filter with filtered unit delay feedback:
-  rsBasicDelayLine<TSig>      mainDelay;
-  rsOnePoleFilter<TSig, TPar> feedbackDamper;
+  rsBasicDelayLine<TSig>             mainDelay;
+  rsFirstOrderFilterBase<TSig, TPar> feedbackDamper;
 
   // Objects for the correction filter:
-  rsUnitDelay<TSig>           unitDelay;
-  rsBasicDelayLine<TSig>      corDelayM1;
-  rsBasicDelayLine<TSig>      corDelayM2;
-  rsOnePoleFilter<TSig, TPar> corOnePole;
+  rsUnitDelay<TSig>                  unitDelay;
+  rsBasicDelayLine<TSig>             corDelayM1;
+  rsBasicDelayLine<TSig>             corDelayM2;
+  rsFirstOrderFilterBase<TSig, TPar> corOnePole;
 
   // Coefficients:
   TPar k;
@@ -806,6 +813,32 @@ protected:
   TSig out = TSig(0);
 
 };
+
+
+template<class TSig, class TPar>
+void rsFeedbackFilterAllpassNaive<TSig, TPar>::setupHighDamp(
+  int delay, TPar feedback, TPar dampOmega, TPar dampGain)
+{
+  k = feedback;
+
+  // Set up one pole filters:
+  TPar b0, b1, a1;
+  rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(dampOmega, dampGain, &b0, &b1, &a1);
+  feedbackDamper.setCoefficients(b0,  b1,  a1);
+  corOnePole.setCoefficients(    1.0, 0.0, a1);
+
+  // Set up delaylines:
+  int M = delay - 1;                        // -1 corrects for unit delay in feedback path
+  mainDelay.setDelayInSamples(M);
+  corDelayM1.setDelayInSamples(M+1);
+  corDelayM2.setDelayInSamples(M+2);
+
+  // Compute correction coefficients:
+  r0  = -k*b1;
+  r1  = -k*b0;
+  rM1 = -a1;
+  rM2 =  1;                                 // Get rid in production code!
+}
 
 template<class TSig, class TPar>
 void rsFeedbackFilterAllpassNaive<TSig, TPar>::reset()
