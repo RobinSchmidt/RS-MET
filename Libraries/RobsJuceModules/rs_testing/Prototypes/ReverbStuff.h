@@ -1002,8 +1002,10 @@ protected:
   TSig y1c = 0;            // y[n-1] for corrector one pole
 
   // Coefficients:
-  TSig k = 0;                    // Needs to be TSig when we want to use it with complex feedback
-  TPar r0 = 0, r1 = 0, rM1 = 0;
+  TSig k   = 0;                    // Needs to be TSig when we want to use it with complex feedback
+  TSig r0  = 0; 
+  TSig r1  = 0; 
+  TPar rM1 = 0;
   TPar b0 = 0, b1 = 0, a1 = 0;
   int  M = 0;
 

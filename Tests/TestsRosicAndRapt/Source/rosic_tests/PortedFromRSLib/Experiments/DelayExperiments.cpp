@@ -723,7 +723,7 @@ void dampedAllpassCombComplex()
   Real w  = 2*PI*dampFreq/sampleRate;
   ap.setMaxDelayInSamples(delay);
 
-  //ap.setupHighDamp(delay, feedback, w, dampGain, false);
+  ap.setupHighDamp(delay, feedback, w, dampGain, false);
   // This doesn't compile! I think, we need to use TSig in a couple of more places instead of TPar
 
   // rsDampedAllpassComb<Complex, Complex>;
