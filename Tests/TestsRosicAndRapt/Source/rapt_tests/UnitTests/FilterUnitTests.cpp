@@ -2270,9 +2270,14 @@ bool dampedAllpassCombUnitTest()
   int N = numSamples;
   comb.reset();
   comb.setupHighDamp(delay, 1.0, 0.5, 1.0, true);
+
   h[0] = comb.getSampleComb(1.0);
   for(int n = 1; n < N; n++)
     h[n] = comb.getSampleComb(0.0);
+
+  //h = impulseResponse(comb, numSamples, 1.0);
+
+
   for(int i = 0; i < N; i++)
   {
     if( (i+1) % delay == 0 )            // Triggers at 49, 99, 149, 199, ... if delay == 50
@@ -2281,6 +2286,17 @@ bool dampedAllpassCombUnitTest()
       ok &= h[i] == 0.0;
   }
   //rsPlotVectors(h);
+
+
+  // Now without predelay:
+  comb.reset();
+  comb.setupHighDamp(delay, 1.0, 0.5, 1.0, false);
+  h[0] = comb.getSampleComb(1.0);
+
+
+
+  // Test the spike placement of the other modes There are 4 in total: 
+  // predelay on/off and unipolar vs bipolar. The original one wa the unipolar with predelay.
 
 
 
