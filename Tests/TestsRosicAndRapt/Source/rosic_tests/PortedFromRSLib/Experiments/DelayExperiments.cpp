@@ -515,7 +515,8 @@ void dampedAllpassComb2()
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Allpass = rsDampedAllpassCombNaive<Real, Real>;
+  //using Allpass = rsDampedAllpassCombNaive<Real, Real>;
+  using Allpass = rsDampedAllpassComb<Real, Real>;
 
   // User parameters:
   int  delay1     =    53;     // 1st main delay roundtrip length in samples. Is M-1 in the algo
@@ -528,13 +529,12 @@ void dampedAllpassComb2()
   Real dampGain   =     0.9;   // Linear high freq damping gain
   Real feedback   =     0.99;  // Feedback gain factor
 
-
+  // Helper function to set up the given flt object with the given settings:
   auto setupComb = [&](Allpass& flt, int delay, Real feedback, Real omega, Real hiGain)
   {
     flt.setupMaxDelayInSamples(delay); 
     flt.setupHighDamp(delay, feedback, omega, hiGain);
   };
-
 
   // Set up the 4 damped allpass comb filters:
   Real w  = 2*PI*dampFreq/sampleRate;
@@ -546,7 +546,6 @@ void dampedAllpassComb2()
   Allpass apf2; setupComb(apf2, d2, k, w, g);
   Allpass apf3; setupComb(apf3, d3, k, w, g);
   Allpass apf4; setupComb(apf4, d4, k, w, g);
-
 
   // Generate impulse response of the allpass chain:
   int N  = numSamples;
@@ -562,16 +561,6 @@ void dampedAllpassComb2()
   rosic::writeToMonoWaveFile("DampedAllpasComb4.wav", &h4[0], N, sampleRate);
   rsPlotVectors(h1, h2, h3, h4);
 
-
-
-
-  // Some prime numbers to experiment with:
-  //
-  // 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 47, 53, 59, 67, 71, 83, 89, 101, 107, 109, 
-  // 113, 127, 131, 137, 139, 149, 157, 167, 179, 181, 191, 197, 199, 211, 227, 233, 239, 251, 
-  // 257, 263, 269, 281, 293, 307, 311, 317, 337, 347, 353, 359, 379, 389, 401, 409
-  //
-  // Maybe try a chain of 53,67,83,101
 
   // Observations:
   //
@@ -606,6 +595,11 @@ void dampedAllpassComb2()
   //   short. Is ther any difference? No - this can't be the case because they are all LTI!
   //
   // - Make a helper function setupFilter()
+  //
+  // - Some prime numbers to experiment with:
+  //   2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 47, 53, 59, 67, 71, 83, 89, 101, 107, 109, 
+  //   113, 127, 131, 137, 139, 149, 157, 167, 179, 181, 191, 197, 199, 211, 227, 233, 239, 251, 
+  //   257, 263, 269, 281, 293, 307, 311, 317, 337, 347, 353, 359, 379, 389, 401, 409
 }
 
 void dampedAllpassComb()
