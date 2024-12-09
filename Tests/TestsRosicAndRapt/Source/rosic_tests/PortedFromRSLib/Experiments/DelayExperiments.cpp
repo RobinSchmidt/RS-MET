@@ -389,9 +389,20 @@ void feedbackFilterAllpass()
 
   // OK. Now we have an implementation structure of C(z) that is amenable to reflecting the zeros
   // in the unit circle. When expressing the FIR part as coefficient array, we need to just reverse
-  // it. ...TBC...
-
-
+  // it. The FIR part implements
+  //
+  //   y[n] = c_0 * x[n] + c_1 * x[n-1] + c_{M+1} * x[n-(M+1)] + c_{M+2} * x[n-(M+2)]
+  //
+  // where
+  //
+  //   c_0 = 1, c_1 = a1, c_{M+1} = k*b0, c_{M+2} = k*b1
+  //
+  // Reversing that amounts to using:
+  //
+  //   r0 = c_{M+2}, r1 = c_{M+1}, r_{M+1} = c_1, r_{M+2} = c_0
+  //
+  //
+  // ...TBC...
 
 
 
