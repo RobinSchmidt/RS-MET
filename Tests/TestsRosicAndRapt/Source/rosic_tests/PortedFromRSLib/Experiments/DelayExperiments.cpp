@@ -529,10 +529,11 @@ void dampedAllpassComb2()
   Real feedback   =     0.99;  // Feedback gain factor
 
   // Helper function to set up the given flt object with the given settings:
-  auto setupComb = [&](Allpass& flt, int delay, Real feedback, Real omega, Real hiGain)
+  auto setupComb = [&](Allpass& flt, int delay, Real feedback, Real omega, Real hiGain, 
+    bool preDelay)
   {
     flt.setMaxDelayInSamples(delay); 
-    flt.setupHighDamp(delay, feedback, omega, hiGain);
+    flt.setupHighDamp(delay, feedback, omega, hiGain, preDelay);
   };
   // Add predelay mode parameter. For the feedback sign, we don't add a parameter - we just use 
   // either positive or negative sign.
@@ -545,11 +546,11 @@ void dampedAllpassComb2()
   Allpass comb; 
 
 
-  setupComb(comb, delay, +k, w, g);
+  setupComb(comb, delay, +k, w, g, false);
   Vec h1 = impulseResponse(comb, N, 1.0);
 
 
-  setupComb(comb, delay, -k, w, g);
+  setupComb(comb, delay, -k, w, g, false);
   Vec h2 = impulseResponse(comb, N, 1.0);
 
 
@@ -583,10 +584,11 @@ void dampedAllpassComb3()
   Real feedback   =     0.99;  // Feedback gain factor
 
   // Helper function to set up the given flt object with the given settings:
-  auto setupComb = [&](Allpass& flt, int delay, Real feedback, Real omega, Real hiGain)
+  auto setupComb = [&](Allpass& flt, int delay, Real feedback, Real omega, Real hiGain, 
+    bool preDelay)
   {
     flt.setMaxDelayInSamples(delay); 
-    flt.setupHighDamp(delay, feedback, omega, hiGain);
+    flt.setupHighDamp(delay, feedback, omega, hiGain, preDelay);
   };
 
   // Set up the 4 damped allpass comb filters:
@@ -595,10 +597,10 @@ void dampedAllpassComb3()
   Real k  = feedback;
   int  d1 = delay1, d2 = delay2, d3 = delay3, d4 = delay4;
   int  delaySum = d1 + d2 + d3 + d4;
-  Allpass apf1; setupComb(apf1, d1, k, w, g);
-  Allpass apf2; setupComb(apf2, d2, k, w, g);
-  Allpass apf3; setupComb(apf3, d3, k, w, g);
-  Allpass apf4; setupComb(apf4, d4, k, w, g);
+  Allpass apf1; setupComb(apf1, d1, k, w, g, false);
+  Allpass apf2; setupComb(apf2, d2, k, w, g, false);
+  Allpass apf3; setupComb(apf3, d3, k, w, g, false);
+  Allpass apf4; setupComb(apf4, d4, k, w, g, false);
 
   // Generate impulse response of the allpass chain:
   int N  = numSamples;

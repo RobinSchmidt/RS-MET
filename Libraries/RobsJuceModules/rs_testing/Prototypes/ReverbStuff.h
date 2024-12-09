@@ -776,7 +776,7 @@ public:
   void setMaxDelayInSamples(int newMaxDelay);
 
 
-  void setupHighDamp(int delay, TPar feedback, TPar dampOmega, TPar dampGain);
+  void setupHighDamp(int delay, TPar feedback, TPar dampOmega, TPar dampGain, bool preDelay);
 
   // We use the convention that we use  M = delay - 1  for the delayline to compensate for the unit
   // delay. This makes more sense from a user's perspective because then, the spike spacing is 
@@ -825,6 +825,8 @@ protected:
   TPar k;
   TPar r0, r1, rM1, rM2;
 
+  bool preDelay = false;
+
 };
 
 template<class TSig, class TPar>
@@ -838,7 +840,7 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 
 template<class TSig, class TPar>
 void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
-  int delay, TPar feedback, TPar dampOmega, TPar dampGain)
+  int delay, TPar feedback, TPar dampOmega, TPar dampGain, bool preDelay)
 {
   k = feedback;
 
@@ -938,7 +940,7 @@ public:
   at 100 sample intervals, the feedback gain is 0.9 the shelving frequency is somewhere in the 
   middle frequency range (at fs = 44.1 kHz) and the high frequency gain of the damping shelver 
   is 0.7. */
-  void setupHighDamp(int delay, TPar feedback, TPar dampOmega, TPar dampGain);
+  void setupHighDamp(int delay, TPar feedback, TPar dampOmega, TPar dampGain, bool predelay);
 
 
 
@@ -1002,6 +1004,8 @@ protected:
   TPar b0, b1, a1;
   int  M;
 
+  bool preDelay = false;
+
 };
 
 template<class TSig, class TPar>
@@ -1014,7 +1018,7 @@ void rsDampedAllpassComb<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 
 template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
-  int delay, TPar feedback, TPar dampOmega, TPar dampGain)
+  int delay, TPar feedback, TPar dampOmega, TPar dampGain, bool preDelay)
 {
   k = feedback;
 
