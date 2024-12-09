@@ -2251,14 +2251,24 @@ bool dampedAllpassCombUnitTest()
   //rsPlotVectors(h);
   ok &= isAllpass(h, 1.e-6);
 
-  // Check the spacing of the spikes:
+  // Check the spacing of the spikes of the comb without correction and with unit feedback 
+  // settings (i.e. no decay, no damping). This should produce a spike train with the distance 
+  // between the spikes given by our desired delay. The first spike occurs at sample index  
+  // n == delay - 1. 
   int N = numSamples;
   naive.reset();
   naive.setupHighDamp(delay, 1.0, 0.5, 1.0);
   h[0] = naive.getSampleComb(1.0);
   for(int n = 1; n < N; n++)
     h[n] = naive.getSampleComb(0.0);
-  rsPlotVectors(h);
+  for(int i = 0; i < N; i++)
+  {
+    if( (i+1) % delay == 0 )            // Triggers at 49, 99, 149, 199, ... if delay == 50
+      ok &= h[i] == 1.0;
+    else
+      ok &= h[i] == 0.0;
+  }
+  //rsPlotVectors(h);
 
   return ok;
 
