@@ -801,12 +801,10 @@ public:
   
   /** This function is supposed to be called with the output produced by getSampleComb to apply the
   correction filter. */
-  TSig applyCorrectionFilter(TSig combOutput);
+  TSig applyCorrector(TSig combOutput);
   // rename to applyCorrector
 
 protected:
-
-
 
 
   // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
@@ -875,11 +873,10 @@ void rsDampedAllpassCombNaive<TSig, TPar>::reset()
   out = TSig(0);
 }
 
-
 template<class TSig, class TPar>
 TSig rsDampedAllpassCombNaive<TSig, TPar>::getSample(TSig in)
 {
-  return applyCorrectionFilter(getSampleComb(in));
+  return applyCorrector(getSampleComb(in));
 }
 
 template<class TSig, class TPar>
@@ -890,7 +887,7 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleComb(TSig in)
 }
 
 template<class TSig, class TPar>
-TSig rsDampedAllpassCombNaive<TSig, TPar>::applyCorrectionFilter(TSig in)
+TSig rsDampedAllpassCombNaive<TSig, TPar>::applyCorrector(TSig in)
 {
   // Apply 1-pole:
   TSig t = corOnePole.getSample(in);
@@ -949,7 +946,7 @@ public:
 
   /** This function is supposed to be called with the output produced by getSampleComb to apply the
   correction filter. */
-  TSig applyCorrectionFilter(TSig combOutput);
+  TSig applyCorrector(TSig combOutput);
   // rename to applyCorrector
 
 protected:
@@ -974,6 +971,8 @@ protected:
   // Coefficients:
   TPar k;
   TPar r0, r1, rM1, rM2;
+
+  int M;
 
   // Optimizations:
   // 
@@ -1007,7 +1006,7 @@ void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   corOnePole.setCoefficients(1.0, 0.0, a1);
 
   // Set up delaylines:
-  int M = delay - 1;                        // -1 corrects for unit delay in feedback path
+  M = delay - 1;                            // -1 corrects for unit delay in feedback path
   mainDelay.setDelayInSamples(M);
   corDelayM1.setDelayInSamples(M+1);
   corDelayM2.setDelayInSamples(M+2);
@@ -1035,7 +1034,7 @@ void rsDampedAllpassComb<TSig, TPar>::reset()
 template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::getSample(TSig in)
 {
-  return applyCorrectionFilter(getSampleComb(in));
+  return applyCorrector(getSampleComb(in));
 }
 
 template<class TSig, class TPar>
@@ -1046,17 +1045,46 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 }
 
 template<class TSig, class TPar>
-TSig rsDampedAllpassComb<TSig, TPar>::applyCorrectionFilter(TSig in)
+TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 {
   // Apply 1-pole:
   TSig t = corOnePole.getSample(in);
+
+  //// Apply the FIR part:
+  //TSig y = 0;
+  //y += r0  * t;
+  //y += r1  * unitDelay.getSample(t);
+  //y += rM1 * corDelayM1.getSample(t);
+  //y += rM2 * corDelayM2.getSample(t);
+
+  //// Nope:
+  //// Apply the FIR part:
+  //TSig y = 0;
+  //y += r0  * t;
+  //y += r1  * unitDelay.getSample(t);
+  //y += rM2 * corDelayM2.getSample(t);  // Check order
+  //y += rM1 * corDelayM2.readOutput();
+
 
   // Apply the FIR part:
   TSig y = 0;
   y += r0  * t;
   y += r1  * unitDelay.getSample(t);
-  y += rM1 * corDelayM1.getSample(t);
-  y += rM2 * corDelayM2.getSample(t);
+  y += rM1 * corDelayM2.readOutputAt(M+1);
+  y += rM2 * corDelayM2.readOutputAt(M+2);
+  corDelayM2.writeInputAndUpdate(t);
+
+
+
+  //y += rM2 * corDelayM2.getSample(t);  // Check order
+
+
+
+
+
+
+
+
 
   return y;
 }
