@@ -640,7 +640,15 @@ public:
     instFreq  = newFreq;
 
     // ToDo:
-    // -Optimize: keep the reciprocal of the sample rate as member to avoid division
+    //
+    // - Optimize: keep the reciprocal of the sample rate as member to avoid division
+    //
+    // - Maybe offer different formulas to compute the signal. Maybe we can compute the 
+    //   instantaneous phase directly with a formula like 
+    //   p(t) = p0 + a * log(t0 + b * t). Although p0 is not really the start phase. The start 
+    //   phase is actually p0 + log(t0). But I think, we can fudge this to give the user a true
+    //   start phase.
+
   }
 
   void reset()
