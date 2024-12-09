@@ -349,25 +349,66 @@ void feedbackFilterAllpass()
   Delay   dl;                               // For the numerator
   OnePole op;                               // For the denominator
   op.setCoefficients(1.0, 0.0, a1);         // Should have same poles as fbf and 1 as denominator
-  dl.setMaximumDelayInSamples(M+2);
+
+
+  // Naive implementation using for each desired delay its own delayline:
+  ud.reset();
+  Delay dlM1;
+  dlM1.setMaximumDelayInSamples(M+1);
+  dlM1.setDelayInSamples(M+1);
+  Delay dlM2;
+  dlM2.setMaximumDelayInSamples(M+2);
+  dlM2.setDelayInSamples(M+2);
 
   // Helper function:
   auto getSampleC2 = [&](Real x)
   {
-    Real t = op.getSample(x);               // Apply 1-pole
+    // Apply 1-pole:
+    Real t = op.getSample(x);
+
+    // Apply the FIR multitap delay to 1-pole output:
+    Real y = t;                             // 1 + ...
+    y +=   a1*ud.getSample(t);              // a1*d + ...
+    y += k*b0*dlM1.getSample(t);            // b0*k*d^(M+1)
+    y += k*b1*dlM2.getSample(t);            // b1*k*d^(M+2)
+    return y;
+  };
+
+
+  // Produce corrected output with alternative implementation:
+  Vec hc2(N);
+  for(int n = 0; n < N; n++)
+    hc2[n] = getSampleC2(hu[n]);
+
+  rsPlotVectors(hc, hc2); 
 
 
 
+  /*
+
+  dl.setMaximumDelayInSamples(M+2);
+  dl.setDelayInSamples(M+2);
+
+  // Helper function:
+  auto getSampleC2 = [&](Real x)
+  {
+    // Apply 1-pole:
+    Real t = op.getSample(x);
+
+    // Apply the FIR multitap delay to 1-pole output:
+
+    dl.writeInputAndUpdate(t);              // Should we do this before or after the readings?
     Real y = t;                             // 1 + ...
     y +=   a1*dl.readOutputAt(1);           // a1*d + ...
     y += k*b0*dl.readOutputAt(M+1);         // b0*k*d^(M+1)
     y += k*b1*dl.readOutputAt(M+2);         // b1*k*d^(M+2)
-
-    dl.writeInputAndUpdate(t);              // Should we do this before or after the readings?
-
-
     return y;
   };
+  // This seems to be still wrong!
+  // Maybe make first a silly implementation where each delay uses its own delayline. this is 
+  // wasteful but less error prone.
+
+
 
   // Produce corrected output with alternative implementation:
   Vec hc2(N);
@@ -375,6 +416,7 @@ void feedbackFilterAllpass()
     hc2[n] = getSampleC2(hu[n]);
 
   rsPlotVectors(hc, hc2);  // Nope! Not the same!
+  */
 
 
 
