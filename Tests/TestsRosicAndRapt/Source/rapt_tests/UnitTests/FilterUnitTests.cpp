@@ -1816,30 +1816,6 @@ bool hilbertFilterUnitTest()
   return ok;
 }
 
-// Tests if a given impulse response h is allpass in nature - up to some tolerance because it's
-// necessarily truncated to finite length.
-template<class T>
-bool isAllpass(const std::vector<T>& h, T tol)
-{
-  // Compute magnitude spectrum:
-  std::vector<T> mags = rsSpectralMagnitudes(h);
-
-  // Check if the maximum deviation from unit frequency response is within the tolerance:
-  T maxErr = T(0);
-  for(size_t k = 0; k < mags.size(); k++)
-    maxErr = rsMax(maxErr, rsAbs(T(1) - mags[k]));
-  bool ok = maxErr <= tol;
-
-  //// This can be uncommented in debug sessions to investigate problems when the test fails:
-  //if(!ok)
-  //{
-  //  rsError("Filter is not allpass!");
-  //  rsPlotVectors(mags);  
-  //}
-
-  return ok;
-}
-
 bool delayLineUnitTest()
 {
   bool ok = true;
