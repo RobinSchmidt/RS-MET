@@ -2259,6 +2259,7 @@ bool dampedAllpassCombUnitTest()
   comb.setupHighDamp(delay, feedback, dampOmega, dampGain);
   Vec h2 = impulseResponse(comb, numSamples, 1.0);
   ok &= h2 == h;
+  rsPlotVectors(h, h2);
   rsAssert(ok);
 
 

@@ -1064,6 +1064,8 @@ template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 {
   out = mainDelay.getSample(in + k * damper.getSample(out));
+  //out = mainDelay.getSample(in + k * applyDamper(out));
+
   return out;
 }
 
@@ -1072,6 +1074,7 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 {
   // Apply 1-pole:
   TSig t = corOnePole.getSample(in);
+  //TSig t = applyCorrectorOnePole(in);
 
   // Apply the FIR part:
   TSig y = 0;
