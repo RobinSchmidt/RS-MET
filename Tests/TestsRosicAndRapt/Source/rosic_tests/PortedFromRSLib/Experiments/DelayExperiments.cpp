@@ -339,19 +339,19 @@ void feedbackFilterAllpass()
   Real b0 = fbf.getB0();
   Real b1 = fbf.getB1();
   Real a1 = fbf.getA1();
-  Delay   dl;                               // For the numerator
-  OnePole op;                               // For the denominator
-  op.setCoefficients(1.0, 0.0, a1);         // Should have same poles as fbf and 1 as denominator
+  Delay   dl;                          // For the numerator
+  OnePole op;                          // For the denominator
+  op.setCoefficients(1.0, 0.0, a1);    // Should have same poles as fbf and 1 as denominator
 
-  // rsOnePoleFilter uses the other sign convention for the feedback coeffs, so if we 
-  // want to use the a1 coeff directly, we have to negate it:
-  a1 = -a1;  
-
-  // For some reason that I don't quite understand, we need to negate the b-coeffs, too:
-  b0 = -b0;
-  b1 = -b1;
-  // Maybe what really happens that we need to negate k when it moves into a numerator? I'm not
-  // quite sure - but it works!
+  // Define the FIR coefficients to be used:
+  Real c0  =  1;
+  Real c1  = -a1;
+  Real cM1 = -k*b0;
+  Real cM2 = -k*b1;
+  // I think the sign inversion for c1 has to do with rsOnePoleFilter using the other sign 
+  // convention for denominator coeffs. For cM1 and cM2, I'm not sure, why it's needed. It may have
+  // to do with the factors involving a k which comes from denominator but is now used in a 
+  // numerator, but I'm really not sure about this. I have figured this out by trial and error.
 
   // Naive implementation using for each desired delay its own delayline:
   ud.reset();
@@ -362,47 +362,73 @@ void feedbackFilterAllpass()
   dlM2.setMaximumDelayInSamples(M+2);
   dlM2.setDelayInSamples(M+2);
 
-  // Helper function:
+  // Helper function to produce correction with alterntative correction filter:
   auto getSampleC2 = [&](Real x)
   {
     // Apply 1-pole:
     Real t = op.getSample(x);
 
-    // Apply the FIR part:
-    Real y = t;                             // 1
-    y +=   a1*ud.getSample(t);              // a1*d
-    y += k*b0*dlM1.getSample(t);            // b0*k*d^(M+1)
-    y += k*b1*dlM2.getSample(t);            // b1*k*d^(M+2)
+    // Apply the FIR part. It has 4 terms:
+    Real y = 0;
+    y += c0  * t;
+    y += c1  * ud.getSample(t);
+    y += cM1 * dlM1.getSample(t);
+    y += cM2 * dlM2.getSample(t);
     return y;
-    // This works! But why?! The b-coeffs are not supposed to flip signs between transfer function
-    // and difference equation! Ah! I think, it's because the involve the factor k, which does 
-    // indeed come from a feedback path...but that seems weird anyway.
   };
 
   // Produce corrected output with alternative implementation:
   Vec hc2(N);
   for(int n = 0; n < N; n++)
     hc2[n] = getSampleC2(hu[n]);
+  rsPlotVectors(hc, hc2);
 
-  rsPlotVectors(hc, hc2); 
+
 
 
   // OK. Now we have an implementation structure of C(z) that is amenable to reflecting the zeros
   // in the unit circle. When expressing the FIR part as coefficient array, we need to just reverse
-  // it. The FIR part implements
+  // it. The FIR part implements:
   //
-  //   y[n] = c_0 * x[n] + c_1 * x[n-1] + c_{M+1} * x[n-(M+1)] + c_{M+2} * x[n-(M+2)]
-  //
-  // where
-  //
-  //   c_0 = 1, c_1 = a1, c_{M+1} = k*b0, c_{M+2} = k*b1
+  //   y[n] = c0 * x[n] + c1 * x[n-1] + cM1 * x[n-(M+1)] + cM2 * x[n-(M+2)]
   //
   // Reversing that amounts to using:
   //
-  //   r0 = c_{M+2}, r1 = c_{M+1}, r_{M+1} = c_1, r_{M+2} = c_0
+  //   r0 = cM2, r1 = cM1, rM1 = c1, rM2 = c_0
+
+  // Define the reversed FIR coefficients:
+  Real r0  = cM2;
+  Real r1  = cM1;
+  Real rM1 = c1;
+  Real rM2 = c0;
+
   //
-  //
-  // ...TBC...
+  // Helper function to reversed correction filter:
+  auto getSampleR = [&](Real x)
+  {
+    // Apply 1-pole:
+    Real t = op.getSample(x);
+
+    // Apply the FIR part. It has 4 terms:
+    Real y = 0;
+    y += r0  * t;
+    y += r1  * ud.getSample(t);
+    y += rM1 * dlM1.getSample(t);
+    y += rM2 * dlM2.getSample(t);
+    return y;
+  };
+
+  // Reset objects:
+  op.reset();
+  ud.reset();
+  dlM1.reset();
+  dlM2.reset();
+
+  // Produce output with modified correction filter:
+  Vec hr(N);
+  for(int n = 0; n < N; n++)
+    hr[n] = getSampleR(hu[n]);
+  rsPlotVectors(hc, hr);
 
 
 
