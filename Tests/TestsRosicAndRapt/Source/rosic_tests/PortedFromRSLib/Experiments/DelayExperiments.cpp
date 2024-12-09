@@ -522,10 +522,10 @@ void dampedAllpassComb2()
   int  delay2     =    67;
   int  delay3     =    83;
   int  delay4     =   101;
-  int  numSamples =  2000;     // Number of samples to generate
+  int  numSamples =  8192;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
-  Real dampFreq   =  1000;     // Frequency of the low shelf for feedback damping
-  Real dampGain   =     0.6;   // Linear high freq damping gain
+  Real dampFreq   =   500;     // Frequency of the low shelf for feedback damping
+  Real dampGain   =     0.9;   // Linear high freq damping gain
   Real feedback   =     0.99;  // Feedback gain factor
 
 
@@ -546,6 +546,12 @@ void dampedAllpassComb2()
   Vec h2 = filterResponse( apf2, N, h1);
   Vec h3 = filterResponse( apf3, N, h2);
   Vec h4 = filterResponse( apf4, N, h3);
+
+  // Write outputs to wavefiles and plot:
+  rosic::writeToMonoWaveFile("DampedAllpasComb1.wav", &h1[0], N, sampleRate);
+  rosic::writeToMonoWaveFile("DampedAllpasComb2.wav", &h2[0], N, sampleRate);
+  rosic::writeToMonoWaveFile("DampedAllpasComb3.wav", &h3[0], N, sampleRate);
+  rosic::writeToMonoWaveFile("DampedAllpasComb4.wav", &h4[0], N, sampleRate);
   rsPlotVectors(h1, h2, h3, h4);
 
 
@@ -562,9 +568,20 @@ void dampedAllpassComb2()
   // Observations:
   //
   // - The first spike in the output seems to occur at the sum off all (delay-1) values, i.e. at 
-  //   delaySum - numDelays. 
+  //   delaySum - numDelays. So, it introduces a significant predelay/latency which is not so 
+  //   desirable.
   //
-  // - The outputs become progressively more complex
+  // - The outputs become progressively more complex.
+  //
+  // - When one reduces the decay time by using feedback gains closer to one and damping gains
+  //   also closer to 1, the sound becomes more metallic. The outputs of the later stages also tend
+  //   to sound more metallic than thos of the previous stage. So, adding more stages does not seem 
+  //   reduce metallicness - to the contrary. However, it also gets longer, so wehn one would 
+  //   compensate for that by using less feedback, the effect might be canceled. Maybe it can also 
+  //   be mitigated by better tuning of the delays.
+  //
+  // - When using feedback = 1, dampGain = 1, the result is strange. There's only one actual spike.
+  //   Figure out what is going on!
   //
   //
   // ToDo:
@@ -579,6 +596,8 @@ void dampedAllpassComb2()
   //
   // - Figure out what is different between ordering the combs from short to long anf long to 
   //   short. Is ther any difference? No - this can't be the case because they are all LTI!
+  //
+  // - Make a helper function setupFilter()
 }
 
 void dampedAllpassComb()
