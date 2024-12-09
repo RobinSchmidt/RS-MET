@@ -883,12 +883,17 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::getSample(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleComb(TSig in)
 {
-  out = mainDelay.getSample(in - k * damper.getSample(out));
+  //out = mainDelay.getSample(in - k * damper.getSample(out));
+  out = damper.getSample(in - k * mainDelay.getSample(out));
   return out;
+
+  // Try swapping delay and damping filter. I think, it can be achieved by using:
+  // out = damper.getSample(in - k * mainDelay.getSample(out));
+
 
   // In the dampedAllpassComb1() experiment where I derived all of this, I actually use a negative
   // sign for the feedback signal. There's some comment about why, but I'm a bit shaky on this. But 
-  // this might explain why we have ot
+  // this might explain why we have 
 }
 
 template<class TSig, class TPar>
@@ -1060,7 +1065,9 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
   // This computation has an implicit unit delay applied to apperance of combOut on the right hand
   // side. On the right hand side, it's the previous comb output. On the left hand side, it's the
   // current comb output:
-  combOut = mainDelay.getSample(in - k * applyDamper(combOut)); 
+
+  //combOut = mainDelay.getSample(in - k * applyDamper(combOut)); 
+  combOut = applyDamper(in - k * mainDelay.getSample(combOut)); 
   return combOut;
 
   // We need to use use -k * ... because when translating from transfer function to difference 
