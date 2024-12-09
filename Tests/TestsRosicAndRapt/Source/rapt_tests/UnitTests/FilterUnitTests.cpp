@@ -2234,6 +2234,8 @@ bool dampedAllpassCombUnitTest()
   using Real      = double;
   using Vec       = std::vector<Real>;
   using CombNaive = rsDampedAllpassCombNaive<Real, Real>;
+  using Comb      = rsDampedAllpassComb<Real, Real>;
+
 
   // Test parameters:
   int  delay      =   50;   // Main delay roundtrip length in samples
@@ -2250,6 +2252,15 @@ bool dampedAllpassCombUnitTest()
   Vec h = impulseResponse(naive, numSamples, 1.0);
   //rsPlotVectors(h);
   ok &= isAllpass(h, 1.e-6);
+
+  // Now try to generate the same output with the production version:
+  Comb comb;
+  comb.setupMaxDelayInSamples(delay);
+  comb.setupHighDamp(delay, feedback, dampOmega, dampGain);
+  Vec h2 = impulseResponse(comb, numSamples, 1.0);
+  ok &= h2 == h;
+  rsAssert(ok);
+
 
   // Check the spacing of the spikes of the comb without correction and with unit feedback 
   // settings (i.e. no decay, no damping). This should produce a spike train with the distance 
@@ -2269,6 +2280,12 @@ bool dampedAllpassCombUnitTest()
       ok &= h[i] == 0.0;
   }
   //rsPlotVectors(h);
+
+
+
+
+
+
 
   return ok;
 

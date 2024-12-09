@@ -911,15 +911,12 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::applyCorrectionFilter(TSig in)
 
 //=================================================================================================
 
-/** This is the less naive version meant to go into production someday
-
-*/
+/** This is the less naive version meant to go into production someday */
 
 template<class TSig, class TPar>
 class rsDampedAllpassComb
 {
 
-  // Maybe rename to rsDampedAllpassComb. 
 
 public:
 
@@ -934,7 +931,7 @@ public:
   // exactly given by delay.
 
 
-
+  /** Resets the state. */
   void reset();
 
   /** This is the normal getSample funtion to be used when you want to produce the allpass output.
