@@ -705,7 +705,8 @@ void dampedAllpassCombComplex()
   using Complex = rsComplex<Real>;
   using VecR    = std::vector<Real>;
   using VecC    = std::vector<Complex>;
-  using Allpass = rsDampedAllpassComb<Complex, Complex>;
+  //using Allpass = rsDampedAllpassComb<Complex, Complex>;
+  using Allpass = rsDampedAllpassComb<Complex, Real>;
 
   Complex j(0,1);
 
@@ -727,7 +728,10 @@ void dampedAllpassCombComplex()
   // rsDampedAllpassComb<Complex, Complex>;
   // and define the k parameter as TSig.
 
-  VecC h = impulseResponse(ap, numSamples, Complex(1));
+  //VecC h = impulseResponse(ap, numSamples, Complex(1));
+  // doesn't compile
+
+
 
   Real fbAbs = rsAbs(feedback);  // For a check
 

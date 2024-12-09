@@ -776,7 +776,7 @@ public:
   void setMaxDelayInSamples(int newMaxDelay);
 
 
-  void setupHighDamp(int delay, TPar feedback, TPar dampOmega, TPar dampGain, bool preDelay);
+  void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay);
 
   // We use the convention that we use  M = delay - 1  for the delayline to compensate for the unit
   // delay. This makes more sense from a user's perspective because then, the spike spacing is 
@@ -822,7 +822,7 @@ protected:
   TSig out = TSig(0);
 
   // Coefficients:
-  TPar k;
+  TSig k;
   TPar r0, r1, rM1, rM2;
 
   bool preDelay = false;
@@ -840,7 +840,7 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 
 template<class TSig, class TPar>
 void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
-  int delay, TPar feedback, TPar dampOmega, TPar dampGain, bool preDelay)
+  int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay)
 {
   k = feedback;
   this->preDelay = preDelay;
@@ -943,7 +943,7 @@ public:
   at 100 sample intervals, the feedback gain is 0.9 the shelving frequency is somewhere in the 
   middle frequency range (at fs = 44.1 kHz) and the high frequency gain of the damping shelver 
   is 0.7. */
-  void setupHighDamp(int delay, TPar feedback, TPar dampOmega, TPar dampGain, bool predelay);
+  void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay);
 
 
 
@@ -1002,7 +1002,7 @@ protected:
   TSig y1c = 0;            // y[n-1] for corrector one pole
 
   // Coefficients:
-  TPar k = 0;
+  TSig k = 0;                    // Needs to be TSig when we want to use it with complex feedback
   TPar r0 = 0, r1 = 0, rM1 = 0;
   TPar b0 = 0, b1 = 0, a1 = 0;
   int  M = 0;
@@ -1021,7 +1021,7 @@ void rsDampedAllpassComb<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 
 template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
-  int delay, TPar feedback, TPar dampOmega, TPar dampGain, bool preDelay)
+  int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay)
 {
   k = feedback;
   this->preDelay = preDelay;
