@@ -558,17 +558,17 @@ void dampedAllpassComb2()
 
   // We have 4 different modes: unipolar/bipolar (selected by sign of k) and predelay or not 
   // (selected by bool parameter):                                             
-  //                                                                              // polar predelay
-  setupComb(comb, d, +k, w, g, false, 0); Vec h1 = impulseResponse(comb, N, 1.0); //  uni     no
-  setupComb(comb, d, -k, w, g, false, 0); Vec h2 = impulseResponse(comb, N, 1.0); //  bi      no
-  setupComb(comb, d, +k, w, g, true,  0); Vec h3 = impulseResponse(comb, N, 1.0); //  uni     yes
-  setupComb(comb, d, -k, w, g, true,  0); Vec h4 = impulseResponse(comb, N, 1.0); //  bi      yes
+  ////                                                                              // polar predelay
+  //setupComb(comb, d, +k, w, g, false, 0); Vec h1 = impulseResponse(comb, N, 1.0); //  uni     no
+  //setupComb(comb, d, -k, w, g, false, 0); Vec h2 = impulseResponse(comb, N, 1.0); //  bi      no
+  //setupComb(comb, d, +k, w, g, true,  0); Vec h3 = impulseResponse(comb, N, 1.0); //  uni     yes
+  //setupComb(comb, d, -k, w, g, true,  0); Vec h4 = impulseResponse(comb, N, 1.0); //  bi      yes
 
                                             // polar  predelay 
-  //Vec h1 = impResp(d, +k, w, g, false, 0);  //  uni     no
-  //Vec h2 = impResp(d, -k, w, g, false, 0);  //  bi      no
-  //Vec h3 = impResp(d, +k, w, g, true,  0);  //  uni     yes
-  //Vec h4 = impResp(d, -k, w, g, true,  0);  //  bi      yes
+  Vec h1 = impResp(d, +k, w, g, false, 0);  //  uni     no
+  Vec h2 = impResp(d, -k, w, g, false, 0);  //  bi      no
+  Vec h3 = impResp(d, +k, w, g, true,  0);  //  uni     yes
+  Vec h4 = impResp(d, -k, w, g, true,  0);  //  bi      yes
 
 
   // Plot them all together and then one at a time:
