@@ -984,7 +984,7 @@ protected:
 
   // Coefficients:
   TPar k;
-  TPar r0, r1, rM1, rM2;
+  TPar r0, r1, rM1;
   TPar b0, b1, a1;
   int  M;
 
@@ -1024,7 +1024,7 @@ void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   r0  = -k*b1;
   r1  = -k*b0;
   rM1 = -a1;
-  rM2 =  1;                                 // Get rid in production code!
+  //rM2 =  1;                                 // Get rid in production code!
 }
 
 template<class TSig, class TPar>
@@ -1063,7 +1063,7 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   y += r0  * t;
   y += r1  * unitDelay.getSample(t);
   y += rM1 * corrDelay.readOutputAt(M+1);
-  y += rM2 * corrDelay.readOutputAt(M+2);
+  y +=       corrDelay.readOutputAt(M+2);
   corrDelay.writeInputAndUpdate(t);
   // Maybe at least one for the calls to readOutputAt can be replaced by a call that just uses the
   // tapOut pointer. Maybe if we organize the calling order right, we can even retrieve the other
