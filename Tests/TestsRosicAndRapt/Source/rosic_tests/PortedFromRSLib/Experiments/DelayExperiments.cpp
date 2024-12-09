@@ -331,10 +331,46 @@ void feedbackFilterAllpass()
   
 
   // Now we try to implement the correction filter in a different way that is more amenable to 
-  // reflecting the zeros.
+  // reflecting the zeros. Namely, in the form:
+  //
+  //           1 + a1*d + b0*k*d^(M+1) + b1*k*d^(M+2)
+  //   C(z) = ----------------------------------------
+  //                   1 + a1*d
 
-  OnePole op;   // Should have same poles as fbf and 1 as denominator
-  op.setCoefficients(1.0, 0.0, fbf.getA1());
+  Real b0 = fbf.getB0();
+  Real b1 = fbf.getB1();
+  Real a1 = fbf.getA1();
+  Delay   dl;                               // For the numerator
+  OnePole op;                               // For the denominator
+  op.setCoefficients(1.0, 0.0, a1);         // Should have same poles as fbf and 1 as denominator
+  dl.setMaximumDelayInSamples(M+2);
+
+  // Helper function:
+  auto getSampleC2 = [&](Real x)
+  {
+    Real t = op.getSample(x);               // Apply 1-pole
+
+    Real y = x;                             // 1 + ...
+    y -= a1*dl.readOutputAt(1);             // a1*d + ...
+    y -= b0*k*dl.readOutputAt(M+1);         // b0*k*d^(M+1)
+    y -= b1*k*dl.readOutputAt(M+2);         // b1*k*d^(M+2)
+
+    dl.writeInputAndUpdate(t);              // Or should we do this first?
+
+    return y;
+  };
+
+  // Produce corrected output with alternative implementation:
+  Vec hc2(N);
+  for(int n = 0; n < N; n++)
+    hc2[n] = getSampleC2(hu[n]);
+
+  rsPlotVectors(hc, hc2);
+
+
+
+
+
 
 
   //op = fbf;     // take over
