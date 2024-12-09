@@ -523,7 +523,7 @@ void dampedAllpassComb2()
   int  delay      =   100;     // Main delay roundtrip length in samples. Is M-1 in the algo
   int  numSamples =  8192;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
-  Real dampFreq   =  1000;     // Frequency (in Hz) of the low shelf for feedback damping
+  Real dampFreq   =  1000;     // Frequency (in Hz) of the shelf filter for feedback damping
   Real dampGain   =     0.7;   // Linear high freq damping gain
   Real feedback   =     0.99;  // Feedback gain factor
   int  mode       =     0;     // 0: high-damp, 1: low-damp, 2: allpass
@@ -579,6 +579,8 @@ void dampedAllpassComb2()
   Vec h5 = impResp(d, +k, w, g, false, 1);
   rsPlotVectors(h1, h5);
 
+  rosic::writeToMonoWaveFile("DampedAllpasComb_LowDamp.wav", &h5[0], N, sampleRate);
+
 
 
 
@@ -586,6 +588,9 @@ void dampedAllpassComb2()
   //
   // - The variants with the predelay have stronger initial spike than those without. I think, that
   //   makes them sound less tonal.
+  //
+  // - In high-damp mode, the impulses smear out more and more over time. In low damp mode, they
+  //   actually become more wiggly over time. The result sounds very tonal.
 }
 
 void dampedAllpassComb3()
