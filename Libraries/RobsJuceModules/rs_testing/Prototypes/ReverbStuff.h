@@ -1030,9 +1030,9 @@ void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   corrDelay.setDelayInSamples(M+2);
 
   // Compute correction coefficients:
-  r0  = -k*b1;
-  r1  = -k*b0;
-  rM1 =  a1;
+  r0  = k*b1;
+  r1  = k*b0;
+  rM1 = a1;
 
   // I think, the reasons for the minus signs in r0, r1 have to do with the fact that we use
   // 
@@ -1062,7 +1062,7 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
   // This computation has an implicit unit delay applied to apperance of combOut on the right hand
   // side. On the right hand side, it's the previous comb output. On the left hand side, it's the
   // current comb output:
-  combOut = mainDelay.getSample(in + k * applyDamper(combOut)); 
+  combOut = mainDelay.getSample(in - k * applyDamper(combOut)); 
   return combOut;
 
   // Use -k * ... because we use the convention that in difference equations, the feedback
