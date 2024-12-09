@@ -777,10 +777,7 @@ public:
 
 
   void setupHighDamp(int delay, TPar feedback, TPar dampOmega, TPar dampGain);
-  // Maybe it should be more flexible to allow also modes in which the low freqs are progressively
-  // dampened. It would actually be pretty nice to have a full blown biquad available for damping
-  // Way may want high and lwo damping etc. ....but for this proto
-  //
+
   // We use the convention that we use  M = delay - 1  for the delayline to compensate for the unit
   // delay. This makes more sense from a user's perspective because then, the spike spacing is 
   // exactly given by delay.
@@ -815,7 +812,7 @@ protected:
   // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
   // filter with filtered unit delay feedback:
   rsBasicDelayLine<TSig>             mainDelay;
-  rsFirstOrderFilterBase<TSig, TPar> feedbackDamper;  // rename to damper
+  rsFirstOrderFilterBase<TSig, TPar> damper;  // rename to damper
 
   // Objects for the correction filter:
   rsUnitDelay<TSig>                  unitDelay;
@@ -850,8 +847,8 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
   // Set up one pole filters:
   TPar b0, b1, a1;
   rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(dampOmega, dampGain, &b0, &b1, &a1);
-  feedbackDamper.setCoefficients(b0,  b1,  a1);
-  corOnePole.setCoefficients(    1.0, 0.0, a1);
+  damper.setCoefficients(    b0,  b1,  a1);
+  corOnePole.setCoefficients(1.0, 0.0, a1);
 
   // Set up delaylines:
   int M = delay - 1;                        // -1 corrects for unit delay in feedback path
@@ -870,7 +867,7 @@ template<class TSig, class TPar>
 void rsDampedAllpassCombNaive<TSig, TPar>::reset()
 {
   mainDelay.reset();
-  feedbackDamper.reset();
+  damper.reset();
   unitDelay.reset();
   corDelayM1.reset();
   corDelayM2.reset();
@@ -888,12 +885,171 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::getSample(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleComb(TSig in)
 {
-  out = mainDelay.getSample(in + k * feedbackDamper.getSample(out));
+  out = mainDelay.getSample(in + k * damper.getSample(out));
   return out;
 }
 
 template<class TSig, class TPar>
 TSig rsDampedAllpassCombNaive<TSig, TPar>::applyCorrectionFilter(TSig in)
+{
+  // Apply 1-pole:
+  TSig t = corOnePole.getSample(in);
+
+  // Apply the FIR part:
+  TSig y = 0;
+  y += r0  * t;
+  y += r1  * unitDelay.getSample(t);
+  y += rM1 * corDelayM1.getSample(t);
+  y += rM2 * corDelayM2.getSample(t);
+
+  return y;
+}
+
+
+
+
+
+//=================================================================================================
+
+/** This is the less naive version meant to go into production someday
+
+*/
+
+template<class TSig, class TPar>
+class rsDampedAllpassComb
+{
+
+  // Maybe rename to rsDampedAllpassComb. 
+
+public:
+
+
+  void setupMaxDelayInSamples(int newMaxDelay);
+
+
+  void setupHighDamp(int delay, TPar feedback, TPar dampOmega, TPar dampGain);
+
+  // We use the convention that we use  M = delay - 1  for the delayline to compensate for the unit
+  // delay. This makes more sense from a user's perspective because then, the spike spacing is 
+  // exactly given by delay.
+
+
+
+  void reset();
+
+  /** This is the normal getSample funtion to be used when you want to produce the allpass output.
+  It calls getSampleComb() and then applyCorrectionFilter() on the result of that. You may
+  be interested in using the object without the correction filter to produce only the pure comb 
+  filter output. That's why I have split it that way so you can also call getSampleComb if that's
+  what you want. You can then just ignore the correction filter - or you can apply it yourself but
+  maybe after messing with comb output. I don't know, if that's useful though, but you can do it. 
+  ...TBC...   */
+  TSig getSample(TSig in);
+
+  /** This implements producing samples for the damped delay feedback loop alone, i.e. without the
+  correction filter applied. */
+  TSig getSampleComb(TSig in);
+
+  /** This function is supposed to be called with the output produced by getSampleComb to apply the
+  correction filter. */
+  TSig applyCorrectionFilter(TSig combOutput);
+  // rename to applyCorrector
+
+protected:
+
+
+
+
+  // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
+  // filter with filtered unit delay feedback:
+  rsBasicDelayLine<TSig>             mainDelay;
+  rsFirstOrderFilterBase<TSig, TPar> damper;  // rename to damper
+
+                                                      // Objects for the correction filter:
+  rsUnitDelay<TSig>                  unitDelay;
+  rsBasicDelayLine<TSig>             corDelayM1;
+  rsBasicDelayLine<TSig>             corDelayM2;
+  rsFirstOrderFilterBase<TSig, TPar> corOnePole;
+
+  // State for the unit delay feedback loop:
+  TSig out = TSig(0);
+
+  // Coefficients:
+  TPar k;
+  TPar r0, r1, rM1, rM2;
+
+  // Optimizations:
+  // 
+  // - Share one delayline for corDelayM1, corDelayM2
+  //
+  // - Implement the one poles inline - save some memory for duplicate and unused coeffs.
+  //
+  // - Maybe implement the unit delay inline. Although I don't think that this causes overhead.
+
+};
+
+template<class TSig, class TPar>
+void rsDampedAllpassComb<TSig, TPar>::setupMaxDelayInSamples(int newMaxDelay)
+{
+  int maxM = newMaxDelay - 1;
+  mainDelay .setMaximumDelayInSamples(maxM);
+  corDelayM1.setMaximumDelayInSamples(maxM+1);
+  corDelayM2.setMaximumDelayInSamples(maxM+2);
+}
+
+template<class TSig, class TPar>
+void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
+  int delay, TPar feedback, TPar dampOmega, TPar dampGain)
+{
+  k = feedback;
+
+  // Set up one pole filters:
+  TPar b0, b1, a1;
+  rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(dampOmega, dampGain, &b0, &b1, &a1);
+  damper.setCoefficients(    b0,  b1,  a1);
+  corOnePole.setCoefficients(1.0, 0.0, a1);
+
+  // Set up delaylines:
+  int M = delay - 1;                        // -1 corrects for unit delay in feedback path
+  mainDelay.setDelayInSamples(M);
+  corDelayM1.setDelayInSamples(M+1);
+  corDelayM2.setDelayInSamples(M+2);
+
+  // Compute correction coefficients:
+  r0  = -k*b1;
+  r1  = -k*b0;
+  rM1 = -a1;
+  rM2 =  1;                                 // Get rid in production code!
+}
+
+template<class TSig, class TPar>
+void rsDampedAllpassComb<TSig, TPar>::reset()
+{
+  mainDelay.reset();
+  damper.reset();
+  unitDelay.reset();
+  corDelayM1.reset();
+  corDelayM2.reset();
+  corOnePole.reset();
+  out = TSig(0);
+}
+
+
+template<class TSig, class TPar>
+TSig rsDampedAllpassComb<TSig, TPar>::getSample(TSig in)
+{
+  return applyCorrectionFilter(getSampleComb(in));
+}
+
+template<class TSig, class TPar>
+TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
+{
+  out = mainDelay.getSample(in + k * damper.getSample(out));
+  return out;
+}
+
+template<class TSig, class TPar>
+TSig rsDampedAllpassComb<TSig, TPar>::applyCorrectionFilter(TSig in)
 {
   // Apply 1-pole:
   TSig t = corOnePole.getSample(in);
