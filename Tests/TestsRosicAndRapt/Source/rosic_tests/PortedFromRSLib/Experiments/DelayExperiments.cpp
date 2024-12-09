@@ -717,7 +717,7 @@ void dampedAllpassCombComplex()
   Real    dampFreq   =   500;
   Real    dampGain   =     0.8;
   Real    fbGain     =     0.99;
-  Real    fbPhase    =     1.7;   // 0.7
+  Real    fbPhase    =    3*PI/2;   // 0.7,1.7
 
 
   //Complex feedback   =  0.99*(0.8 + 0.6*j);  // A complex feedback gain
@@ -744,6 +744,10 @@ void dampedAllpassCombComplex()
   //
   // - Using complex numbers imprints and undulation onto the impulse reponses.
   //
+  // - Feedback phases of 0 and pi give purely real outputs. With 0, it's unipolar, with pi its
+  //   bipolar. That's how it has to be - we expect to get back to behavior of positive and
+  //   negative signs. pi/2 gives a bipolar spike train both real and imaginary part
+  //
   //
   // ToDo:
   //
@@ -751,7 +755,7 @@ void dampedAllpassCombComplex()
   //
   // - Check if the real and imaginary parts of the output are both allpass in nature
   //
-  // - I think, the feedbakc phase should scale with the delay to achieve a uniform undulation
+  // - I think, the feedback phase should scale with the delay to achieve a uniform undulation
   //   frequency. Figure this out!
 
 }
