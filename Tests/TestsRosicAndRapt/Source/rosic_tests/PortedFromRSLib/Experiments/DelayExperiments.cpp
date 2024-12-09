@@ -313,11 +313,10 @@ void feedbackFilterAllpass()
   auto getSampleC = [&](Real x)
   {
     return x - k * ud.getSample(fbf.getSample(apf.getSample(x)));
-    // C(z) = 1 + k * z^-1 * F(z) * A(z). The order in which we apply k, ud, fbf, apf should not 
-    // matter because everything is linear. ToDo: implement () operators such that we can write:
-    // return x - k * ud(fbf(apf(x))); Maybe even rename the filter objects apf, fbf to A and F.
-    // Then the call would look like x - k * ud(F(A(x)))...but nah - that might suggest function 
-    // composition in the math equations - but there, it's actually multiplication.
+    // C(z) = 1 + k * z^-1 * F(z) * A(z). The sign flip "1 + k * z^-1.." -> "x - k * .." is because
+    // in a transfer function, the denominator signs are flipeed with respect to the difference 
+    // equation. The order in which we apply k, ud, fbf, apf should not matter because everything 
+    // is linear.
   };
 
   // This should produce a single spike at M like a delayline without feedback. That is, we compute
@@ -350,6 +349,9 @@ void feedbackFilterAllpass()
   OnePole op;                               // For the denominator
   op.setCoefficients(1.0, 0.0, a1);         // Should have same poles as fbf and 1 as denominator
 
+  a1 = -a1;  
+  // rsOnePoleFilter uses the other sign convention for the feedback coeffs, so if we 
+  // want to use the a1 coeff directly, we have to negate it...but it doesn't help.
 
   // Naive implementation using for each desired delay its own delayline:
   ud.reset();
@@ -367,13 +369,22 @@ void feedbackFilterAllpass()
     Real t = op.getSample(x);
 
     // Apply the FIR multitap delay to 1-pole output:
+    //Real y = t;                             // 1 + ...
+    //y +=   a1*ud.getSample(t);              // a1*d + ...
+    //y += k*b0*dlM1.getSample(t);            // b0*k*d^(M+1)
+    //y += k*b1*dlM2.getSample(t);            // b1*k*d^(M+2)
+    //return y;
+
+
     Real y = t;                             // 1 + ...
     y +=   a1*ud.getSample(t);              // a1*d + ...
-    y += k*b0*dlM1.getSample(t);            // b0*k*d^(M+1)
-    y += k*b1*dlM2.getSample(t);            // b1*k*d^(M+2)
+    y -= k*b0*dlM1.getSample(t);            // b0*k*d^(M+1)
+    y -= k*b1*dlM2.getSample(t);            // b1*k*d^(M+2)
     return y;
+    // This works! But why?! The b-coeffs are not supposed to flip signs between transfer function
+    // and difference equation! Ah! I think, it's because the involve the factor k, which does 
+    // indeed come from a feedback path...but that seems weird anyway.
   };
-
 
   // Produce corrected output with alternative implementation:
   Vec hc2(N);
@@ -383,40 +394,6 @@ void feedbackFilterAllpass()
   rsPlotVectors(hc, hc2); 
 
 
-
-  /*
-
-  dl.setMaximumDelayInSamples(M+2);
-  dl.setDelayInSamples(M+2);
-
-  // Helper function:
-  auto getSampleC2 = [&](Real x)
-  {
-    // Apply 1-pole:
-    Real t = op.getSample(x);
-
-    // Apply the FIR multitap delay to 1-pole output:
-
-    dl.writeInputAndUpdate(t);              // Should we do this before or after the readings?
-    Real y = t;                             // 1 + ...
-    y +=   a1*dl.readOutputAt(1);           // a1*d + ...
-    y += k*b0*dl.readOutputAt(M+1);         // b0*k*d^(M+1)
-    y += k*b1*dl.readOutputAt(M+2);         // b1*k*d^(M+2)
-    return y;
-  };
-  // This seems to be still wrong!
-  // Maybe make first a silly implementation where each delay uses its own delayline. this is 
-  // wasteful but less error prone.
-
-
-
-  // Produce corrected output with alternative implementation:
-  Vec hc2(N);
-  for(int n = 0; n < N; n++)
-    hc2[n] = getSampleC2(hu[n]);
-
-  rsPlotVectors(hc, hc2);  // Nope! Not the same!
-  */
 
 
 
@@ -453,4 +430,8 @@ void feedbackFilterAllpass()
   //   the feedback. What we actually want is to undo only the effect of the feedback on the 
   //   magnitude response. But we want to retain effects on the phase response. Let's also assume
   //   a 1-pole/1-zero feedback filter F(z) = (b0 + b1*d) / (1 + a1*d) with d = z^-1.
+  //
+  // - In a production implemenation, we may use a single delayline to realize d^(M+2), d^(M+1), d.
+  //   but maybe d should not be realized by the delyline. Maybe using a unit delay is more 
+  //   efficient for this
 }
