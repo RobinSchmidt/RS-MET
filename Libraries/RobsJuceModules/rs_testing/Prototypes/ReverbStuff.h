@@ -765,7 +765,7 @@ DelayExperiments.cpp  ...TBC...
 */
 
 template<class TSig, class TPar>
-class rsFeedbackFilterAllpassNaive
+class rsDampedAllpassCombNaive
 {
 
   // Maybe rename to rsDampedAllpassComb. 
@@ -816,7 +816,7 @@ protected:
 
 
 template<class TSig, class TPar>
-void rsFeedbackFilterAllpassNaive<TSig, TPar>::setupHighDamp(
+void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
   int delay, TPar feedback, TPar dampOmega, TPar dampGain)
 {
   k = feedback;
@@ -841,7 +841,7 @@ void rsFeedbackFilterAllpassNaive<TSig, TPar>::setupHighDamp(
 }
 
 template<class TSig, class TPar>
-void rsFeedbackFilterAllpassNaive<TSig, TPar>::reset()
+void rsDampedAllpassCombNaive<TSig, TPar>::reset()
 {
   mainDelay.reset();
   feedbackFilter.reset();
@@ -854,20 +854,20 @@ void rsFeedbackFilterAllpassNaive<TSig, TPar>::reset()
 
 
 template<class TSig, class TPar>
-TSig rsFeedbackFilterAllpassNaive<TSig, TPar>::getSample(TSig in)
+TSig rsDampedAllpassCombNaive<TSig, TPar>::getSample(TSig in)
 {
   return applyCorrectionFilter(getSampleUncorrected(in));
 }
 
 template<class TSig, class TPar>
-TSig rsFeedbackFilterAllpassNaive<TSig, TPar>::getSampleUncorrected(TSig in)
+TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleUncorrected(TSig in)
 {
   out = mainDelay.getSample(in + k * feedbackDamper.getSample(out));
   return out;
 }
 
 template<class TSig, class TPar>
-TSig rsFeedbackFilterAllpassNaive<TSig, TPar>::applyCorrectionFilter(TSig in)
+TSig rsDampedAllpassCombNaive<TSig, TPar>::applyCorrectionFilter(TSig in)
 {
   // Apply 1-pole:
   TSig t = corOnePole.getSample();
