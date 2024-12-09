@@ -961,7 +961,7 @@ protected:
 
   TSig applyCorrectorOnePole(TSig x)
   {
-    TSig y = b0 * x + b1 * x1c + a1 * y1c;
+    TSig y = x + a1 * y1c;
     x1c = x;
     y1c = y;
     return y;
@@ -984,7 +984,7 @@ protected:
 
   // States for the two one pole filters:
   TSig x1d = 0, y1d = 0;   // x[n-1], y[n-1] for damper
-  TSig x1c = 0, y1c = 0;   // x[n-1], y[n-1] for corrector one pole
+  TSig x1c = 0, y1c = 0;   // x[n-1], y[n-1] for corrector one pole  ..x1c not needed
   // ToDo use DF2 or TDF2 implementation
 
 
@@ -1063,8 +1063,8 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSample(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 {
-  out = mainDelay.getSample(in + k * damper.getSample(out));
-  //out = mainDelay.getSample(in + k * applyDamper(out));
+  //out = mainDelay.getSample(in + k * damper.getSample(out));
+  out = mainDelay.getSample(in + k * applyDamper(out));
 
   return out;
 }
@@ -1073,8 +1073,8 @@ template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 {
   // Apply 1-pole:
-  TSig t = corOnePole.getSample(in);
-  //TSig t = applyCorrectorOnePole(in);
+  //TSig t = corOnePole.getSample(in);
+  TSig t = applyCorrectorOnePole(in);
 
   // Apply the FIR part:
   TSig y = 0;
