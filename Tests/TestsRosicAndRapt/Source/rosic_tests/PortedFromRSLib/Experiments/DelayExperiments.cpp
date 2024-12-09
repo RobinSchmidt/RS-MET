@@ -278,7 +278,7 @@ void dampedAllpassComb1()
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
   Real dampFreq   =  1000;     // Frequency of the low shelf for feedback damping
   Real dampGain   =     0.7;   // Linear high freq damping gain
-  Real k          =     0.9;   // Feedback gain factor
+  Real k          =     0.99;  // Feedback gain factor
 
 
   // Create and set up the two given filters for A(z) and F(z):
@@ -525,7 +525,7 @@ void dampedAllpassComb2()
   int  numSamples =  8192;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
   Real dampFreq   =  3000;     // Frequency (in Hz) of the low shelf for feedback damping
-  Real dampGain   =     0.8;   // Linear high freq damping gain
+  Real dampGain   =     0.7;   // Linear high freq damping gain
   Real feedback   =     0.99;  // Feedback gain factor
 
   // Helper function to set up the given flt object with the given settings:
@@ -539,22 +539,28 @@ void dampedAllpassComb2()
   // either positive or negative sign.
 
   // Set up the 4 damped allpass comb filters:
-  int N  = numSamples;
+  int  N  = numSamples;
+  int  d  = delay;
   Real w  = 2*PI*dampFreq/sampleRate;
   Real g  = dampGain;
   Real k  = feedback;
   Allpass comb; 
 
+  // We have 4 different modes: unipolar/bipolar (selected by sign of k) and predelay or not 
+  // (selected by bool parameter):                                             
+  //                                                                            //  polar  predelay
+  setupComb(comb, d, +k, w, g, false); Vec h1 = impulseResponse(comb, N, 1.0);  //   uni      no
+  setupComb(comb, d, -k, w, g, false); Vec h2 = impulseResponse(comb, N, 1.0);  //   bi       no
+  setupComb(comb, d, +k, w, g, true ); Vec h3 = impulseResponse(comb, N, 1.0);  //   uni      yes
+  setupComb(comb, d, -k, w, g, true ); Vec h4 = impulseResponse(comb, N, 1.0);  //   bi       yes
 
-  setupComb(comb, delay, +k, w, g, false);
-  Vec h1 = impulseResponse(comb, N, 1.0);
 
-
-  setupComb(comb, delay, -k, w, g, false);
-  Vec h2 = impulseResponse(comb, N, 1.0);
-
-
-  rsPlotVectors(h1, h2);
+  // Plot them all together and then one at a time:
+  rsPlotVectors(h1, h2, h3, h4);
+  rsPlotVectors(h1);
+  rsPlotVectors(h2);
+  rsPlotVectors(h3);
+  rsPlotVectors(h4);
 
 
 
@@ -688,7 +694,7 @@ void dampedAllpassComb3()
 
 void dampedAllpassComb()
 {
-  //dampedAllpassComb1();
+  dampedAllpassComb1();
   dampedAllpassComb2();
   dampedAllpassComb3();
 }
