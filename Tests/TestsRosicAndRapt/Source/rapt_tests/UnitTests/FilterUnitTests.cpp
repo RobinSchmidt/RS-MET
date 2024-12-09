@@ -2282,12 +2282,6 @@ bool dampedAllpassCombUnitTest()
   }
   //rsPlotVectors(h);
 
-
-
-
-
-
-
   return ok;
 
   // ToDo:

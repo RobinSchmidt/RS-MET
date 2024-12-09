@@ -947,7 +947,7 @@ public:
   /** This function is supposed to be called with the output produced by getSampleComb to apply the
   correction filter. */
   TSig applyCorrector(TSig combOutput);
-  // rename to applyCorrector
+
 
 protected:
 
@@ -957,6 +957,7 @@ protected:
     x1d = x;
     y1d = y;
     return y;
+    // ToDo use DF2 or TDF2 implementation
   }
 
   TSig applyCorrectorOnePole(TSig x)
@@ -966,40 +967,29 @@ protected:
     return y;
   }
 
-
-
   // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
   // filter with filtered unit delay feedback:
-  rsBasicDelayLine<TSig>             mainDelay;
-  //rsFirstOrderFilterBase<TSig, TPar> damper;  // rename to damper
+  rsBasicDelayLine<TSig> mainDelay;
 
   // Objects for the correction filter:
-  rsUnitDelay<TSig>                  unitDelay;
-  rsBasicDelayLine<TSig>             corrDelay;
-  //rsFirstOrderFilterBase<TSig, TPar> corOnePole;
+  rsUnitDelay<TSig>      unitDelay;
+  rsBasicDelayLine<TSig> corrDelay;
 
   // State for the unit delay feedback loop:
-  TSig out = TSig(0);
+  TSig out = TSig(0);      // Rename to combOut
 
   // States for the two one pole filters:
   TSig x1d = 0, y1d = 0;   // x[n-1], y[n-1] for damper
   TSig y1c = 0;            // y[n-1] for corrector one pole
-  // ToDo use DF2 or TDF2 implementation
-
 
   // Coefficients:
   TPar k;
   TPar r0, r1, rM1, rM2;
   TPar b0, b1, a1;
-
-  int M;
+  int  M;
 
   // Optimizations:
   // 
-  // - Share one delayline for corDelayM1, corDelayM2
-  //
-  // - Implement the one poles inline - save some memory for duplicate and unused coeffs.
-  //
   // - Maybe implement the unit delay inline. Although I don't think that this causes overhead.
 
 };
@@ -1018,14 +1008,12 @@ void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
 {
   k = feedback;
 
-  // Set up one pole filters:
-  //TPar b0, b1, a1;
-  rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(dampOmega, dampGain, &b0, &b1, &a1);
-  //damper.setCoefficients(    b0,  b1,  a1);
-  //corOnePole.setCoefficients(1.0, 0.0, a1);
-
-  // Maybe use magnitude match rather than BLT. Might be nicer
-
+  // Compute the pole filters coefficients:
+  rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(
+    dampOmega, dampGain, &b0, &b1, &a1);
+  // Maybe use magnitude match rather than BLT. Might be nicer. But then we need to make the same
+  // change in the naive implementation to make the unit test still pass. Maybe use another 
+  // function that uses the other sign convention for the a-coeffs.
 
   // Set up delaylines:
   M = delay - 1;                            // -1 corrects for unit delay in feedback path
@@ -1043,17 +1031,13 @@ template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::reset()
 {
   mainDelay.reset();
-  //damper.reset();
   unitDelay.reset();
   corrDelay.reset();
-  //corOnePole.reset();
-
   out = TSig(0);
   x1d = TSig(0);
   y1d = TSig(0);
   y1c = TSig(0);
 }
-
 
 template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::getSample(TSig in)
@@ -1064,9 +1048,7 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSample(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 {
-  //out = mainDelay.getSample(in + k * damper.getSample(out));
   out = mainDelay.getSample(in + k * applyDamper(out));
-
   return out;
 }
 
@@ -1074,7 +1056,6 @@ template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 {
   // Apply 1-pole:
-  //TSig t = corOnePole.getSample(in);
   TSig t = applyCorrectorOnePole(in);
 
   // Apply the FIR part:
@@ -1087,8 +1068,6 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   // Maybe at least one for the calls to readOutputAt can be replaced by a call that just uses the
   // tapOut pointer. Maybe if we organize the calling order right, we can even retrieve the other
   // then by readOutput
-
-
 
   return y;
 }
