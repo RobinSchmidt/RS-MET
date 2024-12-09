@@ -717,7 +717,20 @@ void dampedAllpassCombComplex()
   Real    dampGain   =     0.8;
   Complex feedback   =  0.99*(0.8 + 0.6*j);  // A complex feedback gain
 
+
   Allpass ap;
+  Real w  = 2*PI*dampFreq/sampleRate;
+  ap.setMaxDelayInSamples(delay);
+
+  //ap.setupHighDamp(delay, feedback, Complex(w), Complex(dampGain), false);
+  // This doesn't work! I think, we need to use 
+  // rsDampedAllpassComb<Complex, Complex>;
+  // and define the k parameter as TSig.
+
+  VecC h = impulseResponse(ap, numSamples, Complex(1));
+
+  Real fbAbs = rsAbs(feedback);  // For a check
+
 
 
 }
