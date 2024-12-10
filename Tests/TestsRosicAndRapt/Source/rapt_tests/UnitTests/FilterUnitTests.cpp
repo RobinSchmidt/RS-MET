@@ -28,7 +28,7 @@ bool onePoleFilterUnitTest()
 
   Vec h = impulseResponse(flt, N, Real(1));
 
-  /*
+  
   //rsPlotVectors(h);
 
   // Try inverting the filter:
@@ -44,7 +44,8 @@ bool onePoleFilterUnitTest()
 
   // Swap numerator against denominator:
   rsSwap(a1, b1);
-  //a1 = -a1;         // Because the implementation uses the silly sign convention.
+  a1 = -a1;         // Because the implementation uses the silly sign convention.
+  b1 = -b1;
 
   // Re-apply (inverted) overall gain:
   b0 *= s;
@@ -55,7 +56,7 @@ bool onePoleFilterUnitTest()
   // Let's see, if this inversion attempt brings us back to a unit impulse:
   Vec h2 = filterResponse(flt, N, h);
   rsPlotVectors(h2);
-  */
+  
 
 
 

@@ -32,8 +32,8 @@ void invertBiquad(T &b0, T &b1, T &b2, T &a1, T &a2)
   // there's a lot of legacy code that uses the second, so that's not easy. Moreover, it may break
   // client code. It's a mess! 
   //
-  // This code is very questionable anyway! I think, it might be buggy! Has this even been tested? 
-  // Well, It's used in rsPhonoFilter ...hmm...
+  // This code is used in rsPhonoFilter such that its unit test covers it. But eventually, it 
+  // should get its own unit test.
 }
 
 template<class T>
