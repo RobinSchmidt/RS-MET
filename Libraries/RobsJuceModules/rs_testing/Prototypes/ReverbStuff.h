@@ -854,7 +854,7 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
   rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(dampOmega, dampGain, &b0, &b1, &a1);
   damper.setCoefficients(    b0,  b1,  a1);
   invDamper.setCoefficients( b0,  b1,  a1);
-  //invDamper.
+  invDamper.invert();
   corOnePole.setCoefficients(1.0, 0.0, a1);
   a1 = -a1; // We want to use the y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] sign convention here
 
@@ -894,13 +894,22 @@ template<class TSig, class TPar>
 TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleComb(TSig in)
 {
   if(preDelay)
+  {
     out = mainDelay.getSample(in + k * damper.getSample(out));
+    return out;
+  }
   else
   {
+    //out = damper.getSample(in + k * mainDelay.getSample(out));  // Old
+
     out = damper.getSample(in + k * mainDelay.getSample(out));
-    // This need to apply the invDamper!
+    return invDamper.getSample(out);
+
+    //out = invDamper.getSample(damper.getSample(in + k * mainDelay.getSample(out)));  // New
+
+    // This need to apply the invDamper. But it doesn't seem to work
   }
-  return out;
+  //return out;
 
   // In the dampedAllpassComb1() experiment where I derived all of this, I actually use a negative
   // sign for the feedback signal. There's some comment about why, but I'm a bit shaky on this. But 

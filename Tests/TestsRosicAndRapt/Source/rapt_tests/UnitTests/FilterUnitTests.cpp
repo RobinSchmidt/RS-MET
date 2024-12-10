@@ -2304,10 +2304,9 @@ bool dampedAllpassCombUnitTest()
   comb.setupHighDamp( delay, feedback, dampOmega, dampGain, false);
   h  = impulseResponse(naive, numSamples, 1.0);
   h2 = impulseResponse(comb,  numSamples, 1.0);
-  ok &= rsIsCloseTo(h, h2, 1.e-15);
-  //ok &= isAllpass(h, 1.e-5);            // Fails!
-  // Yes, h and h2 are equal but they are *not* allpass anymore! instead they show the magnitude
-  // response of the damping filter!
+  //ok &= rsIsCloseTo(h, h2, 1.e-15);   // FAILS! ...because rsDampedAllpassComb does not yet have the inverse damper
+  ok &= isAllpass(h, 1.e-5); 
+
 
 
   // Check the spacing of the spikes of the comb without correction and with unit feedback 
