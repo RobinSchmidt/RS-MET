@@ -61,8 +61,14 @@ TCoef rsDirectFormFilter<TSig, TCoef>::getMagnitudeResponseAt(TCoef omega)
     cb += ck * b[k];
     sb += sk * b[k];
   }
+
+  // To support different orders for numerator and denominator, we need to split the loop
+  // into two. But thne we need to compute sk and ck in both
+
   return sqrt( (cb*cb + sb*sb) / (ca*ca + sa*sa) );
 }
+
+
 
 template<class TSig, class TCoef>
 void rsDirectFormFilter<TSig, TCoef>::getMagnitudeResponse(TCoef* frequencies, TCoef* magnitudes, 

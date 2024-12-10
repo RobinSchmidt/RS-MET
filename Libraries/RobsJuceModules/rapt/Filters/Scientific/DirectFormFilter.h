@@ -1,7 +1,14 @@
 #ifndef RAPT_DIRECTFORMFILTER_H_INCLUDED
 #define RAPT_DIRECTFORMFILTER_H_INCLUDED
 
-/** This is a generic filter using a Direct Form II implementation structure. */
+/** This is a generic filter using a Direct Form II implementation structure. 
+
+This code needs some seriuos rework!
+
+  (1) Use a fixed maxOrder - maybe 10 - that should be more than one should ever implement in 
+      direct form
+
+*/
 
 template<class TSig, class TCoef>
 class rsDirectFormFilter
@@ -54,6 +61,8 @@ public:
   series. */
   void getMagnitudeResponse(TCoef* frequencies, TCoef* magnitudes, int numBins, 
     TCoef sampleRate, bool inDecibels = false, bool accumulate = false);
+  // This is also a bad API. These boolean parameters to switch behavior are annyoing and also lead
+  // to a compicated implementation
 
   //-----------------------------------------------------------------------------------------------
   /** \name Audio Processing */
@@ -84,11 +93,10 @@ protected:
 
   TSig   *w;       // state buffer
   TCoef  *a, *b;   // filter coefficients
-
   int    order;    // currently used filter order - \todo maybe have separate orders for numerator and denominator
-
   int    maxOrder; // maximum possible filter order
 
+  //static const int maxOrder = 8;  // For later
 };
 
 #endif 
