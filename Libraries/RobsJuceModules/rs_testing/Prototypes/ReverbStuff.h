@@ -1149,22 +1149,6 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 {
-  //// Old:
-
-  //// Apply 1-pole:
-  //TSig t = applyCorrectorOnePole(in);
-
-  //// Apply the FIR part:
-  //TSig y = 0;
-  //y += r0  * t;
-  //y += r1  * unitDelay.getSample(t);
-  //y += rM1 * corrDelay.readOutputAt(M+1);
-  //y +=       corrDelay.readOutputAt(M+2);
-  //corrDelay.writeInputAndUpdate(t);
-  //return y;
-
-  // New - with switched order of FIR and recursive part:
-
   // Apply the FIR part:
   TSig y = 0;
   y += r0  * in;
