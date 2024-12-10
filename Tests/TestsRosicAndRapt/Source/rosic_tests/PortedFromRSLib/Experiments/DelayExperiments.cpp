@@ -579,7 +579,7 @@ void dampedAllpassComb2()
   Vec h5 = impResp(d, +k, w, g, false, 1);
   rsPlotVectors(h1, h5);
 
-  rosic::writeToMonoWaveFile("DampedAllpasComb_LowDamp.wav", &h5[0], N, sampleRate);
+  //rosic::writeToMonoWaveFile("DampedAllpasComb_Low_+_1.wav", &h5[0], N, sampleRate);
 
 
 
@@ -788,13 +788,49 @@ void dampedAllpassCombComplex()
   //   frequency. Figure this out!
 }
 
+void dampedAllpassCombNonLin()
+{
+  // Define types to be used:
+  using Real    = double;
+  using Vec     = std::vector<Real>;
+  using Allpass = rsDampedAllpassCombNonLin<Real, Real>;
+
+  // User parameters:
+  int  delay      =   100;     // Main delay roundtrip length in samples. Is M-1 in the algo
+  int  numSamples =  2000;     // Number of samples to generate
+  Real sampleRate = 44100;     // Sample rate for writing the wavefiles
+  Real dampFreq   =  1000;     // Frequency (in Hz) of the shelf filter for feedback damping
+  Real dampGain   =     0.7;   // Linear high freq damping gain
+  Real feedback   =     1.5;   // Feedback gain factor
+
+  Allpass ap;
+  Real dampOmega = 2*PI*dampFreq/sampleRate;
+  ap.setMaxDelayInSamples(delay);
+  ap.setupHighDamp(delay, feedback, dampOmega, dampGain, false);
+  int N = numSamples;
+ 
+  Vec h1  = impulseResponse(ap, N,  1.0);
+  Vec h2  = impulseResponse(ap, N,  2.0);
+  Vec h4  = impulseResponse(ap, N,  4.0);
+  Vec h8  = impulseResponse(ap, N,  8.0);
+  Vec h16 = impulseResponse(ap, N, 16.0);
+
+  rsPlotVectors(h1, h2, h4, h8, h16);
+
+
+  // - With feedback = 1.5, it becomes unstable despite the saturation the  feedbakc path. But:
+  //   the saturation applies only to the comb. I guess, the correction filter may be the cause 
+  //   for the overall instability. Maybe we need to apply some nonlinearity there, too.
+}
+
 void dampedAllpassComb()
 {
-  dampedAllpassComb2();
+  dampedAllpassCombNonLin();
 
 
   dampedAllpassComb1();
   dampedAllpassComb2();
   dampedAllpassComb3();
   dampedAllpassCombComplex();
+  dampedAllpassCombNonLin();
 }

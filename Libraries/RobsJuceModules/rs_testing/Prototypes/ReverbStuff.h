@@ -1151,6 +1151,37 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 //   the case
 
 
+/** A nonlinear extension of rsDampedAllpassComb */
+
+template<class TSig, class TPar>
+class rsDampedAllpassCombNonLin : public rsDampedAllpassComb<TSig, TPar>
+{
+
+public:
+
+  TSig getSampleComb(TSig in) // override - but at compile time
+  {
+    if(preDelay)
+      combOut = mainDelay.getSample(fbFunc(in + k * applyDamper(combOut)));
+    else
+      combOut = applyDamper(fbFunc(in + k * mainDelay.getSample(combOut)));
+    return combOut;
+  }
+
+protected:
+
+  //std::function<TSig(TSig x)> fbFunc = &tanh;
+  //std::function<TSig(TSig x)> fbFunc = tanh;
+
+  std::function<TSig(TSig x)> fbFunc = [](TSig x)
+  { 
+    return rsTanh(x);
+  };
+
+
+};
+
+
 
 
 
