@@ -1016,7 +1016,8 @@ protected:
   void updateDelaysAndCorrectorCoeffs()
   {
     // Set up delaylines:
-    mainDelay.setDelayInSamples(M);
+    //mainDelay.setDelayInSamples(M);   // Old
+    mainDelay.setDelayInSamples(M+2); // New
     corrDelay.setDelayInSamples(M+2);
 
     // Compute correction coefficients:
