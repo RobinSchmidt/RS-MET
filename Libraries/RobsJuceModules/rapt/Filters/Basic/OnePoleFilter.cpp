@@ -85,6 +85,10 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
   case LOWSHELV_BLT:  { B::coeffsLowShelfBLT( w, g, &this->b0, &this->b1, &this->a1); } break;
   case HIGHSHELV_BLT: { B::coeffsHighShelfBLT(w, g, &this->b0, &this->b1, &this->a1); } break;
 
+  /*
+  // This is code is crazily complicated and doesn't even seem to work. I think, I have included it
+  // to the library prematurely - this needs to go somewhere else - into some research area
+
   // these two need clean-up (and tests):
   case LOWSHELV_NMM:
     {
@@ -133,6 +137,7 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
       // \todo get rid of the code duplication
     }
     break;
+    */
 
 
   default: { B::coeffsBypass(&this->b0, &this->b1, &this->a1); } break;

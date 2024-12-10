@@ -349,8 +349,10 @@ public:
     LOWSHELV_BLT,     // low shelving via bilinear transform
     HIGHSHELV_BLT,    // high shelving via bilinear transform
 
-    LOWSHELV_NMM,     // low shelving via nyquist magnitude match
-    HIGHSHELV_NMM,    // high shelving via nyquist magnitude match
+    //LOWSHELV_NMM,     // low shelving via nyquist magnitude match
+    //HIGHSHELV_NMM,    // high shelving via nyquist magnitude match
+    // These two modes are buggy, so I have made them unavailable! The impulse responses look 
+    // wrong!
 
   };
   // NMM maybe can also be called PMM for pointwise magnitude match

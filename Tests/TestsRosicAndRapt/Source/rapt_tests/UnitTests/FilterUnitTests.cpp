@@ -10,13 +10,42 @@ bool isCloseTo(complex<float> x, complex<float> y, float tol)
 }
 
 
+bool onePoleFilterUnitTest()
+{
+  bool ok = true;
 
+  using Real   = float;
+  using Filter = rsOnePoleFilter<Real, Real>;
+  using Vec    = std::vector<Real>;
+
+  int N = 100;
+
+  Filter flt;
+  flt.setSampleRate(44100);
+  flt.setCutoff(1000);
+  //flt.setMode(Filter::modes::HIGHSHELV_NMM);
+  //flt.setMode(Filter::modes::LOWSHELV_NMM);
+  flt.setMode(Filter::modes::HIGHSHELV_BLT);
+  //flt.setMode(Filter::modes::LOWPASS_BLT);
+  flt.setShelvingGain(0.6);
+
+  Vec h = impulseResponse(flt, N, Real(1));
+  rsPlotVectors(h);
+  // This looks wrong for HIGHSHELV_NMM
+
+
+
+
+
+  return ok;
+}
 
 
 bool basicFiltersUnitTests()
 {
   bool ok = true;
 
+  ok &= onePoleFilterUnitTest();
 
   return ok;
 }
