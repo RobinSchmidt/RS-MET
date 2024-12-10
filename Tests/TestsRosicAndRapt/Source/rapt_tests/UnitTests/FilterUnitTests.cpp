@@ -28,7 +28,12 @@ bool onePoleFilterUnitTest()
 
   Vec h = impulseResponse(flt, N, Real(1));
 
-  
+
+  flt.invert();
+
+
+  /*
+  // This section should go into rsOnePoleFilter::invert:
   //rsPlotVectors(h);
 
   // Try inverting the filter:
@@ -52,10 +57,19 @@ bool onePoleFilterUnitTest()
   b1 *= s;
 
   flt.setCoefficients(b0, b1, a1);
+  */
+
+
+
 
   // Let's see, if this inversion attempt brings us back to a unit impulse:
   Vec h2 = filterResponse(flt, N, h);
-  rsPlotVectors(h2);
+
+
+  ok &= rsIsUnitImpulse(h2, 1.e-7f);
+
+
+  //rsPlotVectors(h2);
   
 
 

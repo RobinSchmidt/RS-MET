@@ -388,6 +388,12 @@ public:
   /** Sets the gain for the shelving modes in decibels. */
   void setShelvingGainInDecibels(TPar newGain);
 
+  /** Inverts the filter, i.e. swaps its poles and zeros and inverts its gain. A filter and its 
+  inverse applied in sequence should bring you back where you have started. But notice that this 
+  can only be used for minimum phase filters because otherwise, the inverse filter may be 
+  unstable - so use with care! */
+  void invert();
+
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 

@@ -57,6 +57,30 @@ void rsOnePoleFilter<TSig, TPar>::setShelvingGainInDecibels(TPar newGain)
   setShelvingGain(rsDB2amp(newGain));
 }
 
+template<class TSig, class TPar>
+void rsOnePoleFilter<TSig, TPar>::invert()
+{
+  // Normalize numerator:
+  TPar g = b0; 
+  TPar s = 1/g;
+  b0  = 1;
+  b1 *= s;
+
+  // Swap numerator against denominator:
+  rsSwap(a1, b1);
+  a1 = -a1;         // Because the implementation uses the silly sign convention.
+  b1 = -b1;
+
+  // Re-apply (inverted) overall gain:
+  b0 *= s;
+  b1 *= s;
+
+  // ToDo:
+  //
+  // - Maybe check, if the filter is still stable and if not, maybe trigger an rsError. Stability
+  //   requires |a1| < 1 or maybe <= 1, if we want to ride on the edge.
+}
+
 // Inquiry:
 
 template<class TSig, class TPar>
