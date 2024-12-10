@@ -1181,6 +1181,11 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 //   the case. But: If we apply the FIR part first in applyCorrector, then the contents may 
 //   actually match - maybe up to a shift. and maybe that shift may depend on the predelay mode.
 //   See dampedAllpassDelayContent() - they have indeed the same content!
+//
+// - OK - to do this optimization, we need the following steps:
+//     (1) Don't use getSample() on mainDelay - do the read/write/update manually
+//     (2) Use M+2 as length for mainDelay instead of M. That should now be safe to do
+//     (3) In applyCorrector(), do the reads from mainDelay rather than corrDelay
 
 
 /** A nonlinear extension of rsDampedAllpassComb */
