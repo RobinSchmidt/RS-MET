@@ -27,6 +27,8 @@ bool onePoleFilterUnitTest()
   flt.setShelvingGain(0.6);
 
   Vec h = impulseResponse(flt, N, Real(1));
+
+  /*
   //rsPlotVectors(h);
 
   // Try inverting the filter:
@@ -53,6 +55,7 @@ bool onePoleFilterUnitTest()
   // Let's see, if this inversion attempt brings us back to a unit impulse:
   Vec h2 = filterResponse(flt, N, h);
   rsPlotVectors(h2);
+  */
 
 
 
@@ -2397,3 +2400,42 @@ bool allpassUnitTest()
 
   return ok;
 }
+
+
+
+bool phonoFilterUnitTest()
+{
+  bool ok = true;
+
+  using Real   = double;
+  using Filter = rsPhonoFilter<Real, Real>;
+  using Vec    = std::vector<Real>;
+
+  int N = 50;
+
+  // Generate the impulse respone of the phono filter:
+  Filter flt;
+  Vec h = impulseResponse(flt, N, 1.0);
+
+  // Now switch the mode from pre-emphasis to de-emphasis. This produces the inverse filter:
+  flt.setMode(Filter::DE_EMPHASIS);
+
+  // Now check, if applying the de-emphasis filter to the impulse response of the pre-emphasis
+  // filter gives us back our original unit impulse. A pre-emphasis/de-emphasis roundtrip should be
+  // an identity opration:
+  Vec h2 = filterResponse(flt, N, h);
+  ok &= rsIsUnitImpulse(h2, 1.e-14);
+  //rsPlotVectors(h, h2);
+
+  return ok;
+}
+
+bool miscFiltersUnitTest()
+{
+  bool ok = true;
+
+  ok &= phonoFilterUnitTest();
+
+  return ok;
+}
+

@@ -211,28 +211,6 @@ bool areNumbersEqual(double x, double y, double relativeTolerance);
 /** Convenience function to convert a string to a window-type.  options: rc,hn,hm,bm,bh */
 RAPT::rsWindowFunction::WindowType stringToWindowType(const std::string& wt);
 
-//=================================================================================================
-// Filtering
-
-template<class T>
-void rsBiquadResponse(const T* x, T* y, int N, T b0, T b1, T b2, T a1, T a2)
-{
-  RAPT::rsAssert(x != y, "Not suitable for in-place computation");
-
-  if(N < 1) 
-    return;
-  y[0] = b0 * x[0];
-
-  if(N < 2) 
-    return;
-  y[1] = b0 * x[1] + b1 * x[0] - a1 * y[0];
-
-  for(int n = 2; n < N; n++)
-    y[n] = b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] - a1 * y[n-1] - a2 * y[n-2];
-}
-// Maybe move this into RAPT::rsArrayTools, maybe make a variant that allows in-place computation
-// maybe distiguish it from this one by having only a single in/out array
-
 // Tests if a given impulse response h is allpass in nature - up to some tolerance because it's
 // necessarily truncated to finite length.
 template<class T>
@@ -256,7 +234,45 @@ bool isAllpass(const std::vector<T>& h, T tol)
 
   return ok;
 }
+// rename to rsAllpass
 
+
+/** Tests if the given signal x is a unit impulse. This can be useful when checking pairs of 
+filters that are supposed to be inverses of one another. Applying thme both to a unit impulse 
+should give back that unit impulse. There may be other use cases for such checks but that happens
+to be the one for which I wrote it */
+
+template<class T>
+bool rsIsUnitImpulse(const std::vector<T>& x, T tol)
+{
+  rsAssert(x.size() > 0);
+  T maxErr = rsAbs(x[0] - T(1));
+  for(size_t n = 1; n < x.size(); n++)
+    maxErr = rsMax(maxErr, rsAbs(x[n]));
+  return maxErr <= tol;
+}
+
+//=================================================================================================
+// Filtering
+
+template<class T>
+void rsBiquadResponse(const T* x, T* y, int N, T b0, T b1, T b2, T a1, T a2)
+{
+  RAPT::rsAssert(x != y, "Not suitable for in-place computation");
+
+  if(N < 1) 
+    return;
+  y[0] = b0 * x[0];
+
+  if(N < 2) 
+    return;
+  y[1] = b0 * x[1] + b1 * x[0] - a1 * y[0];
+
+  for(int n = 2; n < N; n++)
+    y[n] = b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] - a1 * y[n-1] - a2 * y[n-2];
+}
+// Maybe move this into RAPT::rsArrayTools, maybe make a variant that allows in-place computation
+// maybe distiguish it from this one by having only a single in/out array
 
 //=================================================================================================
 // Convenience functions for vectors:

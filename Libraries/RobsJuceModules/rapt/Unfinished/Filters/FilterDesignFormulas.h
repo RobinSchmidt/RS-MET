@@ -9,6 +9,7 @@ void invertBiquad(T &b0, T &b1, T &b2, T &a1, T &a2);
 // Move to some sort of FilterTransformations class, maybe rename to invertBiquadDigital or 
 // inverBiquadZ, take pointers instead of references
 
+
 /** Given two coefficient sets of 1st order filter stages, this function consolidates them into a
 single biquad stage. b0[0] is the b0 coefficient of the 1st stage, b0[1] the b0 coefficient of
 the 2nd stage, etc. The biquad coefficients are returned in B0, B1, etc. */

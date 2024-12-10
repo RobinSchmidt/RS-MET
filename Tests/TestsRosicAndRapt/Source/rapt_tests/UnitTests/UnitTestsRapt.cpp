@@ -23,8 +23,9 @@ bool runUnitTestsRapt()
   // Test for the currently developed class - it's also again run down there below, but I want
   // the test for the code i'm currently working on to go first for faster edit/build/test cycles, 
   // because some of the test take longer to perfom. So this line is volatile:
-  ok &= runUnitTest(&basicFiltersUnitTests,  "BasicFiltersUnitTest");
-  ok &= runUnitTest(&allpassUnitTest,        "AllpassUnitTest");
+  ok &= runUnitTest(&miscFiltersUnitTest,    "Misc filters");
+  ok &= runUnitTest(&basicFiltersUnitTests,  "Basic filters");
+  ok &= runUnitTest(&allpassUnitTest,        "Allpass filters");
 
   //// these tests should go into UnitTestsRosic.cpp:
   //ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine");
@@ -73,7 +74,7 @@ bool runUnitTestsRapt()
 
 
   // Filters:
-  ok &= runUnitTest(&basicFiltersUnitTests,       "BasicFiltersUnitTest");
+  ok &= runUnitTest(&basicFiltersUnitTests,       "Basic filters");
   //ok &= runUnitTest(&prototypeDesignUnitTest, "rsPrototypeDesigner"); // why commented?
   ok &= runUnitTest(&filterSpecUnitTest,          "rsFilterSpecification (BA/ZPK)");
   ok &= runUnitTest(&movingMaximumUnitTest,       "moving maximum filter");
@@ -82,7 +83,10 @@ bool runUnitTestsRapt()
   ok &= runUnitTest(&stateVariableFilterUnitTest, "rsStateVariableFilter");
   ok &= runUnitTest(&engineersFilterUnitTest,     "rsEngineersFilter");
   ok &= runUnitTest(&hilbertFilterUnitTest,       "rsHilbertFilterUnitTest");
-  ok &= runUnitTest(&allpassUnitTest,             "AllpassUnitTest");
+  ok &= runUnitTest(&allpassUnitTest,             "Allpass filters");
+  ok &= runUnitTest(&miscFiltersUnitTest,         "Misc filters");
+
+
 
   
   // Visualization:
