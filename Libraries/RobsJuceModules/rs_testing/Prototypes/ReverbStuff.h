@@ -1122,17 +1122,36 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 {
-  // Apply 1-pole:
-  TSig t = applyCorrectorOnePole(in);
+  //// Old:
+
+  //// Apply 1-pole:
+  //TSig t = applyCorrectorOnePole(in);
+
+  //// Apply the FIR part:
+  //TSig y = 0;
+  //y += r0  * t;
+  //y += r1  * unitDelay.getSample(t);
+  //y += rM1 * corrDelay.readOutputAt(M+1);
+  //y +=       corrDelay.readOutputAt(M+2);
+  //corrDelay.writeInputAndUpdate(t);
+  //return y;
+
+  // New - with switched order of FIR and recursive part:
 
   // Apply the FIR part:
   TSig y = 0;
-  y += r0  * t;
-  y += r1  * unitDelay.getSample(t);
+  y += r0  * in;
+  y += r1  * unitDelay.getSample(in);
   y += rM1 * corrDelay.readOutputAt(M+1);
   y +=       corrDelay.readOutputAt(M+2);
-  corrDelay.writeInputAndUpdate(t);
+  corrDelay.writeInputAndUpdate(in);
+
+  // Apply 1-pole:
+  y = applyCorrectorOnePole(y);
   return y;
+
+  // Switching this order opens the possibility that the content of corrDelay actually matches the
+  // content of mainDelay such that we can optimize away corrDelay ...maybe...we'll see....
 }
 
 // More Optimization ideas:
@@ -1148,7 +1167,8 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 //
 // - Check the contents of the delaylines. Do we even need two or do they have the same contents
 //   or simply realted ones? ...but I don't think so. I don't see any reason why this should be 
-//   the case
+//   the case. But: If we apply the FIR part first in applyCorrector, then the contents may 
+//   actually match - maybe up to a shift. and maybe that shift may depend on the predelay mode.
 
 
 /** A nonlinear extension of rsDampedAllpassComb */

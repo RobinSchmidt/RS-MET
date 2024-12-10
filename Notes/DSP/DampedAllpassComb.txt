@@ -20,8 +20,8 @@ that is required to make the following filter structure allpass in nature:
   X(z) ───> + ────>│ A(z) │──────┬──────>│ C(z) │────> Y(z)	
             ^      └──────┘      │       └──────┘
             │                    v
-            │      ┌──────┐    ┌───┐
-            └──k───│ F(z) │<───│ d │
+           -k      ┌──────┐    ┌───┐
+            └──────│ F(z) │<───│ d │
                    └──────┘    └───┘
 
 In this drawing, we used d = z^-1 for the unit delay. So, A(z) and F(z) are given and we want to 
@@ -114,8 +114,8 @@ the setup:
   X(z) ───> + ────>│ F(z) │──────┬──────>│ C(z) │────> Y(z)	
             ^      └──────┘      │       └──────┘
             │                    v
-            │      ┌──────┐    ┌───┐
-            └──k───│ A(z) │<───│ d │
+           -k      ┌──────┐    ┌───┐
+            └──────│ A(z) │<───│ d │
                    └──────┘    └───┘
 
 The only difference is that now F(z) is in the feedforward path and A(z) in the feedback path. 

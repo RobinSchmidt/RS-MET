@@ -2258,7 +2258,8 @@ bool dampedAllpassCombUnitTest()
   comb.setMaxDelayInSamples(delay);
   comb.setupHighDamp(delay, feedback, dampOmega, dampGain, true);
   Vec h2 = impulseResponse(comb, numSamples, 1.0);
-  ok &= h2 == h;
+  //ok &= h2 == h;
+  ok &= rsIsCloseTo(h, h2, 1.e-15);  // Not exactly equal anymore due to switch of IIR/FIR order
   //rsPlotVectors(h, h2);
   rsAssert(ok);
 
@@ -2289,10 +2290,8 @@ bool dampedAllpassCombUnitTest()
   h[0] = comb.getSampleComb(1.0);
 
 
-
   // Test the spike placement of the other modes There are 4 in total: 
   // predelay on/off and unipolar vs bipolar. The original one wa the unipolar with predelay.
-
 
 
   return ok;
