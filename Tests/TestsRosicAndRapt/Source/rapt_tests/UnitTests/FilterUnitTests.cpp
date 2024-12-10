@@ -2294,6 +2294,7 @@ bool dampedAllpassCombUnitTest()
   comb.setupHighDamp(d, k, w, g, true);
   Vec h2 = impulseResponse(comb, N, 1.0);
   ok &= rsIsCloseTo(h, h2, 1.e-15); 
+  ok &= h == h2;
   
   // Now do the same test again for the other mode of operation, i.e. the one without predelay:
   naive.setupHighDamp(d, k, w, g, false);

@@ -1006,11 +1006,6 @@ protected:
   TSig applyDelay(TSig x)
   {
     return mainDelay.getSample(x);
-
-    //mainDelay.writeInputNoUpdate(x);
-    //TSig y = mainDelay.readOutputAt(M);
-    //mainDelay.incrementTapPointers();
-    //return y;
   }
 
   TSig applyDamper(TSig x)
@@ -1039,8 +1034,7 @@ protected:
   void updateDelaysAndCorrectorCoeffs()
   {
     // Set up delaylines:
-    mainDelay.setDelayInSamples(M);  // old
-    //mainDelay.setDelayInSamples(M+2);  // new
+    mainDelay.setDelayInSamples(M);
     corrDelay.setDelayInSamples(M+2);
 
     // Compute correction coefficients:
@@ -1219,11 +1213,9 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 //   figured out how to do it or if it's even possible. Maybe we don't even need the M member
 //   anymore then.
 //
-// - Check the contents of the delaylines. Do we even need two or do they have the same contents
-//   or simply realted ones? ...but I don't think so. I don't see any reason why this should be 
-//   the case. But: If we apply the FIR part first in applyCorrector, then the contents may 
-//   actually match - maybe up to a shift. and maybe that shift may depend on the predelay mode.
-//   See dampedAllpassDelayContent() - they have indeed the same content!
+// - I checked the contents of mainDelay and corrDelay to see if we can use a shared delayline but
+//   that doesn't seem to be possible. I've also switched the order of applying FIR part and pole
+//   in applyCorrector to see if then the content can be shared. Nope.
 //
 //
 //
