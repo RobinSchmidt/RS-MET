@@ -2271,7 +2271,6 @@ bool dampedAllpassCombUnitTest()
   using CombNaive = rsDampedAllpassCombNaive<Real, Real>;
   using Comb      = rsDampedAllpassComb<Real, Real>;
 
-
   // Test parameters:
   int  delay      =   50;   // Main delay roundtrip length in samples
   int  numSamples = 8192;   // Number of samples to generate
@@ -2286,18 +2285,19 @@ bool dampedAllpassCombUnitTest()
   naive.setMaxDelayInSamples(delay);
   naive.setupHighDamp(delay, feedback, dampOmega, dampGain, true);
   Vec h = impulseResponse(naive, numSamples, 1.0);
-  //rsPlotVectors(h);
   ok &= isAllpass(h, 1.e-5);
+  //rsPlotVectors(h);
 
-  // Now try to generate the same output with the production version:
+  // Now try to generate the same output with the production version. They are not expected to be 
+  // exactly equal because the algorithms differ in whether the feedforward or feedback part of the
+  // correction filter is applied first:
   Comb comb;
   comb.setMaxDelayInSamples(delay);
   comb.setupHighDamp(delay, feedback, dampOmega, dampGain, true);
   Vec h2 = impulseResponse(comb, numSamples, 1.0);
   ok &= rsIsCloseTo(h, h2, 1.e-15); 
   //rsPlotVectors(h, h2);
-  // They are not exactly equal because the algorithms differ in whether the feedforward or 
-  // feedback part of the correction filter is applied first. 
+  
   
   // Now do the same test again for the other mode of operation, i.e. the one without predelay:
   naive.setupHighDamp(delay, feedback, dampOmega, dampGain, false);
@@ -2306,12 +2306,6 @@ bool dampedAllpassCombUnitTest()
   h2 = impulseResponse(comb,  numSamples, 1.0);
   ok &= rsIsCloseTo(h, h2, 1.e-15);
   ok &= isAllpass(h, 1.e-5); 
-
-
-  // After switching the sign convnetion for k, this test fails now. This is expected. We need to
-  // update the test, too. We now expect a bipolar spike train! ..OK - I preliminarily made the
-  // test pass again by inserting abs function into the check. It now tests, if the signal is 
-  // either +1 or -1 at the expected locations
 
   // Check the spacing of the spikes of the comb without correction and with unit feedback 
   // settings (i.e. no decay, no damping). This should produce an alternating spike train with the
@@ -2323,59 +2317,38 @@ bool dampedAllpassCombUnitTest()
   h[0] = comb.getSampleComb(1.0);       // We use getSampleComb() - that's why impulseResponse()
   for(int n = 1; n < N; n++)            // ...can't be used
     h[n] = comb.getSampleComb(0.0);     
-  for(int i = 0; i < N; i++)            
+  for(int n = 0; n < N; n++) 
   {
-    if((i+1) % delay == 0)            // Triggers at 49, 99, 149, 199, ... if delay == 50
+    if((n+1) % delay == 0)            // Triggers at 49, 99, 149, 199, ... if delay == 50
     {
-      //ok &= rsAbs(h[i]) == 1.0;
-
-      int a = (i+1) / delay;
+      int a = (n+1) / delay;
       int b = a % 2;
       if(b == 1)
-        ok &= h[i] == +1.0;
+        ok &= h[n] == +1.0;
       else
-        ok &= h[i] == -1.0;
-
-      int dummy = 0;
-
+        ok &= h[n] == -1.0;
     }
     else
-      ok &= h[i] == 0.0;
+      ok &= h[n] == 0.0;
   }
-  //rsPlotVectors(h);
-  // ToDo: strengthen the test! check if, the positive/negative spikes are in the right order.
-  // Compute a = (i+1) / M
-  // if a % 2 == 0, it should be positive, otherwise negative, I think
 
-  //
-  // if (i+1) % (2*M) == 0, it should be positive, otherwise
-
-
-  // Now without predelay:
+  // Now the same test without predelay and a negative k. This is much simpler because there's no 
+  // alternation and weird first spike location, It's just a unipolar train of spikes at multiples
+  // of the delay:
   comb.reset();
-  comb.setupHighDamp(delay, 1.0, 0.5, 1.0, false);
+  comb.setupHighDamp(delay, -1.0, 0.5, 1.0, false);
   h[0] = comb.getSampleComb(1.0);
-  // ...
-
-
-  // Test the spike placement of the other modes There are 4 in total: 
-  // predelay on/off and unipolar vs bipolar. The original one wa the unipolar with predelay.
-
+  for(int n = 1; n < N; n++) 
+    h[n] = comb.getSampleComb(0.0);
+  for(int n = 0; n < N; n++) 
+  {
+    if(n % delay == 0)            // Triggers at 0, 50, 100, 150, ... if delay == 50
+      ok &= h[n] == +1.0;
+    else
+      ok &= h[n] ==  0.0;
+  }
 
   return ok;
-
-  // ToDo:
-  //
-  // - Add a unit test that verifies the spike spacing. Implement it by using the 
-  //   getSampleUncorrected function. Set the dampGain to 1.0 and feedback to 0.5. We should see
-  //   a first spike at delay-1 and from there, they should be spaced out by the given delay.
-  //
-  // - Add test for both modes - with predelay and without
-  //
-  // - It seems that with the swap of A and F, the filter is not allpass anymore. It looks like we
-  //   get a high-shelf response, i.e. the response of the damping filter? Figure this out! If this
-  //   is the case, it could be compensated for by applying the inverse of the shelver in this mode
-  //   at the end.
 }
 
 bool allpassUnitTest()

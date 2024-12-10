@@ -869,7 +869,7 @@ void dampedAllpassDelayContent()
   Real dampFreq   =   100;
   Real dampGain   =     0.5;
   Real feedback   =     0.9;
-  bool predelay   = true;
+  bool predelay   = false;
 
   Allpass ap;
   Real dampOmega = 2*PI*dampFreq/sampleRate;
@@ -893,7 +893,7 @@ void dampedAllpassDelayContent()
   // - With predelay == true, the two delaylines mainDelay and corrDelay seem to have unrelated 
   //   content
   //
-  // - With predelay == false, their content seems to be the same but delayed by one sample
+  // - With predelay == false, their content seems to be completely different
   //
   // - Ah! I think, the sharing of delaylines is only possible in the operational mode without
   //   predelay. So, to do this optimization, we would have to give up on the "with predelay"
@@ -904,8 +904,8 @@ void dampedAllpassDelayContent()
 
 void dampedAllpassComb()
 {
-  dampedAllpassComb2();
-  //dampedAllpassDelayContent();
+  //dampedAllpassComb2();
+  dampedAllpassDelayContent();
 
 
   dampedAllpassComb1();
