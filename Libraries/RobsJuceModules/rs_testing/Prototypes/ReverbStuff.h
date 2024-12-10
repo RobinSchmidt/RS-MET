@@ -981,7 +981,14 @@ protected:
 
   TSig applyDelay(TSig x)
   {
-    return mainDelay.getSample(x);
+    //return mainDelay.getSample(x);
+
+    // New:
+    mainDelay.writeInputNoUpdate(x);
+    TSig y = mainDelay.readOutputAt(M);
+    mainDelay.incrementTapPointers();
+    return y;
+
 
     // This function exists as preliminary to optimize away corrDelay. We want to use a single 
     // shared delayline for both. That is possible but then we cant use the regular getSample()
