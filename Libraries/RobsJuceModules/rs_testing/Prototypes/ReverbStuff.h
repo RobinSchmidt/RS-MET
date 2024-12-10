@@ -900,14 +900,12 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleComb(TSig in)
   }
   else
   {
-    //out = damper.getSample(in + k * mainDelay.getSample(out));  // Old
-
     out = damper.getSample(in + k * mainDelay.getSample(out));
     return invDamper.getSample(out);
 
-    //out = invDamper.getSample(damper.getSample(in + k * mainDelay.getSample(out)));  // New
-
-    // This need to apply the invDamper. But it doesn't seem to work
+    // It may seem strange that we first apply the damper and then the inverse damper. Doesn't this
+    // mean, we could just leave out the damper entirely? No! Because "out" is a state variable 
+    // that will be used in the next call. And that state needs to have the damper applied.
   }
   //return out;
 
@@ -1026,6 +1024,21 @@ protected:
     return y;
   }
 
+  TSig applyInverseDamper(TSig x)
+  {
+    // Derivation - solve for x, swap x,y, use di rather than d:
+    //TSig y = b0 * x + b1 * x1d - a1 * y1d; 
+    // (y + a1 * y1d - b1 * x1d) / b0 = x; 
+    // (x + a1 * x1d - b1 * y1d) / b0 = y; 
+    // y = (x + a1 * x1di - b1 * y1di) / b0;
+
+
+    TSig y = (x + a1 * x1di - b1 * y1di) / b0;
+    x1di = x;
+    y1di = y;
+    return y;
+  }
+
   TSig applyCorrectorOnePole(TSig x)
   {
     TSig y = x - a1 * y1c;
@@ -1059,8 +1072,9 @@ protected:
   TSig combOut = TSig(0);
 
   // States for the two one pole filters:
-  TSig x1d = 0, y1d = 0;   // x[n-1], y[n-1] for damper
-  TSig y1c = 0;            // y[n-1] for corrector one pole
+  TSig x1d  = 0, y1d  = 0;   // x[n-1], y[n-1] for damper
+  TSig x1di = 0, y1di = 0;   // x[n-1], y[n-1] for inverse damper
+  TSig y1c  = 0;             // y[n-1] for corrector one pole
 
   // Coefficients:
   TSig k   = 0;                    // Needs to be TSig when we want to use it with complex feedback
@@ -1127,6 +1141,8 @@ void rsDampedAllpassComb<TSig, TPar>::reset()
   combOut = TSig(0);
   x1d     = TSig(0);
   y1d     = TSig(0);
+  x1di    = TSig(0);
+  y1di    = TSig(0);
   y1c     = TSig(0);
 }
 
@@ -1147,9 +1163,15 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 
   // New:
   if(preDelay)
+  {
     combOut = applyDelay(in + k * applyDamper(combOut));  // Predelay of M samples
+    return combOut;
+  }
   else
+  {
     combOut = applyDamper(in + k * applyDelay(combOut));  // No predelay
+    return applyInverseDamper(combOut);
+  }
 
   return combOut;
 

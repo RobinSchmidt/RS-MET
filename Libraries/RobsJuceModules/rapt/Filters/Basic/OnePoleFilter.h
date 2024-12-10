@@ -185,8 +185,10 @@ public:
   unstable - so use with care! */
   void invert()
   {
+    rsAssert(b0 != TPar(0), "Filters with b0 == 0 are not invertible!");
+
     // Normalize numerator:
-    TPar g = b0; 
+    TPar g = b0;    // g is not needed, I think
     TPar s = 1/g;
     b0  = 1;
     b1 *= s;
