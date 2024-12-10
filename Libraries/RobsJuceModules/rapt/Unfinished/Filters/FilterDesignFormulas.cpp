@@ -29,7 +29,9 @@ void invertBiquad(T &b0, T &b1, T &b2, T &a1, T &a2)
   // then, I think, we would additionally have to do: a1 = -a1; a2 = -a2; after the swap. Check, if
   // there's a unit test for this. I really want to consistently switch to the first convention but 
   // there's a lot of legacy code that uses the second, so that's not easy. Moreover, it may break
-  // client code. It's a mess!
+  // client code. It's a mess! 
+  //
+  // This code is very questionable anyway! I think, it's buggy! Has this even been tested?
 }
 
 template<class T>

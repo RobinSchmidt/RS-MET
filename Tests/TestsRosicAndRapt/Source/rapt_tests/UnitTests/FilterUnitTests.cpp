@@ -23,15 +23,37 @@ bool onePoleFilterUnitTest()
   Filter flt;
   flt.setSampleRate(44100);
   flt.setCutoff(1000);
-  //flt.setMode(Filter::modes::HIGHSHELV_NMM);
-  //flt.setMode(Filter::modes::LOWSHELV_NMM);
   flt.setMode(Filter::modes::HIGHSHELV_BLT);
-  //flt.setMode(Filter::modes::LOWPASS_BLT);
   flt.setShelvingGain(0.6);
 
   Vec h = impulseResponse(flt, N, Real(1));
-  rsPlotVectors(h);
-  // This looks wrong for HIGHSHELV_NMM
+  //rsPlotVectors(h);
+
+  // Try inverting the filter:
+  Real b0 = flt.getB0();
+  Real b1 = flt.getB1();
+  Real a1 = flt.getA1();
+
+  // Normalize numerator:
+  Real g = b0; 
+  Real s = 1/g;
+  b0  = 1;
+  b1 *= s;
+
+  // Swap numerator against denominator:
+  rsSwap(a1, b1);
+  //a1 = -a1;         // Because the implementation uses the silly sign convention.
+
+  // Re-apply (inverted) overall gain:
+  b0 *= s;
+  b1 *= s;
+
+  flt.setCoefficients(b0, b1, a1);
+
+  // Let's see, if this inversion attempt brings us back to a unit impulse:
+  Vec h2 = filterResponse(flt, N, h);
+  rsPlotVectors(h2);
+
 
 
 
