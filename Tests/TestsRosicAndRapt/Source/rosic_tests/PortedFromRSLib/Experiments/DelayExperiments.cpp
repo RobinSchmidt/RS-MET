@@ -873,7 +873,7 @@ void dampedAllpassDelayContent()
   for(int n = 0; n < N; n++)
   {
     h[n] = ap.getSample(cos(0.8*n));
-    rsPlotDelayLineContent(ap.mainDelay, ap.corrDelay); 
+    //rsPlotDelayLineContent(ap.mainDelay, ap.corrDelay); 
     // To call this, we temporarily need to move the delaylines into the public section
   }
 

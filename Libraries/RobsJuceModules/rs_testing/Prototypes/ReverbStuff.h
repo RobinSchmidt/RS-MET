@@ -974,6 +974,10 @@ public:
 
   // Try also a dispersive allpass in the feedback loop
 
+  // I actually think we should only have a setter of the form:
+  // setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA));
+
+
 
   /** Resets the state. */
   void reset();
@@ -997,8 +1001,8 @@ public:
 
 
   // Temporarily moved to public for some investigations:
-  rsBasicDelayLine<TSig> mainDelay;
-  rsBasicDelayLine<TSig> corrDelay;
+  //rsBasicDelayLine<TSig> mainDelay;
+  //rsBasicDelayLine<TSig> corrDelay;
   // The normal declarations in the protected section are temporarily commented out
 
 protected:
@@ -1046,11 +1050,11 @@ protected:
 
   // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
   // filter with filtered unit delay feedback:
-  //rsBasicDelayLine<TSig> mainDelay;
+  rsBasicDelayLine<TSig> mainDelay;
 
   // Objects for the correction filter:
   rsUnitDelay<TSig>      unitDelay;
-  //rsBasicDelayLine<TSig> corrDelay;
+  rsBasicDelayLine<TSig> corrDelay;
 
   // State for the unit delay feedback loop:
   TSig combOut = TSig(0);
@@ -1066,6 +1070,8 @@ protected:
   TSig r1  = 0; 
   TPar rM1 = 0;
   TPar b0 = 0, b1 = 0, a1 = 0;
+  // Maybe use arrays b[0], b[1], r[0], r[1], etc. Later they may get longer because we want to
+  // support more complex feedback filters
   int  M = 0;
 
   bool preDelay = false;
@@ -1164,8 +1170,6 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 {
-  //// pole first, then FIR:
-
   // Apply 1-pole:
   TSig t = applyCorrectorOnePole(in);
 
@@ -1177,29 +1181,6 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   y +=       corrDelay.readOutputAt(M+2);
   corrDelay.writeInputAndUpdate(t);
   return y;
-
-
-
-  //// FIR first, then pole:
-
-  //// Apply the FIR part:
-  //TSig y = 0;
-  //y += r0  * in;
-  //y += r1  * unitDelay.getSample(in);
-  //y += rM1 * corrDelay.readOutputAt(M+1);
-  //y +=       corrDelay.readOutputAt(M+2);
-  //corrDelay.writeInputAndUpdate(in);
-
-  //// Apply 1-pole:
-  //y = applyCorrectorOnePole(y);
-  //return y;
-
-
-  // Switching this order opens the possibility that the content of corrDelay actually matches the
-  // content of mainDelay such that we can optimize away corrDelay ...maybe...we'll see....
-  // well...nope! The delaylines have different contents. In both modes - with or without predelay.
-  // It first seems otherwise but that was only because something else was still wrong - we didn't
-  // have the invDamper included yet.
 }
 
 // More Optimization ideas:
