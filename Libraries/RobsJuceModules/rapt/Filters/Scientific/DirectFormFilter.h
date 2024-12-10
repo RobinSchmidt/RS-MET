@@ -24,6 +24,10 @@ public:
 
   /** Srts up the filter coefficients to use. */
   void setCoefficients(TCoef* newCoeffsA, TCoef* newCoeffsB, int newOrder);
+  // This is a bad API! It's easy for the caller to assume that the newOrder is the length of the 
+  // arrays when their length is in fact, supposed to be order+1. In such a case we may read 
+  // garbage from a memory location that we are not supposed to!
+
 
   /** Applies a global gain factor (by multiplying all b-coefficients with tha factor). */
   void setGlobalGainFactor(TCoef newFactor);
@@ -80,7 +84,9 @@ protected:
 
   TSig   *w;       // state buffer
   TCoef  *a, *b;   // filter coefficients
+
   int    order;    // currently used filter order - \todo maybe have separate orders for numerator and denominator
+
   int    maxOrder; // maximum possible filter order
 
 };

@@ -36,12 +36,54 @@ bool onePoleFilterUnitTest()
   return ok;
 }
 
+bool directFormFilterUnitTest()
+{
+  bool ok = true;
+
+  using Real   = double;
+  using Filter = rsDirectFormFilter<Real, Real>;
+  using Vec    = std::vector<Real>;
+  using AT     = rsArrayTools;
+
+  int maxOrder = 6;
+  int length   = maxOrder+1;
+
+  // Create some random vectors for the coefficients:
+  Vec a(length), b(length);
+  a = rsRandomVector(length, -0.2, +0.2, 0);
+  b = rsRandomVector(length, -3.0, +3.0, 1);
+  a[0] = 1.0;  // Respect the convention!
+
+  int order = 4;
+
+
+  int N = 20;  // Number of samples to generate
+  Vec x = rsRandomVector(N, -1.0, +1.0, 2);
+
+  Vec y(N);
+
+  AT::filter(&x[0], N, &y[0], N, &b[0], order, &a[0], order);
+
+  rsPlotVectors(x, y);
+
+
+  
+
+  //Filter flt(maxOrder);
+
+
+  return ok;
+}
+
+
+
 
 bool basicFiltersUnitTests()
 {
   bool ok = true;
 
   ok &= onePoleFilterUnitTest();
+  ok &= directFormFilterUnitTest();
 
   return ok;
 }
