@@ -818,6 +818,10 @@ protected:
   rsBasicDelayLine<TSig>             corDelayM2;
   rsFirstOrderFilterBase<TSig, TPar> corOnePole;
 
+  //rsFirstOrderFilterBase<TSig, TPar> invDamper; // Needed for mode without predelay
+
+
+
   // State for the unit delay feedback loop:
   TSig out = TSig(0);
 

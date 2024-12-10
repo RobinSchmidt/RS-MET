@@ -1,14 +1,24 @@
 
-//#include "../../../../Libraries/ThirdParty/Nayuki/SlidingWindowMinMax.hpp"
-//#include "../../../../Libraries/ThirdParty/Nayuki/SlidingWindowMinMax.hpp"
 #include "../../../../../Libraries/ThirdParty/Nayuki/SlidingWindowMinMax.hpp"
 
 using namespace std;
 
-// maybe move somewhere else for sharing
+// maybe move somewhere else for sharing - or get rid and use rsIsCloseTo instead
 bool isCloseTo(complex<float> x, complex<float> y, float tol)
 {
   return abs(x-y) <= tol;
+}
+
+
+
+
+
+bool basicFiltersUnitTests()
+{
+  bool ok = true;
+
+
+  return ok;
 }
 
 bool prototypeDesignUnitTest()

@@ -23,15 +23,10 @@ bool runUnitTestsRapt()
   // Test for the currently developed class - it's also again run down there below, but I want
   // the test for the code i'm currently working on to go first for faster edit/build/test cycles, 
   // because some of the test take longer to perfom. So this line is volatile:
-  //ok &= runUnitTest(&colorUnitTest,  "rsColor");
-  //ok &= runUnitTest(&ladderUnitTest, "rsLadder");
-  //ok &= runUnitTest(&testLinearAlgebra,              "rsLinearAlgebra");
-  ok &= runUnitTest(&allpassUnitTest,             "AllpassUnitTest");
+  ok &= runUnitTest(&basicFiltersUnitTests,  "BasicFiltersUnitTest");
+  ok &= runUnitTest(&allpassUnitTest,        "AllpassUnitTest");
 
   //// these tests should go into UnitTestsRosic.cpp:
-  //ok &= runUnitTest(&testDifferentialEquationSystem, "rsDifferentialEquationSystem");
-  //ok &= runUnitTest(&stateVariableFilterUnitTest,"rsStateVariableFilter"); 
-  //ok &= runUnitTest(&analysisUnitTest,      "Analysis");
   //ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine");
   //return ok;
 
@@ -78,6 +73,7 @@ bool runUnitTestsRapt()
 
 
   // Filters:
+  ok &= runUnitTest(&basicFiltersUnitTests,       "BasicFiltersUnitTest");
   //ok &= runUnitTest(&prototypeDesignUnitTest, "rsPrototypeDesigner"); // why commented?
   ok &= runUnitTest(&filterSpecUnitTest,          "rsFilterSpecification (BA/ZPK)");
   ok &= runUnitTest(&movingMaximumUnitTest,       "moving maximum filter");

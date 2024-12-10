@@ -274,6 +274,11 @@ public:
     setStateForConstInput( xL); for(int n = 0;   n <  N; n++) y[n] = getSample(x[n]); // forward 
     prepareForBackwardPass(xR); for(int n = N-1; n >= 0; n--) y[n] = getSample(y[n]); // backward
   }
+  // Needs unit test! We should compare the result of a bidirectional application of the filter 
+  // using this function to one where we do a numerical ring-down and warm-up phase. Just take
+  // an array of values that has only nonzero values in the middle, then do a naive forward 
+  // backward run over the whole array and compare that to a forward/backward run only over
+  // the nonzero section using this function, then check, if the nonzero sections matches.
 
   /** Like applyForwardBackward, but does the backward pass first and then the forward pass. This 
   should make no difference, though (aside from different roundoff errors). I added the function 

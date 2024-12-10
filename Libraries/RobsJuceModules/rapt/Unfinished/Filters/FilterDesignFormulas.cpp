@@ -1,21 +1,35 @@
 template<class T>
 void invertBiquad(T &b0, T &b1, T &b2, T &a1, T &a2)
 {
-  // normalize numerator:
-  T g = b0;    // superfluous -> get rid
+  // Normalize numerator:
+  T g = b0; 
   T s = 1/g;
   b0  = 1;
   b1 *= s;
   b2 *= s;
 
-  // swap numerator against denominator:
+  // Swap numerator against denominator:
   rsSwap(a1, b1);
   rsSwap(a2, b2);
 
-  // re-apply (inverted) overall gain:
+  // Re-apply (inverted) overall gain:
   b0 *= s;
   b1 *= s;
   b2 *= s;
+
+  // I think, this algorithm assumes that we apply the filter as:
+  //
+  //   y[n] = b0*x[n] + b1*x[n-1] + b2*x[n-2] - a1*x[n-1] - a2*x[n-2]
+  //
+  // i.e. with the sign convention of using minus in the difference equation for the a-coeffs. If 
+  // the convention used would be:
+  //
+  //   y[n] = b0*x[n] + b1*x[n-1] + b2*x[n-2] + a1*x[n-1] + a2*x[n-2]
+  //
+  // then, I think, we would additionally have to do: a1 = -a1; a2 = -a2; after the swap. Check, if
+  // there's a unit test for this. I really want to consistently switch to the first convention but 
+  // there's a lot of legacy code that uses the second, so that's not easy. Moreover, it may break
+  // client code. It's a mess!
 }
 
 template<class T>
