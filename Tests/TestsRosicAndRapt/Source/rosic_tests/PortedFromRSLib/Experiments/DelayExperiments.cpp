@@ -823,9 +823,57 @@ void dampedAllpassCombNonLin()
   //   for the overall instability. Maybe we need to apply some nonlinearity there, too.
 }
 
+template<class T>
+void rsPlotDelayLineContent(const RAPT::rsBasicDelayLine<T>& dl1, 
+                            const RAPT::rsBasicDelayLine<T>& dl2)
+{
+
+  int dummy = 0;
+}
+
+void dampedAllpassDelayContent()
+{
+  // An experiment that lets us look at the content of the delaylines of rsDampedAllpassComb
+
+  // Define types to be used:
+  using Real    = double;
+  using Vec     = std::vector<Real>;
+  using Allpass = rsDampedAllpassComb<Real, Real>;
+
+  // User parameters:
+  int  delay      =    10;
+  int  numSamples =   100;
+  Real sampleRate = 44100;
+  Real dampFreq   =  1000;
+  Real dampGain   =     0.7;
+  Real feedback   =     1.0;
+
+  Allpass ap;
+  Real dampOmega = 2*PI*dampFreq/sampleRate;
+  ap.setMaxDelayInSamples(delay);
+  ap.setupHighDamp(delay, feedback, dampOmega, dampGain, false);
+  int N = numSamples;
+
+  Vec h(N);
+  h[0] = ap.getSample(1.0);
+  for(int i = 1; i < N; i++)
+  {
+    h[i] = ap.getSample(0.0);
+
+    //rsPlotDelayLineContent(ap.mainDelay, ap.corrDelay);
+    // To call this, we temporarily need to move the delaylines into the public section
+  }
+
+
+  // ToDo:
+  //
+  //
+}
+
+
 void dampedAllpassComb()
 {
-  dampedAllpassCombNonLin();
+  dampedAllpassDelayContent();
 
 
   dampedAllpassComb1();
@@ -833,4 +881,5 @@ void dampedAllpassComb()
   dampedAllpassComb3();
   dampedAllpassCombComplex();
   dampedAllpassCombNonLin();
+  dampedAllpassDelayContent();
 }
