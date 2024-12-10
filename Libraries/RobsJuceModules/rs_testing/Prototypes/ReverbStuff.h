@@ -865,8 +865,8 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
   corDelayM2.setDelayInSamples(M+2);
 
   // Compute correction coefficients:
-  r0  = -k*b1;
-  r1  = -k*b0;
+  r0  = k*b1;
+  r1  = k*b0;
   rM1 = a1;
   rM2 = 1;
 }
@@ -895,12 +895,12 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleComb(TSig in)
 {
   if(preDelay)
   {
-    out = mainDelay.getSample(in + k * damper.getSample(out));
+    out = mainDelay.getSample(in - k * damper.getSample(out));
     return out;
   }
   else
   {
-    out = damper.getSample(in + k * mainDelay.getSample(out));
+    out = damper.getSample(in - k * mainDelay.getSample(out));
     return invDamper.getSample(out);
 
     // It may seem strange that we first apply the damper and then the inverse damper. Doesn't this
@@ -1054,8 +1054,8 @@ protected:
     corrDelay.setDelayInSamples(M+2);
 
     // Compute correction coefficients:
-    r0  = -k*b1;                        // See getSampleComb() for why we have a minus sign here.
-    r1  = -k*b0;
+    r0  = k*b1;                        // See getSampleComb() for why we have a minus sign here.
+    r1  = k*b0;
     rM1 = a1;
   }
 
@@ -1164,12 +1164,12 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
   // New:
   if(preDelay)
   {
-    combOut = applyDelay(in + k * applyDamper(combOut));  // Predelay of M samples
+    combOut = applyDelay(in - k * applyDamper(combOut));  // Predelay of M samples
     return combOut;
   }
   else
   {
-    combOut = applyDamper(in + k * applyDelay(combOut));  // No predelay
+    combOut = applyDamper(in - k * applyDelay(combOut));  // No predelay
     return applyInverseDamper(combOut);
   }
 

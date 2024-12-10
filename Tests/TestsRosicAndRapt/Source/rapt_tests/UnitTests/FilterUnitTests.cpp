@@ -2304,14 +2304,18 @@ bool dampedAllpassCombUnitTest()
   comb.setupHighDamp( delay, feedback, dampOmega, dampGain, false);
   h  = impulseResponse(naive, numSamples, 1.0);
   h2 = impulseResponse(comb,  numSamples, 1.0);
-  //ok &= rsIsCloseTo(h, h2, 1.e-15);   // FAILS! ...because rsDampedAllpassComb does not yet have the inverse damper
+  ok &= rsIsCloseTo(h, h2, 1.e-15);
   ok &= isAllpass(h, 1.e-5); 
 
 
+  // After switching the sign convnetion for k, this test fails now. This is expected. We need to
+  // update the test, too. We now expect a bipolar spike train! ..OK - I preliminarily made the
+  // test pass again by inserting abs function into the check. It now tests, if the signal is 
+  // either +1 or -1 at the expected locations
 
   // Check the spacing of the spikes of the comb without correction and with unit feedback 
-  // settings (i.e. no decay, no damping). This should produce a spike train with the distance 
-  // between the spikes given by our desired delay. The first spike occurs at sample index  
+  // settings (i.e. no decay, no damping). This should produce an alternating spike train with the
+  // distance between the spikes given by our desired delay. The first spike occurs at sample index  
   // n == delay - 1. 
   int N = numSamples;
   comb.setupHighDamp(delay, 1.0, 0.5, 1.0, true);
@@ -2321,12 +2325,30 @@ bool dampedAllpassCombUnitTest()
     h[n] = comb.getSampleComb(0.0);     
   for(int i = 0; i < N; i++)            
   {
-    if( (i+1) % delay == 0 )            // Triggers at 49, 99, 149, 199, ... if delay == 50
-      ok &= h[i] == 1.0;
+    if((i+1) % delay == 0)            // Triggers at 49, 99, 149, 199, ... if delay == 50
+    {
+      //ok &= rsAbs(h[i]) == 1.0;
+
+      int a = (i+1) / delay;
+      int b = a % 2;
+      if(b == 1)
+        ok &= h[i] == +1.0;
+      else
+        ok &= h[i] == -1.0;
+
+      int dummy = 0;
+
+    }
     else
       ok &= h[i] == 0.0;
   }
   //rsPlotVectors(h);
+  // ToDo: strengthen the test! check if, the positive/negative spikes are in the right order.
+  // Compute a = (i+1) / M
+  // if a % 2 == 0, it should be positive, otherwise negative, I think
+
+  //
+  // if (i+1) % (2*M) == 0, it should be positive, otherwise
 
 
   // Now without predelay:
