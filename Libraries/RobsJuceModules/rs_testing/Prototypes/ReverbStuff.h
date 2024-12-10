@@ -821,8 +821,9 @@ protected:
   rsBasicDelayLine<TSig>             corDelayM1;
   rsBasicDelayLine<TSig>             corDelayM2;
   rsFirstOrderFilterBase<TSig, TPar> corOnePole;
+  rsFirstOrderFilterBase<TSig, TPar> invDamper;
 
-  rsFirstOrderFilterBase<TSig, TPar> invDamper; // Needed for mode without predelay
+  // ToDo: replace rsFirstOrderFilterBase with rsDirectFormFilter
 
 
 
@@ -848,20 +849,23 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 
 template<class TSig, class TPar>
 void rsDampedAllpassCombNaive<TSig, TPar>::setup(
-  int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA)
+  int delay, TSig feedback, int dampOrder, TPar* b, TPar* a)
 {
   rsAssert(dampOrder == 1, "We currently only support 1st order damping filters");
   // The signature allows for higher order damping filters in anticipation of supporting those
   // later.
 
+  rsAssert(a[0] == 1);   
+  // We may relax this assumption later. If a[0] != 1, we can just scale all coeffs by 1/a[0]
+
   k = feedback;
   this->preDelay = preDelay;
 
-  rsAssert(a[0] == 1);   // We may relax this assumption later...
-  a1 = dampCoeffsA[1];
-  b0 = dampCoeffsB[0];
-  b1 = dampCoeffsB[1];
-  // If a[0] != 1, we can just scale all coeffs by 1/a[0]
+  //// Set up damper and related filters:
+  //damper.setCoefficients(    a, b, dampOrder);
+  //invDamper.setCoefficients( a, b, dampOrder);
+  //invDamper.invert();
+  //corPoles.setCoefficients(  .. );
 
   // Set up delaylines:
   int M = delay - 1;                        // -1 corrects for unit delay in feedback path
@@ -877,7 +881,7 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setup(
 }
 
 
-// This function should go away:
+// This function should go away in fvaor of a general setup() function:
 template<class TSig, class TPar>
 void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
   int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay)
