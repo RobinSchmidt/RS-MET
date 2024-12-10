@@ -778,6 +778,10 @@ public:
 
   void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay);
 
+
+  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA);
+
+
   // We use the convention that we use  M = delay - 1  for the delayline to compensate for the unit
   // delay. This makes more sense from a user's perspective because then, the spike spacing is 
   // exactly given by delay.
@@ -842,6 +846,38 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
   corDelayM2.setMaximumDelayInSamples(maxM+2);
 }
 
+template<class TSig, class TPar>
+void rsDampedAllpassCombNaive<TSig, TPar>::setup(
+  int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA)
+{
+  rsAssert(dampOrder == 1, "We currently only support 1st order damping filters");
+  // The signature allows for higher order damping filters in anticipation of supporting those
+  // later.
+
+  k = feedback;
+  this->preDelay = preDelay;
+
+  rsAssert(a[0] == 1);   // We may relax this assumption later...
+  a1 = dampCoeffsA[1];
+  b0 = dampCoeffsB[0];
+  b1 = dampCoeffsB[1];
+  // If a[0] != 1, we can just scale all coeffs by 1/a[0]
+
+  // Set up delaylines:
+  int M = delay - 1;                        // -1 corrects for unit delay in feedback path
+  mainDelay.setDelayInSamples(M);
+  corDelayM1.setDelayInSamples(M+1);
+  corDelayM2.setDelayInSamples(M+2);
+
+  // Compute correction coefficients:
+  r0  = k*b1;
+  r1  = k*b0;
+  rM1 = a1;
+  rM2 = 1;
+}
+
+
+// This function should go away:
 template<class TSig, class TPar>
 void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
   int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay)
@@ -931,6 +967,20 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::applyCorrector(TSig in)
 }
 
 
+template<class TSig, class TPar>
+void rsSetupAllpassCombHighDamp(rsDampedAllpassCombNaive<TSig, TPar>& flt,
+  int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay)
+{
+  flt.setupHighDamp(delay, feedback, dampOmega, dampGain, preDelay);
+  // Eventually, we want to get rid of the member function setupHighDamp and only provide a general
+  // setup function into which the user can pass the coeffs himself. As a first setp for this 
+  // refactorization, we provide this function here. Then, all direct calls to setupHighDamp shall 
+  // be replaced by a call to this function. Then, this functionshould compute the coeffs itself
+  // and use the general setup function. Then, the setupHighDamp function can be removed.
+  // This should be done in parallel for the production implementation, too.
+}
+
+
 
 
 
@@ -970,12 +1020,13 @@ public:
   void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay);
 
 
-  void setupLowDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay);
-
-  // Try also a dispersive allpass in the feedback loop
-
   // I actually think we should only have a setter of the form:
   // setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA));
+  // That's much more flexible. Something like setupHighDamp should, for the time of development,
+  // be a free function like:
+  //
+  // rsSetupAllpassCombHighDamp(rsDampedAllpassComb& flt, int delay, TSig feedback, TPar dampOmega, 
+  //   TPar dampGain, bool predelay)
 
 
 
@@ -999,11 +1050,6 @@ public:
   correction filter. */
   TSig applyCorrector(TSig combOutput);
 
-
-  // Temporarily moved to public for some investigations:
-  //rsBasicDelayLine<TSig> mainDelay;
-  //rsBasicDelayLine<TSig> corrDelay;
-  // The normal declarations in the protected section are temporarily commented out
 
 protected:
 
@@ -1065,7 +1111,7 @@ protected:
   TSig y1c  = 0;             // y[n-1] for corrector one pole
 
   // Coefficients:
-  TSig k   = 0;                    // Needs to be TSig when we want to use it with complex feedback
+  TSig k   = 0;              // Needs to be TSig when we want to use it with complex feedback
   TSig r0  = 0; 
   TSig r1  = 0; 
   TPar rM1 = 0;
@@ -1106,19 +1152,6 @@ void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   // convention used. 
 
 
-  updateDelaysAndCorrectorCoeffs();
-}
-
-template<class TSig, class TPar>
-void rsDampedAllpassComb<TSig, TPar>::setupLowDamp(
-  int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay)
-{
-  M = delay - 1;
-  k = feedback;
-  this->preDelay = preDelay;
-  rsFirstOrderFilterBase<TSig, TPar>::coeffsLowShelfBLT(
-    dampOmega, dampGain, &b0, &b1, &a1);
-  a1 = -a1;
   updateDelaysAndCorrectorCoeffs();
 }
 

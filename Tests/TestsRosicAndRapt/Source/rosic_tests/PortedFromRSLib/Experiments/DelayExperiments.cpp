@@ -526,29 +526,20 @@ void dampedAllpassComb2()
   Real dampFreq   =  1000;     // Frequency (in Hz) of the shelf filter for feedback damping
   Real dampGain   =     0.7;   // Linear high freq damping gain
   Real feedback   =     0.99;  // Feedback gain factor
-  int  mode       =     0;     // 0: high-damp, 1: low-damp, 2: allpass
-
-
-  Allpass comb; // maybe make local to impResp
 
   // Helper function to set up the given flt object with the given settings:
-  auto setupComb = [&](Allpass& flt, int delay, Real feedback, Real omega, Real hiGain, 
-    bool preDelay, int mode)
+  auto setupComb = [&](Allpass& flt, 
+    int delay, Real feedback, Real omega, Real hiGain, bool preDelay)
   {
     flt.setMaxDelayInSamples(delay);
-    switch(mode)
-    {
-    case 0: flt.setupHighDamp(delay, feedback, omega, hiGain, preDelay); break;
-    case 1: flt.setupLowDamp( delay, feedback, omega, hiGain, preDelay); break;
-    }
+    flt.setupHighDamp(delay, feedback, omega, hiGain, preDelay);
   };
-  // Add predelay mode parameter. For the feedback sign, we don't add a parameter - we just use 
-  // either positive or negative sign.
 
   // Helper function to produce the impulse response for given settings:
   auto impResp = [&](int delay, Real feedback, Real omega, Real hiGain, bool preDelay, int mode)
   {
-    setupComb(comb, delay, feedback, omega, hiGain, preDelay, mode); 
+    Allpass comb; // maybe make local to impResp
+    setupComb(comb, delay, feedback, omega, hiGain, preDelay); 
     Vec h = impulseResponse(comb, numSamples, 1.0);
     return h;
   };
@@ -580,13 +571,6 @@ void dampedAllpassComb2()
   rsPlotArrays(N-delay+1, &h1[0], &h3[delay-1]);
   rsPlotArrays(N-delay+1, &h2[0], &h4[delay-1]);
 
-  // Now let's try a low-damp mode and compare it to the corresponding high-damp setting:
-  Vec h5 = impResp(d, +k, w, g, false, 1);
-  rsPlotVectors(h1, h5);
-
-
-  //rosic::writeToMonoWaveFile("DampedAllpasComb_Low_+_1.wav", &h5[0], N, sampleRate);
-
 
   // Observations:
   //
@@ -602,9 +586,6 @@ void dampedAllpassComb2()
   //   is exactly "delay"-1 samples. This is also kinda counterintuitive. A user might expect it to
   //   be "delay" samples. Maybe when turning this into an end-user facing unit, we should just
   //   artificially introduce an additional sample of delay in "pre-delay" mode.
-  //
-  // - In high-damp mode, the impulses smear out more and more over time. In low damp mode, they
-  //   actually become more wiggly over time. The result sounds very tonal.
 }
 
 void dampedAllpassComb3()
