@@ -2243,6 +2243,7 @@ bool dampedAllpassCombUnitTest()
   Real dampOmega  =  0.1;   // Normalized radian frequency of the low shelf for feedback damping
   Real dampGain   =  0.7;   // Linear high freq damping gain
   Real feedback   =  0.9;   // Feedback gain factor
+  // Maybe use shorter names: d,N,w,g,k
 
   // Create an instance of the naive prototype implemention, generate its impulse response and 
   // check that it is allpass in nature:
@@ -2258,11 +2259,16 @@ bool dampedAllpassCombUnitTest()
   comb.setMaxDelayInSamples(delay);
   comb.setupHighDamp(delay, feedback, dampOmega, dampGain, true);
   Vec h2 = impulseResponse(comb, numSamples, 1.0);
-  //ok &= h2 == h;
-  ok &= rsIsCloseTo(h, h2, 1.e-15);  // Not exactly equal anymore due to switch of IIR/FIR order
-  //rsPlotVectors(h, h2);
-  rsAssert(ok);
-
+  ok &= rsIsCloseTo(h, h2, 1.e-15);  
+  // They are not exactly equal because the algorithms differ in whether the feedforward or 
+  // feedback part of the correction filter is applied first. 
+  
+  // Now do the same test again for the other mode of operation, i.e. the one without predelay:
+  naive.setupHighDamp(delay, feedback, dampOmega, dampGain, false);
+  comb.setupHighDamp( delay, feedback, dampOmega, dampGain, false);
+  h  = impulseResponse(naive, numSamples, 1.0);
+  h2 = impulseResponse(comb,  numSamples, 1.0);
+  ok &= rsIsCloseTo(h, h2, 1.e-15);
 
   // Check the spacing of the spikes of the comb without correction and with unit feedback 
   // settings (i.e. no decay, no damping). This should produce a spike train with the distance 
@@ -2288,6 +2294,7 @@ bool dampedAllpassCombUnitTest()
   comb.reset();
   comb.setupHighDamp(delay, 1.0, 0.5, 1.0, false);
   h[0] = comb.getSampleComb(1.0);
+  // ...
 
 
   // Test the spike placement of the other modes There are 4 in total: 
