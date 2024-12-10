@@ -998,22 +998,7 @@ protected:
 
   TSig applyDelay(TSig x)
   {
-    // Old:
-    //return mainDelay.getSample(x);
-
-    // New:
-    mainDelay.writeInputNoUpdate(x);
-    TSig y = mainDelay.readOutputAt(M);
-    mainDelay.incrementTapPointers();
-    return y;
-
-
-    // This function exists as preliminary to optimize away corrDelay. We want to use a single 
-    // shared delayline for both. That is possible but then we cant use the regular getSample()
-    // calls anymore but must resort to the lower level interface and control the reads and writes
-    // and pointer updates manually. This is, among other things, because corrDelay is actually 2 
-    // samples longer than mainDelay. We need to set up a single delayline of length M+2 and read
-    // and write at the appropriate places. Here is the palce to do that later.
+    return mainDelay.getSample(x);
   }
 
   TSig applyDamper(TSig x)
@@ -1026,13 +1011,6 @@ protected:
 
   TSig applyInverseDamper(TSig x)
   {
-    // Derivation - solve for x, swap x,y, use di rather than d:
-    //TSig y = b0 * x + b1 * x1d - a1 * y1d; 
-    // (y + a1 * y1d - b1 * x1d) / b0 = x; 
-    // (x + a1 * x1d - b1 * y1d) / b0 = y; 
-    // y = (x + a1 * x1di - b1 * y1di) / b0;
-
-
     TSig y = (x + a1 * x1di - b1 * y1di) / b0;
     x1di = x;
     y1di = y;
@@ -1049,8 +1027,8 @@ protected:
   void updateDelaysAndCorrectorCoeffs()
   {
     // Set up delaylines:
-    //mainDelay.setDelayInSamples(M);   // Old
-    mainDelay.setDelayInSamples(M+2); // New
+    mainDelay.setDelayInSamples(M);   // Old
+    //mainDelay.setDelayInSamples(M+2); // New
     corrDelay.setDelayInSamples(M+2);
 
     // Compute correction coefficients:
@@ -1155,13 +1133,6 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSample(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 {
-  // Old:
-  //if(preDelay)
-  //  combOut = mainDelay.getSample(in + k * applyDamper(combOut));  // Predelay of M samples
-  //else
-  //  combOut = applyDamper(in + k * mainDelay.getSample(combOut));  // No predelay
-
-  // New:
   if(preDelay)
   {
     combOut = applyDelay(in - k * applyDamper(combOut));  // Predelay of M samples
@@ -1173,8 +1144,6 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
     return applyInverseDamper(combOut);
   }
 
-  return combOut;
-
   // Notes:
   //
   // - This computation has an implicit unit delay applied to the apperance of combOut on the right
@@ -1183,17 +1152,7 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
   //
   // - Applying the mainDelay as inner filter and the damper as outer filter gives us a filter 
   //   without any predelay/latency. Most of the time, this is more desirable, but maybe it could
-  //   be useful for something to have predelay built in after all. Also, it sounds different in 
-  //   both modes. I think, with predelay sounds somewhat better because it's less tonal.
-  //
-  // - I think, we actually should have used -k * ... because when translating from transfer 
-  //   function to difference equation, coefficients in feedback paths accrue a negative sign. 
-  //   However, when we do this, we would have the situation that positive k stands for alternating
-  //   spikes which is counterintuitive. So we use + k * ... This has the other consequence that
-  //   in the computation of r0, r1 we have to introduce minus signs as well. These are not present
-  //   in the formulas in DampedAllpasComb.txt.  ...Maybe change that. Maybe here, we should stay
-  //   close to the math and not yet mix in user convenience considerations. That should be done on
-  //   a higher level
+  //   be useful for something to have predelay built in after all. 
 }
 
 template<class TSig, class TPar>
@@ -1203,18 +1162,8 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   TSig y = 0;
   y += r0  * in;
   y += r1  * unitDelay.getSample(in);
-
-  // Old:
   y += rM1 * corrDelay.readOutputAt(M+1);
   y +=       corrDelay.readOutputAt(M+2);
-
-  //// New:
-  //y += rM1 * mainDelay.readOutputAt(M+1);
-  //y +=       mainDelay.readOutputAt(M+2);
-  //// Does not yet work Maybe we should read at M and M+1 instead? That could make sense because
-  //// there's a pointer increment that happened before we do our reads
-
-
   corrDelay.writeInputAndUpdate(in);
 
   // Apply 1-pole:
@@ -1223,6 +1172,9 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 
   // Switching this order opens the possibility that the content of corrDelay actually matches the
   // content of mainDelay such that we can optimize away corrDelay ...maybe...we'll see....
+  // well...nope! The delaylines have different contents. In both modes - with or without predelay.
+  // It first seems otherwise but that was only because something else was still wrong - we didn't
+  // have the invDamper included yet.
 }
 
 // More Optimization ideas:

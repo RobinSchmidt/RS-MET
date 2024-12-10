@@ -32,7 +32,10 @@ public:
   // functions can be used from outside - maybe move into a class "FilterDesignFormulas" or
   // something. The formulas here use a positive sign convention for feedback-coeffs...make the 
   // usage of positive or negative sign-convention consistent throughout the library...
-  // or maybe support both conventions in the design formulas
+  // or maybe support both conventions in the design formulas - but nah! We should have a a class
+  // FilterDesignFormulas and that should universally use the negative sign convention for feedback
+  // coeffs. If some filter want to use the other - for optimization or legacy compatibility 
+  // reasons, it just needs to flip the sign itself.
 
   /** Trivial "bypass" coeffs. */
   template<class T>
