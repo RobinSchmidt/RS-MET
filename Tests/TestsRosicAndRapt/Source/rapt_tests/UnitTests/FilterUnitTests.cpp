@@ -2301,6 +2301,8 @@ bool dampedAllpassCombUnitTest()
   // - Add a unit test that verifies the spike spacing. Implement it by using the 
   //   getSampleUncorrected function. Set the dampGain to 1.0 and feedback to 0.5. We should see
   //   a first spike at delay-1 and from there, they should be spaced out by the given delay.
+  //
+  // - Add test for both modes - with predelay and without
 }
 
 bool allpassUnitTest()

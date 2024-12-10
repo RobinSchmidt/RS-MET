@@ -979,6 +979,18 @@ public:
 
 protected:
 
+  TSig applyDelay(TSig x)
+  {
+    return mainDelay.getSample(x);
+
+    // This function exists as preliminary to optimize away corrDelay. We want to use a single 
+    // shared delayline for both. That is possible but then we cant use the regular getSample()
+    // calls anymore but must resort to the lower level interface and control the reads and writes
+    // and pointer updates manually. This is, among other things, because corrDelay is actually 2 
+    // samples longer than mainDelay. We need to set up a single delayline of length M+2 and read
+    // and write at the appropriate places. Here is the palce to do that later.
+  }
+
   TSig applyDamper(TSig x)
   {
     TSig y = b0 * x + b1 * x1d - a1 * y1d;  // ToDo: maybe use DF2 or TDF2 implementation
@@ -1099,10 +1111,18 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSample(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 {
+  // Old:
+  //if(preDelay)
+  //  combOut = mainDelay.getSample(in + k * applyDamper(combOut));  // Predelay of M samples
+  //else
+  //  combOut = applyDamper(in + k * mainDelay.getSample(combOut));  // No predelay
+
+  // New:
   if(preDelay)
-    combOut = mainDelay.getSample(in + k * applyDamper(combOut));  // Predelay of M samples
+    combOut = applyDelay(in + k * applyDamper(combOut));  // Predelay of M samples
   else
-    combOut = applyDamper(in + k * mainDelay.getSample(combOut));  // No predelay
+    combOut = applyDamper(in + k * applyDelay(combOut));  // No predelay
+
   return combOut;
 
   // Notes:
@@ -1121,7 +1141,9 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
   //   However, when we do this, we would have the situation that positive k stands for alternating
   //   spikes which is counterintuitive. So we use + k * ... This has the other consequence that
   //   in the computation of r0, r1 we have to introduce minus signs as well. These are not present
-  //   in the formulas in DampedAllpasComb.txt.
+  //   in the formulas in DampedAllpasComb.txt.  ...Maybe change that. Maybe here, we should stay
+  //   close to the math and not yet mix in user convenience considerations. That should be done on
+  //   a higher level
 }
 
 template<class TSig, class TPar>
@@ -1174,6 +1196,7 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 //   or simply realted ones? ...but I don't think so. I don't see any reason why this should be 
 //   the case. But: If we apply the FIR part first in applyCorrector, then the contents may 
 //   actually match - maybe up to a shift. and maybe that shift may depend on the predelay mode.
+//   See dampedAllpassDelayContent() - they have indeed the same content!
 
 
 /** A nonlinear extension of rsDampedAllpassComb */
