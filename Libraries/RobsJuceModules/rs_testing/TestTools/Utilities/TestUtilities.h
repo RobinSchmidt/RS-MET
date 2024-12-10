@@ -244,7 +244,6 @@ bool isAllpass(const std::vector<T>& h, T tol)
 filters that are supposed to be inverses of one another. Applying thme both to a unit impulse 
 should give back that unit impulse. There may be other use cases for such checks but that happens
 to be the one for which I wrote it */
-
 template<class T>
 bool rsIsUnitImpulse(const std::vector<T>& x, T tol)
 {
@@ -254,6 +253,42 @@ bool rsIsUnitImpulse(const std::vector<T>& x, T tol)
     maxErr = rsMax(maxErr, rsAbs(x[n]));
   return maxErr <= tol;
 }
+
+
+/** Returns N samples of the impulse response of the passed filter as std::vector. It is necessary
+for you to pass a scale factor of the type of the filter's output signal (for example: 1.0 for
+double), such that the compiler can deduce the template parameter. We also use it to scale the
+input impulse to the filter, so it actually gets some purpose besides satisfying the compiler. The
+filter class must support the functions reset() and getSample() */
+template<class TSig, class TFlt>
+inline std::vector<TSig> impulseResponse(TFlt &filter, int length, TSig scale)
+{
+  std::vector<TSig> y(length);
+  filter.reset();
+  y[0] = filter.getSample(scale);
+  for(int n = 1; n < length; n++)
+    y[n] = filter.getSample(0.0);
+  return y;
+}
+template<class TSig, class TFlt>
+inline std::vector<TSig> filterResponse(TFlt& filter, int length, std::vector<TSig> x)
+{
+  std::vector<TSig> y(length);
+  filter.reset();
+  for(int n = 0; n < length; n++)
+    y[n] = filter.getSample(x[n]);
+  return y;
+}
+template<class T>
+inline std::vector<T> ampToDb(const std::vector<T>& x, T minDb)
+{
+  std::vector<T> y(x.size());
+  for(size_t i = 0; i < x.size(); i++)
+    y[i] = rsMax(rsAmpToDb(rsAbs(x[i])), minDb);
+  return y;
+}
+
+
 
 //=================================================================================================
 // Filtering
@@ -322,6 +357,9 @@ bool rsIsPermutation(const std::vector<T>& x, const std::vector<T>& y, T tol)
     done[j] = true;  }
   return true;
 }
+
+
+
 
 //=================================================================================================
 

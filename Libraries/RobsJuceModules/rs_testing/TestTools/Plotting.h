@@ -27,43 +27,6 @@ void createTimeAxis(int numSamples, float *timeAxis, float sampleRate);
 void createTimeAxis(int numSamples, double *timeAxis, double sampleRate);
 
 
-/** Returns N samples of the impulse response of the passed filter as std::vector. It is necessary
-for you to pass a scale factor of the type of the filter's output signal (for example: 1.0 for
-double), such that the compiler can deduce the template parameter. We also use it to scale the
-input impulse to the filter, so it actually gets some purpose besides satisfying the compiler. The
-filter class must support the functions reset() and getSample() */
-template<class TSig, class TFlt>
-inline std::vector<TSig> impulseResponse(TFlt &filter, int length, TSig scale)
-{
-  std::vector<TSig> y(length);
-  filter.reset();
-  y[0] = filter.getSample(scale);
-  for(int n = 1; n < length; n++)
-    y[n] = filter.getSample(0.0);
-  return y;
-}
-template<class TSig, class TFlt>
-inline std::vector<TSig> filterResponse(TFlt& filter, int length, std::vector<TSig> x)
-{
-  std::vector<TSig> y(length);
-  filter.reset();
-  for(int n = 0; n < length; n++)
-    y[n] = filter.getSample(x[n]);
-  return y;
-}
-template<class T>
-inline std::vector<T> ampToDb(const std::vector<T>& x, T minDb)
-{
-  std::vector<T> y(x.size());
-  for(size_t i = 0; i < x.size(); i++)
-    y[i] = rsMax(rsAmpToDb(rsAbs(x[i])), minDb);
-  return y;
-}
-
-
-// move to Utilities
-
-
 
 /** Plots N samples of the impulse response of the passed filter. */
 template<class TSig, class TFlt>
@@ -497,6 +460,31 @@ inline void addDataFunction(GNUPlotter& plt, const std::function<T(T)>& f, T xMi
 // This function could go into class GNUPlotter itself
 
 
+/** Plots the content of the two given delaylines. The pruposes of this function is to be able to
+check if two delaylines have the same or related content such that one may think about getting rid 
+of one of them. */
+template<class T>
+void rsPlotDelayLineContent(const RAPT::rsBasicDelayLine<T>& dl1, 
+  const RAPT::rsBasicDelayLine<T>& dl2)
+{
+  // Helper function to return the content of the given delayline as std::vector:
+  auto getContent = [](const RAPT::rsBasicDelayLine<T>& dl)
+  {
+    // Maybe let the use switch between shwoing the full content (i.e. the full allocated memory)
+    // or only up to the used length - current, we hrdcoded the used length:
+    //int N = dl.getMaxDelayInSamples();
+    int N = dl.getDelayInSamples();
+    std::vector<T> cnt(N);
+    for(int n = 0; n < N; n++)
+      cnt[n] = dl.readOutputAt(n);
+    return cnt;
+  };
+
+  // Retrieve contents of both delaylines and plot them:
+  std::vector<T> cnt1 = getContent(dl1);
+  std::vector<T> cnt2 = getContent(dl2);
+  rsPlotVectors(cnt1, cnt2);
+}
 
 
 

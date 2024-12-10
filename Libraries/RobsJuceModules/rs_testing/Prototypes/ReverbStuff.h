@@ -945,6 +945,13 @@ class rsDampedAllpassComb
 
 public:
 
+  rsDampedAllpassComb()
+  {
+
+
+  }
+
+
   /** Sets the maximum desired roundtrip delay around the comb. This determines the spacing of the
   spikes in the impulse response in a setting without any decay or damping. In such a case, the 
   first spike appears at delay - 1 and from there, the subsequent ones are spaced apart by delay
@@ -999,6 +1006,11 @@ protected:
   TSig applyDelay(TSig x)
   {
     return mainDelay.getSample(x);
+
+    //mainDelay.writeInputNoUpdate(x);
+    //TSig y = mainDelay.readOutputAt(M);
+    //mainDelay.incrementTapPointers();
+    //return y;
   }
 
   TSig applyDamper(TSig x)
@@ -1027,12 +1039,12 @@ protected:
   void updateDelaysAndCorrectorCoeffs()
   {
     // Set up delaylines:
-    mainDelay.setDelayInSamples(M);   // Old
-    //mainDelay.setDelayInSamples(M+2); // New
+    mainDelay.setDelayInSamples(M);  // old
+    //mainDelay.setDelayInSamples(M+2);  // new
     corrDelay.setDelayInSamples(M+2);
 
     // Compute correction coefficients:
-    r0  = k*b1;                        // See getSampleComb() for why we have a minus sign here.
+    r0  = k*b1;
     r1  = k*b0;
     rM1 = a1;
   }
@@ -1158,17 +1170,36 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 {
-  // Apply the FIR part:
-  TSig y = 0;
-  y += r0  * in;
-  y += r1  * unitDelay.getSample(in);
-  y += rM1 * corrDelay.readOutputAt(M+1);
-  y +=       corrDelay.readOutputAt(M+2);
-  corrDelay.writeInputAndUpdate(in);
+  //// pole first, then FIR:
 
   // Apply 1-pole:
-  y = applyCorrectorOnePole(y);
+  TSig t = applyCorrectorOnePole(in);
+
+  // Apply the FIR part:
+  TSig y = 0;
+  y += r0  * t;
+  y += r1  * unitDelay.getSample(t);
+  y += rM1 * corrDelay.readOutputAt(M+1);
+  y +=       corrDelay.readOutputAt(M+2);
+  corrDelay.writeInputAndUpdate(t);
   return y;
+
+
+
+  //// FIR first, then pole:
+
+  //// Apply the FIR part:
+  //TSig y = 0;
+  //y += r0  * in;
+  //y += r1  * unitDelay.getSample(in);
+  //y += rM1 * corrDelay.readOutputAt(M+1);
+  //y +=       corrDelay.readOutputAt(M+2);
+  //corrDelay.writeInputAndUpdate(in);
+
+  //// Apply 1-pole:
+  //y = applyCorrectorOnePole(y);
+  //return y;
+
 
   // Switching this order opens the possibility that the content of corrDelay actually matches the
   // content of mainDelay such that we can optimize away corrDelay ...maybe...we'll see....

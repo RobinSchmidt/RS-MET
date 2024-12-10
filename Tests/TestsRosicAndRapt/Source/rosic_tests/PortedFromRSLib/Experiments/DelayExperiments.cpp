@@ -837,34 +837,17 @@ void dampedAllpassCombNonLin()
   //   for the overall instability. Maybe we need to apply some nonlinearity there, too.
 }
 
-template<class T>
-void rsPlotDelayLineContent(const RAPT::rsBasicDelayLine<T>& dl1, 
-                            const RAPT::rsBasicDelayLine<T>& dl2)
-{
-  // Helper function to return the content of the given delayline as std::vector:
-  auto getContent = [](const RAPT::rsBasicDelayLine<T>& dl)
-  {
-    // Maybe let the use switch between shwoing the full content (i.e. the full allocated memory)
-    // or only up to the used length - current, we hrdcoded the used length:
-    //int N = dl.getMaxDelayInSamples();
-    int N = dl.getDelayInSamples();
-
-
-    std::vector<T> cnt(N);
-    for(int n = 0; n < N; n++)
-      cnt[n] = dl.readOutputAt(n);
-    return cnt;
-  };
-
-  // Retrieve contents of both delaylines and plot them:
-  std::vector<T> cnt1 = getContent(dl1);
-  std::vector<T> cnt2 = getContent(dl2);
-  rsPlotVectors(cnt1, cnt2);
-}
-
 void dampedAllpassDelayContent()
 {
-  // An experiment that lets us look at the content of the delaylines of rsDampedAllpassComb
+  // An experiment that lets us look at the content of the delaylines of rsDampedAllpassComb. To 
+  // make this experiment work, one needs to temporarily move the mainDelay, corrDelay members
+  // into the public section. Then one can uncomment the line:
+  //
+  //   rsPlotDelayLineContent(ap.mainDelay, ap.corrDelay);
+  //
+  // in the for-loop. What it them will do is to show a plot of the contents of the delaylines at 
+  // each sample.
+
 
   // Define types to be used:
   using Real    = double;
@@ -890,31 +873,21 @@ void dampedAllpassDelayContent()
   for(int n = 0; n < N; n++)
   {
     h[n] = ap.getSample(cos(0.8*n));
-    rsPlotDelayLineContent(ap.mainDelay, ap.corrDelay);
+    rsPlotDelayLineContent(ap.mainDelay, ap.corrDelay); 
     // To call this, we temporarily need to move the delaylines into the public section
   }
 
-
-
-
   // Observations:
   //
-  // - With predelay == true, the two delaylines mainDelay and corrDelay seem to have unrelated 
-  //   content
-  //
-  // - With predelay == false, their content seems to be completely different
-  //
-  // - Ah! I think, the sharing of delaylines is only possible in the operational mode without
-  //   predelay. So, to do this optimization, we would have to give up on the "with predelay"
-  //   mode. Hmm...predelay kinda sucks anyway - but on the other hand, it sounds slightly better
-  //   with predelay, so it may be worth to keep this mode available
+  // - The delaylines do not seem to have shared content. So we do indeed seem to need both of 
+  //   them.
 }
 
 
 void dampedAllpassComb()
 {
-  dampedAllpassComb2();
-  //dampedAllpassDelayContent();
+  //dampedAllpassComb2();
+  dampedAllpassDelayContent();
 
 
   dampedAllpassComb1();
