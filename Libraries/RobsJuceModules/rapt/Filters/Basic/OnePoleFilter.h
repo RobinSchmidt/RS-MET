@@ -179,6 +179,35 @@ public:
   // ToDo:
   // void setup(int mode, TPar omega, TPar gain = TPar(1));
 
+  /** Inverts the filter, i.e. swaps its poles and zeros and inverts its gain. A filter and its 
+  inverse applied in sequence should bring you back where you have started. But notice that this 
+  can only be used for minimum phase filters because otherwise, the inverse filter may be 
+  unstable - so use with care! */
+  void invert()
+  {
+    // Normalize numerator:
+    TPar g = b0; 
+    TPar s = 1/g;
+    b0  = 1;
+    b1 *= s;
+
+    // Swap numerator against denominator:
+    rsSwap(a1, b1);
+
+    // Flip signs (because we use the silly sign convention here):
+    a1 = -a1;
+    b1 = -b1;
+
+    // Re-apply (inverted) overall gain:
+    b0 *= s;
+    b1 *= s;
+
+    // ToDo:
+    //
+    // - Maybe check, if the filter is still stable and if not, maybe trigger an rsError. Stability
+    //   requires |a1| < 1 or maybe <= 1, if we want to ride on the edge.
+  }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -388,11 +417,6 @@ public:
   /** Sets the gain for the shelving modes in decibels. */
   void setShelvingGainInDecibels(TPar newGain);
 
-  /** Inverts the filter, i.e. swaps its poles and zeros and inverts its gain. A filter and its 
-  inverse applied in sequence should bring you back where you have started. But notice that this 
-  can only be used for minimum phase filters because otherwise, the inverse filter may be 
-  unstable - so use with care! */
-  void invert();
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */

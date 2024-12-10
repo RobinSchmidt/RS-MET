@@ -818,7 +818,7 @@ protected:
   rsBasicDelayLine<TSig>             corDelayM2;
   rsFirstOrderFilterBase<TSig, TPar> corOnePole;
 
-  //rsFirstOrderFilterBase<TSig, TPar> invDamper; // Needed for mode without predelay
+  rsFirstOrderFilterBase<TSig, TPar> invDamper; // Needed for mode without predelay
 
 
 
@@ -853,6 +853,8 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
   TPar b0, b1, a1;
   rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(dampOmega, dampGain, &b0, &b1, &a1);
   damper.setCoefficients(    b0,  b1,  a1);
+  invDamper.setCoefficients( b0,  b1,  a1);
+  //invDamper.
   corOnePole.setCoefficients(1.0, 0.0, a1);
   a1 = -a1; // We want to use the y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] sign convention here
 
@@ -878,6 +880,7 @@ void rsDampedAllpassCombNaive<TSig, TPar>::reset()
   corDelayM1.reset();
   corDelayM2.reset();
   corOnePole.reset();
+  invDamper.reset();
   out = TSig(0);
 }
 
@@ -893,7 +896,10 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleComb(TSig in)
   if(preDelay)
     out = mainDelay.getSample(in + k * damper.getSample(out));
   else
+  {
     out = damper.getSample(in + k * mainDelay.getSample(out));
+    // This need to apply the invDamper!
+  }
   return out;
 
   // In the dampedAllpassComb1() experiment where I derived all of this, I actually use a negative
