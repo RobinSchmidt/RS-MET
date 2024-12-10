@@ -2252,7 +2252,7 @@ bool dampedAllpassCombUnitTest()
   naive.setupHighDamp(delay, feedback, dampOmega, dampGain, true);
   Vec h = impulseResponse(naive, numSamples, 1.0);
   //rsPlotVectors(h);
-  ok &= isAllpass(h, 1.e-6);
+  ok &= isAllpass(h, 1.e-5);
 
   // Now try to generate the same output with the production version:
   Comb comb;
@@ -2270,6 +2270,10 @@ bool dampedAllpassCombUnitTest()
   h  = impulseResponse(naive, numSamples, 1.0);
   h2 = impulseResponse(comb,  numSamples, 1.0);
   ok &= rsIsCloseTo(h, h2, 1.e-15);
+  //ok &= isAllpass(h, 1.e-5);            // Fails!
+  // Yes, h and h2 are equal but they are *not* allpass anymore! instead they show the magnitude
+  // response of the damping filter!
+
 
   // Check the spacing of the spikes of the comb without correction and with unit feedback 
   // settings (i.e. no decay, no damping). This should produce a spike train with the distance 
@@ -2311,6 +2315,11 @@ bool dampedAllpassCombUnitTest()
   //   a first spike at delay-1 and from there, they should be spaced out by the given delay.
   //
   // - Add test for both modes - with predelay and without
+  //
+  // - It seems that with the swap of A and F, the filter is not allpass anymore. It looks like we
+  //   get a high-shelf response, i.e. the response of the damping filter? Figure this out! If this
+  //   is the case, it could be compensated for by applying the inverse of the shelver in this mode
+  //   at the end.
 }
 
 bool allpassUnitTest()

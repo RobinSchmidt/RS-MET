@@ -132,7 +132,13 @@ time smeared by the damping filter. As this is literally the only difference, ou
 remains valid without any change. So, with this small change, we can provide two different modes of 
 operation - with and without predelay. I think, aside from the predelay, they also sound different. 
 I think, the versions with predelay sounds a bit more colorless (verify!), so there seems to be some 
-tradeoff between wanting no coloration and wanting no latency.
+tradeoff between wanting no coloration and wanting no latency. But wait: Now the resulting filter is
+not allpass anymore! The resulting filter has now a magnitude response equal to that of F(z)! If we 
+want to use the filter in this way, we additionally need to apply the inverse of F(z), i.e.
+(1 + a1*d) / (b0 + b1*d).
+
+
+
 
 By the way, the feedback factor k could also be negative. That gives us another mode switch. It 
 switches the embedded comb filter U(z) between unipolar and bipolar mode, i.e. the spike train 
