@@ -2259,7 +2259,8 @@ bool dampedAllpassCombUnitTest()
   comb.setMaxDelayInSamples(delay);
   comb.setupHighDamp(delay, feedback, dampOmega, dampGain, true);
   Vec h2 = impulseResponse(comb, numSamples, 1.0);
-  ok &= rsIsCloseTo(h, h2, 1.e-15);  
+  ok &= rsIsCloseTo(h, h2, 1.e-15); 
+  //rsPlotVectors(h, h2);
   // They are not exactly equal because the algorithms differ in whether the feedforward or 
   // feedback part of the correction filter is applied first. 
   

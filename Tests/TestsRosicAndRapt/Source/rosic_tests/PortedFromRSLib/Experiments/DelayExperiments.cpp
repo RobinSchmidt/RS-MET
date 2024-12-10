@@ -861,29 +861,39 @@ void dampedAllpassDelayContent()
   int  delay      =    10;
   int  numSamples =   100;
   Real sampleRate = 44100;
-  Real dampFreq   =  1000;
-  Real dampGain   =     0.7;
-  Real feedback   =     1.0;
+  Real dampFreq   =   100;
+  Real dampGain   =     0.5;
+  Real feedback   =     0.9;
+  bool predelay   = true;
 
   Allpass ap;
   Real dampOmega = 2*PI*dampFreq/sampleRate;
   ap.setMaxDelayInSamples(delay);
-  ap.setupHighDamp(delay, feedback, dampOmega, dampGain, false);
+  ap.setupHighDamp(delay, feedback, dampOmega, dampGain, predelay);
   int N = numSamples;
 
   Vec h(N);
-  h[0] = ap.getSample(1.0);
-  for(int i = 1; i < N; i++)
+  for(int n = 0; n < N; n++)
   {
-    h[i] = ap.getSample(0.0);
+    h[n] = ap.getSample(cos(0.8*n));
     rsPlotDelayLineContent(ap.mainDelay, ap.corrDelay);
     // To call this, we temporarily need to move the delaylines into the public section
   }
 
 
-  // ToDo:
+
+
+  // Observations:
   //
-  // - Maybe use a different input signal - maybe a sine
+  // - With predelay == true, the two delaylines mainDelay and corrDelay seem to have unrelated 
+  //   content
+  //
+  // - With predelay == false, their content seems to be the same but delayed by one sample
+  //
+  // - Ah! I think, the sharing of delaylines is only possible in the operational mode without
+  //   predelay. So, to do this optimization, we would have to give up on the "with predelay"
+  //   mode. Hmm...predelay kinda sucks anyway - but on the other hand, it sounds slightly better
+  //   with predelay, so it may be worth to keep this mode available
 }
 
 

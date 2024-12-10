@@ -981,6 +981,7 @@ protected:
 
   TSig applyDelay(TSig x)
   {
+    // Old:
     //return mainDelay.getSample(x);
 
     // New:
@@ -1161,8 +1162,18 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   TSig y = 0;
   y += r0  * in;
   y += r1  * unitDelay.getSample(in);
+
+  // Old:
   y += rM1 * corrDelay.readOutputAt(M+1);
   y +=       corrDelay.readOutputAt(M+2);
+
+  //// New:
+  //y += rM1 * mainDelay.readOutputAt(M+1);
+  //y +=       mainDelay.readOutputAt(M+2);
+  //// Does not yet work Maybe we should read at M and M+1 instead? That could make sense because
+  //// there's a pointer increment that happened before we do our reads
+
+
   corrDelay.writeInputAndUpdate(in);
 
   // Apply 1-pole:
@@ -1190,8 +1201,11 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 //   actually match - maybe up to a shift. and maybe that shift may depend on the predelay mode.
 //   See dampedAllpassDelayContent() - they have indeed the same content!
 //
-// - OK - to do this optimization, we need the following steps:
-//     (1) Don't use getSample() on mainDelay - do the read/write/update manually
+//
+//
+// - To do this optimization, we need the following steps:
+//
+//     (1) Don't use getSample() on mainDelay - do the /write/read/increment manually
 //     (2) Use M+2 as length for mainDelay instead of M. That should now be safe to do
 //     (3) In applyCorrector(), do the reads from mainDelay rather than corrDelay
 
