@@ -823,10 +823,6 @@ protected:
   rsFirstOrderFilterBase<TSig, TPar> corOnePole;
   rsFirstOrderFilterBase<TSig, TPar> invDamper;
 
-  // ToDo: replace rsFirstOrderFilterBase with rsDirectFormFilter
-
-
-
   // State for the unit delay feedback loop:
   TSig out = TSig(0);
 
@@ -836,6 +832,16 @@ protected:
 
   bool preDelay = false;
 
+
+
+  // Under construction:
+
+  // ToDo: replace rsFirstOrderFilterBase with rsDirectFormFilter
+  rsDirectFormFilter<TSig, TPar> damperNew;
+  rsDirectFormFilter<TSig, TPar> corPolesNew;
+  rsDirectFormFilter<TSig, TPar> invDamperNew;
+  // We slowly migrate all the code to use these - when finished, we can remove the 
+  // rsFirstOrderFilterBase versions and rename to get rid of the "New"
 };
 
 template<class TSig, class TPar>
