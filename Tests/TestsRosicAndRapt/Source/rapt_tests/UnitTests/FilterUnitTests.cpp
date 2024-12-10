@@ -46,37 +46,33 @@ bool directFormFilterUnitTest()
   using AT     = rsArrayTools;
 
   int maxOrder = 6;
-  int length   = maxOrder+1;
+  int order    = 4;
+  int N        = 50;           // Number of samples to generate
 
-  // Create some random vectors for the coefficients:
-  Vec a(length), b(length);
-  a = rsRandomVector(length, -0.2, +0.2, 0);
-  b = rsRandomVector(length, -3.0, +3.0, 1);
-  a[0] = 1.0;  // Respect the convention!
+  // Create some random vectors for the filter coefficients:
+  int maxLength = maxOrder+1;
+  Vec a(maxLength), b(maxLength);
+  a = rsRandomVector(maxLength, -0.5, +0.5, 0);
+  b = rsRandomVector(maxLength, -3.0, +3.0, 1);
+  a[0] = 1.0;                  // Respect the convention!
 
-  int order = 4;
-
-
-  int N = 20;  // Number of samples to generate
+  // Create a random signal and filter it with the rnadom coefficients using rsArrayTools::filter
+  // to produce the target output:
   Vec x = rsRandomVector(N, -1.0, +1.0, 2);
+  Vec yt(N);
+  AT::filter(&x[0], N, &yt[0], N, &b[0], order, &a[0], order);
 
+  // Do the same filtering with rsDirectFormFilter and compare the results:
+  Filter flt(maxOrder);
+  flt.setCoefficients(&a[0], &b[0], order);
   Vec y(N);
-
-  AT::filter(&x[0], N, &y[0], N, &b[0], order, &a[0], order);
-
-  rsPlotVectors(x, y);
-
-
-  
-
-  //Filter flt(maxOrder);
-
+  for(int n = 0; n < N; n++)
+    y[n] = flt.getSample(x[n]);
+  ok &= rsIsCloseTo(y, yt, 1.e-14);
+  //rsPlotVectors(x, yt, y);
 
   return ok;
 }
-
-
-
 
 bool basicFiltersUnitTests()
 {
