@@ -128,11 +128,11 @@ time, it's:
 
 The only thing that changed is that now the numerator is F(z) rather than A(z). If A(z) is a delay
 and F(z) is the damping filter, we will now expect the first spike at sample zero, possibly slightly
-time smeared by the damping filter. As this is literally the only difference, everything remains 
-valid. So, with this small change, we can provide two different modes of operation - with and 
-without predelay. I think, aside from the predelay, they also sound different. I think, the versions
-with predelay sounds a bit more colorless (verify!), so there seems to be some tradeoff between 
-wanting no coloration and wanting no latency.
+time smeared by the damping filter. As this is literally the only difference, our formula for C 
+remains valid without any change. So, with this small change, we can provide two different modes of 
+operation - with and without predelay. I think, aside from the predelay, they also sound different. 
+I think, the versions with predelay sounds a bit more colorless (verify!), so there seems to be some 
+tradeoff between wanting no coloration and wanting no latency.
 
 By the way, the feedback factor k could also be negative. That gives us another mode switch. It 
 switches the embedded comb filter U(z) between unipolar and bipolar mode, i.e. the spike train 
@@ -162,6 +162,8 @@ We get:
                          1 + a1*d + a2*d^2
 
 
+...TBC...
+
 ----------------------------------------------------------------------------------------------------
 The stuff from here is still unverified:
 
@@ -179,6 +181,7 @@ when the feedback filter F(z) is given by:
 
 where nz, np are the numbers of zeros and poles of the feedback filter, i.e. the orders of numerator
 and denomniator polynomial. If that is correct, then we can use arbitrary feedback filters! We just
-need to evaluate the formula for C~ and then apply the flip operation.
+need to evaluate the formula for C~ and then apply the flip operation. Maybe we'll have to observe 
+some constraints such as np == nz. Or maybe not. I've not yet looked into this. We'll see.....
 
 

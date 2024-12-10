@@ -1142,7 +1142,7 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 // - Maybe the two calls to corrDelay.readOutputAt(M+1); corrDelay.readOutputAt(M+2); can be
 //   replaced by a clever arrangement of calling getSample() and readOutput(). The readOutpuAt
 //   function is slightly more expensive because it computes the offset taking care of 
-//   wrapraounds etc whereas the others just use stored member variables.But I have not yet 
+//   wrapraounds etc whereas the others just use stored member variables. But I have not yet 
 //   figured out how to do it or if it's even possible. Maybe we don't even need the M member
 //   anymore then.
 //
