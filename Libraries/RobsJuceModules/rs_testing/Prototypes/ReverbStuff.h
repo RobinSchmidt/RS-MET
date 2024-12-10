@@ -972,6 +972,11 @@ public:
   TSig applyCorrector(TSig combOutput);
 
 
+  // Temporarily moved to public for some investigations:
+  rsBasicDelayLine<TSig> mainDelay;
+  rsBasicDelayLine<TSig> corrDelay;
+  // The normal declarations in the protected section are temporarily commented out
+
 protected:
 
   TSig applyDamper(TSig x)
@@ -1004,11 +1009,11 @@ protected:
 
   // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
   // filter with filtered unit delay feedback:
-  rsBasicDelayLine<TSig> mainDelay;
+  //rsBasicDelayLine<TSig> mainDelay;
 
   // Objects for the correction filter:
   rsUnitDelay<TSig>      unitDelay;
-  rsBasicDelayLine<TSig> corrDelay;
+  //rsBasicDelayLine<TSig> corrDelay;
 
   // State for the unit delay feedback loop:
   TSig combOut = TSig(0);
