@@ -68,7 +68,9 @@ void rsOnePoleFilter<TSig, TPar>::invert()
 
   // Swap numerator against denominator:
   rsSwap(a1, b1);
-  a1 = -a1;         // Because the implementation uses the silly sign convention.
+
+  // Flip signs (because we use the silly sign convention here):
+  a1 = -a1;
   b1 = -b1;
 
   // Re-apply (inverted) overall gain:

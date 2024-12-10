@@ -28,54 +28,10 @@ bool onePoleFilterUnitTest()
 
   Vec h = impulseResponse(flt, N, Real(1));
 
-
+  // Let's see, if we can invert the filter. This should bring us back to a unit impulse:
   flt.invert();
-
-
-  /*
-  // This section should go into rsOnePoleFilter::invert:
-  //rsPlotVectors(h);
-
-  // Try inverting the filter:
-  Real b0 = flt.getB0();
-  Real b1 = flt.getB1();
-  Real a1 = flt.getA1();
-
-  // Normalize numerator:
-  Real g = b0; 
-  Real s = 1/g;
-  b0  = 1;
-  b1 *= s;
-
-  // Swap numerator against denominator:
-  rsSwap(a1, b1);
-  a1 = -a1;         // Because the implementation uses the silly sign convention.
-  b1 = -b1;
-
-  // Re-apply (inverted) overall gain:
-  b0 *= s;
-  b1 *= s;
-
-  flt.setCoefficients(b0, b1, a1);
-  */
-
-
-
-
-  // Let's see, if this inversion attempt brings us back to a unit impulse:
   Vec h2 = filterResponse(flt, N, h);
-
-
   ok &= rsIsUnitImpulse(h2, 1.e-7f);
-
-
-  //rsPlotVectors(h2);
-  
-
-
-
-
-
 
   return ok;
 }
