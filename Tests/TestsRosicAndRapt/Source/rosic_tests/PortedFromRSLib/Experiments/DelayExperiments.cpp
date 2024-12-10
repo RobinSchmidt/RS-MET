@@ -590,9 +590,18 @@ void dampedAllpassComb2()
 
   // Observations:
   //
+  // - The sign of the feedback gain switches between unipolar and bipolar spike trains. A positive
+  //   k gives bipolar, a negative unipolar ones. This might seem counterintuitive and has to do 
+  //   with the math of transfer functions and the sign conventions used which imply that feedback 
+  //   coeffs get a negative sign in the implementation. For a user parameter, we may want to 
+  //   switch that behavior but I have decided against it in the DSP code such that it can stay 
+  //   closer to the math equations.
+  //
   // - The output with and without predelay are indeed exactly equal, if one shifts them 
-  //   accordingly for alignment. That means, keeping the "with-predelay" mode for the purpose of
-  //   getting a different sound is wrongheaded.
+  //   accordingly for alignment. The desired shift is exactly "delay"-1. That is, the predelay
+  //   is exactly "delay"-1 samples. This is also kinda counterintuitive. A user might expect it to
+  //   be "delay" samples. Maybe when turning this into an end-user facing unit, we should just
+  //   artificially introduce an additional sample of delay in "pre-delay" mode.
   //
   // - In high-damp mode, the impulses smear out more and more over time. In low damp mode, they
   //   actually become more wiggly over time. The result sounds very tonal.
@@ -904,8 +913,8 @@ void dampedAllpassDelayContent()
 
 void dampedAllpassComb()
 {
-  //dampedAllpassComb2();
-  dampedAllpassDelayContent();
+  dampedAllpassComb2();
+  //dampedAllpassDelayContent();
 
 
   dampedAllpassComb1();

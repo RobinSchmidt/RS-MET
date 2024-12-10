@@ -2307,15 +2307,14 @@ bool dampedAllpassCombUnitTest()
   // settings (i.e. no decay, no damping). This should produce an alternating spike train with the
   // distance between the spikes given by our desired delay. The first spike occurs at sample index  
   // n == delay - 1. 
-  //int N = numSamples;
   comb.setupHighDamp(d, 1.0, 0.5, 1.0, true);
   comb.reset();
-  h[0] = comb.getSampleComb(1.0);       // We use getSampleComb() - that's why impulseResponse()
-  for(int n = 1; n < N; n++)            // ...can't be used
+  h[0] = comb.getSampleComb(1.0);      // We use getSampleComb() - that's why impulseResponse()
+  for(int n = 1; n < N; n++)           // ...can't be used
     h[n] = comb.getSampleComb(0.0);     
   for(int n = 0; n < N; n++) 
   {
-    if((n+1) % d == 0)            // Triggers at 49, 99, 149, 199, ... if delay == 50
+    if((n+1) % d == 0)                 // Triggers at 49, 99, 149, 199, ... if delay == 50
     {
       int a = (n+1) / d;
       int b = a % 2;
@@ -2329,7 +2328,7 @@ bool dampedAllpassCombUnitTest()
   }
 
   // Now the same test without predelay and a negative k. This is much simpler because there's no 
-  // alternation and weird first spike location, It's just a unipolar train of spikes at multiples
+  // alternation and weird first spike location. It's just a unipolar train of spikes at multiples
   // of the delay:
   comb.reset();
   comb.setupHighDamp(d, -1.0, 0.5, 1.0, false);
@@ -2338,7 +2337,7 @@ bool dampedAllpassCombUnitTest()
     h[n] = comb.getSampleComb(0.0);
   for(int n = 0; n < N; n++) 
   {
-    if(n % d == 0)            // Triggers at 0, 50, 100, 150, ... if delay == 50
+    if(n % d == 0)                     // Triggers at 0, 50, 100, 150, ... if delay == 50
       ok &= h[n] == +1.0;
     else
       ok &= h[n] ==  0.0;
