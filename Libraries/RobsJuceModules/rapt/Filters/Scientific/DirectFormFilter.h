@@ -21,7 +21,7 @@ public:
 
   /** Constructor - the passed parameter will determine the maximum order which this filter will be
   able to realize.  */
-  rsDirectFormFilter(int maximumOrder);
+  rsDirectFormFilter(int maximumOrder = 8);
 
   /** Destructor. */
   ~rsDirectFormFilter();
