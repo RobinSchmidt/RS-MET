@@ -563,10 +563,10 @@ void dampedAllpassComb2()
   // We have 4 different modes: unipolar/bipolar (selected by sign of k) and predelay or not 
   // (selected by bool parameter):                                             
                                             // polar  predelay 
-  Vec h1 = impResp(d, +k, w, g, false, 0);  //  uni     no
-  Vec h2 = impResp(d, -k, w, g, false, 0);  //  bi      no
-  Vec h3 = impResp(d, +k, w, g, true,  0);  //  uni     yes
-  Vec h4 = impResp(d, -k, w, g, true,  0);  //  bi      yes
+  Vec h1 = impResp(d, +k, w, g, false, 0);  //  bi      no
+  Vec h2 = impResp(d, -k, w, g, false, 0);  //  uni     no
+  Vec h3 = impResp(d, +k, w, g, true,  0);  //  bi      yes
+  Vec h4 = impResp(d, -k, w, g, true,  0);  //  uni     yes
 
   // Plot them all together and then one at a time:
   rsPlotVectors(h1, h2, h3, h4);
@@ -575,19 +575,24 @@ void dampedAllpassComb2()
   //rsPlotVectors(h3);
   //rsPlotVectors(h4);
 
+  // Let's compare the output with predelay to the one without - like h1 and h3 - but shift h3
+  // to the left for a match. We want to see if they exactly match when shifted properly
+  rsPlotArrays(N-delay+1, &h1[0], &h3[delay-1]);
+  rsPlotArrays(N-delay+1, &h2[0], &h4[delay-1]);
+
   // Now let's try a low-damp mode and compare it to the corresponding high-damp setting:
   Vec h5 = impResp(d, +k, w, g, false, 1);
   rsPlotVectors(h1, h5);
 
+
   //rosic::writeToMonoWaveFile("DampedAllpasComb_Low_+_1.wav", &h5[0], N, sampleRate);
-
-
 
 
   // Observations:
   //
-  // - The variants with the predelay have stronger initial spike than those without. I think, that
-  //   makes them sound less tonal.
+  // - The output with and without predelay are indeed exactly equal, if one shifts them 
+  //   accordingly for alignment. That means, keeping the "with-predelay" mode for the purpose of
+  //   getting a different sound is wrongheaded.
   //
   // - In high-damp mode, the impulses smear out more and more over time. In low damp mode, they
   //   actually become more wiggly over time. The result sounds very tonal.
@@ -899,7 +904,8 @@ void dampedAllpassDelayContent()
 
 void dampedAllpassComb()
 {
-  dampedAllpassDelayContent();
+  dampedAllpassComb2();
+  //dampedAllpassDelayContent();
 
 
   dampedAllpassComb1();
