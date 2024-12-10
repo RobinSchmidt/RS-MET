@@ -2272,38 +2272,34 @@ bool dampedAllpassCombUnitTest()
   using Comb      = rsDampedAllpassComb<Real, Real>;
 
   // Test parameters:
-  int  delay      =   50;   // Main delay roundtrip length in samples
-  int  numSamples = 8192;   // Number of samples to generate
-  Real dampOmega  =  0.1;   // Normalized radian frequency of the low shelf for feedback damping
-  Real dampGain   =  0.7;   // Linear high freq damping gain
-  Real feedback   =  0.9;   // Feedback gain factor
-  // Maybe use shorter names: d,N,w,g,k
+  int  d =   50;       // Main delay roundtrip length in samples
+  int  N = 8192;       // Number of samples to generate
+  Real w =  0.1;       // Normalized radian frequency of the low shelf for feedback damping
+  Real g =  0.7;       // Linear high freq damping gain
+  Real k =  0.9;       // Feedback gain factor
 
   // Create an instance of the naive prototype implemention, generate its impulse response and 
   // check that it is allpass in nature:
   CombNaive naive;
-  naive.setMaxDelayInSamples(delay);
-  naive.setupHighDamp(delay, feedback, dampOmega, dampGain, true);
-  Vec h = impulseResponse(naive, numSamples, 1.0);
+  naive.setMaxDelayInSamples(d);
+  naive.setupHighDamp(d, k, w, g, true);
+  Vec h = impulseResponse(naive, N, 1.0);
   ok &= isAllpass(h, 1.e-5);
-  //rsPlotVectors(h);
 
   // Now try to generate the same output with the production version. They are not expected to be 
   // exactly equal because the algorithms differ in whether the feedforward or feedback part of the
   // correction filter is applied first:
   Comb comb;
-  comb.setMaxDelayInSamples(delay);
-  comb.setupHighDamp(delay, feedback, dampOmega, dampGain, true);
-  Vec h2 = impulseResponse(comb, numSamples, 1.0);
+  comb.setMaxDelayInSamples(d);
+  comb.setupHighDamp(d, k, w, g, true);
+  Vec h2 = impulseResponse(comb, N, 1.0);
   ok &= rsIsCloseTo(h, h2, 1.e-15); 
-  //rsPlotVectors(h, h2);
-  
   
   // Now do the same test again for the other mode of operation, i.e. the one without predelay:
-  naive.setupHighDamp(delay, feedback, dampOmega, dampGain, false);
-  comb.setupHighDamp( delay, feedback, dampOmega, dampGain, false);
-  h  = impulseResponse(naive, numSamples, 1.0);
-  h2 = impulseResponse(comb,  numSamples, 1.0);
+  naive.setupHighDamp(d, k, w, g, false);
+  comb.setupHighDamp( d, k, w, g, false);
+  h  = impulseResponse(naive, N, 1.0);
+  h2 = impulseResponse(comb,  N, 1.0);
   ok &= rsIsCloseTo(h, h2, 1.e-15);
   ok &= isAllpass(h, 1.e-5); 
 
@@ -2311,17 +2307,17 @@ bool dampedAllpassCombUnitTest()
   // settings (i.e. no decay, no damping). This should produce an alternating spike train with the
   // distance between the spikes given by our desired delay. The first spike occurs at sample index  
   // n == delay - 1. 
-  int N = numSamples;
-  comb.setupHighDamp(delay, 1.0, 0.5, 1.0, true);
+  //int N = numSamples;
+  comb.setupHighDamp(d, 1.0, 0.5, 1.0, true);
   comb.reset();
   h[0] = comb.getSampleComb(1.0);       // We use getSampleComb() - that's why impulseResponse()
   for(int n = 1; n < N; n++)            // ...can't be used
     h[n] = comb.getSampleComb(0.0);     
   for(int n = 0; n < N; n++) 
   {
-    if((n+1) % delay == 0)            // Triggers at 49, 99, 149, 199, ... if delay == 50
+    if((n+1) % d == 0)            // Triggers at 49, 99, 149, 199, ... if delay == 50
     {
-      int a = (n+1) / delay;
+      int a = (n+1) / d;
       int b = a % 2;
       if(b == 1)
         ok &= h[n] == +1.0;
@@ -2336,13 +2332,13 @@ bool dampedAllpassCombUnitTest()
   // alternation and weird first spike location, It's just a unipolar train of spikes at multiples
   // of the delay:
   comb.reset();
-  comb.setupHighDamp(delay, -1.0, 0.5, 1.0, false);
+  comb.setupHighDamp(d, -1.0, 0.5, 1.0, false);
   h[0] = comb.getSampleComb(1.0);
   for(int n = 1; n < N; n++) 
     h[n] = comb.getSampleComb(0.0);
   for(int n = 0; n < N; n++) 
   {
-    if(n % delay == 0)            // Triggers at 0, 50, 100, 150, ... if delay == 50
+    if(n % d == 0)            // Triggers at 0, 50, 100, 150, ... if delay == 50
       ok &= h[n] == +1.0;
     else
       ok &= h[n] ==  0.0;
