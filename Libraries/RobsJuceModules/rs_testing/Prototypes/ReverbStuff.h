@@ -1036,9 +1036,8 @@ protected:
     return y;
   }
 
-  void updateDelaysAndCorrectorCoeffs()  // Rename - we don't update any coeffs anymore!
+  void updateDelays()
   {
-    // Set up delaylines:
     mainDelay.setDelayInSamples(M);
     corrDelay.setDelayInSamples(M+2);  // == M + 1 + damperOrder, I think (verify!)
   }
@@ -1098,7 +1097,7 @@ void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOr
   b[0] = dampCoeffsB[0];
   b[1] = dampCoeffsB[1];
 
-  updateDelaysAndCorrectorCoeffs();
+  updateDelays();
 }
 
 template<class TSig, class TPar>
@@ -1154,10 +1153,7 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   // Apply the FIR part:
   TSig y = 0;
   y += k * b[1] * t;
-
-  //y += k * b[0] * unitDelay.getSample(t);       // can we use corrDelay.readOutputAt(1)?
-  y += k * b[0] * corrDelay.readOutputAt(1);       // can we use corrDelay.readOutputAt(1)?
-
+  y += k * b[0] * corrDelay.readOutputAt(1);
   y +=     a[1] * corrDelay.readOutputAt(M+1);
   y +=     a[0] * corrDelay.readOutputAt(M+2);  // a[0] == 1, but we want to see the pattern
   corrDelay.writeInputAndUpdate(t);
