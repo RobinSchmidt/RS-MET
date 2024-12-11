@@ -1156,7 +1156,10 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   // Apply the FIR part:
   TSig y = 0;
   y += k * b[1] * t;
-  y += k * b[0] * unitDelay.getSample(t);       // can we use corrDelay.readOutputAt(1)?
+
+  //y += k * b[0] * unitDelay.getSample(t);       // can we use corrDelay.readOutputAt(1)?
+  y += k * b[0] * corrDelay.readOutputAt(1);       // can we use corrDelay.readOutputAt(1)?
+
   y +=     a[1] * corrDelay.readOutputAt(M+1);
   y +=     a[0] * corrDelay.readOutputAt(M+2);  // a[0] == 1, but we want to see the pattern
   corrDelay.writeInputAndUpdate(t);
