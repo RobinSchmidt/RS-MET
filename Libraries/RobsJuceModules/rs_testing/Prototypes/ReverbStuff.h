@@ -1039,29 +1039,33 @@ protected:
   void updateDelays()
   {
     mainDelay.setDelayInSamples(M);
-    corrDelay.setDelayInSamples(M+2);  // == M + 1 + damperOrder, I think (verify!)
+
+    //corrDelay.setDelayInSamples(M+2);  // == M + 1 + damperOrder, I think (verify!)
+
+    corrDelay.setDelayInSamples(M+dmpOrd+1);  // Verify!
   }
 
+  static const int maxDmpOrd = 1;      // Maximum damping order
+
+  // Embedded DSP objects:
   rsBasicDelayLine<TSig> mainDelay;    // Main delayline for the comb filter
   rsBasicDelayLine<TSig> corrDelay;    // Delayline for the correction filter
+
+  // State:
   TSig combOut = TSig(0);              // State for the unit delay feedback loop
-  TSig xd[1], yd[1];                   // State for the damping filter
-  TSig xi[1], yi[1];                   // State for the inverse damping filter
-  TSig yc[1];                          // State for the poles of the correction filter
+  TSig xd[maxDmpOrd], yd[maxDmpOrd];   // State for the damping filter
+  TSig xi[maxDmpOrd], yi[maxDmpOrd];   // State for the inverse damping filter
+  TSig yc[maxDmpOrd];                  // State for the poles of the correction filter
 
   // Coefficients:
   TSig k = 0;                          // Needs to be TSig for use with complex feedback
-  TPar b[2];
-  TPar a[2];
-  // Lengths must be maxDampOrder+1
+  TPar b[maxDmpOrd+1];                 // Damping filter feedforward coeffs
+  TPar a[maxDmpOrd+1];                 // Damping filter feedback coeffs
 
-  int  M = 0;
-  bool preDelay = false;
-
-  // Arrays of length one make no sense - but they are supposed to get longer. At the moment, we 
-  // support only 1st order feedback filters - but that shall change, so we anticipate the 
-  // general implementation already
-  // Lengths must be maxDampOrder
+  // Settings:
+  int  M        = 0;                   // Delayline length
+  int  dmpOrd   = 1;                   // ...Not yet used...
+  bool preDelay = false;               // Switch between with/without predelay mode of operation
 };
 
 template<class TSig, class TPar>
@@ -1079,13 +1083,14 @@ void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOr
   M = delay - 1;                            // -1 corrects for unit delay in feedback path
   k = feedback;
   this->preDelay = predelay;
+  dmpOrd = dampOrder;
 
   rsAssert(dampOrder == 1);
   // We do not yet support higher order damping filters. This feature is under construction
 
   rsAssert(dampCoeffsA[0] == 1);  // May be relaxed later - can divide through all coeffs by a[0]
-  rsArrayTools::copy(dampCoeffsA, a, dampOrder+1);
-  rsArrayTools::copy(dampCoeffsB, b, dampOrder+1);
+  rsArrayTools::copy(dampCoeffsA, a, dmpOrd+1);
+  rsArrayTools::copy(dampCoeffsB, b, dmpOrd+1);
 
   updateDelays();
 }
@@ -1140,13 +1145,24 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   // Apply 1-pole:
   TSig t = applyCorrectorOnePole(in);
 
+  //// Apply the FIR part:
+  //TSig y = 0;
+  //y += k * b[1] * t;
+  //y += k * b[0] * corrDelay.readOutputAt(1);
+  //y +=     a[1] * corrDelay.readOutputAt(M+1);
+  //y +=     a[0] * corrDelay.readOutputAt(M+2);  // a[0] == 1, but we want to see the pattern
+  //corrDelay.writeInputAndUpdate(t);
+  //return y;
+
+
   // Apply the FIR part:
   TSig y = 0;
-  y += k * b[1] * t;
+  corrDelay.writeInputNoUpdate(t);
+  y += k * b[1] * corrDelay.readOutputAt(0);
   y += k * b[0] * corrDelay.readOutputAt(1);
   y +=     a[1] * corrDelay.readOutputAt(M+1);
   y +=     a[0] * corrDelay.readOutputAt(M+2);  // a[0] == 1, but we want to see the pattern
-  corrDelay.writeInputAndUpdate(t);
+  corrDelay.incrementTapPointers();
   return y;
 }
 
