@@ -1015,7 +1015,7 @@ protected:
 
   TSig applyDamper(TSig x)
   {
-    TSig y = b0 * x + b1 * x1d - a1 * y1d;  // ToDo: maybe use DF2 or TDF2 implementation
+    TSig y = b[0] * x + b[1] * x1d - a[1] * y1d;  // ToDo: maybe use DF2 or TDF2 implementation
     x1d = x;
     y1d = y;
     return y;
@@ -1023,7 +1023,7 @@ protected:
 
   TSig applyInverseDamper(TSig x)
   {
-    TSig y = (x + a1 * x1di - b1 * y1di) / b0;
+    TSig y = (x + a[1] * x1di - b[1] * y1di) / b[0];
     x1di = x;
     y1di = y;
     return y;
@@ -1031,7 +1031,7 @@ protected:
 
   TSig applyCorrectorOnePole(TSig x)
   {
-    TSig y = x - a1 * y1c;
+    TSig y = x - a[1] * y1c;
     y1c = y;
     return y;
   }
@@ -1046,7 +1046,9 @@ protected:
     r[0] = r0   = k*b1;
     r[1] = r1   = k*b0;
     rM[0]       = 1;       // This is never used
-    rM[1] = rM1 = a1;
+    rM[1] = rM1 = a[1];
+
+    // Looks like the content of rM is the same as the content of a - so we may get rid of it.
   }
 
 
