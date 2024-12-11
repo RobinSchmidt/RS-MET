@@ -1043,10 +1043,10 @@ protected:
     corrDelay.setDelayInSamples(M+2);
 
     // Compute correction coefficients:
-    r[0] = r0   = k*b1;
-    r[1] = r1   = k*b0;
-    rM[0]       = 1;       // This is never used
-    rM[1] = rM1 = a[1];
+    r[0]  = k*b[1];
+    r[1]  = k*b[0];
+    rM[0] = 1;       // == a[0] - this is never used
+    rM[1] = a[1];
 
     // Looks like the content of rM is the same as the content of a - so we may get rid of it.
   }
@@ -1070,10 +1070,12 @@ protected:
 
   // Coefficients:
   TSig k   = 0;              // Needs to be TSig when we want to use it with complex feedback
-  TSig r0  = 0; 
-  TSig r1  = 0; 
-  TPar rM1 = 0;
-  TPar b0 = 0, b1 = 0, a1 = 0;
+
+
+  //TSig r0  = 0; 
+  //TSig r1  = 0; 
+  //TPar rM1 = 0;
+  //TPar b0 = 0, b1 = 0, a1 = 0;
   // Maybe use arrays b[0], b[1], r[0], r[1], etc. Later they may get longer because we want to
   // support more complex feedback filters
 
@@ -1116,9 +1118,9 @@ void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOr
 
   rsAssert(dampCoeffsA[0] == 1);
   a[0] = 1;
-  a[1] = a1 = dampCoeffsA[1];
-  b[0] = b0 = dampCoeffsB[0];
-  b[1] = b1 = dampCoeffsB[1];
+  a[1] = dampCoeffsA[1];
+  b[0] = dampCoeffsB[0];
+  b[1] = dampCoeffsB[1];
 
   updateDelaysAndCorrectorCoeffs();
 }
@@ -1176,10 +1178,10 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 
   // Apply the FIR part:
   TSig y = 0;
-  y += r0  * t;
-  y += r1  * unitDelay.getSample(t);
-  y += rM1 * corrDelay.readOutputAt(M+1);
-  y +=       corrDelay.readOutputAt(M+2);
+  y += r[0]  * t;
+  y += r[1]  * unitDelay.getSample(t);
+  y += rM[1] * corrDelay.readOutputAt(M+1);  // could use a[1]
+  y +=         corrDelay.readOutputAt(M+2);
   corrDelay.writeInputAndUpdate(t);
   return y;
 }
