@@ -728,7 +728,7 @@ void dampedAllpassComb4()
   using Vec     = std::vector<Real>;
   using Allpass = rsDampedAllpassComb<Real, Real>;
 
-  int N = 5000;
+  int N = 8192;
   int delay = 100;
 
   // Deisgn a wideband dip filter to be used as damping filter:
@@ -741,9 +741,9 @@ void dampedAllpassComb4()
 
   Allpass ap;
   ap.setMaxDelayInSamples(delay);
-  ap.setup(delay, 1.0, 2, b, a, false);
-
+  ap.setup(delay, 0.9, 2, b, a, false);
   Vec h = impulseResponse(ap, N, 1.0);
+  bool ok = isAllpass(h, 1.e-3);
   rsPlotVectors(h);
 
   // ToDo:

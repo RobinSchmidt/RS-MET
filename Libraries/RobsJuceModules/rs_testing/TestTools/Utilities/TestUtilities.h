@@ -229,11 +229,11 @@ bool isAllpass(const std::vector<T>& h, T tol)
     int dummy = 0;  // For setting a debug breakpoint here
 
   //// This can be uncommented in debug sessions to investigate problems when the test fails:
-  if(!ok)
-  {
-    rsError("Filter is not allpass!");
-    rsPlotVectors(mags);  
-  }
+  //if(!ok)
+  //{
+  //  rsError("Filter is not allpass!");
+  //  rsPlotVectors(mags);  
+  //}
 
   return ok;
 }
