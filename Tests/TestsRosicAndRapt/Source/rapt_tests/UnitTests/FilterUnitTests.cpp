@@ -2323,6 +2323,7 @@ bool dampedAllpassCombUnitTest1()
   using Vec       = std::vector<Real>;
   using CombNaive = rsDampedAllpassCombNaive<Real, Real>;
   using Comb      = rsDampedAllpassComb<Real, Real>;
+  using Comb_1p   = rsDampedAllpassComb_1p<Real, Real>;
 
   // Test parameters:
   int  d =   50;       // Main delay roundtrip length in samples
@@ -2339,19 +2340,32 @@ bool dampedAllpassCombUnitTest1()
   Vec h = impulseResponse(naive, N, 1.0);
   ok &= isAllpass(h, 1.e-5);
 
-  // Now try to generate the same output with the production version:
+  // Now try to generate the same output with the production version of the general kind, i.e. the
+  // one that allows for high order damping filters:
   Comb comb;
   comb.setMaxDelayInSamples(d);
   rsSetupHighDamp(comb, d, k, w, g, true);
   Vec h2 = impulseResponse(comb, N, 1.0);
   ok &= rsIsCloseTo(h, h2, 1.e-15);
+
+  // Now produce the result with the production version of the trimmed down kind, i.e. the one that 
+  // allows only 1st order damping filters:
+  Comb_1p comb_1p;
+  comb_1p.setMaxDelayInSamples(d);
+  rsSetupHighDamp(comb_1p, d, k, w, g, true);
+  Vec h3 = impulseResponse(comb_1p, N, 1.0);
+  ok &= rsIsCloseTo(h, h2, 1.e-15);
+
   
   // Now do the same test again for the other mode of operation, i.e. the one without predelay:
-  rsSetupHighDamp(naive, d, k, w, g, false);
-  rsSetupHighDamp(comb, d, k, w, g, false);
-  h  = impulseResponse(naive, N, 1.0);
-  h2 = impulseResponse(comb,  N, 1.0);
+  rsSetupHighDamp(naive,   d, k, w, g, false);
+  rsSetupHighDamp(comb,    d, k, w, g, false);
+  rsSetupHighDamp(comb_1p, d, k, w, g, false);
+  h  = impulseResponse(naive,   N, 1.0);
+  h2 = impulseResponse(comb,    N, 1.0);
+  h3 = impulseResponse(comb_1p, N, 1.0);
   ok &= rsIsCloseTo(h, h2, 1.e-15);
+  ok &= rsIsCloseTo(h, h3, 1.e-15);
   ok &= isAllpass(h, 1.e-5); 
 
   // Check the spacing of the spikes of the comb without correction and with unit feedback 
@@ -2395,6 +2409,11 @@ bool dampedAllpassCombUnitTest1()
   }
 
   return ok;
+
+  // ToDo:
+  //
+  // - Testa also rsDampedAllpassComb_1p
+
 }
 
 bool dampedAllpassCombUnitTest2()
