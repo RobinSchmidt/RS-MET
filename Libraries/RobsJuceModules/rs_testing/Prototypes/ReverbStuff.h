@@ -776,7 +776,7 @@ public:
   void setMaxDelayInSamples(int newMaxDelay);
 
 
-  void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay);
+  //void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay);
 
 
   void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA, 
@@ -877,7 +877,8 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setup(
   rM2 = 1;
 }
 
-// This function should go away in fvaor of a general setup() function:
+/*
+// This function should go away in favor of a general setup() function:
 template<class TSig, class TPar>
 void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
   int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay)
@@ -890,6 +891,7 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
   TPar tb[2] = { b0, b1 };
   setup(delay, feedback, 1, tb, ta, preDelay);
 }
+*/
 
 template<class TSig, class TPar>
 void rsDampedAllpassCombNaive<TSig, TPar>::reset()
