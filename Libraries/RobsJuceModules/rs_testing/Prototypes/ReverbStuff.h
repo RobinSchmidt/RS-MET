@@ -995,12 +995,6 @@ class rsDampedAllpassComb
 
 public:
 
-  rsDampedAllpassComb()
-  {
-
-
-  }
-
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup
@@ -1013,8 +1007,19 @@ public:
   the unit delay in the feedback loop. */
   void setMaxDelayInSamples(int newMaxDelay);
 
+  /** Sets up the filter with the given total roundtrip delay, the scalar feedback gain and the
+  coefficients of the damping filter to be used. The filter is supposed to be given in direct form
+  and realizes:
 
+    y[n] = b[0] * x[n] + b[1] * x[n-1] + ... + b[P] * x[n-P]
+                       - a[1] * y[n-1] - ... - a[P] * y[n-P]
 
+  where P is the filter order, i.e. the dampOrder parameter. And b,a map to dampCoeffsB, 
+  dampCoeffsA respectively. We assume that the filter coeff arrays are normalized to a[0] = 1.
+  The boolean predelay parameter switches between two modes of operation one of which features a 
+  predelay of delay-1 samples. The -1 occurs because the delayline length M is given by delay-1. 
+  That is: the delay user parameter means the total roundtrip delay which includes the delayline 
+  delay and the implicit delay in the feedback loop. */
   void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA, 
     bool predelay);
 
@@ -1022,16 +1027,17 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-
   /** Returns the maximum order for the feedback damping filters that is supported. */
-  //static constexpr int getMaxDampingOrder() const { return maxDmpOrd; }
   constexpr int getMaxDampingOrder() const { return maxDmpOrd; }
-  // I'd really like to make that function also static but the compiler says that modifiers are
-  // not allowed on static functions
+  // I'd really like to make that function also static like this:
+  //   static constexpr int getMaxDampingOrder() const { return maxDmpOrd; }
+  // but the compiler says that modifiers are not allowed on static functions. See:
+  // https://en.cppreference.com/w/cpp/language/constexpr
+  // Maybe I need to up the language standard from 14 to 17. I tried. It didn't help.
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
-
 
   /** This is the normal getSample funtion to be used when you want to produce the allpass output.
   It calls getSampleComb() and then applyCorrectionFilter() on the result of that. You may
@@ -1054,14 +1060,15 @@ public:
   void reset();
 
 
-
 protected:
 
+  /** Applies the main delay to the input x and updates the state of the main delayline. */
   TSig applyDelay(TSig x)
   {
     return mainDelay.getSample(x);
   }
 
+  /** Applies the feedback damping filter to the signal x and updates the filter's state. */
   TSig applyDamper(TSig x)
   {
     // Compute outputs:
@@ -1075,6 +1082,8 @@ protected:
     return y;
   }
 
+  /** Applies the inverse feedback damping filter to the signal x and updates the filter's state.
+  this filter is need only the "without predelay" mode of operation. */
   TSig applyInverseDamper(TSig x)
   {
     // Compute output:
@@ -1089,6 +1098,8 @@ protected:
     return y;
   }
 
+  /** Applies the poles of the correction filter which are the same as the poles of the damping 
+  filter. */
   TSig applyCorrectorOnePole(TSig x)
   {
     // Compute output:
@@ -1100,16 +1111,14 @@ protected:
     rsArrayTools::shiftPushDiscard(yc, dmpOrd, y);
     return y;
   }
-  // Get rid of the duplications - but first make a unit test that test the class for various
-  // feedback damper orders. It should check for each case, if the filter is an allpass.
-  // We should have general function applyFilterDF1(in, b, a, x, y),  
-  // applyInversFilterDF1(in, b, a, x, y), applyAllpoleFilter(in, a, y),
 
-
+  /** Updates the lengths of the main and correction delayine according to the desired delay which
+  is represented by M+1, i.e. our M here corresponds to delay-1 where delay is the user 
+  parameter. */
   void updateDelays()
   {
     mainDelay.setDelayInSamples(M);
-    corrDelay.setDelayInSamples(M+dmpOrd+1);  // Verify!
+    corrDelay.setDelayInSamples(M+dmpOrd+1);
   }
 
   static const int maxDmpOrd = 8;      // Maximum damping order
@@ -1125,7 +1134,7 @@ protected:
   TSig yc[maxDmpOrd];                  // State for the poles of the correction filter
 
   // Coefficients:
-  TSig k = 0;                          // Needs to be TSig for use with complex feedback
+  TSig k = 0;                          // Feedback gain
   TPar b[maxDmpOrd+1];                 // Damping filter feedforward coeffs
   TPar a[maxDmpOrd+1];                 // Damping filter feedback coeffs
 
@@ -1133,6 +1142,12 @@ protected:
   int  M        = 0;                   // Delayline length
   int  dmpOrd   = 1;                   // Feedback damping filter order
   bool preDelay = false;               // Switch between with/without predelay mode of operation
+
+  // Notes:
+  //
+  // - The feedback gain k is of type TSig rather than TPar to allow usage with TSig == complex and
+  //   then allowing complex feedback factors. There is some experiment that does this. It's 
+  //   interesting.
 };
 
 template<class TSig, class TPar>

@@ -2439,18 +2439,18 @@ bool dampedAllpassCombUnitTest2()
   Real g =  0.7;       // Linear high freq damping gain
   Real k =  0.9;       // Feedback gain factor
 
-  // Create the prototype 1st order shelver:
-  Real a1[2], b1[2];   // Coeffs of the 1st order prototype shelver
-  rsMake1stOrderHighShelf(w, g, &b1[0], &b1[1], &a1[1]);
-  a1[0] = 1;
-
-
+  // Create the allpass filter object and let it allocate delayline memory:
   Comb flt;
   flt.setMaxDelayInSamples(d);
 
-  // Create arrays for filter coeffs and initialize them for realizing a first order shelver, 
-  // intialize them to [1 0 0 0 ...]
-  //static const int maxDampOrder = 8;
+  // Create the coeff arrays of the prototype 1st order shelver:
+  Real a1[2], b1[2];
+  rsMake1stOrderHighShelf(w, g, &b1[0], &b1[1], &a1[1]);
+  a1[0] = 1;
+
+  // Create arrays for filter coeffs for higher order filters and initialize them to [1 0 0 0 ...].
+  // The actual coeff arrays for order i will be obtained by convolving those of order i-1 with the
+  // one-pole shelver arrays. The initialization corresponds to i = 0, i.e. zeroth order.
   static const int maxDampOrder = flt.getMaxDampingOrder();
   static const int maxLength    = maxDampOrder+1;
   Real a[maxLength]; AT::fillWithZeros(a, maxLength); a[0] = 1;
@@ -2458,10 +2458,9 @@ bool dampedAllpassCombUnitTest2()
 
   // Create impulse responses of damped allpasses with damping orders from 1 up to maxDampOrder
   // and check that we obtain an allpass filter:
-
   for(int i = 1; i <= maxDampOrder; i++)
   {
-    // Convolve the current a,b arrays in place with the first order a1,b1 arrays:
+    // In-place convolve the current a,b arrays with the first order a1,b1 arrays:
     AT::convolve(a, i, a1, 2, a);
     AT::convolve(b, i, b1, 2, b);
 
@@ -2472,13 +2471,20 @@ bool dampedAllpassCombUnitTest2()
     //rsPlotVectors(h);
   }
 
-
   return ok;
 
   // ToDo:
   //
-  // - The maxDampOrder defined here needs to <= to the maxDampOrder defined in 
-  //   rsDampedAllpassComb. Maybe we should just use the value defined there.
+  // - I'd really like rsDampedAllpassComb::getMaxDampingOrder(); be a static member function and
+  //   then use  maxDampOrder = Comb::.getMaxDampingOrder();  rather than 
+  //   maxDampOrder = flt.getMaxDampingOrder();  but it seems, I can't combine static with 
+  //   constexpr. Figure out, if this is possible! But maybe we should eventually let the max 
+  //   damping order also be a dynamic variable and allocate the memory for the filter coeffs and
+  //   states on the heap, e.g. use std::vector for them. Then we'll need to use std::vector for 
+  //   a,b, here. Not sure, if that's better. Maybe put some benchmakrs in place and measure if it 
+  //   makes a difference performance wise. But each vector would then redundantly store the size
+  //   (current damping order) and capacity (maximum damping order) - that just feels wrong to me.
+  //   I don't know.
 }
 
 bool allpassUnitTest()
