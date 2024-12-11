@@ -1015,11 +1015,6 @@ protected:
 
   TSig applyDamper(TSig x)
   {
-    //TSig y = b[0] * x + b[1] * xd[0] - a[1] * yd[0];  // ToDo: maybe use DF2 or TDF2 implementation
-    //xd[0] = x;
-    //yd[0] = y;
-    //return y;
-
     // Compute outputs:
     TSig y = b[0]*x;
     for(int i = 1; i <= dmpOrd; i++)
@@ -1039,11 +1034,6 @@ protected:
 
   TSig applyInverseDamper(TSig x)
   {
-    //TSig y = (x + a[1] * xi[0] - b[1] * yi[0]) / b[0];  // Maybe precompute b0r = 1/b[0]
-    //xi[0] = x;
-    //yi[0] = y;
-    //return y;
-
     // Compute output:
     TSig y = x;
     for(int i = 1; i <= dmpOrd; i++)
@@ -1064,10 +1054,6 @@ protected:
 
   TSig applyCorrectorOnePole(TSig x)
   {
-    //TSig y = x - a[1] * yc[0];
-    //yc[0] = y;
-    //return y;
-
     // Compute output:
     TSig y = x;
     for(int i = 1; i <= dmpOrd; i++)
@@ -1087,9 +1073,6 @@ protected:
   void updateDelays()
   {
     mainDelay.setDelayInSamples(M);
-
-    //corrDelay.setDelayInSamples(M+2);  // == M + 1 + damperOrder, I think (verify!)
-
     corrDelay.setDelayInSamples(M+dmpOrd+1);  // Verify!
   }
 
@@ -1121,8 +1104,7 @@ void rsDampedAllpassComb<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
   mainDelay .setMaximumDelayInSamples(maxM);
-  //corrDelay.setMaximumDelayInSamples(maxM+2);
-  corrDelay.setMaximumDelayInSamples(maxM+maxDmpOrd+1);
+  corrDelay.setMaximumDelayInSamples(maxM+maxDmpOrd+1);  // Verify!
 }
 
 template<class TSig, class TPar>
@@ -1131,18 +1113,12 @@ void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOr
 {
   rsAssert(dampOrder <= maxDmpOrd);
 
-  M = delay - 1;                            // -1 corrects for unit delay in feedback path
+  M = delay - 1;                  // -1 corrects for unit delay in feedback path
   k = feedback;
   this->preDelay = predelay;
   dmpOrd = dampOrder;
 
-
-
-
-  //rsAssert(dampOrder == 1);
-  // We do not yet support higher order damping filters. This feature is under construction
-
-  rsAssert(dampCoeffsA[0] == 1);  // May be relaxed later - can divide through all coeffs by a[0]
+  rsAssert(dampCoeffsA[0] == 1);  // May be relaxed later by dividing through all coeffs by a[0]
   rsArrayTools::copy(dampCoeffsA, a, dmpOrd+1);
   rsArrayTools::copy(dampCoeffsB, b, dmpOrd+1);
 
