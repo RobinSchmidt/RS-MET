@@ -42,27 +42,18 @@ void rsDirectFormFilter<TSig, TCoef>::setGlobalGainFactor(TCoef newFactor)
     b[k] *= newFactor;
 }
 
-
 template<class TSig, class TCoef>
 void rsDirectFormFilter<TSig, TCoef>::invert()
 {
-  // Normalize numerator:
-  TCoef s = 1 / b[0];
-  //b[0]  = 1;
+  TCoef s = TCoef(1) / b[0];
   for(int i = 0; i <= order; i++)
+  {
     b[i] *= s;
-
-  // Swap numerator against denominator:
-  for(int i = 0; i <= order; i++)
     rsSwap(a[i], b[i]);
-
-  // Re-apply (inverted) overall gain:
-  for(int i = 0; i <= order; i++)
     b[i] *= s;
+  }
 
-  // Can we do this in a single loop? I think so!
 }
-// Needs test!
 
 template<class TSig, class TCoef>
 TCoef rsDirectFormFilter<TSig, TCoef>::getMagnitudeResponseAt(TCoef omega)
