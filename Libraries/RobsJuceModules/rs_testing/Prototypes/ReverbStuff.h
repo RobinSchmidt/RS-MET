@@ -1043,33 +1043,27 @@ protected:
   }
 
 
-  // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
-  // filter with filtered unit delay feedback:
-  rsBasicDelayLine<TSig> mainDelay;
 
-  // Objects for the correction filter:
-  rsBasicDelayLine<TSig> corrDelay;
-
-  // State for the unit delay feedback loop:
-  TSig combOut = TSig(0);
-
-  // States for the feedback damping and related filters:
-  TSig xd[1], yd[1];
-  TSig xi[1], yi[1];
-  TSig yc[1];
-  // Arrays of length one make no sense - but they are supposed to get longer. At the moment, we 
-  // support only 1st order feedback filters - but that shall change, so we anticipate the 
-  // general implementation already
-  // Lengths must be maxDampOrder
+  rsBasicDelayLine<TSig> mainDelay;  // Main delayline for the comb filter
+  rsBasicDelayLine<TSig> corrDelay;  // Delayline for the correction filter
+  TSig combOut = TSig(0);            // State for the unit delay feedback loop
+  TSig xd[1], yd[1];                 // State for the damping filter
+  TSig xi[1], yi[1];                 // State for the inverse damping filter
+  TSig yc[1];                        // State for the poles of the correction filter
 
   // Coefficients:
-  TSig k = 0;                // Needs to be TSig when we want to use it with complex feedback
+  TSig k = 0;                        // Needs to be TSig for use with complex feedback
   TPar b[2];
   TPar a[2];
   // Lengths must be maxDampOrder+1
 
   int  M = 0;
   bool preDelay = false;
+
+  // Arrays of length one make no sense - but they are supposed to get longer. At the moment, we 
+  // support only 1st order feedback filters - but that shall change, so we anticipate the 
+  // general implementation already
+  // Lengths must be maxDampOrder
 };
 
 template<class TSig, class TPar>
@@ -1089,13 +1083,7 @@ void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOr
   this->preDelay = predelay;
 
   rsAssert(dampOrder == 1);
-  // We do not yet support higher order damping filters. This feature is under constructions
-
-  //rsAssert(dampCoeffsA[0] == 1);
-  //a[0] = 1;
-  //a[1] = dampCoeffsA[1];
-  //b[0] = dampCoeffsB[0];
-  //b[1] = dampCoeffsB[1];
+  // We do not yet support higher order damping filters. This feature is under construction
 
   rsAssert(dampCoeffsA[0] == 1);  // May be relaxed later - can divide through all coeffs by a[0]
   rsArrayTools::copy(dampCoeffsA, a, dampOrder+1);
