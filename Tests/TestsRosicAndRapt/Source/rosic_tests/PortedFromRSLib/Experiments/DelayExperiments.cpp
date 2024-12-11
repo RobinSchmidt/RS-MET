@@ -719,6 +719,22 @@ void dampedAllpassComb4()
 
   // Here, we try to use higher order feedback damping filters
 
+  // Define types to be used:
+  using Real    = double;
+  using Vec     = std::vector<Real>;
+  using Allpass = rsDampedAllpassComb<Real, Real>;
+
+  Real b[3];
+  Real a[3];
+  a[0] = 1;
+  rsStateVariableFilter<Real, Real> svf;  // Only used for designing the feedback filter
+  svf.setupBell(0.1, 0.3, 0.7);           // A widband dip filter
+  svf.convertToBiquad(&b[0], &b[1], &b[2], &a[1], &a[2]);
+
+
+  // ToDo:
+  //
+  // - 
 }
 
 void dampedAllpassCombComplex()

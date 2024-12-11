@@ -1064,7 +1064,7 @@ protected:
 
   // Settings:
   int  M        = 0;                   // Delayline length
-  int  dmpOrd   = 1;                   // ...Not yet used...
+  int  dmpOrd   = 1;                   // Feedbacl damping filter order
   bool preDelay = false;               // Switch between with/without predelay mode of operation
 };
 
