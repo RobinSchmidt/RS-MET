@@ -757,6 +757,19 @@ protected:
 
 };
 
+/** A little helper function to conveniently design a 1st order high shelving filter. This kind of 
+filter is used a lot in the damped allpass combs below. The parameters w,g are "omega" and the 
+linear shelver gain. respectively. */
+template<class T>
+void rsMake1stOrderHighShelf(T w, T g, T* b0, T* b1, T* a1)
+{
+  rsFirstOrderFilterBase<T, T>::coeffsHighShelfBLT(w, g, b0, b1, a1);
+  *a1 = -*a1; 
+  // We want to design according to the y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] sign convention here
+  // but silly rsFirstOrderFilterBase uses  y[n] = b0*x[n] + b1*x[n-1] + a1*y[n-1], so we need to 
+  // flip the sign of a1.
+}
+
 //=================================================================================================
 
 /** We encapsulate into a class the code implemented in  feedbackFilterAllpass()  in 
@@ -936,34 +949,11 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::applyCorrector(TSig in)
   return y;
 }
 
-
-
-// A little helper to conveniently design a 1st order high shelving filter:
-template<class T>
-void rsMake1stOrderHighShelf(T w, T g, T* b0, T* b1, T* a1)
-{
-  rsFirstOrderFilterBase<T, T>::coeffsHighShelfBLT(w, g, b0, b1, a1);
-  *a1 = -*a1; // We want to use the y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] sign convention here
-}
-
-
 // A free function to set up the object with a more convenient parametrization:
 template<class TSig, class TPar>
 void rsSetupHighDamp(rsDampedAllpassCombNaive<TSig, TPar>& flt,
   int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay)
 {
-  // Factor out a rsMake1stOrderHighShelf(w, g, b0, b1, a1)
-
-  /*
-  // Set up one pole filters:
-  TPar b0, b1, a1;
-  rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(dampOmega, dampGain, &b0, &b1, &a1);
-  a1 = -a1; // We want to use the y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] sign convention here
-  TPar ta[2] = { 1,  a1 };
-  TPar tb[2] = { b0, b1 };
-  flt.setup(delay, feedback, 1, tb, ta, predelay);
-  */
-
   TPar a[2], b[2]; a[0] = 1;
   rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
   flt.setup(delay, feedback, 1, b, a, predelay);
@@ -1213,13 +1203,9 @@ template<class TSig, class TPar>
 void rsSetupHighDamp(rsDampedAllpassComb<TSig, TPar>& flt,
   int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay)
 {
-  // Set up one pole filters:
-  TPar b0, b1, a1;
-  rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(dampOmega, dampGain, &b0, &b1, &a1);
-  a1 = -a1; // We want to use the y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] sign convention here
-  TPar ta[2] = { 1,  a1 };
-  TPar tb[2] = { b0, b1 };
-  flt.setup(delay, feedback, 1, tb, ta, predelay);
+  TPar a[2], b[2]; a[0] = 1;
+  rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
+  flt.setup(delay, feedback, 1, b, a, predelay);
 }
 
 // Notes:
