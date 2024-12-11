@@ -2418,18 +2418,42 @@ bool dampedAllpassCombUnitTest1()
 
 bool dampedAllpassCombUnitTest2()
 {
-  // We test rsDampedAllpassComb with higher order damping filters.
+  // We test rsDampedAllpassComb with higher order damping filters. We do this by starting with
+  // coefficient arrays of first order shelving filters and to get higher order filters, we 
+  // iteratively convolve the coeff array of the current filter with the coeff array of the 1st 
+  // order shelver. This way, the higher order filters represent series connections of shelvers 
+  // of the same kind
 
   bool ok = true;
 
   using Real = double;
   using Vec  = std::vector<Real>;
   using Comb = rsDampedAllpassComb<Real, Real>;
+  using AT   = rsArrayTools;
 
+  // Test parameters:
+  int  d =   50;       // Main delay roundtrip length in samples
+  int  N = 8192;       // Number of samples to generate
+  Real w =  0.1;       // Normalized radian frequency of the low shelf for feedback damping
+  Real g =  0.7;       // Linear high freq damping gain
+  Real k =  0.9;       // Feedback gain factor
 
+  // Create the prototype 1st order shelver:
+  Real a1[2], b1[2];   // Coeffs of the 1st order prototype shelver
+  rsMake1stOrderHighShelf(w, g, &b1[0], &b1[1], &a1[1]);
+  a1[0] = 0;
+
+  // Create arrays for filter coeffs and initialize them for realizing a first order shelver: 
   static const int maxDampOrder = 8;
-  Real a[maxDampOrder+1];
-  Real b[maxDampOrder+1];
+  static const int maxLength    = maxDampOrder+1;
+  Real a[maxLength]; AT::fillWithZeros(a, maxLength);
+  Real b[maxLength]; AT::fillWithZeros(b, maxLength);
+  a[0] = a1[0]; a[1] = a1[1];
+  b[0] = b1[0]; b[1] = b1[1];
+
+
+
+
 
 
 
