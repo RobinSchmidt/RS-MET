@@ -1049,7 +1049,6 @@ protected:
   rsBasicDelayLine<TSig> mainDelay;
 
   // Objects for the correction filter:
-  rsUnitDelay<TSig>      unitDelay;
   rsBasicDelayLine<TSig> corrDelay;
 
   // State for the unit delay feedback loop:
@@ -1106,7 +1105,6 @@ template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::reset()
 {
   mainDelay.reset();
-  unitDelay.reset();
   corrDelay.reset();
   combOut = TSig(0);
   xd[0] = TSig(0);
