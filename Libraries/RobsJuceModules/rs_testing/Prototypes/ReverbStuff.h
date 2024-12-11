@@ -1155,13 +1155,27 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   //return y;
 
 
+  // New version shows the pattern more clearly and lend itself to generalization into a loop:
+
+  //// Apply the FIR part:
+  //TSig y = 0;
+  //corrDelay.writeInputNoUpdate(t);
+  //y += k * b[1] * corrDelay.readOutputAt(0);
+  //y += k * b[0] * corrDelay.readOutputAt(1);
+  //y +=     a[1] * corrDelay.readOutputAt(M+1);
+  //y +=     a[0] * corrDelay.readOutputAt(M+2);  // a[0] == 1, but we want to see the pattern
+  //corrDelay.incrementTapPointers();
+  //return y;
+
+
   // Apply the FIR part:
   TSig y = 0;
   corrDelay.writeInputNoUpdate(t);
-  y += k * b[1] * corrDelay.readOutputAt(0);
-  y += k * b[0] * corrDelay.readOutputAt(1);
-  y +=     a[1] * corrDelay.readOutputAt(M+1);
-  y +=     a[0] * corrDelay.readOutputAt(M+2);  // a[0] == 1, but we want to see the pattern
+  for(int i = 0; i <= dmpOrd; i++)
+  {
+    y += k * b[dmpOrd-i] * corrDelay.readOutputAt(i);
+    y +=     a[dmpOrd-i] * corrDelay.readOutputAt(M+1+i);
+  }
   corrDelay.incrementTapPointers();
   return y;
 }
