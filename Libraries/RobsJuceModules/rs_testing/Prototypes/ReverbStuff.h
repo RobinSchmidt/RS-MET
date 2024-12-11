@@ -1015,11 +1015,6 @@ protected:
 
   TSig applyDamper(TSig x)
   {
-    //TSig y = b[0] * x + b[1] * x1d - a[1] * y1d;  // ToDo: maybe use DF2 or TDF2 implementation
-    //x1d = x;
-    //y1d = y;
-    //return y;
-
     TSig y = b[0] * x + b[1] * xd[0] - a[1] * yd[0];  // ToDo: maybe use DF2 or TDF2 implementation
     xd[0] = x;
     yd[0] = y;
@@ -1028,11 +1023,6 @@ protected:
 
   TSig applyInverseDamper(TSig x)
   {
-    //TSig y = (x + a[1] * x1di - b[1] * y1di) / b[0];
-    //x1di = x;
-    //y1di = y;
-    //return y;
-
     TSig y = (x + a[1] * xi[0] - b[1] * yi[0]) / b[0];
     xi[0] = x;
     yi[0] = y;
@@ -1041,10 +1031,6 @@ protected:
 
   TSig applyCorrectorOnePole(TSig x)
   {
-    //TSig y = x - a[1] * y1c;
-    //y1c = y;
-    //return y;
-
     TSig y = x - a[1] * yc[0];
     yc[0] = y;
     return y;
@@ -1069,23 +1055,20 @@ protected:
   // State for the unit delay feedback loop:
   TSig combOut = TSig(0);
 
-  // States for the two one pole filters:
-  TSig x1d  = 0, y1d  = 0;   // x[n-1], y[n-1] for damper
-  TSig x1di = 0, y1di = 0;   // x[n-1], y[n-1] for inverse damper
-  TSig y1c  = 0;             // y[n-1] for corrector one pole
-  // ToDo: use arrays here, too.
-
-  // These array should be used later instead of the values above:
+  // States for the feedback damping and related filters:
   TSig xd[1], yd[1];
   TSig xi[1], yi[1];
   TSig yc[1];
-  // Arrays of length one make no sense - but they are supposed to get longer....
-
+  // Arrays of length one make no sense - but they are supposed to get longer. At the moment, we 
+  // support only 1st order feedback filters - but that shall change, so we anticipate the 
+  // general implementation already
+  // Lengths must be maxDampOrder
 
   // Coefficients:
   TSig k = 0;                // Needs to be TSig when we want to use it with complex feedback
   TPar b[2];
   TPar a[2];
+  // Lengths must be maxDampOrder+1
 
   int  M = 0;
   bool preDelay = false;
@@ -1126,11 +1109,11 @@ void rsDampedAllpassComb<TSig, TPar>::reset()
   unitDelay.reset();
   corrDelay.reset();
   combOut = TSig(0);
-  xd[0] = x1d  = TSig(0);
-  yd[0] = y1d  = TSig(0);
-  xi[0] = x1di = TSig(0);
-  yi[0] = y1di = TSig(0);
-  yc[0] = y1c  = TSig(0);
+  xd[0] = TSig(0);
+  yd[0] = TSig(0);
+  xi[0] = TSig(0);
+  yi[0] = TSig(0);
+  yc[0] = TSig(0);
 }
 
 template<class TSig, class TPar>
