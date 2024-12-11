@@ -2422,7 +2422,8 @@ bool dampedAllpassCombUnitTest2()
   // coefficient arrays of first order shelving filters and to get higher order filters, we 
   // iteratively convolve the coeff array of the current filter with the coeff array of the 1st 
   // order shelver. This way, the higher order filters represent series connections of shelvers 
-  // of the same kind
+  // of the same kind, i.e. more and more "aggressive" shelvers because the shelving gains and 
+  // slopes accumulate.
 
   bool ok = true;
 
@@ -2450,7 +2451,8 @@ bool dampedAllpassCombUnitTest2()
   Real a[maxLength]; AT::fillWithZeros(a, maxLength); a[0] = 1;
   Real b[maxLength]; AT::fillWithZeros(b, maxLength); b[0] = 1;
 
-
+  // Create impulse responses of damped allpasses with damping orders from 1 up to maxDampOrder
+  // and check that we obtain an allpass filter:
   Comb flt;
   flt.setMaxDelayInSamples(d);
   for(int i = 1; i <= maxDampOrder; i++)
@@ -2462,20 +2464,17 @@ bool dampedAllpassCombUnitTest2()
     // Create impulse respone of allpass comb with feedback damping order i:
     flt.setup(d, k, i, b, a, false);
     Vec h = impulseResponse(flt, N, 1.0);
-    rsPlotVectors(h);
-
-
-    // 
-
+    ok &= isAllpass(h, 1.e-7);
+    //rsPlotVectors(h);
   }
 
-
-
-
-
   return ok;
-}
 
+  // ToDo:
+  //
+  // - The maxDampOrder defined here needs to <= to the maxDampOrder defined in 
+  //   rsDampedAllpassComb. Maybe we should just use the value defined there.
+}
 
 bool allpassUnitTest()
 {
