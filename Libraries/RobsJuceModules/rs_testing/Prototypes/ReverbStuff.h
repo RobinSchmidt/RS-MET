@@ -1028,9 +1028,14 @@ protected:
 
   TSig applyInverseDamper(TSig x)
   {
-    TSig y = (x + a[1] * x1di - b[1] * y1di) / b[0];
-    x1di = x;
-    y1di = y;
+    //TSig y = (x + a[1] * x1di - b[1] * y1di) / b[0];
+    //x1di = x;
+    //y1di = y;
+    //return y;
+
+    TSig y = (x + a[1] * xi[0] - b[1] * yi[0]) / b[0];
+    xi[0] = x;
+    yi[0] = y;
     return y;
   }
 
