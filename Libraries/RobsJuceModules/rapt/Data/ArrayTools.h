@@ -824,6 +824,13 @@ public:
   template <class T>
   static void shift(T *buffer, int length, int numPlaces);
 
+  /** Shifts the content of the buffer by one position to the right discarding the last value and
+  pushes the newValue into the now freed 0-th position. This is basically the operation you need
+  to update a direct form filter state in a per sample call. The stored samples get one sample 
+  older, the oldest one gets discarded and a new one is added at the front. */
+  template <class T>
+  static inline void shiftPushDiscard(T *buffer, int length, T newVal);
+
   /** Shifts the values in the array x up or down such that the new minimum off all values will 
   become zero and writes the result to y. The return value is the minimum of the x-values - if you 
   add that value to the resulting y-values, you should get your old x-array back (up to roundoff 
@@ -1270,6 +1277,14 @@ inline void rsArrayTools::scale(const T1 *src, T1 *dst, int length, T2 scaleFact
 {
   for(int n = 0; n < length; n++)
     dst[n] = scaleFactor * src[n];
+}
+
+template<class T>
+inline void rsArrayTools::shiftPushDiscard(T* s, int N, T s0)
+{
+  for(int i = N-1; i > 0; i--)
+    s[i] = s[i-1];
+  s[0] = s0;
 }
 
 template<class T>

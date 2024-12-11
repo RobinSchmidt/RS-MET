@@ -1048,9 +1048,11 @@ protected:
   template<class T>
   void updateState(T* s, int N, T s0)
   {
-    for(int i = N-1; i > 0; i--)
-      s[i] = s[i-1];
-    s[0] = s0;
+    rsArrayTools::shiftPushDiscard(s, N, s0);
+
+    //for(int i = N-1; i > 0; i--)
+    //  s[i] = s[i-1];
+    //s[0] = s0;
   }
 
   TSig applyDamper(TSig x)
