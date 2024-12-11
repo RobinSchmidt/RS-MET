@@ -972,28 +972,9 @@ public:
   void setMaxDelayInSamples(int newMaxDelay);
 
 
-  /** Sets up the filter in such a way that high frequencies are damped more and more after more
-  roundtrips around the delayline. The dampOmega and dampGain parameters set up the normalized 
-  radian frequency and linear high frequency gain for a high shelving filter. A typical call with
-  reasonable values could look like setupHighDamp(100, 0.9, 0.2, 0.7). This spaces the spikes out
-  at 100 sample intervals, the feedback gain is 0.9 the shelving frequency is somewhere in the 
-  middle frequency range (at fs = 44.1 kHz) and the high frequency gain of the damping shelver 
-  is 0.7. */
-  //void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay);
-
-
 
   void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA, 
     bool predelay);
-
-
-  // I actually think we should only have a setter of the form:
-  // setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA));
-  // That's much more flexible. Something like setupHighDamp should, for the time of development,
-  // be a free function like:
-  //
-  // rsSetupAllpassCombHighDamp(rsDampedAllpassComb& flt, int delay, TSig feedback, TPar dampOmega, 
-  //   TPar dampGain, bool predelay)
 
 
 
@@ -1117,31 +1098,6 @@ void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOr
 
   updateDelaysAndCorrectorCoeffs();
 }
-
-/*
-// Get rid of this as member function - implement it as free function
-template<class TSig, class TPar>
-void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
-  int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay)
-{
-  M = delay - 1;                            // -1 corrects for unit delay in feedback path
-  k = feedback;
-  this->preDelay = preDelay;
-
-  // Compute the 1-pole filters coefficients:
-  rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(
-    dampOmega, dampGain, &b0, &b1, &a1);
-  a1 = -a1; // The rsFirstOrderFilterBase uses the other sign convention, so we must flip it.
-  // Maybe use magnitude match rather than BLT. Might be nicer. But then we need to make the same
-  // change in the naive implementation to make the unit test still pass. Maybe use another 
-  // function that uses the other sign convention for the a-coeffs.
-
-  // ToDo: Use filter design functions that return the filter coeffs directly with the right 
-  // convention used. 
-
-  updateDelaysAndCorrectorCoeffs();
-}
-*/
 
 template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::reset()
