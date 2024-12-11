@@ -1043,9 +1043,10 @@ protected:
     corrDelay.setDelayInSamples(M+2);
 
     // Compute correction coefficients:
-    r0  = k*b1;
-    r1  = k*b0;
-    rM1 = a1;
+    r[0] = r0   = k*b1;
+    r[1] = r1   = k*b0;
+    rM[0]       = 1;       // This is never used
+    rM[1] = rM1 = a1;
   }
 
 
@@ -1073,10 +1074,23 @@ protected:
   TPar b0 = 0, b1 = 0, a1 = 0;
   // Maybe use arrays b[0], b[1], r[0], r[1], etc. Later they may get longer because we want to
   // support more complex feedback filters
-  int  M = 0;
 
+
+
+  int  M = 0;
   bool preDelay = false;
 
+
+  // Under construction:
+  TPar b[2];
+  TPar a[2];
+  TSig r[2];
+  TPar rM[2];
+  // These arrays should replace b0, b1, etc.
+
+  // ToDo: Document when a coefficient must be of type TSig. k needs to be of this type to allow
+  // for complex feedback factors. All values that get multiplied by k must then be complex, too.
+  // Seeing this code without comments may look like a bug when it's actually deliberate.
 };
 
 template<class TSig, class TPar>
@@ -1099,9 +1113,10 @@ void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOr
   // We do not yet support higher order damping filters. This feature is under constructions
 
   rsAssert(dampCoeffsA[0] == 1);
-  a1 = dampCoeffsA[1];
-  b0 = dampCoeffsB[0];
-  b1 = dampCoeffsB[1];
+  a[0] = 1;
+  a[1] = a1 = dampCoeffsA[1];
+  b[0] = b0 = dampCoeffsB[0];
+  b[1] = b1 = dampCoeffsB[1];
 
   updateDelaysAndCorrectorCoeffs();
 }
