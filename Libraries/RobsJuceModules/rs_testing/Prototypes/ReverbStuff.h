@@ -1044,17 +1044,6 @@ protected:
     return mainDelay.getSample(x);
   }
 
-  // Move to rsArrayTools - as shiftRightAndPrepend or pushShiftDiscard or something like that
-  template<class T>
-  void updateState(T* s, int N, T s0)
-  {
-    rsArrayTools::shiftPushDiscard(s, N, s0);
-
-    //for(int i = N-1; i > 0; i--)
-    //  s[i] = s[i-1];
-    //s[0] = s0;
-  }
-
   TSig applyDamper(TSig x)
   {
     // Compute outputs:
@@ -1062,21 +1051,9 @@ protected:
     for(int i = 1; i <= dmpOrd; i++)
       y += b[i]*xd[i-1] - a[i] * yd[i-1];
 
-    // Update state:
-    //for(int i = dmpOrd-1; i > 0; i--)
-    //{
-    //  xd[i] = xd[i-1];
-    //  yd[i] = yd[i-1];
-    //}
-    //xd[0] = x;
-    //yd[0] = y;
-
-
-    updateState(xd, dmpOrd, x);
-    updateState(yd, dmpOrd, y);
-
-
-
+    // Update state and return result:
+    rsArrayTools::shiftPushDiscard(xd, dmpOrd, x);
+    rsArrayTools::shiftPushDiscard(yd, dmpOrd, y);
     return y;
   }
 
@@ -1088,18 +1065,9 @@ protected:
       y += a[i] * xi[i-1] - b[i] * yi[i-1];
     y /= b[0];
 
-    // Update state:
-    //for(int i = dmpOrd-1; i > 0; i--)
-    //{
-    //  xi[i] = xi[i-1];
-    //  yi[i] = yi[i-1];
-    //}
-    //xi[0] = x;
-    //yi[0] = y;
-
-    updateState(xi, dmpOrd, x);
-    updateState(yi, dmpOrd, y);
-
+    // Update state and return result:
+    rsArrayTools::shiftPushDiscard(xi, dmpOrd, x);
+    rsArrayTools::shiftPushDiscard(yi, dmpOrd, y);
     return y;
   }
 
@@ -1110,15 +1078,8 @@ protected:
     for(int i = 1; i <= dmpOrd; i++)
       y -= a[i] * yc[i-1];
     
-    // Update state:
-    //for(int i = dmpOrd-1; i > 0; i--)
-    //  yc[i] = yc[i-1];
-    //yc[0] = y;
-
-    updateState(yc, dmpOrd, y);
-
-
-
+    // Update state and return result:
+    rsArrayTools::shiftPushDiscard(yc, dmpOrd, y);
     return y;
   }
   // Get rid of the duplications - but first make a unit test that test the class for various
