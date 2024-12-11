@@ -1041,8 +1041,12 @@ protected:
 
   TSig applyCorrectorOnePole(TSig x)
   {
-    TSig y = x - a[1] * y1c;
-    y1c = y;
+    //TSig y = x - a[1] * y1c;
+    //y1c = y;
+    //return y;
+
+    TSig y = x - a[1] * yc[0];
+    yc[0] = y;
     return y;
   }
 
@@ -1075,6 +1079,7 @@ protected:
   TSig xd[1], yd[1];
   TSig xi[1], yi[1];
   TSig yc[1];
+  // Arrays of length one make no sense - but they are supposed to get longer....
 
 
   // Coefficients:
