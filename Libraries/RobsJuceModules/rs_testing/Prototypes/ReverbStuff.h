@@ -815,18 +815,14 @@ protected:
   // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
   // filter with filtered unit delay feedback:
   rsBasicDelayLine<TSig>         mainDelay;
-  rsDirectFormFilter<TSig, TPar> damperNew;
+  rsDirectFormFilter<TSig, TPar> damper;
 
   // Objects for the correction filter:
   rsUnitDelay<TSig>              unitDelay;
   rsBasicDelayLine<TSig>         corDelayM1;
   rsBasicDelayLine<TSig>         corDelayM2;
-  rsDirectFormFilter<TSig, TPar> corPolesNew;
-  rsDirectFormFilter<TSig, TPar> invDamperNew;
-
-  // We slowly migrate all the code to use these - when finished, we can remove the 
-  // rsFirstOrderFilterBase versions and rename to get rid of the "New"
-
+  rsDirectFormFilter<TSig, TPar> corPoles;
+  rsDirectFormFilter<TSig, TPar> invDamper;
 
   // State for the unit delay feedback loop:
   TSig out = TSig(0);
@@ -863,10 +859,10 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setup(
 
   // Set up damper and related filters:
   TPar t[5] = { 1,0,0,0,0 };
-  damperNew.setCoefficients(    a, b, dampOrder);
-  invDamperNew.setCoefficients( a, b, dampOrder);
-  invDamperNew.invert();
-  corPolesNew.setCoefficients(  a, t, dampOrder);
+  damper.setCoefficients(    a, b, dampOrder);
+  invDamper.setCoefficients( a, b, dampOrder);
+  invDamper.invert();
+  corPoles.setCoefficients(  a, t, dampOrder);
 
   // Set up delaylines:
   int M = delay - 1;                        // -1 corrects for unit delay in feedback path
@@ -899,12 +895,12 @@ template<class TSig, class TPar>
 void rsDampedAllpassCombNaive<TSig, TPar>::reset()
 {
   mainDelay.reset();
-  damperNew.reset();
+  damper.reset();
   unitDelay.reset();
   corDelayM1.reset();
   corDelayM2.reset();
-  corPolesNew.reset();
-  invDamperNew.reset();
+  corPoles.reset();
+  invDamper.reset();
   out = TSig(0);
 }
 
@@ -919,13 +915,13 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleComb(TSig in)
 {
   if(preDelay)
   {
-    out = mainDelay.getSample(in - k * damperNew.getSample(out));
+    out = mainDelay.getSample(in - k * damper.getSample(out));
     return out;
   }
   else
   {
-    out = damperNew.getSample(in - k * mainDelay.getSample(out));
-    return invDamperNew.getSample(out);
+    out = damper.getSample(in - k * mainDelay.getSample(out));
+    return invDamper.getSample(out);
     // It may seem strange that we first apply the damper and then the inverse damper. Doesn't this
     // mean, we could just leave out the damper entirely? No! Because "out" is a state variable 
     // that will be used in the next call. And that state needs to have the damper applied.
@@ -940,7 +936,7 @@ template<class TSig, class TPar>
 TSig rsDampedAllpassCombNaive<TSig, TPar>::applyCorrector(TSig in)
 {
   // Apply 1-pole:
-  TSig t = corPolesNew.getSample(in);
+  TSig t = corPoles.getSample(in);
 
   // Apply the FIR part:
   TSig y = 0;
