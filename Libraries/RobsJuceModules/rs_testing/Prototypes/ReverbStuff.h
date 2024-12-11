@@ -1286,7 +1286,10 @@ public:
 
   void setMaxDelayInSamples(int newMaxDelay);
 
-  void setup(int delay, TSig feedback, TPar* dampCoeffsB, TPar* dampCoeffsA, bool predelay);
+  void setup(int delay, TSig feedback, 
+    TPar dampCoeffB0, TPar dampCoeffB1, TPar dampCoeffA1, bool predelay);
+
+  //void setup(int delay, TSig feedback, TPar* dampCoeffsB, TPar* dampCoeffsA, bool predelay);
   // dampCoeffsB, dampCoeffsB must be of length 2. They represent the first order damping filter 
   // coeffs b0 = b[0], b1 = b[1], a[0] = 1, a1 = a[1]
   // ToDo: change the signature to pass in b0, b1, a1 directly. That is more clear and less error 
@@ -1368,16 +1371,15 @@ void rsDampedAllpassComb_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 
 template<class TSig, class TPar>
 void rsDampedAllpassComb_1p<TSig, TPar>::setup(int delay, TSig feedback, 
-  TPar* dampCoeffsB, TPar* dampCoeffsA, bool predelay)
+  TPar dampCoeffB0, TPar dampCoeffB1, TPar dampCoeffA1, bool predelay)
 {
   M = delay - 1;                            // -1 corrects for unit delay in feedback path
   k = feedback;
   this->preDelay = predelay;
 
-  rsAssert(dampCoeffsA[0] == 1);
-  a1 = dampCoeffsA[1];
-  b0 = dampCoeffsB[0];
-  b1 = dampCoeffsB[1];
+  a1 = dampCoeffA1;
+  b0 = dampCoeffB0;
+  b1 = dampCoeffB1;
 
   updateDelaysAndCorrectorCoeffs();
 }
@@ -1437,7 +1439,7 @@ void rsSetupHighDamp(rsDampedAllpassComb_1p<TSig, TPar>& flt,
 {
   TPar a[2], b[2]; a[0] = 1;
   rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
-  flt.setup(delay, feedback, b, a, predelay);
+  flt.setup(delay, feedback, b[0], b[1], a[1], predelay);
 }
 
 //=================================================================================================
