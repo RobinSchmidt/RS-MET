@@ -813,7 +813,8 @@ protected:
 
   // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
   // filter with filtered unit delay feedback:
-  rsBasicDelayLine<TSig>             mainDelay;
+  rsBasicDelayLine<TSig>         mainDelay;
+  rsDirectFormFilter<TSig, TPar> damperNew;
   //rsFirstOrderFilterBase<TSig, TPar> damper;
 
   // Objects for the correction filter:
@@ -822,6 +823,12 @@ protected:
   rsBasicDelayLine<TSig>             corDelayM2;
   //rsFirstOrderFilterBase<TSig, TPar> corOnePole;
   //rsFirstOrderFilterBase<TSig, TPar> invDamper;
+  rsDirectFormFilter<TSig, TPar> corPolesNew;
+  rsDirectFormFilter<TSig, TPar> invDamperNew;
+
+  // We slowly migrate all the code to use these - when finished, we can remove the 
+  // rsFirstOrderFilterBase versions and rename to get rid of the "New"
+
 
   // State for the unit delay feedback loop:
   TSig out = TSig(0);
@@ -831,17 +838,6 @@ protected:
   TSig r0, r1, rM1, rM2;
 
   bool preDelay = false;
-
-
-
-  // Under construction:
-
-  // ToDo: replace rsFirstOrderFilterBase with rsDirectFormFilter
-  rsDirectFormFilter<TSig, TPar> damperNew;
-  rsDirectFormFilter<TSig, TPar> corPolesNew;
-  rsDirectFormFilter<TSig, TPar> invDamperNew;
-  // We slowly migrate all the code to use these - when finished, we can remove the 
-  // rsFirstOrderFilterBase versions and rename to get rid of the "New"
 };
 
 template<class TSig, class TPar>
@@ -905,6 +901,15 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
   //corOnePole.setCoefficients(1.0, 0.0, a1);
   a1 = -a1; // We want to use the y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] sign convention here
 
+
+  // Under construction - set up the new direct form filters that shall replace the 1st order 
+  // filters:
+  TPar ta[2] = { 1,  a1 };
+  TPar tb[2] = { b0, b1 };
+  setup(delay, feedback, 1, tb, ta);
+
+
+  /*
   // Set up delaylines:
   int M = delay - 1;                        // -1 corrects for unit delay in feedback path
   mainDelay.setDelayInSamples(M);
@@ -916,13 +921,7 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
   r1  = k*b0;
   rM1 = a1;
   rM2 = 1;
-
-
-  // Under construction - set up the new direct form filters that shall replace the 1st order 
-  // filters:
-  TPar ta[2] = { 1,  a1 };
-  TPar tb[2] = { b0, b1 };
-  setup(delay, feedback, 1, tb, ta);
+  */
 }
 
 template<class TSig, class TPar>
