@@ -772,6 +772,11 @@ class rsDampedAllpassCombNaive
 
 public:
 
+  rsDampedAllpassCombNaive()
+  {
+
+  }
+
 
   void setMaxDelayInSamples(int newMaxDelay);
 
@@ -814,8 +819,10 @@ protected:
 
   // Objects for the correction filter:
   rsUnitDelay<TSig>              unitDelay;
+
   rsBasicDelayLine<TSig>         corDelayM1;
   rsBasicDelayLine<TSig>         corDelayM2;
+
   rsDirectFormFilter<TSig, TPar> corPoles;
   rsDirectFormFilter<TSig, TPar> invDamper;
 

@@ -713,6 +713,14 @@ void dampedAllpassComb3()
   //   and negative and positive k.
 }
 
+void dampedAllpassComb4()
+{
+  // Under construction - just a stub
+
+  // Here, we try to use higher order feedback damping filters
+
+}
+
 void dampedAllpassCombComplex()
 {
   // We instantiate rsDampedAllpassComb with a complex datatype for the signals. The feedbakc gain
@@ -872,13 +880,15 @@ void dampedAllpassDelayContent()
 
 void dampedAllpassComb()
 {
+  dampedAllpassComb4();
   //dampedAllpassComb2();
-  dampedAllpassDelayContent();
+  //dampedAllpassDelayContent();
 
 
   dampedAllpassComb1();
   dampedAllpassComb2();
   dampedAllpassComb3();
+  dampedAllpassComb4();
   dampedAllpassCombComplex();
   dampedAllpassCombNonLin();
   dampedAllpassDelayContent();
