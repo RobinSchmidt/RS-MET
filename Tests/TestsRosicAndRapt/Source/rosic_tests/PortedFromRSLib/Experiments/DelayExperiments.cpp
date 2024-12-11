@@ -532,7 +532,8 @@ void dampedAllpassComb2()
     int delay, Real feedback, Real omega, Real hiGain, bool preDelay)
   {
     flt.setMaxDelayInSamples(delay);
-    flt.setupHighDamp(delay, feedback, omega, hiGain, preDelay);
+    //flt.setupHighDamp(delay, feedback, omega, hiGain, preDelay);
+    rsSetupHighDamp(flt, delay, feedback, omega, hiGain, preDelay);
   };
 
   // Helper function to produce the impulse response for given settings:
@@ -613,7 +614,8 @@ void dampedAllpassComb3()
     bool preDelay)
   {
     flt.setMaxDelayInSamples(delay); 
-    flt.setupHighDamp(delay, feedback, omega, hiGain, preDelay);
+    //flt.setupHighDamp(delay, feedback, omega, hiGain, preDelay);
+    rsSetupHighDamp(flt, delay, feedback, omega, hiGain, preDelay);
   };
 
   // Set up the 4 damped allpass comb filters:
@@ -741,7 +743,8 @@ void dampedAllpassCombComplex()
   Real    w  = 2*PI*dampFreq/sampleRate;
   int     N  = numSamples;
   ap.setMaxDelayInSamples(delay);
-  ap.setupHighDamp(delay, fb, w, dampGain, false);
+  //ap.setupHighDamp(delay, fb, w, dampGain, false);
+  rsSetupHighDamp(ap, delay, fb, w, dampGain, false);
   VecC h = impulseResponse(ap, N, Complex(1));
   plotComplexVectorReIm(h);                      // Doesn't accept rsComplex - fix that!
 
@@ -801,7 +804,8 @@ void dampedAllpassCombNonLin()
   Allpass ap;
   Real dampOmega = 2*PI*dampFreq/sampleRate;
   ap.setMaxDelayInSamples(delay);
-  ap.setupHighDamp(delay, feedback, dampOmega, dampGain, false);
+  //ap.setupHighDamp(delay, feedback, dampOmega, dampGain, false);
+  rsSetupHighDamp(ap, delay, feedback, dampOmega, dampGain, false);
   int N = numSamples;
  
   Vec h1  = impulseResponse(ap, N,  1.0);
@@ -847,7 +851,8 @@ void dampedAllpassDelayContent()
   Allpass ap;
   Real dampOmega = 2*PI*dampFreq/sampleRate;
   ap.setMaxDelayInSamples(delay);
-  ap.setupHighDamp(delay, feedback, dampOmega, dampGain, predelay);
+  //ap.setupHighDamp(delay, feedback, dampOmega, dampGain, predelay);
+  rsSetupHighDamp(ap, delay, feedback, dampOmega, dampGain, predelay);
   int N = numSamples;
 
   Vec h(N);

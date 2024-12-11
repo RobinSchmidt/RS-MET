@@ -979,7 +979,7 @@ public:
   at 100 sample intervals, the feedback gain is 0.9 the shelving frequency is somewhere in the 
   middle frequency range (at fs = 44.1 kHz) and the high frequency gain of the damping shelver 
   is 0.7. */
-  void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay);
+  //void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay);
 
 
 
@@ -1118,6 +1118,7 @@ void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOr
   updateDelaysAndCorrectorCoeffs();
 }
 
+/*
 // Get rid of this as member function - implement it as free function
 template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
@@ -1138,9 +1139,9 @@ void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   // ToDo: Use filter design functions that return the filter coeffs directly with the right 
   // convention used. 
 
-
   updateDelaysAndCorrectorCoeffs();
 }
+*/
 
 template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::reset()

@@ -2342,7 +2342,8 @@ bool dampedAllpassCombUnitTest()
   // Now try to generate the same output with the production version:
   Comb comb;
   comb.setMaxDelayInSamples(d);
-  comb.setupHighDamp(d, k, w, g, true);
+  //comb.setupHighDamp(d, k, w, g, true);
+  rsSetupHighDamp(comb, d, k, w, g, true);
   Vec h2 = impulseResponse(comb, N, 1.0);
   ok &= rsIsCloseTo(h, h2, 1.e-15);
   //ok &= h == h2;
@@ -2350,7 +2351,8 @@ bool dampedAllpassCombUnitTest()
   // Now do the same test again for the other mode of operation, i.e. the one without predelay:
   //naive.setupHighDamp(d, k, w, g, false);  // old
   rsSetupHighDamp(naive, d, k, w, g, false);
-  comb.setupHighDamp( d, k, w, g, false);
+  //comb.setupHighDamp( d, k, w, g, false);
+  rsSetupHighDamp(comb, d, k, w, g, false);
   h  = impulseResponse(naive, N, 1.0);
   h2 = impulseResponse(comb,  N, 1.0);
   ok &= rsIsCloseTo(h, h2, 1.e-15);
@@ -2360,7 +2362,8 @@ bool dampedAllpassCombUnitTest()
   // settings (i.e. no decay, no damping). This should produce an alternating spike train with the
   // distance between the spikes given by our desired delay. The first spike occurs at sample index  
   // n == delay - 1. 
-  comb.setupHighDamp(d, 1.0, 0.5, 1.0, true);
+  //comb.setupHighDamp(d, 1.0, 0.5, 1.0, true);
+  rsSetupHighDamp(comb, d, 1.0, 0.5, 1.0, true);
   comb.reset();
   h[0] = comb.getSampleComb(1.0);      // We use getSampleComb() - that's why impulseResponse()
   for(int n = 1; n < N; n++)           // ...can't be used
@@ -2384,7 +2387,8 @@ bool dampedAllpassCombUnitTest()
   // alternation and weird first spike location. It's just a unipolar train of spikes at multiples
   // of the delay:
   comb.reset();
-  comb.setupHighDamp(d, -1.0, 0.5, 1.0, false);
+  //comb.setupHighDamp(d, -1.0, 0.5, 1.0, false);
+  rsSetupHighDamp(comb, d, -1.0, 0.5, 1.0, false);
   h[0] = comb.getSampleComb(1.0);
   for(int n = 1; n < N; n++) 
     h[n] = comb.getSampleComb(0.0);
