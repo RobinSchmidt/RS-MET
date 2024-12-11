@@ -1285,8 +1285,12 @@ class rsDampedAllpassComb_1p
 public:
 
   void setMaxDelayInSamples(int newMaxDelay);
-  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA, 
-    bool predelay);
+
+  void setup(int delay, TSig feedback, TPar* dampCoeffsB, TPar* dampCoeffsA, bool predelay);
+  // dampCoeffsB, dampCoeffsB must be of length 2. They represent the first order damping filter 
+  // coeffs b0 = b[0], b1 = b[1], a[0] = 1, a1 = a[1]
+  // ToDo: change the signature to pass in b0, b1, a1 directly. That is more clear and less error 
+  // prone. 
 
   TSig getSample(TSig in);
   TSig getSampleComb(TSig in);
@@ -1363,18 +1367,12 @@ void rsDampedAllpassComb_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 }
 
 template<class TSig, class TPar>
-void rsDampedAllpassComb_1p<TSig, TPar>::setup(int delay, TSig feedback, int dampOrder,
+void rsDampedAllpassComb_1p<TSig, TPar>::setup(int delay, TSig feedback, 
   TPar* dampCoeffsB, TPar* dampCoeffsA, bool predelay)
 {
   M = delay - 1;                            // -1 corrects for unit delay in feedback path
   k = feedback;
   this->preDelay = predelay;
-
-  rsAssert(dampOrder == 1);
-  // We do not support higher order damping filters here! If you want this, use class
-  // rsDampedAllpassComb rather than rsDampedAllpassComb_1p. 
-  //
-  // ToDo: Maybe get rid of the dampOrder parameter. 
 
   rsAssert(dampCoeffsA[0] == 1);
   a1 = dampCoeffsA[1];
@@ -1439,7 +1437,7 @@ void rsSetupHighDamp(rsDampedAllpassComb_1p<TSig, TPar>& flt,
 {
   TPar a[2], b[2]; a[0] = 1;
   rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
-  flt.setup(delay, feedback, 1, b, a, predelay);
+  flt.setup(delay, feedback, b, a, predelay);
 }
 
 //=================================================================================================
