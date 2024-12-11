@@ -959,8 +959,10 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleComb(TSig in)
   else
   {
     //out = damper.getSample(in - k * mainDelay.getSample(out));  // old
+    //return invDamper.getSample(out); //  old
+
     out = damperNew.getSample(in - k * mainDelay.getSample(out));
-    return invDamper.getSample(out);
+    return invDamperNew.getSample(out);
 
     // It may seem strange that we first apply the damper and then the inverse damper. Doesn't this
     // mean, we could just leave out the damper entirely? No! Because "out" is a state variable 
