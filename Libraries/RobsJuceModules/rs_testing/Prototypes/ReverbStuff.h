@@ -1080,6 +1080,9 @@ protected:
 
     return y;
   }
+  // Get rid of the duplications - but first make a unit test that test the class for various
+  // feedback damper orders. It should check for each case, if the filter is an allpass
+
 
   void updateDelays()
   {

@@ -715,6 +715,10 @@ void dampedAllpassComb3()
 
 void dampedAllpassComb4()
 {
+  // This fails if we run the unti tests before. Maybe we have some memory corruption going on?
+  // Ah! I think, on reset, we have to empty the buffers! Maybe they happen to be zero initialized
+  // unless we run the unit test before
+
   // Under construction - just a stub
 
   // Here, we try to use higher order feedback damping filters
@@ -732,7 +736,7 @@ void dampedAllpassComb4()
   Real a[3];
   a[0] = 1;
   rsStateVariableFilter<Real, Real> svf;  // Only used for designing the feedback filter
-  svf.setupBell(0.2, 0.3, 0.5);           // A widband dip filter
+  svf.setupBell(0.2, 0.3, 0.5);           // A wideband dip filter
   svf.convertToBiquad(&b[0], &b[1], &b[2], &a[1], &a[2]);
 
   Allpass ap;
@@ -741,7 +745,6 @@ void dampedAllpassComb4()
 
   Vec h = impulseResponse(ap, N, 1.0);
   rsPlotVectors(h);
-  // OK - this totally does not yet work! The filter is unstable!
 
   // ToDo:
   //
