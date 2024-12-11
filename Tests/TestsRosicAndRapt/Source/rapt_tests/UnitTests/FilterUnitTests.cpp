@@ -2441,7 +2441,7 @@ bool dampedAllpassCombUnitTest2()
   // Create the prototype 1st order shelver:
   Real a1[2], b1[2];   // Coeffs of the 1st order prototype shelver
   rsMake1stOrderHighShelf(w, g, &b1[0], &b1[1], &a1[1]);
-  a1[0] = 0;
+  a1[0] = 1;
 
   // Create arrays for filter coeffs and initialize them for realizing a first order shelver: 
   static const int maxDampOrder = 8;
@@ -2452,7 +2452,12 @@ bool dampedAllpassCombUnitTest2()
   b[0] = b1[0]; b[1] = b1[1];
 
 
+  Comb flt;
+  flt.setMaxDelayInSamples(d);
 
+  flt.setup(d, k, 1, b, a, false);
+  Vec h = impulseResponse(flt, N, 1.0);
+  rsPlotVectors(h);
 
 
 
