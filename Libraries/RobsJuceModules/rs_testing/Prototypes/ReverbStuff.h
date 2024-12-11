@@ -814,14 +814,14 @@ protected:
   // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
   // filter with filtered unit delay feedback:
   rsBasicDelayLine<TSig>             mainDelay;
-  rsFirstOrderFilterBase<TSig, TPar> damper;
+  //rsFirstOrderFilterBase<TSig, TPar> damper;
 
   // Objects for the correction filter:
   rsUnitDelay<TSig>                  unitDelay;
   rsBasicDelayLine<TSig>             corDelayM1;
   rsBasicDelayLine<TSig>             corDelayM2;
-  rsFirstOrderFilterBase<TSig, TPar> corOnePole;
-  rsFirstOrderFilterBase<TSig, TPar> invDamper;
+  //rsFirstOrderFilterBase<TSig, TPar> corOnePole;
+  //rsFirstOrderFilterBase<TSig, TPar> invDamper;
 
   // State for the unit delay feedback loop:
   TSig out = TSig(0);
@@ -899,10 +899,10 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
   // Set up one pole filters:
   TPar b0, b1, a1;
   rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(dampOmega, dampGain, &b0, &b1, &a1);
-  damper.setCoefficients(    b0,  b1,  a1);
-  invDamper.setCoefficients( b0,  b1,  a1);
-  invDamper.invert();
-  corOnePole.setCoefficients(1.0, 0.0, a1);
+  //damper.setCoefficients(    b0,  b1,  a1);
+  //invDamper.setCoefficients( b0,  b1,  a1);
+  //invDamper.invert();
+  //corOnePole.setCoefficients(1.0, 0.0, a1);
   a1 = -a1; // We want to use the y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] sign convention here
 
   // Set up delaylines:
@@ -929,14 +929,14 @@ template<class TSig, class TPar>
 void rsDampedAllpassCombNaive<TSig, TPar>::reset()
 {
   mainDelay.reset();
-  damper.reset();
+  //damper.reset();
   damperNew.reset();
   unitDelay.reset();
   corDelayM1.reset();
   corDelayM2.reset();
-  corOnePole.reset();
+  //corOnePole.reset();
   corPolesNew.reset();
-  invDamper.reset();
+  //invDamper.reset();
   invDamperNew.reset();
   out = TSig(0);
 }
