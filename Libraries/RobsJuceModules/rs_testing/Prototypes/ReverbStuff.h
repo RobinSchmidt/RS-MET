@@ -1266,6 +1266,11 @@ void rsSetupHighDamp(rsDampedAllpassComb<TSig, TPar>& flt,
 }
 
 
+// ToDo:
+//
+// - Bring back the implementation that directly implements the one pole feedback. Having to use
+//   the complicated general implementation for (what I believe) is a very common use case is 
+//   overkill. We really want to have both.
 
 
 
