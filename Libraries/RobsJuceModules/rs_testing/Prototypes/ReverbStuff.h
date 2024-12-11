@@ -1015,9 +1015,14 @@ protected:
 
   TSig applyDamper(TSig x)
   {
-    TSig y = b[0] * x + b[1] * x1d - a[1] * y1d;  // ToDo: maybe use DF2 or TDF2 implementation
-    x1d = x;
-    y1d = y;
+    //TSig y = b[0] * x + b[1] * x1d - a[1] * y1d;  // ToDo: maybe use DF2 or TDF2 implementation
+    //x1d = x;
+    //y1d = y;
+    //return y;
+
+    TSig y = b[0] * x + b[1] * xd[0] - a[1] * yd[0];  // ToDo: maybe use DF2 or TDF2 implementation
+    xd[0] = x;
+    yd[0] = y;
     return y;
   }
 
