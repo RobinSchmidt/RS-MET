@@ -1270,7 +1270,18 @@ void rsSetupHighDamp(rsDampedAllpassComb<TSig, TPar>& flt,
 //
 // - Bring back the implementation that directly implements the one pole feedback. Having to use
 //   the complicated general implementation for (what I believe) is a very common use case is 
-//   overkill. We really want to have both.
+//   overkill. We really want to have both. Maybe the version before I started moving the r,b,a,
+//   etc, arrays to arrays is the right one. It's this:
+//   29ed81a4fac5a32e4eea9716aa4aa37e2927256b
+//   The comment is "Update ReverbStuff.h" but there are many commits with this comment. But this 
+//   one is directly above "added Stub" ...or..well - no - we actually need the "added Stub"
+//   commit. Or maybe use the version from the commit with comment 
+//   "added rsSetupHighDamp free function" and hash 0b8ce98e5a275856d4de46cd0648185e0922d758
+//   This one:
+//   https://github.com/RobinSchmidt/RS-MET/blob/0b8ce98e5a275856d4de46cd0648185e0922d758/Libraries/RobsJuceModules/rs_testing/Prototypes/ReverbStuff.h
+//   Yes. I think, that's the version, we should bring back as specific implementation for the 
+//   1-pole case. We should give the class a different name, though. Like rsDampedAllpassComb_1p
+//   wher _1p stands for one-pole
 
 
 
