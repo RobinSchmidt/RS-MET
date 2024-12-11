@@ -1041,11 +1041,6 @@ protected:
     // Set up delaylines:
     mainDelay.setDelayInSamples(M);
     corrDelay.setDelayInSamples(M+2);  // == M + 1 + damperOrder, I think (verify!)
-
-    // Compute correction coefficients:
-    //r[0] = k*b[1];
-    //r[1] = k*b[0];
-    // Maybe get rid of the r-array. Compute the product on the fly.
   }
 
 
@@ -1066,9 +1061,14 @@ protected:
   TSig y1c  = 0;             // y[n-1] for corrector one pole
   // ToDo: use arrays here, too.
 
+  // These array should be used later instead of the values above:
+  TSig xd[1], yd[1];
+  TSig xi[1], yi[1];
+  TSig yc[1];
+
+
   // Coefficients:
   TSig k = 0;                // Needs to be TSig when we want to use it with complex feedback
-  //TSig r[2];                 // They involve a k-factor, so they need to be TSig, too.
   TPar b[2];
   TPar a[2];
 
@@ -1111,11 +1111,11 @@ void rsDampedAllpassComb<TSig, TPar>::reset()
   unitDelay.reset();
   corrDelay.reset();
   combOut = TSig(0);
-  x1d     = TSig(0);
-  y1d     = TSig(0);
-  x1di    = TSig(0);
-  y1di    = TSig(0);
-  y1c     = TSig(0);
+  xd[0] = x1d  = TSig(0);
+  yd[0] = y1d  = TSig(0);
+  xi[0] = x1di = TSig(0);
+  yi[0] = y1di = TSig(0);
+  yc[0] = y1c  = TSig(0);
 }
 
 template<class TSig, class TPar>
