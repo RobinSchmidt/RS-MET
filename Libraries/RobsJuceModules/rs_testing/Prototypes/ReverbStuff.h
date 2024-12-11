@@ -1044,6 +1044,14 @@ protected:
     return mainDelay.getSample(x);
   }
 
+  // Move to rsArrayTools - as shiftRightAndPrepend or pushShiftDiscard or something like that
+  void updateState(T* s, int N, T s0)
+  {
+    for(int i = N-1; i > 0; i--)
+      s[i] = s[i-1];
+    s[0] = s0;
+  }
+
   TSig applyDamper(TSig x)
   {
     // Compute outputs:
@@ -1285,15 +1293,8 @@ class rsDampedAllpassComb_1p
 public:
 
   void setMaxDelayInSamples(int newMaxDelay);
-
   void setup(int delay, TSig feedback, 
     TPar dampCoeffB0, TPar dampCoeffB1, TPar dampCoeffA1, bool predelay);
-
-  //void setup(int delay, TSig feedback, TPar* dampCoeffsB, TPar* dampCoeffsA, bool predelay);
-  // dampCoeffsB, dampCoeffsB must be of length 2. They represent the first order damping filter 
-  // coeffs b0 = b[0], b1 = b[1], a[0] = 1, a1 = a[1]
-  // ToDo: change the signature to pass in b0, b1, a1 directly. That is more clear and less error 
-  // prone. 
 
   TSig getSample(TSig in);
   TSig getSampleComb(TSig in);
