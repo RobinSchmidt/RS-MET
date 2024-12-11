@@ -1045,6 +1045,7 @@ protected:
   }
 
   // Move to rsArrayTools - as shiftRightAndPrepend or pushShiftDiscard or something like that
+  template<class T>
   void updateState(T* s, int N, T s0)
   {
     for(int i = N-1; i > 0; i--)
@@ -1060,13 +1061,19 @@ protected:
       y += b[i]*xd[i-1] - a[i] * yd[i-1];
 
     // Update state:
-    for(int i = dmpOrd-1; i > 0; i--)
-    {
-      xd[i] = xd[i-1];
-      yd[i] = yd[i-1];
-    }
-    xd[0] = x;
-    yd[0] = y;
+    //for(int i = dmpOrd-1; i > 0; i--)
+    //{
+    //  xd[i] = xd[i-1];
+    //  yd[i] = yd[i-1];
+    //}
+    //xd[0] = x;
+    //yd[0] = y;
+
+
+    updateState(xd, dmpOrd, x);
+    updateState(yd, dmpOrd, y);
+
+
 
     return y;
   }
@@ -1080,13 +1087,16 @@ protected:
     y /= b[0];
 
     // Update state:
-    for(int i = dmpOrd-1; i > 0; i--)
-    {
-      xi[i] = xi[i-1];
-      yi[i] = yi[i-1];
-    }
-    xi[0] = x;
-    yi[0] = y;
+    //for(int i = dmpOrd-1; i > 0; i--)
+    //{
+    //  xi[i] = xi[i-1];
+    //  yi[i] = yi[i-1];
+    //}
+    //xi[0] = x;
+    //yi[0] = y;
+
+    updateState(xi, dmpOrd, x);
+    updateState(yi, dmpOrd, y);
 
     return y;
   }
@@ -1099,9 +1109,13 @@ protected:
       y -= a[i] * yc[i-1];
     
     // Update state:
-    for(int i = dmpOrd-1; i > 0; i--)
-      yc[i] = yc[i-1];
-    yc[0] = y;
+    //for(int i = dmpOrd-1; i > 0; i--)
+    //  yc[i] = yc[i-1];
+    //yc[0] = y;
+
+    updateState(yc, dmpOrd, y);
+
+
 
     return y;
   }
