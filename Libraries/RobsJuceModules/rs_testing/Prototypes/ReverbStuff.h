@@ -1152,14 +1152,23 @@ void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOr
 template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::reset()
 {
+  using AT = rsArrayTools;
+
   mainDelay.reset();
   corrDelay.reset();
   combOut = TSig(0);
-  xd[0] = TSig(0);
-  yd[0] = TSig(0);
-  xi[0] = TSig(0);
-  yi[0] = TSig(0);
-  yc[0] = TSig(0);
+
+  AT::clear(xd, maxDmpOrd);
+  AT::clear(yd, maxDmpOrd);
+  AT::clear(xi, maxDmpOrd);
+  AT::clear(yi, maxDmpOrd);
+  AT::clear(yc, maxDmpOrd);
+
+  //xd[0] = TSig(0);
+  //yd[0] = TSig(0);
+  //xi[0] = TSig(0);
+  //yi[0] = TSig(0);
+  //yc[0] = TSig(0);
 }
 
 template<class TSig, class TPar>
