@@ -871,7 +871,7 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setup(
   TPar t[5] = { 1,0,0,0,0 };
   damperNew.setCoefficients(    a, b, dampOrder);
   invDamperNew.setCoefficients( a, b, dampOrder);
-  invDamperNew.invert();                           // Needs to be implemented!
+  invDamperNew.invert();
   corPolesNew.setCoefficients(  a, b, dampOrder);
 
   // Set up delaylines:
@@ -881,9 +881,9 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setup(
   corDelayM2.setDelayInSamples(M+2);
 
   // Compute correction coefficients:
-  r0  = k*b1;
-  r1  = k*b0;
-  rM1 = a1;
+  r0  = k * b[1];
+  r1  = k * b[0];
+  rM1 =     a[1];
   rM2 = 1;
 }
 
@@ -916,6 +916,13 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
   r1  = k*b0;
   rM1 = a1;
   rM2 = 1;
+
+
+  // Under construction - set up the new direct form filters that shall replace the 1st order 
+  // filters:
+  TPar ta[2] = { 1,  a1 };
+  TPar tb[2] = { b0, b1 };
+  setup(delay, feedback, 1, tb, ta);
 }
 
 template<class TSig, class TPar>
@@ -979,10 +986,10 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::applyCorrector(TSig in)
 
 
 template<class TSig, class TPar>
-void rsSetupAllpassCombHighDamp(rsDampedAllpassCombNaive<TSig, TPar>& flt,
+void rsSetupHighDamp(rsDampedAllpassCombNaive<TSig, TPar>& flt,
   int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay)
 {
-  flt.setupHighDamp(delay, feedback, dampOmega, dampGain, preDelay);
+  flt.setupHighDamp(delay, feedback, dampOmega, dampGain, predelay);
   // Eventually, we want to get rid of the member function setupHighDamp and only provide a general
   // setup function into which the user can pass the coeffs himself. As a first setp for this 
   // refactorization, we provide this function here. Then, all direct calls to setupHighDamp shall 

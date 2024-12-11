@@ -2334,7 +2334,8 @@ bool dampedAllpassCombUnitTest()
   // check that it is allpass in nature:
   CombNaive naive;
   naive.setMaxDelayInSamples(d);
-  naive.setupHighDamp(d, k, w, g, true);
+  //naive.setupHighDamp(d, k, w, g, true);  // old
+  rsSetupHighDamp(naive, d, k, w, g, true);
   Vec h = impulseResponse(naive, N, 1.0);
   ok &= isAllpass(h, 1.e-5);
 
@@ -2346,7 +2347,8 @@ bool dampedAllpassCombUnitTest()
   ok &= h == h2;
   
   // Now do the same test again for the other mode of operation, i.e. the one without predelay:
-  naive.setupHighDamp(d, k, w, g, false);
+  //naive.setupHighDamp(d, k, w, g, false);  // old
+  rsSetupHighDamp(naive, d, k, w, g, false);
   comb.setupHighDamp( d, k, w, g, false);
   h  = impulseResponse(naive, N, 1.0);
   h2 = impulseResponse(comb,  N, 1.0);
@@ -2410,7 +2412,6 @@ bool allpassUnitTest()
 
   return ok;
 }
-
 
 
 bool phonoFilterUnitTest()
