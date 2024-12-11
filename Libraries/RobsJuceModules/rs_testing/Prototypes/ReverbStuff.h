@@ -1036,15 +1036,15 @@ protected:
     return y;
   }
 
-  void updateDelaysAndCorrectorCoeffs()
+  void updateDelaysAndCorrectorCoeffs()  // Rename - we don't update any coeffs anymore!
   {
     // Set up delaylines:
     mainDelay.setDelayInSamples(M);
-    corrDelay.setDelayInSamples(M+2);
+    corrDelay.setDelayInSamples(M+2);  // == M + 1 + damperOrder, I think (verify!)
 
     // Compute correction coefficients:
-    r[0] = k*b[1];
-    r[1] = k*b[0];
+    //r[0] = k*b[1];
+    //r[1] = k*b[0];
     // Maybe get rid of the r-array. Compute the product on the fly.
   }
 
@@ -1068,7 +1068,7 @@ protected:
 
   // Coefficients:
   TSig k = 0;                // Needs to be TSig when we want to use it with complex feedback
-  TSig r[2];                 // They involve a k-factor, so they need to be TSig, too.
+  //TSig r[2];                 // They involve a k-factor, so they need to be TSig, too.
   TPar b[2];
   TPar a[2];
 
