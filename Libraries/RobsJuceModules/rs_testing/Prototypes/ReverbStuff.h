@@ -776,17 +776,12 @@ public:
   void setMaxDelayInSamples(int newMaxDelay);
 
 
-  //void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay);
-
-
   void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA, 
              bool predelay);
-
 
   // We use the convention that we use  M = delay - 1  for the delayline to compensate for the unit
   // delay. This makes more sense from a user's perspective because then, the spike spacing is 
   // exactly given by delay.
-
 
 
   void reset();
@@ -877,22 +872,6 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setup(
   rM2 = 1;
 }
 
-/*
-// This function should go away in favor of a general setup() function:
-template<class TSig, class TPar>
-void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
-  int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay)
-{
-  // Set up one pole filters:
-  TPar b0, b1, a1;
-  rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(dampOmega, dampGain, &b0, &b1, &a1);
-  a1 = -a1; // We want to use the y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] sign convention here
-  TPar ta[2] = { 1,  a1 };
-  TPar tb[2] = { b0, b1 };
-  setup(delay, feedback, 1, tb, ta, preDelay);
-}
-*/
-
 template<class TSig, class TPar>
 void rsDampedAllpassCombNaive<TSig, TPar>::reset()
 {
@@ -951,6 +930,7 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::applyCorrector(TSig in)
 }
 
 
+// A free function to set up the object with a more convenient parametrization:
 template<class TSig, class TPar>
 void rsSetupHighDamp(rsDampedAllpassCombNaive<TSig, TPar>& flt,
   int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay)
@@ -962,19 +942,7 @@ void rsSetupHighDamp(rsDampedAllpassCombNaive<TSig, TPar>& flt,
   TPar ta[2] = { 1,  a1 };
   TPar tb[2] = { b0, b1 };
   flt.setup(delay, feedback, 1, tb, ta, predelay);
-
-
-  //flt.setupHighDamp(delay, feedback, dampOmega, dampGain, predelay);
-
-  // Eventually, we want to get rid of the member function setupHighDamp and only provide a general
-  // setup function into which the user can pass the coeffs himself. As a first setp for this 
-  // refactorization, we provide this function here. Then, all direct calls to setupHighDamp shall 
-  // be replaced by a call to this function. Then, this functionshould compute the coeffs itself
-  // and use the general setup function. Then, the setupHighDamp function can be removed.
-  // This should be done in parallel for the production implementation, too.
 }
-
-
 
 
 
@@ -1012,6 +980,11 @@ public:
   middle frequency range (at fs = 44.1 kHz) and the high frequency gain of the damping shelver 
   is 0.7. */
   void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay);
+
+
+
+  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA, 
+    bool predelay);
 
 
   // I actually think we should only have a setter of the form:
@@ -1127,6 +1100,25 @@ void rsDampedAllpassComb<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 }
 
 template<class TSig, class TPar>
+void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOrder,
+  TPar* dampCoeffsB, TPar* dampCoeffsA, bool predelay)
+{
+  M = delay - 1;                            // -1 corrects for unit delay in feedback path
+  k = feedback;
+  this->preDelay = predelay;
+
+  rsAssert(dampOrder == 1);
+  // We do not yet support higher order damping filters. This feature is under constructions
+
+  rsAssert(dampCoeffsA[0] == 1);
+  a1 = dampCoeffsA[1];
+  b0 = dampCoeffsB[0];
+  b1 = dampCoeffsB[1];
+
+  updateDelaysAndCorrectorCoeffs();
+}
+
+template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay)
 {
@@ -1233,6 +1225,15 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 //     (2) Use M+2 as length for mainDelay instead of M. That should now be safe to do
 //     (3) In applyCorrector(), do the reads from mainDelay rather than corrDelay
 
+
+
+
+
+
+
+
+
+//=================================================================================================
 
 /** A nonlinear extension of rsDampedAllpassComb */
 
