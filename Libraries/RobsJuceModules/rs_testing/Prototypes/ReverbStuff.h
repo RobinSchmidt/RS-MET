@@ -953,7 +953,17 @@ template<class TSig, class TPar>
 void rsSetupHighDamp(rsDampedAllpassCombNaive<TSig, TPar>& flt,
   int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay)
 {
-  flt.setupHighDamp(delay, feedback, dampOmega, dampGain, predelay);
+  // Set up one pole filters:
+  TPar b0, b1, a1;
+  rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(dampOmega, dampGain, &b0, &b1, &a1);
+  a1 = -a1; // We want to use the y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] sign convention here
+  TPar ta[2] = { 1,  a1 };
+  TPar tb[2] = { b0, b1 };
+  flt.setup(delay, feedback, 1, tb, ta, predelay);
+
+
+  //flt.setupHighDamp(delay, feedback, dampOmega, dampGain, predelay);
+
   // Eventually, we want to get rid of the member function setupHighDamp and only provide a general
   // setup function into which the user can pass the coeffs himself. As a first setp for this 
   // refactorization, we provide this function here. Then, all direct calls to setupHighDamp shall 
