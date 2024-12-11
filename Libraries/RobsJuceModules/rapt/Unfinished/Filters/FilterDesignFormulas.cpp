@@ -3,8 +3,8 @@ template<class T>
 void invertBiquad(T &b0, T &b1, T &b2, T &a1, T &a2)
 {
   // Normalize numerator:
-  T g = b0; 
-  T s = 1/g;
+  //T g = b0; 
+  T s = 1 / b0;
   b0  = 1;
   b1 *= s;
   b2 *= s;

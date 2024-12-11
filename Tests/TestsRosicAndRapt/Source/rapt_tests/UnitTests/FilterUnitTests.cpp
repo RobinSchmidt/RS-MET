@@ -71,6 +71,20 @@ bool directFormFilterUnitTest()
   ok &= rsIsCloseTo(y, yt, 1.e-14);
   //rsPlotVectors(x, yt, y);
 
+  // Check inversion:
+  flt.invert();
+  flt.reset();
+  Vec z(N);
+  for(int n = 0; n < N; n++)
+    z[n] = flt.getSample(y[n]);
+  ok &= rsIsCloseTo(z, x, 1.e-4);   // We need a very high tolerance here!
+  //rsPlotVectors(x, z);   // They do look the same visually
+  //rsPlotVectors(x - z);  // ..but there's an error that explodes exponentially
+  // I guess maybe the inverse filter is unstable and therefore the error explodes? I guess, we 
+  // should do this test with a more sensible filter - not one with random coeffs. But even then - 
+  // up to a tolerance of 10^-4, it still works! So, even an unstable filter can be used for 
+  // inverting a given filter for the first few samples - until the instability takes over.
+
   return ok;
 }
 

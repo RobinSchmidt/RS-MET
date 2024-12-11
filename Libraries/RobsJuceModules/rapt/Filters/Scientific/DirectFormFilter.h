@@ -39,8 +39,8 @@ public:
   /** Applies a global gain factor (by multiplying all b-coefficients with tha factor). */
   void setGlobalGainFactor(TCoef newFactor);
 
-  /** Resets the filter state. */
-  void reset();
+  /** Inverts the filter, i.e. swaps poles and zeros and inverts the gain. */
+  void invert();
 
   /** Initializes the filter coefficients so as to realize a 'bypass' filter. */
   void initializeCoefficients();
@@ -87,6 +87,10 @@ public:
 
     return y;
   }
+
+  /** Resets the filter state. */
+  void reset();
+
 
 
 protected:

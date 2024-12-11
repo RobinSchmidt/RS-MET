@@ -867,11 +867,12 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setup(
   k = feedback;
   this->preDelay = preDelay;
 
-  //// Set up damper and related filters:
-  //damper.setCoefficients(    a, b, dampOrder);
-  //invDamper.setCoefficients( a, b, dampOrder);
-  //invDamper.invert();
-  //corPoles.setCoefficients(  .. );
+  // Set up damper and related filters:
+  TPar t[5] = { 1,0,0,0,0 };
+  damperNew.setCoefficients(    a, b, dampOrder);
+  invDamperNew.setCoefficients( a, b, dampOrder);
+  invDamperNew.invert();                           // Needs to be implemented!
+  corPolesNew.setCoefficients(  a, b, dampOrder);
 
   // Set up delaylines:
   int M = delay - 1;                        // -1 corrects for unit delay in feedback path
