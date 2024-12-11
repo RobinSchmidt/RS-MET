@@ -952,12 +952,14 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleComb(TSig in)
 {
   if(preDelay)
   {
-    out = mainDelay.getSample(in - k * damper.getSample(out));
+    //out = mainDelay.getSample(in - k * damper.getSample(out)); // old
+    out = mainDelay.getSample(in - k * damperNew.getSample(out));
     return out;
   }
   else
   {
-    out = damper.getSample(in - k * mainDelay.getSample(out));
+    //out = damper.getSample(in - k * mainDelay.getSample(out));  // old
+    out = damperNew.getSample(in - k * mainDelay.getSample(out));
     return invDamper.getSample(out);
 
     // It may seem strange that we first apply the damper and then the inverse damper. Doesn't this
@@ -975,7 +977,8 @@ template<class TSig, class TPar>
 TSig rsDampedAllpassCombNaive<TSig, TPar>::applyCorrector(TSig in)
 {
   // Apply 1-pole:
-  TSig t = corOnePole.getSample(in);
+  //TSig t = corOnePole.getSample(in);  // old
+  TSig t = corPolesNew.getSample(in);
 
   // Apply the FIR part:
   TSig y = 0;
