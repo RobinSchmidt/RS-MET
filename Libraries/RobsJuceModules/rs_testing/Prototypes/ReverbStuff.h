@@ -1045,9 +1045,9 @@ protected:
     // Compute correction coefficients:
     r[0]  = k*b[1];
     r[1]  = k*b[0];
-    rM[0] = 1;       // == a[0] - this is never used
-    rM[1] = a[1];
 
+    //rM[0] = 1;       // == a[0] - this is never used
+    //rM[1] = a[1];
     // Looks like the content of rM is the same as the content of a - so we may get rid of it.
   }
 
@@ -1069,17 +1069,7 @@ protected:
   TSig y1c  = 0;             // y[n-1] for corrector one pole
 
   // Coefficients:
-  TSig k   = 0;              // Needs to be TSig when we want to use it with complex feedback
-
-
-  //TSig r0  = 0; 
-  //TSig r1  = 0; 
-  //TPar rM1 = 0;
-  //TPar b0 = 0, b1 = 0, a1 = 0;
-  // Maybe use arrays b[0], b[1], r[0], r[1], etc. Later they may get longer because we want to
-  // support more complex feedback filters
-
-
+  TSig k = 0  ;              // Needs to be TSig when we want to use it with complex feedback
 
   int  M = 0;
   bool preDelay = false;
@@ -1088,8 +1078,9 @@ protected:
   // Under construction:
   TPar b[2];
   TPar a[2];
-  TSig r[2];
-  TPar rM[2];
+  TSig r[2];                 // They involve a k-factor, so they need to be TSig, too.
+
+  //TPar rM[2];
   // These arrays should replace b0, b1, etc.
 
   // ToDo: Document when a coefficient must be of type TSig. k needs to be of this type to allow
@@ -1178,10 +1169,10 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 
   // Apply the FIR part:
   TSig y = 0;
-  y += r[0]  * t;
-  y += r[1]  * unitDelay.getSample(t);
-  y += rM[1] * corrDelay.readOutputAt(M+1);  // could use a[1]
-  y +=         corrDelay.readOutputAt(M+2);
+  y += r[0] * t;
+  y += r[1] * unitDelay.getSample(t);
+  y += a[1] * corrDelay.readOutputAt(M+1);
+  y +=        corrDelay.readOutputAt(M+2);
   corrDelay.writeInputAndUpdate(t);
   return y;
 }
