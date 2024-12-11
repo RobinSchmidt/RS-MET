@@ -1045,7 +1045,7 @@ protected:
     corrDelay.setDelayInSamples(M+dmpOrd+1);  // Verify!
   }
 
-  static const int maxDmpOrd = 1;      // Maximum damping order
+  static const int maxDmpOrd = 2;      // Maximum damping order
 
   // Embedded DSP objects:
   rsBasicDelayLine<TSig> mainDelay;    // Main delayline for the comb filter
@@ -1073,19 +1073,25 @@ void rsDampedAllpassComb<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
   mainDelay .setMaximumDelayInSamples(maxM);
-  corrDelay.setMaximumDelayInSamples(maxM+2);
+  //corrDelay.setMaximumDelayInSamples(maxM+2);
+  corrDelay.setMaximumDelayInSamples(maxM+maxDmpOrd+1);
 }
 
 template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOrder,
   TPar* dampCoeffsB, TPar* dampCoeffsA, bool predelay)
 {
+  rsAssert(dampOrder <= maxDmpOrd);
+
   M = delay - 1;                            // -1 corrects for unit delay in feedback path
   k = feedback;
   this->preDelay = predelay;
   dmpOrd = dampOrder;
 
-  rsAssert(dampOrder == 1);
+
+
+
+  //rsAssert(dampOrder == 1);
   // We do not yet support higher order damping filters. This feature is under construction
 
   rsAssert(dampCoeffsA[0] == 1);  // May be relaxed later - can divide through all coeffs by a[0]

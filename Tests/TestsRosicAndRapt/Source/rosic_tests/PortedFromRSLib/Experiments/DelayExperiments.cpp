@@ -724,13 +724,24 @@ void dampedAllpassComb4()
   using Vec     = std::vector<Real>;
   using Allpass = rsDampedAllpassComb<Real, Real>;
 
+  int N = 5000;
+  int delay = 100;
+
+  // Deisgn a wideband dip filter to be used as damping filter:
   Real b[3];
   Real a[3];
   a[0] = 1;
   rsStateVariableFilter<Real, Real> svf;  // Only used for designing the feedback filter
-  svf.setupBell(0.1, 0.3, 0.7);           // A widband dip filter
+  svf.setupBell(0.2, 0.3, 0.5);           // A widband dip filter
   svf.convertToBiquad(&b[0], &b[1], &b[2], &a[1], &a[2]);
 
+  Allpass ap;
+  ap.setMaxDelayInSamples(delay);
+  ap.setup(delay, 1.0, 2, b, a, false);
+
+  Vec h = impulseResponse(ap, N, 1.0);
+  rsPlotVectors(h);
+  // OK - this totally does not yet work! The filter is unstable!
 
   // ToDo:
   //
