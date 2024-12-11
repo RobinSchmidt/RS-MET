@@ -779,7 +779,8 @@ public:
   void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay);
 
 
-  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA);
+  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA, 
+             bool predelay);
 
 
   // We use the convention that we use  M = delay - 1  for the delayline to compensate for the unit
@@ -848,7 +849,7 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 
 template<class TSig, class TPar>
 void rsDampedAllpassCombNaive<TSig, TPar>::setup(
-  int delay, TSig feedback, int dampOrder, TPar* b, TPar* a)
+  int delay, TSig feedback, int dampOrder, TPar* b, TPar* a, bool predelay)
 {
   rsAssert(dampOrder == 1, "We currently only support 1st order damping filters");
   // The signature allows for higher order damping filters in anticipation of supporting those
@@ -858,7 +859,7 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setup(
   // We may relax this assumption later. If a[0] != 1, we can just scale all coeffs by 1/a[0]
 
   k = feedback;
-  this->preDelay = preDelay;
+  this->preDelay = predelay;
 
   // Set up damper and related filters:
   TPar t[5] = { 1,0,0,0,0 };
@@ -898,7 +899,7 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setupHighDamp(
   // filters:
   TPar ta[2] = { 1,  a1 };
   TPar tb[2] = { b0, b1 };
-  setup(delay, feedback, 1, tb, ta);
+  setup(delay, feedback, 1, tb, ta, preDelay);
 }
 
 template<class TSig, class TPar>
