@@ -1002,6 +1002,10 @@ public:
   }
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+
   /** Sets the maximum desired roundtrip delay around the comb. This determines the spacing of the
   spikes in the impulse response in a setting without any decay or damping. In such a case, the 
   first spike appears at delay - 1 and from there, the subsequent ones are spaced apart by delay
@@ -1015,9 +1019,19 @@ public:
     bool predelay);
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
 
-  /** Resets the state. */
-  void reset();
+
+  /** Returns the maximum order for the feedback damping filters that is supported. */
+  //static constexpr int getMaxDampingOrder() const { return maxDmpOrd; }
+  constexpr int getMaxDampingOrder() const { return maxDmpOrd; }
+  // I'd really like to make that function also static but the compiler says that modifiers are
+  // not allowed on static functions
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
+
 
   /** This is the normal getSample funtion to be used when you want to produce the allpass output.
   It calls getSampleComb() and then applyCorrectionFilter() on the result of that. You may
@@ -1035,6 +1049,10 @@ public:
   /** This function is supposed to be called with the output produced by getSampleComb to apply the
   correction filter. */
   TSig applyCorrector(TSig combOutput);
+
+  /** Resets the state. */
+  void reset();
+
 
 
 protected:

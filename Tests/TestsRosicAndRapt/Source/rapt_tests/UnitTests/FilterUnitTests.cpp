@@ -2444,17 +2444,21 @@ bool dampedAllpassCombUnitTest2()
   rsMake1stOrderHighShelf(w, g, &b1[0], &b1[1], &a1[1]);
   a1[0] = 1;
 
+
+  Comb flt;
+  flt.setMaxDelayInSamples(d);
+
   // Create arrays for filter coeffs and initialize them for realizing a first order shelver, 
   // intialize them to [1 0 0 0 ...]
-  static const int maxDampOrder = 8;
+  //static const int maxDampOrder = 8;
+  static const int maxDampOrder = flt.getMaxDampingOrder();
   static const int maxLength    = maxDampOrder+1;
   Real a[maxLength]; AT::fillWithZeros(a, maxLength); a[0] = 1;
   Real b[maxLength]; AT::fillWithZeros(b, maxLength); b[0] = 1;
 
   // Create impulse responses of damped allpasses with damping orders from 1 up to maxDampOrder
   // and check that we obtain an allpass filter:
-  Comb flt;
-  flt.setMaxDelayInSamples(d);
+
   for(int i = 1; i <= maxDampOrder; i++)
   {
     // Convolve the current a,b arrays in place with the first order a1,b1 arrays:
@@ -2467,6 +2471,7 @@ bool dampedAllpassCombUnitTest2()
     ok &= isAllpass(h, 1.e-7);
     //rsPlotVectors(h);
   }
+
 
   return ok;
 
