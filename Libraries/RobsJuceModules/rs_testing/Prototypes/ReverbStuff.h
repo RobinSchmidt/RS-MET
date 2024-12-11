@@ -1043,12 +1043,9 @@ protected:
     corrDelay.setDelayInSamples(M+2);
 
     // Compute correction coefficients:
-    r[0]  = k*b[1];
-    r[1]  = k*b[0];
-
-    //rM[0] = 1;       // == a[0] - this is never used
-    //rM[1] = a[1];
-    // Looks like the content of rM is the same as the content of a - so we may get rid of it.
+    r[0] = k*b[1];
+    r[1] = k*b[0];
+    // Maybe get rid of the r-array. Compute the product on the fly.
   }
 
 
@@ -1067,25 +1064,16 @@ protected:
   TSig x1d  = 0, y1d  = 0;   // x[n-1], y[n-1] for damper
   TSig x1di = 0, y1di = 0;   // x[n-1], y[n-1] for inverse damper
   TSig y1c  = 0;             // y[n-1] for corrector one pole
+  // ToDo: use arrays here, too.
 
   // Coefficients:
-  TSig k = 0  ;              // Needs to be TSig when we want to use it with complex feedback
+  TSig k = 0;                // Needs to be TSig when we want to use it with complex feedback
+  TSig r[2];                 // They involve a k-factor, so they need to be TSig, too.
+  TPar b[2];
+  TPar a[2];
 
   int  M = 0;
   bool preDelay = false;
-
-
-  // Under construction:
-  TPar b[2];
-  TPar a[2];
-  TSig r[2];                 // They involve a k-factor, so they need to be TSig, too.
-
-  //TPar rM[2];
-  // These arrays should replace b0, b1, etc.
-
-  // ToDo: Document when a coefficient must be of type TSig. k needs to be of this type to allow
-  // for complex feedback factors. All values that get multiplied by k must then be complex, too.
-  // Seeing this code without comments may look like a bug when it's actually deliberate.
 };
 
 template<class TSig, class TPar>
@@ -1172,7 +1160,7 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   y += r[0] * t;
   y += r[1] * unitDelay.getSample(t);
   y += a[1] * corrDelay.readOutputAt(M+1);
-  y +=        corrDelay.readOutputAt(M+2);
+  y += a[0] * corrDelay.readOutputAt(M+2);  // a[0] == 1, but we want to see the pattern
   corrDelay.writeInputAndUpdate(t);
   return y;
 }
