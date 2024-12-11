@@ -1023,7 +1023,7 @@ protected:
 
   TSig applyInverseDamper(TSig x)
   {
-    TSig y = (x + a[1] * xi[0] - b[1] * yi[0]) / b[0];
+    TSig y = (x + a[1] * xi[0] - b[1] * yi[0]) / b[0];  // Maybe precompute b0r = 1/b[0]
     xi[0] = x;
     yi[0] = y;
     return y;
@@ -1042,17 +1042,15 @@ protected:
     corrDelay.setDelayInSamples(M+2);  // == M + 1 + damperOrder, I think (verify!)
   }
 
-
-
-  rsBasicDelayLine<TSig> mainDelay;  // Main delayline for the comb filter
-  rsBasicDelayLine<TSig> corrDelay;  // Delayline for the correction filter
-  TSig combOut = TSig(0);            // State for the unit delay feedback loop
-  TSig xd[1], yd[1];                 // State for the damping filter
-  TSig xi[1], yi[1];                 // State for the inverse damping filter
-  TSig yc[1];                        // State for the poles of the correction filter
+  rsBasicDelayLine<TSig> mainDelay;    // Main delayline for the comb filter
+  rsBasicDelayLine<TSig> corrDelay;    // Delayline for the correction filter
+  TSig combOut = TSig(0);              // State for the unit delay feedback loop
+  TSig xd[1], yd[1];                   // State for the damping filter
+  TSig xi[1], yi[1];                   // State for the inverse damping filter
+  TSig yc[1];                          // State for the poles of the correction filter
 
   // Coefficients:
-  TSig k = 0;                        // Needs to be TSig for use with complex feedback
+  TSig k = 0;                          // Needs to be TSig for use with complex feedback
   TPar b[2];
   TPar a[2];
   // Lengths must be maxDampOrder+1
@@ -1152,28 +1150,11 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   return y;
 }
 
-// More Optimization ideas:
+// Notes:
 // 
-// - Maybe implement the unit delay inline. Although I don't think that this causes overhead.
-//
-// - Maybe the two calls to corrDelay.readOutputAt(M+1); corrDelay.readOutputAt(M+2); can be
-//   replaced by a clever arrangement of calling getSample() and readOutput(). The readOutpuAt
-//   function is slightly more expensive because it computes the offset taking care of 
-//   wrapraounds etc whereas the others just use stored member variables. But I have not yet 
-//   figured out how to do it or if it's even possible. Maybe we don't even need the M member
-//   anymore then.
-//
 // - I checked the contents of mainDelay and corrDelay to see if we can use a shared delayline but
 //   that doesn't seem to be possible. I've also switched the order of applying FIR part and pole
 //   in applyCorrector to see if then the content can be shared. Nope.
-//
-//
-//
-// - To do this optimization, we need the following steps:
-//
-//     (1) Don't use getSample() on mainDelay - do the /write/read/increment manually
-//     (2) Use M+2 as length for mainDelay instead of M. That should now be safe to do
-//     (3) In applyCorrector(), do the reads from mainDelay rather than corrDelay
 
 
 
