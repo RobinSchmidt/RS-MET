@@ -1163,12 +1163,6 @@ void rsDampedAllpassComb<TSig, TPar>::reset()
   AT::clear(xi, maxDmpOrd);
   AT::clear(yi, maxDmpOrd);
   AT::clear(yc, maxDmpOrd);
-
-  //xd[0] = TSig(0);
-  //yd[0] = TSig(0);
-  //xi[0] = TSig(0);
-  //yi[0] = TSig(0);
-  //yc[0] = TSig(0);
 }
 
 template<class TSig, class TPar>
@@ -1208,29 +1202,6 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   // Apply 1-pole:
   TSig t = applyCorrectorOnePole(in);
 
-  //// Apply the FIR part:
-  //TSig y = 0;
-  //y += k * b[1] * t;
-  //y += k * b[0] * corrDelay.readOutputAt(1);
-  //y +=     a[1] * corrDelay.readOutputAt(M+1);
-  //y +=     a[0] * corrDelay.readOutputAt(M+2);  // a[0] == 1, but we want to see the pattern
-  //corrDelay.writeInputAndUpdate(t);
-  //return y;
-
-
-  // New version shows the pattern more clearly and lend itself to generalization into a loop:
-
-  //// Apply the FIR part:
-  //TSig y = 0;
-  //corrDelay.writeInputNoUpdate(t);
-  //y += k * b[1] * corrDelay.readOutputAt(0);
-  //y += k * b[0] * corrDelay.readOutputAt(1);
-  //y +=     a[1] * corrDelay.readOutputAt(M+1);
-  //y +=     a[0] * corrDelay.readOutputAt(M+2);  // a[0] == 1, but we want to see the pattern
-  //corrDelay.incrementTapPointers();
-  //return y;
-
-
   // Apply the FIR part:
   TSig y = 0;
   corrDelay.writeInputNoUpdate(t);
@@ -1242,13 +1213,6 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   corrDelay.incrementTapPointers();
   return y;
 }
-
-// Notes:
-// 
-// - I checked the contents of mainDelay and corrDelay to see if we can use a shared delayline but
-//   that doesn't seem to be possible. I've also switched the order of applying FIR part and pole
-//   in applyCorrector to see if then the content can be shared. Nope.
-
 
 
 // A free function to set up the object with a more convenient parametrization:
@@ -1265,7 +1229,13 @@ void rsSetupHighDamp(rsDampedAllpassComb<TSig, TPar>& flt,
   flt.setup(delay, feedback, 1, tb, ta, predelay);
 }
 
-
+// Notes:
+// 
+// - I checked the contents of mainDelay and corrDelay to see if we can use a shared delayline but
+//   that doesn't seem to be possible. I've also switched the order of applying FIR part and pole
+//   in applyCorrector to see if then the content can be shared. Nope.
+//
+//
 // ToDo:
 //
 // - Bring back the implementation that directly implements the one pole feedback. Having to use
@@ -1281,7 +1251,13 @@ void rsSetupHighDamp(rsDampedAllpassComb<TSig, TPar>& flt,
 //   https://github.com/RobinSchmidt/RS-MET/blob/0b8ce98e5a275856d4de46cd0648185e0922d758/Libraries/RobsJuceModules/rs_testing/Prototypes/ReverbStuff.h
 //   Yes. I think, that's the version, we should bring back as specific implementation for the 
 //   1-pole case. We should give the class a different name, though. Like rsDampedAllpassComb_1p
-//   wher _1p stands for one-pole
+//   where _1p stands for one-pole
+//
+// - Maybe we can replace the "predelay" parameter (i.e. binary mode switch) with a more general
+//   mode switch. I could also imagine to use it in "Schroeder mode" , i.e . with feedforward path
+//   around the main delay line. For this, we could repurpose the invDamper for the 2nd damper
+//   filter that sits in the feedforward path. But this setup even allows for an implementation
+//   with just a single delayline.
 
 
 
