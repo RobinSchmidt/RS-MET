@@ -1094,7 +1094,7 @@ protected:
     corrDelay.setDelayInSamples(M+dmpOrd+1);  // Verify!
   }
 
-  static const int maxDmpOrd = 2;      // Maximum damping order
+  static const int maxDmpOrd = 8;      // Maximum damping order
 
   // Embedded DSP objects:
   rsBasicDelayLine<TSig> mainDelay;    // Main delayline for the comb filter
@@ -1113,7 +1113,7 @@ protected:
 
   // Settings:
   int  M        = 0;                   // Delayline length
-  int  dmpOrd   = 1;                   // Feedbacl damping filter order
+  int  dmpOrd   = 1;                   // Feedback damping filter order
   bool preDelay = false;               // Switch between with/without predelay mode of operation
 };
 

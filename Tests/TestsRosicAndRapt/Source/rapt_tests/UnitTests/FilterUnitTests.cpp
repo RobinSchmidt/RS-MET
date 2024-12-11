@@ -2434,7 +2434,7 @@ bool dampedAllpassCombUnitTest2()
   // Test parameters:
   int  d =   50;       // Main delay roundtrip length in samples
   int  N = 8192;       // Number of samples to generate
-  Real w =  0.1;       // Normalized radian frequency of the low shelf for feedback damping
+  Real w =  0.5;       // Normalized radian frequency of the low shelf for feedback damping
   Real g =  0.7;       // Linear high freq damping gain
   Real k =  0.9;       // Feedback gain factor
 
@@ -2443,21 +2443,31 @@ bool dampedAllpassCombUnitTest2()
   rsMake1stOrderHighShelf(w, g, &b1[0], &b1[1], &a1[1]);
   a1[0] = 1;
 
-  // Create arrays for filter coeffs and initialize them for realizing a first order shelver: 
+  // Create arrays for filter coeffs and initialize them for realizing a first order shelver, 
+  // intialize them to [1 0 0 0 ...]
   static const int maxDampOrder = 8;
   static const int maxLength    = maxDampOrder+1;
-  Real a[maxLength]; AT::fillWithZeros(a, maxLength);
-  Real b[maxLength]; AT::fillWithZeros(b, maxLength);
-  a[0] = a1[0]; a[1] = a1[1];
-  b[0] = b1[0]; b[1] = b1[1];
+  Real a[maxLength]; AT::fillWithZeros(a, maxLength); a[0] = 1;
+  Real b[maxLength]; AT::fillWithZeros(b, maxLength); b[0] = 1;
 
 
   Comb flt;
   flt.setMaxDelayInSamples(d);
+  for(int i = 1; i <= maxDampOrder; i++)
+  {
+    // Convolve the current a,b arrays in place with the first order a1,b1 arrays:
+    AT::convolve(a, i, a1, 2, a);
+    AT::convolve(b, i, b1, 2, b);
 
-  flt.setup(d, k, 1, b, a, false);
-  Vec h = impulseResponse(flt, N, 1.0);
-  rsPlotVectors(h);
+    // Create impulse respone of allpass comb with feedback damping order i:
+    flt.setup(d, k, i, b, a, false);
+    Vec h = impulseResponse(flt, N, 1.0);
+    rsPlotVectors(h);
+
+
+    // 
+
+  }
 
 
 
