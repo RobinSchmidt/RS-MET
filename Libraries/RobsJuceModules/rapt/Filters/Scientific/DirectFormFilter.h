@@ -35,7 +35,6 @@ public:
   // arrays when their length is in fact, supposed to be order+1. In such a case we may read 
   // garbage from a memory location that we are not supposed to!
 
-
   /** Applies a global gain factor (by multiplying all b-coefficients with tha factor). */
   void setGlobalGainFactor(TCoef newFactor);
 
@@ -62,7 +61,7 @@ public:
   void getMagnitudeResponse(TCoef* frequencies, TCoef* magnitudes, int numBins, 
     TCoef sampleRate, bool inDecibels = false, bool accumulate = false);
   // This is also a bad API. These boolean parameters to switch behavior are annyoing and also lead
-  // to a compicated implementation
+  // to a complicated implementation
 
   //-----------------------------------------------------------------------------------------------
   /** \name Audio Processing */

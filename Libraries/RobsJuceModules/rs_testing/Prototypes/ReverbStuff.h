@@ -1118,6 +1118,7 @@ void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOr
   updateDelaysAndCorrectorCoeffs();
 }
 
+// Get rid of this as member function - implement it as free function
 template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::setupHighDamp(
   int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool preDelay)
@@ -1227,6 +1228,19 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 
 
 
+// A free function to set up the object with a more convenient parametrization:
+template<class TSig, class TPar>
+void rsSetupHighDamp(rsDampedAllpassComb<TSig, TPar>& flt,
+  int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay)
+{
+  // Set up one pole filters:
+  TPar b0, b1, a1;
+  rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(dampOmega, dampGain, &b0, &b1, &a1);
+  a1 = -a1; // We want to use the y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] sign convention here
+  TPar ta[2] = { 1,  a1 };
+  TPar tb[2] = { b0, b1 };
+  flt.setup(delay, feedback, 1, tb, ta, predelay);
+}
 
 
 
