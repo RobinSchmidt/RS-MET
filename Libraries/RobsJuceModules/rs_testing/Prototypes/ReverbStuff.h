@@ -937,11 +937,24 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::applyCorrector(TSig in)
 }
 
 
+
+// A little helper to conveniently design a 1st order high shelving filter:
+template<class T>
+void rsMake1stOrderHighShelf(T w, T g, T* b0, T* b1, T* a1)
+{
+  rsFirstOrderFilterBase<T, T>::coeffsHighShelfBLT(w, g, b0, b1, a1);
+  *a1 = -*a1; // We want to use the y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] sign convention here
+}
+
+
 // A free function to set up the object with a more convenient parametrization:
 template<class TSig, class TPar>
 void rsSetupHighDamp(rsDampedAllpassCombNaive<TSig, TPar>& flt,
   int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay)
 {
+  // Factor out a rsMake1stOrderHighShelf(w, g, b0, b1, a1)
+
+  /*
   // Set up one pole filters:
   TPar b0, b1, a1;
   rsFirstOrderFilterBase<TSig, TPar>::coeffsHighShelfBLT(dampOmega, dampGain, &b0, &b1, &a1);
@@ -949,9 +962,12 @@ void rsSetupHighDamp(rsDampedAllpassCombNaive<TSig, TPar>& flt,
   TPar ta[2] = { 1,  a1 };
   TPar tb[2] = { b0, b1 };
   flt.setup(delay, feedback, 1, tb, ta, predelay);
+  */
+
+  TPar a[2], b[2]; a[0] = 1;
+  rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
+  flt.setup(delay, feedback, 1, b, a, predelay);
 }
-
-
 
 //=================================================================================================
 
@@ -1067,7 +1083,9 @@ protected:
     return y;
   }
   // Get rid of the duplications - but first make a unit test that test the class for various
-  // feedback damper orders. It should check for each case, if the filter is an allpass
+  // feedback damper orders. It should check for each case, if the filter is an allpass.
+  // We should have general function applyFilterDF1(in, b, a, x, y),  
+  // applyInversFilterDF1(in, b, a, x, y), applyAllpoleFilter(in, a, y),
 
 
   void updateDelays()
@@ -1189,7 +1207,6 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   corrDelay.incrementTapPointers();
   return y;
 }
-
 
 // A free function to set up the object with a more convenient parametrization:
 template<class TSig, class TPar>

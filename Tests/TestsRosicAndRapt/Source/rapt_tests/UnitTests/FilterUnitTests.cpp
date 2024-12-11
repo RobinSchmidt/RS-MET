@@ -2314,7 +2314,8 @@ bool multiPoleAllpassDelayUnitTest()
   //   of the multi pole case. Maybe some order of operations is different or something?
 }
 
-bool dampedAllpassCombUnitTest()
+
+bool dampedAllpassCombUnitTest1()
 {
   bool ok = true;
 
@@ -2334,7 +2335,6 @@ bool dampedAllpassCombUnitTest()
   // check that it is allpass in nature:
   CombNaive naive;
   naive.setMaxDelayInSamples(d);
-  //naive.setupHighDamp(d, k, w, g, true);  // old
   rsSetupHighDamp(naive, d, k, w, g, true);
   Vec h = impulseResponse(naive, N, 1.0);
   ok &= isAllpass(h, 1.e-5);
@@ -2342,16 +2342,12 @@ bool dampedAllpassCombUnitTest()
   // Now try to generate the same output with the production version:
   Comb comb;
   comb.setMaxDelayInSamples(d);
-  //comb.setupHighDamp(d, k, w, g, true);
   rsSetupHighDamp(comb, d, k, w, g, true);
   Vec h2 = impulseResponse(comb, N, 1.0);
   ok &= rsIsCloseTo(h, h2, 1.e-15);
-  //ok &= h == h2;
   
   // Now do the same test again for the other mode of operation, i.e. the one without predelay:
-  //naive.setupHighDamp(d, k, w, g, false);  // old
   rsSetupHighDamp(naive, d, k, w, g, false);
-  //comb.setupHighDamp( d, k, w, g, false);
   rsSetupHighDamp(comb, d, k, w, g, false);
   h  = impulseResponse(naive, N, 1.0);
   h2 = impulseResponse(comb,  N, 1.0);
@@ -2362,7 +2358,6 @@ bool dampedAllpassCombUnitTest()
   // settings (i.e. no decay, no damping). This should produce an alternating spike train with the
   // distance between the spikes given by our desired delay. The first spike occurs at sample index  
   // n == delay - 1. 
-  //comb.setupHighDamp(d, 1.0, 0.5, 1.0, true);
   rsSetupHighDamp(comb, d, 1.0, 0.5, 1.0, true);
   comb.reset();
   h[0] = comb.getSampleComb(1.0);      // We use getSampleComb() - that's why impulseResponse()
@@ -2387,7 +2382,6 @@ bool dampedAllpassCombUnitTest()
   // alternation and weird first spike location. It's just a unipolar train of spikes at multiples
   // of the delay:
   comb.reset();
-  //comb.setupHighDamp(d, -1.0, 0.5, 1.0, false);
   rsSetupHighDamp(comb, d, -1.0, 0.5, 1.0, false);
   h[0] = comb.getSampleComb(1.0);
   for(int n = 1; n < N; n++) 
@@ -2403,6 +2397,28 @@ bool dampedAllpassCombUnitTest()
   return ok;
 }
 
+bool dampedAllpassCombUnitTest2()
+{
+  // We test rsDampedAllpassComb with higher order damping filters.
+
+  bool ok = true;
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  using Comb = rsDampedAllpassComb<Real, Real>;
+
+
+  static const int maxDampOrder = 8;
+  Real a[maxDampOrder+1];
+  Real b[maxDampOrder+1];
+
+
+
+
+  return ok;
+}
+
+
 bool allpassUnitTest()
 {
   bool ok = true;
@@ -2413,7 +2429,8 @@ bool allpassUnitTest()
   ok &= allpassDisperserUnitTest();
   ok &= twoPoleAllpassDelayUnitTest();
   ok &= multiPoleAllpassDelayUnitTest();
-  ok &= dampedAllpassCombUnitTest();
+  ok &= dampedAllpassCombUnitTest1();
+  ok &= dampedAllpassCombUnitTest2();
 
   return ok;
 }
