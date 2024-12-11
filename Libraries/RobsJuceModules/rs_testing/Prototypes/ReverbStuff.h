@@ -872,7 +872,7 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setup(
   damperNew.setCoefficients(    a, b, dampOrder);
   invDamperNew.setCoefficients( a, b, dampOrder);
   invDamperNew.invert();
-  corPolesNew.setCoefficients(  a, b, dampOrder);
+  corPolesNew.setCoefficients(  a, t, dampOrder);
 
   // Set up delaylines:
   int M = delay - 1;                        // -1 corrects for unit delay in feedback path
@@ -930,11 +930,14 @@ void rsDampedAllpassCombNaive<TSig, TPar>::reset()
 {
   mainDelay.reset();
   damper.reset();
+  damperNew.reset();
   unitDelay.reset();
   corDelayM1.reset();
   corDelayM2.reset();
   corOnePole.reset();
+  corPolesNew.reset();
   invDamper.reset();
+  invDamperNew.reset();
   out = TSig(0);
 }
 
