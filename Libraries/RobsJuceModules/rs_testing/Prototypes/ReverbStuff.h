@@ -1091,11 +1091,15 @@ void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOr
   rsAssert(dampOrder == 1);
   // We do not yet support higher order damping filters. This feature is under constructions
 
-  rsAssert(dampCoeffsA[0] == 1);
-  a[0] = 1;
-  a[1] = dampCoeffsA[1];
-  b[0] = dampCoeffsB[0];
-  b[1] = dampCoeffsB[1];
+  //rsAssert(dampCoeffsA[0] == 1);
+  //a[0] = 1;
+  //a[1] = dampCoeffsA[1];
+  //b[0] = dampCoeffsB[0];
+  //b[1] = dampCoeffsB[1];
+
+  rsAssert(dampCoeffsA[0] == 1);  // May be relaxed later - can divide through all coeffs by a[0]
+  rsArrayTools::copy(dampCoeffsA, a, dampOrder+1);
+  rsArrayTools::copy(dampCoeffsB, b, dampOrder+1);
 
   updateDelays();
 }
