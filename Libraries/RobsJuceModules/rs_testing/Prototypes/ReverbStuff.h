@@ -1015,24 +1015,69 @@ protected:
 
   TSig applyDamper(TSig x)
   {
-    TSig y = b[0] * x + b[1] * xd[0] - a[1] * yd[0];  // ToDo: maybe use DF2 or TDF2 implementation
+    //TSig y = b[0] * x + b[1] * xd[0] - a[1] * yd[0];  // ToDo: maybe use DF2 or TDF2 implementation
+    //xd[0] = x;
+    //yd[0] = y;
+    //return y;
+
+    // Compute outputs:
+    TSig y = b[0]*x;
+    for(int i = 1; i <= dmpOrd; i++)
+      y += b[i]*xd[i-1] - a[i] * yd[i-1];
+
+    // Update state:
+    for(int i = dmpOrd-1; i > 0; i--)
+    {
+      xd[i] = xd[i-1];
+      yd[i] = yd[i-1];
+    }
     xd[0] = x;
     yd[0] = y;
+
     return y;
   }
 
   TSig applyInverseDamper(TSig x)
   {
-    TSig y = (x + a[1] * xi[0] - b[1] * yi[0]) / b[0];  // Maybe precompute b0r = 1/b[0]
+    //TSig y = (x + a[1] * xi[0] - b[1] * yi[0]) / b[0];  // Maybe precompute b0r = 1/b[0]
+    //xi[0] = x;
+    //yi[0] = y;
+    //return y;
+
+    // Compute output:
+    TSig y = x;
+    for(int i = 1; i <= dmpOrd; i++)
+      y += a[i] * xi[i-1] - b[i] * yi[i-1];
+    y /= b[0];
+
+    // Update state:
+    for(int i = dmpOrd-1; i > 0; i--)
+    {
+      xi[i] = xi[i-1];
+      yi[i] = yi[i-1];
+    }
     xi[0] = x;
     yi[0] = y;
+
     return y;
   }
 
   TSig applyCorrectorOnePole(TSig x)
   {
-    TSig y = x - a[1] * yc[0];
+    //TSig y = x - a[1] * yc[0];
+    //yc[0] = y;
+    //return y;
+
+    // Compute output:
+    TSig y = x;
+    for(int i = 1; i <= dmpOrd; i++)
+      y -= a[i] * yc[i-1];
+    
+    // Update state:
+    for(int i = dmpOrd-1; i > 0; i--)
+      yc[i] = yc[i-1];
     yc[0] = y;
+
     return y;
   }
 
