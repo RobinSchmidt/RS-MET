@@ -1049,6 +1049,17 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
+  // \name Lifetime
+
+  /** Standard constructor. Initializes the settings and resets the state to initial conditions. */
+  rsDampedAllpassComb()
+  {
+    initSettings();
+    reset();
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
   // \name Setup
 
   /** Sets the maximum desired roundtrip delay around the comb. This total roundtrip delay includes
@@ -1070,6 +1081,9 @@ public:
   delay and the implicit delay in the feedback loop. */
   void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA, 
     bool predelayMode);
+
+  /** Initializes all settings to default values. */
+  void initSettings();
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1200,26 +1214,40 @@ template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOrder,
   TPar* dampCoeffsB, TPar* dampCoeffsA, bool predelayMode)
 {
-  rsAssert(dampOrder <= maxDmpOrd, "Such high damping order is not supported.");
-  rsAssert(dampCoeffsA[0] == 1);    // May be relaxed later by dividing through all coeffs by a[0]
+  if(dampOrder > maxDmpOrd) 
+  {
+    rsError("Such high damping order is not supported.");
+    initSettings();
+    return;   
+  }
 
   M        = delay - 1;             // -1 corrects for unit delay in feedback path
   k        = feedback;
   preDelay = predelayMode;
   dmpOrd   = dampOrder;
 
+  rsAssert(dampCoeffsA[0] == 1);    // May be relaxed later by dividing through all coeffs by a[0]
   rsArrayTools::copy(dampCoeffsA, a, dmpOrd+1);
   rsArrayTools::copy(dampCoeffsB, b, dmpOrd+1);
 
   mainDelay.setDelayInSamples(M);
   corrDelay.setDelayInSamples(M+dmpOrd+1);
+}
 
-  // ToDo:
-  //
-  // - When dampOrder > maxDmpOrd, we should not only assert but also return early or we'll get an
-  //   access violation! Maybe in such a case, set into "initialized" mode. ..like delay = 0, 
-  //   k = 0, etc. We should really write an initSettings() function that (re)initializes all 
-  //   settings.
+template<class TSig, class TPar>
+void rsDampedAllpassComb<TSig, TPar>::initSettings()
+{
+  mainDelay.setDelayInSamples(0);
+  corrDelay.setDelayInSamples(0);
+
+  M        = 0;
+  k        = 0;
+  dmpOrd   = 0;
+  preDelay = false; 
+
+  using AT = rsArrayTools;
+  AT::clear(b, maxDmpOrd+1);
+  AT::clear(a, maxDmpOrd+1);
 }
 
 template<class TSig, class TPar>
@@ -1240,12 +1268,12 @@ void rsDampedAllpassComb<TSig, TPar>::reset()
 template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 {
-  if(preDelay)
+  if(preDelay) 
   {
     combOut = applyDelay(in - k * applyDamper(combOut));  // Predelay of M samples
-    return combOut;
+    return combOut; 
   }
-  else
+  else 
   {
     combOut = applyDamper(in - k * applyDelay(combOut));  // No predelay
     return applyInverseDamper(combOut);

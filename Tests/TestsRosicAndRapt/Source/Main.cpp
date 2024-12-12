@@ -728,7 +728,7 @@ int main(int argc, char* argv[])
 
   // The new renering scripts for creating sample content for the sfz engine:
   //createMiscSamples();
-  //createAllpassDrums();
+  createAllpassDrums();
   //createSamplerWaveforms();
 
   // Older sample-map creations based on modal synthesis (they take long):
