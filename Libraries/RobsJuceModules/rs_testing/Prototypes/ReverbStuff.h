@@ -1218,7 +1218,7 @@ void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOr
   {
     rsError("Such high damping order is not supported.");
     initSettings();
-    return;   
+    return;
   }
 
   M        = delay - 1;             // -1 corrects for unit delay in feedback path
