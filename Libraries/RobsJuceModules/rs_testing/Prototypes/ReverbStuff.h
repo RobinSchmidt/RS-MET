@@ -1032,16 +1032,13 @@ behavior.
 
 Stability:
 
-If you want to use the mode without predelay, you need to be careful to pass a filter F(z) that has
-a stable inverse (i.e. is minimum phase) and there are no checks and warnings about this. Also 
-better stay away from BLT-based lowpasses as they tend to have zeros at z = -1 which in the 
-inversion will become marginally stable poles. I'd rather recommend to go with impulse invariance 
-based lowpasses or with shelving or peak/bell filters. The shelves and bells should use (linear) 
-gains less than 1 (i.e. dB gains less than 0) because we really want the magnitude of F(z) to be 
-less than or equal to one at all frequencies or else already the comb setup may become unstable.
-Well, the stability, of course also depends on the scalar feedback gain - but I'd rather not let 
-the filter go above unit gain and then try to compensate by the feedback factor. That just feels 
-wrong. The feedback gain k should also be restricted to -1 <= k <= +1 for stability. */
+For stability, the feedback parameter k should be restricted to -1 <= k <= +1 and the feedback 
+filter F(z) should have a magnitude response that is less or equal to one (i.e. |F(w)| <= 1) for 
+all frequencies w. If you want to use the mode without predelay, you need to be careful to pass a 
+filter F(z) that has a stable inverse (i.e. is minimum phase) and there are no checks and warnings
+about this. Also better stay away from BLT-based lowpasses as they tend to have zeros at z = -1 
+which in the inversion will become marginally stable poles. I'd rather recommend to go with impulse
+invariance based allpole lowpasses or with shelving or peak/bell filters with negative dB gains. */
 
 template<class TSig, class TPar>
 class rsDampedAllpassComb
@@ -1149,7 +1146,7 @@ protected:
 
   /** Applies the poles of the correction filter which are the same as the poles of the damping 
   filter. */
-  TSig applyCorrectorOnePole(TSig x)
+  TSig applyCorrectorPoles(TSig x)
   {
     // Compute output:
     TSig y = x;
@@ -1169,6 +1166,7 @@ protected:
     mainDelay.setDelayInSamples(M);
     corrDelay.setDelayInSamples(M+dmpOrd+1);
   }
+  // Maybe get rid
 
   static const int maxDmpOrd = 8;      // Maximum damping order
 
@@ -1269,8 +1267,8 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 {
-  // Apply 1-pole:
-  TSig t = applyCorrectorOnePole(in);
+  // Apply the poles:
+  TSig t = applyCorrectorPoles(in);
 
   // Apply the FIR part:
   TSig y = 0;
