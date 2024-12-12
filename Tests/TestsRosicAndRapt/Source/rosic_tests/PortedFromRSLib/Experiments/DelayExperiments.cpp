@@ -909,6 +909,8 @@ void dampedAllpassDelayContent()
 
 void dampedSchroederAllpass()
 {
+  // Under construction. This idea does not yet work
+
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
@@ -922,12 +924,9 @@ void dampedSchroederAllpass()
   Real dampGain   =     0.7;   // Linear high freq damping gain
   Real feedback   =     0.9;   // Feedback gain factor
 
-
-  Real one = 1;
-
+  // Create and verify allpass impulse response:
   Allpass ap;
   ap.setMaxDelayInSamples(delay);
-  //ap.setup(delay, feedback, 0, &one, &one);  // This doesn't work!
   ap.setupHighDamp(delay, feedback, 2*PI*dampFreq/sampleRate, dampGain);
   int N = numSamples;
   Vec h = impulseResponse(ap, N, 1.0);
@@ -936,11 +935,16 @@ void dampedSchroederAllpass()
   Vec mags = rsSpectralMagnitudes(h);
   rsPlotVectors(mags);
 
-
-
-  // Nope! This is not an allpass! What's wrong? Maybe let Sage solve the transfer function for 
-  // small M like 3 or 5. Try a simpler case - with 0th order filter.
-  // Without the filters, it's also not allpass.
+  // Ovservations:
+  //
+  // - This is only an allpass when dampGain = 1. For something like 0.7, we see a sort of comb
+  //   like spectrum.
+  //
+  //
+  // ToDo:
+  //
+  // - Figure out where it goes wrong. Let SageMath expand the transfer function and check why 
+  //   numerator and denominator are not reversals of one another and what can be done about it.
 
 }
 
@@ -956,5 +960,5 @@ void dampedAllpassComb()
   dampedAllpassCombComplex();
   dampedAllpassCombNonLin();
   dampedAllpassDelayContent();
-  dampedSchroederAllpass();
+  dampedSchroederAllpass();       // Does not yet work!
 }
