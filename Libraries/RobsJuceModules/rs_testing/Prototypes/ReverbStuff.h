@@ -988,8 +988,8 @@ public:
  
   void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA)
   {
-    //mainDelay.setDelayInSamples(delay);
-    mainDelay.setDelayInSamples(delay-1);
+    mainDelay.setDelayInSamples(delay);
+    //mainDelay.setDelayInSamples(delay-1);
     k = feedback;
     feedbackDamper.setCoefficients(dampCoeffsA, dampCoeffsB, dampOrder);
     feedforwardDamper.setCoefficients(dampCoeffsA, dampCoeffsB, dampOrder);

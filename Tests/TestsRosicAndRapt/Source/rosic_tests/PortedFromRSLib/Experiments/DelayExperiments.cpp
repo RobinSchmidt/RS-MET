@@ -915,7 +915,7 @@ void dampedSchroederAllpass()
   using Allpass = rsDampedSchroederAllpassNaive<Real, Real>;
 
   // User parameters:
-  int  delay     =      5;     // Delay roundtrip length in samples. Is M-1 in the algo
+  int  delay     =    100;     // Delay roundtrip length in samples. Is M-1 in the algo
   int  numSamples =  8192;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
   Real dampFreq   =   500;     // Frequency (in Hz) of the low shelf for feedback damping
@@ -931,11 +931,12 @@ void dampedSchroederAllpass()
   ap.setupHighDamp(delay, feedback, 2*PI*dampFreq/sampleRate, dampGain);
   int N = numSamples;
   Vec h = impulseResponse(ap, N, 1.0);
+  bool ok = isAllpass(h, 1.e-3);
   rsPlotVectors(h);
   Vec mags = rsSpectralMagnitudes(h);
   rsPlotVectors(mags);
 
-  //bool ok = isAllpass(h, 1.e-5);
+
 
   // Nope! This is not an allpass! What's wrong? Maybe let Sage solve the transfer function for 
   // small M like 3 or 5. Try a simpler case - with 0th order filter.
