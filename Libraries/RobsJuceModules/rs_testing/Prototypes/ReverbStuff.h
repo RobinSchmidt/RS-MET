@@ -986,7 +986,21 @@ void rsSetupHighDamp(rsDampedAllpassCombNaive<TSig, TPar>& flt,
 
 //=================================================================================================
 
-/** This is a generalization that allows for arbitrary order feedback filters */
+/** This class implements a delayline based allpass filter based on the folloing block diagram:
+
+                              
+  X(z) ---> + -----> z^-M ----------------> C(z) -----> Y(z)
+            ^                    |
+            |                    |
+           -k                   z^-1
+            |                    |
+            -------- F(z) <-------
+
+There is delayline of length M around which we have a feedback loop with a feedback filter F(z) and
+scalar feedback gain k and a unit delay z^-1 in the loop to make it realizable. This, taken by 
+itself, implements a comb filter. The strategy is now to apply an appropriate compensation filter 
+C(z) to make the overall structure allpass in nature. The derivation of this filter C(z) is 
+outlined in Notes/DSP/DampedAllpassComb.txt. ...TBC...  */
 
 template<class TSig, class TPar>
 class rsDampedAllpassComb
@@ -1039,21 +1053,19 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
-  /** This is the normal getSample funtion to be used when you want to produce the allpass output.
-  It calls getSampleComb() and then applyCorrectionFilter() on the result of that. You may
+  /** This is the normal getSample() funtion to be used when you want to produce the allpass 
+  output. It calls getSampleComb() and then applyCorrector() on the result of that. You may
   be interested in using the object without the correction filter to produce only the pure comb 
-  filter output. That's why I have split it that way so you can also call getSampleComb if that's
-  what you want. You can then just ignore the correction filter - or you can apply it yourself but
-  maybe after messing with comb output. I don't know, if that's useful though, but you can do it. 
-  ...TBC...   */
-  TSig getSample(TSig in);
+  filter output or you may be interested in shoving some other operations in between the comb and 
+  the correction filter. That's why I have split it up that way. */
+  TSig getSample(TSig in) { return applyCorrector(getSampleComb(in)); }
 
   /** This implements producing samples for the damped delay feedback loop alone, i.e. without the
   correction filter applied. */
   TSig getSampleComb(TSig in);
 
-  /** This function is supposed to be called with the output produced by getSampleComb to apply the
-  correction filter. */
+  /** This function is supposed to be called with the output produced by getSampleComb() to apply 
+  the correction filter. */
   TSig applyCorrector(TSig combOutput);
 
   /** Resets the state. */
@@ -1193,12 +1205,6 @@ void rsDampedAllpassComb<TSig, TPar>::reset()
 }
 
 template<class TSig, class TPar>
-TSig rsDampedAllpassComb<TSig, TPar>::getSample(TSig in)
-{
-  return applyCorrector(getSampleComb(in));
-}
-
-template<class TSig, class TPar>
 TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 {
   if(preDelay)
@@ -1282,7 +1288,7 @@ void rsSetupHighDamp(rsDampedAllpassComb<TSig, TPar>& flt,
 /** This is a special trimmed down version of rsDampedAllpassComb that only allows for a first 
 order filter in the feedback loop. I think, this is a common case that is worth to have some 
 optimized code for. The general version with arbitrary feedback filters needs a much more
-compicated implementation. */
+complicated implementation. */
 
 template<class TSig, class TPar>
 class rsDampedAllpassComb_1p
@@ -1372,7 +1378,7 @@ template<class TSig, class TPar>
 void rsDampedAllpassComb_1p<TSig, TPar>::setup(int delay, TSig feedback, 
   TPar dampCoeffB0, TPar dampCoeffB1, TPar dampCoeffA1, bool predelay)
 {
-  M = delay - 1;                            // -1 corrects for unit delay in feedback path
+  M = delay - 1;
   k = feedback;
   this->preDelay = predelay;
 
