@@ -1016,7 +1016,7 @@ from the preliminary one by reflecting its zeros about the unit circle. That amo
 reversing its FIR part. The user can specify the feedback filter in terms of its direct form filter 
 coefficients and we currently support feedback filters of orders up to 8. 
 
-The filter also supports a second mode of operation in which the places of z^-M and F(z) are 
+The class also supports a second mode of operation in which the places of z^-M and F(z) are 
 swapped in the block diagram. It turns out that the compensation filter will then need to include 
 an inverted damping filter, i.e. F^-1(z) = 1/F(z), but is otherwise the same. This second mode of 
 operation has no initial predelay. That is, the first nonzero sample of the impulse response occurs
@@ -1036,9 +1036,10 @@ For stability, the feedback parameter k should be restricted to -1 <= k <= +1 an
 filter F(z) should have a magnitude response that is less or equal to one (i.e. |F(w)| <= 1) for 
 all frequencies w. If you want to use the mode without predelay, you need to be careful to pass a 
 filter F(z) that has a stable inverse (i.e. is minimum phase) and there are no checks and warnings
-about this. Also better stay away from BLT-based lowpasses as they tend to have zeros at z = -1 
-which in the inversion will become marginally stable poles. I'd rather recommend to go with impulse
-invariance based allpole lowpasses or with shelving or peak/bell filters with negative dB gains. */
+about this. That may mean to stay away from BLT-based lowpasses as they tend to have zeros at 
+z = -1 which in the inversion will become marginally stable poles. I'd rather recommend to go with 
+impulse invariance based allpole lowpasses or with shelving or peak/bell filters with negative dB 
+gains. */
 
 template<class TSig, class TPar>
 class rsDampedAllpassComb
@@ -1090,16 +1091,8 @@ public:
   // \name Inquiry
 
   /** Returns the maximum order for the feedback damping filters that is supported. */
-  constexpr int getMaxDampingOrder() const { return maxDmpOrd; }
-
-  // I'd really like to make that function also static like this:
-  //
-  //   static constexpr int getMaxDampingOrder() const { return maxDmpOrd; }   or
-  //   constexpr static int getMaxDampingOrder() const { return maxDmpOrd; }
-  //
-  // but the compiler says that modifiers are not allowed on static functions. See:
-  // https://en.cppreference.com/w/cpp/language/constexpr
-  // Maybe I need to up the language standard from 14 to 17. I tried. It didn't help.
+  static int getMaxDampingOrder() { return maxDmpOrd; }
+    // ToDo: Try to make constexpr. But that seems to incompatible with static. Why?
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1196,7 +1189,7 @@ protected:
 
   // Settings:
   int  M        = 0;                   // Delayline length
-  int  dmpOrd   = 1;                   // Feedback damping filter order
+  int  dmpOrd   = 0;                   // Feedback damping filter order
   bool preDelay = false;               // Switch between with/without predelay mode of operation
 
   // Notes:
@@ -1211,7 +1204,7 @@ void rsDampedAllpassComb<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
   mainDelay .setMaximumDelayInSamples(maxM);
-  corrDelay.setMaximumDelayInSamples(maxM+maxDmpOrd+1);  // Verify!
+  corrDelay.setMaximumDelayInSamples(maxM+maxDmpOrd+1);
 }
 
 template<class TSig, class TPar>

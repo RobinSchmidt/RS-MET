@@ -2439,9 +2439,6 @@ bool dampedAllpassCombUnitTest2()
   Real g =  0.7;       // Linear high freq damping gain
   Real k =  0.9;       // Feedback gain factor
 
-  // Create the allpass filter object and let it allocate delayline memory:
-  Comb flt;
-  flt.setMaxDelayInSamples(d);
 
   // Create the coeff arrays of the prototype 1st order shelver:
   Real a1[2], b1[2];
@@ -2451,27 +2448,26 @@ bool dampedAllpassCombUnitTest2()
   // Create arrays for filter coeffs for higher order filters and initialize them to [1 0 0 0 ...].
   // The actual coeff arrays for order i will be obtained by convolving those of order i-1 with the
   // one-pole shelver arrays. The initialization corresponds to i = 0, i.e. zeroth order.
-  static const int maxDampOrder = flt.getMaxDampingOrder();
-  static const int length       = maxDampOrder+2;
-  Real a[length]; AT::fillWithZeros(a, length); a[0] = 1;
-  Real b[length]; AT::fillWithZeros(b, length); b[0] = 1;
-  // The length is maxOrder + 2 because the actually needed length is maxOrder + 1 but we need one
-  // guard slot because the convolve calls are at the bottom of the loop. There's a last set of
-  // filter coeffs generated that is not used anymore.
+  int maxDampOrder = Comb::getMaxDampingOrder();
+  int length       = maxDampOrder+2;
+  Vec a(length); a[0] = 1;
+  Vec b(length); b[0] = 1;
 
   // Create impulse responses of damped allpasses with damping orders from 1 up to maxDampOrder
   // and check that we obtain an allpass filter:
+  Comb flt;
+  flt.setMaxDelayInSamples(d);
   for(int i = 0; i <= maxDampOrder; i++)
   {
     // Create impulse respone of allpass comb with feedback damping order i:
-    flt.setup(d, k, i, b, a, false);
+    flt.setup(d, k, i, &b[0], &a[0], false);
     Vec h = impulseResponse(flt, N, 1.0);
     ok &= isAllpass(h, 1.e-7);
     //rsPlotVectors(h);
 
     // In-place convolve the current a,b arrays with the first order a1,b1 arrays:
-    AT::convolve(a, i+1, a1, 2, a);
-    AT::convolve(b, i+1, b1, 2, b);
+    AT::convolve(&a[0], i+1, a1, 2, &a[0]);
+    AT::convolve(&b[0], i+1, b1, 2, &b[0]);
   }
 
   return ok;
