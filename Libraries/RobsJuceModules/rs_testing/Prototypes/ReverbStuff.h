@@ -962,7 +962,9 @@ void rsSetupHighDamp(rsDampedAllpassCombNaive<TSig, TPar>& flt,
 //=================================================================================================
 
 
-/** We try to implement a generalization of the Schroede allpass with frequency dependent damping.
+/** UNDER CONSTRUCTION! Does not yet work!
+
+We try to implement a generalization of the Schroeder allpass with frequency dependent damping.
 We want to realize:
 
           z^-1 * G(z) + z^-M
@@ -1021,13 +1023,26 @@ public:
     // Wihtout filters, we should reproduce the normal Schroeder allpass - but this doesn't work!
 
 
-    // This is adapted from rsAllpassDelay:
-    TSig vM = mainDelay.readOutput();    // Read vM = v[n-M] from the delayline.
-    TSig v  = in - k * vM;               // Compute v[n] = x[n] - k * v[n-M].
-    mainDelay.writeInputAndUpdate(v);    // Write v[n] into the delayline.
-    TSig out =  k * v + vM;              // Return y[n] = k * v[n] + v[n-M].
-    return out;
 
+
+    //// This is adapted from rsAllpassDelay:
+    //TSig vM = mainDelay.readOutput();    // Read vM = v[n-M] from the delayline.
+    //TSig v  = in - k * vM;               // Compute v[n] = x[n] - k * v[n-M].
+    //mainDelay.writeInputAndUpdate(v);    // Write v[n] into the delayline.
+    //TSig out =  k * v + vM;              // Return y[n] = k * v[n] + v[n-M].
+    //return out;
+    // It works but it has no damping filters in the feedback and feedforward paths.
+
+
+    // So, let's just add them:
+    TSig vM = mainDelay.readOutput();
+    TSig v  = in - k * feedbackDamper.getSample(vM);
+    mainDelay.writeInputAndUpdate(v); 
+    TSig out =  k * feedforwardDamper.getSample(v) + vM;
+    return out;
+    // Nope! That naive way of doing it does not seem to work! ToDo: work out the transfer function
+    // in direct form and check it for the hallmark of allpasses: numerator and denominator should
+    // be reverses of one another. Check where it goes wrong!
   }
 
   void reset()
@@ -1613,6 +1628,10 @@ protected:
 
 
 };
+
+
+//=================================================================================================
+
 
 
 
