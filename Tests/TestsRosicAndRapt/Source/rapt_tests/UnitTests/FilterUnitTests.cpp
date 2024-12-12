@@ -2484,6 +2484,9 @@ bool dampedAllpassCombUnitTest2()
   //   makes a difference performance wise. But each vector would then redundantly store the size
   //   (current damping order) and capacity (maximum damping order) - that just feels wrong to me.
   //   I don't know.
+  //
+  // - Try it with feedback filters with different numbers of poles and zeros, i.e. where either a
+  //   or b has a tail of zeros
 }
 
 bool allpassUnitTest()
