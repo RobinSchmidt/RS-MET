@@ -988,6 +988,7 @@ public:
  
   void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA)
   {
+    //mainDelay.setDelayInSamples(delay);
     mainDelay.setDelayInSamples(delay-1);
     k = feedback;
     feedbackDamper.setCoefficients(dampCoeffsA, dampCoeffsB, dampOrder);
@@ -1007,16 +1008,26 @@ public:
     //TSig out = combOut + unitDelay.getSample(k * feedforwardDamper.getSample(in));
 
     
-    // Test - without the filters:
-    combOut = mainDelay.getSample(in - k * combOut);
-    TSig out = combOut + k * unitDelay.getSample(in);
+    //// Test - without the filters:
+    //combOut = mainDelay.getSample(in - k * combOut);
+    //TSig out = combOut + k * unitDelay.getSample(in);
 
     //// Test - without the filters:
     //combOut = mainDelay.getSample(in - k * combOut);
     //TSig out = combOut + k *in;
 
+    //return out;
 
+    // Wihtout filters, we should reproduce the normal Schroeder allpass - but this doesn't work!
+
+
+    // This is adapted from rsAllpassDelay:
+    TSig vM = mainDelay.readOutput();    // Read vM = v[n-M] from the delayline.
+    TSig v  = in - k * vM;               // Compute v[n] = x[n] - k * v[n-M].
+    mainDelay.writeInputAndUpdate(v);    // Write v[n] into the delayline.
+    TSig out =  k * v + vM;              // Return y[n] = k * v[n] + v[n-M].
     return out;
+
   }
 
   void reset()
