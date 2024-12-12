@@ -2485,6 +2485,9 @@ bool dampedAllpassCombUnitTest2()
   //   makes a difference performance wise. But each vector would then redundantly store the size
   //   (current damping order) and capacity (maximum damping order) - that just feels wrong to me.
   //   I don't know.
+  //
+  // - Let the loop start at 0 and put the convolutions at the end of the loop. We want to also 
+  //   allow the "trivial" case of dampOrd = 0
 }
 
 bool allpassUnitTest()

@@ -1069,7 +1069,7 @@ public:
   That is: the delay user parameter means the total roundtrip delay which includes the delayline 
   delay and the implicit delay in the feedback loop. */
   void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA, 
-    bool predelay);
+    bool predelayMode);
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1158,15 +1158,6 @@ protected:
     return y;
   }
 
-  /** Updates the lengths of the main and correction delayine according to the desired delay which
-  is represented by M+1, i.e. our M here corresponds to delay-1 where delay is the user 
-  parameter. */
-  void updateDelays()
-  {
-    mainDelay.setDelayInSamples(M);
-    corrDelay.setDelayInSamples(M+dmpOrd+1);
-  }
-  // Maybe get rid
 
   static const int maxDmpOrd = 8;      // Maximum damping order
 
@@ -1207,31 +1198,38 @@ void rsDampedAllpassComb<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 
 template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOrder,
-  TPar* dampCoeffsB, TPar* dampCoeffsA, bool predelay)
+  TPar* dampCoeffsB, TPar* dampCoeffsA, bool predelayMode)
 {
-  rsAssert(dampOrder <= maxDmpOrd);
+  rsAssert(dampOrder <= maxDmpOrd, "Such high damping order is not supported.");
+  rsAssert(dampCoeffsA[0] == 1);    // May be relaxed later by dividing through all coeffs by a[0]
 
-  M = delay - 1;                  // -1 corrects for unit delay in feedback path
-  k = feedback;
-  this->preDelay = predelay;
-  dmpOrd = dampOrder;
+  M        = delay - 1;             // -1 corrects for unit delay in feedback path
+  k        = feedback;
+  preDelay = predelayMode;
+  dmpOrd   = dampOrder;
 
-  rsAssert(dampCoeffsA[0] == 1);  // May be relaxed later by dividing through all coeffs by a[0]
   rsArrayTools::copy(dampCoeffsA, a, dmpOrd+1);
   rsArrayTools::copy(dampCoeffsB, b, dmpOrd+1);
 
-  updateDelays();
+  mainDelay.setDelayInSamples(M);
+  corrDelay.setDelayInSamples(M+dmpOrd+1);
+
+  // ToDo:
+  //
+  // - When dampOrder > maxDmpOrd, we should not only assert but also return early or we'll get an
+  //   access violation! Maybe in such a case, set into "initialized" mode. ..like delay = 0, 
+  //   k = 0, etc. We should really write an initSettings() function that (re)initializes all 
+  //   settings.
 }
 
 template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::reset()
 {
-  using AT = rsArrayTools;
-
   mainDelay.reset();
   corrDelay.reset();
   combOut = TSig(0);
 
+  using AT = rsArrayTools;
   AT::clear(xd, maxDmpOrd);
   AT::clear(yd, maxDmpOrd);
   AT::clear(xi, maxDmpOrd);
