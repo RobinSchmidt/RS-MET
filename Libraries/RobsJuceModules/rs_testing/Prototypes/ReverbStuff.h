@@ -1091,8 +1091,12 @@ public:
 
   /** Returns the maximum order for the feedback damping filters that is supported. */
   constexpr int getMaxDampingOrder() const { return maxDmpOrd; }
+
   // I'd really like to make that function also static like this:
-  //   static constexpr int getMaxDampingOrder() const { return maxDmpOrd; }
+  //
+  //   static constexpr int getMaxDampingOrder() const { return maxDmpOrd; }   or
+  //   constexpr static int getMaxDampingOrder() const { return maxDmpOrd; }
+  //
   // but the compiler says that modifiers are not allowed on static functions. See:
   // https://en.cppreference.com/w/cpp/language/constexpr
   // Maybe I need to up the language standard from 14 to 17. I tried. It didn't help.
