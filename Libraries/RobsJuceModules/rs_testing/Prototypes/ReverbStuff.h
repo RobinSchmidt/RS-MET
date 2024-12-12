@@ -1587,7 +1587,7 @@ public:
 
     // So, let's just add them:
     TSig u = mainDelay.readOutput();                     // U(z) = z^-M * V(z)
-    TSig v = in - k * feedbackDamper.getSample(u);       // V(z) = X(z)  -  k * F(z)
+    TSig v = in - k * feedbackDamper.getSample(u);       // V(z) = X(z)  -  k * F(z) * U(z)
     mainDelay.writeInputAndUpdate(v); 
     TSig out =  k * feedforwardDamper.getSample(v) + u;  // Y(z) = k * F(z) * V(z)  +  U(z)
     return out;
@@ -1596,7 +1596,7 @@ public:
     // be reverses of one another. Check where it goes wrong!
 
     // F(z) = b0 * X(z)  +  b1 * z^-1 * X(z)  -  a1 * z^-1 * F(z)  
-    // V(z) = X(z)  -  k * F(z)
+    // V(z) = X(z)  -  k * F(z) * U(z)
     // U(z) = z^-M * V(z)     
     // Y(z) = k * F(z) * V(z)  +  U(z)
   }

@@ -935,10 +935,13 @@ void dampedSchroederAllpass()
   Vec mags = rsSpectralMagnitudes(h);
   rsPlotVectors(mags);
 
+  rosic::writeToMonoWaveFile("SchroederAllpassWithDamping.wav", &h[0], N, (int)sampleRate);
+
   // Obvservations:
   //
   // - This is only an allpass when dampGain = 1. For something like 0.7, we see a sort of comb
-  //   like spectrum.
+  //   like spectrum. Not really what I wanted - but maybe it could be useful for ceratin things.
+  //   Maybe for synthesis of semi-tonal percussions.
   //
   //
   // ToDo:
@@ -950,7 +953,7 @@ void dampedSchroederAllpass()
   // Derivations:
   //
   // F(z) = b0 * X(z)  +  b1 * z^-1 * X(z)  -  a1 * z^-1 * F(z)  
-  // V(z) = X(z)  -  k * F(z)
+  // V(z) = X(z)  -  k * F(z) * U(z);
   // U(z) = z^-M * V(z)     
   // Y(z) = k * F(z) * V(z)  +  U(z)
   //
