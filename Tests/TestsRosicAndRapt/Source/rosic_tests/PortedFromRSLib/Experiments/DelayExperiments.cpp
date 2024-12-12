@@ -920,7 +920,7 @@ void dampedSchroederAllpass()
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
   Real dampFreq   =   500;     // Frequency (in Hz) of the low shelf for feedback damping
   Real dampGain   =     0.7;   // Linear high freq damping gain
-  Real feedback   =     0.99;  // Feedback gain factor
+  Real feedback   =     1.0;   // Feedback gain factor
 
 
   Allpass ap;
@@ -928,7 +928,10 @@ void dampedSchroederAllpass()
   ap.setupHighDamp(delay, feedback, 2*PI*dampFreq/sampleRate, dampGain);
   int N = numSamples;
   Vec h = impulseResponse(ap, N, 1.0);
+  bool ok = isAllpass(h, 1.e-5);
   rsPlotVectors(h);
+  // Nope! This is not an allpass! What's wrong? Maybe let Sage solve the transfer function for 
+  // small M like 3 or 5.
 
 
 }

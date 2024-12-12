@@ -966,8 +966,8 @@ void rsSetupHighDamp(rsDampedAllpassCombNaive<TSig, TPar>& flt,
 We want to realize:
 
           z^-1 * G(z) + z^-M
-  H(z) = ----------------------
-          1  + k * z^-1 * G(z)
+  H(z) = -----------------------------
+          1  + k * z^-1 * G(z) * z^-M
 
 */
 
