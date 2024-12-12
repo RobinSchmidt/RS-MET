@@ -935,7 +935,7 @@ void dampedSchroederAllpass()
   Vec mags = rsSpectralMagnitudes(h);
   rsPlotVectors(mags);
 
-  // Ovservations:
+  // Obvservations:
   //
   // - This is only an allpass when dampGain = 1. For something like 0.7, we see a sort of comb
   //   like spectrum.
@@ -945,7 +945,16 @@ void dampedSchroederAllpass()
   //
   // - Figure out where it goes wrong. Let SageMath expand the transfer function and check why 
   //   numerator and denominator are not reversals of one another and what can be done about it.
-
+  //
+  //
+  // Derivations:
+  //
+  // F(z) = b0 * X(z)  +  b1 * z^-1 * X(z)  -  a1 * z^-1 * F(z)  
+  // V(z) = X(z)  -  k * F(z)
+  // U(z) = z^-M * V(z)     
+  // Y(z) = k * F(z) * V(z)  +  U(z)
+  //
+  // ...TBC...
 }
 
 void dampedAllpassComb()

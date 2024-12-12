@@ -961,123 +961,6 @@ void rsSetupHighDamp(rsDampedAllpassCombNaive<TSig, TPar>& flt,
 
 //=================================================================================================
 
-
-/** UNDER CONSTRUCTION! Does not yet work!
-
-We try to implement a generalization of the Schroeder allpass with frequency dependent damping.
-We want to realize:
-
-          z^-1 * G(z) + z^-M
-  H(z) = -----------------------------
-          1  + k * z^-1 * G(z) * z^-M
-
-This does not yet work!
-
-*/
-
-
-template<class TSig, class TPar>
-class rsDampedSchroederAllpassNaive
-{
-
-
-public:
-
-  void setMaxDelayInSamples(int newMaxDelay)
-  {
-    mainDelay.setMaximumDelayInSamples(newMaxDelay);
-  }
- 
-  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA)
-  {
-    mainDelay.setDelayInSamples(delay);
-    //mainDelay.setDelayInSamples(delay-1);
-    k = feedback;
-    feedbackDamper.setCoefficients(dampCoeffsA, dampCoeffsB, dampOrder);
-    feedforwardDamper.setCoefficients(dampCoeffsA, dampCoeffsB, dampOrder);
-  }
-
-  void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain)
-  {
-    TPar a[2], b[2]; a[0] = 1;
-    rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
-    setup(delay, feedback, 1, b, a);
-  }
-
-  TSig getSample(TSig in)
-  {
-    //combOut = mainDelay.getSample(in - k * feedbackDamper.getSample(combOut));
-    //TSig out = combOut + unitDelay.getSample(k * feedforwardDamper.getSample(in));
-
-    
-    //// Test - without the filters:
-    //combOut = mainDelay.getSample(in - k * combOut);
-    //TSig out = combOut + k * unitDelay.getSample(in);
-
-    //// Test - without the filters:
-    //combOut = mainDelay.getSample(in - k * combOut);
-    //TSig out = combOut + k *in;
-
-    //return out;
-
-    // Wihtout filters, we should reproduce the normal Schroeder allpass - but this doesn't work!
-
-
-
-
-    //// This is adapted from rsAllpassDelay:
-    //TSig vM = mainDelay.readOutput();    // Read vM = v[n-M] from the delayline.
-    //TSig v  = in - k * vM;               // Compute v[n] = x[n] - k * v[n-M].
-    //mainDelay.writeInputAndUpdate(v);    // Write v[n] into the delayline.
-    //TSig out =  k * v + vM;              // Return y[n] = k * v[n] + v[n-M].
-    //return out;
-    // It works but it has no damping filters in the feedback and feedforward paths.
-
-
-    // So, let's just add them:
-    TSig vM = mainDelay.readOutput();
-    TSig v  = in - k * feedbackDamper.getSample(vM);
-    mainDelay.writeInputAndUpdate(v); 
-    TSig out =  k * feedforwardDamper.getSample(v) + vM;
-    return out;
-    // Nope! That naive way of doing it does not seem to work! ToDo: work out the transfer function
-    // in direct form and check it for the hallmark of allpasses: numerator and denominator should
-    // be reverses of one another. Check where it goes wrong!
-  }
-
-  void reset()
-  {
-    mainDelay.reset();
-    feedbackDamper.reset();
-    feedforwardDamper.reset();
-    unitDelay.reset();
-    combOut = 0;
-  }
-
-
-protected:
-
-  rsBasicDelayLine<TSig>         mainDelay;
-  rsDirectFormFilter<TSig, TPar> feedbackDamper;
-  rsDirectFormFilter<TSig, TPar> feedforwardDamper;
-  rsUnitDelay<TSig>              unitDelay;
-
-  TSig combOut = TSig(0);
-
-  TSig k;
-
-};
-
-
-
-
-
-
-
-
-
-//=================================================================================================
-
 /** This class implements a delayline based allpass filter based on the following block diagram:
 
   X(z) ---> + -----> z^-M ----------------> C(z) -----> Y(z)
@@ -1631,6 +1514,115 @@ protected:
 
 
 //=================================================================================================
+
+
+/** UNDER CONSTRUCTION! Does not yet work!
+
+We try to implement a generalization of the Schroeder allpass with frequency dependent damping.
+We want to realize:
+
+          z^-1 * G(z) + z^-M
+  H(z) = -----------------------------
+          1  + k * z^-1 * G(z) * z^-M
+
+This does not yet work!
+
+*/
+
+
+template<class TSig, class TPar>
+class rsDampedSchroederAllpassNaive
+{
+
+
+public:
+
+  void setMaxDelayInSamples(int newMaxDelay)
+  {
+    mainDelay.setMaximumDelayInSamples(newMaxDelay);
+  }
+ 
+  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA)
+  {
+    mainDelay.setDelayInSamples(delay);
+    //mainDelay.setDelayInSamples(delay-1);
+    k = feedback;
+    feedbackDamper.setCoefficients(dampCoeffsA, dampCoeffsB, dampOrder);
+    feedforwardDamper.setCoefficients(dampCoeffsA, dampCoeffsB, dampOrder);
+  }
+
+  void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain)
+  {
+    TPar a[2], b[2]; a[0] = 1;
+    rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
+    setup(delay, feedback, 1, b, a);
+  }
+
+  TSig getSample(TSig in)
+  {
+    //combOut = mainDelay.getSample(in - k * feedbackDamper.getSample(combOut));
+    //TSig out = combOut + unitDelay.getSample(k * feedforwardDamper.getSample(in));
+
+    
+    //// Test - without the filters:
+    //combOut = mainDelay.getSample(in - k * combOut);
+    //TSig out = combOut + k * unitDelay.getSample(in);
+
+    //// Test - without the filters:
+    //combOut = mainDelay.getSample(in - k * combOut);
+    //TSig out = combOut + k *in;
+
+    //return out;
+
+    // Without filters, we should reproduce the normal Schroeder allpass - but this doesn't work!
+
+    //// This is adapted from rsAllpassDelay:
+    //TSig vM = mainDelay.readOutput();    // Read vM = v[n-M] from the delayline.
+    //TSig v  = in - k * vM;               // Compute v[n] = x[n] - k * v[n-M].
+    //mainDelay.writeInputAndUpdate(v);    // Write v[n] into the delayline.
+    //TSig out =  k * v + vM;              // Return y[n] = k * v[n] + v[n-M].
+    //return out;
+    // It works but it has no damping filters in the feedback and feedforward paths.
+
+
+    // So, let's just add them:
+    TSig u = mainDelay.readOutput();                     // U(z) = z^-M * V(z)
+    TSig v = in - k * feedbackDamper.getSample(u);       // V(z) = X(z)  -  k * F(z)
+    mainDelay.writeInputAndUpdate(v); 
+    TSig out =  k * feedforwardDamper.getSample(v) + u;  // Y(z) = k * F(z) * V(z)  +  U(z)
+    return out;
+    // Nope! That naive way of doing it does not seem to work! ToDo: work out the transfer function
+    // in direct form and check it for the hallmark of allpasses: numerator and denominator should
+    // be reverses of one another. Check where it goes wrong!
+
+    // F(z) = b0 * X(z)  +  b1 * z^-1 * X(z)  -  a1 * z^-1 * F(z)  
+    // V(z) = X(z)  -  k * F(z)
+    // U(z) = z^-M * V(z)     
+    // Y(z) = k * F(z) * V(z)  +  U(z)
+  }
+
+  void reset()
+  {
+    mainDelay.reset();
+    feedbackDamper.reset();
+    feedforwardDamper.reset();
+    unitDelay.reset();
+    combOut = 0;
+  }
+
+
+protected:
+
+  rsBasicDelayLine<TSig>         mainDelay;
+  rsDirectFormFilter<TSig, TPar> feedbackDamper;
+  rsDirectFormFilter<TSig, TPar> feedforwardDamper;
+  rsUnitDelay<TSig>              unitDelay;
+
+  TSig combOut = TSig(0);
+
+  TSig k;
+
+};
 
 
 
