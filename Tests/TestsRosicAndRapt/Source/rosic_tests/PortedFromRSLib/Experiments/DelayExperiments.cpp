@@ -907,12 +907,21 @@ void dampedAllpassDelayContent()
   //   them.
 }
 
+void dampedSchroederAllpass()
+{
+  // Define types to be used:
+  using Real    = double;
+  using Vec     = std::vector<Real>;
+  using Allpass = rsDampedSchroederAllpassNaive<Real, Real>;
+
+  Allpass ap;
+
+
+}
 
 void dampedAllpassComb()
 {
-  dampedAllpassComb4();
-  //dampedAllpassComb2();
-  //dampedAllpassDelayContent();
+  dampedSchroederAllpass();
 
 
   dampedAllpassComb1();
@@ -922,4 +931,5 @@ void dampedAllpassComb()
   dampedAllpassCombComplex();
   dampedAllpassCombNonLin();
   dampedAllpassDelayContent();
+  dampedSchroederAllpass();
 }

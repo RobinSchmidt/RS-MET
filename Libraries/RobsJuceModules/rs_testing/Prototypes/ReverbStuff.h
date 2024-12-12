@@ -961,20 +961,66 @@ void rsSetupHighDamp(rsDampedAllpassCombNaive<TSig, TPar>& flt,
 
 //=================================================================================================
 
-/** This is the less naive version meant to go into production someday */
+
+/** We try to implement a generalization of the Schroede allpass with frequency dependent damping.
+We want to realize:
+
+          z^-1 * G(z) + z^-M
+  H(z) = ----------------------
+          1  + k * z^-1 * G(z)
+
+*/
 
 
+template<class TSig, class TPar>
+class rsDampedSchroederAllpassNaive
+{
 
 
+public:
+
+  void setMaxDelayInSamples(int newMaxDelay)
+  {
+    mainDelay.setMaximumDelayInSamples(newMaxDelay);
+  }
+ 
+  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA,
+    bool predelay)
+  {
+    mainDelay.setDelayInSamples(delay-1);
+    k = feedback;
+    feedbackDamper.setCoefficients(dampCoeffsA, dampCoeffsB, dampOrder);
+    feedforwardDamper.setCoefficients(dampCoeffsA, dampCoeffsB, dampOrder);
+  }
+
+  TSig getSample(TSig in)
+  {
+    combOut = mainDelay.getSample(in - k * feedbackDamper.getSample(combOut));
+    TSig out = combOut + unitDelay.getSample(feedforwardDamper.getSample(in));
+  }
+
+  void reset()
+  {
+    mainDelay.reset();
+    feedbackDamper.reset();  
+    feedforwardDamper.reset;
+    unitDelay.reset();
+    combOut = 0;
+  }
 
 
+protected:
 
+  rsBasicDelayLine<TSig>         mainDelay;
+  rsDirectFormFilter<TSig, TPar> feedbackDamper;
+  rsDirectFormFilter<TSig, TPar> feedforwardDamper;
+  rsUnitDelay<TSig>              unitDelay;
 
+  TSig combOut = TSig(0);
 
+  TSig k;
 
-
-
-
+};
 
 
 
