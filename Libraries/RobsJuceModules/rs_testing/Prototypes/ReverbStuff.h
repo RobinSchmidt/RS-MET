@@ -986,9 +986,8 @@ void rsSetupHighDamp(rsDampedAllpassCombNaive<TSig, TPar>& flt,
 
 //=================================================================================================
 
-/** This class implements a delayline based allpass filter based on the folloing block diagram:
+/** This class implements a delayline based allpass filter based on the following block diagram:
 
-                              
   X(z) ---> + -----> z^-M ----------------> C(z) -----> Y(z)
             ^                    |
             |                    |
@@ -996,11 +995,53 @@ void rsSetupHighDamp(rsDampedAllpassCombNaive<TSig, TPar>& flt,
             |                    |
             -------- F(z) <-------
 
-There is delayline of length M around which we have a feedback loop with a feedback filter F(z) and
-scalar feedback gain k and a unit delay z^-1 in the loop to make it realizable. This, taken by 
-itself, implements a comb filter. The strategy is now to apply an appropriate compensation filter 
-C(z) to make the overall structure allpass in nature. The derivation of this filter C(z) is 
-outlined in Notes/DSP/DampedAllpassComb.txt. ...TBC...  */
+There is a delayline of length M around which we have a feedback loop with a feedback filter F(z) 
+and a scalar feedback gain k and a unit delay z^-1 in the loop to make it realizable. This part
+of the filter so far, taken by itself, implements a comb filter. The strategy is now to apply an 
+appropriate compensation filter C(z) to make the overall structure allpass in nature. The 
+derivation of this filter C(z) is outlined in Notes/DSP/DampedAllpassComb.txt. The short version 
+of it that the comb part has a transfer function:
+
+                   z^-M
+  U(z) = ----------------------------
+          1 + k * z^-1 * F(z) * z^-M
+
+and we start by defining a preliminary compensation filter C~(z) as follows:
+
+   C~(z) = 1 + k * z^-1 * F(z) * z^-M
+
+This filter would just cancel the denominator and bring us back to a pure delay z^-M. But as, said,
+that was just our preliminary compensation filter. The actual compensation filter C(z) is obtained
+from the preliminary one by reflecting its zeros about the unit circle. That amounts to just 
+reversing its FIR part. The user can specify the feedback filter in terms of its direct form filter 
+coefficients and we currently support feedback filters of orders up to 8. 
+
+The filter also supports a second mode of operation in which the places of z^-M and F(z) are 
+swapped in the block diagram. It turns out that the compensation filter will then need to include 
+an inverted damping filter, i.e. F^-1(z) = 1/F(z), but is otherwise the same. This second mode of 
+operation has no initial predelay. That is, the first nonzero sample of the impulse response occurs
+at sample index n = 0 whereas in the depiction above, the first nonzero sample could clearly not 
+occur before n = M because the signal has to go through the delayline before appearing at the 
+output. In fact, it appears exactly at n = M. 
+
+The result is an interesting allpass filter with the potential to introduce a frequency dependent 
+decay by choosing the feedback filter appropriately. For example, a high shelving filter that 
+attenuates high frequencies would make high frequencies decay faster to get Karplus-Strong like
+behavior. 
+
+
+Stability:
+
+If you want to use the mode without predelay, you need to be careful to pass a filter F(z) that has
+a stable inverse (i.e. is minimum phase) and there are no checks and warnings about this. Also 
+better stay away from BLT-based lowpasses as they tend to have zeros at z = -1 which in the 
+inversion will become marginally stable poles. I'd rather recommend to go with impulse invariance 
+based lowpasses or with shelving or peak/bell filters. The shelves and bells should use (linear) 
+gains less than 1 (i.e. dB gains less than 0) because we really want the magnitude of F(z) to be 
+less than or equal to one at all frequencies or else already the comb setup may become unstable.
+Well, the stability, of course also depends on the scalar feedback gain - but I'd rather not let 
+the filter go above unit gain and then try to compensate by the feedback factor. That just feels 
+wrong. The feedback gain k should also be restricted to -1 <= k <= +1 for stability. */
 
 template<class TSig, class TPar>
 class rsDampedAllpassComb
@@ -1013,12 +1054,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-
-  /** Sets the maximum desired roundtrip delay around the comb. This determines the spacing of the
-  spikes in the impulse response in a setting without any decay or damping. In such a case, the 
-  first spike appears at delay - 1 and from there, the subsequent ones are spaced apart by delay
-  itself. The fact that first spike appears at delay - 1 rather than delay itself has to do with 
-  the unit delay in the feedback loop. */
+  /** Sets the maximum desired roundtrip delay around the comb. This total roundtrip delay includes
+  the z^-1 unit delay, so the delayline length is actually shorter by one. */
   void setMaxDelayInSamples(int newMaxDelay);
 
   /** Sets up the filter with the given total roundtrip delay, the scalar feedback gain and the
