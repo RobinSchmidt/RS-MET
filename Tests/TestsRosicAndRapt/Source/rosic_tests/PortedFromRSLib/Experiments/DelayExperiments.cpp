@@ -923,16 +923,22 @@ void dampedSchroederAllpass()
   Real feedback   =     1.0;   // Feedback gain factor
 
 
+  Real one = 1;
+
   Allpass ap;
   ap.setMaxDelayInSamples(delay);
+  //ap.setup(delay, feedback, 0, &one, &one);  // This doesn't work!
   ap.setupHighDamp(delay, feedback, 2*PI*dampFreq/sampleRate, dampGain);
   int N = numSamples;
   Vec h = impulseResponse(ap, N, 1.0);
-  bool ok = isAllpass(h, 1.e-5);
-  rsPlotVectors(h);
-  // Nope! This is not an allpass! What's wrong? Maybe let Sage solve the transfer function for 
-  // small M like 3 or 5.
+  Vec mags = rsSpectralMagnitudes(h);
+  rsPlotVectors(mags);
 
+  //bool ok = isAllpass(h, 1.e-5);
+  //rsPlotVectors(h);
+  // Nope! This is not an allpass! What's wrong? Maybe let Sage solve the transfer function for 
+  // small M like 3 or 5. Try a simpler case - with 0th order filter.
+  // Without the filters, it's also not allpass.
 
 }
 

@@ -969,6 +969,8 @@ We want to realize:
   H(z) = -----------------------------
           1  + k * z^-1 * G(z) * z^-M
 
+This does not yet work!
+
 */
 
 
@@ -1001,8 +1003,19 @@ public:
 
   TSig getSample(TSig in)
   {
-    combOut = mainDelay.getSample(in - k * feedbackDamper.getSample(combOut));
-    TSig out = combOut + unitDelay.getSample(feedforwardDamper.getSample(in));
+    //combOut = mainDelay.getSample(in - k * feedbackDamper.getSample(combOut));
+    //TSig out = combOut + unitDelay.getSample(k * feedforwardDamper.getSample(in));
+
+    
+    // Test - without the filters:
+    combOut = mainDelay.getSample(in - k * combOut);
+    TSig out = combOut + k * unitDelay.getSample(in);
+
+    //// Test - without the filters:
+    //combOut = mainDelay.getSample(in - k * combOut);
+    //TSig out = combOut + k *in;
+
+
     return out;
   }
 
