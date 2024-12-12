@@ -193,6 +193,8 @@ when the feedback filter F(z) is given by:
 where nz, np are the numbers of zeros and poles of the feedback filter, i.e. the orders of numerator
 and denomniator polynomial. If that is correct, then we can use arbitrary feedback filters! We just
 need to evaluate the formula for C~ and then apply the flip operation. Maybe we'll have to observe 
-some constraints such as np == nz. Or maybe not. I've not yet looked into this. We'll see.....
+some constraints such as np == nz. Or maybe not. I've not yet looked into this. We'll see. OK - I 
+have implemented the general case in rsDampedAllpassComb based on that assumption and the thing 
+works.
 
 
