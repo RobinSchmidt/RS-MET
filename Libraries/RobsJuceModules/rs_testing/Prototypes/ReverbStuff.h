@@ -984,8 +984,7 @@ public:
     mainDelay.setMaximumDelayInSamples(newMaxDelay);
   }
  
-  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA,
-    bool predelay)
+  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA)
   {
     mainDelay.setDelayInSamples(delay-1);
     k = feedback;
@@ -993,17 +992,25 @@ public:
     feedforwardDamper.setCoefficients(dampCoeffsA, dampCoeffsB, dampOrder);
   }
 
+  void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain)
+  {
+    TPar a[2], b[2]; a[0] = 1;
+    rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
+    setup(delay, feedback, 1, b, a);
+  }
+
   TSig getSample(TSig in)
   {
     combOut = mainDelay.getSample(in - k * feedbackDamper.getSample(combOut));
     TSig out = combOut + unitDelay.getSample(feedforwardDamper.getSample(in));
+    return out;
   }
 
   void reset()
   {
     mainDelay.reset();
-    feedbackDamper.reset();  
-    feedforwardDamper.reset;
+    feedbackDamper.reset();
+    feedforwardDamper.reset();
     unitDelay.reset();
     combOut = 0;
   }

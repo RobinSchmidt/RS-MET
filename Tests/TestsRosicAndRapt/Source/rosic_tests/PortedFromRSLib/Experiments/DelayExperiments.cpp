@@ -914,7 +914,21 @@ void dampedSchroederAllpass()
   using Vec     = std::vector<Real>;
   using Allpass = rsDampedSchroederAllpassNaive<Real, Real>;
 
+  // User parameters:
+  int  delay     =   100;      // Delay roundtrip length in samples. Is M-1 in the algo
+  int  numSamples =  8192;     // Number of samples to generate
+  Real sampleRate = 44100;     // Sample rate for writing the wavefiles
+  Real dampFreq   =   500;     // Frequency (in Hz) of the low shelf for feedback damping
+  Real dampGain   =     0.7;   // Linear high freq damping gain
+  Real feedback   =     0.99;  // Feedback gain factor
+
+
   Allpass ap;
+  ap.setMaxDelayInSamples(delay);
+  ap.setupHighDamp(delay, feedback, 2*PI*dampFreq/sampleRate, dampGain);
+  int N = numSamples;
+  Vec h = impulseResponse(ap, N, 1.0);
+  rsPlotVectors(h);
 
 
 }
