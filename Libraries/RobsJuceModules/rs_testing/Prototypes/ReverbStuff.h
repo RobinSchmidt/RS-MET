@@ -1634,9 +1634,13 @@ protected:
 
 /** A naive version of rsDampedSchroederAllpass that implements the transfer function
 
-            k*F(z) + z^-M 
+            k * F(z) + z^-M 
   H(z) = ---------------------
           1 + k * F(z) * z^-M
+
+hmmm but maybe we need to intrdouce unit delays in front of both k*F*... terms to make it 
+implementable?
+
 
 directly. */
 
@@ -1670,10 +1674,16 @@ public:
   }
 
 
-
   TSig getSample(TSig in)
   {
+    combOut = outDelay.getSample(in - k*feedbackDamper.getSample(combOut));
 
+    TSig out = combOut + inDelay.getSample(in) + k*feedforwardDamper.getSample(in);
+     
+    //TSig out = combOut + inDelay.getSample(in) 
+    //           + k*unitDelay.getSample(feedforwardDamper.getSample(in));
+
+    return out;
   }
 
   void reset()
