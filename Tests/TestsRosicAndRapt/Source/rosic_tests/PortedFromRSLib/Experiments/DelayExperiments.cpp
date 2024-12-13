@@ -931,8 +931,8 @@ void dampedSchroederAllpass()
   Vec h, mags;
 
   // Try to set it up with a 1-point moving average FIR filter in the feedback path:
-  Real b[2] = { 0.5, 0.5 };      // Crazy comb
-  //Real b[2] = { 1.0, 0.0 };    // Works without the reversal
+  //Real b[2] = { 0.5, 0.5 };      // Crazy comb
+  Real b[2] = { 1.0, 0.0 };    // Works without the reversal
   Real a[2] = { 1.0, 0.0 };
 
 
@@ -963,11 +963,10 @@ void dampedSchroederAllpass()
   Vec hN = impulseResponse(apn, N, 1.0);
   //rsPlotVectors(hN);
   Vec magsN = rsSpectralMagnitudes(hN);
-  //rsPlotVectors(magsN);
-
-  rsPlotVectors(h, hN);  // They look completely different!
+  rsPlotVectors(h, hN); 
+  rsPlotVectors(mags, magsN);
   dummy = 0;
-
+   // They look completely different!
 
 
 

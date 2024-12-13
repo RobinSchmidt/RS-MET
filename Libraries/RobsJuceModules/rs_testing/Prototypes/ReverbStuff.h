@@ -1654,7 +1654,7 @@ public:
   void setMaxDelayInSamples(int newMaxDelay)
   {
     inDelay.setMaximumDelayInSamples(newMaxDelay);
-    outDelay.setMaximumDelayInSamples(newMaxDelay);
+    outDelay.setMaximumDelayInSamples(newMaxDelay-1);
   }
 
   void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA)
@@ -1678,7 +1678,10 @@ public:
   {
     combOut = outDelay.getSample(in - k*feedbackDamper.getSample(combOut));
 
-    TSig out = combOut + inDelay.getSample(in) + k*feedforwardDamper.getSample(in);
+   //TSig out = combOut + inDelay.getSample(in) + k*feedforwardDamper.getSample(in);
+
+    TSig out = combOut + inDelay.getSample(in) 
+               + k*unitDelay.getSample(feedforwardDamper.getSample(in));
      
     //TSig out = combOut + inDelay.getSample(in) 
     //           + k*unitDelay.getSample(feedforwardDamper.getSample(in));
