@@ -920,20 +920,18 @@ void dampedSchroederAllpass()
   int  delay     =     10;     // Delay roundtrip length in samples. Is M-1 in the algo
   int  numSamples =  1024;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
-  Real dampFreq   =   500;     // Frequency (in Hz) of the low shelf for feedback damping
-  Real dampGain   =     0.5;   // Linear high freq damping gain
+  //Real dampFreq   =   500;     // Frequency (in Hz) of the low shelf for feedback damping
+  //Real dampGain   =     0.5;   // Linear high freq damping gain
   Real feedback   =     0.7;   // Feedback gain factor
 
 
 
   int N = numSamples;
   Vec h, mags;
-  bool ok = true;
-
 
   // Try to set it up with a 1-point moving average FIR filter in the feedback path:
-  //Real b[2] = { 0.5, 0.5 };
-  Real b[2] = { 1.0, 0.0 };
+  Real b[2] = { 0.5, 0.5 };      // Crazy comb
+  //Real b[2] = { 1.0, 0.0 };    // Works without the reversal
   Real a[2] = { 1.0, 0.0 };
 
 
