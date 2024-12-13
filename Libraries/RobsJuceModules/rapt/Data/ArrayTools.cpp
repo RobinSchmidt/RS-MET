@@ -1444,6 +1444,10 @@ T rsArrayTools::softMax(const T* x, int N, T* y, T temperature)
   // x, y
   //
   // which produces: 0.10587707, 0.06421769, 0.04757363, 0.78233161
+  //
+  // See also: https://www.youtube.com/watch?v=IpHjDoW4ffw
+  // for how to avoid overflow problems (subtract the largest exponent - i.e. use x[i]-max(x)
+  // as exponents)
 }
 */
 

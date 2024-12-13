@@ -841,9 +841,9 @@ public:
 
 
 
-  /** Under Construction (The cpp file has a commeneted implemenation and in testArrayFuncs(), 
+  /** Under Construction (The cpp file has a commented out implemenation and in testArrayFuncs(), 
   there's a commented unit test and in RaptInstantiations.cpp in the rs_testing module, a commented
-  explicit instantitation
+  explicit instantitation. It's not yet ready ...maybe move to Prototypes.h/cpp until it's ready
 
   Computes the so called soft-max function of the array x and stores it in y...TBC...  */
   //template <class T>

@@ -914,7 +914,7 @@ void dampedSchroederAllpass()
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Allpass = rsDampedSchroederAllpassNaive<Real, Real>;
+  using Allpass = rsDampedSchroederAllpass<Real, Real>;
 
   // User parameters:
   int  delay     =     10;     // Delay roundtrip length in samples. Is M-1 in the algo
@@ -944,6 +944,17 @@ void dampedSchroederAllpass()
   rsPlotVectors(h);
   mags = rsSpectralMagnitudes(h);
   rsPlotVectors(mags);
+  int dummy = 0;
+  // Not allpass! Maybe try to implement the difference equation that I derived in allpassstuff.txt
+  // in a more direct way and see if that works. If so, it means, that our implementation is 
+  // somehow not equivalent to the direct form implementation. If not, there may be some error in
+  // the derivation. The derived transfer function is:
+  //
+  //              k*F(z) + z^-M 
+  //  H(z) = ---------------------
+  //          1 + k * F(z) * z^-M
+  // 
+  // Let's implement that naively with two delaylines.
 
 
 

@@ -130,6 +130,9 @@ JC-303
 https://github.com/midilab/jc303
 -A Cmake JUCE port of Robin Schmidt`s Open303, a Roland TB-303 clone plugin.
 
+Aeolus:
+https://github.com/Archie3d/aeolus_plugin
+-Pipe organ synthesizer
 
 ----------------------------------------------------------------------------------------------------
 Effect Plugins

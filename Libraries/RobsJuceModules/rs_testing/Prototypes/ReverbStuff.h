@@ -1294,7 +1294,8 @@ void rsSetupHighDamp(rsDampedAllpassComb<TSig, TPar>& flt,
 // 
 // - I checked the contents of mainDelay and corrDelay to see if we can use a shared delayline but
 //   that doesn't seem to be possible. I've also switched the order of applying FIR part and pole
-//   in applyCorrector to see if then the content can be shared. Nope.
+//   in applyCorrector to see if then the content can be shared. Nope. But maybe it's possible to
+//   share the delayline, if we somehow change the structure of the computations? 
 //
 //
 // ToDo:
@@ -1536,7 +1537,7 @@ for IIR filters, we may only be able to use FIR filters.
 
 
 template<class TSig, class TPar>
-class rsDampedSchroederAllpassNaive
+class rsDampedSchroederAllpass // This is actually not so naive!
 {
 
 
@@ -1552,7 +1553,7 @@ public:
     mainDelay.setDelayInSamples(delay);
     //mainDelay.setDelayInSamples(delay-1);
     k = feedback;
-    feedbackDamper.setCoefficients(dampCoeffsA, dampCoeffsB, dampOrder);
+    feedbackDamper.setCoefficients(   dampCoeffsA, dampCoeffsB, dampOrder);
     feedforwardDamper.setCoefficients(dampCoeffsA, dampCoeffsB, dampOrder);
 
     // For test:
@@ -1606,11 +1607,6 @@ public:
     //// Nope! That naive way of doing it does not seem to work! ToDo: work out the transfer function
     //// in direct form and check it for the hallmark of allpasses: numerator and denominator should
     //// be reverses of one another. Check where it goes wrong!
-
-    // F(z) = b0 * X(z)  +  b1 * z^-1 * X(z)  -  a1 * z^-1 * F(z)  
-    // V(z) = X(z)  -  k * F(z) * U(z)
-    // U(z) = z^-M * V(z)     
-    // Y(z) = k * F(z) * V(z)  +  U(z)
   }
 
   void reset()

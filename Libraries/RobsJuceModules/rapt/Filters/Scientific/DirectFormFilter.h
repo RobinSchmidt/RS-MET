@@ -94,6 +94,7 @@ public:
 
     return y;
   }
+  // ToDo: Provide getSample versions that apply only the poles or only the zeros.
 
   /** Resets the filter state. */
   void reset();
