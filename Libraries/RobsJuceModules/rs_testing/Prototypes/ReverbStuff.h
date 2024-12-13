@@ -1632,6 +1632,74 @@ protected:
 
 };
 
+/** A naive version of rsDampedSchroederAllpass that implements the transfer function
+
+            k*F(z) + z^-M 
+  H(z) = ---------------------
+          1 + k * F(z) * z^-M
+
+directly. */
+
+template<class TSig, class TPar>
+class rsDampedSchroederAllpassNaive
+{
+
+
+public:
+
+  void setMaxDelayInSamples(int newMaxDelay)
+  {
+    inDelay.setMaximumDelayInSamples(newMaxDelay);
+    outDelay.setMaximumDelayInSamples(newMaxDelay);
+  }
+
+  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA)
+  {
+    k = feedback;
+    inDelay.setDelayInSamples( delay);
+    outDelay.setDelayInSamples(delay);
+    feedbackDamper.setCoefficients(   dampCoeffsA, dampCoeffsB, dampOrder);
+    feedforwardDamper.setCoefficients(dampCoeffsA, dampCoeffsB, dampOrder);
+
+    // For test:
+    //feedforwardDamper.reflectPoles();
+    //feedforwardDamper.reflectZeros();
+    // The pole reflection will render it unstable but for experiments, we do it anyway. It does
+    // seem to try to be indeed allpass when we do this, though. We can render a 100 or so samples
+    // without getting into much trouble
+  }
+
+
+
+  TSig getSample(TSig in)
+  {
+
+  }
+
+  void reset()
+  {
+    inDelay.reset();
+    outDelay.reset();
+    feedbackDamper.reset();
+    feedforwardDamper.reset();
+    unitDelay.reset();
+    combOut = 0;
+  }
+
+
+protected:
+
+  rsBasicDelayLine<TSig>         inDelay;
+  rsBasicDelayLine<TSig>         outDelay;
+  rsDirectFormFilter<TSig, TPar> feedbackDamper;
+  rsDirectFormFilter<TSig, TPar> feedforwardDamper;
+  rsUnitDelay<TSig>              unitDelay;
+
+  TSig combOut = TSig(0);
+
+  TSig k;
+
+};
 
 
 
