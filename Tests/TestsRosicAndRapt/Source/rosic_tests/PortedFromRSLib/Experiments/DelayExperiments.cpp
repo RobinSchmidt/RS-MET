@@ -918,11 +918,11 @@ void dampedSchroederAllpass()
 
   // User parameters:
   int  delay     =    100;     // Delay roundtrip length in samples. Is M-1 in the algo
-  int  numSamples =  8192;     // Number of samples to generate
+  int  numSamples =   256;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
   Real dampFreq   =   500;     // Frequency (in Hz) of the low shelf for feedback damping
-  Real dampGain   =     0.7;   // Linear high freq damping gain
-  Real feedback   =     0.9;   // Feedback gain factor
+  Real dampGain   =     0.5;   // Linear high freq damping gain
+  Real feedback   =     0.7;   // Feedback gain factor
 
   // Create and verify allpass impulse response:
   Allpass ap;
@@ -937,17 +937,43 @@ void dampedSchroederAllpass()
 
   rosic::writeToMonoWaveFile("SchroederAllpassWithDamping.wav", &h[0], N, (int)sampleRate);
 
+
+  // Try to set it up with a 1-point moving average FIR filter in the feedback path:
+  Real b[2] = { 0.5, 0.5 };
+  Real a[2] = { 1.0, 0.0 };
+  ap.setup(delay, feedback, 1, b, a);
+  h = impulseResponse(ap, N, 1.0);
+  rsPlotVectors(h);
+  mags = rsSpectralMagnitudes(h);
+  rsPlotVectors(mags);
+
+
+
+
+
+
   // Obvservations:
   //
-  // - This is only an allpass when dampGain = 1. For something like 0.7, we see a sort of comb
-  //   like spectrum. Not really what I wanted - but maybe it could be useful for ceratin things.
-  //   Maybe for synthesis of semi-tonal percussions.
+  // - Without the reversals, this is only an allpass when dampGain = 1. For something like 0.7, we
+  //   see a sort of comb like spectrum. Not really what I wanted - but maybe it could be useful 
+  //   for certtin things. Maybe for synthesis of semi-tonal percussions.
+  //
+  //
+  // Conclusions:
+  //
+  // - It seems like to make this setup work as allpass, it is required to modify the feedforward
+  //   filter in such a way as to reverse both of its coefficient arrays. Doing that with the
+  //   a-array will make the feedforward filter unstable though. We would have to restrict 
+  //   ourselves to use only FIR filters as feedbank filters. That would remove the problem.
   //
   //
   // ToDo:
   //
   // - Figure out where it goes wrong. Let SageMath expand the transfer function and check why 
   //   numerator and denominator are not reversals of one another and what can be done about it.
+  //
+  // - Before writing the results to wavefiles, post-process them by a 1st order lowpass and 
+  //   normalization. That makes the non-allpass "percussions" more musically useful.
   //
   //
   // Derivations:

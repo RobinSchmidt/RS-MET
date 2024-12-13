@@ -41,6 +41,14 @@ public:
   /** Inverts the filter, i.e. swaps poles and zeros and inverts the gain. */
   void invert();
 
+
+  // Under construction - needs tests:
+  void reflectZeros();
+  void reflectPoles();
+
+
+  // ToDo: reflectPoles, reflectZeros
+
   /** Initializes the filter coefficients so as to realize a 'bypass' filter. */
   void initializeCoefficients();
 

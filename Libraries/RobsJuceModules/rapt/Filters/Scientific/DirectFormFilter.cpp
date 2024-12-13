@@ -52,7 +52,18 @@ void rsDirectFormFilter<TSig, TCoef>::invert()
     rsSwap(a[i], b[i]);
     b[i] *= s;
   }
+}
 
+template<class TSig, class TCoef>
+void rsDirectFormFilter<TSig, TCoef>::reflectZeros()
+{
+  rsArrayTools::reverse(b, order+1);
+}
+
+template<class TSig, class TCoef>
+void rsDirectFormFilter<TSig, TCoef>::reflectPoles()
+{
+  rsArrayTools::reverse(a, order+1);
 }
 
 template<class TSig, class TCoef>

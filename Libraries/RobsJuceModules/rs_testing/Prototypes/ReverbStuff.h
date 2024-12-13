@@ -1549,6 +1549,14 @@ public:
     k = feedback;
     feedbackDamper.setCoefficients(dampCoeffsA, dampCoeffsB, dampOrder);
     feedforwardDamper.setCoefficients(dampCoeffsA, dampCoeffsB, dampOrder);
+
+    // For test:
+    //feedforwardDamper.reflectPoles();
+    //feedforwardDamper.reflectZeros();
+    // The pole reflection will render it unstable but for experiments, we do it anyway. It does
+    // seem to try to be indeed allpass when we do this, though. We can render a 100 or so samples
+    // without getting into much trouble
+
   }
 
   void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain)
