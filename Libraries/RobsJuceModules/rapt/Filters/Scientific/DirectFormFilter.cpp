@@ -45,7 +45,7 @@ void rsDirectFormFilter<TSig, TCoef>::setGlobalGainFactor(TCoef newFactor)
 template<class TSig, class TCoef>
 void rsDirectFormFilter<TSig, TCoef>::invert()
 {
-  TCoef s = TCoef(1) / b[0];
+  TCoef s = TCoef(1) / b[0];        // Or maybe use a[0]/b[0]? We assume a[0]==1 anyway but still.
   for(int i = 0; i <= order; i++)
   {
     b[i] *= s;

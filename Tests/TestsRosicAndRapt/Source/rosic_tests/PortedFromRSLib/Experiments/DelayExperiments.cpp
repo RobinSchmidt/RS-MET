@@ -917,8 +917,8 @@ void dampedSchroederAllpass()
   using Allpass = rsDampedSchroederAllpassNaive<Real, Real>;
 
   // User parameters:
-  int  delay     =    100;     // Delay roundtrip length in samples. Is M-1 in the algo
-  int  numSamples =   256;     // Number of samples to generate
+  int  delay     =     10;     // Delay roundtrip length in samples. Is M-1 in the algo
+  int  numSamples =  8192;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
   Real dampFreq   =   500;     // Frequency (in Hz) of the low shelf for feedback damping
   Real dampGain   =     0.5;   // Linear high freq damping gain
@@ -956,7 +956,10 @@ void dampedSchroederAllpass()
   //
   // - Without the reversals, this is only an allpass when dampGain = 1. For something like 0.7, we
   //   see a sort of comb like spectrum. Not really what I wanted - but maybe it could be useful 
-  //   for certtin things. Maybe for synthesis of semi-tonal percussions.
+  //   for certain things. Maybe for synthesis of semi-tonal percussions.
+  //
+  // - Even with the simple 2-point MA feedback filter, the result is still not allpass. I think,
+  //   at least that one should work!
   //
   //
   // Conclusions:
@@ -965,6 +968,7 @@ void dampedSchroederAllpass()
   //   filter in such a way as to reverse both of its coefficient arrays. Doing that with the
   //   a-array will make the feedforward filter unstable though. We would have to restrict 
   //   ourselves to use only FIR filters as feedbank filters. That would remove the problem.
+  //   Or can we use filters with symmetric coefficient arrays? Do they make sense?
   //
   //
   // ToDo:
