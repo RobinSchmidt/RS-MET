@@ -965,7 +965,7 @@ void dampedSchroederAllpass()
   Vec magsN = rsSpectralMagnitudes(hN);
   //rsPlotVectors(magsN);
 
-  rsPlotVectors(h, hN);
+  rsPlotVectors(h, hN);  // They look completely different!
   dummy = 0;
 
 
