@@ -1525,7 +1525,12 @@ We want to realize:
   H(z) = -----------------------------
           1  + k * z^-1 * G(z) * z^-M
 
-This does not yet work!
+This does not yet work! 
+
+ToDo: Try to make it work first with a simple 2-point moving average in the feedback path. If that 
+works, try more complex filters. So far, I think, the filter in the feedforward path must used 
+reversed coeff arrays compared to the one in the feedback path. Because this changes the stability
+for IIR filters, we may only be able to use FIR filters.
 
 */
 
@@ -1592,15 +1597,15 @@ public:
     // It works but it has no damping filters in the feedback and feedforward paths.
 
 
-    // So, let's just add them:
+    //// So, let's just add them:
     TSig u = mainDelay.readOutput();                     // U(z) = z^-M * V(z)
     TSig v = in - k * feedbackDamper.getSample(u);       // V(z) = X(z)  -  k * F(z) * U(z)
     mainDelay.writeInputAndUpdate(v); 
     TSig out =  k * feedforwardDamper.getSample(v) + u;  // Y(z) = k * F(z) * V(z)  +  U(z)
     return out;
-    // Nope! That naive way of doing it does not seem to work! ToDo: work out the transfer function
-    // in direct form and check it for the hallmark of allpasses: numerator and denominator should
-    // be reverses of one another. Check where it goes wrong!
+    //// Nope! That naive way of doing it does not seem to work! ToDo: work out the transfer function
+    //// in direct form and check it for the hallmark of allpasses: numerator and denominator should
+    //// be reverses of one another. Check where it goes wrong!
 
     // F(z) = b0 * X(z)  +  b1 * z^-1 * X(z)  -  a1 * z^-1 * F(z)  
     // V(z) = X(z)  -  k * F(z) * U(z)

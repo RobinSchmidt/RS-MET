@@ -918,34 +918,49 @@ void dampedSchroederAllpass()
 
   // User parameters:
   int  delay     =     10;     // Delay roundtrip length in samples. Is M-1 in the algo
-  int  numSamples =  8192;     // Number of samples to generate
+  int  numSamples =  1024;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
   Real dampFreq   =   500;     // Frequency (in Hz) of the low shelf for feedback damping
   Real dampGain   =     0.5;   // Linear high freq damping gain
   Real feedback   =     0.7;   // Feedback gain factor
 
-  // Create and verify allpass impulse response:
-  Allpass ap;
-  ap.setMaxDelayInSamples(delay);
-  ap.setupHighDamp(delay, feedback, 2*PI*dampFreq/sampleRate, dampGain);
-  int N = numSamples;
-  Vec h = impulseResponse(ap, N, 1.0);
-  bool ok = isAllpass(h, 1.e-3);
-  rsPlotVectors(h);
-  Vec mags = rsSpectralMagnitudes(h);
-  rsPlotVectors(mags);
 
-  rosic::writeToMonoWaveFile("SchroederAllpassWithDamping.wav", &h[0], N, (int)sampleRate);
+
+  int N = numSamples;
+  Vec h, mags;
+  bool ok = true;
 
 
   // Try to set it up with a 1-point moving average FIR filter in the feedback path:
-  Real b[2] = { 0.5, 0.5 };
+  //Real b[2] = { 0.5, 0.5 };
+  Real b[2] = { 1.0, 0.0 };
   Real a[2] = { 1.0, 0.0 };
+
+
+  // Create and verify allpass impulse response:
+  Allpass ap;
+  ap.setMaxDelayInSamples(delay);
   ap.setup(delay, feedback, 1, b, a);
+  //ap.setup(delay, feedback, 0, b, a);  // Nope! Trying with 0th order filter crashes!
   h = impulseResponse(ap, N, 1.0);
   rsPlotVectors(h);
   mags = rsSpectralMagnitudes(h);
   rsPlotVectors(mags);
+
+
+
+
+  //ap.setupHighDamp(delay, feedback, 2*PI*dampFreq/sampleRate, dampGain);
+  //h = impulseResponse(ap, N, 1.0);
+  //bool ok = isAllpass(h, 1.e-3);
+  ////rsPlotVectors(h);
+  //mags = rsSpectralMagnitudes(h);
+  ////rsPlotVectors(mags);
+  ////rosic::writeToMonoWaveFile("SchroederAllpassWithDamping.wav", &h[0], N, (int)sampleRate);
+
+
+
+
 
 
 
@@ -959,7 +974,8 @@ void dampedSchroederAllpass()
   //   for certain things. Maybe for synthesis of semi-tonal percussions.
   //
   // - Even with the simple 2-point MA feedback filter, the result is still not allpass. I think,
-  //   at least that one should work!
+  //   at least that one should work! Ah - I think, it might be because we reverse the a-array?
+  //   Try not doing that! ..ok - done - it's still not allpass
   //
   //
   // Conclusions:
