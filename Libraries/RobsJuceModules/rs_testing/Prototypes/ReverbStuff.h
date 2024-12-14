@@ -1562,6 +1562,11 @@ public:
     // The pole reflection will render it unstable but for experiments, we do it anyway. It does
     // seem to try to be indeed allpass when we do this, though. We can render a 100 or so samples
     // without getting into much trouble
+
+    // These are used only in development:
+    b0 = dampCoeffsB[0];
+    b1 = dampCoeffsB[1];
+    a1 = dampCoeffsA[1];
   }
 
   void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain)
@@ -1607,6 +1612,9 @@ public:
     //// Nope! That naive way of doing it does not seem to work! ToDo: work out the transfer function
     //// in direct form and check it for the hallmark of allpasses: numerator and denominator should
     //// be reverses of one another. Check where it goes wrong!
+
+
+
   }
 
   void reset()
@@ -1629,6 +1637,9 @@ protected:
   TSig combOut = TSig(0);
 
   TSig k;
+
+  // Temporary - for experimentation during development:
+  TPar b0, b1, a1;
 
 };
 

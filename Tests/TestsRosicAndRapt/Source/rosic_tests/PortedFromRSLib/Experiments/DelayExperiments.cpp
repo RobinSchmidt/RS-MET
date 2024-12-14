@@ -923,7 +923,7 @@ void dampedSchroederAllpass()
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
   //Real dampFreq   =   500;     // Frequency (in Hz) of the low shelf for feedback damping
   //Real dampGain   =     0.5;   // Linear high freq damping gain
-  Real feedback   =     1.0;   // Feedback gain factor
+  Real feedback   =     0.8;   // Feedback gain factor
 
 
 
