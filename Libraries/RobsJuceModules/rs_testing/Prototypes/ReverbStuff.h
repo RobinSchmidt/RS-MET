@@ -1676,12 +1676,14 @@ public:
 
   TSig getSample(TSig in)
   {
+    //combOut = outDelay.getSample(in - k*feedbackDamper.getSample(combOut));
     combOut = outDelay.getSample(in - k*feedbackDamper.getSample(combOut));
 
-   //TSig out = combOut + inDelay.getSample(in) + k*feedforwardDamper.getSample(in);
-
     TSig out = combOut + inDelay.getSample(in) 
-               + k*unitDelay.getSample(feedforwardDamper.getSample(in));
+               + k*feedforwardDamper.getSample(in);
+
+    //TSig out = combOut + inDelay.getSample(in) 
+    //           + k*unitDelay.getSample(feedforwardDamper.getSample(in));
      
     //TSig out = combOut + inDelay.getSample(in) 
     //           + k*unitDelay.getSample(feedforwardDamper.getSample(in));
