@@ -919,7 +919,7 @@ void dampedSchroederAllpass()
 
   // User parameters:
   int  delay     =      5;     // Delay roundtrip length in samples. Is M-1 in the algo
-  int  numSamples =   256;     // Number of samples to generate
+  int  numSamples =   512;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
   //Real dampFreq   =   500;     // Frequency (in Hz) of the low shelf for feedback damping
   //Real dampGain   =     0.5;   // Linear high freq damping gain
@@ -942,9 +942,9 @@ void dampedSchroederAllpass()
   ap.setup(delay, feedback, 1, b, a);
   //ap.setup(delay, feedback, 0, b, a);  // Nope! Trying with 0th order filter crashes!
   h = impulseResponse(ap, N, 1.0);
-  //rsPlotVectors(h);
+  rsPlotVectors(h);
   mags = rsSpectralMagnitudes(h);
-  //rsPlotVectors(mags);
+  rsPlotVectors(mags);
   int dummy = 0;
   // Not allpass! Maybe try to implement the difference equation that I derived in allpassstuff.txt
   // in a more direct way and see if that works. If so, it means, that our implementation is 
