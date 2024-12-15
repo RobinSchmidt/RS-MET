@@ -1278,6 +1278,13 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   }
   corrDelay.incrementTapPointers();
   return y;
+
+  // I think, what's happening in the loop at the bottom can be re-interpreted as reading out the
+  // delayline at 0 and at M+1 and applying FIR filters to these outputs and then adding both of 
+  // these FIR outputs to y. The coeffs for the FIR for the output at 0 are given by k times the 
+  // reversal of the b-coeffs and the FIR coeffs for the output at M+1 are given by the reversal 
+  // of the a-coeffs of the feedback filter. Or something along these lines. ToDo: Figure this out 
+  // exactly!
 }
 
 // A free function to set up the object with a more convenient parametrization:
@@ -1394,6 +1401,7 @@ protected:
   TSig r1  = 0; 
   TPar rM1 = 0;
   TPar b0 = 0, b1 = 0, a1 = 0;
+  // Get rid of the r-coeffs! r0 = k*b1, r1 = k*b0, rM1 = a1. Use that directly
 
   int  M = 0;
   bool preDelay = false;
