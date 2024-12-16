@@ -1572,6 +1572,8 @@ public:
   {
     mainDelay.setDelayInSamples(delay);
 
+    M = delay;
+
     k = feedback;
 
     b.resize(dampOrder+1);
@@ -1607,22 +1609,53 @@ public:
 
   TSig getSample(TSig in)
   {
+    int order = (int) b.size()-1;
+
+    // Naive (feedforward first):
+    //// Apply feedforward part:
+    //inDelay.writeInputNoUpdate(in);
+    //TSig tmp = inDelay.readOutputAt(M);           // readOutput() should also work (more efficient)
+    //for(int i = 0; i <= order; i++)
+    //  tmp += k * b[i] * inDelay.readOutputAt(i);
+
+    //// Apply feedback path:
+    //for(int i = 0; i <= order; i++)
+    //  tmp -= k * b[i] * outDelay.readOutputAt(M-i);
+
+    //// Update delaylines and return result:
+    //inDelay.incrementTapPointers();
+    //outDelay.writeInputAndUpdate(tmp);
+    //return tmp;
+
+
+    // Delay-canonical (feedback first):
+    TSig tmp = in;
+
+    // Apply feedback path:
+    for(int i = 0; i <= order; i++)
+      tmp -= k * b[i] * mainDelay.readOutputAt(M-i);
+    mainDelay.writeInputNoUpdate(tmp);
+
+    // Apply feedforward path:
+    for(int i = 0; i <= order; i++)
+      tmp += k * b[i] * mainDelay.readOutputAt(i);
+
+    // Update delayline and return result:
+    mainDelay.incrementTapPointers();
+    return tmp;
+
+
 
 
     //// Old:
-    TSig u = mainDelay.readOutput();                     // U(z) = z^-M * V(z)
-    TSig v = in - k * feedbackDamper.getSample(u);       // V(z) = X(z)  -  k * F(z) * U(z)
-    mainDelay.writeInputAndUpdate(v); 
-    TSig out =  k * feedforwardDamper.getSample(v) + u;  // Y(z) = k * F(z) * V(z)  +  U(z)
-    return out;
+    //TSig u = mainDelay.readOutput();                     // U(z) = z^-M * V(z)
+    //TSig v = in - k * feedbackDamper.getSample(u);       // V(z) = X(z)  -  k * F(z) * U(z)
+    //mainDelay.writeInputAndUpdate(v); 
+    //TSig out =  k * feedforwardDamper.getSample(v) + u;  // Y(z) = k * F(z) * V(z)  +  U(z)
+    //return out;
     //// Nope! That naive way of doing it does not seem to work! ToDo: work out the transfer function
     //// in direct form and check it for the hallmark of allpasses: numerator and denominator should
     //// be reverses of one another. Check where it goes wrong!
-
-
-
-
-
   }
 
   void reset()
@@ -1650,6 +1683,8 @@ protected:
   TSig combOut = TSig(0);
 
   TSig k;
+
+  int M = 0;
 
   // Temporary - for experimentation during development:
   //TPar b0, b1, a1;
