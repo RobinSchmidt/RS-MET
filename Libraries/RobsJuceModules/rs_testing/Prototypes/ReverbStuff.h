@@ -1606,8 +1606,17 @@ public:
     //return tmp;
 
 
+    // For a 2-point feedback filter with coeffs b0,b1 and with M = 5 (the delay), the transfer 
+    // function should look like this:
+    //
+    //            k*b0 + k*b1*d + d^M         M=5   k*b0 + k*b1*d + d^5
+    //  H(z) = -----------------------------   =   --------------------------
+    //          1 + k*b1*d^(M-1) + k*b0*d^M         1 + k*b1*d^4 + k*b0*d^5
+
+
     // Delay-canonical (feedback first):
     TSig tmp = in;
+    // Is this correct? ...yeah..I think, that looks OK
 
     // Apply feedback path:
     for(int i = 0; i <= order; i++)
@@ -1617,12 +1626,21 @@ public:
     // Apply feedforward path:
     for(int i = 0; i <= order; i++)
       tmp += k * b[i] * mainDelay.readOutputAt(i);
+    tmp += mainDelay.readOutputAt(M);  
+    // The d^5 term in the numerator. But: we already used that output. It somehow feels wrong to 
+    // use it again. Or does it? Sharing the delayline actually means to use all of its contents
+    // twice, so maybe it's ok.
+
 
     // Update delayline and return result:
     mainDelay.incrementTapPointers();
     return tmp;
 
+    // Where is the d^5 term from the numerator? Nowhere!
 
+
+    // See also:
+    // https://www.dsprelated.com/freebooks/filters/Direct_Form_II.html
 
 
     //// Old:
