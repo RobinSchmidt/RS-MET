@@ -1565,25 +1565,21 @@ public:
 
   void setMaxDelayInSamples(int newMaxDelay)
   {
-    mainDelay.setMaximumDelayInSamples(newMaxDelay);
+    delayLine.setMaximumDelayInSamples(newMaxDelay);
   }
  
+  /** Sets up the delay, feedback gain the damping filter. The damping filter must be an FIR 
+  filter and the caller is supposed to pass its coefficients and order. The order is the length of
+  the coefficient array plus one. */
   void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB)
   {
-    mainDelay.setDelayInSamples(delay);
+    delayLine.setDelayInSamples(delay);
     M = delay;
     k = feedback;
     b.resize(dampOrder+1);
     for(int k = 0;  k <= dampOrder; k++)
       b[k] = dampCoeffsB[k];
   }
-
-  //void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain)
-  //{
-  //  TPar a[2], b[2]; a[0] = 1;
-  //  rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
-  //  setup(delay, feedback, 1, b, a);
-  //}
 
   TSig getSample(TSig in)
   {
@@ -1592,32 +1588,32 @@ public:
     // Apply feedback path:
     TSig tmp = in;
     for(int i = 0; i <= order; i++)
-      tmp -= k * b[i] * mainDelay.readOutputAt(M-i);
-    mainDelay.writeInputNoUpdate(tmp);
+      tmp -= k * b[i] * delayLine.readOutputAt(M-i);
+    delayLine.writeInputNoUpdate(tmp);
 
     // Apply feedforward path:
     tmp = 0;
     for(int i = 0; i <= order; i++)
-      tmp += k * b[i] * mainDelay.readOutputAt(i);
-    tmp += mainDelay.readOutputAt(M);
+      tmp += k * b[i] * delayLine.readOutputAt(i);
+    tmp += delayLine.readOutputAt(M);
 
     // Update delayline and return result:
-    mainDelay.incrementTapPointers();
+    delayLine.incrementTapPointers();
     return tmp;
 
-    // See also:
+    // In order to need only one delayline, we use a direct form 2 implementation. See:
     // https://www.dsprelated.com/freebooks/filters/Direct_Form_II.html
   }
 
   void reset()
   {
-    mainDelay.reset();
+    delayLine.reset();
   }
 
 
 protected:
 
-  rsBasicDelayLine<TSig>  mainDelay;
+  rsBasicDelayLine<TSig> delayLine;
   std::vector<TPar> b;
   TSig k;
   int M = 0;

@@ -921,7 +921,7 @@ void dampedSchroederAllpass()
   int  delay      =    10;     // Delay roundtrip length in samples. Is M-1 in the algo
   int  numSamples =   512;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
-  Real feedback   =    -0.99;  // Feedback gain factor
+  Real feedback   =    +0.99;  // Feedback gain factor
 
   // Abbreviations for convenience:
   int  N = numSamples;
@@ -978,7 +978,8 @@ void dampedSchroederAllpass()
   // 
   // ToDo:
   //
-  // - Implement a variant that uses a sparse FIR in the feedback path.
+  // - Implement a variant that uses a sparse FIR in the feedback path. But then - how would we 
+  //   ensure stability?
   //
   // - Before writing the results to wavefiles, post-process them by a 1st order lowpass and 
   //   normalization. That makes the non-allpass "percussions" more musically useful.
