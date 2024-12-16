@@ -2537,9 +2537,9 @@ bool dampedSchroederAllpassUnitTest()
     ok &= isAllpass(h, 1.e-7);         // The result should be allpass in nature
     //if(!ok)
     //{
-      //Vec mags = rsSpectralMagnitudes(h);
-      //rsPlotVectors(h, hN);
-      //rsPlotVectors(mags);
+    //  Vec mags = rsSpectralMagnitudes(h);
+    //  rsPlotVectors(h, hN);
+    //  rsPlotVectors(mags);
     //}
     rsArrayTools::convolve(&b[0], order+1, &b1[0], 2, &b[0]);
   }

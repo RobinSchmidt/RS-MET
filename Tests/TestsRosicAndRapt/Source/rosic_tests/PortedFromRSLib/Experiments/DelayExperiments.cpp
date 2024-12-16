@@ -909,7 +909,7 @@ void dampedAllpassDelayContent()
 
 void dampedSchroederAllpass()
 {
-  // Under construction. This idea does not yet work
+  // We test the class rsDampedSchroederAllpass here. ...TBC...
 
   // Define types to be used:
   using Real     = double;
@@ -918,134 +918,43 @@ void dampedSchroederAllpass()
   using AllpassN = rsDampedSchroederAllpassNaive<Real, Real>;
 
   // User parameters:
-  int  delay     =      5;     // Delay roundtrip length in samples. Is M-1 in the algo
+  int  delay      =     5;     // Delay roundtrip length in samples. Is M-1 in the algo
   int  numSamples =   512;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
-  //Real dampFreq   =   500;     // Frequency (in Hz) of the low shelf for feedback damping
-  //Real dampGain   =     0.5;   // Linear high freq damping gain
   Real feedback   =     0.8;   // Feedback gain factor
 
-
-
+  // Abbreviations for convenience:
   int  N = numSamples;
   int  M = delay;
   Real k = feedback;
-  Vec h, mags;
 
-  // Try to set it up with a 1-point moving average FIR filter in the feedback path:
-  //Real b[2] = { 0.5, 0.5 };      // Crazy comb
-  Real b[2] = { 0.75, 0.25 };      // 
-  //Real b[2] = { 1.0, 0.0 };    // Works without the reversal
-  //Real b[3] = { 0.5, 0.3, 0.2 };
-  //Real a[2] = { 1.0, 0.0 };
+  // We use a 2-point FIR filter in the feedback path:
+  Real b[2] = { 0.75, 0.25 }; 
 
-
-  // Create and verify allpass impulse response:
+  // Create impulse- and magnitude response of proper implementation:
   Allpass ap;
   ap.setMaxDelayInSamples(delay);
   ap.setup(delay, feedback, 1, b);
-  //ap.setup(delay, feedback, 0, b, a);  // Nope! Trying with 0th order filter crashes!
-  h = impulseResponse(ap, N, 1.0);
-  //rsPlotVectors(h);
-  mags = rsSpectralMagnitudes(h);
-  //rsPlotVectors(mags);
-  int dummy = 0;
-  // Not allpass! Maybe try to implement the difference equation that I derived in allpassstuff.txt
-  // in a more direct way and see if that works. If so, it means, that our implementation is 
-  // somehow not equivalent to the direct form implementation. If not, there may be some error in
-  // the derivation. The derived transfer function is:
-  //
-  //              k*F(z) + z^-M 
-  //  H(z) = ---------------------
-  //          1 + k * F(z) * z^-M
-  // 
-  // Let's implement that naively with two delaylines.
+  Vec h = impulseResponse(ap, N, 1.0);
+  Vec mags = rsSpectralMagnitudes(h);
 
+  // Create impulse- and magnitude response of naive implementation:
   AllpassN apn;
   apn.setMaxDelayInSamples(delay);
   apn.setup(delay, feedback, 1, b);
-  //apn.setup(delay, feedback, 2, b);
   Vec hN = impulseResponse(apn, N, 1.0);
-  //rsPlotVectors(hN);
   Vec magsN = rsSpectralMagnitudes(hN);
-  rsPlotVectors(h, hN); 
-  rsPlotVectors(mags, magsN);
-  dummy = 0;
-   // They look completely different!
-
-
-
-
-
-  //ap.setupHighDamp(delay, feedback, 2*PI*dampFreq/sampleRate, dampGain);
-  //h = impulseResponse(ap, N, 1.0);
-  //bool ok = isAllpass(h, 1.e-3);
-  ////rsPlotVectors(h);
-  //mags = rsSpectralMagnitudes(h);
-  ////rsPlotVectors(mags);
-  ////rosic::writeToMonoWaveFile("SchroederAllpassWithDamping.wav", &h[0], N, (int)sampleRate);
-
-  // Create unit impulse of length N:
-  Vec d(N), hP(N);
-  d[0] = 1;
-
 
   // Implement the difference equation of the filter directly. With a 1st order FIR filter in
   // the feedback path,  we have the following transfer function:
   //
-  //            k*b0 + k*b1*d + d^M
-  //  H(z) = -----------------------------
-  //          1 + k*b0*d^M + k*b1*d^(M+1)
-  //
-  rsInfiniteDataStream<Real> x(&d[0], N), y(&hP[0], N);
-  y.setZero();
-  for(int n = 0; n < N; n++)
-  {
-    Real tmp = 0;
-    tmp += k*b[0]*x[n]   + k*b[1]*x[n-1] + x[n-M];  // Feedforward part
-    //tmp -= k*b[0]*y[n-M] + k*b[1]*y[n-M-1];         // Feedback part
-    tmp -= k*b[1]*y[n-M] + k*b[0]*y[n-M-1];         // Feedback part
-    y[n] = tmp;
-  }
-  Vec magsP = rsSpectralMagnitudes(hP);
-  mags = rsSpectralMagnitudes(h);
-  //rsPlotVectors(h, hP);
-  //rsPlotVectors(mags, magsP);
-  // OK - with b = a = {1,0}, these look the same as it should be. Switching to b = {0.5, 0.5},
-  // they still look the same. But the spectral magnitudes totally do not look like an allpass
-  // filter. Oh - I think, we need to reverse the b-coeffs in the denominator. But that shouldn't
-  // matter when b0 == b1 as is the case here. But we should do it anyway. Also, the delays do not 
-  // seem to match.
-
-  // OK - let's try something else. Adapt the difference equation to realize:
-  //
-  //            k*b0*d + k*b1*d^2 + d^(M+1)
-  //  H(z) = -------------------------------
-  //          1 + k*b1*d^M + k*b0*d^(M+1)
-  //
-  y.setZero();
-  for(int n = 0; n < N; n++)
-  {
-    Real tmp = 0;
-    tmp += k*b[0]*x[n-1] + k*b[1]*x[n-2] + x[n-M-1];
-    tmp -= k*b[1]*y[n-M] + k*b[0]*y[n-M-1];
-    y[n] = tmp;
-  }
-  magsP = rsSpectralMagnitudes(hP);
-  //rsPlotVectors(h, hP);
-  //rsPlotVectors(mags, magsP);
-  // Nope - this just shifts the whole impulse respone by one sample to the right. But the 
-  // magnitude response is still not allpass. But why? Looking at the transfer function, it surely
-  // looks like that numerator and denominator are reversals of one another.
-
-
-  // Maybe there's a mismatch of one sample delay in the feedback and feedforward path? I think, 
-  // what we really want is something like:
-  // 
-  //            k*b0 + k*b1*d + d^M         M=5   k*b0 + k*b1*d + d^5
+  //            k*b0 + k*b1*d + d^M         M=5     k*b0 + k*b1*d + d^5
   //  H(z) = -----------------------------   =   --------------------------
   //          1 + k*b1*d^(M-1) + k*b0*d^M         1 + k*b1*d^4 + k*b0*d^5
   //
+  Vec d(N), hP(N);  // d[n] is the unit impulse
+  d[0] = 1;
+  rsInfiniteDataStream<Real> x(&d[0], N), y(&hP[0], N);
   y.setZero();
   for(int n = 0; n < N; n++)
   {
@@ -1054,67 +963,19 @@ void dampedSchroederAllpass()
     tmp -= k*b[1]*y[n-(M-1)] + k*b[0]*y[n-M];
     y[n] = tmp;
   }
-  magsP = rsSpectralMagnitudes(hP);
-  rsPlotVectors(h, hP);
-  rsPlotVectors(mags, magsP);
-  // Aha! The magsP now looks allpass indeed!
+  Vec magsP = rsSpectralMagnitudes(hP);
+
+  // Plot all 3 impulse and magnitude responses. They should all match and be allpass:
+  rsPlotVectors(h, hN, hP);
+  rsPlotVectors(mags, magsN, magsP);
 
 
-
-  dummy = 0;
-
-
-
-
-  // Obvservations:
-  //
-  // - Without the reversals, this is only an allpass when dampGain = 1. For something like 0.7, we
-  //   see a sort of comb like spectrum. Not really what I wanted - but maybe it could be useful 
-  //   for certain things. Maybe for synthesis of semi-tonal percussions.
-  //
-  // - Even with the simple 2-point MA feedback filter, the result is still not allpass. I think,
-  //   at least that one should work! Ah - I think, it might be because we reverse the a-array?
-  //   Try not doing that! ..ok - done - it's still not allpass
-  //
-  //
-  // Conclusions:
-  //
-  // - It seems like to make this setup work as allpass, it is required to modify the feedforward
-  //   filter in such a way as to reverse both of its coefficient arrays. Doing that with the
-  //   a-array will make the feedforward filter unstable though. We would have to restrict 
-  //   ourselves to use only FIR filters as feedbank filters. That would remove the problem.
-  //   Or can we use filters with symmetric coefficient arrays? Do they make sense?
-  //
-  //
   // ToDo:
   //
-  // - Figure out where it goes wrong. Let SageMath expand the transfer function and check why 
-  //   numerator and denominator are not reversals of one another and what can be done about it.
+  // - Implement a variant that uses a sparse FIR in the feedback path.
   //
   // - Before writing the results to wavefiles, post-process them by a 1st order lowpass and 
   //   normalization. That makes the non-allpass "percussions" more musically useful.
-  //
-  //
-  // Derivations:
-  //
-  // F(z) = b0 * X(z)  +  b1 * z^-1 * X(z)  -  a1 * z^-1 * F(z)  
-  // V(z) = X(z)  -  k * F(z) * U(z);
-  // U(z) = z^-M * V(z)     
-  // Y(z) = k * F(z) * V(z)  +  U(z)
-  //
-  //
-  // Let's use only 2pt MA:
-  //
-  //  var("k b0 b1 d M")
-  //  F = b0 + b1*d
-  //  H = (k*F + d^M) / (1 + k*F*d^M)
-  //  H.numerator(), H.denominator()
-  //
-  //    ->  b1*d*k + b0*k + d^M, b1*d*d^M*k + b0*d^M*k + 1
-  //
-  //            k*b0 + k*b1*d + d^M
-  //  H(z) = -----------------------------
-  //          1 + k*b0*d^M + k*b1*d^(M+1)
 }
 
 void dampedAllpassComb()
