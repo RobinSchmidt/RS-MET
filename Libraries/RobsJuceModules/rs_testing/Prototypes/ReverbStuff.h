@@ -947,6 +947,15 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::applyCorrector(TSig in)
   y += rM2 * corDelayM2.getSample(t);
 
   return y;
+
+  // Maybe re-implement the FIR part as:
+  //
+  //   y += corrZerosFront.getSample(t) + corrZerosBack.getSample(corrDelayM1.getSample(t))
+  //
+  // where corrZerosFront/Back implement the two parts of the FIR filter. One (front) part acts
+  // on the non-delayed t and the other (back) on the delayed t. We may then get rid of the 
+  // unitDelay and the corDelayM2 because these delays would then be part of the two corZeros
+  // filters. This implementation would make it clearer what happens, I think.
 }
 
 // A free function to set up the object with a more convenient parametrization:
@@ -1284,7 +1293,10 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   // these FIR outputs to y. The coeffs for the FIR for the output at 0 are given by k times the 
   // reversal of the b-coeffs and the FIR coeffs for the output at M+1 are given by the reversal 
   // of the a-coeffs of the feedback filter. Or something along these lines. ToDo: Figure this out 
-  // exactly!
+  // exactly! But I don't think, the implementation should change to implement it literally that 
+  // way. the way we do it currently seems more efficient. No additional (redundant) filter objects
+  // are used here which is actually a good thing from an economic point of view. But maybe in the 
+  // naive prototype, we should do it with the additional filters.
 }
 
 // A free function to set up the object with a more convenient parametrization:
