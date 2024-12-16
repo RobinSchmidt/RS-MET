@@ -936,6 +936,7 @@ void dampedSchroederAllpass()
   //Real b[2] = { 0.5, 0.5 };      // Crazy comb
   Real b[2] = { 0.75, 0.25 };      // 
   //Real b[2] = { 1.0, 0.0 };    // Works without the reversal
+  //Real b[3] = { 0.5, 0.3, 0.2 };
   Real a[2] = { 1.0, 0.0 };
 
 
@@ -962,7 +963,8 @@ void dampedSchroederAllpass()
 
   AllpassN apn;
   apn.setMaxDelayInSamples(delay);
-  apn.setup(delay, feedback, 1, b, a);
+  apn.setup(delay, feedback, 1, b);
+  //apn.setup(delay, feedback, 2, b);
   Vec hN = impulseResponse(apn, N, 1.0);
   //rsPlotVectors(hN);
   Vec magsN = rsSpectralMagnitudes(hN);
