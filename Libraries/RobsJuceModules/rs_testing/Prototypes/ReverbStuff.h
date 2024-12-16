@@ -1578,12 +1578,12 @@ public:
       b[k] = dampCoeffsB[k];
   }
 
-  void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain)
-  {
-    TPar a[2], b[2]; a[0] = 1;
-    rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
-    setup(delay, feedback, 1, b, a);
-  }
+  //void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain)
+  //{
+  //  TPar a[2], b[2]; a[0] = 1;
+  //  rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
+  //  setup(delay, feedback, 1, b, a);
+  //}
 
   TSig getSample(TSig in)
   {

@@ -918,10 +918,10 @@ void dampedSchroederAllpass()
   using AllpassN = rsDampedSchroederAllpassNaive<Real, Real>;
 
   // User parameters:
-  int  delay      =     5;     // Delay roundtrip length in samples. Is M-1 in the algo
+  int  delay      =    10;     // Delay roundtrip length in samples. Is M-1 in the algo
   int  numSamples =   512;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
-  Real feedback   =     0.8;   // Feedback gain factor
+  Real feedback   =    -0.99;  // Feedback gain factor
 
   // Abbreviations for convenience:
   int  N = numSamples;
@@ -970,6 +970,12 @@ void dampedSchroederAllpass()
   rsPlotVectors(mags, magsN, magsP);
 
 
+  // Observations:
+  //
+  // - With high positive feedback and a lowpassish feedback filter, the impulse response tends
+  //   to a periodic waveform with period 2*M. With negative feedback, the period is M.
+  //
+  // 
   // ToDo:
   //
   // - Implement a variant that uses a sparse FIR in the feedback path.

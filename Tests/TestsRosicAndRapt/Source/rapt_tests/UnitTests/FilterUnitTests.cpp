@@ -2548,10 +2548,10 @@ bool dampedSchroederAllpassUnitTest()
 
   // ToDo:
   //
-  // - Test cases where order > delay. I think, the currently implementation will have problems 
-  //   with that. But it should be possible to make it work, I think. OK - done. Indeed, when
-  //   order > delay, the response deviates from allpass. order == delay still seems to work 
-  //   fine, though.
+  // - Test cases where order > delay. I think, the current implementation will have problems 
+  //   with that. Does such a setup even make sense? OK - test done. Indeed, when order > delay, 
+  //   the response deviates from allpass. order == delay still seems to work fine, though. Maybe
+  //   the class should enforce and assert this limit.
 }
 
 bool allpassUnitTest()
