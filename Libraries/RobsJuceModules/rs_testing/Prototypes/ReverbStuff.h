@@ -1687,45 +1687,25 @@ public:
     k = feedback;
     inDelay.setDelayInSamples( delay);
     outDelay.setDelayInSamples(delay);
-    feedbackDamper.setCoefficients(   dampCoeffsA, dampCoeffsB, dampOrder);
-    feedforwardDamper.setCoefficients(dampCoeffsA, dampCoeffsB, dampOrder);
-
     b.resize(dampOrder+1);
     for(int k = 0;  k <= dampOrder; k++)
       b[k] = dampCoeffsB[k];
-
-
-    // For test:
-    //feedforwardDamper.reflectPoles();
-    //feedforwardDamper.reflectZeros();
-    // The pole reflection will render it unstable but for experiments, we do it anyway. It does
-    // seem to try to be indeed allpass when we do this, though. We can render a 100 or so samples
-    // without getting into much trouble
   }
-
 
   TSig getSample(TSig in)
   {
-    ////combOut = outDelay.getSample(in - k*feedbackDamper.getSample(combOut));
-    //combOut = outDelay.getSample(in - k*feedbackDamper.getSample(combOut));
-
-    //TSig out = combOut + inDelay.getSample(k*feedforwardDamper.getSample(in));
-    ////TSig out = combOut + k*feedforwardDamper.getSample(in);
-
-
-
+    // For a 2-point feedback filter with coeffs b0,b1 and with M = 5 (the delay), the transfer 
+    // function should look like this:
+    //
     //            k*b0 + k*b1*d + d^M         M=5   k*b0 + k*b1*d + d^5
     //  H(z) = -----------------------------   =   --------------------------
     //          1 + k*b1*d^(M-1) + k*b0*d^M         1 + k*b1*d^4 + k*b0*d^5
-
-
-
 
     int order = (int) b.size()-1;
 
     // Apply feedforward part:
     inDelay.writeInputNoUpdate(in);
-    TSig tmp = inDelay.readOutputAt(M);   // Just using readOutpiut should also work and be more efficient
+    TSig tmp = inDelay.readOutputAt(M);           // readOutput() should also work (more efficient)
     for(int i = 0; i <= order; i++)
       tmp += k * b[i] * inDelay.readOutputAt(i);
 
@@ -1743,10 +1723,6 @@ public:
   {
     inDelay.reset();
     outDelay.reset();
-    feedbackDamper.reset();
-    feedforwardDamper.reset();
-    unitDelay.reset();
-    combOut = 0;
   }
 
 
@@ -1754,17 +1730,8 @@ protected:
 
   rsBasicDelayLine<TSig>         inDelay;
   rsBasicDelayLine<TSig>         outDelay;
-  rsDirectFormFilter<TSig, TPar> feedbackDamper;      // get rid
-  rsDirectFormFilter<TSig, TPar> feedforwardDamper;   // get rid
-  rsUnitDelay<TSig>              unitDelay;           // get rid
-
   std::vector<TPar> b;
-
-
-  TSig combOut = TSig(0);                             // get rid
-
   TSig k;
-
   int M = 0;
 
 };
