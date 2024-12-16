@@ -1683,11 +1683,17 @@ public:
 
   void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA)
   {
+    M = delay;
     k = feedback;
     inDelay.setDelayInSamples( delay);
     outDelay.setDelayInSamples(delay);
     feedbackDamper.setCoefficients(   dampCoeffsA, dampCoeffsB, dampOrder);
     feedforwardDamper.setCoefficients(dampCoeffsA, dampCoeffsB, dampOrder);
+
+    b.resize(dampOrder+1);
+    for(int k = 0;  k <= dampOrder; k++)
+      b[k] = dampCoeffsB[k];
+
 
     // For test:
     //feedforwardDamper.reflectPoles();
@@ -1700,13 +1706,36 @@ public:
 
   TSig getSample(TSig in)
   {
+    ////combOut = outDelay.getSample(in - k*feedbackDamper.getSample(combOut));
     //combOut = outDelay.getSample(in - k*feedbackDamper.getSample(combOut));
-    combOut = outDelay.getSample(in - k*feedbackDamper.getSample(combOut));
 
-    TSig out = combOut + inDelay.getSample(k*feedforwardDamper.getSample(in));
-    //TSig out = combOut + k*feedforwardDamper.getSample(in);
+    //TSig out = combOut + inDelay.getSample(k*feedforwardDamper.getSample(in));
+    ////TSig out = combOut + k*feedforwardDamper.getSample(in);
 
-    return out;
+
+
+    //            k*b0 + k*b1*d + d^M         M=5   k*b0 + k*b1*d + d^5
+    //  H(z) = -----------------------------   =   --------------------------
+    //          1 + k*b1*d^(M-1) + k*b0*d^M         1 + k*b1*d^4 + k*b0*d^5
+
+
+
+
+    int order = (int) b.size()-1;
+
+    // Apply feedforward part:
+    TSig tmp = inDelay.readOutputAt(M);   // Just using readOutpiut should also work and be more efficient
+    for(int i = 0; i <= order; i++)
+      tmp += k * b[i] * inDelay.readOutputAt(i);
+
+    // Apply feedback path:
+    for(int i = 0; i <= order; i++)
+      tmp -= k * b[i] * outDelay.readOutputAt(M-i);
+
+    // Update delaylines and return result:
+    inDelay.writeInputAndUpdate( in);
+    outDelay.writeInputAndUpdate(tmp);
+    return tmp;
   }
 
   void reset()
@@ -1724,13 +1753,18 @@ protected:
 
   rsBasicDelayLine<TSig>         inDelay;
   rsBasicDelayLine<TSig>         outDelay;
-  rsDirectFormFilter<TSig, TPar> feedbackDamper;
-  rsDirectFormFilter<TSig, TPar> feedforwardDamper;
-  rsUnitDelay<TSig>              unitDelay;
+  rsDirectFormFilter<TSig, TPar> feedbackDamper;      // get rid
+  rsDirectFormFilter<TSig, TPar> feedforwardDamper;   // get rid
+  rsUnitDelay<TSig>              unitDelay;           // get rid
 
-  TSig combOut = TSig(0);
+  std::vector<TPar> b;
+
+
+  TSig combOut = TSig(0);                             // get rid
 
   TSig k;
+
+  int M = 0;
 
 };
 
