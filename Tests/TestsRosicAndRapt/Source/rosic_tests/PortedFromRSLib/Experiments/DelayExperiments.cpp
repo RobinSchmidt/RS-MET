@@ -990,5 +990,5 @@ void dampedAllpassComb()
   dampedAllpassCombComplex();
   dampedAllpassCombNonLin();
   dampedAllpassDelayContent();
-  dampedSchroederAllpass();       // Does not yet work!
+  dampedSchroederAllpass();
 }

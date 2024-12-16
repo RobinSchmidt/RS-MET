@@ -1543,7 +1543,7 @@ We try to implement a generalization of the Schroeder allpass with frequency dep
 We want to realize:
 
           z^-1 * G(z) + z^-M
-  H(z) = -----------------------------
+  H(z) = -----------------------------   ...Nah! this is wrong!
           1  + k * z^-1 * G(z) * z^-M
 
 This does not yet work! 
@@ -1589,68 +1589,24 @@ public:
   {
     int order = (int) b.size()-1;
 
-    // Naive (feedforward first):
-    //// Apply feedforward part:
-    //inDelay.writeInputNoUpdate(in);
-    //TSig tmp = inDelay.readOutputAt(M);           // readOutput() should also work (more efficient)
-    //for(int i = 0; i <= order; i++)
-    //  tmp += k * b[i] * inDelay.readOutputAt(i);
-
-    //// Apply feedback path:
-    //for(int i = 0; i <= order; i++)
-    //  tmp -= k * b[i] * outDelay.readOutputAt(M-i);
-
-    //// Update delaylines and return result:
-    //inDelay.incrementTapPointers();
-    //outDelay.writeInputAndUpdate(tmp);
-    //return tmp;
-
-
-    // For a 2-point feedback filter with coeffs b0,b1 and with M = 5 (the delay), the transfer 
-    // function should look like this:
-    //
-    //            k*b0 + k*b1*d + d^M         M=5   k*b0 + k*b1*d + d^5
-    //  H(z) = -----------------------------   =   --------------------------
-    //          1 + k*b1*d^(M-1) + k*b0*d^M         1 + k*b1*d^4 + k*b0*d^5
-
-
-    // Delay-canonical (feedback first):
-    TSig tmp = in;
-    // Is this correct? ...yeah..I think, that looks OK
-
     // Apply feedback path:
+    TSig tmp = in;
     for(int i = 0; i <= order; i++)
       tmp -= k * b[i] * mainDelay.readOutputAt(M-i);
-    mainDelay.writeInputNoUpdate(tmp); // Maybe that's too early to update? Nah! It's ok!
+    mainDelay.writeInputNoUpdate(tmp);
 
     // Apply feedforward path:
     tmp = 0;
     for(int i = 0; i <= order; i++)
       tmp += k * b[i] * mainDelay.readOutputAt(i);
     tmp += mainDelay.readOutputAt(M);
-    // The d^5 term in the numerator. But: we already used that output. It somehow feels wrong to 
-    // use it again. Or does it? Sharing the delayline actually means to use all of its contents
-    // twice, so maybe it's ok.
-
 
     // Update delayline and return result:
     mainDelay.incrementTapPointers();
     return tmp;
 
-
     // See also:
     // https://www.dsprelated.com/freebooks/filters/Direct_Form_II.html
-
-
-    //// Old:
-    //TSig u = mainDelay.readOutput();                     // U(z) = z^-M * V(z)
-    //TSig v = in - k * feedbackDamper.getSample(u);       // V(z) = X(z)  -  k * F(z) * U(z)
-    //mainDelay.writeInputAndUpdate(v); 
-    //TSig out =  k * feedforwardDamper.getSample(v) + u;  // Y(z) = k * F(z) * V(z)  +  U(z)
-    //return out;
-    //// Nope! That naive way of doing it does not seem to work! ToDo: work out the transfer function
-    //// in direct form and check it for the hallmark of allpasses: numerator and denominator should
-    //// be reverses of one another. Check where it goes wrong!
   }
 
   void reset()
