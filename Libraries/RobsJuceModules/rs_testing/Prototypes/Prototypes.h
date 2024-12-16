@@ -490,6 +490,14 @@ public:
       return data[index];
   }
 
+  /** Sets all values in the buffer to zero. */
+  void setZero()
+  {
+    for(int i = 0; i < dataLength; i++)
+      data[i] = T(0);
+  }
+
+
   // \todo setValue, setBufferValues
 
 protected:
