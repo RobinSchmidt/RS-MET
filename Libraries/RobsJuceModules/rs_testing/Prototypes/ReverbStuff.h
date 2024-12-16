@@ -1630,17 +1630,15 @@ hmmm but maybe we need to introduce unit delays in front of both k*F*... terms t
 implementable? ...noo - I think, that transfer function is wrong anyway. I think, it's more 
 something like:
 
-            k * F(z) + z^-M 
+            k * R(z) + z^-M 
   H(z) = -------------------------
-          1 + k * R(z) * z^-(M-P)
+          1 + k * F(z) * z^-(M-P)
 
 Where R is the reversal of F and P is the order of F. ...But this also needs verification. We 
 assume that F(z) is purely FIR, by the way - because otherwise the whole thing would be unstable,
-I think.
-
-
-
-directly. */
+I think. Maybe try implementing the filter literally like the transfer function above. Use 2 FIR
+filters F(z) and R(z) and an input delayline of length M and an output delayline of length M-P. 
+Or maybe it's M-P+1 - or M-L where L is the length of the filter (i.e. number of coeffs) */
 
 template<class TSig, class TPar>
 class rsDampedSchroederAllpassNaive
