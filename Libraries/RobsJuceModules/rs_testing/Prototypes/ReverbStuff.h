@@ -1724,6 +1724,7 @@ public:
     int order = (int) b.size()-1;
 
     // Apply feedforward part:
+    inDelay.writeInputNoUpdate(in);
     TSig tmp = inDelay.readOutputAt(M);   // Just using readOutpiut should also work and be more efficient
     for(int i = 0; i <= order; i++)
       tmp += k * b[i] * inDelay.readOutputAt(i);
@@ -1733,7 +1734,7 @@ public:
       tmp -= k * b[i] * outDelay.readOutputAt(M-i);
 
     // Update delaylines and return result:
-    inDelay.writeInputAndUpdate( in);
+    inDelay.incrementTapPointers();
     outDelay.writeInputAndUpdate(tmp);
     return tmp;
   }
