@@ -1621,12 +1621,13 @@ public:
     // Apply feedback path:
     for(int i = 0; i <= order; i++)
       tmp -= k * b[i] * mainDelay.readOutputAt(M-i);
-    mainDelay.writeInputNoUpdate(tmp);
+    mainDelay.writeInputNoUpdate(tmp); // Maybe that's too early to update? Nah! It's ok!
 
     // Apply feedforward path:
+    tmp = 0;
     for(int i = 0; i <= order; i++)
       tmp += k * b[i] * mainDelay.readOutputAt(i);
-    tmp += mainDelay.readOutputAt(M);  
+    tmp += mainDelay.readOutputAt(M);
     // The d^5 term in the numerator. But: we already used that output. It somehow feels wrong to 
     // use it again. Or does it? Sharing the delayline actually means to use all of its contents
     // twice, so maybe it's ok.
@@ -1635,8 +1636,6 @@ public:
     // Update delayline and return result:
     mainDelay.incrementTapPointers();
     return tmp;
-
-    // Where is the d^5 term from the numerator? Nowhere!
 
 
     // See also:
