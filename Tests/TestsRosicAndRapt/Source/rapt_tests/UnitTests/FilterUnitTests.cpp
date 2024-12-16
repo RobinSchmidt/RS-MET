@@ -2489,6 +2489,46 @@ bool dampedAllpassCombUnitTest2()
   //   or b has a tail of zeros
 }
 
+bool dampedSchroederAllpassUnitTest()
+{
+  // We test rsDampedSchroederAllpass for different feedback filter orders. This structure only
+  // admits FIR filters in the feedback path. We start with the trivial filter b = { 1 } and 
+  // iteratively convolve that array with a prototype filter b1 = { 0.75, 0.25 }. 
+  //
+  // ...TBC...
+
+  bool ok = true;
+
+  // Define types to be used:
+  using Real     = double;
+  using Vec      = std::vector<Real>;
+  using Allpass  = rsDampedSchroederAllpass<Real, Real>;
+  using AllpassN = rsDampedSchroederAllpassNaive<Real, Real>;
+
+  // User parameters:
+  int  delay      =   10;     // Delay roundtrip length in samples.
+  int  numSamples =  512;     // Number of samples to generate
+  Real feedback   =    0.8;   // Feedback gain factor
+  int  maxOrder   =    5;     // Maximum order for feedback filter
+
+
+  int  N = numSamples;
+  int  M = delay;
+  Real k = feedback;
+
+  Vec b1 = { 0.75, 0.25 };
+  Vec b(maxOrder+1);
+  b[0] = 1;
+
+
+
+  //Vec h, mags;
+
+
+
+  return ok;
+}
+
 bool allpassUnitTest()
 {
   bool ok = true;
@@ -2501,6 +2541,7 @@ bool allpassUnitTest()
   ok &= multiPoleAllpassDelayUnitTest();
   ok &= dampedAllpassCombUnitTest1();
   ok &= dampedAllpassCombUnitTest2();
+  ok &= dampedSchroederAllpassUnitTest();
 
   return ok;
 }
