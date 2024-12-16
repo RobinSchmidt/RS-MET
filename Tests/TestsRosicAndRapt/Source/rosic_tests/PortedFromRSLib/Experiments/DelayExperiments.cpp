@@ -933,8 +933,8 @@ void dampedSchroederAllpass()
   Vec h, mags;
 
   // Try to set it up with a 1-point moving average FIR filter in the feedback path:
-  Real b[2] = { 0.5, 0.5 };      // Crazy comb
-  //Real b[2] = { 0.75, 0.25 };      // 
+  //Real b[2] = { 0.5, 0.5 };      // Crazy comb
+  Real b[2] = { 0.75, 0.25 };      // 
   //Real b[2] = { 1.0, 0.0 };    // Works without the reversal
   Real a[2] = { 1.0, 0.0 };
 
