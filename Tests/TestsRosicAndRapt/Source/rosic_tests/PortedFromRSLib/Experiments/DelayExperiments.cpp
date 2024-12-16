@@ -927,8 +927,9 @@ void dampedSchroederAllpass()
 
 
 
-  int N = numSamples;
-  int D = delay;
+  int  N = numSamples;
+  int  M = delay;
+  Real k = feedback;
   Vec h, mags;
 
   // Try to set it up with a 1-point moving average FIR filter in the feedback path:
@@ -982,17 +983,29 @@ void dampedSchroederAllpass()
   ////rosic::writeToMonoWaveFile("SchroederAllpassWithDamping.wav", &h[0], N, (int)sampleRate);
 
   // Create unit impulse of length N:
-  Vec d(N);
+  Vec d(N), hP(N);
   d[0] = 1;
 
 
   // Create infinite data stream objects for conveniently implementing the difference equation of 
   // the filter directly:
-  rsInfiniteDataStream<Real> x(&d[0], N), y(&h[0], N);
+  rsInfiniteDataStream<Real> x(&d[0], N), y(&hP[0], N);
+  for(int n = 0; n < N; n++)
+  {
+    Real tmp = 0;
+    tmp += k*b[0]*x[n]   + k*b[1]*x[n-1] + x[n-M];  // Feedforward part
+    tmp -= k*b[0]*y[n-M] + k*b[1]*y[n-M-1];         // Feedback part
+    y[n] = tmp;
+  }
+  rsPlotVectors(h, hP);
+  // OK - with b = a = {1,0}, these look the same as it should be.
+
 
   dummy = 0;
 
-
+  //            k*b0 + k*b1*d + d^M
+  //  H(z) = -----------------------------
+  //          1 + k*b0*d^M + k*b1*d^(M+1)
 
 
   // Obvservations:
@@ -1031,7 +1044,19 @@ void dampedSchroederAllpass()
   // U(z) = z^-M * V(z)     
   // Y(z) = k * F(z) * V(z)  +  U(z)
   //
-  // ...TBC...
+  //
+  // Let's use only 2pt MA:
+  //
+  //  var("k b0 b1 d M")
+  //  F = b0 + b1*d
+  //  H = (k*F + d^M) / (1 + k*F*d^M)
+  //  H.numerator(), H.denominator()
+  //
+  //    ->  b1*d*k + b0*k + d^M, b1*d*d^M*k + b0*d^M*k + 1
+  //
+  //            k*b0 + k*b1*d + d^M
+  //  H(z) = -----------------------------
+  //          1 + k*b0*d^M + k*b1*d^(M+1)
 }
 
 void dampedAllpassComb()
