@@ -934,7 +934,8 @@ void dampedSchroederAllpass()
 
   // Try to set it up with a 1-point moving average FIR filter in the feedback path:
   //Real b[2] = { 0.5, 0.5 };      // Crazy comb
-  Real b[2] = { 1.0, 0.0 };    // Works without the reversal
+  Real b[2] = { 0.75, 0.25 };      // 
+  //Real b[2] = { 1.0, 0.0 };    // Works without the reversal
   Real a[2] = { 1.0, 0.0 };
 
 
@@ -987,25 +988,57 @@ void dampedSchroederAllpass()
   d[0] = 1;
 
 
-  // Create infinite data stream objects for conveniently implementing the difference equation of 
-  // the filter directly:
+  // Implement the difference equation of the filter directly. With a 1st order FIR filter in
+  // the feedback path,  we have the following transfer function:
+  //
+  //            k*b0 + k*b1*d + d^M
+  //  H(z) = -----------------------------
+  //          1 + k*b0*d^M + k*b1*d^(M+1)
+  //
   rsInfiniteDataStream<Real> x(&d[0], N), y(&hP[0], N);
   for(int n = 0; n < N; n++)
   {
     Real tmp = 0;
     tmp += k*b[0]*x[n]   + k*b[1]*x[n-1] + x[n-M];  // Feedforward part
-    tmp -= k*b[0]*y[n-M] + k*b[1]*y[n-M-1];         // Feedback part
+    //tmp -= k*b[0]*y[n-M] + k*b[1]*y[n-M-1];         // Feedback part
+    tmp -= k*b[1]*y[n-M] + k*b[0]*y[n-M-1];         // Feedback part
     y[n] = tmp;
   }
   rsPlotVectors(h, hP);
-  // OK - with b = a = {1,0}, these look the same as it should be.
+  Vec magsP = rsSpectralMagnitudes(hP);
+  mags = rsSpectralMagnitudes(h);
+  rsPlotVectors(mags, magsP);
+  // OK - with b = a = {1,0}, these look the same as it should be. Switching to b = {0.5, 0.5},
+  // they still look the same. But the spectral magnitudes totally do not look like an allpass
+  // filter. Oh - I think, we need to reverse the b-coeffs in the denominator. But that shouldn't
+  // matter when b0 == b1 as is the case here. But we should do it anyway. Also, the delays do not 
+  // seem to match.
+
+  // OK - let's try something else. Adapt the difference equation to realize:
+  //
+  //            k*b0*d + k*b1*d^2 + d^(M+1)
+  //  H(z) = -------------------------------
+  //          1 + k*b1*d^M + k*b0*d^(M+1)
+  //
+  for(int n = 0; n < N; n++)
+  {
+    Real tmp = 0;
+    tmp += k*b[0]*x[n-1] + k*b[1]*x[n-2] + x[n-M-1];
+    tmp -= k*b[1]*y[n-M] + k*b[0]*y[n-M-1];
+    y[n] = tmp;
+  }
+  rsPlotVectors(h, hP);
+  magsP = rsSpectralMagnitudes(hP);
+  rsPlotVectors(mags, magsP);
+  // Nope - this just shifts the whole impulse respone by one sample to the right. But the 
+  // magnitude response is still not allpass. But why? Looking at the transfer function, it surely
+  // looks like that numerator and denominator are reversals of one another
+
 
 
   dummy = 0;
 
-  //            k*b0 + k*b1*d + d^M
-  //  H(z) = -----------------------------
-  //          1 + k*b0*d^M + k*b1*d^(M+1)
+
 
 
   // Obvservations:

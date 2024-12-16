@@ -1577,16 +1577,16 @@ public:
     feedforwardDamper.setCoefficients(dampCoeffsA, dampCoeffsB, dampOrder);
 
     // For test:
-    //feedforwardDamper.reflectPoles();
-    //feedforwardDamper.reflectZeros();
+    //feedforwardDamper.reflectPoles();  // Reverses the a-array
+    feedforwardDamper.reflectZeros();    // Reverses the b-array
     // The pole reflection will render it unstable but for experiments, we do it anyway. It does
     // seem to try to be indeed allpass when we do this, though. We can render a 100 or so samples
     // without getting into much trouble
 
-    // These are used only in development:
-    b0 = dampCoeffsB[0];
-    b1 = dampCoeffsB[1];
-    a1 = dampCoeffsA[1];
+    //// These are used only in development:
+    //b0 = dampCoeffsB[0];
+    //b1 = dampCoeffsB[1];
+    //a1 = dampCoeffsA[1];
   }
 
   void setupHighDamp(int delay, TSig feedback, TPar dampOmega, TPar dampGain)
@@ -1661,7 +1661,7 @@ protected:
   TSig k;
 
   // Temporary - for experimentation during development:
-  TPar b0, b1, a1;
+  //TPar b0, b1, a1;
 
 };
 
