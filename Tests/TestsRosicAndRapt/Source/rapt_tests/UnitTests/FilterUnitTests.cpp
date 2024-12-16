@@ -2494,8 +2494,6 @@ bool dampedSchroederAllpassUnitTest()
   // We test rsDampedSchroederAllpass for different feedback filter orders. This structure only
   // admits FIR filters in the feedback path. We start with the trivial filter b = { 1 } and 
   // iteratively convolve that array with a prototype filter b1 = { 0.75, 0.25 }. 
-  //
-  // ...TBC...
 
   bool ok = true;
 
@@ -2506,25 +2504,29 @@ bool dampedSchroederAllpassUnitTest()
   using AllpassN = rsDampedSchroederAllpassNaive<Real, Real>;
 
   // User parameters:
-  int  delay      =   10;     // Delay roundtrip length in samples.
+  int  delay      =    8;     // Delay roundtrip length in samples.
   int  numSamples =  512;     // Number of samples to generate
   Real feedback   =    0.7;   // Feedback gain factor
-  int  maxOrder   =    5;     // Maximum order for feedback filter
+  int  maxOrder   =    8;     // Maximum order for feedback filter
 
-
+  // For convenience:
   int  N = numSamples;
   int  M = delay;
   Real k = feedback;
 
+  // Arrays for prototype filter b1 and the current filter b:
   Vec b1 = { 0.75, 0.25 };
   Vec b(maxOrder+1);
   b[0] = 1;
-  //int order = 0;
 
+  // Create allpass filter objects:
   Allpass  ap;
   AllpassN apN;
-  ap.setMaxDelayInSamples( delay);
-  apN.setMaxDelayInSamples(delay);
+  ap.setMaxDelayInSamples( M);
+  apN.setMaxDelayInSamples(M);
+
+  // Obtain impulse responses for various feedback filter orders and check that they are allpass in
+  // nature. Check also that both implementations produce the same result:
   for(int order = 0; order < maxOrder; order++)
   {
     ap.setup( M, k, order, &b[0]);
@@ -2533,30 +2535,23 @@ bool dampedSchroederAllpassUnitTest()
     Vec hN = impulseResponse(apN, N, 1.0);
     ok &= rsIsCloseTo(h, hN, 1.e-15);  // Naive and optimized version should give same results
     ok &= isAllpass(h, 1.e-7);         // The result should be allpass in nature
-
-
-    //Vec mags = rsSpectralMagnitudes(h);
-    //rsPlotVectors(mags);
-    //rsPlotVectors(h, hN);
-
-
+    //if(!ok)
+    //{
+      //Vec mags = rsSpectralMagnitudes(h);
+      //rsPlotVectors(h, hN);
+      //rsPlotVectors(mags);
+    //}
     rsArrayTools::convolve(&b[0], order+1, &b1[0], 2, &b[0]);
   }
-
-
-
-
-
-  //Vec h, mags;
-
-
 
   return ok;
 
   // ToDo:
   //
   // - Test cases where order > delay. I think, the currently implementation will have problems 
-  //   with that. But it should be possible to make it work, I think.
+  //   with that. But it should be possible to make it work, I think. OK - done. Indeed, when
+  //   order > delay, the response deviates from allpass. order == delay still seems to work 
+  //   fine, though.
 }
 
 bool allpassUnitTest()
