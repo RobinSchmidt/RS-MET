@@ -928,6 +928,7 @@ void dampedSchroederAllpass()
 
 
   int N = numSamples;
+  int D = delay;
   Vec h, mags;
 
   // Try to set it up with a 1-point moving average FIR filter in the feedback path:
@@ -963,8 +964,8 @@ void dampedSchroederAllpass()
   Vec hN = impulseResponse(apn, N, 1.0);
   //rsPlotVectors(hN);
   Vec magsN = rsSpectralMagnitudes(hN);
-  rsPlotVectors(h, hN); 
-  rsPlotVectors(mags, magsN);
+  //rsPlotVectors(h, hN); 
+  //rsPlotVectors(mags, magsN);
   dummy = 0;
    // They look completely different!
 
@@ -980,11 +981,16 @@ void dampedSchroederAllpass()
   ////rsPlotVectors(mags);
   ////rosic::writeToMonoWaveFile("SchroederAllpassWithDamping.wav", &h[0], N, (int)sampleRate);
 
+  // Create unit impulse of length N:
+  Vec d(N);
+  d[0] = 1;
 
 
+  // Create infinite data stream objects for conveniently implementing the difference equation of 
+  // the filter directly:
+  rsInfiniteDataStream<Real> x(&d[0], N), y(&h[0], N);
 
-
-
+  dummy = 0;
 
 
 
