@@ -933,17 +933,17 @@ void dampedSchroederAllpass()
   Vec h, mags;
 
   // Try to set it up with a 1-point moving average FIR filter in the feedback path:
-  Real b[2] = { 0.5, 0.5 };      // Crazy comb
-  //Real b[2] = { 0.75, 0.25 };      // 
+  //Real b[2] = { 0.5, 0.5 };      // Crazy comb
+  Real b[2] = { 0.75, 0.25 };      // 
   //Real b[2] = { 1.0, 0.0 };    // Works without the reversal
   //Real b[3] = { 0.5, 0.3, 0.2 };
-  Real a[2] = { 1.0, 0.0 };
+  //Real a[2] = { 1.0, 0.0 };
 
 
   // Create and verify allpass impulse response:
   Allpass ap;
   ap.setMaxDelayInSamples(delay);
-  ap.setup(delay, feedback, 1, b, a);
+  ap.setup(delay, feedback, 1, b);
   //ap.setup(delay, feedback, 0, b, a);  // Nope! Trying with 0th order filter crashes!
   h = impulseResponse(ap, N, 1.0);
   //rsPlotVectors(h);

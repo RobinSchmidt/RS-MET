@@ -1568,7 +1568,7 @@ public:
     mainDelay.setMaximumDelayInSamples(newMaxDelay);
   }
  
-  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA)
+  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB)
   {
     mainDelay.setDelayInSamples(delay);
     M = delay;
