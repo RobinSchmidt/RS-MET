@@ -1662,8 +1662,18 @@ protected:
   H(z) = ---------------------
           1 + k * F(z) * z^-M
 
-hmmm but maybe we need to intrdouce unit delays in front of both k*F*... terms to make it 
-implementable?
+hmmm but maybe we need to introduce unit delays in front of both k*F*... terms to make it 
+implementable? ...noo - I think, that transfer function is wrong anyway. I think, it's more 
+something like:
+
+            k * F(z) + z^-M 
+  H(z) = -------------------------
+          1 + k * R(z) * z^-(M-P)
+
+Where R is the reversal of F and P is the order of F. ...But this also needs verification. We 
+assume that F(z) is purely FIR, by the way - because otherwise the whole thing would be unstable,
+I think.
+
 
 
 directly. */
@@ -1728,8 +1738,8 @@ public:
 
 protected:
 
-  rsBasicDelayLine<TSig>         inDelay;
-  rsBasicDelayLine<TSig>         outDelay;
+  rsBasicDelayLine<TSig> inDelay;
+  rsBasicDelayLine<TSig> outDelay;
   std::vector<TPar> b;
   TSig k;
   int M = 0;
