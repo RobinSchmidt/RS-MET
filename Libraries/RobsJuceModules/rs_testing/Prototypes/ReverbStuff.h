@@ -1740,36 +1740,22 @@ public:
     k = feedback;
 
     inDelay.setDelayInSamples( M);
-
-    //outDelay.setDelayInSamples(M-P);                 // Verify!
-    // Maybe needs a -1
-
-    outDelay.setDelayInSamples(M-P-1); 
-    //outDelay.setDelayInSamples(M-P); 
-
-
-    outFilter.setImpulseResponse(dampCoeffsB, P+1);  // Verify the P+1
+    outDelay.setDelayInSamples(M-P-1);               // -1 compnesates for implicit feedback delay
+    outFilter.setImpulseResponse(dampCoeffsB, P+1);
     inFilter.setImpulseResponse( dampCoeffsB, P+1);
-
-
-    //inFilter.reverseImpulseResponse();
-
     outFilter.reverseImpulseResponse();
 
-
-    // Maybe bake the scaler k into the filter coeffs.
+    // Maybe bake the scaler k into the filter coeffs. I think, instead of reversing the coeffs
+    // for the outFilter (i.e. in the feedback path), we should use the given coeffs in the
+    // feedback path as is and reverse them in the feedforward path. We need to do this in all the
+    // variants then.
   }
 
   TSig getSample(TSig in)
   {
-    TSig tmp = 0;
-    tmp += k*inFilter.getSample(in) + inDelay.getSample(in);  // Feedforward path
-
-    //tmp -= k*outFilter.getSample(outDelay.getSample(tmp));    // Feedback path
-    // But this is not really feedback! We do not feed in the previous output! Mayb int
-
-    out = tmp -  k*outFilter.getSample(outDelay.getSample(out));    // Feedback path
-
+    TSig tmp;
+    tmp = k*inFilter.getSample(in) + inDelay.getSample(in);       // Feedforward path
+    out = tmp -  k*outFilter.getSample(outDelay.getSample(out));  // Feedback path
     return out;
   }
 
