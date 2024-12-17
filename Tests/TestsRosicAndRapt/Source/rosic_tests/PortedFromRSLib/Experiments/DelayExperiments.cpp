@@ -916,12 +916,13 @@ void dampedSchroederAllpass()
   using Vec      = std::vector<Real>;
   using Allpass  = rsDampedSchroederAllpass<Real, Real>;
   using AllpassN = rsDampedSchroederAllpassNaive<Real, Real>;
+  using Allpass2 = rsDampedSchroederAllpassNaive2<Real, Real>;
 
   // User parameters:
   int  delay      =    10;     // Delay roundtrip length in samples. Is M-1 in the algo
   int  numSamples =   512;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
-  Real feedback   =    +0.99;  // Feedback gain factor
+  Real feedback   =    +0.9;   // Feedback gain factor
 
   // Abbreviations for convenience:
   int  N = numSamples;
@@ -966,8 +967,25 @@ void dampedSchroederAllpass()
   Vec magsP = rsSpectralMagnitudes(hP);
 
   // Plot all 3 impulse and magnitude responses. They should all match and be allpass:
-  rsPlotVectors(h, hN, hP);
-  rsPlotVectors(mags, magsN, magsP);
+  //rsPlotVectors(h, hN, hP);
+  //rsPlotVectors(mags, magsN, magsP);
+
+
+  // Create yet another one - this time with class rsDampedSchroederAllpassNaive2 ....
+  Allpass2 ap2;
+  ap2.setMaxDelayInSamples(M);
+  ap2.setup(delay, feedback, 1, b);
+  Vec h2 = impulseResponse(ap2, N, 1.0);
+  Vec mags2 = rsSpectralMagnitudes(h2);
+
+
+  // Plot all 4 impulse and magnitude responses. They should all match and be allpass:
+  rsPlotVectors(h, hN, hP, h2);
+  rsPlotVectors(mags, magsN, magsP, mags2);
+  // ToDo: Rename the filters to ap0, ap1, ap2, ap3 and the impulse responses to h0, h1, ...
+
+
+  int dummy = 0;
 
 
   // Observations:
