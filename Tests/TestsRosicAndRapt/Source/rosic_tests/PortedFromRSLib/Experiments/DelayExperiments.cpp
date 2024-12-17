@@ -966,25 +966,17 @@ void dampedSchroederAllpass()
   }
   Vec magsP = rsSpectralMagnitudes(hP);
 
-  // Plot all 3 impulse and magnitude responses. They should all match and be allpass:
-  //rsPlotVectors(h, hN, hP);
-  //rsPlotVectors(mags, magsN, magsP);
-
-
   // Create yet another one - this time with class rsDampedSchroederAllpassNaive2 ....
   Allpass2 ap2;
   ap2.setMaxDelayInSamples(M);
   ap2.setup(delay, feedback, 1, b);
   Vec h2 = impulseResponse(ap2, N, 1.0);
   Vec mags2 = rsSpectralMagnitudes(h2);
-  // The new one is still wrong! We need to debug!
-
 
   // Plot all 4 impulse and magnitude responses. They should all match and be allpass:
   rsPlotVectors(h, hN, hP, h2);
   rsPlotVectors(mags, magsN, magsP, mags2);
   // ToDo: Rename the filters to ap0, ap1, ap2, ap3 and the impulse responses to h0, h1, ...
-
 
   int dummy = 0;
 

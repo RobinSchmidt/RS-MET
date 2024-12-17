@@ -1557,7 +1557,7 @@ for IIR filters, we may only be able to use FIR filters.
 
 
 template<class TSig, class TPar>
-class rsDampedSchroederAllpass // This is actually not so naive!
+class rsDampedSchroederAllpass
 {
 
 
@@ -1714,9 +1714,9 @@ protected:
 
 A variant that implements the transfer function proposed above:
 
-            k * R(z) + z^-M 
-  H(z) = -------------------------
-          1 + k * F(z) * z^-(M-P)
+            k * R(z) + z^-M                    k * R(z) + z^-M
+  H(z) = ------------------------- = ----------------------------------
+          1 + k * F(z) * z^-(M-P)     1 + k * z-^1 * F(z) * z^-(M-P-1)
 
 directly. Mainly to see, if this formula is actually correct. ...TBC...  */
 
