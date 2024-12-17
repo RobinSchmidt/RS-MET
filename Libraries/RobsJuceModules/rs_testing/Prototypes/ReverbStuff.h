@@ -1740,10 +1740,22 @@ public:
     k = feedback;
 
     inDelay.setDelayInSamples( M);
-    outDelay.setDelayInSamples(M-P);                 // Verify!
+
+    //outDelay.setDelayInSamples(M-P);                 // Verify!
+    // Maybe needs a -1
+
+    outDelay.setDelayInSamples(M-P-1); 
+    //outDelay.setDelayInSamples(M-P); 
+
+
     outFilter.setImpulseResponse(dampCoeffsB, P+1);  // Verify the P+1
     inFilter.setImpulseResponse( dampCoeffsB, P+1);
-    inFilter.reverseImpulseResponse();
+
+
+    //inFilter.reverseImpulseResponse();
+
+    outFilter.reverseImpulseResponse();
+
 
     // Maybe bake the scaler k into the filter coeffs.
   }
@@ -1752,8 +1764,13 @@ public:
   {
     TSig tmp = 0;
     tmp += k*inFilter.getSample(in) + inDelay.getSample(in);  // Feedforward path
-    tmp -= k*outFilter.getSample(outDelay.getSample(tmp));    // Feedback path
-    return tmp;
+
+    //tmp -= k*outFilter.getSample(outDelay.getSample(tmp));    // Feedback path
+    // But this is not really feedback! We do not feed in the previous output! Mayb int
+
+    out = tmp -  k*outFilter.getSample(outDelay.getSample(out));    // Feedback path
+
+    return out;
   }
 
   void reset()
@@ -1762,6 +1779,7 @@ public:
     outDelay.reset();
     inFilter.clearInputBuffer();   // Rename to reset
     outFilter.clearInputBuffer(); 
+    out = 0;
   }
 
 
@@ -1776,6 +1794,8 @@ protected:
   TSig k;
   int M = 0;   // Delay in samples
   int P = 0;   // Order of feedback- and feedforward filter
+
+  TSig out;
 
 };
 
