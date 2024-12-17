@@ -55,6 +55,7 @@ namespace rosic
 
     /** Sets the buffer for the previous input samples to zero. */
     void clearInputBuffer();
+    // Rename to reset - or provide an alias
 
     //=====================================================================================================================================
 

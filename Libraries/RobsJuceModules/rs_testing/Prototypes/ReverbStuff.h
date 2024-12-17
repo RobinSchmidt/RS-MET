@@ -1710,6 +1710,104 @@ protected:
 
 
 
+/** Under Construction.
+
+A variant that implements the transfer function proposed above:
+
+            k * R(z) + z^-M 
+  H(z) = -------------------------
+          1 + k * F(z) * z^-(M-P)
+
+directly. Mainly to see, if this formula is actually correct. ...TBC...  */
+
+template<class TSig, class TPar>
+class rsDampedSchroederAllpassNaive2
+{
+
+
+public:
+
+  void setMaxDelayInSamples(int newMaxDelay)
+  {
+    inDelay.setMaximumDelayInSamples( newMaxDelay);
+    outDelay.setMaximumDelayInSamples(newMaxDelay);
+  }
+
+  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB)
+  {
+    M = delay;
+    P = dampOrder;
+    k = feedback;
+
+    inDelay.setDelayInSamples( M);
+    outDelay.setDelayInSamples(M-P);                 // Verify!
+    outFilter.setImpulseResponse(dampCoeffsB, P+1);  // Verify the P+1
+    inFilter.setImpulseResponse( dampCoeffsB, P+1);
+    //inFilter.reverseImpulseRespose();              // Function does not yet exist - write it!
+
+    // Maybe bake the scaler k into the filter coeffs.
+  }
+
+  TSig getSample(TSig in)
+  {
+    return 0;  // Preliminary
+
+
+    // Old:
+    /*
+    // For a 2-point feedback filter with coeffs b0,b1 and with M = 5 (the delay), the transfer 
+    // function should look like this:
+    //
+    //            k*b0 + k*b1*d + d^M         M=5   k*b0 + k*b1*d + d^5
+    //  H(z) = -----------------------------   =   -------------------------
+    //          1 + k*b1*d^(M-1) + k*b0*d^M         1 + k*b1*d^4 + k*b0*d^5
+
+    int order = (int) b.size()-1;
+
+    // Apply feedforward part:
+    inDelay.writeInputNoUpdate(in);
+    TSig tmp = inDelay.readOutputAt(M);           // readOutput() should also work (more efficient)
+    for(int i = 0; i <= order; i++)
+      tmp += k * b[i] * inDelay.readOutputAt(i);
+
+    // Apply feedback path:
+    for(int i = 0; i <= order; i++)
+      tmp -= k * b[i] * outDelay.readOutputAt(M-i);
+
+    // Update delaylines and return result:
+    inDelay.incrementTapPointers();
+    outDelay.writeInputAndUpdate(tmp);
+    return tmp;
+    */
+  }
+
+  void reset()
+  {
+    inDelay.reset();
+    outDelay.reset();
+    inFilter.clearInputBuffer();   // Rename to reset
+    outFilter.clearInputBuffer(); 
+  }
+
+
+protected:
+
+  rsBasicDelayLine<TSig> inDelay;
+  rsBasicDelayLine<TSig> outDelay;
+
+  rosic::ConvolverBruteForce inFilter;
+  rosic::ConvolverBruteForce outFilter;
+
+  TSig k;
+  int M = 0;   // Delay in samples
+  int P = 0;   // Order of feedback- and feedforward filter
+
+};
+
+
+
+
+
 
 
 #endif
