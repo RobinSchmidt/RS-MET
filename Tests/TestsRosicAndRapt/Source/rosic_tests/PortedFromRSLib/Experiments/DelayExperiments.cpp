@@ -909,7 +909,8 @@ void dampedAllpassDelayContent()
 
 void dampedSchroederAllpass()
 {
-  // We test the class rsDampedSchroederAllpass here. ...TBC...
+  // We test the class rsDampedSchroederAllpass here. We compare its output against two naive
+  // prototype implementations and one naive implementation that we implement directly here.
 
   // Define types to be used:
   using Real     = double;
@@ -919,8 +920,8 @@ void dampedSchroederAllpass()
   using Allpass2 = rsDampedSchroederAllpassNaive2<Real, Real>;
 
   // User parameters:
-  int  delay      =    10;     // Delay roundtrip length in samples. Is M-1 in the algo
-  int  numSamples =   512;     // Number of samples to generate
+  int  delay      =    20;     // Delay roundtrip length in samples. 
+  int  numSamples =  1024;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
   Real feedback   =    +0.9;   // Feedback gain factor
 
@@ -930,21 +931,28 @@ void dampedSchroederAllpass()
   Real k = feedback;
 
   // We use a 2-point FIR filter in the feedback path:
-  Real b[2] = { 0.75, 0.25 }; 
+  Real b[2] = { 0.75, 0.25 };  // Examples: 0.75,0.25; 0.6,0.4; 0.9,0.1; 0.2,0.8
 
   // Create impulse- and magnitude response of proper implementation:
   Allpass0 ap0;
   ap0.setMaxDelayInSamples(M);
   ap0.setup(M, k, 1, b);
-  Vec h = impulseResponse(ap0, N, 1.0);
-  Vec mags = rsSpectralMagnitudes(h);
+  Vec h0 = impulseResponse(ap0, N, 1.0);
+  Vec m0 = rsSpectralMagnitudes(h0);
 
-  // Create impulse- and magnitude response of naive implementation:
+  // Create impulse- and magnitude response of first naive implementation:
   Allpass1 ap1;
   ap1.setMaxDelayInSamples(M);
   ap1.setup(M, k, 1, b);
-  Vec hN = impulseResponse(ap1, N, 1.0);
-  Vec magsN = rsSpectralMagnitudes(hN);
+  Vec h1 = impulseResponse(ap1, N, 1.0);
+  Vec m1 = rsSpectralMagnitudes(h1);
+
+  // Create impulse- and magnitude response of second naive implementation:
+  Allpass2 ap2;
+  ap2.setMaxDelayInSamples(M);
+  ap2.setup(M, k, 1, b);
+  Vec h2 = impulseResponse(ap2, N, 1.0);
+  Vec m2 = rsSpectralMagnitudes(h2);
 
   // Implement the difference equation of the filter directly. With a 1st order FIR filter in
   // the feedback path,  we have the following transfer function:
@@ -953,9 +961,9 @@ void dampedSchroederAllpass()
   //  H(z) = -----------------------------   =   --------------------------
   //          1 + k*b1*d^(M-1) + k*b0*d^M         1 + k*b1*d^4 + k*b0*d^5
   //
-  Vec d(N), hP(N);  // d[n] is the unit impulse
+  Vec d(N), h3(N);  // d[n] is the unit impulse, i.e. the Diract delta function
   d[0] = 1;
-  rsInfiniteDataStream<Real> x(&d[0], N), y(&hP[0], N);
+  rsInfiniteDataStream<Real> x(&d[0], N), y(&h3[0], N);
   y.setZero();
   for(int n = 0; n < N; n++)
   {
@@ -964,21 +972,24 @@ void dampedSchroederAllpass()
     tmp -= k*b[1]*y[n-(M-1)] + k*b[0]*y[n-M];
     y[n] = tmp;
   }
-  Vec magsP = rsSpectralMagnitudes(hP);
-
-  // Create yet another one - this time with class rsDampedSchroederAllpassNaive2 ....
-  Allpass2 ap2;
-  ap2.setMaxDelayInSamples(M);
-  ap2.setup(M, k, 1, b);
-  Vec h2 = impulseResponse(ap2, N, 1.0);
-  Vec mags2 = rsSpectralMagnitudes(h2);
+  Vec m3 = rsSpectralMagnitudes(h3);
 
   // Plot all 4 impulse and magnitude responses. They should all match and be allpass:
-  rsPlotVectors(h, hN, hP, h2);
-  rsPlotVectors(mags, magsN, magsP, mags2);
-  // ToDo: Rename the filters to ap0, ap1, ap2, ap3 and the impulse responses to h0, h1, ...
+  rsPlotVectors(h0, h1, h2, h3);
+  rsPlotVectors(m0, m1, m2, m3);
 
-  int dummy = 0;
+  // Post-process impulse response and write it to a wave file:
+  Real period = delay / sampleRate;
+  Real freq   = 1 / period;
+  Real cutoff = 0.5 * freq;    // Tune lowpass cutoff an octave below the signal frequency
+  RAPT::rsOnePoleFilter<Real, Real> lpf;
+  lpf.setMode(RAPT::rsOnePoleFilter<Real, Real>::modes::LOWPASS_IIT);
+  lpf.setCutoff(cutoff);
+  lpf.setSampleRate(sampleRate);
+  Vec z = filterResponse(lpf, N, h0);
+  rsArrayTools::normalize(&z[0], N);
+  rsPlotVectors(h0, z);
+  rosic::writeToMonoWaveFile("DampedSchroederAllpass.wav", &z[0], N, (int) sampleRate);
 
 
   // Observations:
@@ -990,10 +1001,18 @@ void dampedSchroederAllpass()
   // ToDo:
   //
   // - Implement a variant that uses a sparse FIR in the feedback path. But then - how would we 
-  //   ensure stability?
+  //   ensure stability? Maybe experimentally. If we want to use such filters in the context of a
+  //   reverb, we'll tune these during development anyway. Such sparse FIR feedback filter settings
+  //   are not something, I'll want to expose as end-user parameters anyway.
   //
   // - Before writing the results to wavefiles, post-process them by a 1st order lowpass and 
   //   normalization. That makes the non-allpass "percussions" more musically useful.
+  //
+  // - Maybe tune the lowpass to a cutoff related to the length of the delayline which determines 
+  //   the period of the late signal. Maybe create a sample rendering function that creates a 
+  //   couple of samples that can be used as transients. Such allpass transients an perhaps be used
+  //   together with modal synthesis. The modal synthesis creates the body of the sound and the 
+  //   allpasses create the transients.
 }
 
 void dampedAllpassComb()

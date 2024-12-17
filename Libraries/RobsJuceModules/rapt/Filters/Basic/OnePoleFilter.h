@@ -313,6 +313,7 @@ public:
   // an array of values that has only nonzero values in the middle, then do a naive forward 
   // backward run over the whole array and compare that to a forward/backward run only over
   // the nonzero section using this function, then check, if the nonzero sections matches.
+  // ToDo: make x const!
 
   /** Like applyForwardBackward, but does the backward pass first and then the forward pass. This 
   should make no difference, though (aside from different roundoff errors). I added the function 
@@ -322,6 +323,7 @@ public:
     setStateForConstInput( xR); for(int n = N-1; n >= 0; n--) y[n] = getSample(x[n]);
     prepareForBackwardPass(xL); for(int n = 0;   n <  N; n++) y[n] = getSample(y[n]);
   }
+  // Make x const!
 
   /** Applies the filter bidirectionally with a stride (i.e. index-distance between two successive 
   samples) that is not necessarrily unity. This may be useful for filtering along a particular 
@@ -334,6 +336,7 @@ public:
   }
   // optimize: use n += stride and n -= stride in loop headers and get rid of the multiplications 
   // n*stride in loop bodies
+  // Make x const!
 
 
   //-----------------------------------------------------------------------------------------------
