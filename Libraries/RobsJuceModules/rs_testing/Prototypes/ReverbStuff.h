@@ -1750,35 +1750,10 @@ public:
 
   TSig getSample(TSig in)
   {
-    return 0;  // Preliminary
-
-
-    // Old:
-    /*
-    // For a 2-point feedback filter with coeffs b0,b1 and with M = 5 (the delay), the transfer 
-    // function should look like this:
-    //
-    //            k*b0 + k*b1*d + d^M         M=5   k*b0 + k*b1*d + d^5
-    //  H(z) = -----------------------------   =   -------------------------
-    //          1 + k*b1*d^(M-1) + k*b0*d^M         1 + k*b1*d^4 + k*b0*d^5
-
-    int order = (int) b.size()-1;
-
-    // Apply feedforward part:
-    inDelay.writeInputNoUpdate(in);
-    TSig tmp = inDelay.readOutputAt(M);           // readOutput() should also work (more efficient)
-    for(int i = 0; i <= order; i++)
-      tmp += k * b[i] * inDelay.readOutputAt(i);
-
-    // Apply feedback path:
-    for(int i = 0; i <= order; i++)
-      tmp -= k * b[i] * outDelay.readOutputAt(M-i);
-
-    // Update delaylines and return result:
-    inDelay.incrementTapPointers();
-    outDelay.writeInputAndUpdate(tmp);
+    TSig tmp = 0;
+    tmp += k*inFilter.getSample(in) + inDelay.getSample(in);  // Feedforward path
+    tmp -= k*outFilter.getSample(outDelay.getSample(tmp));    // Feedback path
     return tmp;
-    */
   }
 
   void reset()
