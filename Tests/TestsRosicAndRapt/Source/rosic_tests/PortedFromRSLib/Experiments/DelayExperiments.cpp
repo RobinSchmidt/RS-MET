@@ -914,8 +914,8 @@ void dampedSchroederAllpass()
   // Define types to be used:
   using Real     = double;
   using Vec      = std::vector<Real>;
-  using Allpass  = rsDampedSchroederAllpass<Real, Real>;
-  using AllpassN = rsDampedSchroederAllpassNaive<Real, Real>;
+  using Allpass0 = rsDampedSchroederAllpass<Real, Real>;
+  using Allpass1 = rsDampedSchroederAllpassNaive<Real, Real>;
   using Allpass2 = rsDampedSchroederAllpassNaive2<Real, Real>;
 
   // User parameters:
@@ -933,17 +933,17 @@ void dampedSchroederAllpass()
   Real b[2] = { 0.75, 0.25 }; 
 
   // Create impulse- and magnitude response of proper implementation:
-  Allpass ap;
-  ap.setMaxDelayInSamples(delay);
-  ap.setup(delay, feedback, 1, b);
-  Vec h = impulseResponse(ap, N, 1.0);
+  Allpass0 ap0;
+  ap0.setMaxDelayInSamples(M);
+  ap0.setup(M, k, 1, b);
+  Vec h = impulseResponse(ap0, N, 1.0);
   Vec mags = rsSpectralMagnitudes(h);
 
   // Create impulse- and magnitude response of naive implementation:
-  AllpassN apn;
-  apn.setMaxDelayInSamples(delay);
-  apn.setup(delay, feedback, 1, b);
-  Vec hN = impulseResponse(apn, N, 1.0);
+  Allpass1 ap1;
+  ap1.setMaxDelayInSamples(M);
+  ap1.setup(M, k, 1, b);
+  Vec hN = impulseResponse(ap1, N, 1.0);
   Vec magsN = rsSpectralMagnitudes(hN);
 
   // Implement the difference equation of the filter directly. With a 1st order FIR filter in
@@ -969,7 +969,7 @@ void dampedSchroederAllpass()
   // Create yet another one - this time with class rsDampedSchroederAllpassNaive2 ....
   Allpass2 ap2;
   ap2.setMaxDelayInSamples(M);
-  ap2.setup(delay, feedback, 1, b);
+  ap2.setup(M, k, 1, b);
   Vec h2 = impulseResponse(ap2, N, 1.0);
   Vec mags2 = rsSpectralMagnitudes(h2);
 
