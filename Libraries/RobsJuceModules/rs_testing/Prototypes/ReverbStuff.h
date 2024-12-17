@@ -1743,7 +1743,7 @@ public:
     outDelay.setDelayInSamples(M-P);                 // Verify!
     outFilter.setImpulseResponse(dampCoeffsB, P+1);  // Verify the P+1
     inFilter.setImpulseResponse( dampCoeffsB, P+1);
-    //inFilter.reverseImpulseRespose();              // Function does not yet exist - write it!
+    inFilter.reverseImpulseResponse();
 
     // Maybe bake the scaler k into the filter coeffs.
   }
