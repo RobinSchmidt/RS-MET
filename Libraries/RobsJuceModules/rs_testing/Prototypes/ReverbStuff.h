@@ -1755,7 +1755,7 @@ public:
   {
     TSig tmp;
     tmp = k*inFilter.getSample(in) + inDelay.getSample(in);       // Feedforward path
-    out = tmp -  k*outFilter.getSample(outDelay.getSample(out));  // Feedback path
+    out = tmp - k*outFilter.getSample(outDelay.getSample(out));   // Feedback path
     return out;
   }
 
