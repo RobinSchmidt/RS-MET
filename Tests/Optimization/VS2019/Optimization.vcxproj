@@ -127,6 +127,9 @@
   <ItemGroup>
     <ClCompile Include="..\Source\main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Source\OptimizationStuff.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

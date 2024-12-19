@@ -1,6 +1,8 @@
 /** This project is for experimenting a bit with various optimization techniques and tricks. */
 
 
+#include "OptimizationStuff.h"
+
 #include <vector>
 
 
@@ -53,8 +55,8 @@ void add2(const int& N, const double* in1, const double* in2, double* out)
 
 
 // 3 variations of a class has 4 arrays of double as data members. They have wildy different memory
-// footprints. The naive implementation FourArrays1 has hust 4 members of type std::vector. This 
-// has a memory footprint of 128 byte. The variant FourAttays2 stores the length just once and no
+// footprints. The naive implementation FourArrays1 has just 4 members of type std::vector. This 
+// has a memory footprint of 128 byte. The variant FourArrays2 stores the length just once and no
 // capacity and thereby saves quite a lot of memory. It uses 40 bytes. Finally FourArrays3 has just
 // one pointer and implements the 4 arrays as parts of that allocated memory block. It has the 
 // additonal potential advantage that the 4 arrays are guaranteed to be in successive memory
@@ -214,5 +216,62 @@ https://www.youtube.com/watch?v=Qq_WaiwzOtI CppCon 2014: Andrei Alexandrescu "Op
 This has a function to convert from double to int faster than the usual way:
 https://stackoverflow.com/questions/28668348/how-expensive-is-it-to-convert-between-int-and-double
 
+
+Fast and Small C++ - When Efficiency Matters - Andreas Fertig - CppCon 2024
+https://www.youtube.com/watch?v=rNl591__9zY
+
+
+-My idea for short string optimization: In short mode, use the last byte of the 24 for the length
+ of the short string. When subtracting also the space for the zero-terminator, we may store short
+ strings up to a length of 22 characters, if this wokrs out:
+
+class rsString
+{
+
+
+  bool is_long() const { str.longStr.data != this; }  // would this work?
+
+  size_t size() const
+  {
+     if(is_long()
+       return str.longStr.size;
+     else
+       return (size_t) str.shortStr.data[23];
+  }
+
+  size_t capacity()
+  {
+     if(is_long()
+       return str.longStr.capacity;
+     else
+       return 22;
+  }
+
+ 
+
+private:
+
+  struct LongStr
+  {
+    char*  data;
+    size_t size;
+    size_t capacity;
+  };
+
+  struct ShortStr
+  {
+    char data[24];
+  }
+
+  union Str
+  {
+    LongStr longStr;
+    ShortStr shortStr;
+  }
+
+
+  Str str;
+
+}
 
 */
