@@ -814,6 +814,30 @@ void dampedAllpassCombTransFunc()
   bool ok = isAllpass(h, 1.e-3);
   rsPlotVectors(u, c, h);
 
+  // Define our z-value at which we want to evaluate H(z) and compute the sequence z-^n that is 
+  // needed in the z-transform:
+  Complex z(0.6, 0.8);              // z = 0.6 + 0.8i is on the unit circle.
+  std::vector<Complex> zn(N);       // zn[n] = z^-n = pow(z, -n)
+  for(int n = 0; n < N; n++)
+    zn[n] = rsPow(z, Complex(-n));
+
+  // Evaluate the transfer functions the hard way, i.e. via the definition of the z-transform. See:
+  // https://en.wikipedia.org/wiki/Z-transform#Definition  We can start the sum at n = 0 because
+  // x[n] = 0 for n < 0 because the impulses responses are causal. The signal x[n] in the formula 
+  // is replaced by our impulse responses u[n], c[n], h[n] in this case:
+  Complex U = 0, H = 0, C = 0;
+  for(int n = 0; n < N; n++)
+  {
+    U += u[n] * zn[n];   // Comb transfer function
+    C += c[n] * zn[n];   // Corrector transfer function
+    H += h[n] * zn[n];   // Overall allpass transfer function
+  }
+
+  // Sanity check: The magnitude of H should be 1 because z is on the unit circle and our filter 
+  // is an allpass:
+  Real Ha = rsAbs(H);
+  ok &= rsIsCloseTo(Ha, 1.0, 1.e-9);
+
 
 
 
