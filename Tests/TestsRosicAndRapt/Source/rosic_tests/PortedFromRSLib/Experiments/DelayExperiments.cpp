@@ -824,9 +824,10 @@ void dampedAllpassCombTransFunc()
   ok &= rsIsCloseTo(U, Ut, 1.e-8);
 
   Complex C = ap.getCorrectorTransferFunctionAt(z);
-  ok &= rsIsCloseTo(C, Ct, 1.e-8);                   // FAILS!!
-  rsAssert(ok);
+  ok &= rsIsCloseTo(C, Ct, 1.e-8);
 
+
+  rsAssert(ok);
 }
 
 void dampedAllpassCombComplex()

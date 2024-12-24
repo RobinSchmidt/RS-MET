@@ -1285,7 +1285,7 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getDamperTransferFunctionAt(
 {
   using Complex = rsComplex<TPar>;
   Complex num = 0, den = 0;
-  for(int k = 0; k <= dmpOrd; k++)
+  for(int k = 0; k <= dmpOrd; k++)       // Use i - we have a member called k
   {
     Complex zk = rsPow(z, Complex(-k));  // z^-k
     num += b[k] * zk;
@@ -1308,11 +1308,11 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCorrectorTransferFunctionAt(
 
   using Complex = rsComplex<TPar>;
   Complex num = 0, den = 0;
-  for(int k = 0; k <= dmpOrd; k++)
+  for(int i = 0; i <= dmpOrd; i++)
   {
-    den +=     a[k]        * rsPow(z, Complex(-k));
-    num += k * b[dmpOrd-k] * rsPow(z, Complex(-k));
-    num +=     a[dmpOrd-k] * rsPow(z, Complex(-(M+1+k)));
+    den +=     a[i]        * rsPow(z, Complex(-i));
+    num += k * b[dmpOrd-i] * rsPow(z, Complex(-i));
+    num +=     a[dmpOrd-i] * rsPow(z, Complex(-(M+1+i)));
   }
   return num / den;
 
