@@ -1018,12 +1018,16 @@ Stability:
 
 For stability, the feedback parameter k should be restricted to -1 <= k <= +1 and the feedback 
 filter F(z) should have a magnitude response that is less or equal to one (i.e. |F(w)| <= 1) for 
-all frequencies w. If you want to use the mode without predelay, you need to be careful to pass a 
-filter F(z) that has a stable inverse (i.e. is minimum phase) and there are no checks and warnings
-about this. That may mean to stay away from BLT-based lowpasses as they tend to have zeros at 
-z = -1 which in the inversion will become marginally stable poles. I'd rather recommend to go with 
-impulse invariance based allpole lowpasses or with shelving or peak/bell filters with negative dB 
-gains. */
+all frequencies w. Well, strictly speaking, what you actually want is |k * F(w)| <= 1 for all w, so
+you could theoretically have F(w) = 2 if you choose |k| <= 0.5, etc. But I really like to normalize
+F(w) such that it peaks at 1 and then adjust the overall feedback gain via k. If you want to use 
+the mode without predelay, you need to be careful to pass a filter F(z) that has a stable inverse 
+(i.e. is minimum phase) and there are no checks and warnings about this. That may mean to stay away
+from BLT-based lowpasses as they tend to have zeros at z = -1 which in the inversion will become 
+marginally stable poles. I'd rather recommend to go with impulse invariance based allpole lowpasses
+or with shelving or peak/bell filters with negative dB gains. 
+
+*/
 
 template<class TSig, class TPar>
 class rsDampedAllpassComb
@@ -1300,7 +1304,24 @@ template<class TSig, class TPar>
 rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCorrectorTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
-  rsError("Not yet implemented"); return 0;  // Preliminary
+  //rsError("Not yet implemented"); return 0;  // Preliminary
+
+  using Complex = rsComplex<TPar>;
+  Complex num = 0, den = 0;
+  for(int k = 0; k <= dmpOrd; k++)
+  {
+    den +=     a[k]        * rsPow(z, Complex(-k));
+    num += k * b[dmpOrd-k] * rsPow(z, Complex(-k));
+    num +=     a[dmpOrd-k] * rsPow(z, Complex(-(M+1+k)));
+  }
+  return num / den;
+
+  // ToDo:
+  //
+  // - Verify numerically! ...hmm...it seems to be wrong!
+  //
+  // - Optimize! The current implementation is horribly inefficient. But maybe keep it for the 
+  //   naive implementation
 }
 
 template<class TSig, class TPar>

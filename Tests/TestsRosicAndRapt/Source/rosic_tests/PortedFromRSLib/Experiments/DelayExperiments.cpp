@@ -742,6 +742,14 @@ void dampedAllpassComb4()
   Vec h = impulseResponse(ap, N, 1.0);
   bool ok = isAllpass(h, 1.e-3);
   rsPlotVectors(h);
+
+  // ToDo:
+  //
+  // - Add more dispersion to the feedback path by using a maximum phase rather than minimum phase
+  //   biquad. This can be achieved by reversing the b-array, i.e. swapping b[0] and b[2]. But then
+  //   we can't use the mode without predelay. See documentation of rsDampedAllpassComb. But maybe
+  //   it can actually be made to work if we don't use the inverse damping filter as is but reflect
+  //   its poles.
 }
 
 void dampedAllpassCombTransFunc()
@@ -815,9 +823,9 @@ void dampedAllpassCombTransFunc()
   Complex U = ap.getCombTransferFunctionAt(z);
   ok &= rsIsCloseTo(U, Ut, 1.e-8);
 
-  //Complex C = ap.getCorrectorTransferFunctionAt(z); // Not yet implemented
-
-
+  Complex C = ap.getCorrectorTransferFunctionAt(z);
+  ok &= rsIsCloseTo(C, Ct, 1.e-8);                   // FAILS!!
+  rsAssert(ok);
 
 }
 
