@@ -1086,6 +1086,12 @@ public:
 
 
 
+  rsComplex<TPar> getCombTransferFunctionAt(const rsComplex<TPar>& z) const;
+  // Under construction.
+
+  rsComplex<TPar> getDamperTransferFunctionAt(const rsComplex<TPar>& z) const;
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
@@ -1242,9 +1248,48 @@ template<class TSig, class TPar>
 rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
-  return z;  // Preliminary
+  return 0;  // Preliminary
+}
 
+template<class TSig, class TPar>
+rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCombTransferFunctionAt(
+  const rsComplex<TPar>& z) const
+{
+  //return 0;  // Preliminary
 
+  using Complex = rsComplex<TPar>;
+  Complex zM = rsPow(z, Complex(-M));              // z^-M
+  Complex z1 = TPar(1)/z;                          // z^-1
+  Complex F  = getDamperTransferFunctionAt(z);     // F(z)
+  Complex U  = zM / (TPar(1) + k * z1 * F * zM);   // U(z)
+  return U;
+
+  //                   z^-M
+  //  U(z) = ----------------------------
+  //          1 + k * z^-1 * F(z) * z^-M
+
+  // ToDo:
+  //
+  // - Switch between two cases. The above transfer function is valid only for the "with predelay" 
+  //   mode
+}
+
+template<class TSig, class TPar>
+rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getDamperTransferFunctionAt(
+  const rsComplex<TPar>& z) const
+{
+  using Complex = rsComplex<TPar>;
+  Complex num = 0, den = 0;
+  for(int k = 0; k <= dmpOrd; k++)
+  {
+    Complex zk = rsPow(z, Complex(-k));  // z^-k
+    num += b[k] * zk;
+    den += a[k] * zk;
+  }
+  return num / den;
+
+  // This should be optimized and factored into a library function to compute the transfer function
+  // of direct form filters. Maybe it should go into rsFilterAnalyzer
 }
 
 template<class TSig, class TPar>

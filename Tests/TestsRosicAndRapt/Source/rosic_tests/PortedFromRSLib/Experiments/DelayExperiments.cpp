@@ -725,7 +725,7 @@ void dampedAllpassComb4()
   using Allpass = rsDampedAllpassComb<Real, Real>;
 
   int  N        = 8192;
-  int  delay    = 50;
+  int  delay    = 100;
   Real feedback = 0.9;
 
   // Design a wideband dip filter to be used as damping filter:
@@ -741,34 +741,7 @@ void dampedAllpassComb4()
   ap.setup(delay, feedback, 2, b, a, false);
   Vec h = impulseResponse(ap, N, 1.0);
   bool ok = isAllpass(h, 1.e-3);
-  //rsPlotVectors(h);
-
-
-  // This should go into dampedAllpassCombTransFunc():
-
-  // Evaluate transfer function the hard way, i.e. via the definition of the z-transform. See:
-  // https://en.wikipedia.org/wiki/Z-transform#Definition  We can start the sum at n = 0 because
-  // x[n] = 0 for n < 0 because the impulse response in causal. The signal x[n] is our impulse 
-  // response h[n] in this case:
-  Complex z(0.6, 0.8);              // The z-value where we evaluate H(z). It's on the unit circle.
-  Complex H = 0;
-  for(int n = 0; n < N; n++)
-    H += h[n] * rsPow(z, Complex(-n));
-
-  // Sanity check: The magnitude of H should be 1 because z is on the unit circle and our filter 
-  // is an allpass:
-  Real Ha = rsAbs(H);
-  ok &= rsIsCloseTo(Ha, 1.0, 1.e-9);
-
-  // Now try evaluating it via getTransferFunctionAt at check that it matches the result of the
-  // naive calculation:
-
-  // ...
-
-
-  // ToDo: 
-  //
-  // - Implement and test getTransferFunctionAt();
+  rsPlotVectors(h);
 }
 
 void dampedAllpassCombTransFunc()
@@ -825,22 +798,21 @@ void dampedAllpassCombTransFunc()
   // https://en.wikipedia.org/wiki/Z-transform#Definition  We can start the sum at n = 0 because
   // x[n] = 0 for n < 0 because the impulses responses are causal. The signal x[n] in the formula 
   // is replaced by our impulse responses u[n], c[n], h[n] in this case:
-  Complex U = 0, H = 0, C = 0;
+  Complex Ut = 0, Ht = 0, Ct = 0;   // The t stands for "target"
   for(int n = 0; n < N; n++)
   {
-    U += u[n] * zn[n];   // Comb transfer function
-    C += c[n] * zn[n];   // Corrector transfer function
-    H += h[n] * zn[n];   // Overall allpass transfer function
+    Ut += u[n] * zn[n];             // Comb transfer function
+    Ct += c[n] * zn[n];             // Corrector transfer function
+    Ht += h[n] * zn[n];             // Overall allpass transfer function
   }
 
   // Sanity check: The magnitude of H should be 1 because z is on the unit circle and our filter 
   // is an allpass:
-  Real Ha = rsAbs(H);
+  Real Ha = rsAbs(Ht);
   ok &= rsIsCloseTo(Ha, 1.0, 1.e-9);
 
-
-
-
+  // Compute the transfer functions using the respective methods:
+  Complex U = ap.getCombTransferFunctionAt(z);
 
 
 }
@@ -1111,8 +1083,8 @@ void dampedSchroederAllpass()
 
 void dampedAllpassComb()
 {
-  dampedAllpassCombTransFunc();
   //dampedAllpassComb4();
+  dampedAllpassCombTransFunc();
   //dampedSchroederAllpass();
 
   dampedAllpassComb1();
