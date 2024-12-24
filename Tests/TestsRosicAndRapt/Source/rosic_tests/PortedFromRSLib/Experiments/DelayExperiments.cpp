@@ -539,7 +539,7 @@ void dampedAllpassComb2()
   // Helper function to produce the impulse response for given settings:
   auto impResp = [&](int delay, Real feedback, Real omega, Real hiGain, bool preDelay, int mode)
   {
-    Allpass comb; // maybe make local to impResp
+    Allpass comb;
     setupComb(comb, delay, feedback, omega, hiGain, preDelay); 
     Vec h = impulseResponse(comb, numSamples, 1.0);
     return h;
@@ -583,8 +583,8 @@ void dampedAllpassComb2()
   //   closer to the math equations.
   //
   // - The output with and without predelay are indeed exactly equal, if one shifts them 
-  //   accordingly for alignment. The desired shift is exactly "delay"-1. That is, the predelay
-  //   is exactly "delay"-1 samples. This is also kinda counterintuitive. A user might expect it to
+  //   accordingly for alignment. The desired shift is exactly delay-1. That is, the predelay
+  //   is exactly delay-1 samples. This is also kinda counterintuitive. A user might expect it to
   //   be "delay" samples. Maybe when turning this into an end-user facing unit, we should just
   //   artificially introduce an additional sample of delay in "pre-delay" mode.
 }

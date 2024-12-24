@@ -1195,6 +1195,10 @@ protected:
   // - The feedback gain k is of type TSig rather than TPar to allow usage with TSig == complex and
   //   then allowing complex feedback factors. There is some experiment that does this. It's 
   //   interesting.
+  //
+  // - Maybe be more flexible with the order of the damping filter by letting numerator and 
+  //   denominator have different orders. Maybe replace dmpOrd by two variables bOrd, aOrd or 
+  //   something like that.
 };
 
 template<class TSig, class TPar>
@@ -1330,7 +1334,7 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 
   // Notes:
   //
-  // - This computation has an implicit unit delay applied to the apperance of combOut on the right
+  // - This computation has an implicit unit delay applied to the appearance of combOut on the right
   //   hand side. On the right hand side, it's the previous comb output. On the left hand side, 
   //   it's the current comb output.
   //
@@ -1362,7 +1366,7 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
   // reversal of the b-coeffs and the FIR coeffs for the output at M+1 are given by the reversal 
   // of the a-coeffs of the feedback filter. Or something along these lines. ToDo: Figure this out 
   // exactly! But I don't think, the implementation should change to implement it literally that 
-  // way. the way we do it currently seems more efficient. No additional (redundant) filter objects
+  // way. The way we do it currently seems more efficient. No additional (redundant) filter objects
   // are used here which is actually a good thing from an economic point of view. But maybe in the 
   // naive prototype, we should do it with the additional filters.
 }
@@ -1395,13 +1399,6 @@ void rsSetupHighDamp(rsDampedAllpassComb<TSig, TPar>& flt,
 //   provide this mode as option here, too then maybe it would be nice to have. I have not yet 
 //   worked the math though, so I'm not yet sure if that is even workable. It appears to be 
 //   plausible, though.
-
-
-
-
-//=================================================================================================
-
-
 
 
 //=================================================================================================
@@ -1571,7 +1568,7 @@ void rsSetupHighDamp(rsDampedAllpassComb_1p<TSig, TPar>& flt,
 
 //=================================================================================================
 
-/** A nonlinear extension of rsDampedAllpassComb */
+/** A nonlinear extension of rsDampedAllpassComb. At the moment, it's just an experimental stub. */
 
 template<class TSig, class TPar>
 class rsDampedAllpassCombNonLin : public rsDampedAllpassComb<TSig, TPar>
@@ -1605,13 +1602,13 @@ protected:
 //=================================================================================================
 
 
-/** UNDER CONSTRUCTION! Does not yet work!
+/** UNDER CONSTRUCTION! Seems to work already, though.
 
 We try to implement a generalization of the Schroeder allpass with frequency dependent damping.
 We want to realize:
 
           z^-1 * G(z) + z^-M
-  H(z) = -----------------------------   ...Nah! this is wrong!
+  H(z) = -----------------------------   ...Nah! This is wrong, I think!
           1  + k * z^-1 * G(z) * z^-M
 
 This does not yet work! 
