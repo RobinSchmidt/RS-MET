@@ -824,12 +824,46 @@ void dampedAllpassCombTransFunc()
   Complex U = ap.getCombTransferFunctionAt(z);      ok &= rsIsCloseTo(U, Ut, 1.e-8);
   Complex C = ap.getCorrectorTransferFunctionAt(z); ok &= rsIsCloseTo(C, Ct, 1.e-8);
   Complex H = ap.getTransferFunctionAt(z);          ok &= rsIsCloseTo(H, Ht, 1.e-8);
+
+
+  // Now do the same test for the mode without predelay:
+  ap.setup(delay, feedback, 2, b, a, false);
+  ap.reset();
+  for(int n = 0; n < N; n++)
+  {
+    u[n] = ap.getSampleComb( d[n]);
+    h[n] = ap.applyCorrector(u[n]);
+  }
+  ap.reset();
+  for(int n = 0; n < N; n++)
+    c[n] = ap.applyCorrector(d[n]);
+  ok &= isAllpass(h, 1.e-3);
+
+  Ut = 0, Ht = 0, Ct = 0;
+  for(int n = 0; n < N; n++)
+  {
+    Ut += u[n] * zn[n];
+    Ct += c[n] * zn[n];
+    Ht += h[n] * zn[n];
+  }
+  Ha = rsAbs(Ht);
+  ok &= rsIsCloseTo(Ha, 1.0, 1.e-9);
+
+  //U = ap.getCombTransferFunctionAt(z);      ok &= rsIsCloseTo(U, Ut, 1.e-8); // FAILS!!!
+  //C = ap.getCorrectorTransferFunctionAt(z); ok &= rsIsCloseTo(C, Ct, 1.e-8);
+  //H = ap.getTransferFunctionAt(z);          ok &= rsIsCloseTo(H, Ht, 1.e-8);
+  // Ah! I know why it fails! the ap.applyCorrector call does not actually include the inverse
+  // feedback filter! But wait! The comb actually includes the inverse damper! So, it seems
+  // we can indeed replace the numerator F by 1 in getCombTransferFunctionAt()
+
   rsAssert(ok);
+
 
   // ToDo:
   //
   // - Integrate such a test into the unit test for rsDampedAllpassComb. Do it for different orders
-  //   of the feedback filter (like 0...8)
+  //   of the feedback filter (like 0...8). Maybe when this is in place, this function here is
+  //   obsolete and may be deleted.
 }
 
 void dampedAllpassCombComplex()
