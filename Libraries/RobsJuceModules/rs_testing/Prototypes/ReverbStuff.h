@@ -1237,7 +1237,7 @@ void rsDampedAllpassComb<TSig, TPar>::initSettings()
   M        = 0;
   k        = 0;
   dmpOrd   = 0;
-  preDelay = false; 
+  preDelay = false;
 
   using AT = rsArrayTools;
   AT::clear(b, maxDmpOrd+1);
@@ -1248,30 +1248,26 @@ template<class TSig, class TPar>
 rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
-  return 0;  // Preliminary
+  rsError("Not yet implemented"); return 0;  // Preliminary
 }
 
 template<class TSig, class TPar>
 rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCombTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
-  //return 0;  // Preliminary
-
   using Complex = rsComplex<TPar>;
+  Complex one(TPar(1));                            // 1 + 0i
   Complex zM = rsPow(z, Complex(-M));              // z^-M
-  Complex z1 = TPar(1)/z;                          // z^-1
+  Complex z1 = one/z;                              // z^-1
   Complex F  = getDamperTransferFunctionAt(z);     // F(z)
-  Complex U  = zM / (TPar(1) + k * z1 * F * zM);   // U(z)
-  return U;
-
-  //                   z^-M
-  //  U(z) = ----------------------------
-  //          1 + k * z^-1 * F(z) * z^-M
+  if(preDelay)
+    return zM / (one + k * z1 * F * zM);           // U(z) = z^-M / (1 + k * z^-1 * F(z) * z^-M)
+  else
+    return F  / (one + k * z1 * F * zM);           // U(z) = F(z) / (1 + k * z^-1 * F(z) * z^-M)
 
   // ToDo:
   //
-  // - Switch between two cases. The above transfer function is valid only for the "with predelay" 
-  //   mode
+  // - Verify both cases in unit tests
 }
 
 template<class TSig, class TPar>
@@ -1288,8 +1284,11 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getDamperTransferFunctionAt(
   }
   return num / den;
 
-  // This should be optimized and factored into a library function to compute the transfer function
-  // of direct form filters. Maybe it should go into rsFilterAnalyzer
+  // ToDo:
+  //
+  // - This should be optimized (don't call rsPow - compute the powers on the fly by multiplying by
+  //   z) and factored into a library function to compute the transfer function of direct form 
+  //   filters. Maybe it should go into rsFilterAnalyzer.
 }
 
 template<class TSig, class TPar>

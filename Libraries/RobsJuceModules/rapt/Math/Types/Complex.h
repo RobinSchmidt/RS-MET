@@ -302,6 +302,17 @@ inline bool rsIsCloseTo(rsComplex<T> x, rsComplex<T> targetValue, rsComplex<T> t
   else
     return false;
 }
+// Do we really need this function with a complex tolerance? Try to get rid of it!
+
+template<class T>
+inline bool rsIsCloseTo(rsComplex<T> x, rsComplex<T> targetValue, T tolerance)
+{
+  rsAssert(tolerance >= T(0), "tolerance must be non-negative");
+  if( rsAbs(x - targetValue) <= tolerance )
+    return true;
+  else
+    return false;
+}
 
 template<class T>
 rsComplex<T> rsEpsilon(rsComplex<T> x)

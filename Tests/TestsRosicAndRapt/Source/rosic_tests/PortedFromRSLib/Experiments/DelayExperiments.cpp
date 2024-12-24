@@ -785,7 +785,7 @@ void dampedAllpassCombTransFunc()
   for(int n = 0; n < N; n++)
     c[n] = ap.applyCorrector(d[n]);
   bool ok = isAllpass(h, 1.e-3);
-  rsPlotVectors(u, c, h);
+  //rsPlotVectors(u, c, h);
 
   // Define our z-value at which we want to evaluate H(z) and compute the sequence z-^n that is 
   // needed in the z-transform:
@@ -813,6 +813,7 @@ void dampedAllpassCombTransFunc()
 
   // Compute the transfer functions using the respective methods:
   Complex U = ap.getCombTransferFunctionAt(z);
+  ok &= rsIsCloseTo(U, Ut, 1.e-8);
 
 
 }
