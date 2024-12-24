@@ -1087,9 +1087,10 @@ public:
 
 
   rsComplex<TPar> getCombTransferFunctionAt(const rsComplex<TPar>& z) const;
-  // Under construction.
 
   rsComplex<TPar> getDamperTransferFunctionAt(const rsComplex<TPar>& z) const;
+
+  rsComplex<TPar> getCorrectorTransferFunctionAt(const rsComplex<TPar>& z) const;
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1248,7 +1249,14 @@ template<class TSig, class TPar>
 rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
-  rsError("Not yet implemented"); return 0;  // Preliminary
+  //rsError("Not yet implemented"); return 0;  // Preliminary
+
+  //using Complex = rsComplex<TPar>;
+  //Complex H1 = getCombTransferFunctionAt(z);
+  //Complex H2 = getCorrectorTransferFunctionAt(z);
+  //return H1 * H2;
+
+  return getCombTransferFunctionAt(z) * getCorrectorTransferFunctionAt(z);
 }
 
 template<class TSig, class TPar>
@@ -1289,6 +1297,13 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getDamperTransferFunctionAt(
   // - This should be optimized (don't call rsPow - compute the powers on the fly by multiplying by
   //   z) and factored into a library function to compute the transfer function of direct form 
   //   filters. Maybe it should go into rsFilterAnalyzer.
+}
+
+template<class TSig, class TPar>
+rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCorrectorTransferFunctionAt(
+  const rsComplex<TPar>& z) const
+{
+  rsError("Not yet implemented"); return 0;  // Preliminary
 }
 
 template<class TSig, class TPar>

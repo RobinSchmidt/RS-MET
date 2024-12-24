@@ -815,6 +815,9 @@ void dampedAllpassCombTransFunc()
   Complex U = ap.getCombTransferFunctionAt(z);
   ok &= rsIsCloseTo(U, Ut, 1.e-8);
 
+  //Complex C = ap.getCorrectorTransferFunctionAt(z); // Not yet implemented
+
+
 
 }
 
