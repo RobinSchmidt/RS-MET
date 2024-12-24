@@ -754,10 +754,8 @@ void dampedAllpassComb4()
 
 void dampedAllpassCombTransFunc()
 {
-  // Under construction.
-
   // We test the computation of the transfer function in rsDampedAllpassComb, i.e. the 
-  // getTransferFunctionAt(complex z) method. We use the same setup as in dampedAllpassComb4
+  // getTransferFunctionAt(complex z) etc. methods. We use the same setup as in dampedAllpassComb4
 
   // Define types to be used:
   using Real    = double;

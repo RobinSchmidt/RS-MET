@@ -2459,11 +2459,17 @@ bool dampedAllpassCombUnitTest2()
   flt.setMaxDelayInSamples(d);
   for(int i = 0; i <= maxDampOrder; i++)
   {
-    // Create impulse respone of allpass comb with feedback damping order i:
+    // Create impulse respone of allpass comb with feedback damping order i without predelay and
+    // check that we get an allpass:
     flt.setup(d, k, i, &b[0], &a[0], false);
     Vec h = impulseResponse(flt, N, 1.0);
     ok &= isAllpass(h, 1.e-7);
     //rsPlotVectors(h);
+
+    // Now do the same test with predelay:
+    flt.setup(d, k, i, &b[0], &a[0], true);
+    h = impulseResponse(flt, N, 1.0);
+    ok &= isAllpass(h, 1.e-7);
 
     // In-place convolve the current a,b arrays with the first order a1,b1 arrays:
     AT::convolve(&a[0], i+1, a1, 2, &a[0]);
@@ -2487,6 +2493,9 @@ bool dampedAllpassCombUnitTest2()
   //
   // - Try it with feedback filters with different numbers of poles and zeros, i.e. where either a
   //   or b has a tail of zeros
+  //
+  // - Integrate tests for the transfer function computations. See dampedAllpassCombTransFunc() in
+  //   DelayExperiments.cpp. Also, do all the tests also with the mode with predelay.
 }
 
 bool dampedSchroederAllpassUnitTest()
