@@ -1265,18 +1265,22 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCombTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
   using Complex = rsComplex<TPar>;
-  Complex one(TPar(1));                            // 1 + 0i
-  Complex zM = rsPow(z, Complex(-M));              // z^-M
-  Complex z1 = one/z;                              // z^-1
-  Complex F  = getDamperTransferFunctionAt(z);     // F(z)
+  Complex one(TPar(1));                         // 1 + 0i
+  Complex zM = rsPow(z, Complex(-M));           // z^-M
+  Complex z1 = one/z;                           // z^-1
+  Complex F  = getDamperTransferFunctionAt(z);  // F(z)
   if(preDelay)
-    return zM / (one + k * z1 * F * zM);           // U(z) = z^-M / (1 + k * z^-1 * F(z) * z^-M)
+    return zM / (one + k * z1 * F * zM);        // U(z) = z^-M / (1 + k * z^-1 * F(z) * z^-M)
   else
-    return F  / (one + k * z1 * F * zM);           // U(z) = F(z) / (1 + k * z^-1 * F(z) * z^-M)
+    return F  / (one + k * z1 * F * zM);        // U(z) = F(z) / (1 + k * z^-1 * F(z) * z^-M)
 
   // ToDo:
   //
-  // - Verify both cases in unit tests
+  // - Verify both cases in unit tests. I think, the 2nd branch might be wrong. We actually have an 
+  //   additional inverse damping filter 1/F(z) in the corrector in this case which is not 
+  //   accounted for in the given formula. So, I think, the numerator should be just 1 instead of 
+  //   F because the F cancels with the 1/F. -> Try it numerically! But wait! No! The comb does 
+  //   indeed contain the F. But the overall transfer will have that F be cancelled!
 }
 
 template<class TSig, class TPar>
@@ -1319,6 +1323,10 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCorrectorTransferFunctionAt(
   // - Optimize! The current implementation is horribly inefficient. But maybe keep it for the 
   //   naive implementation. But before doing this, implement a unit test for the transfer function
   //   computation
+  //
+  // - I think, we need a branch. In the case without predelay, we need to do:
+  //   return num / (den * F);  where F = getDamperTransferFunctionAt(z)
+
 }
 
 template<class TSig, class TPar>
