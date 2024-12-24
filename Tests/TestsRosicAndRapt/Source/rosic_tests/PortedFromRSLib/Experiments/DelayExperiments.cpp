@@ -715,13 +715,8 @@ void dampedAllpassComb3()
 
 void dampedAllpassComb4()
 {
-  // This fails if we run the unti tests before. Maybe we have some memory corruption going on?
-  // Ah! I think, on reset, we have to empty the buffers! Maybe they happen to be zero initialized
-  // unless we run the unit test before
-
-  // Under construction - just a stub
-
-  // Here, we try to use higher order feedback damping filters
+  // Here, we try to use higher order feedback damping filters. Specifically, we use a biquad that
+  // realized a wide-band dip (i.e. downward bell) frequency response.
 
   // Define types to be used:
   using Real    = double;
@@ -745,10 +740,17 @@ void dampedAllpassComb4()
   Vec h = impulseResponse(ap, N, 1.0);
   bool ok = isAllpass(h, 1.e-3);
   rsPlotVectors(h);
+}
 
-  // ToDo:
-  //
-  // - 
+void dampedAllpassCombTransFunc()
+{
+  // Under construction.
+
+  // We test the computation of the transfer function in rsDampedAllpassComb, i.e. the 
+  // getTransferFunctionAt(complex z) method. ...TBC...
+
+
+
 }
 
 void dampedAllpassCombComplex()
@@ -1017,15 +1019,23 @@ void dampedSchroederAllpass()
 
 void dampedAllpassComb()
 {
-  dampedSchroederAllpass();
+  dampedAllpassCombTransFunc();
+  //dampedAllpassComb4();
+  //dampedSchroederAllpass();
 
 
   dampedAllpassComb1();
   dampedAllpassComb2();
   dampedAllpassComb3();
   dampedAllpassComb4();
+  dampedAllpassCombTransFunc();
   dampedAllpassCombComplex();
   dampedAllpassCombNonLin();
   dampedAllpassDelayContent();
   dampedSchroederAllpass();
+
+  // ToDo: implement and test getTransferFunctionAt(complex z) functions. We can test them by 
+  // literally implementing the z-trafo of the impulse response. By using a z for which z^n 
+  // decays reasonably quickly with n, such a computation should not introduce too much numerical
+  // error
 }
