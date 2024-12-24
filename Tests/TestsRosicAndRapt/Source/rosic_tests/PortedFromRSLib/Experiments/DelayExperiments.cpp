@@ -743,6 +743,9 @@ void dampedAllpassComb4()
   bool ok = isAllpass(h, 1.e-3);
   //rsPlotVectors(h);
 
+
+  // This should go into dampedAllpassCombTransFunc():
+
   // Evaluate transfer function the hard way, i.e. via the definition of the z-transform. See:
   // https://en.wikipedia.org/wiki/Z-transform#Definition  We can start the sum at n = 0 because
   // x[n] = 0 for n < 0 because the impulse response in causal. The signal x[n] is our impulse 
@@ -768,27 +771,59 @@ void dampedAllpassComb4()
   // - Implement and test getTransferFunctionAt();
 }
 
-/*
 void dampedAllpassCombTransFunc()
 {
   // Under construction.
 
   // We test the computation of the transfer function in rsDampedAllpassComb, i.e. the 
-  // getTransferFunctionAt(complex z) method. ...TBC...
+  // getTransferFunctionAt(complex z) method. We use the same setup as in dampedAllpassComb4
 
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
+  using Complex = rsComplex<Real>;
   using Allpass = rsDampedAllpassComb<Real, Real>;
+
+  int  N        = 8192;
+  int  delay    = 50;
+  Real feedback = 0.9;
+
+  // Design a wideband dip filter to be used as damping filter:
+  Real b[3];
+  Real a[3];
+  a[0] = 1;
+  rsStateVariableFilter<Real, Real> svf;  // Only used for designing the feedback filter
+  svf.setupBell(0.2, 0.3, 0.5);           // A wideband dip filter
+  svf.convertToBiquad(&b[0], &b[1], &b[2], &a[1], &a[2]);
+
+  // Set up the filter and compute the impulse responses of the comb section, the compensation 
+  // filter and the overall filter. We use a setup with predelay here:
+  Allpass ap;
+  ap.setMaxDelayInSamples(delay);
+  ap.setup(delay, feedback, 2, b, a, true);
+  Vec d(N); d[0] = 1;                         // Unit impulse aka Dirac delta function d[n]
+  Vec u(N), c(N), h(N);                       // Imp-resps of comb, corrector and allpass
+  for(int n = 0; n < N; n++)
+  {
+    u[n] = ap.getSampleComb( d[n]);
+    h[n] = ap.applyCorrector(u[n]);
+  }
+  ap.reset();
+  for(int n = 0; n < N; n++)
+    c[n] = ap.applyCorrector(d[n]);
+  bool ok = isAllpass(h, 1.e-3);
+  rsPlotVectors(u, c, h);
+
+
+
 
 
 
 }
-*/
 
 void dampedAllpassCombComplex()
 {
-  // We instantiate rsDampedAllpassComb with a complex datatype for the signals. The feedbakc gain
+  // We instantiate rsDampedAllpassComb with a complex datatype for the signals. The feedback gain
   // is also complex. Using a complex feedback gain further increases the space of the things that 
   // we can do with this filter. 
 
@@ -1052,13 +1087,15 @@ void dampedSchroederAllpass()
 
 void dampedAllpassComb()
 {
-  dampedAllpassComb4();
+  dampedAllpassCombTransFunc();
+  //dampedAllpassComb4();
   //dampedSchroederAllpass();
 
   dampedAllpassComb1();
   dampedAllpassComb2();
   dampedAllpassComb3();
   dampedAllpassComb4();
+  dampedAllpassCombTransFunc();
   dampedAllpassCombComplex();
   dampedAllpassCombNonLin();
   dampedAllpassDelayContent();

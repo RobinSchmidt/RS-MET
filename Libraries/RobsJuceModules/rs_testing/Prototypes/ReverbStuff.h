@@ -1058,12 +1058,13 @@ public:
     y[n] = b[0] * x[n] + b[1] * x[n-1] + ... + b[P] * x[n-P]
                        - a[1] * y[n-1] - ... - a[P] * y[n-P]
 
-  where P is the filter order, i.e. the dampOrder parameter. And b,a map to dampCoeffsB, 
-  dampCoeffsA respectively. We assume that the filter coeff arrays are normalized to a[0] = 1.
-  The boolean predelay parameter switches between two modes of operation one of which features a 
-  predelay of delay-1 samples. The -1 occurs because the delayline length M is given by delay-1. 
-  That is: the delay user parameter means the total roundtrip delay which includes the delayline 
-  delay and the implicit delay in the feedback loop. */
+  where P is the filter order, i.e. the dampOrder parameter and the b,a arrays in the formula map 
+  t the dampCoeffsB, dampCoeffsA parameters respectively. We assume that the filter coeff arrays 
+  are normalized to a[0] = 1. The boolean predelayMode parameter switches between two modes of 
+  operation one of which features a predelay of delay-1 samples. The -1 occurs because the 
+  delayline length M is given by delay-1. That is: the delay user parameter means the total 
+  roundtrip delay which includes the delayline delay and the implicit delay in the feedback 
+  loop. */
   void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA, 
     bool predelayMode);
 
@@ -1077,6 +1078,12 @@ public:
   /** Returns the maximum order for the feedback damping filters that is supported. */
   static int getMaxDampingOrder() { return maxDmpOrd; }
     // ToDo: Try to make constexpr. But that seems to incompatible with static. Why?
+
+
+  /** Evaluates the filter's z-domain transfer function H(z) value at the given value of z. */
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const;
+  // Under construction. ToDo: check, if this works with a complex type for TSig.
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1131,7 +1138,7 @@ protected:
     TSig y = x;
     for(int i = 1; i <= dmpOrd; i++)
       y += a[i] * xi[i-1] - b[i] * yi[i-1];
-    y /= b[0];
+    y /= b[0];                                        // ToDo: maybe precompute 1/b[0]
 
     // Update state and return result:
     rsArrayTools::shiftPushDiscard(xi, dmpOrd, x);
@@ -1229,6 +1236,15 @@ void rsDampedAllpassComb<TSig, TPar>::initSettings()
   using AT = rsArrayTools;
   AT::clear(b, maxDmpOrd+1);
   AT::clear(a, maxDmpOrd+1);
+}
+
+template<class TSig, class TPar>
+rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getTransferFunctionAt(
+  const rsComplex<TPar>& z) const
+{
+  return z;  // Preliminary
+
+
 }
 
 template<class TSig, class TPar>
