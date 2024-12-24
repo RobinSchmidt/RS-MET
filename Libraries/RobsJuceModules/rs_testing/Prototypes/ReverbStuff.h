@@ -1272,7 +1272,10 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCombTransferFunctionAt(
   if(preDelay)
     return zM / (one + k * z1 * F * zM);        // U(z) = z^-M / (1 + k * z^-1 * F(z) * z^-M)
   else
-    return F  / (one + k * z1 * F * zM);        // U(z) = F(z) / (1 + k * z^-1 * F(z) * z^-M)
+  {
+    //return F  / (one + k * z1 * F * zM);        // U(z) = F(z) / (1 + k * z^-1 * F(z) * z^-M)
+    return one / (one + k * z1 * F * zM);        // U(z) = 1 / (1 + k * z^-1 * F(z) * z^-M)
+  }
 
   // ToDo:
   //
@@ -1280,7 +1283,9 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCombTransferFunctionAt(
   //   additional inverse damping filter 1/F(z) in the corrector in this case which is not 
   //   accounted for in the given formula. So, I think, the numerator should be just 1 instead of 
   //   F because the F cancels with the 1/F. -> Try it numerically! But wait! No! The comb does 
-  //   indeed contain the F. But the overall transfer will have that F be cancelled!
+  //   indeed contain the F. But the overall transfer will have that F be cancelled! But no! 
+  //   Actually, we do indeed apply the inverse damper in getSampleComb(), so it seems appropriate
+  //   to cancel the F already here
 }
 
 template<class TSig, class TPar>

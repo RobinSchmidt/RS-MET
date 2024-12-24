@@ -849,9 +849,9 @@ void dampedAllpassCombTransFunc()
   Ha = rsAbs(Ht);
   ok &= rsIsCloseTo(Ha, 1.0, 1.e-9);
 
-  //U = ap.getCombTransferFunctionAt(z);      ok &= rsIsCloseTo(U, Ut, 1.e-8); // FAILS!!!
-  //C = ap.getCorrectorTransferFunctionAt(z); ok &= rsIsCloseTo(C, Ct, 1.e-8);
-  //H = ap.getTransferFunctionAt(z);          ok &= rsIsCloseTo(H, Ht, 1.e-8);
+  U = ap.getCombTransferFunctionAt(z);      ok &= rsIsCloseTo(U, Ut, 1.e-8);
+  C = ap.getCorrectorTransferFunctionAt(z); ok &= rsIsCloseTo(C, Ct, 1.e-8);
+  H = ap.getTransferFunctionAt(z);          ok &= rsIsCloseTo(H, Ht, 1.e-8);
   // Ah! I know why it fails! the ap.applyCorrector call does not actually include the inverse
   // feedback filter! But wait! The comb actually includes the inverse damper! So, it seems
   // we can indeed replace the numerator F by 1 in getCombTransferFunctionAt()
