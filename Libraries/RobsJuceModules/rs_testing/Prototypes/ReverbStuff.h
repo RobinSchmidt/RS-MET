@@ -1270,22 +1270,17 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCombTransferFunctionAt(
   Complex z1 = one/z;                           // z^-1
   Complex F  = getDamperTransferFunctionAt(z);  // F(z)
   if(preDelay)
-    return zM / (one + k * z1 * F * zM);        // U(z) = z^-M / (1 + k * z^-1 * F(z) * z^-M)
+    return zM  / (one + k * z1 * F * zM);       // U(z) = z^-M / (1 + k * z^-1 * F(z) * z^-M)
   else
-  {
-    //return F  / (one + k * z1 * F * zM);        // U(z) = F(z) / (1 + k * z^-1 * F(z) * z^-M)
-    return one / (one + k * z1 * F * zM);        // U(z) = 1 / (1 + k * z^-1 * F(z) * z^-M)
-  }
+    return one / (one + k * z1 * F * zM);       // U(z) =   1  / (1 + k * z^-1 * F(z) * z^-M)
 
-  // ToDo:
+  // Notes:
   //
-  // - Verify both cases in unit tests. I think, the 2nd branch might be wrong. We actually have an 
-  //   additional inverse damping filter 1/F(z) in the corrector in this case which is not 
-  //   accounted for in the given formula. So, I think, the numerator should be just 1 instead of 
-  //   F because the F cancels with the 1/F. -> Try it numerically! But wait! No! The comb does 
-  //   indeed contain the F. But the overall transfer will have that F be cancelled! But no! 
-  //   Actually, we do indeed apply the inverse damper in getSampleComb(), so it seems appropriate
-  //   to cancel the F already here
+  // - The comb transfer function in the 2nd branch (i.e. without predelay) already includes the
+  //   inverse damping filter which cancels the effect of the damping filter. That's because
+  //   getSampleComb() already applies the inverse damping filter. That's why we don't see an F in 
+  //   the numerator. It cancels with the same F that would appear in the denominator due to the
+  //   application of the inverse damper. So, overall, the numerator turns out to be just 1.
 }
 
 template<class TSig, class TPar>
@@ -1328,10 +1323,6 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCorrectorTransferFunctionAt(
   // - Optimize! The current implementation is horribly inefficient. But maybe keep it for the 
   //   naive implementation. But before doing this, implement a unit test for the transfer function
   //   computation
-  //
-  // - I think, we need a branch. In the case without predelay, we need to do:
-  //   return num / (den * F);  where F = getDamperTransferFunctionAt(z)
-
 }
 
 template<class TSig, class TPar>
