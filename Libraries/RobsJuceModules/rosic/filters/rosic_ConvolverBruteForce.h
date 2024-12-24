@@ -39,11 +39,11 @@ namespace rosic
     // setup:
 
     /** Sets up the impulse response to be used. */
-    void setImpulseResponse(double *newImpulseResponse, int newLength);
+    void setImpulseResponse(const double *newImpulseResponse, int newLength);
 
     /** Reverses the impulse response. In the z-domain, this has the effect of reflecting the zeros
     about the unit circle. The magnitude response remains the same but the phase response changes
-    from minimum pahse to maximum phase or vice versa (or reverses the mix in cases of a mixed
+    from minimum phase to maximum phase or vice versa (or reverses the mix in cases of a mixed
     phase response). */
     void reverseImpulseResponse() { RAPT::rsArrayTools::reverse(h, M); }
 

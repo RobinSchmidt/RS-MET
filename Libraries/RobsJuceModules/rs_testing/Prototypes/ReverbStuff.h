@@ -1065,8 +1065,8 @@ public:
   delayline length M is given by delay-1. That is: the delay user parameter means the total 
   roundtrip delay which includes the delayline delay and the implicit delay in the feedback 
   loop. */
-  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA, 
-    bool predelayMode);
+  void setup(int delay, TSig feedback, 
+    int dampOrder, const TPar* dampCoeffsB, const TPar* dampCoeffsA, bool predelayMode);
 
   /** Initializes all settings to default values. */
   void initSettings();
@@ -1207,7 +1207,7 @@ void rsDampedAllpassComb<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 
 template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOrder,
-  TPar* dampCoeffsB, TPar* dampCoeffsA, bool predelayMode)
+  const TPar* dampCoeffsB, const TPar* dampCoeffsA, bool predelayMode)
 {
   if(dampOrder > maxDmpOrd) 
   {
@@ -1249,13 +1249,6 @@ template<class TSig, class TPar>
 rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
-  //rsError("Not yet implemented"); return 0;  // Preliminary
-
-  //using Complex = rsComplex<TPar>;
-  //Complex H1 = getCombTransferFunctionAt(z);
-  //Complex H2 = getCorrectorTransferFunctionAt(z);
-  //return H1 * H2;
-
   return getCombTransferFunctionAt(z) * getCorrectorTransferFunctionAt(z);
 }
 
@@ -1646,7 +1639,7 @@ public:
   /** Sets up the delay, feedback gain the damping filter. The damping filter must be an FIR 
   filter and the caller is supposed to pass its coefficients and order. The order is the length of
   the coefficient array plus one. */
-  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB)
+  void setup(int delay, TSig feedback, int dampOrder, const TPar* dampCoeffsB)
   {
     delayLine.setDelayInSamples(delay);
     M = delay;
@@ -1728,7 +1721,7 @@ public:
     outDelay.setMaximumDelayInSamples(newMaxDelay);
   }
 
-  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB)
+  void setup(int delay, TSig feedback, int dampOrder, const TPar* dampCoeffsB)
   {
     M = delay;
     k = feedback;
@@ -1808,7 +1801,7 @@ public:
     outDelay.setMaximumDelayInSamples(newMaxDelay);
   }
 
-  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB)
+  void setup(int delay, TSig feedback, int dampOrder, const TPar* dampCoeffsB)
   {
     M = delay;
     P = dampOrder;

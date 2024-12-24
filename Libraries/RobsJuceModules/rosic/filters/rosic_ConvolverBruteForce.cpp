@@ -24,7 +24,7 @@ ConvolverBruteForce::~ConvolverBruteForce()
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // parameter settings:
 
-void ConvolverBruteForce::setImpulseResponse(double *newImpulseResponse, int newLength)
+void ConvolverBruteForce::setImpulseResponse(const double *newImpulseResponse, int newLength)
 {
   mutex.lock();
 
