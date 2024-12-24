@@ -1285,11 +1285,11 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getDamperTransferFunctionAt(
 {
   using Complex = rsComplex<TPar>;
   Complex num = 0, den = 0;
-  for(int k = 0; k <= dmpOrd; k++)       // Use i - we have a member called k
+  for(int i = 0; i <= dmpOrd; i++)
   {
-    Complex zk = rsPow(z, Complex(-k));  // z^-k
-    num += b[k] * zk;
-    den += a[k] * zk;
+    Complex zi = rsPow(z, Complex(-i));  // z^-i
+    num += b[i] * zi;
+    den += a[i] * zi;
   }
   return num / den;
 
@@ -1304,8 +1304,6 @@ template<class TSig, class TPar>
 rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCorrectorTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
-  //rsError("Not yet implemented"); return 0;  // Preliminary
-
   using Complex = rsComplex<TPar>;
   Complex num = 0, den = 0;
   for(int i = 0; i <= dmpOrd; i++)
@@ -1318,10 +1316,9 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCorrectorTransferFunctionAt(
 
   // ToDo:
   //
-  // - Verify numerically! ...hmm...it seems to be wrong!
-  //
   // - Optimize! The current implementation is horribly inefficient. But maybe keep it for the 
-  //   naive implementation
+  //   naive implementation. But before doing this, implement a unit test for the transfer function
+  //   computation
 }
 
 template<class TSig, class TPar>

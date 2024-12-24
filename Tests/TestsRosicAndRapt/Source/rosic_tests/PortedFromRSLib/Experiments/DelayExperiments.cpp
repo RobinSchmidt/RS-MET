@@ -819,15 +819,17 @@ void dampedAllpassCombTransFunc()
   Real Ha = rsAbs(Ht);
   ok &= rsIsCloseTo(Ha, 1.0, 1.e-9);
 
-  // Compute the transfer functions using the respective methods:
-  Complex U = ap.getCombTransferFunctionAt(z);
-  ok &= rsIsCloseTo(U, Ut, 1.e-8);
-
-  Complex C = ap.getCorrectorTransferFunctionAt(z);
-  ok &= rsIsCloseTo(C, Ct, 1.e-8);
-
-
+  // Compute the transfer functions using the respective methods and check if the results match the
+  // naively computed values:
+  Complex U = ap.getCombTransferFunctionAt(z);      ok &= rsIsCloseTo(U, Ut, 1.e-8);
+  Complex C = ap.getCorrectorTransferFunctionAt(z); ok &= rsIsCloseTo(C, Ct, 1.e-8);
+  Complex H = ap.getTransferFunctionAt(z);          ok &= rsIsCloseTo(H, Ht, 1.e-8);
   rsAssert(ok);
+
+  // ToDo:
+  //
+  // - Integrate such a test into the unit test for rsDampedAllpassComb. Do it for different orders
+  //   of the feedback filter (like 0...8)
 }
 
 void dampedAllpassCombComplex()
