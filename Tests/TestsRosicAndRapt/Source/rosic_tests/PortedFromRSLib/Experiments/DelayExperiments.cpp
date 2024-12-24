@@ -721,12 +721,14 @@ void dampedAllpassComb4()
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
+  using Complex = rsComplex<Real>;
   using Allpass = rsDampedAllpassComb<Real, Real>;
 
-  int N = 8192;
-  int delay = 100;
+  int  N        = 8192;
+  int  delay    = 50;
+  Real feedback = 0.9;
 
-  // Deisgn a wideband dip filter to be used as damping filter:
+  // Design a wideband dip filter to be used as damping filter:
   Real b[3];
   Real a[3];
   a[0] = 1;
@@ -736,12 +738,37 @@ void dampedAllpassComb4()
 
   Allpass ap;
   ap.setMaxDelayInSamples(delay);
-  ap.setup(delay, 0.9, 2, b, a, false);
+  ap.setup(delay, feedback, 2, b, a, false);
   Vec h = impulseResponse(ap, N, 1.0);
   bool ok = isAllpass(h, 1.e-3);
-  rsPlotVectors(h);
+  //rsPlotVectors(h);
+
+  // Evaluate transfer function the hard way, i.e. via the definition of the z-transform. See:
+  // https://en.wikipedia.org/wiki/Z-transform#Definition  We can start the sum at n = 0 because
+  // x[n] = 0 for n < 0 because the impulse response in causal. The signal x[n] is our impulse 
+  // response h[n] in this case:
+  Complex z(0.6, 0.8);              // The z-value where we evaluate H(z). It's on the unit circle.
+  Complex H = 0;
+  for(int n = 0; n < N; n++)
+    H += h[n] * rsPow(z, Complex(-n));
+
+  // Sanity check: The magnitude of H should be 1 because z is on the unit circle and our filter 
+  // is an allpass:
+  Real Ha = rsAbs(H);
+  ok &= rsIsCloseTo(Ha, 1.0, 1.e-9);
+
+  // Now try evaluating it via getTransferFunctionAt at check that it matches the result of the
+  // naive calculation:
+
+  // ...
+
+
+  // ToDo: 
+  //
+  // - Implement and test getTransferFunctionAt();
 }
 
+/*
 void dampedAllpassCombTransFunc()
 {
   // Under construction.
@@ -749,9 +776,15 @@ void dampedAllpassCombTransFunc()
   // We test the computation of the transfer function in rsDampedAllpassComb, i.e. the 
   // getTransferFunctionAt(complex z) method. ...TBC...
 
+  // Define types to be used:
+  using Real    = double;
+  using Vec     = std::vector<Real>;
+  using Allpass = rsDampedAllpassComb<Real, Real>;
+
 
 
 }
+*/
 
 void dampedAllpassCombComplex()
 {
@@ -1019,16 +1052,13 @@ void dampedSchroederAllpass()
 
 void dampedAllpassComb()
 {
-  dampedAllpassCombTransFunc();
-  //dampedAllpassComb4();
+  dampedAllpassComb4();
   //dampedSchroederAllpass();
-
 
   dampedAllpassComb1();
   dampedAllpassComb2();
   dampedAllpassComb3();
   dampedAllpassComb4();
-  dampedAllpassCombTransFunc();
   dampedAllpassCombComplex();
   dampedAllpassCombNonLin();
   dampedAllpassDelayContent();
