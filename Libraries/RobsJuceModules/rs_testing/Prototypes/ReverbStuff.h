@@ -1654,6 +1654,13 @@ public:
   {
     delayLine.setMaximumDelayInSamples(newMaxDelay);
   }
+
+  void setMaxDampOrder(int newMaxDampOrder)
+  {
+    b.reserve(newMaxDampOrder+1);
+  }
+  // May be called before setup to pre-allocate the memory for the damping filter coeffs to avoid
+  // memory allocations in setup()
  
   /** Sets up the delay, feedback gain the damping filter. The damping filter must be an FIR 
   filter and the caller is supposed to pass its coefficients and order. The order is the length of

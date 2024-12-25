@@ -1128,10 +1128,22 @@ void dampedSchroederAllpass()
   //   allpasses create the transients.
 }
 
+void dampedSchroederAllpassTransFunc()
+{
+  // Define types to be used:
+  using Real    = double;
+  using Vec     = std::vector<Real>;
+  using Allpass = rsDampedSchroederAllpass<Real, Real>;
+
+
+
+}
+
 void dampedAllpassComb()
 {
   //dampedAllpassComb4();
-  dampedAllpassCombTransFunc();
+  //dampedAllpassCombTransFunc();
+  dampedSchroederAllpassTransFunc();
   //dampedSchroederAllpass();
 
   dampedAllpassComb1();
@@ -1143,6 +1155,7 @@ void dampedAllpassComb()
   dampedAllpassCombNonLin();
   dampedAllpassDelayContent();
   dampedSchroederAllpass();
+  dampedSchroederAllpassTransFunc();
 
   // ToDo: implement and test getTransferFunctionAt(complex z) functions. We can test them by 
   // literally implementing the z-trafo of the impulse response. By using a z for which z^n 
