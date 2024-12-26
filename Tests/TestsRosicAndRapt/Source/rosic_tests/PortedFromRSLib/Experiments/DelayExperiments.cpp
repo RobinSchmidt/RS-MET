@@ -753,7 +753,7 @@ void dampedAllpassComb4()
 }
 
 // This should be turned into a unit test and moved into the test suite:
-void dampedAllpassCombTransFunc()
+bool dampedAllpassCombTransFunc()
 {
   // We test the computation of the transfer function in rsDampedAllpassComb, i.e. the 
   // getTransferFunctionAt(complex z) etc. methods. We use the same setup as in dampedAllpassComb4
@@ -859,7 +859,9 @@ void dampedAllpassCombTransFunc()
   ok &= testTransferFunction(ap, z, N, 1.e-8);
 
 
-  rsAssert(ok);
+  return ok;
+
+  //rsAssert(ok);
   // OK - this seems to work fine!
 
 
