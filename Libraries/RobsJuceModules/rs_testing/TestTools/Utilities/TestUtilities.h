@@ -254,7 +254,6 @@ bool rsIsUnitImpulse(const std::vector<T>& x, T tol)
   return maxErr <= tol;
 }
 
-
 /** Returns N samples of the impulse response of the passed filter as std::vector. It is necessary
 for you to pass a scale factor of the type of the filter's output signal (for example: 1.0 for
 double), such that the compiler can deduce the template parameter. We also use it to scale the
@@ -271,6 +270,9 @@ inline std::vector<TSig> impulseResponse(TFlt &filter, int length, TSig scale)
   return y;
 }
 
+/** Returns the response y[n] of the given filter to the input signal x[n]. The length determines the
+length of y which may be different from the length of x to allow the filter to ring out, for 
+example. */
 template<class TSig, class TFlt>
 inline std::vector<TSig> filterResponse(TFlt& filter, int length, std::vector<TSig> x)
 {
@@ -280,6 +282,37 @@ inline std::vector<TSig> filterResponse(TFlt& filter, int length, std::vector<TS
     y[n] = filter.getSample(x[n]);
   return y;
 }
+
+/** Helper function to test the result of filter.getTransferFunctionAt() against a naively computed
+transfer function value. This is meant for unit testing the getTransferFunctionAt() member function
+that I typically give to many of my filter classes. */
+template<class T, class TFlt>
+inline bool testTransferFunction(TFlt& filter, rsComplex<T> z, int N, T tol)
+{
+  // Compute transfer function H(z) at the given z the hard way, i.e. as the z-transform of the 
+  // impulse response. It's only an approximation though because we truncate the infinite sum at
+  // N-1. N should be large enough such that the impulse response has sufficiently decayed at the 
+  // end. We compute Ht = sum_{n=0}^{N-1} h[n] * z^{-n} where h[n] is the impulse response of the 
+  // filter. In the actual z-trafo, the upper limit of the sum would be infinity.
+  filter.reset();
+  rsComplex<T> z1 = T(1) / z;                         // z^-1
+  rsComplex<T> zn = T(1);                             // z^-n with n = 0
+  rsComplex<T> Ht = filter.getSample(T(1)) * zn;      // The "t" in Ht stands for "target"
+  for(int n = 1; n < N; n++)
+  {
+    zn *= z1;                                         // z^-n
+    Ht += filter.getSample(T(0)) * zn;
+  }
+
+  // Compute the transfer function using the filter's getTransferFunctionAt() method:
+  rsComplex<T> H = filter.getTransferFunctionAt(z);
+
+  // Compute the error and check if it's absolute value is within the tolerance:
+  rsComplex<T> err = Ht - H;
+  T errAbs = rsAbs(err);
+  return errAbs <= tol;
+}
+
 
 template<class T>
 inline std::vector<T> ampToDb(const std::vector<T>& x, T minDb)
