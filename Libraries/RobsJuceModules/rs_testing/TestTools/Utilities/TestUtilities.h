@@ -270,6 +270,7 @@ inline std::vector<TSig> impulseResponse(TFlt &filter, int length, TSig scale)
     y[n] = filter.getSample(0.0);
   return y;
 }
+
 template<class TSig, class TFlt>
 inline std::vector<TSig> filterResponse(TFlt& filter, int length, std::vector<TSig> x)
 {
@@ -279,6 +280,7 @@ inline std::vector<TSig> filterResponse(TFlt& filter, int length, std::vector<TS
     y[n] = filter.getSample(x[n]);
   return y;
 }
+
 template<class T>
 inline std::vector<T> ampToDb(const std::vector<T>& x, T minDb)
 {

@@ -1675,6 +1675,15 @@ public:
       b[k] = dampCoeffsB[k];
   }
 
+
+  /** Evaluates the filter's z-domain transfer function H(z) value at the given value of z. */
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const
+  {
+    return z; // Preliminary!
+  }
+
+
+
   TSig getSample(TSig in)
   {
     int order = (int) b.size()-1;

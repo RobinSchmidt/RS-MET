@@ -438,6 +438,10 @@ TrackAnalyzer:
 https://github.com/tfriedel/trackanalyzer
 -java based command line tool that estimates the musical key and bpm 
 
+Midiverb Emulator:
+https://github.com/thement/midiverb_emulator
+-Emulation of the Alesis midiverb hardware effect unit.
+-See also: https://github.com/shabtronic/Midiverb-Analysis
 
 ----------------------------------------------------------------------------------------------------
 Research and Education Code
