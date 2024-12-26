@@ -1794,7 +1794,8 @@ public:
       b[k] = dampCoeffsB[k];
   }
 
-  TSig getSample(TSig in)
+
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const
   {
     // For a 2-point feedback filter with coeffs b0,b1 and with M = 5 (the delay), the transfer 
     // function should look like this:
@@ -1803,6 +1804,21 @@ public:
     //  H(z) = -----------------------------   =   -------------------------
     //          1 + k*b1*d^(M-1) + k*b0*d^M         1 + k*b1*d^4 + k*b0*d^5
 
+    using Complex = rsComplex<TPar>;
+    Complex d   = TPar(1) / z;                      // d = z^-1
+    Complex num = rsPow(d, Complex(M));
+    Complex den = TPar(1);
+    for(size_t i = 0; i < b.size(); i++)
+    {
+      num += k * b[i] * rsPow(d, Complex(i  ));
+      den += k * b[i] * rsPow(d, Complex(M-i));
+    }
+    return num / den;
+  }
+
+
+  TSig getSample(TSig in)
+  {
     int order = (int) b.size()-1;
 
     // Apply feedforward part:

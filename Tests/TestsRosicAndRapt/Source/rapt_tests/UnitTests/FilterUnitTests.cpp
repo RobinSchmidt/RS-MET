@@ -2545,8 +2545,11 @@ bool dampedSchroederAllpassUnitTest()
     apN.setup(M, k, order, &b[0]);
     Vec h  = impulseResponse(ap,  N, 1.0);
     Vec hN = impulseResponse(apN, N, 1.0);
-    ok &= rsIsCloseTo(h, hN, 1.e-15);       // Naive and optimized version should give same results
-    ok &= isAllpass(h, 1.e-7);              // The result should be allpass in nature
+
+    // Naive and optimized version should give same results and those results should be allpass in
+    // nature:
+    ok &= rsIsCloseTo(h, hN, 1.e-15);
+    ok &= isAllpass(h, 1.e-7);
     //if(!ok)
     //{
     //  Vec mags = rsSpectralMagnitudes(h);
@@ -2554,11 +2557,11 @@ bool dampedSchroederAllpassUnitTest()
     //  rsPlotVectors(mags);
     //}
 
-
+    // The getTransferFunctionAt() member functions should return correct results:
     ok &= testTransferFunction(ap,  z, N, 1.e-10);
-    //ok &= testTransferFunction(apN, z, N, 1.e-8); // Not yet implemented
+    ok &= testTransferFunction(apN, z, N, 1.e-10);
 
-
+    // Prepare b-array of filter coeffs for next iteration:
     rsArrayTools::convolve(&b[0], order+1, &b1[0], 2, &b[0]);
   }
 
