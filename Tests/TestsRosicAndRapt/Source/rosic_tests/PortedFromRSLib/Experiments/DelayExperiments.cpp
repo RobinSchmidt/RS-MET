@@ -752,7 +752,7 @@ void dampedAllpassComb4()
   //   its poles.
 }
 
-// This should be turned into a unit test and moved into the test suite:
+// This should be turned into a unit test and moved into the test suite (done - can be deleted):
 bool dampedAllpassCombTransFunc()
 {
   // We test the computation of the transfer function in rsDampedAllpassComb, i.e. the 

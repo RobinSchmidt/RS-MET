@@ -2454,7 +2454,8 @@ bool dampedAllpassCombUnitTest2()
   Vec b(length); b[0] = 1;
 
   // Create impulse responses of damped allpasses with damping orders from 1 up to maxDampOrder
-  // and check that we obtain an allpass filter:
+  // and check that we obtain an allpass filter. We also check that the getTransferFunctionAt()
+  // member function computes the correct result:
   Comb flt;
   flt.setMaxDelayInSamples(d);
   rsComplex<Real> z(0.6, 0.8);
