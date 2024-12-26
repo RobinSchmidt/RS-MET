@@ -2508,6 +2508,7 @@ bool dampedSchroederAllpassUnitTest()
 
   // Define types to be used:
   using Real     = double;
+  using Complex  = rsComplex<Real>;
   using Vec      = std::vector<Real>;
   using Allpass  = rsDampedSchroederAllpass<Real, Real>;
   using AllpassN = rsDampedSchroederAllpassNaive<Real, Real>;
@@ -2535,21 +2536,29 @@ bool dampedSchroederAllpassUnitTest()
   apN.setMaxDelayInSamples(M);
 
   // Obtain impulse responses for various feedback filter orders and check that they are allpass in
-  // nature. Check also that both implementations produce the same result:
+  // nature. Check also that both implementations produce the same result. Check also that the
+  // getTransferFunctionAt() functions return the correct result:
+  Complex z(0.6, 0.8);
   for(int order = 0; order < maxOrder; order++)
   {
     ap.setup( M, k, order, &b[0]);
     apN.setup(M, k, order, &b[0]);
     Vec h  = impulseResponse(ap,  N, 1.0);
     Vec hN = impulseResponse(apN, N, 1.0);
-    ok &= rsIsCloseTo(h, hN, 1.e-15);  // Naive and optimized version should give same results
-    ok &= isAllpass(h, 1.e-7);         // The result should be allpass in nature
+    ok &= rsIsCloseTo(h, hN, 1.e-15);       // Naive and optimized version should give same results
+    ok &= isAllpass(h, 1.e-7);              // The result should be allpass in nature
     //if(!ok)
     //{
     //  Vec mags = rsSpectralMagnitudes(h);
     //  rsPlotVectors(h, hN);
     //  rsPlotVectors(mags);
     //}
+
+
+    ok &= testTransferFunction(ap,  z, N, 1.e-10);
+    //ok &= testTransferFunction(apN, z, N, 1.e-8); // Not yet implemented
+
+
     rsArrayTools::convolve(&b[0], order+1, &b1[0], 2, &b[0]);
   }
 
