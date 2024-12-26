@@ -1679,7 +1679,34 @@ public:
   /** Evaluates the filter's z-domain transfer function H(z) value at the given value of z. */
   rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const
   {
-    return z; // Preliminary!
+    //return z; // Preliminary!
+
+    // For a 2-point feedback filter with coeffs b0,b1 and with M = 5 (the delay), the transfer 
+    // function should look like this:
+    //
+    //            k*b0 + k*b1*d + d^M         M=5   k*b0 + k*b1*d + d^5
+    //  H(z) = -----------------------------   =   -------------------------
+    //          1 + k*b1*d^(M-1) + k*b0*d^M         1 + k*b1*d^4 + k*b0*d^5
+
+
+    using Complex = rsComplex<TPar>;
+    Complex d   = TPar(1) / z;                      // d = z^-1
+    //Complex num = rsPow(z, Complex(-M));
+    Complex num = rsPow(d, Complex(M));
+    Complex den = TPar(1);
+    for(size_t i = 0; i < b.size(); i++)
+    {
+      num += k * b[i] * rsPow(d, Complex(i  ));
+      den += k * b[i] * rsPow(d, Complex(M-i));
+    }
+    return num / den;
+
+
+    // ToDo: 
+    //
+    // - Optimize by avoiding rsPow in the loop. instead compute the power d^i incrementally. Maybe
+    //   compute the d^(M-i) "decrementally". But let's keep this implementation for the naive
+    //   class. 
   }
 
 
