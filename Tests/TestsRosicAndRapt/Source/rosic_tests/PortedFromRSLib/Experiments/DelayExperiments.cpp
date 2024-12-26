@@ -752,6 +752,7 @@ void dampedAllpassComb4()
   //   its poles.
 }
 
+// This should be turned into a unit test and moved into the test suite:
 void dampedAllpassCombTransFunc()
 {
   // We test the computation of the transfer function in rsDampedAllpassComb, i.e. the 
@@ -1136,7 +1137,7 @@ void dampedSchroederAllpass()
 
 
 
-
+// This is obsolete - we now cover this stuff in a unit test:
 void dampedSchroederAllpassTransFunc()
 {
   // Define types to be used:
