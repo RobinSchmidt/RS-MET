@@ -752,126 +752,6 @@ void dampedAllpassComb4()
   //   its poles.
 }
 
-// This should be turned into a unit test and moved into the test suite (done - can be deleted):
-bool dampedAllpassCombTransFunc()
-{
-  // We test the computation of the transfer function in rsDampedAllpassComb, i.e. the 
-  // getTransferFunctionAt(complex z) etc. methods. We use the same setup as in dampedAllpassComb4
-
-  // Define types to be used:
-  using Real    = double;
-  using Vec     = std::vector<Real>;
-  using Complex = rsComplex<Real>;
-  using Allpass = rsDampedAllpassComb<Real, Real>;
-
-  int  N        = 8192;
-  int  delay    = 50;
-  Real feedback = 0.9;
-
-  // Design a wideband dip filter to be used as damping filter:
-  Real b[3];
-  Real a[3];
-  a[0] = 1;
-  rsStateVariableFilter<Real, Real> svf;  // Only used for designing the feedback filter
-  svf.setupBell(0.2, 0.3, 0.5);           // A wideband dip filter
-  svf.convertToBiquad(&b[0], &b[1], &b[2], &a[1], &a[2]);
-
-  // Set up the filter and compute the impulse responses of the comb section, the compensation 
-  // filter and the overall filter. We use a setup with predelay here:
-  Allpass ap;
-  ap.setMaxDelayInSamples(delay);
-  ap.setup(delay, feedback, 2, b, a, true);
-  Vec d(N); d[0] = 1;                         // Unit impulse aka Dirac delta function d[n]
-  Vec u(N), c(N), h(N);                       // Imp-resps of comb, corrector and allpass
-  for(int n = 0; n < N; n++)
-  {
-    u[n] = ap.getSampleComb( d[n]);
-    h[n] = ap.applyCorrector(u[n]);
-  }
-  ap.reset();
-  for(int n = 0; n < N; n++)
-    c[n] = ap.applyCorrector(d[n]);
-  bool ok = isAllpass(h, 1.e-3);
-  //rsPlotVectors(u, c, h);
-
-  // Define our z-value at which we want to evaluate H(z) and compute the sequence z-^n that is 
-  // needed in the z-transform:
-  Complex z(0.6, 0.8);              // z = 0.6 + 0.8i is on the unit circle.
-  std::vector<Complex> zn(N);       // zn[n] = z^-n = pow(z, -n)
-  for(int n = 0; n < N; n++)
-    zn[n] = rsPow(z, Complex(-n));
-
-  // Evaluate the transfer functions the hard way, i.e. via the definition of the z-transform. See:
-  // https://en.wikipedia.org/wiki/Z-transform#Definition  We can start the sum at n = 0 because
-  // x[n] = 0 for n < 0 because the impulses responses are causal. The signal x[n] in the formula 
-  // is replaced by our impulse responses u[n], c[n], h[n] in this case:
-  Complex Ut = 0, Ht = 0, Ct = 0;   // The t stands for "target"
-  for(int n = 0; n < N; n++)
-  {
-    Ut += u[n] * zn[n];             // Comb transfer function
-    Ct += c[n] * zn[n];             // Corrector transfer function
-    Ht += h[n] * zn[n];             // Overall allpass transfer function
-  }
-
-  // Sanity check: The magnitude of H should be 1 because z is on the unit circle and our filter 
-  // is an allpass:
-  Real Ha = rsAbs(Ht);
-  ok &= rsIsCloseTo(Ha, 1.0, 1.e-9);
-
-  // Compute the transfer functions using the respective methods and check if the results match the
-  // naively computed target values:
-  Complex U = ap.getCombTransferFunctionAt(z);      ok &= rsIsCloseTo(U, Ut, 1.e-8);
-  Complex C = ap.getCorrectorTransferFunctionAt(z); ok &= rsIsCloseTo(C, Ct, 1.e-8);
-  Complex H = ap.getTransferFunctionAt(z);          ok &= rsIsCloseTo(H, Ht, 1.e-8);
-
-
-  // Now do the same test for the mode without predelay:
-  ap.setup(delay, feedback, 2, b, a, false);
-  ap.reset();
-  for(int n = 0; n < N; n++)
-  {
-    u[n] = ap.getSampleComb( d[n]);
-    h[n] = ap.applyCorrector(u[n]);
-  }
-  ap.reset();
-  for(int n = 0; n < N; n++)
-    c[n] = ap.applyCorrector(d[n]);
-  ok &= isAllpass(h, 1.e-3);
-
-  Ut = 0, Ht = 0, Ct = 0;
-  for(int n = 0; n < N; n++)
-  {
-    Ut += u[n] * zn[n];
-    Ct += c[n] * zn[n];
-    Ht += h[n] * zn[n];
-  }
-  Ha = rsAbs(Ht);
-  ok &= rsIsCloseTo(Ha, 1.0, 1.e-9);
-
-  U = ap.getCombTransferFunctionAt(z);      ok &= rsIsCloseTo(U, Ut, 1.e-8);
-  C = ap.getCorrectorTransferFunctionAt(z); ok &= rsIsCloseTo(C, Ct, 1.e-8);
-  H = ap.getTransferFunctionAt(z);          ok &= rsIsCloseTo(H, Ht, 1.e-8);
-
-
-  // Now do a test using our testTransferFunction() helper function. This will only test the 
-  // overall getTransferFunctionAt() function not the separate partial functions 
-  // getCombTransferFunctionAt(), getCorrectorTransferFunctionAt(). 
-  ok &= testTransferFunction(ap, z, N, 1.e-8);
-
-
-  return ok;
-
-  //rsAssert(ok);
-  // OK - this seems to work fine!
-
-
-  // ToDo:
-  //
-  // - Integrate such a test into the unit test for rsDampedAllpassComb. Do it for different orders
-  //   of the feedback filter (like 0...8). Maybe when this is in place, this function here is
-  //   obsolete and may be deleted.
-}
-
 void dampedAllpassCombComplex()
 {
   // We instantiate rsDampedAllpassComb with a complex datatype for the signals. The feedback gain
@@ -1136,61 +1016,23 @@ void dampedSchroederAllpass()
   //   allpasses create the transients.
 }
 
-
-
-
-// This is obsolete - we now cover this stuff in a unit test:
-void dampedSchroederAllpassTransFunc()
-{
-  // Define types to be used:
-  using Real    = double;
-  using Complex = rsComplex<Real>;
-  using Vec     = std::vector<Real>;
-  using Allpass = rsDampedSchroederAllpass<Real, Real>;
-
-  int  N        = 8192;
-  int  delay    = 50;
-  Real feedback = 0.9;
-
-  // Define the filter coeffs:
-  Real b[4] = { 0.2, 0.3, 0.1, 0.4 };
-
-  // Set up the filter:
-  Allpass ap;
-  ap.setMaxDelayInSamples(delay);
-  ap.setup(delay, feedback, 3, b);
-
-  // Define the z-value at which we evaluate the transfer function H(z):
-  Complex z(0.6, 0.8);
-
-  // Check the implementation of Allpass::getTransferFunctionAt():
-  bool ok = testTransferFunction(ap, z, N, 1.e-8);
-
-  // This still fails because rsDampedSchroederAllpass::getTransferFunctionAt is still just a stub!
-
-
-}
-
 void dampedAllpassComb()
 {
   //dampedAllpassComb4();
-  dampedAllpassCombTransFunc();
-  dampedSchroederAllpassTransFunc();
   //dampedSchroederAllpass();
 
   dampedAllpassComb1();
   dampedAllpassComb2();
   dampedAllpassComb3();
   dampedAllpassComb4();
-  dampedAllpassCombTransFunc();
   dampedAllpassCombComplex();
   dampedAllpassCombNonLin();
   dampedAllpassDelayContent();
   dampedSchroederAllpass();
-  dampedSchroederAllpassTransFunc();
 
-  // ToDo: implement and test getTransferFunctionAt(complex z) functions. We can test them by 
-  // literally implementing the z-trafo of the impulse response. By using a z for which z^n 
-  // decays reasonably quickly with n, such a computation should not introduce too much numerical
-  // error
+  // ToDo: 
+  //
+  // - Plot the phase-delay and group-delay as function of frequency for the damped allpass comb 
+  //   and damped Schroeder allpass. We can do this by evaluating the complex frequency response 
+  //   using the getTransferFunctionAt() functions.
 }
