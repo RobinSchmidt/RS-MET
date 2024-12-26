@@ -1679,8 +1679,6 @@ public:
   /** Evaluates the filter's z-domain transfer function H(z) value at the given value of z. */
   rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const
   {
-    //return z; // Preliminary!
-
     // For a 2-point feedback filter with coeffs b0,b1 and with M = 5 (the delay), the transfer 
     // function should look like this:
     //
@@ -1688,38 +1686,21 @@ public:
     //  H(z) = -----------------------------   =   -------------------------
     //          1 + k*b1*d^(M-1) + k*b0*d^M         1 + k*b1*d^4 + k*b0*d^5
 
-
     using Complex = rsComplex<TPar>;
-    Complex d   = TPar(1) / z;                      // d  = z^-1
-    Complex dM  = rsPow(d, Complex(M));             // dM = z^-M
+    Complex d   = TPar(1) / z;                 // d       = z^-1
+    Complex dM  = rsPow(d, Complex(M));        // dM      = z^-M
+    Complex di  = TPar(1);                     // d^i     = z^-i
+    Complex dMi = dM;                          // d^(M-i) = z^(-(M-i)) = z^(i-M)
     Complex num = dM;
     Complex den = TPar(1);
-
-    Complex di  = TPar(1);                          // d^i     = z^-i
-    Complex dMi = dM;                               // d^(M-i) = z^(-(M-i)) = z^(i-M)
-
-
-
     for(size_t i = 0; i < b.size(); i++)
     {
-      //num += k * b[i] * rsPow(d, Complex(i  ));
-      //den += k * b[i] * rsPow(d, Complex(M-i));
-
-
       num += k * b[i] * di;
       den += k * b[i] * dMi;
-
       di  *= d;
-      dMi /= d;   // Use *= z
+      dMi *= z;                                // Equivalent to: dMi /= d; Decrement exponent.
     }
     return num / den;
-
-
-    // ToDo: 
-    //
-    // - Optimize by avoiding rsPow in the loop. instead compute the power d^i incrementally. Maybe
-    //   compute the d^(M-i) "decrementally". But let's keep this implementation for the naive
-    //   class. 
   }
 
 
