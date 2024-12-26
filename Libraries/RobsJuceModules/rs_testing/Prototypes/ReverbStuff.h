@@ -1690,14 +1690,27 @@ public:
 
 
     using Complex = rsComplex<TPar>;
-    Complex d   = TPar(1) / z;                      // d = z^-1
-    //Complex num = rsPow(z, Complex(-M));
-    Complex num = rsPow(d, Complex(M));
+    Complex d   = TPar(1) / z;                      // d  = z^-1
+    Complex dM  = rsPow(d, Complex(M));             // dM = z^-M
+    Complex num = dM;
     Complex den = TPar(1);
+
+    Complex di  = TPar(1);                          // d^i     = z^-i
+    Complex dMi = dM;                               // d^(M-i) = z^(-(M-i)) = z^(i-M)
+
+
+
     for(size_t i = 0; i < b.size(); i++)
     {
-      num += k * b[i] * rsPow(d, Complex(i  ));
-      den += k * b[i] * rsPow(d, Complex(M-i));
+      //num += k * b[i] * rsPow(d, Complex(i  ));
+      //den += k * b[i] * rsPow(d, Complex(M-i));
+
+
+      num += k * b[i] * di;
+      den += k * b[i] * dMi;
+
+      di  *= d;
+      dMi /= d;   // Use *= z
     }
     return num / den;
 
