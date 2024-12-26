@@ -1683,37 +1683,32 @@ public:
     H(z) = ---------------------------------------
              1  + sum_{i=0}^P  k * b[i] * d^(M-i)
 
-  where M is the delay, P is the feedback filter order and d = z^-1 = 1/z.
-  
+  where M is the delay, P is the feedback filter order and d = z^-1 = 1/z. For example, with M = 5
+  and P = 2, it would look like:
+
+             d^5 + k*b0     + k*b1*d 
+    H(z) =  ---------------------------
+              1  + k*b1*d^4 + k*b0*d^5
   */
   rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const
   {
-    // For a 2-point feedback filter with coeffs b0,b1 and with M = 5 (the delay), the transfer 
-    // function should look like this:
-    //
-    //            k*b0 + k*b1*d + d^M         M=5   k*b0 + k*b1*d + d^5
-    //  H(z) = -----------------------------   =   -------------------------
-    //          1 + k*b1*d^(M-1) + k*b0*d^M         1 + k*b1*d^4 + k*b0*d^5
-
     using Complex = rsComplex<TPar>;
     Complex d   = TPar(1) / z;                 // d       = z^-1
-    Complex dM  = rsPow(d, Complex(M));        // dM      = z^-M
+    Complex dM  = rsPow(d, Complex(M));        // dM      = z^-M = d^M
     Complex di  = TPar(1);                     // d^i     = z^-i
     Complex dMi = dM;                          // d^(M-i) = z^(-(M-i)) = z^(i-M)
-    Complex num = dM;
-    Complex den = TPar(1);
+    Complex num = TPar(0);
+    Complex den = TPar(0);
     for(size_t i = 0; i < b.size(); i++)
     {
-      num += k * b[i] * di;
-      den += k * b[i] * dMi;
+      num += b[i] * di;
+      den += b[i] * dMi;
       di  *= d;
       dMi *= z;                                // Equivalent to: dMi /= d; Decrement exponent.
     }
+    num = dM      + k*num;
+    den = TPar(1) + k*den;
     return num / den;
-
-    // Optimize by dragging out the multiplication by k. We need to init num and den by zero, then
-    // accumulate  b[i] * di  and  b[i] * dMi, then after the loop multiply num and den by k and 
-    // then add dM and 1 respectively
   }
 
 
@@ -1740,6 +1735,12 @@ public:
 
     // In order to need only one delayline, we use a direct form 2 implementation. See:
     // https://www.dsprelated.com/freebooks/filters/Direct_Form_II.html
+
+    // ToDo:
+    //
+    // - Try using size_t for the loop index i. Get rid of the local variable "order". Measure
+    //   performance of both variants. Maybe the delayLine needs a member function readOutputAt
+    //   that takes a size_t to avoid the conversion.
   }
 
   void reset()
@@ -1871,7 +1872,7 @@ A variant that implements the transfer function proposed above:
   H(z) = ------------------------- = ----------------------------------
           1 + k * R(z) * z^-(M-P)     1 + k * z-^1 * R(z) * z^-(M-P-1)
 
-directly. Mainly to see, if this formula is actually correct. ...TBC...  */
+directly. Mainly to see, if this formula is actually correct. ...TBC...Verify formula  */
 
 template<class TSig, class TPar>
 class rsDampedSchroederAllpassNaive2
