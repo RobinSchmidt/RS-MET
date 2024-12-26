@@ -1709,6 +1709,11 @@ public:
     num = dM      + k*num;
     den = TPar(1) + k*den;
     return num / den;
+
+    // ToDo:
+    //
+    // - Maybe use rsPowInt(d, M) to compute dM. But the function may not yet work for rsComplex.
+    //   Figure that out!
   }
 
 
