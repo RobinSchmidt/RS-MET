@@ -752,36 +752,6 @@ void dampedAllpassComb4()
   //   its poles.
 }
 
-//// Helper function to test the result of flt.getTransferFunctionAt() against a naively computed 
-//// transfer function value
-//template<class T, class TFlt>
-//inline bool testTransferFunction(TFlt& filter, rsComplex<T> z, int N, T tol)
-//{
-//  // Compute transfer function H(z) at the given z the hard way, i.e. as the z-transform of the 
-//  // impulse response. It's only an approximation though because we truncate the infinite sum at
-//  // N-1. N should be large enough such that the impulse response has sufficiently decayed at the 
-//  // end. We compute Ht = sum_{n=0}^{N-1} h[n] * z^{-n} where h[n] is the impulse response of the 
-//  // filter. In the actual z-trafo, the upper limit of the sum would be infinity.
-//  filter.reset();
-//  rsComplex<T> z1 = T(1) / z;                         // z^-1
-//  rsComplex<T> zn = T(1);                             // z^-n with n = 0
-//  rsComplex<T> Ht = filter.getSample(T(1)) * zn;      // The "t" in Ht stands for "target"
-//  for(int n = 1; n < N; n++)
-//  {
-//    zn *= z1;                                         // z^-n
-//    Ht += filter.getSample(T(0)) * zn;
-//  }
-//
-//  // Compute the transfer function using the filter's getTransferFunctionAt() method:
-//  rsComplex<T> H = filter.getTransferFunctionAt(z);
-//
-//  // Compute the error and check if it's absolute value is within the tolerance:
-//  rsComplex<T> err = Ht - H;
-//  T errAbs = rsAbs(err);
-//  return errAbs <= tol;
-//}
-// ToDo: move to TestUtilities.h
-
 void dampedAllpassCombTransFunc()
 {
   // We test the computation of the transfer function in rsDampedAllpassComb, i.e. the 
@@ -1193,34 +1163,8 @@ void dampedSchroederAllpassTransFunc()
   // Check the implementation of Allpass::getTransferFunctionAt():
   bool ok = testTransferFunction(ap, z, N, 1.e-8);
 
-  /*
-  Vec d(N); d[0] = 1;                         // Unit impulse aka Dirac delta function d[n]
-  Vec u(N), c(N), h(N);                       // Imp-resps of comb, corrector and allpass
-  for(int n = 0; n < N; n++)
-  {
-    u[n] = ap.getSampleComb( d[n]);
-    h[n] = ap.applyCorrector(u[n]);
-  }
-  ap.reset();
-  for(int n = 0; n < N; n++)
-    c[n] = ap.applyCorrector(d[n]);
-  bool ok = isAllpass(h, 1.e-3);
-  //rsPlotVectors(u, c, h);
+  // This still fails because rsDampedSchroederAllpass::getTransferFunctionAt is still just a stub!
 
-  // Define our z-value at which we want to evaluate H(z) and compute the sequence z-^n that is 
-  // needed in the z-transform:
-  Complex z(0.6, 0.8);              // z = 0.6 + 0.8i is on the unit circle.
-  std::vector<Complex> zn(N);       // zn[n] = z^-n = pow(z, -n)
-  for(int n = 0; n < N; n++)
-    zn[n] = rsPow(z, Complex(-n));
-    */
-
-
-
-  // ToDo:
-  //
-  // - Maybe factor out a general testTransferFunction(TFlt filter, complex z, int N, T tol) and
-  //   use it. That can be useful for a lot of unit tests
 
 }
 
