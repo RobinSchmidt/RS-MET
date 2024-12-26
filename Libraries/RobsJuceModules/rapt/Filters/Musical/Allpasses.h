@@ -421,7 +421,7 @@ are spaced out on the frequency axis in a particular way. Basically, the spacing
 between some user provided lower and upper normalized radian frequency. But before mapping to 
 exponential, we may also apply a rational map to alter the frequency spacing to skew them more
 towards lower or higher frequencies. The impulse response of these allpass filters are sinusoidal
-sweepdowns. They are actually well suited as raw material for kickdrum synthesis as is realized
+sweepdowns. They are actually well suited as raw material for bassdrum synthesis as is realized
 in rosic::rsFlatZapper. ...TBC...  */
 
 template<class TSig, class TPar>

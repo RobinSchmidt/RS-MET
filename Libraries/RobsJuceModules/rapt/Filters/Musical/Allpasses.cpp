@@ -23,8 +23,12 @@ ToDo:
   any filter: just take its poles and use as zeros the reflected poles.
 
 - Another general recipe (applicable to stable, minimum phase filters) could be: invert the filter 
-  (swap numertaor and denominator), reverse the FIR part, take the product (i.e. series connection) 
-  of the original and the invert-reversed one.
+  (swap numerator and denominator), reverse the FIR part, take the product (i.e. series connection) 
+  of the original and the invert-reversed one. If the original filter is maximum phase, one should 
+  also reverse the recursive part. If its minimum phase, that would lead to an unstable filter, but
+  with a maximum phase original filter, it should be fine. Maybe if the original filter is minimum
+  phase, one could convert it to max phase before (by reversing the b-coeff array). Do some 
+  experiments with this using rsArrayTools::filter().
 
 - Implement a phaser like allpass - maybe one in which all stages have the same coeffs.
 
