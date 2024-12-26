@@ -1676,7 +1676,16 @@ public:
   }
 
 
-  /** Evaluates the filter's z-domain transfer function H(z) value at the given value of z. */
+  /** Evaluates the filter's z-domain transfer function H(z) value at the given value of z. It is 
+  given by:
+
+            d^M + sum_{i=0}^P  k * b[i] * d^(i)
+    H(z) = ---------------------------------------
+             1  + sum_{i=0}^P  k * b[i] * d^(M-i)
+
+  where M is the delay, P is the feedback filter order and d = z^-1 = 1/z.
+  
+  */
   rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const
   {
     // For a 2-point feedback filter with coeffs b0,b1 and with M = 5 (the delay), the transfer 
@@ -1701,6 +1710,10 @@ public:
       dMi *= z;                                // Equivalent to: dMi /= d; Decrement exponent.
     }
     return num / den;
+
+    // Optimize by dragging out the multiplication by k. We need to init num and den by zero, then
+    // accumulate  b[i] * di  and  b[i] * dMi, then after the loop multiply num and den by k and 
+    // then add dM and 1 respectively
   }
 
 
