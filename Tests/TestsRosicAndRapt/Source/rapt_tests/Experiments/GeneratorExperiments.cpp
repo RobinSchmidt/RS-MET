@@ -3611,6 +3611,7 @@ void showFlatZapPlots()
   bool plotPhaseSpectrum  = false;
   bool plotGroupDelay     = false;
   bool plotRinging        = false;
+  bool plotSpectrogram_   = true;
   bool plotInstFreq       = true;  // Instantaneous frequency measurement
 
   // Create the signal to analyze:
@@ -3623,13 +3624,13 @@ void showFlatZapPlots()
   //x = getBrownZap(50, 15, 8000, 2.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // Defaults except for freqShape (2 instead of 0)
 
-  //x = getBrownZap(100, 15, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  x = getBrownZap(100, 15, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // Defaults except for numStages (100 instead of 50). 
 
   //x = getBrownZap(50, 250, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // Defaults except for lowFreq (250 instead of 15). 
 
-  x = getBrownZap(50, 1000, 1000, 0.0, 1.0, 1.0, 0.0, 1.0, (int)sampleRate);
+  //x = getBrownZap(50, 1000, 1000, 0.0, 1.0, 1.0, 0.0, 1.0, (int)sampleRate);
   // All allpasses tuned to 1 kHz
 
   //x = getFlatZap(50,  10, 10000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
@@ -3698,6 +3699,13 @@ void showFlatZapPlots()
     sp.plotSpectra(N, &x[0]);  
   }
   // Looks like a nice bell curve
+
+  if(plotSpectrogram_)
+  {
+    plotSpectrogram(&x[0], N, 64, 512, 512, sampleRate);
+    //plotSpectrogram(&x[0], N, 64, 256, 256, sampleRate);
+  }
+
 
 
   // Plot the measured instantaneous frequency:
@@ -3944,7 +3952,7 @@ void flatZapper()
   //allpassChainBassdrum();
   //flatZapperPhaseTweaks();
   //flatZapperOpposingLengthTweaks();
-  //showFlatZapPlots();
+  showFlatZapPlots();
   showRedZapsInstFreqs();
 
   int dummy = 0;

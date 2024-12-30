@@ -263,6 +263,41 @@ void plotSpectrogram(int numFrames, int numBins, const rsMatrix<std::complex<dou
   rsMatrixTools::deallocateMatrix(dB, numFrames, numBins);
 }
 
+void plotSpectrogram(const double* x, int N, int hopSize, int blockSize, int trafoSize,
+  double sampleRate)
+{
+  // Create and set up the analyzer object:
+  rsSinusoidalAnalyzer<double> sa;  // ToDo: use rsSpectrogramProcessor instead
+  sa.setHopSize(hopSize);
+  sa.setBlockAndTrafoSize(blockSize, trafoSize);
+  //sa.setWindowType(...);
+
+  // Compute the complex spectrogram:
+  RAPT::rsMatrix<std::complex<double>> stft = sa.getComplexSpectrogram(x, N);
+
+  // Compute the dB-spectrogram:
+  double maxDb = +10.0;
+  double minDb = -70.0;
+  //int numBins   = stft.getNumRows();
+  //int numFrames = stft.getNumColumns();
+  RAPT::rsMatrix<double> dB(stft.getNumRows(), stft.getNumColumns());
+  for(int i = 0; i < dB.getNumRows(); i++)
+    for(int j = 0; j < dB.getNumColumns(); j++)
+      dB(i, j) = rsClip(rsAmpToDb(abs(stft(i, j))), minDb, maxDb);
+
+
+  plotMatrix(dB, true);
+
+
+
+  // Maybe integrate this functionality into SpectrogramPlotter. See also the code in
+  // SinusoidalModelPlotter<T>::plotAnalysisResult. There's a lot of overlap. This should be 
+  // refactored in a way to have a clean class that can plot spectrograms of a given signal.
+
+  // Make x- and y-axis ticks in phyiscal units (seconds and Hz)
+}
+
+
 
 void plotPhasogram(int numFrames, int numBins, double **phases, double sampleRate, int hopSize)
 {

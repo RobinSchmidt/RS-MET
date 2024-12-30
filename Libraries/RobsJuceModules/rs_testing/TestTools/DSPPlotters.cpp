@@ -720,16 +720,16 @@ void SpectrogramPlotter<T>::addSpectrogramData(GNUPlotter& p, int numFrames, int
 
   // create time- and frequency axis and add the data:
   T tMax = H*(numFrames-1)/fs;
-  T fMax =  0.5*fs*(numBins-1)/numBins;
-  T *t = new T[numFrames];
-  T *f = new T[numBins];
-  p.rangeLinear(t, numFrames, 0.0, tMax);
-  p.rangeLinear(f, numBins,   0.0, fMax);
-  // We should use T rather than double, I think.
-  // Verify the formulas for tMax, fMax. They seem fishy! Use std::vector!
+  //T tMax = (H*numFrames-1)/fs;
+  T fMax =  0.5*fs*(numBins-1)/numBins;  // why not just 0.5*fs?
+  std::vector<T> t(numFrames);
+  std::vector<T> f(numBins);
+  p.rangeLinear(&t[0], numFrames, 0.0, tMax);
+  p.rangeLinear(&f[0], numBins,   0.0, fMax);
+  // Verify the formulas for tMax, fMax. 
 
   p.setDataPrecision(4);                                  // make temp files smaller
-  p.addDataMatrix(numFrames, numBins, t, f, s);
+  p.addDataMatrix(numFrames, numBins, &t[0], &f[0], s);
 
   // set up style settings:
   //p.setAxisLabels("Time in s", "Frequency in Hz", "Level in dB");
@@ -749,9 +749,6 @@ void SpectrogramPlotter<T>::addSpectrogramData(GNUPlotter& p, int numFrames, int
   p.setRange(0.0, tMax, 0.0, fMax, dbMin, dbMax);
   // doesn't seem to have any effect on the color axis (z). it seems like GNUPlot uses
   // autoscaling for it, no matter what.
-
-  delete[] t;
-  delete[] f;
 }
 
 //=================================================================================================

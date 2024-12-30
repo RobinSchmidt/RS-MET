@@ -753,50 +753,6 @@ void dampedAllpassComb4()
   //   its poles.
 }
 
-
-// Move to Plotting.h/cpp:
-template<class T>
-void plotSpectrogram(const T* x, int N, int hopSize, int blockSize, int trafoSize, T sampleRate)
-{
-  // Create and set up the analyzer object:
-  rsSinusoidalAnalyzer<T> sa;  // ToDo: use rsSpectrogramProcessor instead
-  sa.setHopSize(hopSize);
-  sa.setBlockAndTrafoSize(blockSize, trafoSize);
-  //sa.setWindowType(...);
-
-  // Compute the complex spectrogram:
-  RAPT::rsMatrix<std::complex<T>> stft = sa.getComplexSpectrogram(x, N);
-
-  // Compute the dB-spectrogram:
-  T maxDb = +10.0;
-  T minDb = -70.0;
-  int numBins   = stft.getNumRows();
-  int numFrames = stft.getNumColumns();
-  RAPT::rsMatrix<T> dB(stft.getNumRows(), stft.getNumColumns());
-  for(int i = 0; i < dB.getNumRows(); i++)
-    for(int j = 0; j < dB.getNumColumns(); j++)
-      dB(i, j) = rsClip(rsAmpToDb(abs(stft(i, j))), minDb, maxDb);
-  dB.transpose();
-  // ToDo: clean this up such that we don't need to tranpose!
-
-
-  // Create plotter object and pass in the data and plot the spectrogram:
-
-  GNUPlotter plt;
-  SpectrogramPlotter<T> splt;
-  T** rowPointers = createRowPointers(dB);
-  splt.addSpectrogramData(
-    plt, numFrames, numBins, rowPointers, sampleRate, sa.getHopSize(), minDb, maxDb);
-  deleteRowPointers(rowPointers, dB);  
-  plt.plot();
-
-
-  // Maybe integrate this functionality into SpectrogramPlotter. See also the code in
-  // SinusoidalModelPlotter<T>::plotAnalysisResult. There's a lot of overlap. This should be 
-  // refactored in a way to have a clean class that can plot spectrograms of a given signal.
-}
-
-
 void dampedAllpassComb5()
 {
   // Under construction.
@@ -812,8 +768,8 @@ void dampedAllpassComb5()
 
   // User parameters:
   Real sampleRate = 48000;     // Sampling rate.
-  int  numSamples = 20000;     // Number of samples to render.
-  int  delay      =   100;     // Delay in samples.
+  int  numSamples = 24000;     // Number of samples to render.
+  int  delay      =    50;     // Delay in samples.
   Real decayTime  =     0.3;   // Decay time for mid frequencies in seconds.
   Real lowFreq    =   250.0;   // Crossover freq between low and mid frequencies in Hz.
   Real lowScale   =     1.0;   // Decay time scaler for low frequencies.
@@ -861,7 +817,7 @@ void dampedAllpassComb5()
 
   // Plot spectrogram of the allpass output::
   plotSpectrogram(&y[0], N, 256, 2048, 2048, sampleRate);
-
+  // numFrames does not seem to depend on the hopSize
 
 
 
@@ -881,6 +837,10 @@ void dampedAllpassComb5()
   // - Plot an energy decay relief and check if it looks like expected. Maybe plot a spectrogram.
   //   ...hmm - the spectrogram of the impulse-response looks weird. Maybe it's because the hop
   //   size is synced with the delay. Maybe try it with a noise input.
+  //
+  // - We really need to check the spectrogram computation and plotting functions. I think, they 
+  //   may not yet have been ready for general use. Make an experiment to test them. Maybe with a
+  //   modal synthesis guitar tone.
   //
   // - Maybe give the user an option to switch between positive and negative feedback.
   //

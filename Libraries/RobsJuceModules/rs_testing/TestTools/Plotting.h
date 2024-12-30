@@ -361,6 +361,13 @@ void plotSpectrogram(int numFrames, int numBins, double **decibels, double sampl
 /** Plots spectrogram magnitudes from a complex spectrogram. */
 void plotSpectrogram(int numFrames, int numBins, const rsMatrix<std::complex<double>>& spec,
   double sampleRate, int hopSize, double dbMin = -100, double dbMax = +10);
+// numFrames and numBins can be inferred from the matrix shape -> get rid!
+
+/** Under construction.... */
+void plotSpectrogram(const double* x, int N, int hopSize, int blockSize, int trafoSize, 
+  double sampleRate);
+
+
 
 
 

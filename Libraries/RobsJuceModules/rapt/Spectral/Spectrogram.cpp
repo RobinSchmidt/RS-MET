@@ -172,7 +172,7 @@ rsMatrix<std::complex<T>> rsSpectrogramProcessor<T>::getComplexSpectrogram(const
       s(i, j) = a * X[j];
     n += H;                                    // advance n by the hop size
   }
-  delete[] X;
+  delete[] X;  // Get rid of this! Use std::vector for X!
   return s;
 }
 
