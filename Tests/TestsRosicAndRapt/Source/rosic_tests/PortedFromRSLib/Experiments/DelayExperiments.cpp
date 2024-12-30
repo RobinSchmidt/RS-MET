@@ -767,14 +767,14 @@ void dampedAllpassComb5()
   using Allpass = rsDampedAllpassComb<Real, Real>;
 
   // User parameters:
-  int  sampleRate = 48000;
-  int  N          =  8192;
-  int  delay      =    50;
-  Real decayTime  =     0.2;   // Decay time for mid frequencies in seconds.
-  Real lowFreq    =   250.0;
-  Real lowScale   =     1.5;
-  Real highFreq   =  4000.0;
-  Real highScale  =     0.5;
+  int  sampleRate = 48000;     // Sampling rate.
+  int  numSamples =  8192;     // Number of samples to render.
+  int  delay      =    50;     // Delay in samples.
+  Real decayTime  =     1.0;   // Decay time for mid frequencies in seconds.
+  Real lowFreq    =   250.0;   // Crossover freq between low and mid frequencies in Hz.
+  Real lowScale   =     1.5;   // Decay time scaler for low frequencies.
+  Real highFreq   =  4000.0;   // Crossover freq between mid and high frequencies in Hz.
+  Real highScale  =     0.5;   // Decay time scaler for high frequencies.
 
   // Compute intermediate values:
   Real decaySamples = decayTime     * sampleRate;
@@ -786,15 +786,33 @@ void dampedAllpassComb5()
   ap.setMaxDelayInSamples(delay);
   rsSetupDecayTimes(ap, delay, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
 
-
+  // Get impulse response:
+  Vec h = impulseResponse(ap, numSamples, 1.0);
+  rsPlotVectors(h);
 
   int dummy = 0;
 
+  // Observations:
+  //
+  // - With longer decay times, the initial spike grows larger with respect to the decaying tail.
+  //
+  //
   // ToDo:
   //
   // - Plot an energy decay relief and check if it looks like expected.
   //
-  // - Make it work also when lowScale and/or highScale is greater than 1
+  // - Maybe give the user an option to switch between positive and negative feedback.
+  //
+  // - Make it work also when lowScale and/or highScale is greater than 1. ..I think it should 
+  //   already work -> verify that!
+  //
+  // - Write result to wavefile and listen to it.
+  //
+  // - Try creating a series connection of a bunch of such allpasses with different values for the
+  //   delay. Maybe try giving them different decay times. Maybe the average of the decay times 
+  //   should stay the same but the decay time of the individual allpasses should scale with the 
+  //   delay somehow. Figure out, how chaining such filters affects the overall decay time. Will 
+  //   the decay times add up?
 }
 
 void dampedAllpassCombComplex()
