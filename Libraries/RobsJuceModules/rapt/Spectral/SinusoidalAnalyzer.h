@@ -149,6 +149,7 @@ public:
   RAPT::rsSinusoidalModel<T> analyze(T* sampleData, int numSamples, T sampleRate);
   // rename to analyzeSample, maybe don't let the user pass the sampleRate, instead have a 
   // setSampleRate function - this would be consistent with the synthesizer
+  // ToDo: Make sampleData const!
 
   /** Analyzes the given spectrogram and return the sinusoidal model for it */
   RAPT::rsSinusoidalModel<T> analyzeSpectrogram(
@@ -157,7 +158,8 @@ public:
   /** Creates and returns a complex spectrogram from the given sample data. Used internally by 
   analyze, so client code needs to call this directly only if it wants to see/plot/investigate the 
   underlying spectrogram analysis result. */
-  RAPT::rsMatrix<std::complex<T>> getComplexSpectrogram(T* sampleData, int numSamples);
+  RAPT::rsMatrix<std::complex<T>> getComplexSpectrogram(const T* sampleData, int numSamples);
+  // This function should probably be moved into class rsComplexSpectrogram
 
   /** Returns an array of indices of peaks in the given array x of length N. A peak at index i is 
   defined by the condition x[i-1] < x[i] < x[i+1]. You can also pass a relative threshold (with 
@@ -167,17 +169,20 @@ public:
   static std::vector<int> peakIndices(T* x, int N, T threshToMax = T(0));
   // todo: that function seems to be more generally useful - maybe move out of the class (and maybe 
   // into rsArrayTools)
+  // ToDo: Make x const!
 
   /** Given an array of spectral magnitude values x and a peak-index k such that 
   x[k-1] < x[k] < x[k+1], this function computes the exact location of the peak 
   pos = k + d, where d is some number between -1..+1 and the actual y-value of the peak at that 
   exact location by fitting a quadratic parabola to the dB-values around x[k]. */
   static void spectralMaximumPositionAndValue(T *x, int k, T* pos, T* val);
+  // ToDo: Make x const!
 
   /** Given an array of phase-values (in -pi..pi), this function computes an interpolated phase 
   value at given continuous array position. It uses linear interpolation and also takes care about 
   the wrap-arounds at -pi and pi. */
   static T interpolatePhase(T* phases, T position);
+  // ToDo: Make phases const!
 
 
 protected:

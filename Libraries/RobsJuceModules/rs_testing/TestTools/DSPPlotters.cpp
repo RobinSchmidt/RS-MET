@@ -725,6 +725,7 @@ void SpectrogramPlotter<T>::addSpectrogramData(GNUPlotter& p, int numFrames, int
   double *f = new double[numBins];
   p.rangeLinear(t, numFrames, 0.0, tMax);
   p.rangeLinear(f, numBins,   0.0, fMax);
+  // We should use T rather than double, I think.
 
 
   p.setDataPrecision(4);                                  // make temp files smaller
@@ -809,27 +810,6 @@ std::string SinusoidalModelPlotter<T>::getPartialColor(
 {
   return "000000"; // preliminary
 }
-
-
-// this is a kludge - get rid - the best would be, if GNUPlotter would support to take the matrix
-// in flat storage format
-template<class T>
-T** createRowPointers(RAPT::rsMatrix<T>& M)
-{
-  int N = M.getNumRows();
-  T** rp = new T*[N];
-  for(int i = 0; i < N; i++)
-    rp[i] = M.getRowPointer(i);
-  return rp;
-}
-template<class T>
-void deleteRowPointers(T** rowPointers, const RAPT::rsMatrix<T>& M)
-{
-  for(int i = 0; i < M.getNumRows(); i++)
-    delete rowPointers[i];
-}
-// while we still need it, move it to rsMatrix
-
 
 template<class T>
 void SinusoidalModelPlotter<T>::plotInterpolatedPhases(

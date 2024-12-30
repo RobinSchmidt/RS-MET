@@ -228,7 +228,7 @@ void rsSinusoidalAnalyzer<T>::applyContinuations(
 
 template<class T>
 rsMatrix<std::complex<T>> rsSinusoidalAnalyzer<T>::getComplexSpectrogram(
-  T* sampleData, int numSamples)
+  const T* sampleData, int numSamples)
 {
   return sp.getComplexSpectrogram(sampleData, numSamples);
 }

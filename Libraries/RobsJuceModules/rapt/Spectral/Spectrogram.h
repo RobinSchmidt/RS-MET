@@ -248,6 +248,7 @@ public:
   to a constant for given blocksize B and hopsize H, this function computes that constant and
   returns it. */
   static T getWindowSum(T *wa, T *ws, int B, int H);
+  // ToDo: Make wa, ws const!
 
 
   /** Computes the number of required zero valued samples to prepend and append for given block

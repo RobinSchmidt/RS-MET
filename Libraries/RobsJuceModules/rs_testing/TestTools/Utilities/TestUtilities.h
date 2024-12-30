@@ -576,6 +576,37 @@ rsMatrix<T> rsToMatrixColumnWise(const std::vector<T>& v, int numRows, int numCo
 // called like A.toVectorRowWise() and the "toMatrix" functions as static member functions
 // in rsMatrix to be called like rsMatrix<float>::toMatrixRowWise()
 
+
+// This is a kludge. Get rid! We need it to convert from rsMatrix into a format the GNUPlotter
+// understands, i.e. matrices defined by a pointer-to-pointer structure. The best would be, if
+// GNUPlotter would support to take the matrix in flat storage format.
+template<class T>
+T** createRowPointers(RAPT::rsMatrix<T>& M)
+{
+  int N = M.getNumRows();
+  T** rp = new T*[N];
+  for(int i = 0; i < N; i++)
+    rp[i] = M.getRowPointer(i);
+  return rp;
+}
+template<class T>
+void deleteRowPointers(T** rowPointers, const RAPT::rsMatrix<T>& M)
+{
+  // New:
+  delete[] rowPointers;
+
+  // Old - wrong:
+  //for(int i = 0; i < M.getNumRows(); i++)
+  //  delete rowPointers[i];
+
+  // This needs some testing!
+}
+// ToDo: maybe use rs-prefix
+
+
+
+
+
 /** Given an array of N desired eigenvalues and an NxN matrix whose columns are the desired 
 eigenvectors, this function returns the NxN matrix A that has this eigensystem. It basically 
 computes vecs * diag(vals) * inv(vecs). */
