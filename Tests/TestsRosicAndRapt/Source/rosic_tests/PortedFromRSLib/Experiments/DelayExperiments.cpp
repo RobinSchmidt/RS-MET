@@ -754,6 +754,7 @@ void dampedAllpassComb4()
 }
 
 
+// Move to Plotting.h/cpp:
 template<class T>
 void plotSpectrogram(const T* x, int N, int hopSize, int blockSize, int trafoSize, T sampleRate)
 {
@@ -767,19 +768,20 @@ void plotSpectrogram(const T* x, int N, int hopSize, int blockSize, int trafoSiz
   RAPT::rsMatrix<std::complex<T>> stft = sa.getComplexSpectrogram(x, N);
 
   // Compute the dB-spectrogram:
+  T maxDb = +10.0;
+  T minDb = -70.0;
   int numBins   = stft.getNumRows();
   int numFrames = stft.getNumColumns();
   RAPT::rsMatrix<T> dB(stft.getNumRows(), stft.getNumColumns());
   for(int i = 0; i < dB.getNumRows(); i++)
     for(int j = 0; j < dB.getNumColumns(); j++)
-      dB(i, j) = rsAmpToDb(abs(stft(i, j)));
+      dB(i, j) = rsClip(rsAmpToDb(abs(stft(i, j))), minDb, maxDb);
   dB.transpose();
   // ToDo: clean this up such that we don't need to tranpose!
 
 
   // Create plotter object and pass in the data and plot the spectrogram:
-  T maxDb =  +10.0;
-  T minDb = -100.0;
+
   GNUPlotter plt;
   SpectrogramPlotter<T> splt;
   T** rowPointers = createRowPointers(dB);
@@ -793,6 +795,7 @@ void plotSpectrogram(const T* x, int N, int hopSize, int blockSize, int trafoSiz
   // SinusoidalModelPlotter<T>::plotAnalysisResult. There's a lot of overlap. This should be 
   // refactored in a way to have a clean class that can plot spectrograms of a given signal.
 }
+
 
 void dampedAllpassComb5()
 {
@@ -809,16 +812,16 @@ void dampedAllpassComb5()
 
   // User parameters:
   Real sampleRate = 48000;     // Sampling rate.
-  int  numSamples =  8192;     // Number of samples to render.
-  int  delay      =    64;     // Delay in samples.
+  int  numSamples = 20000;     // Number of samples to render.
+  int  delay      =   100;     // Delay in samples.
   Real decayTime  =     0.3;   // Decay time for mid frequencies in seconds.
   Real lowFreq    =   250.0;   // Crossover freq between low and mid frequencies in Hz.
-  Real lowScale   =     1.5;   // Decay time scaler for low frequencies.
+  Real lowScale   =     1.0;   // Decay time scaler for low frequencies.
   Real highFreq   =  4000.0;   // Crossover freq between mid and high frequencies in Hz.
-  Real highScale  =     0.5;   // Decay time scaler for high frequencies.
+  Real highScale  =     1.0;   // Decay time scaler for high frequencies.
 
   // Test:
-  //lowScale  = 0.5; highScale = 0.25;
+  //lowScale  = 0.6; highScale = 0.2;
 
   // Compute intermediate values:
   Real decaySamples = decayTime     * sampleRate;
@@ -830,14 +833,37 @@ void dampedAllpassComb5()
   ap.setMaxDelayInSamples(delay);
   rsSetupDecayTimes(ap, delay, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
 
+
+  int N = numSamples;
+
   // Get impulse response:
-  Vec h = impulseResponse(ap, numSamples, 1.0);
-  rsPlotVectors(h);
+  Vec h = impulseResponse(ap, N, 1.0);
+  //rsPlotVectors(h);
 
   // Plot a spectrogram:
-  plotSpectrogram(&h[0], numSamples, 64, 256, 256, sampleRate);
-  //SpectrogramPlotter<Real> plt;
-  //plt.s
+  //plotSpectrogram(&h[0], N, 64, 256, 256, sampleRate);
+
+
+  // Create an enveloped noise as input:
+  Vec noise = createNoise(N, -1.0, +1.0, 0);
+  rsAttackDecayFilter<Real> adEnv;
+  adEnv.setAttackSamples(100.0);
+  adEnv.setDecaySamples( 300.0);
+  Vec env(N);
+  env[0] = adEnv.getSample(1.0);
+  for(int n = 0; n < N; n++)
+    env[n] = adEnv.getSample(0.0);
+  Vec envdNoise = env * noise;
+
+  // Pass the enveloped noise through the allpass:
+  Vec y = filterResponse(ap, N, envdNoise);
+  rsPlotVectors(h, y);
+
+  // Plot spectrogram of the allpass output::
+  plotSpectrogram(&y[0], N, 256, 2048, 2048, sampleRate);
+
+
+
 
   int dummy = 0;
 
@@ -845,10 +871,16 @@ void dampedAllpassComb5()
   //
   // - With longer decay times, the initial spike grows larger with respect to the decaying tail.
   //
+  // - The spectrogram shows vertical stripes in the higher frequencies. Also, it doesn't really
+  //   seem to decay very much over time. This looks wrong! The scaling of the time-axis looks also
+  //   wrong! It doesn't even seem to depend on numSamples
+  //
   //
   // ToDo:
   //
   // - Plot an energy decay relief and check if it looks like expected. Maybe plot a spectrogram.
+  //   ...hmm - the spectrogram of the impulse-response looks weird. Maybe it's because the hop
+  //   size is synced with the delay. Maybe try it with a noise input.
   //
   // - Maybe give the user an option to switch between positive and negative feedback.
   //

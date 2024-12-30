@@ -719,14 +719,14 @@ void SpectrogramPlotter<T>::addSpectrogramData(GNUPlotter& p, int numFrames, int
   // fs: sample rate, H: hop size
 
   // create time- and frequency axis and add the data:
-  double tMax = H*(numFrames-1)/fs;
-  double fMax =  0.5*fs*(numBins-1)/numBins;
-  double *t = new double[numFrames];
-  double *f = new double[numBins];
+  T tMax = H*(numFrames-1)/fs;
+  T fMax =  0.5*fs*(numBins-1)/numBins;
+  T *t = new T[numFrames];
+  T *f = new T[numBins];
   p.rangeLinear(t, numFrames, 0.0, tMax);
   p.rangeLinear(f, numBins,   0.0, fMax);
   // We should use T rather than double, I think.
-
+  // Verify the formulas for tMax, fMax. They seem fishy! Use std::vector!
 
   p.setDataPrecision(4);                                  // make temp files smaller
   p.addDataMatrix(numFrames, numBins, t, f, s);
