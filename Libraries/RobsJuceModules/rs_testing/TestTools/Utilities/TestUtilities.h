@@ -270,9 +270,7 @@ inline std::vector<TSig> impulseResponse(TFlt &filter, int length, TSig scale)
   return y;
 }
 
-/** Returns the response y[n] of the given filter to the input signal x[n]. The length determines the
-length of y which may be different from the length of x to allow the filter to ring out, for 
-example. */
+/** Returns the response y[n] of the given filter to the input signal x[n]. */
 template<class TSig, class TFlt>
 inline std::vector<TSig> filterResponse(TFlt& filter, int length, std::vector<TSig> x)
 {
@@ -282,6 +280,17 @@ inline std::vector<TSig> filterResponse(TFlt& filter, int length, std::vector<TS
     y[n] = filter.getSample(x[n]);
   return y;
 }
+// ToDo: Document the length parameter. It's for allowing y to be shorter than x. But why? It would 
+// actually make more sense to allow y to be longer to allow for a ringout. This old documentation 
+// text is wrong:
+// The length determines the length of y which may be different from the length of x to allow the 
+// filter to ring out, for example. WAIT - NO - this is wrong! The code below does not actually 
+// implement a ringout phase! I think, the "length" parameter currently only serves to allow y to 
+// be shorter than x. But why did I do it like that? Maybe change the implementation such that y
+// may be shorter or longer than x. Or mayb just get rid of the length parameter and take x.size()
+// for the length of y.
+
+
 
 /** Helper function to test the result of filter.getTransferFunctionAt() against a naively computed
 transfer function value. This is meant for unit testing the getTransferFunctionAt() member function

@@ -770,6 +770,18 @@ void rsMake1stOrderHighShelf(T w, T g, T* b0, T* b1, T* a1)
   // flip the sign of a1.
 }
 
+template<class T>
+void rsMake1stOrderLowShelf(T w, T g, T* b0, T* b1, T* a1)
+{
+  rsFirstOrderFilterBase<T, T>::coeffsLowShelfBLT(w, g, b0, b1, a1);
+  *a1 = -*a1; 
+}
+
+// Maybe add rsMake1stOrderAllpass to add dispersion. But we may also add dispersion by using
+// maximum-phase low- and high-shelvers
+
+
+
 //=================================================================================================
 
 /** We encapsulate into a class the code implemented in  feedbackFilterAllpass()  in 
@@ -1402,6 +1414,25 @@ void rsSetupHighDamp(rsDampedAllpassComb<TSig, TPar>& flt,
   rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
   flt.setup(delay, feedback, 1, b, a, predelay);
 }
+
+// Under construction. Should set up the flt such that it achieves a given overall decay time in 
+// samples (in the sense of RT60, i.e. reverb time to decay to -60 dB) and having scaled deacy 
+// times for low and high frequencies. The scale factors are given as raw factors for the RT60 and
+// crossover frequencies are given as omega.
+template<class TSig, class TPar>
+void rsSetupDecayTimes(rsDampedAllpassComb<TSig, TPar>& flt, int delay, TPar decayTimeInSamples,
+  TPar lowOmega, TPar lowTimeScale, TPar highOmega, TPar highTimeScale, bool predelay)
+{
+  TPar a[3], b[3]; a[0] = 1;
+
+  //rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
+  //flt.setup(delay, feedback, 1, b, a, predelay);
+}
+
+
+// ToDo: rsSetupDecayTimes(rsDampedAllpassComb<TSig, TPar>& flt,
+// int delay, TPar decayTime, TPar lowOmega, TPar lowScale, TPar highOmega, TPar
+// TPar dampGain, bool predelay)
 
 // Notes:
 // 

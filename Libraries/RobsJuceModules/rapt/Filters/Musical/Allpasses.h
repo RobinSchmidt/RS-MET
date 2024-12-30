@@ -435,7 +435,12 @@ public:
 
   void setMaxNumStages(int newMaxNumStages) { filters.resize(newMaxNumStages); }
 
+  /**  */
   void setupWithTwoPoles(int numStages, TPar wLo, TPar wHi, TPar wShape, TPar Q);
+  // Maybe rename to setup() or provide another method setupWithOnePoles in which each biquad 
+  // allpass is a 1-pole allpass (i.e. sets the 2nd order coeffs to zero). Maybe also have a 
+  // setupWithDualOnePoles where each biquad implements a chain of 2 1-pole allpasses. Maybe also
+  // spread out their frequencies.
 
 
   //-----------------------------------------------------------------------------------------------

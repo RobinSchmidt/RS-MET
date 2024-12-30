@@ -724,6 +724,7 @@ void dampedAllpassComb4()
   using Complex = rsComplex<Real>;
   using Allpass = rsDampedAllpassComb<Real, Real>;
 
+  // User parameters:
   int  N        = 8192;
   int  delay    = 100;
   Real feedback = 0.9;
@@ -750,6 +751,40 @@ void dampedAllpassComb4()
   //   we can't use the mode without predelay. See documentation of rsDampedAllpassComb. But maybe
   //   it can actually be made to work if we don't use the inverse damping filter as is but reflect
   //   its poles.
+}
+
+void dampedAllpassComb5()
+{
+  // Under construction.
+  //
+  // We want to set up an rsDampedAllpassComb that achieves a desired overall decay time (in the 
+  // RT60 sense) and also allows that decay time to be scaled at low and high frequencies via 
+  // shelving filters. ...TBC...
+
+  // Define types to be used:
+  using Real    = double;
+  using Vec     = std::vector<Real>;
+  using Allpass = rsDampedAllpassComb<Real, Real>;
+
+  // User parameters:
+  int  sampleRate = 48000;
+  int  N          =  8192;
+  int  delay      =    25;
+  Real decayTime  =   500.0;
+  Real lowFreq    =   250.0;
+  Real lowScale   =     1.5;
+  Real highFreq   =  4000.0;
+  Real highScale  =     0.5;
+
+
+
+
+
+  int dummy = 0;
+
+  // ToDo:
+  //
+  // - Plot an energy decay relief and check if it looks like expected.
 }
 
 void dampedAllpassCombComplex()
@@ -1018,6 +1053,7 @@ void dampedSchroederAllpass()
 
 void dampedAllpassComb()
 {
+  dampedAllpassComb5();
   //dampedAllpassComb4();
   //dampedSchroederAllpass();
 
@@ -1025,6 +1061,7 @@ void dampedAllpassComb()
   dampedAllpassComb2();
   dampedAllpassComb3();
   dampedAllpassComb4();
+  dampedAllpassComb5();
   dampedAllpassCombComplex();
   dampedAllpassCombNonLin();
   dampedAllpassDelayContent();
