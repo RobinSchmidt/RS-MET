@@ -1440,13 +1440,19 @@ void rsSetupDecayTimes(rsDampedAllpassComb<TSig, TPar>& flt, int delay, TPar dec
   TPar aL[2], bL[2]; aL[0] = 1; rsMake1stOrderLowShelf( lowOmega,  gL, &bL[0], &bL[1], &aL[1]);
   TPar aH[2], bH[2]; aH[0] = 1; rsMake1stOrderHighShelf(highOmega, gH, &bH[0], &bH[1], &aH[1]);
 
-  // Combine low and high shelver into biquad:
+  // Combine low- and high shelver into biquad:
   TPar a[3], b[3];
   rsArrayTools::convolve(aL, 2, aH, 2, a);
   rsArrayTools::convolve(bL, 2, bH, 2, b);
 
   // Set up the allpass filter:
   flt.setup(delay, kM, 2, b, a, predelay);
+
+  // ToDo:
+  //
+  // - Maybe optionally turn the low- and/or high-shelver into a maximum phase version. Maybe 
+  //   optionally let the user also add an allpass filter for additional dispersion in the feedback
+  //   path.
 }
 
 
