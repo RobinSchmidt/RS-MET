@@ -769,14 +769,22 @@ void dampedAllpassComb5()
   // User parameters:
   int  sampleRate = 48000;
   int  N          =  8192;
-  int  delay      =    25;
-  Real decayTime  =   500.0;
+  int  delay      =    50;
+  Real decayTime  =     0.2;   // Decay time for mid frequencies in seconds.
   Real lowFreq    =   250.0;
   Real lowScale   =     1.5;
   Real highFreq   =  4000.0;
   Real highScale  =     0.5;
 
+  // Compute intermediate values:
+  Real decaySamples = decayTime     * sampleRate;
+  Real lowOmega     = 2*PI*lowFreq  / sampleRate;
+  Real highOmega    = 2*PI*highFreq / sampleRate;
 
+  // Create and set up the allpass filter:
+  Allpass ap;
+  ap.setMaxDelayInSamples(delay);
+  rsSetupDecayTimes(ap, delay, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
 
 
 
@@ -785,6 +793,8 @@ void dampedAllpassComb5()
   // ToDo:
   //
   // - Plot an energy decay relief and check if it looks like expected.
+  //
+  // - Make it work also when lowScale and/or highScale is greater than 1
 }
 
 void dampedAllpassCombComplex()

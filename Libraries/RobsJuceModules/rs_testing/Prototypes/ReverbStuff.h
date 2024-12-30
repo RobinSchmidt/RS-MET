@@ -1423,10 +1423,30 @@ template<class TSig, class TPar>
 void rsSetupDecayTimes(rsDampedAllpassComb<TSig, TPar>& flt, int delay, TPar decayTimeInSamples,
   TPar lowOmega, TPar lowTimeScale, TPar highOmega, TPar highTimeScale, bool predelay)
 {
-  TPar a[3], b[3]; a[0] = 1;
+  //TPar a60 = 0.001;            // Target amplitude (-60 dB) to reach after decayTimeInSamples
 
-  //rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
-  //flt.setup(delay, feedback, 1, b, a, predelay);
+  // Compute desired feedback gains for low, mid and high frequencies:
+  TPar a60 = TPar(0.001); // = rsDbToAmp(-60.0). Target amplitude to reach after decayTimeInSamples
+  TPar kL  = rsPow(a60, TPar(delay) / (decayTimeInSamples * lowTimeScale ));
+  TPar kM  = rsPow(a60, TPar(delay) / (decayTimeInSamples                ));
+  TPar kH  = rsPow(a60, TPar(delay) / (decayTimeInSamples * highTimeScale));
+  // Verify formulas!
+
+  // Compute desired gains for the low and high shelver:
+  TPar gL = kL / kM;
+  TPar gH = kH / kM;
+
+  // Compute coeffs for low- and high shelver:
+  TPar aL[2], bL[2]; aL[0] = 1; rsMake1stOrderLowShelf( lowOmega,  gL, &bL[0], &bL[1], &aL[1]);
+  TPar aH[2], bH[2]; aH[0] = 1; rsMake1stOrderHighShelf(highOmega, gH, &bH[0], &bH[1], &aH[1]);
+
+  // Combine low and high shelver into biquad:
+  TPar a[3], b[3];
+  rsArrayTools::convolve(aL, 2, aH, 2, a);
+  rsArrayTools::convolve(bL, 2, bH, 2, b);
+
+  // Set up the allpass filter:
+  flt.setup(delay, kM, 2, b, a, predelay);
 }
 
 
