@@ -837,20 +837,23 @@ void dampedAllpassComb5()
     dbH[n] = rsAmpToDb(rsMax(rsAbs(hH[n]), ampFloor));
   }
 
-  // This doesn't work yet:
-  // Try to extract envelope from the dB-decay signals
-  RAPT::rsEnvelopeFollower2<Real> envFlw;
+  // Extract envelope from the dB-decay signals:
+  RAPT::rsSlewRateLimiter<Real, Real> envFlw;
   envFlw.setSampleRate(sampleRate);
-  envFlw.setInputFrequency(spikeFreq);
+  envFlw.setAttackTime(0.0);
+  envFlw.setReleaseTime(10 * 1000 * Real(delay) / Real(sampleRate));
   Vec env  = filterResponse(envFlw, N, db );
   Vec envL = filterResponse(envFlw, N, dbL);
   Vec envM = filterResponse(envFlw, N, dbM);
   Vec envH = filterResponse(envFlw, N, dbH);
 
+  //RAPT::rsEnvelopeExtractor<Real> envExt;
+
   // Plot the decaying lowpass, bandpass and highpass parts. The decay should be linear on a dB
   // scale:
-  rsPlotVectors(db, env);
-  //rsPlotVectors(env, envL, envM, envH);  // Looks wrong!
+  //rsPlotVectors(db, env);
+  //rsPlotVectors(envM, envH);
+  rsPlotVectors(env, envL, envM, envH);
   //rsPlotVectors(h, hL, hM, hH);
   //rsPlotVectors(db, dbL, dbM, dbH);
   //rsPlotVectors(db, dbL, dbM, dbH);
@@ -905,6 +908,11 @@ void dampedAllpassComb5()
   //   explanation for the 2-stage decay is the leakage of the mid band into the high band. So, 
   //   the actually relevant slope for the high band is the inital (steeper) slope. The more 
   //   shallow slope towards the end comes from the more slowly decaying mid band.
+  //
+  // - But: the 2-stage decay is also present in the unfiltered signal. Maybe there, it has to do
+  //   with how the spikes are smoothed out over time. At first, we see the decay of the spikes and
+  //   and soon as they get buried in the smooth sine-like part, we see the decay of the smooth 
+  //   part?
   //
   // - The spectrogram looks weird. Not really what I expected. Figure out, why it looks so 
   //   strange!
