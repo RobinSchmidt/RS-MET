@@ -300,8 +300,6 @@ T rsTriSaw(T x, T p)
 //  We can then get rid of the x *= (1/(2*PI));
 // -Verify if fmod behaves correctly for negative x.
 
-
-
 /** Converts a time-stamp given in whole notes into seconds according to a tempo measured
 in beats per minute (bpm). */
 template<class T>
@@ -309,5 +307,27 @@ inline T rsWholeNotesToSeconds(T noteValue, T bpm)
 {
   return (240.0/bpm) * noteValue;
 }
+
+/** Computes the desired feedback gain factor for a feedback loop with a given "roundtripLength"
+such that after a given "decayTime" the amplitude of the output has decayed away to
+"targetAmplitude". It doesn't really matter in which units the decayTime and roundtripLength are
+given as long as they are given in the same unit (might be seconds or samples or whatever other 
+time unit is convenient). For example, for a recursive comb filter based on a delayline of length 
+M, if your desired decay time in samples is D and your target amplitude is 0.001 (== dBToAmp(-60) 
+such that decayTime would be a RT60 value), you would have to compute (0.001)^(M/D). This function 
+encapsulates this formula. */
+template<class T>
+inline T rsDecayTimeToFeedbackGain(T decayTime, T roundTripLength, T targetAmplitude)
+{
+  return rsPow(targetAmplitude, roundTripLength / decayTime);
+
+  // When we have a feedback loop with roundtrip length "d" and we want to reach a gain of "a" 
+  // after an elapsed time of "t", we need to solve:  a = k^(t/d)  for the feedback gain factor
+  // k. The result is k = a^(d/t).
+  //
+  // ToDo: Maybe optimize based on exp or exp2
+}
+
+
 
 #endif

@@ -16,7 +16,7 @@ In that respect, it is very much like the ToneControl class, but here we use a
 different definition of the corner-frequency. In the ToneControl class, the
 corner-frequency is defined to be the frequency at which the gain is the
 geometric mean between the gain the reference gain (which is unity) - here the 
-rereference gain does not need to be unity and the relative gain at the 
+reference gain does not need to be unity and the relative gain at the 
 corner-frequency can be specified arbitrarily. This facilitates the use of the 
 filter inside the feedback-loop of a delay-line - here it may be desirable to 
 define the corner-freq in terms of decay-time instead of in terms of gain.

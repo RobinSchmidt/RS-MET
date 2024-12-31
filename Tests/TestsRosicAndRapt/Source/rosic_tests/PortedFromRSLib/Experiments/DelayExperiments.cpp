@@ -770,11 +770,11 @@ void dampedAllpassComb5()
   Real sampleRate = 48000;     // Sampling rate.
   int  numSamples = 24000;     // Number of samples to render.
   int  delay      =    50;     // Delay in samples.
-  Real decayTime  =     0.3;   // Decay time for mid frequencies in seconds.
+  Real decayTime  =     1.0;   // Decay time for mid frequencies in seconds.
   Real lowFreq    =   250.0;   // Crossover freq between low and mid frequencies in Hz.
-  Real lowScale   =     1.0;   // Decay time scaler for low frequencies.
+  Real lowScale   =     1.5;   // Decay time scaler for low frequencies.
   Real highFreq   =  4000.0;   // Crossover freq between mid and high frequencies in Hz.
-  Real highScale  =     1.0;   // Decay time scaler for high frequencies.
+  Real highScale  =     0.2;   // Decay time scaler for high frequencies.
 
   // Test:
   //lowScale  = 0.6; highScale = 0.2;
@@ -798,6 +798,8 @@ void dampedAllpassComb5()
 
   // Plot a spectrogram:
   //plotSpectrogram(&h[0], N, 64, 256, 256, sampleRate);
+  plotSpectrogram(&h[0], N, 32, 128, 128, sampleRate);
+  //plotSpectrogram(&h[0], N, 16,  64,  64, sampleRate);
 
 
   // Create an enveloped noise as input:
@@ -817,6 +819,7 @@ void dampedAllpassComb5()
 
   // Plot spectrogram of the allpass output::
   plotSpectrogram(&y[0], N, 256, 2048, 2048, sampleRate);
+  plotSpectrogram(&y[0], N,  32,  128,  128, sampleRate);
   // numFrames does not seem to depend on the hopSize
 
 

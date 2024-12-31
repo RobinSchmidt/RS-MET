@@ -253,7 +253,7 @@ int main(int argc, char* argv[])
   //additiveEngine();
   //multiplicativeSynth();
   //pulseWidthModulationViaTwoSaws();  // just a stub at the moment
-  flatZapper();  // Various experiments
+  //flatZapper();  // Various experiments
   //freqSweeper();
   //sineSweepBassdrum();
 
