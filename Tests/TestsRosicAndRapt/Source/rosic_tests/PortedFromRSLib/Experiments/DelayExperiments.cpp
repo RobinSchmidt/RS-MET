@@ -828,12 +828,29 @@ void dampedAllpassComb5()
   // Extract highpass part:
   engFlt.setMode(rsInfiniteImpulseResponseDesigner<Real>::HIGHPASS);
   engFlt.setFrequency(highFreq);
+  //engFlt.setFrequency(1.5*highFreq);  // To see if this fixes the 2-stage decay - Yes!
   engFlt.reset();
   for(int n = 0; n < N; n++)
     hH[n] = engFlt.getSample(h[n]);
 
+  // Compute the dB-values of the absolute values of the signals:
+  Vec db(N), dbL(N), dbM(N), dbH(N);
+  Real ampFloor = rsDbToAmp(-120.0);
+  for(int n = 0; n < N; n++)
+  {
+    db[n]  = rsAmpToDb(rsMax(rsAbs(h[n] ), ampFloor));
+    dbL[n] = rsAmpToDb(rsMax(rsAbs(hL[n]), ampFloor));
+    dbM[n] = rsAmpToDb(rsMax(rsAbs(hM[n]), ampFloor));
+    dbH[n] = rsAmpToDb(rsMax(rsAbs(hH[n]), ampFloor));
+  }
 
-  rsPlotVectors(h, hL, hM, hH);
+  //rsPlotVectors(h, hL, hM, hH);
+  //rsPlotVectors(dbH);                    // To investigate the 2-stage decay
+  //rsPlotVectors(db, dbL, dbM, dbH);
+  //rsPlotVectors(db, dbL, dbM, dbH);
+  rsPlotVectors(dbL + 40.0, dbM, dbH); // dbL + 40 to lift it up because otherwise it's covered
+  // ToDo: apply an envelope follower to the dB-decay profiles. That's much better for plotting. 
+  // Then we may also get rid of the +40
 
 
 
@@ -874,12 +891,29 @@ void dampedAllpassComb5()
   //
   // - With longer decay times, the initial spike grows larger with respect to the decaying tail.
   //
-  // - The spectrogram shows vertical stripes in the higher frequencies. Also, it doesn't really
-  //   seem to decay very much over time. This looks wrong! The scaling of the time-axis looks also
-  //   wrong! It doesn't even seem to depend on numSamples
+  // - The bandpassed decay profiles look kind of as expected but they seem to feature a sort of
+  //   two-stage decay. Maybe that's because of leakage from the adjacent frequency band. Maybe we
+  //   can fix this by adjusting the cutoff frequencies of the filters and/or their steepness.
+  //   Maybe test, if the two-stage decay becomes more pronounced when we use lower order 
+  //   bandsplitting filters. ...hmm...hard to say. But  increaing the cutoff for the highpass
+  //   to something like 1.5*highFreq does indeed seem to fix it. So, yeah - I think, the 
+  //   explanation for the 2-stage decay is the leakage of the mid band into the high band. So, 
+  //   the actually relevant slope for the high band is the inital (steeper) slope. The more 
+  //   shallow slope towards the end comes from the more slowly decaying mid band.
+  //
+  // - The spectrogram looks weird. Not really what I expected.
   //
   //
   // ToDo:
+  //
+  // - Apply envelope followers to the (bandpassed) dB signals and fit a line to measure the 
+  //   slopes. Compare the measured slope to what we would predict based on the settings. I don't
+  //   know the formulas for what we should predict, though. We need to convert between a desired
+  //   T60 and some decay slope - perhaps given in dB/sec.
+  //
+  // - Try using the more complicated calculations from 
+  //   FeedbackDelayNetwork16::updateDampingAndCorrectionFilters() for designing the feedback 
+  //   filter.
   //
   // - Plot an energy decay relief and check if it looks like expected. Maybe plot a spectrogram.
   //   ...hmm - the spectrogram of the impulse-response looks weird. Maybe it's because the hop
