@@ -783,23 +783,18 @@ void dampedAllpassComb5()
   Real decaySamples = decayTime     * sampleRate;
   Real lowOmega     = 2*PI*lowFreq  / sampleRate;
   Real highOmega    = 2*PI*highFreq / sampleRate;
+  Real spikeFreq    = Real(sampleRate) / Real(delay);  // Frequency of the spikes
 
   // Create and set up the allpass filter:
   Allpass ap;
   ap.setMaxDelayInSamples(delay);
   rsSetupDecayTimes(ap, delay, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
 
-
-  int N = numSamples;
-
   // Get impulse response:
+  int N = numSamples;
   Vec h = impulseResponse(ap, N, 1.0);
-  //rsPlotVectors(h);
 
 
-
-
-  // Under construction
   // Split the impulse response into low, mid and high parts:
   Vec hL(N), hM(N), hH(N);
   rsEngineersFilterMono engFlt;
@@ -814,8 +809,7 @@ void dampedAllpassComb5()
   for(int n = 0; n < N; n++)
     hL[n] = engFlt.getSample(h[n]);
 
-  // ToDo: extract bandpass part. But for this, we need to convert form lowFreq/highFreq to
-  // centerFreq/bandwidthInOctaves. Use rsBandwidthConverter
+  // Extract bandpass part:
   Real midFreq   = RAPT::rsBandwidthConverter::bandedgesToCenterFrequency(   lowFreq, highFreq);
   Real bandWidth = RAPT::rsBandwidthConverter::bandedgesToBandwidthInOctaves(lowFreq, highFreq);
   engFlt.setMode(rsInfiniteImpulseResponseDesigner<Real>::BANDPASS);
@@ -828,7 +822,6 @@ void dampedAllpassComb5()
   // Extract highpass part:
   engFlt.setMode(rsInfiniteImpulseResponseDesigner<Real>::HIGHPASS);
   engFlt.setFrequency(highFreq);
-  //engFlt.setFrequency(1.5*highFreq);  // To see if this fixes the 2-stage decay - Yes!
   engFlt.reset();
   for(int n = 0; n < N; n++)
     hH[n] = engFlt.getSample(h[n]);
@@ -844,14 +837,26 @@ void dampedAllpassComb5()
     dbH[n] = rsAmpToDb(rsMax(rsAbs(hH[n]), ampFloor));
   }
 
+  // This doesn't work yet:
+  // Try to extract envelope from the dB-decay signals
+  RAPT::rsEnvelopeFollower2<Real> envFlw;
+  envFlw.setSampleRate(sampleRate);
+  envFlw.setInputFrequency(spikeFreq);
+  Vec env  = filterResponse(envFlw, N, db );
+  Vec envL = filterResponse(envFlw, N, dbL);
+  Vec envM = filterResponse(envFlw, N, dbM);
+  Vec envH = filterResponse(envFlw, N, dbH);
+
+  // Plot the decaying lowpass, bandpass and highpass parts. The decay should be linear on a dB
+  // scale:
+  rsPlotVectors(db, env);
+  //rsPlotVectors(env, envL, envM, envH);  // Looks wrong!
   //rsPlotVectors(h, hL, hM, hH);
-  //rsPlotVectors(dbH);                    // To investigate the 2-stage decay
   //rsPlotVectors(db, dbL, dbM, dbH);
   //rsPlotVectors(db, dbL, dbM, dbH);
-  rsPlotVectors(dbL + 40.0, dbM, dbH); // dbL + 40 to lift it up because otherwise it's covered
+  //rsPlotVectors(dbL + 40.0, dbM, dbH); // dbL + 40 to lift it up because otherwise it's covered
   // ToDo: apply an envelope follower to the dB-decay profiles. That's much better for plotting. 
   // Then we may also get rid of the +40
-
 
 
   // Plot a spectrogram:
@@ -865,11 +870,11 @@ void dampedAllpassComb5()
   rsAttackDecayFilter<Real> adEnv;
   adEnv.setAttackSamples(100.0);
   adEnv.setDecaySamples( 300.0);
-  Vec env(N);
-  env[0] = adEnv.getSample(1.0);
+  Vec nsEnv(N);
+  nsEnv[0] = adEnv.getSample(1.0);
   for(int n = 0; n < N; n++)
-    env[n] = adEnv.getSample(0.0);
-  Vec envdNoise = env * noise;
+    nsEnv[n] = adEnv.getSample(0.0);
+  Vec envdNoise = nsEnv * noise;
 
   // Pass the enveloped noise through the allpass:
   Vec y = filterResponse(ap, N, envdNoise);
@@ -901,7 +906,8 @@ void dampedAllpassComb5()
   //   the actually relevant slope for the high band is the inital (steeper) slope. The more 
   //   shallow slope towards the end comes from the more slowly decaying mid band.
   //
-  // - The spectrogram looks weird. Not really what I expected.
+  // - The spectrogram looks weird. Not really what I expected. Figure out, why it looks so 
+  //   strange!
   //
   //
   // ToDo:
