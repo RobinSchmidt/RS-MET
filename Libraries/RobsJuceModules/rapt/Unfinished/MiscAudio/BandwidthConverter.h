@@ -10,14 +10,17 @@ may be more or less convenient in different contexts and it's sometimes necessar
 between the different parametrizations - that's what this class is for.
 
 We define:
-fl: lower bandedge frequency  fl = fc/k
-fu: upper bandedge frequency  fu = fc*k
-fc: center frequency          fc = sqrt(fl*fu)
-ba: absolute bandwidth        ba = fu-fl
-br: relative bandwidth        br = ba/fc
-Q:  quality factor            Q  = 1/br
-bo: bandwidth in octaves      bo = log2(fu/fl)
-k:  bandedge factor           k  = 0.5*br+sqrt(0.25*br*br+1)
+
+  Name   Meaning                       Formula
+  
+  fl     lower bandedge frequency      fl = fc/k
+  fu     upper bandedge frequency      fu = fc*k
+  fc     center frequency              fc = sqrt(fl*fu)
+  ba     absolute bandwidth            ba = fu-fl
+  br     relative bandwidth            br = ba/fc
+  Q      quality factor                Q  = 1/br
+  bo     bandwidth in octaves          bo = log2(fu/fl)
+  k      bandedge factor               k  = 0.5*br+sqrt(0.25*br*br+1)
 
 
 \todo maybe move this file into the filters section  */

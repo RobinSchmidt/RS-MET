@@ -796,6 +796,47 @@ void dampedAllpassComb5()
   Vec h = impulseResponse(ap, N, 1.0);
   //rsPlotVectors(h);
 
+
+
+
+  // Under construction
+  // Split the impulse response into low, mid and high parts:
+  Vec hL(N), hM(N), hH(N);
+  rsEngineersFilterMono engFlt;
+  engFlt.setSampleRate(sampleRate);
+  engFlt.setApproximationMethod(rsPrototypeDesigner<Real>::BUTTERWORTH);
+  engFlt.setPrototypeOrder(4);
+
+  // Extract lowpass part:
+  engFlt.setMode(rsInfiniteImpulseResponseDesigner<Real>::LOWPASS);
+  engFlt.setFrequency(lowFreq);
+  engFlt.reset();
+  for(int n = 0; n < N; n++)
+    hL[n] = engFlt.getSample(h[n]);
+
+  // ToDo: extract bandpass part. But for this, we need to convert form lowFreq/highFreq to
+  // centerFreq/bandwidthInOctaves. Use rsBandwidthConverter
+  Real midFreq   = RAPT::rsBandwidthConverter::bandedgesToCenterFrequency(   lowFreq, highFreq);
+  Real bandWidth = RAPT::rsBandwidthConverter::bandedgesToBandwidthInOctaves(lowFreq, highFreq);
+  engFlt.setMode(rsInfiniteImpulseResponseDesigner<Real>::BANDPASS);
+  engFlt.setBandwidth(bandWidth);
+  engFlt.setFrequency(highFreq);
+  engFlt.reset();
+  for(int n = 0; n < N; n++)
+    hM[n] = engFlt.getSample(h[n]);
+
+  // Extract highpass part:
+  engFlt.setMode(rsInfiniteImpulseResponseDesigner<Real>::HIGHPASS);
+  engFlt.setFrequency(highFreq);
+  engFlt.reset();
+  for(int n = 0; n < N; n++)
+    hH[n] = engFlt.getSample(h[n]);
+
+
+  rsPlotVectors(h, hL, hM, hH);
+
+
+
   // Plot a spectrogram:
   //plotSpectrogram(&h[0], N, 64, 256, 256, sampleRate);
   plotSpectrogram(&h[0], N, 32, 128, 128, sampleRate);
@@ -824,6 +865,9 @@ void dampedAllpassComb5()
 
 
 
+
+
+
   int dummy = 0;
 
   // Observations:
@@ -840,6 +884,9 @@ void dampedAllpassComb5()
   // - Plot an energy decay relief and check if it looks like expected. Maybe plot a spectrogram.
   //   ...hmm - the spectrogram of the impulse-response looks weird. Maybe it's because the hop
   //   size is synced with the delay. Maybe try it with a noise input.
+  //
+  // - Split the impulse response into low, mid and high parts and plot the log of the abs of these
+  //   filtered signals. Maybe we can get a better temporal resolution by this.
   //
   // - We really need to check the spectrogram computation and plotting functions. I think, they 
   //   may not yet have been ready for general use. Make an experiment to test them. Maybe with a

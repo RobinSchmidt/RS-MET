@@ -1423,33 +1423,16 @@ template<class TSig, class TPar>
 void rsSetupDecayTimes(rsDampedAllpassComb<TSig, TPar>& flt, int delay, TPar decayTimeInSamples,
   TPar lowOmega, TPar lowTimeScale, TPar highOmega, TPar highTimeScale, bool predelay)
 {
-  //TPar a60 = 0.001;            // Target amplitude (-60 dB) to reach after decayTimeInSamples
-
   // Compute desired feedback gains for low, mid and high frequencies:
   TPar a60 = TPar(0.001); // = rsDbToAmp(-60.0). Target amplitude to reach after decayTimeInSamples
-  //TPar kL  = rsPow(a60, TPar(delay) / (decayTimeInSamples * lowTimeScale ));
-  //TPar kM  = rsPow(a60, TPar(delay) / (decayTimeInSamples                ));
-  //TPar kH  = rsPow(a60, TPar(delay) / (decayTimeInSamples * highTimeScale));
-  TPar kL = rsDecayTimeToFeedbackGain(decayTimeInSamples * lowTimeScale , TPar(delay), a60);
-  TPar kM = rsDecayTimeToFeedbackGain(decayTimeInSamples                , TPar(delay), a60);
-  TPar kH = rsDecayTimeToFeedbackGain(decayTimeInSamples * highTimeScale, TPar(delay), a60);
+  TPar kL  = rsDecayTimeToFeedbackGain(decayTimeInSamples * lowTimeScale , TPar(delay), a60);
+  TPar kM  = rsDecayTimeToFeedbackGain(decayTimeInSamples                , TPar(delay), a60);
+  TPar kH  = rsDecayTimeToFeedbackGain(decayTimeInSamples * highTimeScale, TPar(delay), a60);
   // These formulas could also be expressed as e.g.:
   //
   //   kM = rsPow(10.0, TPar(-3 * delay) / decayTimeInSamples);
   //
-  // which is how they are often seen in the FDN literature. But the form above makes it more clear
-  // where the formulas come from. When we have a feedback delay loop of length d and we want to 
-  // reach a gain of a after t samples, we need to solve: a = k^(t/d) for the feedback factor k. 
-  // The result is k = a^(d/t). The target amplitude a is given here by 0.001 which is the linear 
-  // gain for a dB value of -60. The -60 occurs because we are setting up the feedback gain in 
-  // terms of RT60. 
-  //
-  // ToDo: Maybe factor out into a function: 
-  // decayTimeToFeedbackGain(T decayTime, T roundTripLength, T targetAmplitude)
-
-
-
-
+  // which is how they are often seen in the FDN literature. 
 
 
   // Compute desired gains for the low and high shelver:
@@ -1476,8 +1459,8 @@ void rsSetupDecayTimes(rsDampedAllpassComb<TSig, TPar>& flt, int delay, TPar dec
   //
   // - Compare to implementation of FeedbackDelayNetwork16::updateDampingAndCorrectionFilters. It 
   //   uses class rosic::DampingFilter and it specifies the gains also at the shelver's crossover
-  //   frequecies. The idea is that the linear gain at the crossover freq is not defined to be just
-  //   the geometric mean between the actual shelver gain and unity but instead some gain that 
+  //   frequencies. The idea is that the linear gain at the crossover freq is not defined to be 
+  //   just the geometric mean between the actual shelver gain and unity but instead some gain that
   //   let's the decay time at that frequency be the geometric mean between the mid decay time
   //   and the low (or high) frequency decay time.
   //
@@ -1486,14 +1469,15 @@ void rsSetupDecayTimes(rsDampedAllpassComb<TSig, TPar>& flt, int delay, TPar dec
   //   handles the computations of the desired gains at the crossover frequencies - which we 
   //   currently do in FeedbackDelayNetwork16::updateDampingAndCorrectionFilters(). I'm not sure, 
   //   if it's really worth the trouble to do it like this, though. It will just slightly(?) change
-  //   the response/feeling of the lowFreq/lowScale, highFreq/highScale parameters. It may be more
-  //   natural, though. 
+  //   the response/feeling of the lowFreq/lowScale, highFreq/highScale parameters. It may be a 
+  //   more natural response, though. I think, it may help to decouple the respective freq and 
+  //   scale parameters. ...but it's quite complicated to implement... But maybe it doesn't have to
+  //   be that complicated. Maybe we could use a general 3-point filter-design routine that lets
+  //   the user specify 3 omegas and the 3 corresponding gains. Or maybe we could use the general
+  //   5-point biquad design method that takes 5 omegas and 5 magnitudes. The omegas would be
+  //   DC, loFreq, sqrt(loFreq*hiFreq), hiFreq, fs/2. But what if loFreq==hiFreq? I guess, we would
+  //   get a singular system of equations.
 }
-
-
-// ToDo: rsSetupDecayTimes(rsDampedAllpassComb<TSig, TPar>& flt,
-// int delay, TPar decayTime, TPar lowOmega, TPar lowScale, TPar highOmega, TPar
-// TPar dampGain, bool predelay)
 
 // Notes:
 // 
