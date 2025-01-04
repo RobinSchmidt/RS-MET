@@ -1283,20 +1283,20 @@ void dampedAllpassBiComb_1p()
   hc[0] = ap.getSampleCombs(1.0);
   for(int n = 0; n < N; n++)
     hc[n] = ap.getSampleCombs(0.0);
-  rsPlotVectors(hc);
+  //rsPlotVectors(hc);
 
-
-  /*
   // Produce the impulse response of the combs with the alterntaive (direct form) algorithm:
-  ap.reset();
+  AllpassT apt;
+  apt.setMaxDelayInSamples(delay2);
+  apt.setup(delay1, k1, b10, b11, a11,
+            delay2, k2, b20, b21, a21);
+  //apt.reset();
   Vec hc2(N);
-  hc2[0] = ap.getSampleCombsTest(1.0);
+  hc2[0] = apt.getSampleCombsTest(1.0);
   for(int n = 0; n < N; n++)
-    hc2[n] = ap.getSampleCombsTest(0.0);
-
-
-  rsPlotVectors(hc, hc2);
-  */
+    hc2[n] = apt.getSampleCombsTest(0.0);
+  rsPlotVectors(hc, hc2);  // hc2 looks wrong!
+ 
 
 
 
