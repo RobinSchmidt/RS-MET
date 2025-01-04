@@ -138,7 +138,8 @@ By the way, the feedback factor k could also be negative. That gives us another 
 switches the embedded comb filter U(z) between unipolar and bipolar mode, i.e. the spike train 
 produced as impulse response of the comb can either have spikes of all the same sign or with 
 alternating signs. This corresponds to producing a full series of harmonics or only odd harmonics 
-respectivley.
+respectivley where in the case of only odd harmonics, the fundamental is an octave lower than in 
+the case with all harmoncis.
 
 A one-pole filter for the feedback path is a nice start but it might not be flexible enough. Let's 
 now use a full blown biquad as feedback filter F(z). To find the corrector filter in direct form, we 
@@ -172,23 +173,26 @@ so
 ----------------------------------------------------------------------------------------------------
 The stuff from here is still unverified:
 
-A general pattern seems to emerge. I think, it looks like :
+A general pattern for arbitrary feedback filters in direct form seems to emerge. I think, when the 
+feedback filter F(z) is given by:
+
+       sum_{i=0}^nz b_i d^i
+  F = ----------------------
+       sum_{i=0}^np a_i d^i
+
+then the required corrector filter before the zero reflection needs to have the following transfer 
+function: 
 
         sum_{i=0}^np a_i d^i + sum_{i=0}^nz k b_i d^(M+1+i)
   C~ = -----------------------------------------------------     where in the a_i sum, a_0 = d^0 = 1
                     sum_{i=0}^np a_i d^i
 
-when the feedback filter F(z) is given by:
-
-       sum_{i=0}^nz b_i d^i
-  F = -------------------------
-       sum_{i=0}^np a_i d^i
-
 where nz, np are the numbers of zeros and poles of the feedback filter, i.e. the orders of numerator
-and denomniator polynomial. If that is correct, then we can use arbitrary feedback filters! We just
-need to evaluate the formula for C~ and then apply the flip operation. Maybe we'll have to observe 
-some constraints such as np == nz. Or maybe not. I've not yet looked into this. We'll see. OK - I 
-have implemented the general case in rsDampedAllpassComb based on that assumption and the thing 
-works.
+and denomniator polynomial of the feedback filter F = F(z). If that is correct, then we can use 
+arbitrary feedback filters! We just need to evaluate the formula for C~ and then apply the flip 
+operation. Maybe we'll have to observe some constraints such as np == nz. Or maybe not. I've not yet 
+looked into this. We'll see...  ....OK - I have implemented the general case in rsDampedAllpassComb 
+based on that formula and the thing apparently works as desired. So, the formula seems to be indeed 
+correct. Yay! We can now do allpasses with quite flexible frequency dependent decay characteristics!
 
 

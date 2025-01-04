@@ -1,7 +1,8 @@
 template<class TSig, class TPar>
 rsMovingAverage<TSig, TPar>::rsMovingAverage()
 {
-  delayLine.setDelayInSamples(100);
+  delayLine.setMaximumDelayInSamples(512);
+  delayLine.setDelayInSamples(512);
 
   sampleRate = 44100.0;
   setLengthInSeconds(0.01);

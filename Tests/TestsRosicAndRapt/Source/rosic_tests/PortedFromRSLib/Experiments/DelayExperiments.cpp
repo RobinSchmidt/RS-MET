@@ -828,7 +828,7 @@ void dampedAllpassComb5()
 
   // Compute the dB-values of the absolute values of the signals:
   Vec db(N), dbL(N), dbM(N), dbH(N);
-  Real ampFloor = rsDbToAmp(-120.0);
+  Real ampFloor = rsDbToAmp(-140.0);
   for(int n = 0; n < N; n++)
   {
     db[n]  = rsAmpToDb(rsMax(rsAbs(h[n] ), ampFloor));
@@ -847,14 +847,35 @@ void dampedAllpassComb5()
   Vec envM = filterResponse(envFlw, N, dbM);
   Vec envH = filterResponse(envFlw, N, dbH);
 
+  // Apply a moving average filter of length equal to the delay to smooth out the artifacts of the
+  // envelope follower:
+  RAPT::rsMovingAverage<Real, Real> ma;
+  ma.setMaxLengthInSamples(delay);
+  ma.setLengthInSamples(delay);
+  env  = filterResponse(ma, N, env );
+  envL = filterResponse(ma, N, envL);
+  envM = filterResponse(ma, N, envM);
+  envH = filterResponse(ma, N, envH);
+
+  // ToDo:
+  // 
+  // - Try a processing chain of:  abs -> ma -> amp2db  instead.
+
+
+
   //RAPT::rsEnvelopeExtractor<Real> envExt;
 
   // Plot the decaying lowpass, bandpass and highpass parts. The decay should be linear on a dB
   // scale:
   //rsPlotVectors(db, env);
   //rsPlotVectors(envM, envH);
-  rsPlotVectors(env, envL, envM, envH);
+  //rsPlotVectors(h);
+  //rsPlotVectors(hL);
+  //rsPlotVectors(hM);
+  //rsPlotVectors(hH);
   //rsPlotVectors(h, hL, hM, hH);
+  rsPlotVectors(env, 20.0*h);
+  rsPlotVectors(env, envL, envM, envH);
   //rsPlotVectors(db, dbL, dbM, dbH);
   //rsPlotVectors(db, dbL, dbM, dbH);
   //rsPlotVectors(dbL + 40.0, dbM, dbH); // dbL + 40 to lift it up because otherwise it's covered
@@ -912,7 +933,16 @@ void dampedAllpassComb5()
   // - But: the 2-stage decay is also present in the unfiltered signal. Maybe there, it has to do
   //   with how the spikes are smoothed out over time. At first, we see the decay of the spikes and
   //   and soon as they get buried in the smooth sine-like part, we see the decay of the smooth 
-  //   part?
+  //   part? Yes! That is indeed the case. The crossover moment is at around n = 6700. From this 
+  //   point on onwards, the smooth part of the waveform peaks higher than the spikes.
+  //
+  // - The low frequency output looks very different from the others. It has this weird artifact at
+  //   the beginning. Maybe it has to do with the fact that the low band contains the DC component
+  //   whichbehaves differently? Maybe try it with a sign-flipped feedback. Will the low band still 
+  //   look so different from mid and high bands?
+  //
+  // - Actually, it's a 3-stage decay. The initial decay goes up to sample 399, then the medium 
+  //   decay goes to around sample 6700 and then the late decay begins.
   //
   // - The spectrogram looks weird. Not really what I expected. Figure out, why it looks so 
   //   strange!

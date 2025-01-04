@@ -26,6 +26,12 @@ public:
   /** Sets the length of the impulse-response as a number of samples. */
   void setLengthInSamples(int newLength);
 
+
+  void setMaxLengthInSamples(int newMaxLength)
+  {
+    delayLine.setMaximumDelayInSamples(newMaxLength);
+  }
+
   /** Computes the leakage coefficient a1 from a specified maximum deviation of the
   impulse-response from the ideal flat line. The non-ideal impulse response is almost flat but
   shows a decay. The deviation is defined as the maximum relative overshoot over the flat line.
