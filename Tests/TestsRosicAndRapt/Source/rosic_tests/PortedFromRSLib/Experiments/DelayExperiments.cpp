@@ -1253,9 +1253,10 @@ void dampedSchroederAllpass()
 void dampedAllpassBiComb_1p()
 {
   // Define types to be used:
-  using Real    = double;
-  using Vec     = std::vector<Real>;
-  using Allpass = rsDampedAllpassBiComb_1p_Test<Real, Real>;
+  using Real     = double;
+  using Vec      = std::vector<Real>;
+  using Allpass  = rsDampedAllpassBiComb_1p<Real, Real>;
+  using AllpassT = rsDampedAllpassBiComb_1p_Test<Real, Real>;
 
 
   int  N      = 1000;    // Number of samples to render
@@ -1277,12 +1278,25 @@ void dampedAllpassBiComb_1p()
   ap.setup(delay1, k1, b10, b11, a11,
            delay2, k2, b20, b21, a21);
 
+  // Produce the impulse response of the two parallel comb filters:
   Vec hc(N);
-  hc[0] = ap.getSampleComb(1.0);
+  hc[0] = ap.getSampleCombs(1.0);
   for(int n = 0; n < N; n++)
-    hc[n] = ap.getSampleComb(0.0);
+    hc[n] = ap.getSampleCombs(0.0);
+  rsPlotVectors(hc);
 
-  rsPlotVectors(hc);  // This looks wrong!
+
+  /*
+  // Produce the impulse response of the combs with the alterntaive (direct form) algorithm:
+  ap.reset();
+  Vec hc2(N);
+  hc2[0] = ap.getSampleCombsTest(1.0);
+  for(int n = 0; n < N; n++)
+    hc2[n] = ap.getSampleCombsTest(0.0);
+
+
+  rsPlotVectors(hc, hc2);
+  */
 
 
 

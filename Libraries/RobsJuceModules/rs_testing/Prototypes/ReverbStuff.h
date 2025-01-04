@@ -1688,7 +1688,7 @@ public:
 
 
 
-  TSig getSampleComb(TSig in)
+  TSig getSampleCombs(TSig in)
   {
     return getSampleComb1(in) + getSampleComb2(in);
   }
@@ -1771,6 +1771,10 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::rsDampedAllpassBiComb_1p<TSig, TPar>:
   mainDelay1.reset();
   mainDelay2.reset();
   corrDelay.reset();
+
+  combOut1 = 0;
+  combOut2 = 0;
+
   x11d  = 0;
   y11d  = 0;
   x21d  = 0;
@@ -1832,16 +1836,67 @@ class rsDampedAllpassBiComb_1p_Test : public rsDampedAllpassBiComb_1p<TSig, TPar
 
 public:
 
-  TSig getSampleTest(TSig in);
+  using Base = rsDampedAllpassBiComb_1p<TSig, TPar>;
+
+  void setMaxDelayInSamples(int newMaxDelay)
+  {
+    mainDelay1.setMaximumDelayInSamples(2*newMaxDelay+3);
+    mainDelay2.setMaximumDelayInSamples(2*newMaxDelay+4);
+  }
+
+  void setup(
+    int delay1, TSig feedback1, TPar dampCoeffB10, TPar dampCoeffB11, TPar dampCoeffA11,
+    int delay2, TSig feedback2, TPar dampCoeffB20, TPar dampCoeffB21, TPar dampCoeffA21)
+  {
+    Base::setup(delay1, feedback1, dampCoeffB10, dampCoeffB11, dampCoeffA11,
+                delay2, feedback2, dampCoeffB20, dampCoeffB21, dampCoeffA21);
+
+    mainDelay1.setDelayInSamples(M1+M2+3);
+    mainDelay2.setDelayInSamples(M1+M2+4);
+  }
 
 
+  TSig getSampleCombsTest(TSig in);
 };
 
+
 template<class TSig, class TPar>
-TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleTest(TSig in)
+TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsTest(TSig x)
 {
+  // We use here the mainDelay1 and inDelay and mainDelay2 as outDelay To make the code simpler
+  // due to using direct form 1 rather than 2. One could write this code in terms of one delayline
+  // when one uses direct form 2 - but the ocde is easire to follow with DF1.:
 
+  rsBasicDelayLine<TSig>& id = mainDelay1;  // id: input delayline
+  rsBasicDelayLine<TSig>& od = mainDelay2;  // od: output delayline
+  TSig y = 0;
 
+  // Apply feedforward part:
+  y += (1 + a11*a21)                         * id.readOutputAt(M1);
+  y += (1 + a11*a21)                         * id.readOutputAt(M2);
+  y += (a11 + a21)                           * id.readOutputAt(M1+1);
+  y += (a11 + a21)                           * id.readOutputAt(M2+1);
+  y += b10*k1 + b20*k2                       * id.readOutputAt(M1+M2+1);
+  y += ((a21*b10+b11)*k1 + (a11*b20+b21)*k2) * id.readOutputAt(M1+M2+2);
+  y += a21*b11*k1 + a11*b21*k2               * id.readOutputAt(M1+M2+3);
+
+  // Apply feedback part:
+  //y += (a11 + a21)                  *  od.readOutputAt(1);
+  //y += (a11 * a21)                  *  od.readOutputAt(2);
+  //y += b10 * k1                     *  od.readOutputAt(M1+1);
+  //y += b20 * k2                     *  od.readOutputAt(M2+1);
+  //y += (a21*b10 + b11)     * k1     *  od.readOutputAt(M1+2);
+  //y += (a11*b20 + b21)     * k2     *  od.readOutputAt(M2+2);
+  //y += a21 * b11           * k1     *  od.readOutputAt(M1+3);
+  //y += a11 * b21           * k2     *  od.readOutputAt(M2+3);
+  //y += b10*b20             * k1*k1  *  od.readOutputAt(M1+M2+2);
+  //y += (b11*b20 + b10*b21) * k1*k2  *  od.readOutputAt(M1+M2+3);
+  //y += b11*b21             * k1*k2  *  od.readOutputAt(M1+M2+4);
+
+  // Update delaylines and return result:
+  id.writeInputAndUpdate(x);
+  od.writeInputAndUpdate(y);
+  return y;
 }
 
 
