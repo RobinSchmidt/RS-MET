@@ -1250,11 +1250,47 @@ void dampedSchroederAllpass()
   //   allpasses create the transients.
 }
 
+void dampedAllpassBiComb_1p()
+{
+  // Define types to be used:
+  using Real    = double;
+  using Vec     = std::vector<Real>;
+  using Allpass = rsDampedAllpassBiComb_1p_Test<Real, Real>;
+
+
+  int  N      = 1000;    // Number of samples to render
+  int  delay1 = 23;
+  int  delay2 = 29;
+  Real k1     = 0.9;
+  Real k2     = 0.8;
+
+
+  // Compute the feedback filter coeffs:
+  Real b10, b11, a11; rsMake1stOrderHighShelf(0.5, 0.9, &b10, &b11, &a11);
+  Real b20, b21, a21; rsMake1stOrderHighShelf(0.7, 0.8, &b20, &b21, &a21);
+
+  // Create and set up the allpass:
+  Allpass ap;
+  ap.setMaxDelayInSamples(delay2);
+  ap.setup(delay1, k1, b10, b11, a11,
+           delay2, k2, b20, b21, a21);
+
+  Vec hc(N);
+  hc[0] = ap.getSampleComb(1.0);
+  for(int n = 0; n < N; n++)
+    hc[n] = ap.getSampleComb(0.0);
+
+  rsPlotVectors(hc);  // This looks wrong!
+
+
+
+  int dummy = 0;
+}
+
 void dampedAllpassComb()
 {
-  dampedAllpassComb5();
-  //dampedAllpassComb4();
-  //dampedSchroederAllpass();
+  dampedAllpassBiComb_1p();
+  //dampedAllpassComb5();
 
   dampedAllpassComb1();
   dampedAllpassComb2();
@@ -1265,6 +1301,8 @@ void dampedAllpassComb()
   dampedAllpassCombNonLin();
   dampedAllpassDelayContent();
   dampedSchroederAllpass();
+  dampedAllpassBiComb_1p();
+
 
   // ToDo: 
   //

@@ -1684,8 +1684,7 @@ public:
 
   void setup(
     int delay1, TSig feedback1, TPar dampCoeffB10, TPar dampCoeffB11, TPar dampCoeffA11,
-    int delay2, TSig feedback2, TPar dampCoeffB20, TPar dampCoeffB21, TPar dampCoeffA21,
-    bool predelay);
+    int delay2, TSig feedback2, TPar dampCoeffB20, TPar dampCoeffB21, TPar dampCoeffA21);
 
 
 
@@ -1695,7 +1694,7 @@ public:
   }
 
 
-
+  void reset();
 
 
 protected:
@@ -1767,6 +1766,19 @@ protected:
 
 
 template<class TSig, class TPar>
+void rsDampedAllpassBiComb_1p<TSig, TPar>::rsDampedAllpassBiComb_1p<TSig, TPar>::reset()
+{
+  mainDelay1.reset();
+  mainDelay2.reset();
+  corrDelay.reset();
+  x11d  = 0;
+  y11d  = 0;
+  x21d  = 0;
+  y21d  = 0;
+}
+
+
+template<class TSig, class TPar>
 void rsDampedAllpassBiComb_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
@@ -1778,24 +1790,21 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 template<class TSig, class TPar>
 void rsDampedAllpassBiComb_1p<TSig, TPar>::setup(
   int delay1, TSig feedback1, TPar dampCoeffB10, TPar dampCoeffB11, TPar dampCoeffA11,
-  int delay2, TSig feedback2, TPar dampCoeffB20, TPar dampCoeffB21, TPar dampCoeffA21,
-  bool predelay)
+  int delay2, TSig feedback2, TPar dampCoeffB20, TPar dampCoeffB21, TPar dampCoeffA21)
 {
-  this->preDelay = predelay;
-
   M1 = delay1 - 1;
   M2 = delay2 - 1;
 
   k1 = feedback1;
   k2 = feedback2;
 
-  a11 = dampCoeffA11;
   b10 = dampCoeffB10;
   b11 = dampCoeffB11;
+  a11 = dampCoeffA11;
 
-  a21 = dampCoeffA11;
-  b20 = dampCoeffB10;
-  b21 = dampCoeffB11;
+  b20 = dampCoeffB20;
+  b21 = dampCoeffB21;
+  a21 = dampCoeffA21;
 
   updateDelaysAndCorrectorCoeffs();
 }
@@ -1803,20 +1812,37 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::setup(
 template<class TSig, class TPar>
 void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
 {
+  mainDelay1.setDelayInSamples(M1);
+  mainDelay2.setDelayInSamples(M2);
 
-
-  //mainDelay.setDelayInSamples(M);
-  //corrDelay.setDelayInSamples(M+2);
-  //r0  = k*b1;
-  //r1  = k*b0;
-  //rM1 = a1;
+  //corrDelay.setDelayInSamples(...);
+  // ...
 }
 
 
 
+//-------------------------------------------------------------------------------------------------
+
+/** A subclass of rsDampedAllpassBiComb_1p that implements some additional functionality that is 
+only relevant in a testing and experimentation setting */
+
+template<class TSig, class TPar>
+class rsDampedAllpassBiComb_1p_Test : public rsDampedAllpassBiComb_1p<TSig, TPar>
+{
+
+public:
+
+  TSig getSampleTest(TSig in);
 
 
+};
 
+template<class TSig, class TPar>
+TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleTest(TSig in)
+{
+
+
+}
 
 
 
