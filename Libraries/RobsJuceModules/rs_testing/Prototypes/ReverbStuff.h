@@ -1828,7 +1828,9 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
 //-------------------------------------------------------------------------------------------------
 
 /** A subclass of rsDampedAllpassBiComb_1p that implements some additional functionality that is 
-only relevant in a testing and experimentation setting */
+only relevant in a testing and experimentation setting. Foremostly, we want to try to implement the
+whole filter in direct form just to verify that the SageMath output for the direct form is correct.
+If that works, we can continue working from there - but it doesn't work yet .... */
 
 template<class TSig, class TPar>
 class rsDampedAllpassBiComb_1p_Test : public rsDampedAllpassBiComb_1p<TSig, TPar>
@@ -1881,22 +1883,25 @@ TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsTest(TSig x)
   y += a21*b11*k1 + a11*b21*k2               * id.readOutputAt(M1+M2+3);
 
   // Apply feedback part:
-  //y += (a11 + a21)                  *  od.readOutputAt(1);
-  //y += (a11 * a21)                  *  od.readOutputAt(2);
-  //y += b10 * k1                     *  od.readOutputAt(M1+1);
-  //y += b20 * k2                     *  od.readOutputAt(M2+1);
-  //y += (a21*b10 + b11)     * k1     *  od.readOutputAt(M1+2);
-  //y += (a11*b20 + b21)     * k2     *  od.readOutputAt(M2+2);
-  //y += a21 * b11           * k1     *  od.readOutputAt(M1+3);
-  //y += a11 * b21           * k2     *  od.readOutputAt(M2+3);
-  //y += b10*b20             * k1*k1  *  od.readOutputAt(M1+M2+2);
-  //y += (b11*b20 + b10*b21) * k1*k2  *  od.readOutputAt(M1+M2+3);
-  //y += b11*b21             * k1*k2  *  od.readOutputAt(M1+M2+4);
+  y -= (a11 + a21)                  *  od.readOutputAt(1);
+  y -= (a11 * a21)                  *  od.readOutputAt(2);
+  y -= b10 * k1                     *  od.readOutputAt(M1+1);
+  y -= b20 * k2                     *  od.readOutputAt(M2+1);
+  y -= (a21*b10 + b11)     * k1     *  od.readOutputAt(M1+2);
+  y -= (a11*b20 + b21)     * k2     *  od.readOutputAt(M2+2);
+  y -= a21 * b11           * k1     *  od.readOutputAt(M1+3);
+  y -= a11 * b21           * k2     *  od.readOutputAt(M2+3);
+  y -= b10*b20             * k1*k1  *  od.readOutputAt(M1+M2+2);
+  y -= (b11*b20 + b10*b21) * k1*k2  *  od.readOutputAt(M1+M2+3);
+  y -= b11*b21             * k1*k2  *  od.readOutputAt(M1+M2+4);
 
   // Update delaylines and return result:
   id.writeInputAndUpdate(x);
   od.writeInputAndUpdate(y);
   return y;
+
+  // This doesn't seem to work yet. Verify the coefficients using Sage. See AllpassStuff.txt in the
+  // private repo. 
 }
 
 

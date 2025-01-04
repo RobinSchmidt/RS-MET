@@ -1252,6 +1252,17 @@ void dampedSchroederAllpass()
 
 void dampedAllpassBiComb_1p()
 {
+  // Under construction. This does not yet work.
+
+  // We want to create an allpass by using a correction filter after a parallel connection of two
+  // Karplus-Strong like comb filters. The first step would be to derive the direct form transfer
+  // function of the two parrallel combs. I did this with sageMath in AllpassStuff.txt in the 
+  // private repo but trying to implement the dual comb in direct form doesn't yet work. I'm not 
+  // sure if I have a mistake in the derivation or implementation. But before goimg any further, 
+  // it's really necessarry to make the direct form work so we can be sure to build on formulas
+  // that are actually correct ...TBC...
+
+
   // Define types to be used:
   using Real     = double;
   using Vec      = std::vector<Real>;
@@ -1269,7 +1280,7 @@ void dampedAllpassBiComb_1p()
   // Compute the feedback filter coeffs:
   Real b10, b11, a11; rsMake1stOrderHighShelf(0.5, 0.9, &b10, &b11, &a11);
   Real b20, b21, a21; rsMake1stOrderHighShelf(0.7, 0.8, &b20, &b21, &a21);
-  //b10 = 1; b11 = a11 = 0; b20 = 1; b21 = a21 = 0;   //  For test with neutral filter
+  b10 = 1; b11 = a11 = 0; b20 = 1; b21 = a21 = 0;   //  For test with neutral filter
 
 
   // Create and set up the allpass:
@@ -1285,19 +1296,17 @@ void dampedAllpassBiComb_1p()
     hc[n] = ap.getSampleCombs(0.0);
   //rsPlotVectors(hc);
 
-  // Produce the impulse response of the combs with the alterntaive (direct form) algorithm:
+  // Produce the impulse response of the combs with the alternative (direct form) algorithm:
   AllpassT apt;
   apt.setMaxDelayInSamples(delay2);
   apt.setup(delay1, k1, b10, b11, a11,
             delay2, k2, b20, b21, a21);
-  //apt.reset();
+  apt.reset();
   Vec hc2(N);
   hc2[0] = apt.getSampleCombsTest(1.0);
   for(int n = 0; n < N; n++)
     hc2[n] = apt.getSampleCombsTest(0.0);
-  rsPlotVectors(hc, hc2);  // hc2 looks wrong!
- 
-
+  rsPlotVectors(hc, hc2);  // hc2 looks wrong! It should be equal to hc
 
 
   int dummy = 0;
