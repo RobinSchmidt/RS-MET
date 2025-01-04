@@ -1262,12 +1262,14 @@ void dampedAllpassBiComb_1p()
   int  delay1 = 23;
   int  delay2 = 29;
   Real k1     = 0.9;
-  Real k2     = 0.8;
+  Real k2     = 0.9;
 
 
   // Compute the feedback filter coeffs:
   Real b10, b11, a11; rsMake1stOrderHighShelf(0.5, 0.9, &b10, &b11, &a11);
   Real b20, b21, a21; rsMake1stOrderHighShelf(0.7, 0.8, &b20, &b21, &a21);
+  //b10 = 1; b11 = a11 = 0; b20 = 1; b21 = a21 = 0;   //  For test with neutral filter
+
 
   // Create and set up the allpass:
   Allpass ap;
