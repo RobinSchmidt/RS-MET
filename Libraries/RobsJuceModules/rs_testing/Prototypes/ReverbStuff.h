@@ -2021,8 +2021,95 @@ protected:
 };
 
 
+//=================================================================================================
+
+/** Like rsDampedAllpassComb_1p but with two combs in parallel instead of just one 
+
+...TBC... see AllpassStuff.txt in the private repo for more details  */
+
+template<class TSig, class TPar>
+class rsDampedAllpassBiComb_1p
+{
 
 
+public:
+
+  void setMaxDelayInSamples(int newMaxDelay);
+
+  void setup(
+    int delay1, TSig feedback1, TPar dampCoeffB10, TPar dampCoeffB11, TPar dampCoeffA11,
+    int delay2, TSig feedback2, TPar dampCoeffB20, TPar dampCoeffB21, TPar dampCoeffA21,
+    bool predelay);
+
+
+protected:
+
+  void updateDelaysAndCorrectorCoeffs();
+
+
+  rsBasicDelayLine<TSig> mainDelay1;
+  rsBasicDelayLine<TSig> mainDelay2;
+  rsBasicDelayLine<TSig> corrDelay;
+
+  TSig combOut1 = TSig(0);
+  TSig combOut2 = TSig(0);
+
+  TSig k1 = 0;
+  TSig k2 = 0;
+
+  TPar b10 = 0, b11 = 0, a11 = 0;
+  TPar b20 = 0, b21 = 0, a21 = 0;
+
+  int  M1 = 0;
+  int  M2 = 0;
+
+  //TSig x1d  = 0, y1d  = 0;
+  //TSig x1di = 0, y1di = 0;
+  //TSig y1c  = 0;
+
+  //TSig k   = 0;
+  //TSig r0  = 0;
+  //TSig r1  = 0;
+  //TPar rM1 = 0;
+
+};
+
+template<class TSig, class TPar>
+void rsDampedAllpassBiComb_1p<TSig, TPar>::setup(
+  int delay1, TSig feedback1, TPar dampCoeffB10, TPar dampCoeffB11, TPar dampCoeffA11,
+  int delay2, TSig feedback2, TPar dampCoeffB20, TPar dampCoeffB21, TPar dampCoeffA21,
+  bool predelay)
+{
+  this->preDelay = predelay;
+
+  M1 = delay1 - 1;
+  M2 = delay2 - 1;
+
+  k1 = feedback1;
+  k2 = feedback2;
+
+  a11 = dampCoeffA11;
+  b10 = dampCoeffB10;
+  b11 = dampCoeffB11;
+
+  a21 = dampCoeffA11;
+  b20 = dampCoeffB10;
+  b21 = dampCoeffB11;
+
+  updateDelaysAndCorrectorCoeffs();
+}
+
+template<class TSig, class TPar>
+void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
+{
+
+
+  //mainDelay.setDelayInSamples(M);
+  //corrDelay.setDelayInSamples(M+2);
+  //r0  = k*b1;
+  //r1  = k*b0;
+  //rM1 = a1;
+}
 
 
 

@@ -863,6 +863,8 @@ void dampedAllpassComb5()
 
 
 
+
+
   //RAPT::rsEnvelopeExtractor<Real> envExt;
 
   // Plot the decaying lowpass, bandpass and highpass parts. The decay should be linear on a dB
@@ -874,7 +876,7 @@ void dampedAllpassComb5()
   //rsPlotVectors(hM);
   //rsPlotVectors(hH);
   //rsPlotVectors(h, hL, hM, hH);
-  rsPlotVectors(env, 20.0*h);
+  //rsPlotVectors(env, 20.0*h);
   rsPlotVectors(env, envL, envM, envH);
   //rsPlotVectors(db, dbL, dbM, dbH);
   //rsPlotVectors(db, dbL, dbM, dbH);
