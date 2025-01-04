@@ -1664,6 +1664,170 @@ void rsSetupHighDamp(rsDampedAllpassComb_1p<TSig, TPar>& flt,
   flt.setup(delay, feedback, b[0], b[1], a[1], predelay);
 }
 
+
+//=================================================================================================
+
+/** UNDER CONSTRUCTION. Just a stub at the moment.
+
+Like rsDampedAllpassComb_1p but with two combs in parallel instead of just one 
+
+...TBC... see AllpassStuff.txt in the private repo for more details  */
+
+template<class TSig, class TPar>
+class rsDampedAllpassBiComb_1p
+{
+
+
+public:
+
+  void setMaxDelayInSamples(int newMaxDelay);
+
+  void setup(
+    int delay1, TSig feedback1, TPar dampCoeffB10, TPar dampCoeffB11, TPar dampCoeffA11,
+    int delay2, TSig feedback2, TPar dampCoeffB20, TPar dampCoeffB21, TPar dampCoeffA21,
+    bool predelay);
+
+
+
+  TSig getSampleComb(TSig in)
+  {
+    return getSampleComb1(in) + getSampleComb2(in);
+  }
+
+
+
+
+
+protected:
+
+
+
+
+
+
+  TSig applyDamper1(TSig x)
+  {
+    TSig y = b10 * x + b11 * x11d - a11 * y11d; 
+    x11d = x;
+    y11d = y;
+    return y;
+  }
+
+  TSig getSampleComb1(TSig in)
+  {
+    combOut1 = mainDelay1.getSample(in - k1 * applyDamper1(combOut1));
+    return combOut1;
+  }
+
+
+  TSig applyDamper2(TSig x)
+  {
+    TSig y = b20 * x + b21 * x21d - a21 * y21d; 
+    x21d = x;
+    y21d = y;
+    return y;
+  }
+
+  TSig getSampleComb2(TSig in)
+  {
+    combOut2 = mainDelay2.getSample(in - k2 * applyDamper2(combOut2));
+    return combOut2;
+  }
+
+
+
+
+
+  void updateDelaysAndCorrectorCoeffs();
+
+
+  rsBasicDelayLine<TSig> mainDelay1;
+  rsBasicDelayLine<TSig> mainDelay2;
+  rsBasicDelayLine<TSig> corrDelay;
+
+  TSig combOut1 = TSig(0);
+  TSig combOut2 = TSig(0);
+
+  TSig k1 = 0;
+  TSig k2 = 0;
+
+  TPar b10 = 0, b11 = 0, a11 = 0;
+  TPar b20 = 0, b21 = 0, a21 = 0;
+
+  int  M1 = 0;
+  int  M2 = 0;
+
+
+  // States of feedback filters:
+  TSig x11d  = 0, y11d  = 0;
+  TSig x21d  = 0, y21d  = 0;
+
+};
+
+
+
+template<class TSig, class TPar>
+void rsDampedAllpassBiComb_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
+{
+  int maxM = newMaxDelay - 1;
+  mainDelay1.setMaximumDelayInSamples(maxM);
+  mainDelay2.setMaximumDelayInSamples(maxM);
+  corrDelay.setMaximumDelayInSamples(maxM+3);  // Verify!
+}
+
+template<class TSig, class TPar>
+void rsDampedAllpassBiComb_1p<TSig, TPar>::setup(
+  int delay1, TSig feedback1, TPar dampCoeffB10, TPar dampCoeffB11, TPar dampCoeffA11,
+  int delay2, TSig feedback2, TPar dampCoeffB20, TPar dampCoeffB21, TPar dampCoeffA21,
+  bool predelay)
+{
+  this->preDelay = predelay;
+
+  M1 = delay1 - 1;
+  M2 = delay2 - 1;
+
+  k1 = feedback1;
+  k2 = feedback2;
+
+  a11 = dampCoeffA11;
+  b10 = dampCoeffB10;
+  b11 = dampCoeffB11;
+
+  a21 = dampCoeffA11;
+  b20 = dampCoeffB10;
+  b21 = dampCoeffB11;
+
+  updateDelaysAndCorrectorCoeffs();
+}
+
+template<class TSig, class TPar>
+void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
+{
+
+
+  //mainDelay.setDelayInSamples(M);
+  //corrDelay.setDelayInSamples(M+2);
+  //r0  = k*b1;
+  //r1  = k*b0;
+  //rM1 = a1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //=================================================================================================
 
 /** A nonlinear extension of rsDampedAllpassComb. At the moment, it's just an experimental stub. */
@@ -1700,23 +1864,13 @@ protected:
 //=================================================================================================
 
 
-/** UNDER CONSTRUCTION! Seems to work already, though.
+/** Implements a Schroeder allpass filters with a frequency dependent feedback, i.e. with a filter
+in the feedback path. For technical reasons, this feedback filter must be an FIR filter (otherwise
+the allpass condition would imply instability, I think). 
 
-We try to implement a generalization of the Schroeder allpass with frequency dependent damping.
-We want to realize:
-
-          z^-1 * G(z) + z^-M
-  H(z) = -----------------------------   ...Nah! This is wrong, I think!
-          1  + k * z^-1 * G(z) * z^-M
-
-This does not yet work! 
-
-ToDo: Try to make it work first with a simple 2-point moving average in the feedback path. If that 
-works, try more complex filters. So far, I think, the filter in the feedforward path must used 
-reversed coeff arrays compared to the one in the feedback path. Because this changes the stability
-for IIR filters, we may only be able to use FIR filters.
-
-*/
+...TBC...Elaborate! So far, I think, the filter in the feedforward path must used reversed coeff 
+arrays compared to the one in the feedback path. Because this changes the stability for IIR 
+filters, we may only be able to use FIR filters. */
 
 
 template<class TSig, class TPar>
@@ -2021,95 +2175,7 @@ protected:
 };
 
 
-//=================================================================================================
 
-/** Like rsDampedAllpassComb_1p but with two combs in parallel instead of just one 
-
-...TBC... see AllpassStuff.txt in the private repo for more details  */
-
-template<class TSig, class TPar>
-class rsDampedAllpassBiComb_1p
-{
-
-
-public:
-
-  void setMaxDelayInSamples(int newMaxDelay);
-
-  void setup(
-    int delay1, TSig feedback1, TPar dampCoeffB10, TPar dampCoeffB11, TPar dampCoeffA11,
-    int delay2, TSig feedback2, TPar dampCoeffB20, TPar dampCoeffB21, TPar dampCoeffA21,
-    bool predelay);
-
-
-protected:
-
-  void updateDelaysAndCorrectorCoeffs();
-
-
-  rsBasicDelayLine<TSig> mainDelay1;
-  rsBasicDelayLine<TSig> mainDelay2;
-  rsBasicDelayLine<TSig> corrDelay;
-
-  TSig combOut1 = TSig(0);
-  TSig combOut2 = TSig(0);
-
-  TSig k1 = 0;
-  TSig k2 = 0;
-
-  TPar b10 = 0, b11 = 0, a11 = 0;
-  TPar b20 = 0, b21 = 0, a21 = 0;
-
-  int  M1 = 0;
-  int  M2 = 0;
-
-  //TSig x1d  = 0, y1d  = 0;
-  //TSig x1di = 0, y1di = 0;
-  //TSig y1c  = 0;
-
-  //TSig k   = 0;
-  //TSig r0  = 0;
-  //TSig r1  = 0;
-  //TPar rM1 = 0;
-
-};
-
-template<class TSig, class TPar>
-void rsDampedAllpassBiComb_1p<TSig, TPar>::setup(
-  int delay1, TSig feedback1, TPar dampCoeffB10, TPar dampCoeffB11, TPar dampCoeffA11,
-  int delay2, TSig feedback2, TPar dampCoeffB20, TPar dampCoeffB21, TPar dampCoeffA21,
-  bool predelay)
-{
-  this->preDelay = predelay;
-
-  M1 = delay1 - 1;
-  M2 = delay2 - 1;
-
-  k1 = feedback1;
-  k2 = feedback2;
-
-  a11 = dampCoeffA11;
-  b10 = dampCoeffB10;
-  b11 = dampCoeffB11;
-
-  a21 = dampCoeffA11;
-  b20 = dampCoeffB10;
-  b21 = dampCoeffB11;
-
-  updateDelaysAndCorrectorCoeffs();
-}
-
-template<class TSig, class TPar>
-void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
-{
-
-
-  //mainDelay.setDelayInSamples(M);
-  //corrDelay.setDelayInSamples(M+2);
-  //r0  = k*b1;
-  //r1  = k*b0;
-  //rM1 = a1;
-}
 
 
 
