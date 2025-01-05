@@ -1265,6 +1265,7 @@ void dampedAllpassBiComb_1p()
 
   // Define types to be used:
   using Real     = double;
+  using Complex  = rsComplex<Real>;
   using Vec      = std::vector<Real>;
   using Allpass  = rsDampedAllpassBiComb_1p<Real, Real>;
   using AllpassT = rsDampedAllpassBiComb_1p_Test<Real, Real>;
@@ -1334,6 +1335,16 @@ void dampedAllpassBiComb_1p()
   // swapping numerator and denominator and then reflect the zeros in the unit circle. Algo 2 leads
   // to straightforward inversion.
 
+  // Test transfer function computation:
+  Complex z(0.6, 0.8);
+  Complex H = ap.getCombTransferFunctionAt(z);
+  Complex Ht = 0;
+  for(int n = 0; n < N; n++)
+    Ht += hc[n] * rsPow(z, Complex(-n));
+  // OK - they are similar but the error is rather large because the feedback is rather high and we
+  // truncate teh impulse response before it has sufficiently decayed away.
+
+
   // Try inverting the bi-comb:
   Vec hci(N);
   apt.reset();
@@ -1342,7 +1353,13 @@ void dampedAllpassBiComb_1p()
 
   rsPlotVectors(hci);  // Should be a unit impulse
   // Nope! It explodes! ...Hmmm...maybe the inverse filter is indeed unstable? If that is the case,
-  // the whole idea may not work out. But verify the implementation. Maybe it's just buggy
+  // the whole idea may not work out. But verify the implementation. Maybe it's just buggy. But I
+  // think the filter can't really be inverted anyway because the first output spike occurs at M1.
+  // We would need a non-causal filter to turn such a signal back into a unit impulse. But maybe
+  // if the filter is unstable because all poles are outside the unit circle, we could make it 
+  // stable by reflecting the poles in the unit circle. We need to figure out where the z-domain
+  // poles and zeros are. Maybe write a function getTransferFunctionAt()
+
 
 
 

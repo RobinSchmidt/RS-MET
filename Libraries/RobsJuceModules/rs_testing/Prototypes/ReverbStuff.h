@@ -1695,6 +1695,11 @@ public:
 
 
 
+
+  rsComplex<TPar> getCombTransferFunctionAt(const rsComplex<TPar>& z) const;
+
+
+
   TSig getSampleCombs(TSig in)
   {
     return g1 * getSampleComb1(in) + g2 * getSampleComb2(in);
@@ -1833,6 +1838,34 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::setup(
 
   updateDelaysAndCorrectorCoeffs();
 }
+
+
+template<class TSig, class TPar>
+rsComplex<TPar> rsDampedAllpassBiComb_1p<TSig, TPar>::getCombTransferFunctionAt(
+  const rsComplex<TPar>& z) const
+{
+  using Complex = rsComplex<TPar>;
+  Complex one(TPar(1));                              // 1 + 0i
+  Complex z1 = one/z;                                // z^-1
+
+  Complex num = Complex(0);
+  for(size_t i = 0; i < ffCoeffs.size(); i++)
+    num += ffCoeffs[i] * rsPow(z1, Complex(ffDelays[i]));
+
+  Complex den = one;                                 // a0 == 1 as usual
+  for(size_t i = 0; i < fbCoeffs.size(); i++)  
+    den += fbCoeffs[i] * rsPow(z1, Complex(fbDelays[i]));
+
+  return num / den;
+
+  // ToDo:
+  //
+  // - Maybe implement a different algorithm to compute the transfer functions based on computing
+  //   the two transfer functions of the two combs and forming a weighted sum of them. Maybe that 
+  //   would be more efficient. Maybe keep that implementation for testing and eductaional purposes
+  //   in some derived class as well.
+}
+
 
 template<class TSig, class TPar>
 void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
@@ -1990,6 +2023,8 @@ TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::applyInverse(TSig x)
   // Update delayline and return result:
   corrDelay.incrementTapPointers();
   return tmp;
+
+  // This seems to be unstable! Maybe we need to flip the signs? Nope - that doesn't help!
 }
 
 
