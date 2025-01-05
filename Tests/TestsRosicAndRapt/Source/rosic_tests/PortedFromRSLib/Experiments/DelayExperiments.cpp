@@ -1378,6 +1378,22 @@ void dampedAllpassBiComb_1p()
 
 
   int dummy = 0;
+
+  // ToDo:
+  //
+  // - Figure out the poles and zeros of the bi-comb - at least roughly. Are they inside or outside
+  //   the unit circle? Maybe try making a plot of the magnitude (or dB values) of the z-domain
+  //   transfer function. But I'm not sure how numerically stable the evaluation of the transfer 
+  //   function is for z with small radius. In this case, the z^-n sequence diverges. Maybe we coul 
+  //   try to find them with a polynomial root finder. But for this, we should perhaps use smaller
+  //   numbers for the delays because otherwise, we have to deal with very high degree polynomials
+  //   and I'm not sure about the numerical performance of the root finder for very high degree
+  //   polynomials. If the zeros are all inside the unit circle, then turning the numerator into
+  //   a denominator (i.e. turning them into poles) shouldn't be a problem. When they are all 
+  //   outside the unit circle, then we could do a reflection in the unit circle.
+  //
+  // - Maybe the current filter has no causal inverse. But maybe if we sap the positions of F1(z)
+  //   and z^-M1 and likewise for F2(z) and z^-M2, then it could work out?
 }
 
 void dampedAllpassComb()
