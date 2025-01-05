@@ -1884,12 +1884,12 @@ TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsTest(TSig x)
   // Apply feedforward part:
   y += id.readOutputAt(M1)      * (g1);
   y += id.readOutputAt(M2)      * (g2);
-  y += id.readOutputAt(M1+1)    * (a11*g1 + a21*g1);
-  y += id.readOutputAt(M2+1)    * (a11*g2 + a21*g2);
+  y += id.readOutputAt(M1+1)    * (a11 + a21)*g1;
+  y += id.readOutputAt(M2+1)    * (a11 + a21)*g2;
   y += id.readOutputAt(M1+2)    * (a11*a21*g1);
   y += id.readOutputAt(M2+2)    * (a11*a21*g2);
   y += id.readOutputAt(M1+M2+1) * (b10*g2*k1 + b20*g1*k2);
-  y += id.readOutputAt(M1+M2+2) * (a21*b10*g2*k1 + a11*b20*g1*k2 + b11*g2*k1 + b21*g1*k2);
+  y += id.readOutputAt(M1+M2+2) * ((a11*b20 + b21)*g1*k2 + (a21*b10 + b11)*g2*k1);
   y += id.readOutputAt(M1+M2+3) * (a21*b11*g2*k1 + a11*b21*g1*k2);
 
   // Apply feedback part:
@@ -1901,7 +1901,7 @@ TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsTest(TSig x)
   y -= od.readOutputAt(M2+2)    * (a11*b20 + b21)     * k2;
   y -= od.readOutputAt(M1+3)    * a21 * b11           * k1;
   y -= od.readOutputAt(M2+3)    * a11 * b21           * k2;
-  y -= od.readOutputAt(M1+M2+2) * b10*b20             * k1*k1;
+  y -= od.readOutputAt(M1+M2+2) * b10*b20             * k1*k2;
   y -= od.readOutputAt(M1+M2+3) * (b11*b20 + b10*b21) * k1*k2;
   y -= od.readOutputAt(M1+M2+4) * b11*b21             * k1*k2;
 
