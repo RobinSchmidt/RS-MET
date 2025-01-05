@@ -1336,13 +1336,18 @@ void dampedAllpassBiComb_1p()
   // to straightforward inversion.
 
   // Test transfer function computation:
-  Complex z(0.6, 0.8);
+  //Complex z(0.5, 0.7);                          // z is inside the unit circle.
+  Complex z(0.6, 0.8);                          // z is on the unit circle.
   Complex H = ap.getCombTransferFunctionAt(z);
   Complex Ht = 0;
   for(int n = 0; n < N; n++)
     Ht += hc[n] * rsPow(z, Complex(-n));
   // OK - they are similar but the error is rather large because the feedback is rather high and we
-  // truncate teh impulse response before it has sufficiently decayed away.
+  // truncate teh impulse response before it has sufficiently decayed away. Maybe use a z that is 
+  // itself decaying, i.e. not on the unit circle
+  // Oh - waint - for z = 0.6 + 0.8i, H and Ht are similar but for z = 0.5 + 0.7i, they are totally
+  // different! Maybe we need to make sure that the unit test also test some random z-values!
+  //
 
 
   // Try inverting the bi-comb:
