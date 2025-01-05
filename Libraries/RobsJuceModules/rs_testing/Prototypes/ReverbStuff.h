@@ -1723,6 +1723,15 @@ protected:
     y11d = y;
     return y;
   }
+  TSig applyInverseDamper1(TSig x)
+  {
+    TSig y = (x + a11 * x11di - b11 * y11di) / b10;
+    x11di = x;
+    y11di = y;
+    return y;
+  }
+
+
 
   TSig getSampleComb1(TSig in)
   {
@@ -1732,7 +1741,10 @@ protected:
 
     // New:
     combOut1 = applyDamper1(in - k1 * mainDelay1.getSample(combOut1));
-    return combOut1; 
+    return applyInverseDamper1(combOut1);
+
+    //return combOut1; 
+
     
     // ToDo: Maybe also try something like  return applyInverseDamper1(combOut1);  Maybe that works
     // better? Not yet sure...still experimenting and researching...
@@ -1746,6 +1758,13 @@ protected:
     y21d = y;
     return y;
   }
+  TSig applyInverseDamper2(TSig x)
+  {
+    TSig y = (x + a21 * x21di - b21 * y21di) / b20;
+    x21di = x;
+    y21di = y;
+    return y;
+  }
 
   TSig getSampleComb2(TSig in)
   {
@@ -1756,7 +1775,8 @@ protected:
 
     // New:
     combOut2 = applyDamper2(in - k2 * mainDelay2.getSample(combOut2));
-    return combOut2; 
+    return applyInverseDamper2(combOut2);
+    //return combOut2; 
   }
 
 
@@ -1790,6 +1810,9 @@ protected:
   TSig x11d  = 0, y11d  = 0;
   TSig x21d  = 0, y21d  = 0;
 
+  TSig x11di  = 0, y11di  = 0;
+  TSig x21di  = 0, y21di  = 0;
+
   // Coefficients and delays that would have to be used if we wanted to implement the filter in 
   // direct form. They will be used (in modified form) for the corrector filter:
   std::vector<TSig> ffCoeffs, fbCoeffs;
@@ -1815,6 +1838,11 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::rsDampedAllpassBiComb_1p<TSig, TPar>:
   y11d  = 0;
   x21d  = 0;
   y21d  = 0;
+
+  x11di = 0;
+  y11di = 0;
+  x21di = 0;
+  y21di = 0;
 }
 
 
@@ -1892,32 +1920,32 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
   // Compute the delays and coefficients for a direct form implementation. See AllpassStuff.txt in 
   // the private repo for derivation of the formulas for the delays and coeffs:
 
-  //// Old:
+  // Coeffs needed when the inverse dampers are NOT applied after each comb:
   //// Feedforward delays and coeffs:
-  //ffDelays[ 0] = M1;       ffCoeffs[ 0] = g1;
-  //ffDelays[ 1] = M2;       ffCoeffs[ 1] = g2;
-  //ffDelays[ 2] = M1+1;     ffCoeffs[ 2] = (a11 + a21)*g1;
-  //ffDelays[ 3] = M1+2;     ffCoeffs[ 3] = a11*a21*g1;
-  //ffDelays[ 4] = M2+1;     ffCoeffs[ 4] = (a11 + a21)*g2;
-  //ffDelays[ 5] = M2+2;     ffCoeffs[ 5] = a11*a21*g2;
-  //ffDelays[ 6] = M1+M2+1;  ffCoeffs[ 6] = b10*g2*k1 + b20*g1*k2;
-  //ffDelays[ 7] = M1+M2+2;  ffCoeffs[ 7] = (a11*b20 + b21)*g1*k2 + (a21*b10 + b11)*g2*k1;
-  //ffDelays[ 8] = M1+M2+3;  ffCoeffs[ 8] = a21*b11*g2*k1 + a11*b21*g1*k2;
+  //ffDelays[ 0] = 0;     ffCoeffs[ 0] = b10*g1 + b20*g2;
+  //ffDelays[ 1] = 1;     ffCoeffs[ 1] = a21*b10*g1 + a11*b20*g2 + b11*g1 + b21*g2;
+  //ffDelays[ 2] = 2;     ffCoeffs[ 2] = a21*b11*g1 + a11*b21*g2;
+  //ffDelays[ 3] = M1+1;  ffCoeffs[ 3] = b10*b20*g2*k1;
+  //ffDelays[ 4] = M1+2;  ffCoeffs[ 4] = b11*b20*g2*k1 + b10*b21*g2*k1;
+  //ffDelays[ 5] = M1+3;  ffCoeffs[ 5] = b11*b21*g2*k1;
+  //ffDelays[ 6] = M2+1;  ffCoeffs[ 6] = b10*b20*g1*k2;
+  //ffDelays[ 7] = M2+2;  ffCoeffs[ 7] = b11*b20*g1*k2 + b10*b21*g1*k2;
+  //ffDelays[ 8] = M2+3;  ffCoeffs[ 8] = b11*b21*g1*k2;
+  //// Can be optimized!
 
-  // New:
+
+  // Coeffs needed when the inverse dampers are applied after each comb:
   // Feedforward delays and coeffs:
-  ffDelays[ 0] = 0;     ffCoeffs[ 0] = b10*g1 + b20*g2;
-  ffDelays[ 1] = 1;     ffCoeffs[ 1] = a21*b10*g1 + a11*b20*g2 + b11*g1 + b21*g2;
-  ffDelays[ 2] = 2;     ffCoeffs[ 2] = a21*b11*g1 + a11*b21*g2;
-
-  ffDelays[ 3] = M1+1;  ffCoeffs[ 3] = b10*b20*g2*k1;
-  ffDelays[ 4] = M1+2;  ffCoeffs[ 4] = b11*b20*g2*k1 + b10*b21*g2*k1;
-  ffDelays[ 5] = M1+3;  ffCoeffs[ 5] = b11*b21*g2*k1;
-
-  ffDelays[ 6] = M2+1;  ffCoeffs[ 6] = b10*b20*g1*k2;
-  ffDelays[ 7] = M2+2;  ffCoeffs[ 7] = b11*b20*g1*k2 + b10*b21*g1*k2;
-  ffDelays[ 8] = M2+3;  ffCoeffs[ 8] = b11*b21*g1*k2;
-
+  ffDelays[ 0] = 0;     ffCoeffs[ 0] = g1 + g2;
+  ffDelays[ 1] = 1;     ffCoeffs[ 1] = a11*g1 + a21*g1 + a11*g2 + a21*g2;
+  ffDelays[ 2] = 2;     ffCoeffs[ 2] = a11*a21*g1 + a11*a21*g2;
+  ffDelays[ 3] = M1+1;  ffCoeffs[ 3] = b10*g2*k1;
+  ffDelays[ 4] = M1+2;  ffCoeffs[ 4] = a21*b10*g2*k1 + b11*g2*k1;
+  ffDelays[ 5] = M1+3;  ffCoeffs[ 5] = a21*b11*g2*k1;
+  ffDelays[ 6] = M2+1;  ffCoeffs[ 6] = b20*g1*k2;
+  ffDelays[ 7] = M2+2;  ffCoeffs[ 7] = a11*b20*g1*k2 + b21*g1*k2;
+  ffDelays[ 8] = M2+3;  ffCoeffs[ 8] = a11*b21*g1*k2;
+  // Can be optimized!
 
 
   // Feedback delays and coeffs:
