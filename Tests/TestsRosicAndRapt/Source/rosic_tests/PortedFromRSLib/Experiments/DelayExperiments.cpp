@@ -1292,26 +1292,29 @@ void dampedAllpassBiComb_1p()
   // Produce the impulse response of the two parallel comb filters:
   Vec hc(N);
   hc[0] = ap.getSampleCombs(1.0);
-  for(int n = 0; n < N; n++)
+  for(int n = 1; n < N; n++)
     hc[n] = ap.getSampleCombs(0.0);
   //rsPlotVectors(hc);
 
-  // Produce the impulse response of the combs with the alternative (direct form 1) algorithm:
+  // Produce the impulse response of the combs with the alternative (direct form 1 and 2) 
+  // algorithms:
   AllpassT apt;
   apt.setMaxDelayInSamples(delay2);
   apt.setup(delay1, g1, k1, b10, b11, a11,
             delay2, g2, k2, b20, b21, a21);
+
+  // With direct form 1:
   apt.reset();
   Vec hc2(N);
   hc2[0] = apt.getSampleCombsDF1(1.0);
-  for(int n = 0; n < N; n++)
+  for(int n = 1; n < N; n++)
     hc2[n] = apt.getSampleCombsDF1(0.0);
 
-  // Now with direct form 2:
+  // With direct form 2:
   apt.reset();
   Vec hc3(N);
   hc3[0] = apt.getSampleCombsDF2(1.0);
-  for(int n = 0; n < N; n++)
+  for(int n = 1; n < N; n++)
     hc3[n] = apt.getSampleCombsDF2(0.0);
 
   rsPlotVectors(hc, hc2, hc3);
@@ -1329,7 +1332,26 @@ void dampedAllpassBiComb_1p()
   // From a practical point of view, it makes no sense to use algorithm 2 but it is a stepping 
   // stone to turn the filter into an allpass. We now need to invert the filter of algorithm 2 by
   // swapping numerator and denominator and then reflect the zeros in the unit circle. Algo 2 leads
-  // to straighforward inversion. 
+  // to straightforward inversion.
+
+  // Try inverting the bi-comb:
+  Vec hci(N);
+  apt.reset();
+  for(int n = 0; n < N; n++)
+    hci[n] = apt.applyInverse(hc[n]);
+
+  rsPlotVectors(hci);  // Should be a unit impulse
+  // Nope! It explodes! ...Hmmm...maybe the inverse filter is indeed unstable? If that is the case,
+  // the whole idea may not work out. But verify the implementation. Maybe it's just buggy
+
+
+
+
+  // ToDo: apply the inverse comb to a unit impulse - just for curiosity
+
+
+
+
 
   int dummy = 0;
 }

@@ -1905,12 +1905,28 @@ public:
 
     mainDelay1.setDelayInSamples(M1+M2+3);
     mainDelay2.setDelayInSamples(M1+M2+4);
+    corrDelay.setDelayInSamples( M1+M2+4);
   }
 
 
+  // These functions implement the weighted sum if the two combs as direct form implementation:
   TSig getSampleCombsDF1(TSig in);
-
   TSig getSampleCombsDF2(TSig in);
+  // This is not supposed to be used in practice - it's just a test to see that we can do it. This 
+  // also verifies that we have the right formulas for the direct form coeffs.
+  // ToDo: Maybe implement TDF1, TDF2, too
+
+
+  TSig applyInverse(TSig in);
+  // This function should implement the inverse filter. Applying it to the the output of of
+  // getSamplesCombsDF1/DF2 (or the inherited getSampleCombs()) should give the neutral 
+  // "do-nothing" filter.
+  // Rename to applyInverseComb
+
+
+  TSig applyCorrector(TSig in);
+  // This function should implement the coorector filter...
+
 
 };
 
@@ -1918,10 +1934,7 @@ public:
 template<class TSig, class TPar>
 TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsDF1(TSig x)
 {
-  // We use here the mainDelay1 and inDelay and mainDelay2 as outDelay to make the code simpler
-  // due to using direct form 1 rather than 2. One could write this code in terms of one delayline
-  // when one uses direct form 2 - but the code is easier to follow with DF1. See AllpassStuff.txt
-  // in the private repo for derivation of the formulas for the coeffs.
+  // We use here the mainDelay1 and inDelay and mainDelay2 as outDelay.
 
   // Apply feedforward part:
   TSig y = 0;
@@ -1936,15 +1949,14 @@ TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsDF1(TSig x)
   mainDelay1.writeInputAndUpdate(x);
   mainDelay2.writeInputAndUpdate(y);
   return y;
-
-  // ToDo:
-  //
-  // - Implement a DF2 version, too
 }
 
 template<class TSig, class TPar>
 TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsDF2(TSig x)
 {
+  // We use mainDelay2 as the delayline for the DF2 implementation because mainDelay1 might be one
+  // sample too short in certain settings.
+
   // Apply feedback part:
   TSig tmp = x;
   for(size_t i = 0; i < fbCoeffs.size(); i++)
@@ -1961,7 +1973,24 @@ TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsDF2(TSig x)
   return tmp;
 }
 
+template<class TSig, class TPar>
+TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::applyInverse(TSig x)
+{
+  // Apply feedforward part as feedback part:
+  TSig tmp = x;
+  for(size_t i = 0; i < ffCoeffs.size(); i++)
+    tmp -= ffCoeffs[i] * corrDelay.readOutputAt(ffDelays[i]);
+  corrDelay.writeInputNoUpdate(tmp);
 
+  // Apply feedback part as feedforward path:
+  tmp = 0;
+  for(size_t i = 0; i < fbCoeffs.size(); i++)
+    tmp += fbCoeffs[i] * corrDelay.readOutputAt(fbDelays[i]);
+
+  // Update delayline and return result:
+  corrDelay.incrementTapPointers();
+  return tmp;
+}
 
 
 
