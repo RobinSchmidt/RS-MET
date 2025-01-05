@@ -1273,17 +1273,15 @@ void dampedAllpassBiComb_1p()
   int  N      = 1000;    // Number of samples to render
   int  delay1 = 23;
   int  delay2 = 29;
-  Real g1     = 1.0;
-  Real g2     = 1.0;
+  Real g1     = 0.6;
+  Real g2     = 0.7;
   Real k1     = 0.9;
-  Real k2     = 0.9;
-
+  Real k2     = 0.8;
 
   // Compute the feedback filter coeffs:
   Real b10, b11, a11; rsMake1stOrderHighShelf(0.5, 0.9, &b10, &b11, &a11);
   Real b20, b21, a21; rsMake1stOrderHighShelf(0.7, 0.8, &b20, &b21, &a21);
-  b10 = 1; b11 = a11 = 0; b20 = 1; b21 = a21 = 0;   //  For test with neutral filter
-
+  //b10 = 1; b11 = a11 = 0; b20 = 1; b21 = a21 = 0;   //  For test with neutral filter
 
   // Create and set up the allpass:
   Allpass ap;
@@ -1298,18 +1296,36 @@ void dampedAllpassBiComb_1p()
     hc[n] = ap.getSampleCombs(0.0);
   //rsPlotVectors(hc);
 
-  // Produce the impulse response of the combs with the alternative (direct form) algorithm:
+  // Produce the impulse response of the combs with the alternative (direct form 1) algorithm:
   AllpassT apt;
   apt.setMaxDelayInSamples(delay2);
   apt.setup(delay1, g1, k1, b10, b11, a11,
             delay2, g2, k2, b20, b21, a21);
   apt.reset();
   Vec hc2(N);
-  hc2[0] = apt.getSampleCombsTest(1.0);
+  hc2[0] = apt.getSampleCombsDF1(1.0);
   for(int n = 0; n < N; n++)
-    hc2[n] = apt.getSampleCombsTest(0.0);
-  rsPlotVectors(hc, hc2);  // hc2 looks wrong! It should be equal to hc
+    hc2[n] = apt.getSampleCombsDF1(0.0);
 
+  // Now with direct form 2:
+
+
+
+  rsPlotVectors(hc, hc2);
+
+  bool ok = true;
+  ok &= rsIsCloseTo(hc, hc2, 1.e-15);
+
+  // OK - so far, so good. We can produce the output of the weighted sum of the two comb filters by
+  // two different algorithms: 
+  //
+  //   (1) Literally implementing two combs and mixing their outputs. 
+  //   (2) Implementing the whole thing in direct form
+  //
+  // From a practical point of view, it makes no sense to use algorithm 2 but it is a stepping 
+  // stone to turn the filter into an allpass. We now need to invert the filter of algorithm 2 by
+  // swapping numerator and denominator and then reflect the zeros in the unit circle. Algo 2 leads
+  // to straighforward inversion. 
 
   int dummy = 0;
 }
