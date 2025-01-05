@@ -1680,6 +1680,13 @@ class rsDampedAllpassBiComb_1p
 
 public:
 
+  rsDampedAllpassBiComb_1p()
+    : ffCoeffs(9), ffDelays(9), fbCoeffs(11), fbDelays(11)
+  {
+
+  }
+
+
   void setMaxDelayInSamples(int newMaxDelay);
 
   void setup(
@@ -1690,7 +1697,7 @@ public:
 
   TSig getSampleCombs(TSig in)
   {
-    return getSampleComb1(in) + getSampleComb2(in);
+    return g1 * getSampleComb1(in) + g2 * getSampleComb2(in);
   }
 
 
@@ -1765,6 +1772,12 @@ protected:
   TSig x11d  = 0, y11d  = 0;
   TSig x21d  = 0, y21d  = 0;
 
+
+  // Under construction:
+  std::vector<TSig> ffCoeffs, fbCoeffs;
+  std::vector<int>  ffDelays, fbDelays;
+
+
 };
 
 
@@ -1826,8 +1839,41 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
   mainDelay1.setDelayInSamples(M1);
   mainDelay2.setDelayInSamples(M2);
 
-  //corrDelay.setDelayInSamples(...);
+  // Compute the delays and coefficients for a direct form implementation:
+
+  // Feedforward delays and coeffs:
+  ffDelays[ 0] = M1;       ffCoeffs[ 0] = g1;
+  ffDelays[ 1] = M2;       ffCoeffs[ 1] = g2;
+  ffDelays[ 2] = M1+1;     ffCoeffs[ 2] = (a11 + a21)*g1;
+  ffDelays[ 3] = M2+1;     ffCoeffs[ 3] = (a11 + a21)*g2;
+  ffDelays[ 4] = M1+2;     ffCoeffs[ 4] = (a11*a21*g1);
+  ffDelays[ 5] = M2+2;     ffCoeffs[ 5] = (a11*a21*g2);
+  ffDelays[ 6] = M1+M2+1;  ffCoeffs[ 6] = (b10*g2*k1 + b20*g1*k2);
+  ffDelays[ 7] = M1+M2+2;  ffCoeffs[ 7] = ((a11*b20 + b21)*g1*k2 + (a21*b10 + b11)*g2*k1);
+  ffDelays[ 8] = M1+M2+3;  ffCoeffs[ 8] = (a21*b11*g2*k1 + a11*b21*g1*k2);
+
+  // Feedback delays and coeffs:
+  fbDelays[ 0] = 1;        fbCoeffs[ 0] = a11 + a21;
+  fbDelays[ 1] = 2;        fbCoeffs[ 1] = a11 * a21;
+  fbDelays[ 2] = M1+1;     fbCoeffs[ 2] = b10 * k1;
+  fbDelays[ 3] = M2+1;     fbCoeffs[ 3] = b20 * k2;
+  fbDelays[ 4] = M1+2;     fbCoeffs[ 4] = (a21*b10 + b11) * k1;
+  fbDelays[ 5] = M2+2;     fbCoeffs[ 5] = (a11*b20 + b21) * k2;
+  fbDelays[ 6] = M1+3;     fbCoeffs[ 6] = a21 * b11 * k1;
+  fbDelays[ 7] = M2+3;     fbCoeffs[ 7] = a11 * b21 * k2;
+  fbDelays[ 8] = M1+M2+2;  fbCoeffs[ 8] = b10*b20 * k1*k2;
+  fbDelays[ 9] = M1+M2+3;  fbCoeffs[ 9] = (b11*b20 + b10*b21) * k1*k2;
+  fbDelays[10] = M1+M2+4;  fbCoeffs[10] = b11*b21 * k1*k2;
+
+
+
+
+  //corrDelay.setDelayInSamples(M1+M2+4);  // Verify!
   // ...
+
+
+  // See AllpassStuff.txt in the private repo for derivation of the formulas for the delays and 
+  // coeffs.
 }
 
 
@@ -1881,34 +1927,57 @@ TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsTest(TSig x)
   rsBasicDelayLine<TSig>& od = mainDelay2;  // od: output delayline
   TSig y = 0;                               // y:  output signal
 
+
+  // Old:
+
+  //// Apply feedforward part:
+  //y += id.readOutputAt(M1)      * (g1);
+  //y += id.readOutputAt(M2)      * (g2);
+  //y += id.readOutputAt(M1+1)    * (a11 + a21)*g1;
+  //y += id.readOutputAt(M2+1)    * (a11 + a21)*g2;
+  //y += id.readOutputAt(M1+2)    * (a11*a21*g1);
+  //y += id.readOutputAt(M2+2)    * (a11*a21*g2);
+  //y += id.readOutputAt(M1+M2+1) * (b10*g2*k1 + b20*g1*k2);
+  //y += id.readOutputAt(M1+M2+2) * ((a11*b20 + b21)*g1*k2 + (a21*b10 + b11)*g2*k1);
+  //y += id.readOutputAt(M1+M2+3) * (a21*b11*g2*k1 + a11*b21*g1*k2);
+
+  //// Apply feedback part:
+  //y -= od.readOutputAt(1)       * (a11 + a21);
+  //y -= od.readOutputAt(2)       * (a11 * a21);
+  //y -= od.readOutputAt(M1+1)    * b10                 * k1;
+  //y -= od.readOutputAt(M2+1)    * b20                 * k2;
+  //y -= od.readOutputAt(M1+2)    * (a21*b10 + b11)     * k1;
+  //y -= od.readOutputAt(M2+2)    * (a11*b20 + b21)     * k2;
+  //y -= od.readOutputAt(M1+3)    * a21 * b11           * k1;
+  //y -= od.readOutputAt(M2+3)    * a11 * b21           * k2;
+  //y -= od.readOutputAt(M1+M2+2) * b10*b20             * k1*k2;
+  //y -= od.readOutputAt(M1+M2+3) * (b11*b20 + b10*b21) * k1*k2;
+  //y -= od.readOutputAt(M1+M2+4) * b11*b21             * k1*k2;
+
+
+
+  // New - the coeffs and delays are now stored in (inherited) member arrays so we don't have to
+  // compute them here:
+
   // Apply feedforward part:
-  y += id.readOutputAt(M1)      * (g1);
-  y += id.readOutputAt(M2)      * (g2);
-  y += id.readOutputAt(M1+1)    * (a11 + a21)*g1;
-  y += id.readOutputAt(M2+1)    * (a11 + a21)*g2;
-  y += id.readOutputAt(M1+2)    * (a11*a21*g1);
-  y += id.readOutputAt(M2+2)    * (a11*a21*g2);
-  y += id.readOutputAt(M1+M2+1) * (b10*g2*k1 + b20*g1*k2);
-  y += id.readOutputAt(M1+M2+2) * ((a11*b20 + b21)*g1*k2 + (a21*b10 + b11)*g2*k1);
-  y += id.readOutputAt(M1+M2+3) * (a21*b11*g2*k1 + a11*b21*g1*k2);
+  for(size_t i = 0; i < ffCoeffs.size(); i++)
+    y += ffCoeffs[i] * id.readOutputAt(ffDelays[i]);
 
   // Apply feedback part:
-  y -= od.readOutputAt(1)       * (a11 + a21);
-  y -= od.readOutputAt(2)       * (a11 * a21);
-  y -= od.readOutputAt(M1+1)    * b10                 * k1;
-  y -= od.readOutputAt(M2+1)    * b20                 * k2;
-  y -= od.readOutputAt(M1+2)    * (a21*b10 + b11)     * k1;
-  y -= od.readOutputAt(M2+2)    * (a11*b20 + b21)     * k2;
-  y -= od.readOutputAt(M1+3)    * a21 * b11           * k1;
-  y -= od.readOutputAt(M2+3)    * a11 * b21           * k2;
-  y -= od.readOutputAt(M1+M2+2) * b10*b20             * k1*k2;
-  y -= od.readOutputAt(M1+M2+3) * (b11*b20 + b10*b21) * k1*k2;
-  y -= od.readOutputAt(M1+M2+4) * b11*b21             * k1*k2;
+  for(size_t i = 0; i < fbCoeffs.size(); i++)
+    y -= fbCoeffs[i] * od.readOutputAt(fbDelays[i]);
+
+
 
   // Update delaylines and return result:
   id.writeInputAndUpdate(x);
   od.writeInputAndUpdate(y);
   return y;
+
+
+  // ToDo:
+  //
+  // - Rename this function to getSampleCombsDF1 and implement a DF2 version, too
 }
 
 
