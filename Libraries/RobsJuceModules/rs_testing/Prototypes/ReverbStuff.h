@@ -1683,8 +1683,8 @@ public:
   void setMaxDelayInSamples(int newMaxDelay);
 
   void setup(
-    int delay1, TSig feedback1, TPar dampCoeffB10, TPar dampCoeffB11, TPar dampCoeffA11,
-    int delay2, TSig feedback2, TPar dampCoeffB20, TPar dampCoeffB21, TPar dampCoeffA21);
+    int delay1, TPar gain1, TSig feedback1, TPar coeffB10, TPar coeffB11, TPar coeffA11,
+    int delay2, TPar gain2, TSig feedback2, TPar coeffB20, TPar coeffB21, TPar coeffA21);
 
 
 
@@ -1750,6 +1750,9 @@ protected:
   TSig k1 = 0;
   TSig k2 = 0;
 
+  TPar g1 = 1;
+  TPar g2 = 1;
+
   TPar b10 = 0, b11 = 0, a11 = 0;
   TPar b20 = 0, b21 = 0, a21 = 0;
 
@@ -1793,22 +1796,25 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 
 template<class TSig, class TPar>
 void rsDampedAllpassBiComb_1p<TSig, TPar>::setup(
-  int delay1, TSig feedback1, TPar dampCoeffB10, TPar dampCoeffB11, TPar dampCoeffA11,
-  int delay2, TSig feedback2, TPar dampCoeffB20, TPar dampCoeffB21, TPar dampCoeffA21)
+  int delay1, TPar gain1, TSig feedback1, TPar coeffB10, TPar coeffB11, TPar coeffA11,
+  int delay2, TPar gain2, TSig feedback2, TPar coeffB20, TPar coeffB21, TPar coeffA21)
 {
   M1 = delay1 - 1;
   M2 = delay2 - 1;
 
+  g1 = gain1;
+  g2 = gain2;
+
   k1 = feedback1;
   k2 = feedback2;
 
-  b10 = dampCoeffB10;
-  b11 = dampCoeffB11;
-  a11 = dampCoeffA11;
+  b10 = coeffB10;
+  b11 = coeffB11;
+  a11 = coeffA11;
 
-  b20 = dampCoeffB20;
-  b21 = dampCoeffB21;
-  a21 = dampCoeffA21;
+  b20 = coeffB20;
+  b21 = coeffB21;
+  a21 = coeffA21;
 
   updateDelaysAndCorrectorCoeffs();
 }
@@ -1847,11 +1853,11 @@ public:
   }
 
   void setup(
-    int delay1, TSig feedback1, TPar dampCoeffB10, TPar dampCoeffB11, TPar dampCoeffA11,
-    int delay2, TSig feedback2, TPar dampCoeffB20, TPar dampCoeffB21, TPar dampCoeffA21)
+    int delay1, TPar gain1, TSig feedback1, TPar coeffB10, TPar coeffB11, TPar coeffA11,
+    int delay2, TPar gain2, TSig feedback2, TPar coeffB20, TPar coeffB21, TPar coeffA21)
   {
-    Base::setup(delay1, feedback1, dampCoeffB10, dampCoeffB11, dampCoeffA11,
-                delay2, feedback2, dampCoeffB20, dampCoeffB21, dampCoeffA21);
+    Base::setup(delay1, gain1, feedback1, coeffB10, coeffB11, coeffA11,
+                delay2, gain2, feedback2, coeffB20, coeffB21, coeffA21);
 
     mainDelay1.setDelayInSamples(M1+M2+3);
     mainDelay2.setDelayInSamples(M1+M2+4);

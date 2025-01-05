@@ -1273,6 +1273,8 @@ void dampedAllpassBiComb_1p()
   int  N      = 1000;    // Number of samples to render
   int  delay1 = 23;
   int  delay2 = 29;
+  Real g1     = 1.0;
+  Real g2     = 1.0;
   Real k1     = 0.9;
   Real k2     = 0.9;
 
@@ -1286,8 +1288,8 @@ void dampedAllpassBiComb_1p()
   // Create and set up the allpass:
   Allpass ap;
   ap.setMaxDelayInSamples(delay2);
-  ap.setup(delay1, k1, b10, b11, a11,
-           delay2, k2, b20, b21, a21);
+  ap.setup(delay1, g1, k1, b10, b11, a11,
+           delay2, g2, k2, b20, b21, a21);
 
   // Produce the impulse response of the two parallel comb filters:
   Vec hc(N);
@@ -1299,8 +1301,8 @@ void dampedAllpassBiComb_1p()
   // Produce the impulse response of the combs with the alternative (direct form) algorithm:
   AllpassT apt;
   apt.setMaxDelayInSamples(delay2);
-  apt.setup(delay1, k1, b10, b11, a11,
-            delay2, k2, b20, b21, a21);
+  apt.setup(delay1, g1, k1, b10, b11, a11,
+            delay2, g2, k2, b20, b21, a21);
   apt.reset();
   Vec hc2(N);
   hc2[0] = apt.getSampleCombsTest(1.0);
