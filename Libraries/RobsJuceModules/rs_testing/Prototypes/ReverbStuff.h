@@ -1880,13 +1880,24 @@ TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsTest(TSig x)
   TSig y = 0;
 
   // Apply feedforward part:
-  y += (1 + a11*a21)                         * id.readOutputAt(M1);
-  y += (1 + a11*a21)                         * id.readOutputAt(M2);
-  y += (a11 + a21)                           * id.readOutputAt(M1+1);
-  y += (a11 + a21)                           * id.readOutputAt(M2+1);
-  y += b10*k1 + b20*k2                       * id.readOutputAt(M1+M2+1);
-  y += ((a21*b10+b11)*k1 + (a11*b20+b21)*k2) * id.readOutputAt(M1+M2+2);
-  y += a21*b11*k1 + a11*b21*k2               * id.readOutputAt(M1+M2+3);
+  //y += (1 + a11*a21)                         * id.readOutputAt(M1);
+  //y += (1 + a11*a21)                         * id.readOutputAt(M2);
+  //y += (a11 + a21)                           * id.readOutputAt(M1+1);
+  //y += (a11 + a21)                           * id.readOutputAt(M2+1);
+  //y += b10*k1 + b20*k2                       * id.readOutputAt(M1+M2+1);
+  //y += ((a21*b10+b11)*k1 + (a11*b20+b21)*k2) * id.readOutputAt(M1+M2+2);
+  //y += a21*b11*k1 + a11*b21*k2               * id.readOutputAt(M1+M2+3);
+
+  y += id.readOutputAt(M1)      * (g1);
+  y += id.readOutputAt(M2)      * (g2);
+  y += id.readOutputAt(M1+1)    * (a11*g1 + a21*g1);
+  y += id.readOutputAt(M2+1)    * (a11*g2 + a21*g2);
+  y += id.readOutputAt(M1+2)    * (a11*a21*g1);
+  y += id.readOutputAt(M2+2)    * (a11*a21*g2);
+  y += id.readOutputAt(M1+M2+1) * (b10*g2*k1 + b20*g1*k2);
+  y += id.readOutputAt(M1+M2+2) * (a21*b10*g2*k1 + a11*b20*g1*k2 + b11*g2*k1 + b21*g1*k2);
+  y += id.readOutputAt(M1+M2+3) * (a21*b11*g2*k1 + a11*b21*g1*k2);
+
 
   // Apply feedback part:
   y -= (a11 + a21)                  *  od.readOutputAt(1);
@@ -1900,6 +1911,8 @@ TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsTest(TSig x)
   y -= b10*b20             * k1*k1  *  od.readOutputAt(M1+M2+2);
   y -= (b11*b20 + b10*b21) * k1*k2  *  od.readOutputAt(M1+M2+3);
   y -= b11*b21             * k1*k2  *  od.readOutputAt(M1+M2+4);
+
+
 
   // Update delaylines and return result:
   id.writeInputAndUpdate(x);
