@@ -1909,6 +1909,9 @@ public:
 
 
   TSig getSampleCombsDF1(TSig in);
+
+  TSig getSampleCombsDF2(TSig in);
+
 };
 
 
@@ -1937,6 +1940,28 @@ TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsDF1(TSig x)
   // ToDo:
   //
   // - Implement a DF2 version, too
+}
+
+template<class TSig, class TPar>
+TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsDF2(TSig x)
+{
+  // Apply feedback part:
+  TSig tmp = x;
+  for(size_t i = 0; i < fbCoeffs.size(); i++)
+    tmp -= fbCoeffs[i] * mainDelay2.readOutputAt(fbDelays[i]);
+
+  // Apply feedforward part:
+  TSig y = tmp;
+  for(size_t i = 0; i < ffCoeffs.size(); i++)
+    y += ffCoeffs[i] * mainDelay2.readOutputAt(ffDelays[i]);
+
+
+  // Update delayline and return result:
+  mainDelay2.writeInputAndUpdate(tmp);
+  return y;
+
+
+  // VERIFY THIS! I'm not sure ...Nah - it seems to be totally wrong!
 }
 
 

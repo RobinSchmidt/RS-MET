@@ -1308,10 +1308,14 @@ void dampedAllpassBiComb_1p()
     hc2[n] = apt.getSampleCombsDF1(0.0);
 
   // Now with direct form 2:
+  apt.reset();
+  Vec hc3(N);
+  hc3[0] = apt.getSampleCombsDF2(1.0);
+  for(int n = 0; n < N; n++)
+    hc3[n] = apt.getSampleCombsDF2(0.0);
 
 
-
-  rsPlotVectors(hc, hc2);
+  rsPlotVectors(hc, hc2, hc3);
 
   bool ok = true;
   ok &= rsIsCloseTo(hc, hc2, 1.e-15);
