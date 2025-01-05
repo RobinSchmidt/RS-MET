@@ -1749,6 +1749,7 @@ protected:
 
   TSig k1 = 0;
   TSig k2 = 0;
+  // Maybe make them TPar - we don't really want to use it with complex valued feedback...or do we?
 
   TPar g1 = 1;
   TPar g2 = 1;
@@ -1871,23 +1872,16 @@ public:
 template<class TSig, class TPar>
 TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsTest(TSig x)
 {
-  // We use here the mainDelay1 and inDelay and mainDelay2 as outDelay To make the code simpler
+  // We use here the mainDelay1 and inDelay and mainDelay2 as outDelay to make the code simpler
   // due to using direct form 1 rather than 2. One could write this code in terms of one delayline
-  // when one uses direct form 2 - but the ocde is easire to follow with DF1.:
+  // when one uses direct form 2 - but the code is easier to follow with DF1. See AllpassStuff.txt
+  // in the private repo for derivation of the formulas for the coeffs.
 
   rsBasicDelayLine<TSig>& id = mainDelay1;  // id: input delayline
   rsBasicDelayLine<TSig>& od = mainDelay2;  // od: output delayline
-  TSig y = 0;
+  TSig y = 0;                               // y:  output signal
 
   // Apply feedforward part:
-  //y += (1 + a11*a21)                         * id.readOutputAt(M1);
-  //y += (1 + a11*a21)                         * id.readOutputAt(M2);
-  //y += (a11 + a21)                           * id.readOutputAt(M1+1);
-  //y += (a11 + a21)                           * id.readOutputAt(M2+1);
-  //y += b10*k1 + b20*k2                       * id.readOutputAt(M1+M2+1);
-  //y += ((a21*b10+b11)*k1 + (a11*b20+b21)*k2) * id.readOutputAt(M1+M2+2);
-  //y += a21*b11*k1 + a11*b21*k2               * id.readOutputAt(M1+M2+3);
-
   y += id.readOutputAt(M1)      * (g1);
   y += id.readOutputAt(M2)      * (g2);
   y += id.readOutputAt(M1+1)    * (a11*g1 + a21*g1);
@@ -1898,29 +1892,23 @@ TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsTest(TSig x)
   y += id.readOutputAt(M1+M2+2) * (a21*b10*g2*k1 + a11*b20*g1*k2 + b11*g2*k1 + b21*g1*k2);
   y += id.readOutputAt(M1+M2+3) * (a21*b11*g2*k1 + a11*b21*g1*k2);
 
-
   // Apply feedback part:
-  y -= (a11 + a21)                  *  od.readOutputAt(1);
-  y -= (a11 * a21)                  *  od.readOutputAt(2);
-  y -= b10 * k1                     *  od.readOutputAt(M1+1);
-  y -= b20 * k2                     *  od.readOutputAt(M2+1);
-  y -= (a21*b10 + b11)     * k1     *  od.readOutputAt(M1+2);
-  y -= (a11*b20 + b21)     * k2     *  od.readOutputAt(M2+2);
-  y -= a21 * b11           * k1     *  od.readOutputAt(M1+3);
-  y -= a11 * b21           * k2     *  od.readOutputAt(M2+3);
-  y -= b10*b20             * k1*k1  *  od.readOutputAt(M1+M2+2);
-  y -= (b11*b20 + b10*b21) * k1*k2  *  od.readOutputAt(M1+M2+3);
-  y -= b11*b21             * k1*k2  *  od.readOutputAt(M1+M2+4);
-
-
+  y -= od.readOutputAt(1)       * (a11 + a21);
+  y -= od.readOutputAt(2)       * (a11 * a21);
+  y -= od.readOutputAt(M1+1)    * b10                 * k1;
+  y -= od.readOutputAt(M2+1)    * b20                 * k2;
+  y -= od.readOutputAt(M1+2)    * (a21*b10 + b11)     * k1;
+  y -= od.readOutputAt(M2+2)    * (a11*b20 + b21)     * k2;
+  y -= od.readOutputAt(M1+3)    * a21 * b11           * k1;
+  y -= od.readOutputAt(M2+3)    * a11 * b21           * k2;
+  y -= od.readOutputAt(M1+M2+2) * b10*b20             * k1*k1;
+  y -= od.readOutputAt(M1+M2+3) * (b11*b20 + b10*b21) * k1*k2;
+  y -= od.readOutputAt(M1+M2+4) * b11*b21             * k1*k2;
 
   // Update delaylines and return result:
   id.writeInputAndUpdate(x);
   od.writeInputAndUpdate(y);
   return y;
-
-  // This doesn't seem to work yet. Verify the coefficients using Sage. See AllpassStuff.txt in the
-  // private repo. 
 }
 
 
