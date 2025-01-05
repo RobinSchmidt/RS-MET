@@ -1337,7 +1337,8 @@ void dampedAllpassBiComb_1p()
 
   // Test transfer function computation:
   //Complex z(0.5, 0.7);                          // z is inside the unit circle.
-  Complex z(0.6, 0.8);                          // z is on the unit circle.
+  //Complex z(0.6, 0.8);                          // z is on the unit circle.
+  Complex z(0.7, 0.8);                          // z outside unit circle - z^-n goes to 0
   Complex H = ap.getCombTransferFunctionAt(z);
   Complex Ht = 0;
   for(int n = 0; n < N; n++)
@@ -1347,7 +1348,8 @@ void dampedAllpassBiComb_1p()
   // itself decaying, i.e. not on the unit circle
   // Oh - waint - for z = 0.6 + 0.8i, H and Ht are similar but for z = 0.5 + 0.7i, they are totally
   // different! Maybe we need to make sure that the unit test also test some random z-values!
-  //
+  // Ah - OK - we seem to get problems with z-values inside the unit circle because then z^-n 
+  // diverges.
 
 
   // Try inverting the bi-comb:

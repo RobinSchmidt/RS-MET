@@ -2458,7 +2458,9 @@ bool dampedAllpassCombUnitTest2()
   // member function computes the correct result:
   Comb flt;
   flt.setMaxDelayInSamples(d);
-  rsComplex<Real> z(0.6, 0.8);
+  rsComplex<Real> z(0.6, 0.8);     // On unit circle
+  //rsComplex<Real> z(0.5, 0.7);   // Inside unit circle -> z^-n diverges
+  //rsComplex<Real> z(0.7, 0.9);   // Outside unit circle  ->  z^-n converges to zero
   for(int i = 0; i <= maxDampOrder; i++)
   {
     // Create impulse respone of allpass comb with feedback damping order i without predelay and
