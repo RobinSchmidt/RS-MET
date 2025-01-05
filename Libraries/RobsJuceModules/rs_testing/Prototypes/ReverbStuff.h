@@ -2071,22 +2071,30 @@ TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsDF2(TSig x)
 template<class TSig, class TPar>
 TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::applyInverse(TSig x)
 {
+
+  TSig s = 1 / ffCoeffs[0]; // scaler to normalize the inverse filter to a0 = 1
+  // ...not sure about that, though
+
+
   // Apply feedforward part as feedback part:
   TSig tmp = x;
   for(size_t i = 0; i < ffCoeffs.size(); i++)
-    tmp -= ffCoeffs[i] * corrDelay.readOutputAt(ffDelays[i]);
+    tmp -= s * ffCoeffs[i] * corrDelay.readOutputAt(ffDelays[i]);
   corrDelay.writeInputNoUpdate(tmp);
 
   // Apply feedback part as feedforward path:
   tmp = 0;
   for(size_t i = 0; i < fbCoeffs.size(); i++)
-    tmp += fbCoeffs[i] * corrDelay.readOutputAt(fbDelays[i]);
+    tmp += s * fbCoeffs[i] * corrDelay.readOutputAt(fbDelays[i]);
 
   // Update delayline and return result:
   corrDelay.incrementTapPointers();
   return tmp;
 
   // This seems to be unstable! Maybe we need to flip the signs? Nope - that doesn't help!
+
+  // I think, I first need a well tested implementation for inverting an arbitrary filter defined
+  // in terms of coeffs and delays. I'm not sure, if I'm doing this right here.
 }
 
 

@@ -1279,6 +1279,8 @@ void dampedAllpassBiComb_1p()
   Real k1     = 0.9;
   Real k2     = 0.8;
 
+  //k1 = k2 = 0.0;  // For test
+
   // Compute the feedback filter coeffs:
   Real b10, b11, a11; rsMake1stOrderHighShelf(0.5, 0.9, &b10, &b11, &a11);
   Real b20, b21, a21; rsMake1stOrderHighShelf(0.7, 0.8, &b20, &b21, &a21);
@@ -1366,6 +1368,16 @@ void dampedAllpassBiComb_1p()
   // if the filter is unstable because all poles are outside the unit circle, we could make it 
   // stable by reflecting the poles in the unit circle. We need to figure out where the z-domain
   // poles and zeros are. Maybe write a function getTransferFunctionAt()
+  // But maybe we need to scale all coeffs because the inverse filter is not normalized to a0 = 1?
+  // Hmm...I tried to include a scaling factor but that doesn't seem to help either. I think, it 
+  // first need to be verified that the implementation of applyInverse() is correct and would 
+  // indeed apply an inverse filter. To figure this out, try to implement a general pair of 
+  //   applyFilter(       VecS x, VecS ffCoeffs, VecI ffDelays, VecS fbCoeffs, VecI fbDelays)
+  //   applyInverseFilter(VecS x, VecS ffCoeffs, VecI ffDelays, VecS fbCoeffs, VecI fbDelays)
+  // functions. VecS should be a vector of signal values and VecI an integer vector. When we have 
+  // that working, we can better assess if the implementation of apt.applyInverse() makes any 
+  // sense.
+
 
 
 
