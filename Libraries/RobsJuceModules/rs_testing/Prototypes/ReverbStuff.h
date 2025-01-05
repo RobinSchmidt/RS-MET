@@ -1726,8 +1726,16 @@ protected:
 
   TSig getSampleComb1(TSig in)
   {
-    combOut1 = mainDelay1.getSample(in - k1 * applyDamper1(combOut1));
-    return combOut1;
+    // Old:
+    //combOut1 = mainDelay1.getSample(in - k1 * applyDamper1(combOut1));
+    //return combOut1;
+
+    // New:
+    combOut1 = applyDamper1(in - k1 * mainDelay1.getSample(combOut1));
+    return combOut1; 
+    
+    // ToDo: Maybe also try something like  return applyInverseDamper1(combOut1);  Maybe that works
+    // better? Not yet sure...still experimenting and researching...
   }
 
 
@@ -1741,8 +1749,14 @@ protected:
 
   TSig getSampleComb2(TSig in)
   {
-    combOut2 = mainDelay2.getSample(in - k2 * applyDamper2(combOut2));
-    return combOut2;
+    //// Old:
+    //combOut2 = mainDelay2.getSample(in - k2 * applyDamper2(combOut2));
+    //return combOut2;
+
+
+    // New:
+    combOut2 = applyDamper2(in - k2 * mainDelay2.getSample(combOut2));
+    return combOut2; 
   }
 
 
@@ -1878,16 +1892,33 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
   // Compute the delays and coefficients for a direct form implementation. See AllpassStuff.txt in 
   // the private repo for derivation of the formulas for the delays and coeffs:
 
+  //// Old:
+  //// Feedforward delays and coeffs:
+  //ffDelays[ 0] = M1;       ffCoeffs[ 0] = g1;
+  //ffDelays[ 1] = M2;       ffCoeffs[ 1] = g2;
+  //ffDelays[ 2] = M1+1;     ffCoeffs[ 2] = (a11 + a21)*g1;
+  //ffDelays[ 3] = M1+2;     ffCoeffs[ 3] = a11*a21*g1;
+  //ffDelays[ 4] = M2+1;     ffCoeffs[ 4] = (a11 + a21)*g2;
+  //ffDelays[ 5] = M2+2;     ffCoeffs[ 5] = a11*a21*g2;
+  //ffDelays[ 6] = M1+M2+1;  ffCoeffs[ 6] = b10*g2*k1 + b20*g1*k2;
+  //ffDelays[ 7] = M1+M2+2;  ffCoeffs[ 7] = (a11*b20 + b21)*g1*k2 + (a21*b10 + b11)*g2*k1;
+  //ffDelays[ 8] = M1+M2+3;  ffCoeffs[ 8] = a21*b11*g2*k1 + a11*b21*g1*k2;
+
+  // New:
   // Feedforward delays and coeffs:
-  ffDelays[ 0] = M1;       ffCoeffs[ 0] = g1;
-  ffDelays[ 1] = M2;       ffCoeffs[ 1] = g2;
-  ffDelays[ 2] = M1+1;     ffCoeffs[ 2] = (a11 + a21)*g1;
-  ffDelays[ 3] = M1+2;     ffCoeffs[ 3] = a11*a21*g1;
-  ffDelays[ 4] = M2+1;     ffCoeffs[ 4] = (a11 + a21)*g2;
-  ffDelays[ 5] = M2+2;     ffCoeffs[ 5] = a11*a21*g2;
-  ffDelays[ 6] = M1+M2+1;  ffCoeffs[ 6] = b10*g2*k1 + b20*g1*k2;
-  ffDelays[ 7] = M1+M2+2;  ffCoeffs[ 7] = (a11*b20 + b21)*g1*k2 + (a21*b10 + b11)*g2*k1;
-  ffDelays[ 8] = M1+M2+3;  ffCoeffs[ 8] = a21*b11*g2*k1 + a11*b21*g1*k2;
+  ffDelays[ 0] = 0;     ffCoeffs[ 0] = b10*g1 + b20*g2;
+  ffDelays[ 1] = 1;     ffCoeffs[ 1] = a21*b10*g1 + a11*b20*g2 + b11*g1 + b21*g2;
+  ffDelays[ 2] = 2;     ffCoeffs[ 2] = a21*b11*g1 + a11*b21*g2;
+
+  ffDelays[ 3] = M1+1;  ffCoeffs[ 3] = b10*b20*g2*k1;
+  ffDelays[ 4] = M1+2;  ffCoeffs[ 4] = b11*b20*g2*k1 + b10*b21*g2*k1;
+  ffDelays[ 5] = M1+3;  ffCoeffs[ 5] = b11*b21*g2*k1;
+
+  ffDelays[ 6] = M2+1;  ffCoeffs[ 6] = b10*b20*g1*k2;
+  ffDelays[ 7] = M2+2;  ffCoeffs[ 7] = b11*b20*g1*k2 + b10*b21*g1*k2;
+  ffDelays[ 8] = M2+3;  ffCoeffs[ 8] = b11*b21*g1*k2;
+
+
 
   // Feedback delays and coeffs:
   fbDelays[ 0] = 1;        fbCoeffs[ 0] = a11 + a21;
@@ -1901,6 +1932,7 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
   fbDelays[ 8] = M1+M2+2;  fbCoeffs[ 8] = b10*b20 * k1*k2;
   fbDelays[ 9] = M1+M2+3;  fbCoeffs[ 9] = (b11*b20 + b10*b21) * k1*k2;
   fbDelays[10] = M1+M2+4;  fbCoeffs[10] = b11*b21 * k1*k2;
+
 }
 
 
@@ -1971,6 +2003,7 @@ TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsDF1(TSig x)
 
   // Apply feedforward part:
   TSig y = 0;
+  mainDelay1.writeInputNoUpdate(x);
   for(size_t i = 0; i < ffCoeffs.size(); i++)
     y += ffCoeffs[i] * mainDelay1.readOutputAt(ffDelays[i]);
 
@@ -1979,7 +2012,8 @@ TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsDF1(TSig x)
     y -= fbCoeffs[i] * mainDelay2.readOutputAt(fbDelays[i]);
 
   // Update delaylines and return result:
-  mainDelay1.writeInputAndUpdate(x);
+  //mainDelay1.writeInputAndUpdate(x);
+  mainDelay1.incrementTapPointers();
   mainDelay2.writeInputAndUpdate(y);
   return y;
 }
