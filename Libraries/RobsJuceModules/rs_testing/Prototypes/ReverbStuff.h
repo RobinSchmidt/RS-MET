@@ -1894,10 +1894,6 @@ public:
     mainDelay2.setMaximumDelayInSamples(2*maxM + 4);
     corrDelay.setMaximumDelayInSamples( 2*maxM + 4);
     // Verify!
-
-    //mainDelay1.setMaximumDelayInSamples(2*newMaxDelay+3);
-    //mainDelay2.setMaximumDelayInSamples(2*newMaxDelay+4);
-    //corrDelay.setMaximumDelayInSamples( 2*newMaxDelay+4);
   }
 
   void setup(
@@ -1924,27 +1920,23 @@ TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsDF1(TSig x)
   // when one uses direct form 2 - but the code is easier to follow with DF1. See AllpassStuff.txt
   // in the private repo for derivation of the formulas for the coeffs.
 
-  rsBasicDelayLine<TSig>& id = mainDelay1;  // id: input delayline
-  rsBasicDelayLine<TSig>& od = mainDelay2;  // od: output delayline
-  TSig y = 0;                               // y:  output signal
-
   // Apply feedforward part:
+  TSig y = 0;
   for(size_t i = 0; i < ffCoeffs.size(); i++)
-    y += ffCoeffs[i] * id.readOutputAt(ffDelays[i]);
+    y += ffCoeffs[i] * mainDelay1.readOutputAt(ffDelays[i]);
 
   // Apply feedback part:
   for(size_t i = 0; i < fbCoeffs.size(); i++)
-    y -= fbCoeffs[i] * od.readOutputAt(fbDelays[i]);
+    y -= fbCoeffs[i] * mainDelay2.readOutputAt(fbDelays[i]);
 
   // Update delaylines and return result:
-  id.writeInputAndUpdate(x);
-  od.writeInputAndUpdate(y);
+  mainDelay1.writeInputAndUpdate(x);
+  mainDelay2.writeInputAndUpdate(y);
   return y;
-
 
   // ToDo:
   //
-  // - Rename this function to getSampleCombsDF1 and implement a DF2 version, too
+  // - Implement a DF2 version, too
 }
 
 
