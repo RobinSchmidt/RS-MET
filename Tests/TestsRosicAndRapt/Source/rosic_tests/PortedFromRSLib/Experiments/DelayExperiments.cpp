@@ -1314,11 +1314,11 @@ void dampedAllpassBiComb_1p()
   for(int n = 0; n < N; n++)
     hc3[n] = apt.getSampleCombsDF2(0.0);
 
-
   rsPlotVectors(hc, hc2, hc3);
 
   bool ok = true;
   ok &= rsIsCloseTo(hc, hc2, 1.e-15);
+  ok &= rsIsCloseTo(hc, hc3, 1.e-15);
 
   // OK - so far, so good. We can produce the output of the weighted sum of the two comb filters by
   // two different algorithms: 

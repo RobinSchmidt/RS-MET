@@ -1949,26 +1949,17 @@ TSig rsDampedAllpassBiComb_1p_Test<TSig, TPar>::getSampleCombsDF2(TSig x)
   TSig tmp = x;
   for(size_t i = 0; i < fbCoeffs.size(); i++)
     tmp -= fbCoeffs[i] * mainDelay2.readOutputAt(fbDelays[i]);
+  mainDelay2.writeInputNoUpdate(tmp);
 
-  // Apply feedforward part:
-  TSig y = tmp;
+  // Apply feedforward path:
+  tmp = 0;
   for(size_t i = 0; i < ffCoeffs.size(); i++)
-    y += ffCoeffs[i] * mainDelay2.readOutputAt(ffDelays[i]);
-
+    tmp += ffCoeffs[i] * mainDelay2.readOutputAt(ffDelays[i]);
 
   // Update delayline and return result:
-  mainDelay2.writeInputAndUpdate(tmp);
-  return y;
-
-
-  // VERIFY THIS! I'm not sure ...Nah - it seems to be totally wrong!
+  mainDelay2.incrementTapPointers();
+  return tmp;
 }
-
-
-
-
-
-
 
 
 
