@@ -1882,8 +1882,8 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
   ffDelays[ 0] = M1;       ffCoeffs[ 0] = g1;
   ffDelays[ 1] = M2;       ffCoeffs[ 1] = g2;
   ffDelays[ 2] = M1+1;     ffCoeffs[ 2] = (a11 + a21)*g1;
-  ffDelays[ 3] = M2+1;     ffCoeffs[ 3] = (a11 + a21)*g2;
-  ffDelays[ 4] = M1+2;     ffCoeffs[ 4] = a11*a21*g1;
+  ffDelays[ 3] = M1+2;     ffCoeffs[ 3] = a11*a21*g1;
+  ffDelays[ 4] = M2+1;     ffCoeffs[ 4] = (a11 + a21)*g2;
   ffDelays[ 5] = M2+2;     ffCoeffs[ 5] = a11*a21*g2;
   ffDelays[ 6] = M1+M2+1;  ffCoeffs[ 6] = b10*g2*k1 + b20*g1*k2;
   ffDelays[ 7] = M1+M2+2;  ffCoeffs[ 7] = (a11*b20 + b21)*g1*k2 + (a21*b10 + b11)*g2*k1;
@@ -1893,10 +1893,10 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
   fbDelays[ 0] = 1;        fbCoeffs[ 0] = a11 + a21;
   fbDelays[ 1] = 2;        fbCoeffs[ 1] = a11 * a21;
   fbDelays[ 2] = M1+1;     fbCoeffs[ 2] = b10 * k1;
-  fbDelays[ 3] = M2+1;     fbCoeffs[ 3] = b20 * k2;
   fbDelays[ 4] = M1+2;     fbCoeffs[ 4] = (a21*b10 + b11) * k1;
-  fbDelays[ 5] = M2+2;     fbCoeffs[ 5] = (a11*b20 + b21) * k2;
   fbDelays[ 6] = M1+3;     fbCoeffs[ 6] = a21 * b11 * k1;
+  fbDelays[ 3] = M2+1;     fbCoeffs[ 3] = b20 * k2;
+  fbDelays[ 5] = M2+2;     fbCoeffs[ 5] = (a11*b20 + b21) * k2;
   fbDelays[ 7] = M2+3;     fbCoeffs[ 7] = a11 * b21 * k2;
   fbDelays[ 8] = M1+M2+2;  fbCoeffs[ 8] = b10*b20 * k1*k2;
   fbDelays[ 9] = M1+M2+3;  fbCoeffs[ 9] = (b11*b20 + b10*b21) * k1*k2;
