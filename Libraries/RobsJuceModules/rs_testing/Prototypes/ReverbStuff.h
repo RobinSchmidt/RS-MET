@@ -1911,13 +1911,13 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::convertCombSumToDirectForm(
   if(dampCompensated)
   {
     setB(0, 0,    g1 + g2);
-    setB(1, 1,    a11*g1 + a21*g1 + a11*g2 + a21*g2);
+    setB(1, 1,    g1*(a11+a21) + g2*(a11+a21));
     setB(2, 2,    a11*a21*g1 + a11*a21*g2);
     setB(3, M1+1, b10*g2*k1);
-    setB(4, M1+2, a21*b10*g2*k1 + b11*g2*k1);
+    setB(4, M1+2, g2*k1*(a21*b10 + b11));
     setB(5, M1+3, a21*b11*g2*k1);
     setB(6, M2+1, b20*g1*k2);
-    setB(7, M2+2, a11*b20*g1*k2 + b21*g1*k2);
+    setB(7, M2+2, g1*k2*(a11*b20 + b21));
     setB(8, M2+3, a11*b21*g1*k2);
   }
   else
