@@ -1681,8 +1681,7 @@ class rsDampedAllpassBiComb_1p
 
 public:
 
-  rsDampedAllpassBiComb_1p()
-    : ffCoeffs(9), ffDelays(9), fbCoeffs(11), fbDelays(11)
+  rsDampedAllpassBiComb_1p() 
   {
 
   }
@@ -1776,9 +1775,10 @@ protected:
   void updateDelaysAndCorrectorCoeffs();
 
 
-  rsBasicDelayLine<TSig> mainDelay1;
+  rsBasicDelayLine<TSig> mainDelay1;  // Rename to combDelay1
   rsBasicDelayLine<TSig> mainDelay2;
-  rsBasicDelayLine<TSig> corrDelay;
+
+  //rsBasicDelayLine<TSig> corrDelay;
 
   TSig combOut1 = TSig(0);
   TSig combOut2 = TSig(0);
@@ -1805,8 +1805,8 @@ protected:
 
   // Coefficients and delays that would have to be used if we wanted to implement the filter in 
   // direct form. They will be used (in modified form) for the corrector filter:
-  std::vector<TSig> ffCoeffs, fbCoeffs;
-  std::vector<int>  ffDelays, fbDelays;
+  //std::vector<TSig> ffCoeffs, fbCoeffs;
+  //std::vector<int>  ffDelays, fbDelays;
   // The coeffs are of type TSig (rather than TPar) because some involve k1 and/or k2 which we have
   // also made TSig in order to allow for complex feedback. 
 
@@ -1826,7 +1826,7 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::rsDampedAllpassBiComb_1p<TSig, TPar>:
 {
   mainDelay1.reset();
   mainDelay2.reset();
-  corrDelay.reset();
+  //corrDelay.reset();
 
   combOut1 = 0;
   combOut2 = 0;
@@ -1849,8 +1849,9 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
   int maxM = newMaxDelay - 1;
   mainDelay1.setMaximumDelayInSamples(maxM);
   mainDelay2.setMaximumDelayInSamples(maxM);
+
   //corrDelay.setMaximumDelayInSamples(maxM+3);  // Verify! ...I think, it should be 2*maxM+4
-  corrDelay.setMaximumDelayInSamples(2*maxM+4); 
+  //corrDelay.setMaximumDelayInSamples(2*maxM+4); 
 }
 
 template<class TSig, class TPar>
@@ -1886,27 +1887,10 @@ rsComplex<TPar> rsDampedAllpassBiComb_1p<TSig, TPar>::getCombTransferFunctionAt(
   rsError("Not yet implemented");
   return rsComplex<TPar>(0); 
 
-
-  //using Complex = rsComplex<TPar>;
-  //Complex one(TPar(1));                              // 1 + 0i
-  //Complex z1 = one/z;                                // z^-1
-
-  //Complex num = Complex(0);
-  //for(size_t i = 0; i < ffCoeffs.size(); i++)
-  //  num += ffCoeffs[i] * rsPow(z1, Complex(ffDelays[i]));
-
-  //Complex den = one;                                 // a0 == 1 as usual
-  //for(size_t i = 0; i < fbCoeffs.size(); i++)  
-  //  den += fbCoeffs[i] * rsPow(z1, Complex(fbDelays[i]));
-
-  //return num / den;
-
   // ToDo:
   //
-  // - Maybe implement a different algorithm to compute the transfer functions based on computing
-  //   the two transfer functions of the two combs and forming a weighted sum of them. Maybe that 
-  //   would be more efficient. Maybe keep that implementation for testing and eductaional purposes
-  //   in some derived class as well.
+  // - Compute the transfer function based on computing the two transfer functions of the two 
+  //   combs and forming a weighted sum of them.
 }
 
 template<class TSig, class TPar>
@@ -1979,10 +1963,12 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
   mainDelay1.setDelayInSamples(M1);
   mainDelay2.setDelayInSamples(M2);
 
-  corrDelay.setDelayInSamples(M1+M2+4);
+  // May be obsolete soon:
+  //corrDelay.setDelayInSamples(M1+M2+4);
   // Nah! Too much! we need only  max(M1, M2) + 4
 
 
+  /*
   // Compute the delays and coefficients for a direct form implementation. See AllpassStuff.txt in 
   // the private repo for derivation of the formulas for the delays and coeffs:
 
@@ -2026,6 +2012,7 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
   fbDelays[ 8] = M1+M2+2;  fbCoeffs[ 8] = b10*b20 * k1*k2;
   fbDelays[ 9] = M1+M2+3;  fbCoeffs[ 9] = (b11*b20 + b10*b21) * k1*k2;
   fbDelays[10] = M1+M2+4;  fbCoeffs[10] = b11*b21 * k1*k2;
+  */
 
 }
 
