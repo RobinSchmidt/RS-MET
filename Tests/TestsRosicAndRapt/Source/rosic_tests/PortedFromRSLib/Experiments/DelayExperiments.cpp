@@ -1382,6 +1382,8 @@ void dampedAllpassBiComb_1p()
   // should have a std::vector<Monomial<T>> where Monomial is a simple struct containing a
   // "T coeff" and "int power". I have started doing this. It's in MiscFilters.h nd there is a unit
   // test called sparseFilterUnitTest() in FilterUnitTests.cpp.
+  //
+  // Maybe rsDampedAllpassBiComb_1p should internally use and object of class rsSparseFilter.
 
 
 

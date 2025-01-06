@@ -1820,6 +1820,10 @@ protected:
   // The coeffs are of type TSig (rather than TPar) because some involve k1 and/or k2 which we have
   // also made TSig in order to allow for complex feedback. 
 
+
+  //rsSparseFilter<TSig, TPar> corrector;
+  // This may eventually replace the members corrDelay, ffCoeffs, fbCoeffs, ffDelays, fbDelays
+
 };
 
 
@@ -1914,7 +1918,9 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
 {
   mainDelay1.setDelayInSamples(M1);
   mainDelay2.setDelayInSamples(M2);
+
   corrDelay.setDelayInSamples(M1+M2+4);
+  // Nah! Too much! we need only  max(M1, M2) + 4
 
 
   // Compute the delays and coefficients for a direct form implementation. See AllpassStuff.txt in 

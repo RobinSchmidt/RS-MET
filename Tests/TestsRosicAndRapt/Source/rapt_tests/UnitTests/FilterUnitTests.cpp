@@ -2759,7 +2759,9 @@ bool sparseFilterUnitTest()
   // But I'm not sure, if that's stable and minimum phase, though. Maybe we should use coeffs that
   // ensure this.
 
-  Vec b( {0.5, 0.0, -0.7, 0.0, 0.0,  0.0, 0.3});
+
+  Vec b( {1.0, 0.0, -0.7, 0.0, 0.0,  0.0, 0.3});   // Test with b0 = 1 (scaling doesn't matter in inversion)
+  //Vec b( {0.5, 0.0, -0.7, 0.0, 0.0,  0.0, 0.3});
   Vec a( {1.0, 0.0,  0.0, 0.6, 0.1, -0.1     });
 
 
@@ -2796,11 +2798,20 @@ bool sparseFilterUnitTest()
   ok &= rsIsUnitImpulse(y, 1.e-14);
   //rsPlotVectors(y);
 
+  // Try computing the inverse filter of the sparse filter without inverting the actual coeffs of 
+  // the filter:
+  sf.reset();
+  for(int n = 0; n < N; n++)
+    y[n] = sf.getSampleInverse(hs[n]);
+  ok &= rsIsUnitImpulse(y, 1.e-14);
+  rsPlotVectors(y);
 
+
+  // Now actually invert the filter and check that is indeed the inverse of the original one:
   sf.invert();
   y = filterResponse(sf, N, hs);
   ok &= rsIsUnitImpulse(y, 1.e-14);
-  rsPlotVectors(y);
+  //rsPlotVectors(y);
 
 
 

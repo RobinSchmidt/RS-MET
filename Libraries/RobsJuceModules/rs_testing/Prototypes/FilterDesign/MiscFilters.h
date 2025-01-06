@@ -761,7 +761,10 @@ public:
     coeff = newCoeff;
   }
 
-  // void setPower(...)
+  void setPower(int newPower)
+  {
+    power = newPower;
+  }
 
 
 
@@ -842,6 +845,7 @@ public:
       maxPower = rsMax(maxPower, term.getPower());
     return maxPower;
   }
+  // ToDo: getMinPower
 
   int getNumTerms() const
   {
@@ -922,7 +926,6 @@ public:
     delayLine.setDelayInSamples(degree);
   }
 
-
   void scale(TPar scaler)
   {
     num.scale(scaler);
@@ -937,13 +940,14 @@ public:
     // function and scales x[n] in the difference equation. Maybe we can relax that later to allow
     // the z^0 coeff to appear at a different position in the array
 
-    // Needs test:
     TPar s = TPar(1) / num.getCoeff(0);
     scale(s);
     rsSwap(num, den);
     scale(s);
 
-    int dummy = 0;
+    // Figure out if rsSwap causes memory allocations when swapping the underlying std::vectors. 
+    // Actually, swapping two vectors would only require pointer adjustments under the hood. Maybe
+    // std::swap is clever enough to implement it that way?
   }
 
 
@@ -970,20 +974,15 @@ public:
 
   TSig getSample(TSig in)
   {
-    // Sanity checks:
-    //rsAssert(num.getNumTerms() > 0 && den.getNumTerms() > 0);
-    //rsAssert(den.getPower(0) == 0 && den.getCoeff(0) == TPar(1)); // Assume a0 == 1 normalization
-
     rsAssert(isFilterValid());
 
-
-    // Apply feedback part:
+    // Apply denominator as feedback part:
     TSig tmp = in;
     for(int i = 1; i < den.getNumTerms(); i++)
       tmp -= den.getCoeff(i) * delayLine.readOutputAt(den.getPower(i));
     delayLine.writeInputNoUpdate(tmp);
 
-    // Apply feedforward path:
+    // Apply numerator as feedforward path:
     tmp = 0;
     for(int i = 0; i < num.getNumTerms(); i++)
       tmp += num.getCoeff(i) * delayLine.readOutputAt(num.getPower(i));
@@ -993,17 +992,34 @@ public:
     return tmp;
   }
 
+  TSig getSampleInverse(TSig in)
+  {
+    // Apply numerator as feedback part:
+    TSig tmp = in;
+    for(int i = 1; i < num.getNumTerms(); i++)
+      tmp -= num.getCoeff(i) * delayLine.readOutputAt(num.getPower(i));
+    delayLine.writeInputNoUpdate(tmp);
+
+    // Apply denominator as feedforward path:
+    tmp = 0;
+    for(int i = 0; i < den.getNumTerms(); i++)
+      tmp += den.getCoeff(i) * delayLine.readOutputAt(den.getPower(i));
+
+    // Update delayline and return result:
+    delayLine.incrementTapPointers();
+    return tmp;
+  }
+  // Needs test!
+
+
   void reset()
   {
     delayLine.reset();
   }
 
 
+
 protected:
-
-
-
- 
 
   rsSparsePolynomial<TPar> num, den;    // Numerator and denominator of transfer function
   rsBasicDelayLine<TSig> delayLine;     // Delayline used for the direct form 2 implementation
