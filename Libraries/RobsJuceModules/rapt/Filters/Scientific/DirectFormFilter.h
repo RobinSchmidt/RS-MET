@@ -54,6 +54,9 @@ public:
   //void reflectPoles();
 
 
+  
+
+
   // ToDo: reflectPoles, reflectZeros
 
   /** Initializes the filter coefficients so as to realize a 'bypass' filter. */

@@ -110,6 +110,7 @@ public:
 
   /** Returns the complex transfer function at the given value of z. */
   std::complex<TCoef> getTransferFunctionAt(std::complex<TCoef> z);
+  // Use rsComplex instead of std::complex
 
   /** Writes the complex frequency-response of a biquad-cascade at the normalized radian 
   frequencies given in 'w' into the array 'H'. */

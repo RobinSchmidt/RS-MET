@@ -1380,8 +1380,8 @@ void dampedAllpassBiComb_1p()
   //
   // Or better: implement a class rsSparseFilter based on a class rsSparsePolynomial. The latter
   // should have a std::vector<Monomial<T>> where Monomial is a simple struct containing a
-  // "T coeff" and "int power".
-  // https://en.wikipedia.org/wiki/Monomial
+  // "T coeff" and "int power". I have started doing this. It's in MiscFilters.h nd there is a unit
+  // test called sparseFilterUnitTest() in FilterUnitTests.cpp.
 
 
 

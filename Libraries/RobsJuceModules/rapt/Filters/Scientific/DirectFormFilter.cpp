@@ -52,6 +52,8 @@ void rsDirectFormFilter<TSig, TCoef>::invert()
     rsSwap(a[i], b[i]);
     b[i] *= s;
   }
+
+  // See invertBiquad(T &b0, T &b1, T &b2, T &a1, T &a2); in FilterDesignFormulas.cpp
 }
 
 //template<class TSig, class TCoef>
@@ -66,6 +68,7 @@ void rsDirectFormFilter<TSig, TCoef>::invert()
 //  rsArrayTools::reverse(a, order+1);
 //  // ToDo: Renormalize to a[0] = 1. Write a function normalize() for that and call that here.
 //}
+
 
 template<class TSig, class TCoef>
 TCoef rsDirectFormFilter<TSig, TCoef>::getMagnitudeResponseAt(TCoef omega)

@@ -2787,13 +2787,25 @@ bool sparseFilterUnitTest()
 
   // Check, if both impulse responses match:
   ok &= rsIsCloseTo(hd, hs, 1.e-14);
-  rsPlotVectors(hd, hs);
+  //rsPlotVectors(hd, hs);
 
-  // Plot both impulse responses for comparison. They should match:
+  // Invert the dense filter and check if applying the inverse filter to the impulse response of
+  // the original filter gives back a unit impulse:
+  df.invert();
+  Vec y = filterResponse(df, N, hd);
+  ok &= rsIsUnitImpulse(y, 1.e-14);
+  //rsPlotVectors(y);
+
 
 
 
   return ok;
+
+  // ToDo:
+  //
+  // - Implement df.getInverse() which should produce a filter that inverts the original filter
+  //   and getSampleInverse that just uses the coeff arrays as is to produce a sample of the 
+  //   inverted filter
 }
 
 
