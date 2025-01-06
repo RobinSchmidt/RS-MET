@@ -1271,7 +1271,7 @@ void dampedAllpassBiComb_1p()
   using SparseFilter = rsSparseFilter<Real, Real>;
 
 
-  int  N      = 1000;    // Number of samples to render
+  int  N      = 2048;    // Number of samples to render
   int  delay1 = 23;
   int  delay2 = 29;
   Real g1     = 0.6;
@@ -1341,54 +1341,27 @@ void dampedAllpassBiComb_1p()
   // diverges.
 
 
+  // Try inverting the direct form version of the bi-comb. Applying the inverted filter to the 
+  // impulse response of the original filter should give us back a unit impulse:
+  sf.invert();
+  Vec y = filterResponse(sf, N, hc);
+  ok &= rsIsUnitImpulse(y, 1.e-14);
+  //rsPlotVectors(y);
 
-  // Obsolete:
-
-  //// Try inverting the bi-comb:
-  //Vec hci(N);
-  //apt.reset();
-  //for(int n = 0; n < N; n++)
-  //  hci[n] = apt.applyInverse(hc[n]);
-
-  //rsPlotVectors(hci);  // Should be a unit impulse
-  // Nope! It explodes! ...Hmmm...maybe the inverse filter is indeed unstable? If that is the case,
-  // the whole idea may not work out. But verify the implementation. Maybe it's just buggy. But I
-  // think the filter can't really be inverted anyway because the first output spike occurs at M1.
-  // We would need a non-causal filter to turn such a signal back into a unit impulse. But maybe
-  // if the filter is unstable because all poles are outside the unit circle, we could make it 
-  // stable by reflecting the poles in the unit circle. We need to figure out where the z-domain
-  // poles and zeros are. Maybe write a function getTransferFunctionAt()
-  // But maybe we need to scale all coeffs because the inverse filter is not normalized to a0 = 1?
-  // Hmm...I tried to include a scaling factor but that doesn't seem to help either. I think, it 
-  // first need to be verified that the implementation of applyInverse() is correct and would 
-  // indeed apply an inverse filter. To figure this out, try to implement a general pair of 
-  //   applyFilter(       VecS x, VecS ffCoeffs, VecI ffDelays, VecS fbCoeffs, VecI fbDelays)
-  //   applyInverseFilter(VecS x, VecS ffCoeffs, VecI ffDelays, VecS fbCoeffs, VecI fbDelays)
-  // functions. VecS should be a vector of signal values and VecI an integer vector. When we have 
-  // that working, we can better assess if the implementation of apt.applyInverse() makes any 
-  // sense.
-  //
-  // Or better: implement a class rsSparseFilter based on a class rsSparsePolynomial. The latter
-  // should have a std::vector<Monomial<T>> where Monomial is a simple struct containing a
-  // "T coeff" and "int power". I have started doing this. It's in MiscFilters.h nd there is a unit
-  // test called sparseFilterUnitTest() in FilterUnitTests.cpp.
-  //
-  // Maybe rsDampedAllpassBiComb_1p should internally use and object of class rsSparseFilter.
-
-
-
-
-
-
-  // ToDo: apply the inverse comb to a unit impulse - just for curiosity
-
-
-
+  // Now we want to reflect the zeros in the unit circle. That is eventually the corrector filter 
+  // that we want to use:
+  sf.reflectZeros();
+  y = filterResponse(sf, N, hc);
+  ok &= isAllpass(y, 1.e-3);
+  rsPlotVectors(y);
 
 
   int dummy = 0;
 
+
   // ToDo:
+  //
+  // - Implement rsDampedAllpassBiComb_1p::getTransferFunctionAt() and test it.
   //
   // - Figure out the poles and zeros of the bi-comb - at least roughly. Are they inside or outside
   //   the unit circle? Maybe try making a plot of the magnitude (or dB values) of the z-domain
@@ -1403,6 +1376,8 @@ void dampedAllpassBiComb_1p()
   //
   // - Maybe the current filter has no causal inverse. But maybe if we sap the positions of F1(z)
   //   and z^-M1 and likewise for F2(z) and z^-M2, then it could work out?
+  //
+  // - Apply the inverse comb to a unit impulse just for curiosity
 }
 
 void dampedAllpassComb()
