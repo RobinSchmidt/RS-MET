@@ -922,7 +922,8 @@ protected:
 
 
 /** A class for representing sparse filters in direct form. We represent them using two sparse
-polynomials. one for the numerator and one for the denominator of the transer function. */
+polynomials. One for the numerator and one for the denominator of the transer function. The filter
+is implemented in direct form 2 using a single delayline. */
 
 template<class TSig, class TPar>
 class rsSparseFilter
@@ -951,12 +952,6 @@ public:
       if(denCoeffs[i] != TPar(0))               // Maybe we need a tolerance?
         den.addTerm(denCoeffs[i], (int)i);
     }
-
-
-    //// Factor out into function updateDelayLine
-    //int degree = rsMax(num.getDegree(), den.getDegree());
-    //delayLine.setMaximumDelayInSamples(degree);
-    //delayLine.setDelayInSamples(degree);
 
     updateDelayLineLength();
   }
@@ -1023,6 +1018,12 @@ public:
     // Figure out if rsSwap causes memory allocations when swapping the underlying std::vectors. 
     // Actually, swapping two vectors would only require pointer adjustments under the hood. Maybe
     // std::swap is clever enough to implement it that way?
+
+    // When the filter has an initial delay, i.e. the first power in the numerator is not equal to 
+    // zero, then we actually cannot invert the filter. A delay cannot be undone (at least not in
+    // realtime). In this case, the best we can do is to invert the filter up to a delay. I think, 
+    // we can do this by first figuring out the minimum exponent of the numerator and the 
+    // subtracting that from all the numerator exponents. After that, we can invert as usual.
   }
 
   void reflectZeros()
@@ -1064,19 +1065,15 @@ public:
 
   rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const
   {
-    using Complex = rsComplex<TPar>;
-    //Complex one(TPar(1));                              // 1 + 0i
-    //Complex z1 = one/z;                                // z^-1
-
     // Compute numerator N(z):
-    Complex N(0);
+    rsComplex<TPar> N(0);
     for(int i = 0; i < num.getNumTerms(); i++)
-      N += num.getCoeff(i) * rsPow(z, Complex(-num.getPower(i)));
+      N += num.getCoeff(i) * rsPow(z, rsComplex<TPar>(-num.getPower(i)));
 
     // Compute denominator D(z):
-    Complex D(0);
+    rsComplex<TPar> D(0);
     for(int i = 0; i < den.getNumTerms(); i++)  
-      D += den.getCoeff(i) * rsPow(z, Complex(-den.getPower(i)));
+      D += den.getCoeff(i) * rsPow(z, rsComplex<TPar>(-den.getPower(i)));
 
     // Compute transfer function H(z) = N(z) / D(z):
     return N / D;

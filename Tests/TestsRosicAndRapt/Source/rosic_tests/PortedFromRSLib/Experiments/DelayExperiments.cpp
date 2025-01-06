@@ -1252,7 +1252,7 @@ void dampedSchroederAllpass()
 
 void dampedAllpassBiComb_1p()
 {
-  // Under construction. This does not yet work.
+  // Under construction.
 
   // We want to create an allpass by using a correction filter after a parallel connection of two
   // Karplus-Strong like comb filters. The first step would be to derive the direct form transfer
@@ -1268,7 +1268,6 @@ void dampedAllpassBiComb_1p()
   using Complex      = rsComplex<Real>;
   using Vec          = std::vector<Real>;
   using Allpass      = rsDampedAllpassBiComb_1p<Real, Real>;
-  //using AllpassT     = rsDampedAllpassBiComb_1p_Test<Real, Real>;  // May be soon obsolete
   using SparseFilter = rsSparseFilter<Real, Real>;
 
 
@@ -1298,42 +1297,16 @@ void dampedAllpassBiComb_1p()
   hc[0] = ap.getSampleCombs(1.0);
   for(int n = 1; n < N; n++)
     hc[n] = ap.getSampleCombs(0.0);
-  //rsPlotVectors(hc);
-
-  //// Produce the impulse response of the combs with the alternative (direct form 1 and 2) 
-  //// algorithms:
-  //AllpassT apt;
-  //apt.setMaxDelayInSamples(delay2);
-  //apt.setup(delay1, g1, k1, b10, b11, a11,
-  //          delay2, g2, k2, b20, b21, a21);
-
-  //// With direct form 1:
-  //apt.reset();
-  //Vec hc2(N);
-  //hc2[0] = apt.getSampleCombsDF1(1.0);
-  //for(int n = 1; n < N; n++)
-  //  hc2[n] = apt.getSampleCombsDF1(0.0);
-
-  //// With direct form 2:
-  //apt.reset();
-  //Vec hc3(N);
-  //hc3[0] = apt.getSampleCombsDF2(1.0);
-  //for(int n = 1; n < N; n++)
-  //  hc3[n] = apt.getSampleCombsDF2(0.0);
 
   // Let the ap convert itself into a sparse direct form filter and check that this converted 
   // filter has the same impulse response:
   SparseFilter sf;
   ap.convertCombSumToDirectForm(&sf);
-  Vec hc4 = impulseResponse(sf, N, 1.0);  // rename to hc2
+  Vec hc2 = impulseResponse(sf, N, 1.0);
 
   bool ok = true;
-  ok &= rsIsCloseTo(hc, hc4, 1.e-15);
-  rsPlotVectors(hc, hc4);
-
-
-
-
+  ok &= rsIsCloseTo(hc, hc2, 1.e-15);
+  rsPlotVectors(hc, hc2);
 
   // OK - so far, so good. We can produce the output of the weighted sum of the two comb filters by
   // two different algorithms: 
@@ -1345,6 +1318,8 @@ void dampedAllpassBiComb_1p()
   // stone to turn the filter into an allpass. We now need to invert the filter of algorithm 2 by
   // swapping numerator and denominator and then reflect the zeros in the unit circle. Algo 2 leads
   // to straightforward inversion.
+
+
 
   // Test transfer function computation:
   //Complex z(0.5, 0.7);                          // z is inside the unit circle.
@@ -1365,6 +1340,9 @@ void dampedAllpassBiComb_1p()
   // Ah - OK - we seem to get problems with z-values inside the unit circle because then z^-n 
   // diverges.
 
+
+
+  // Obsolete:
 
   //// Try inverting the bi-comb:
   //Vec hci(N);

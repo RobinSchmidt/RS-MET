@@ -1883,19 +1883,23 @@ template<class TSig, class TPar>
 rsComplex<TPar> rsDampedAllpassBiComb_1p<TSig, TPar>::getCombTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
-  using Complex = rsComplex<TPar>;
-  Complex one(TPar(1));                              // 1 + 0i
-  Complex z1 = one/z;                                // z^-1
+  rsError("Not yet implemented");
+  return rsComplex<TPar>(0); 
 
-  Complex num = Complex(0);
-  for(size_t i = 0; i < ffCoeffs.size(); i++)
-    num += ffCoeffs[i] * rsPow(z1, Complex(ffDelays[i]));
 
-  Complex den = one;                                 // a0 == 1 as usual
-  for(size_t i = 0; i < fbCoeffs.size(); i++)  
-    den += fbCoeffs[i] * rsPow(z1, Complex(fbDelays[i]));
+  //using Complex = rsComplex<TPar>;
+  //Complex one(TPar(1));                              // 1 + 0i
+  //Complex z1 = one/z;                                // z^-1
 
-  return num / den;
+  //Complex num = Complex(0);
+  //for(size_t i = 0; i < ffCoeffs.size(); i++)
+  //  num += ffCoeffs[i] * rsPow(z1, Complex(ffDelays[i]));
+
+  //Complex den = one;                                 // a0 == 1 as usual
+  //for(size_t i = 0; i < fbCoeffs.size(); i++)  
+  //  den += fbCoeffs[i] * rsPow(z1, Complex(fbDelays[i]));
+
+  //return num / den;
 
   // ToDo:
   //
