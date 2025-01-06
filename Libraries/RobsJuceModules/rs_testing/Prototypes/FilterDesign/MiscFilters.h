@@ -841,13 +841,24 @@ public:
 
   void scaleCoeff(int index, T scaler)
   {
-    setCoeff(index, scaler*getCoeff(index));
+    setCoeff(index, scaler * getCoeff(index));
+  }
+
+  void shiftPower(int index, int amount)
+  {
+    setPower(index, amount + getPower(index));
   }
 
   void scale(T scaler)
   {
     for(int i = 0; i < getNumTerms(); i++)
       scaleCoeff(i, scaler);
+  }
+
+  void shiftPowers(int amount)
+  {
+    for(int i = 0; i < getNumTerms(); i++)
+      shiftPower(i, amount);
   }
 
   void reverse()
@@ -979,6 +990,13 @@ public:
   {
     den.setTerm(index, coeff, delay);
   }
+  // Actually, we really should call updateDelayLineLength() after setting a term because it 
+  // potentially requires a change of the length. But: updateDelayLineLength() is expensive and 
+  // setting terms is an operation that might be called in a loop or sequence in which case only
+  // one update after the sequence of calls should be done. Maybe when calling it in a sequence,
+  // we should use other functions like setNumeratorTermSuppressDelayUpdate. Or maybe give the 
+  // function a boolean parameter updateDelayLength which defaults tor true
+
 
   /** Updates the length of the delayline according to the maximum power of z^-1 that occurs in
   numerator and denominator polynomial. */
@@ -997,6 +1015,24 @@ public:
   void scale(TPar scaler)
   {
     num.scale(scaler);
+  }
+
+  /** Adds an overall predelay to the whole filter by shifting all exponents of z^-1 by the given 
+  amount. */
+  void addPreDelay(int amountInSamples)
+  {
+    if(amountInSamples < 0)
+    {
+      rsError("Negative predelay is not allowed");
+      return;
+      // We could allow it if we already have some predelay and the given amount would just 
+      // reduce it. Maybe we can relax the restriction to amountInSamples >= -num.getMinPower() or
+      // something. If the minimum power is 3, we could allow a predelay amount of -3. This would 
+      // then just reduce the predelay to zero.
+    }
+
+    num.shiftPowers(amountInSamples);
+    updateDelayLineLength();
   }
 
   /** Turns the filter into its inverse. This basically amounts to swapping numerator and 

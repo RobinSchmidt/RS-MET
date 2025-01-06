@@ -2904,15 +2904,21 @@ bool sparseFilterUnitTest()
   //rsPlotVectors(mags, magsP); 
   //rsPlotVectors(mags - magsP); 
 
-
   sf.reflectZeros();
   Vec hps2 = impulseResponse(sf, N, 1.0);
-  ok &= rsIsCloseTo(hps, hps2, 1.e-6);   
+  ok &= rsIsCloseTo(hps, hps2, 1.e-6);
   // Why do we need such a big tolerance here? That is weird! Commenting out the num.reverse() 
   // call in reflectZeros doesn't seem to help.
 
 
   //rsPlotVectors(hps, hps2, hps - hps2);
+
+
+  // Try inversion when b0 != 0. In this case, we can only invert up to a delay:
+  sf.setupFromDenseCoeffs(b, a);      // Start fresh
+  sf.addPreDelay(10);
+  hs = impulseResponse(sf, N, 1.0);
+  rsPlotVectors(hd, hs);
 
   return ok;
 
@@ -2920,7 +2926,10 @@ bool sparseFilterUnitTest()
   //
   // - Implement and test functions for reflection of zeros and poles in the unit circle and also 
   //   getSample functions that perform the desired transformation on the fly in the sparse and 
-  //   dense implementation. Compare magnitude responses of both
+  //   dense implementation. Compare magnitude responses of both.
+  //
+  // - Test inversion when b0 == 0. In this case, we should produce a filter that inverts the 
+  //   original up to a delay.
 }
 
 
