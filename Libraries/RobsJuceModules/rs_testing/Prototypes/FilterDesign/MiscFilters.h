@@ -816,6 +816,14 @@ public:
     terms.reserve(amount);
   }
 
+
+  void setPower(int index, int newPower)
+  {
+    rsAssert(index >= 0 && index < getNumTerms());
+    terms[index].setPower(newPower);
+  }
+
+
   void setCoeff(int index, T newCoeff)
   {
     rsAssert(index >= 0 && index < getNumTerms());
@@ -833,7 +841,10 @@ public:
       scaleCoeff(i, scaler);
   }
 
-
+  void reverse()
+  {
+    //rsReverse(terms);  // Doesn't compile
+  }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -845,7 +856,17 @@ public:
       maxPower = rsMax(maxPower, term.getPower());
     return maxPower;
   }
-  // ToDo: getMinPower
+
+  int getMinPower() const
+  {
+    int minPower = std::numeric_limits<int>::max();
+    for(auto& term : terms)
+      minPower = rsMin(minPower, term.getPower());
+    return minPower;
+  }
+  // needs test
+
+
 
   int getNumTerms() const
   {
@@ -902,7 +923,8 @@ public:
 
 
 
-  // This may allocate!
+  /** Sets up the filter from dense arrays of numerator and denominator coeffs. When a coefficient
+  in the dense representation is zero, we not create a term for that. */
   void setupFromDenseCoeffs(const std::vector<TPar>& numCoeffs, const std::vector<TPar>& denCoeffs)
   {
     num.clear();
@@ -925,12 +947,17 @@ public:
     delayLine.setMaximumDelayInSamples(degree);
     delayLine.setDelayInSamples(degree);
   }
+  // This may allocate!
 
+  /** Applies a scaling factor to the filter. This basically means to scale all numerator coeffs by
+  that factor. */
   void scale(TPar scaler)
   {
     num.scale(scaler);
   }
 
+  /** Turns the filter into its inverse. This basically amounts to swapping numerator and 
+  denominator and possibly applying some scaling of the coefficients if b0 != 1. */
   void invert()
   {
     rsAssert(isFilterValid());
@@ -950,6 +977,18 @@ public:
     // std::swap is clever enough to implement it that way?
   }
 
+  void reflectZeros()
+  {
+    int deg = num.getDegree();
+    for(int i = 0; i < num.getNumTerms(); i++)
+      num.setPower(i, deg - num.getPower(i));
+    num.reverse();
+  }
+  // not yet tested
+
+  // ToDo: reflectPoles/reflectZeros - shoulv reverse the coeff arrays. i.e. the powers should remain
+  // the same but the coeffs should be reversed. Wait! No! We need to modify the powers from p
+  // to deg-p. Then the term array will be sorted in reverse order so we should reverse it
 
 
   /** Performs soem sanity checks. Is meant for debug assertions. */
@@ -972,6 +1011,7 @@ public:
 
 
 
+  /** Computes one output sample at a time using a direct form 2 implementation. */
   TSig getSample(TSig in)
   {
     rsAssert(isFilterValid());
@@ -992,26 +1032,64 @@ public:
     return tmp;
   }
 
+  /** Computes a sample at a time of the inverse filter. We apply the desired transformation to the
+  filter into its inverse on the fly. */
   TSig getSampleInverse(TSig in)
   {
-    // Apply numerator as feedback part:
+    rsAssert(isFilterValid());
+    rsAssert(num.getPower(0) == 0);
+    rsAssert(num.getCoeff(0) != 0);
+
+    // Apply scaled numerator as feedback part:
+    TPar s = TPar(1) / num.getCoeff(0);
     TSig tmp = in;
     for(int i = 1; i < num.getNumTerms(); i++)
-      tmp -= num.getCoeff(i) * delayLine.readOutputAt(num.getPower(i));
+      tmp -= s * num.getCoeff(i) * delayLine.readOutputAt(num.getPower(i));
     delayLine.writeInputNoUpdate(tmp);
 
-    // Apply denominator as feedforward path:
+    // Apply scaled denominator as feedforward path:
     tmp = 0;
     for(int i = 0; i < den.getNumTerms(); i++)
-      tmp += den.getCoeff(i) * delayLine.readOutputAt(den.getPower(i));
+      tmp += s * den.getCoeff(i) * delayLine.readOutputAt(den.getPower(i));
 
     // Update delayline and return result:
     delayLine.incrementTapPointers();
     return tmp;
   }
-  // Needs test!
 
 
+  /** Computes a sample at a time of a filter that has the numerator transformed from min-phase to
+  max-phase or vice versa. */
+  TSig getSamplePhased(TSig in)
+  {
+    rsAssert(isFilterValid());
+
+    // Apply denominator as feedback part:
+    TSig tmp = in;
+    for(int i = 1; i < den.getNumTerms(); i++)
+      tmp -= den.getCoeff(i) * delayLine.readOutputAt(den.getPower(i));
+    delayLine.writeInputNoUpdate(tmp);
+
+    // Apply reversed numerator as feedforward path:
+    int deg = num.getDegree();
+    tmp = 0;
+    for(int i = 0; i < num.getNumTerms(); i++)
+      tmp += num.getCoeff(i) * delayLine.readOutputAt(deg - num.getPower(i));
+
+    // Update delayline and return result:
+    delayLine.incrementTapPointers();
+    return tmp;
+  }
+  // Needs test! This is perhaps not great for realtime use because the num.getDegree() call must
+  // iterate through the whole numerator. Maybe that value coudl be cached. Not sure.
+
+
+
+
+
+
+
+  /** Resets the filter's state. This clears the delayline. */
   void reset()
   {
     delayLine.reset();

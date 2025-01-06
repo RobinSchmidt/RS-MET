@@ -2749,7 +2749,7 @@ bool sparseFilterUnitTest()
   using FltD = rsDirectFormFilter<Real, Real>;   // Dense filter type
   using FltS = rsSparseFilter<Real, Real>;       // Sparse filter type
 
-  int N = 100;
+  int N = 128;
 
   // Use:
   //
@@ -2760,9 +2760,9 @@ bool sparseFilterUnitTest()
   // ensure this.
 
 
-  Vec b( {1.0, 0.0, -0.7, 0.0, 0.0,  0.0, 0.3});   // Test with b0 = 1 (scaling doesn't matter in inversion)
-  //Vec b( {0.5, 0.0, -0.7, 0.0, 0.0,  0.0, 0.3});
-  Vec a( {1.0, 0.0,  0.0, 0.6, 0.1, -0.1     });
+  //Vec b( {1.0, 0.0, -0.7, 0.0, 0.0,  0.0, 0.3});   // Test with b0 = 1 (scaling doesn't matter in inversion)
+  Vec b({ 0.5, 0.0, -0.7, 0.0, 0.0,  0.0, 0.3});
+  Vec a({ 1.0, 0.0,  0.0, 0.6, 0.1, -0.1     });
 
 
   // Helper function to set up a dense filter. We need this because the dense filter does not (yet)
@@ -2804,8 +2804,7 @@ bool sparseFilterUnitTest()
   for(int n = 0; n < N; n++)
     y[n] = sf.getSampleInverse(hs[n]);
   ok &= rsIsUnitImpulse(y, 1.e-14);
-  rsPlotVectors(y);
-
+  //rsPlotVectors(y);
 
   // Now actually invert the filter and check that is indeed the inverse of the original one:
   sf.invert();
@@ -2813,17 +2812,37 @@ bool sparseFilterUnitTest()
   ok &= rsIsUnitImpulse(y, 1.e-14);
   //rsPlotVectors(y);
 
+  // Invert the filter again and see if we get the original filter back:
+  sf.invert();
+  hs = impulseResponse(sf, N, 1.0);
+  ok &= rsIsCloseTo(hd, hs, 1.e-14);
+
+  // Get the "phased" impulse response of the sparse filter, i.e. the one with the numerator array
+  // reversed:
+  Vec hps(N);
+  hps[0] = sf.getSamplePhased(1.0);
+  for(int n = 1; n < N; n++)
+    hps[n] = sf.getSamplePhased(0.0);
+  //rsPlotVectors(hs, hps);
+
+  Vec mags  = rsSpectralMagnitudes(hs);
+  Vec magsP = rsSpectralMagnitudes(hps);
+  ok &= rsIsCloseTo(mags, magsP, 1.e-5); 
+  // A big tolerance needed here due to truncation of the impulse response at N samples.
+
+  //rsPlotVectors(mags, magsP); 
+  //rsPlotVectors(mags - magsP); 
 
 
-
+  sf.reflectZeros();
 
   return ok;
 
   // ToDo:
   //
-  // - Implement df.getInverse() which should produce a filter that inverts the original filter
-  //   and getSampleInverse that just uses the coeff arrays as is to produce a sample of the 
-  //   inverted filter
+  // - Implement and test functions for reflection of zeros and poles in the unit circle and also 
+  //   getSample functions that perform the desired transformation on the fly in the sparse and 
+  //   dense implementation. Compare magnitude responses of both
 }
 
 
