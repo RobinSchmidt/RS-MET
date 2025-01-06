@@ -2775,14 +2775,22 @@ bool sparseFilterUnitTest()
   };
 
 
+  // Create, set up and produce impulse response of dense filter:
   FltD df;
   setupDenseFilter(df, b, a);
-  Vec h = impulseResponse(df, N, 1.0);
-  rsPlotVectors(h);
+  Vec hd = impulseResponse(df, N, 1.0);
+  //rsPlotVectors(hd);
 
-
+  // Create, set up and produce impulse response of sparse filter:
   FltS sf;
   sf.setupFromDenseCoeffs(b, a);
+  Vec hs = impulseResponse(sf, N, 1.0);
+
+  // Check, if both impulse responses match:
+  ok &= rsIsCloseTo(hd, hs, 1.e-14);
+  rsPlotVectors(hd, hs);
+
+  // Plot both impulse responses for comparison. They should match:
 
 
 
