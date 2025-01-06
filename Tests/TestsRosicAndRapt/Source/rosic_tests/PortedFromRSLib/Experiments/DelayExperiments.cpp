@@ -1252,7 +1252,8 @@ void dampedSchroederAllpass()
 
 void dampedAllpassBiComb_1p()
 {
-  // Under construction.
+  // This is now obsolete because the (relevant) code has been moved into 
+  // dampedAllpassBiCombUnitTest()
 
   // We want to create an allpass by using a correction filter after a parallel connection of two
   // Karplus-Strong like comb filters. The first step would be to derive the direct form transfer

@@ -2694,8 +2694,71 @@ bool dampedAllpassBiCombUnitTest()
 {
   bool ok = true;
 
+  // Define types to be used:
+  using Real         = double;
+  using Complex      = rsComplex<Real>;
+  using Vec          = std::vector<Real>;
+  using Allpass      = rsDampedAllpassBiComb_1p<Real, Real>;
+  using SparseFilter = rsSparseFilter<Real, Real>;
+
+  // Test parameters:
+  int  N      = 2048;    // Number of samples to render
+  int  delay1 = 23;
+  int  delay2 = 29;
+  Real g1     = 0.6;
+  Real g2     = 0.7;
+  Real k1     = 0.9;
+  Real k2     = 0.8;
+
+  // Compute the feedback filter coeffs:
+  Real b10, b11, a11; rsMake1stOrderHighShelf(0.5, 0.9, &b10, &b11, &a11);
+  Real b20, b21, a21; rsMake1stOrderHighShelf(0.7, 0.8, &b20, &b21, &a21);
+
+  // Create and set up the allpass:
+  Allpass ap;
+  ap.setMaxDelayInSamples(delay2);
+  ap.setup(delay1, g1, k1, b10, b11, a11,
+           delay2, g2, k2, b20, b21, a21);
+
+  // Produce the impulse response of the two parallel comb filters:
+  Vec hc(N);
+  hc[0] = ap.getSampleCombs(1.0);
+  for(int n = 1; n < N; n++)
+    hc[n] = ap.getSampleCombs(0.0);
+
+  // Let the ap convert itself into a sparse direct form filter and check that this converted 
+  // filter has the same impulse response:
+  SparseFilter sf;
+  ap.convertCombSumToDirectForm(&sf);
+  Vec hc2 = impulseResponse(sf, N, 1.0);
+  ok &= rsIsCloseTo(hc, hc2, 1.e-15);
+  //rsPlotVectors(hc, hc2);
+
+  // Test transfer function computation:
+  Complex z(0.7, 0.8);                          // z outside unit circle - z^-n goes to 0
+  //Complex H = ap.getCombTransferFunctionAt(z);
+  Complex H = sf.getTransferFunctionAt(z);
+  Complex Ht = 0;
+  for(int n = 0; n < N; n++)
+    Ht += hc[n] * rsPow(z, Complex(-n));
+  ok &= rsIsCloseTo(H, Ht, 1.e-12);
+
+  // Test the whole filter, i.e. the comb-sum with corrector applied:
+  Vec h = impulseResponse(ap, N, 1.0);
+  ok &= isAllpass(h, 1.e-4);
+
 
   return ok;
+
+
+  // ToDo:
+  //
+  // - Test the different modes of operation. Maybe wrap all the tests into a helper function that
+  //   takes the mode as parameter and then call that with all the modes.
+  //
+  // - Implement rsDampedAllpassBiComb_1p::getTransferFunctionAt() and test it.
+  //
+  // - Apply the inverse comb to a unit impulse just for curiosity
 }
 
 bool allpassUnitTest()
