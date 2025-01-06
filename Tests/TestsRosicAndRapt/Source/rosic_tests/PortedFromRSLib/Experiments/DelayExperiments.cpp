@@ -1333,9 +1333,9 @@ void dampedAllpassBiComb_1p()
   ok &= rsIsCloseTo(H, Ht, 1.e-12);
 
   // OK - they are similar but the error is rather large because the feedback is rather high and we
-  // truncate teh impulse response before it has sufficiently decayed away. Maybe use a z that is 
+  // truncate the impulse response before it has sufficiently decayed away. Maybe use a z that is 
   // itself decaying, i.e. not on the unit circle
-  // Oh - waint - for z = 0.6 + 0.8i, H and Ht are similar but for z = 0.5 + 0.7i, they are totally
+  // Oh - wait - for z = 0.6 + 0.8i, H and Ht are similar but for z = 0.5 + 0.7i, they are totally
   // different! Maybe we need to make sure that the unit test also test some random z-values!
   // Ah - OK - we seem to get problems with z-values inside the unit circle because then z^-n 
   // diverges.

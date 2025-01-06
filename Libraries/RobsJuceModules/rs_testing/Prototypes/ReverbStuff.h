@@ -1692,7 +1692,7 @@ public:
   void setup(
     int delay1, TPar gain1, TSig feedback1, TPar coeffB10, TPar coeffB11, TPar coeffA11,
     int delay2, TPar gain2, TSig feedback2, TPar coeffB20, TPar coeffB21, TPar coeffA21);
-
+  // ToDo: add a parameter for switching the mode of operation
 
 
 
@@ -1715,10 +1715,6 @@ public:
 
 
 protected:
-
-
-
-
 
 
   TSig applyDamper1(TSig x)
@@ -1775,24 +1771,32 @@ protected:
   void updateDelaysAndCorrectorCoeffs();
 
 
+
+  // The two delayines for the two parallel comb filters:
   rsBasicDelayLine<TSig> mainDelay1;  // Rename to combDelay1
   rsBasicDelayLine<TSig> mainDelay2;
 
-  //rsBasicDelayLine<TSig> corrDelay;
+  // Correction filter to turn the whole filter into an allpass:
+  rsSparseFilter<TSig, TPar> corrector;
 
+  // The stored comb outputs for use in feedback loop:
   TSig combOut1 = TSig(0);
   TSig combOut2 = TSig(0);
 
+  // Feedback gains:
   TSig k1 = 0;
   TSig k2 = 0;
   // Maybe make them TPar - we don't really want to use it with complex valued feedback...or do we?
 
+  // Gains or weights for the two comb outputs:
   TPar g1 = 1;
   TPar g2 = 1;
 
+  // Coeffs for the two feedback filters in the two combs:
   TPar b10 = 0, b11 = 0, a11 = 0;
   TPar b20 = 0, b21 = 0, a21 = 0;
 
+  // Lengths of the delaylines for the combs:
   int  M1 = 0;
   int  M2 = 0;
 
@@ -1800,25 +1804,15 @@ protected:
   TSig x11d  = 0, y11d  = 0;
   TSig x21d  = 0, y21d  = 0;
 
+  // States of the inverse feedback filters:
   TSig x11di  = 0, y11di  = 0;
   TSig x21di  = 0, y21di  = 0;
 
-  // Coefficients and delays that would have to be used if we wanted to implement the filter in 
-  // direct form. They will be used (in modified form) for the corrector filter:
-  //std::vector<TSig> ffCoeffs, fbCoeffs;
-  //std::vector<int>  ffDelays, fbDelays;
-  // The coeffs are of type TSig (rather than TPar) because some involve k1 and/or k2 which we have
-  // also made TSig in order to allow for complex feedback. 
-
- 
+  // Switch between two modes of operation:
   bool dampCompensated = true;
-
-
-  //rsSparseFilter<TSig, TPar> corrector;
-  // This may eventually replace the members corrDelay, ffCoeffs, fbCoeffs, ffDelays, fbDelays
+  // ToDo: maybe have 3 modes - include one with predelay where the delays sit in the numerator.
 
 };
-
 
 
 template<class TSig, class TPar>
@@ -1826,7 +1820,6 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::rsDampedAllpassBiComb_1p<TSig, TPar>:
 {
   mainDelay1.reset();
   mainDelay2.reset();
-  //corrDelay.reset();
 
   combOut1 = 0;
   combOut2 = 0;
@@ -1842,16 +1835,12 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::rsDampedAllpassBiComb_1p<TSig, TPar>:
   y21di = 0;
 }
 
-
 template<class TSig, class TPar>
 void rsDampedAllpassBiComb_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
   mainDelay1.setMaximumDelayInSamples(maxM);
   mainDelay2.setMaximumDelayInSamples(maxM);
-
-  //corrDelay.setMaximumDelayInSamples(maxM+3);  // Verify! ...I think, it should be 2*maxM+4
-  //corrDelay.setMaximumDelayInSamples(2*maxM+4); 
 }
 
 template<class TSig, class TPar>
@@ -1962,59 +1951,8 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
 {
   mainDelay1.setDelayInSamples(M1);
   mainDelay2.setDelayInSamples(M2);
-
-  // May be obsolete soon:
-  //corrDelay.setDelayInSamples(M1+M2+4);
-  // Nah! Too much! we need only  max(M1, M2) + 4
-
-
-  /*
-  // Compute the delays and coefficients for a direct form implementation. See AllpassStuff.txt in 
-  // the private repo for derivation of the formulas for the delays and coeffs:
-
-  // Coeffs needed when the inverse dampers are NOT applied after each comb:
-  //// Feedforward delays and coeffs:
-  //ffDelays[ 0] = 0;     ffCoeffs[ 0] = b10*g1 + b20*g2;
-  //ffDelays[ 1] = 1;     ffCoeffs[ 1] = a21*b10*g1 + a11*b20*g2 + b11*g1 + b21*g2;
-  //ffDelays[ 2] = 2;     ffCoeffs[ 2] = a21*b11*g1 + a11*b21*g2;
-  //ffDelays[ 3] = M1+1;  ffCoeffs[ 3] = b10*b20*g2*k1;
-  //ffDelays[ 4] = M1+2;  ffCoeffs[ 4] = b11*b20*g2*k1 + b10*b21*g2*k1;
-  //ffDelays[ 5] = M1+3;  ffCoeffs[ 5] = b11*b21*g2*k1;
-  //ffDelays[ 6] = M2+1;  ffCoeffs[ 6] = b10*b20*g1*k2;
-  //ffDelays[ 7] = M2+2;  ffCoeffs[ 7] = b11*b20*g1*k2 + b10*b21*g1*k2;
-  //ffDelays[ 8] = M2+3;  ffCoeffs[ 8] = b11*b21*g1*k2;
-  //// Can be optimized!
-
-
-  // Coeffs needed when the inverse dampers are applied after each comb:
-  // Feedforward delays and coeffs:
-  ffDelays[ 0] = 0;     ffCoeffs[ 0] = g1 + g2;
-  ffDelays[ 1] = 1;     ffCoeffs[ 1] = a11*g1 + a21*g1 + a11*g2 + a21*g2;
-  ffDelays[ 2] = 2;     ffCoeffs[ 2] = a11*a21*g1 + a11*a21*g2;
-  ffDelays[ 3] = M1+1;  ffCoeffs[ 3] = b10*g2*k1;
-  ffDelays[ 4] = M1+2;  ffCoeffs[ 4] = a21*b10*g2*k1 + b11*g2*k1;
-  ffDelays[ 5] = M1+3;  ffCoeffs[ 5] = a21*b11*g2*k1;
-  ffDelays[ 6] = M2+1;  ffCoeffs[ 6] = b20*g1*k2;
-  ffDelays[ 7] = M2+2;  ffCoeffs[ 7] = a11*b20*g1*k2 + b21*g1*k2;
-  ffDelays[ 8] = M2+3;  ffCoeffs[ 8] = a11*b21*g1*k2;
-  // Can be optimized!
-
-
-  // Feedback delays and coeffs:
-  fbDelays[ 0] = 1;        fbCoeffs[ 0] = a11 + a21;
-  fbDelays[ 1] = 2;        fbCoeffs[ 1] = a11 * a21;
-  fbDelays[ 2] = M1+1;     fbCoeffs[ 2] = b10 * k1;
-  fbDelays[ 3] = M1+2;     fbCoeffs[ 3] = (a21*b10 + b11) * k1;
-  fbDelays[ 4] = M1+3;     fbCoeffs[ 4] = a21 * b11 * k1;
-  fbDelays[ 5] = M2+1;     fbCoeffs[ 5] = b20 * k2;
-  fbDelays[ 6] = M2+2;     fbCoeffs[ 6] = (a11*b20 + b21) * k2;
-  fbDelays[ 7] = M2+3;     fbCoeffs[ 7] = a11 * b21 * k2;
-  fbDelays[ 8] = M1+M2+2;  fbCoeffs[ 8] = b10*b20 * k1*k2;
-  fbDelays[ 9] = M1+M2+3;  fbCoeffs[ 9] = (b11*b20 + b10*b21) * k1*k2;
-  fbDelays[10] = M1+M2+4;  fbCoeffs[10] = b11*b21 * k1*k2;
-  */
-
 }
+
 
 //=================================================================================================
 
