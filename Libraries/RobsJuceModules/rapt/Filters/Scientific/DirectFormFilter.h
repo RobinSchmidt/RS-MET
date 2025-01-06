@@ -3,7 +3,7 @@
 
 /** This is a generic filter using a Direct Form II implementation structure. 
 
-This code needs some seriuos rework!
+This code needs some serious rework!
 
   (1) Use a fixed maxOrder - maybe 10 - that should be more than one should ever implement in 
       direct form
@@ -33,18 +33,25 @@ public:
   void setCoefficients(TCoef* newCoeffsA, TCoef* newCoeffsB, int newOrder);
   // This is a bad API! It's easy for the caller to assume that the newOrder is the length of the 
   // arrays when their length is in fact, supposed to be order+1. In such a case we may read 
-  // garbage from a memory location that we are not supposed to!
+  // garbage from a memory location that we are not supposed to! But passing the order rather than
+  // the length is actually consistent with other filter setup functions in the library. Hmmm...
+  // Also, in most other filter setup functions, we pass the b-coeffs (feedforward, numerator) 
+  // first. We also want to be able to have different orders for numerator and denominator. So the
+  // new API should be:
+  // setup(const TCoef* newCoeffsB, int degreeB, const TCoef* newCoeffsA, int degreeA).
+  // Maybe also add a convenience function that takes the coeff arrays as std::vector 
+  // (as const ref)
 
-  /** Applies a global gain factor (by multiplying all b-coefficients with tha factor). */
+  /** Applies a global gain factor (by multiplying all b-coefficients with that factor). */
   void setGlobalGainFactor(TCoef newFactor);
 
   /** Inverts the filter, i.e. swaps poles and zeros and inverts the gain. */
   void invert();
 
 
-  // Under construction - needs tests:
-  void reflectZeros();
-  void reflectPoles();
+  //// Under construction - needs tests:
+  //void reflectZeros();
+  //void reflectPoles();
 
 
   // ToDo: reflectPoles, reflectZeros

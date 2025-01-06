@@ -2709,6 +2709,9 @@ bool allpassUnitTest()
 }
 
 
+
+
+
 bool phonoFilterUnitTest()
 {
   bool ok = true;
@@ -2736,11 +2739,61 @@ bool phonoFilterUnitTest()
   return ok;
 }
 
+bool sparseFilterUnitTest()
+{
+  bool ok = true;
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  using Poly = rsPolynomial<Real>;
+  using FltD = rsDirectFormFilter<Real, Real>;   // Dense filter type
+  using FltS = rsSparseFilter<Real, Real>;       // Sparse filter type
+
+  // Use:
+  //
+  //  b0 = 0.5, b2 = -0.7, b6 =  0.3
+  //  a0 = 1.0, a3 =  0.6, a5 = -0.1
+  //
+  // But I'm not sure, if that's stable and minimum phase, though. Maybe we should use coeffs that
+  // ensure this.
+
+  Vec b( {0.5, 0, -0.7, 0,   0,  0, 0.3});
+  Vec a( {1.0, 0,  0.0, 0.6, 0, -0.1   });
+
+
+  // Helper function to set up a dense filter. We need this because the dense filter does not (yet)
+  // support different orders for numerator and denominator, so we need to zero-pad the shorter
+  // coeff array:
+  auto setupFilter = [](FltD& flt, const Vec& b, const Vec& a)
+  {
+    size_t size = std::max(b.size(), a.size());
+    Vec B = b; B.resize(size);
+    Vec A = a; A.resize(size);
+    flt.setCoefficients(&A[0], &B[0], (int)size - 1);
+  };
+
+
+
+
+
+  FltD df;
+  setupFilter(df, b, a);
+
+
+  FltS sf;
+
+
+
+  return ok;
+}
+
+
 bool miscFiltersUnitTest()
 {
   bool ok = true;
 
   ok &= phonoFilterUnitTest();
+  ok &= sparseFilterUnitTest();
 
   return ok;
 }

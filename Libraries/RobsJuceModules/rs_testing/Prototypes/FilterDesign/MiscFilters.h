@@ -792,6 +792,8 @@ class rsSparseFilter
 public:
 
 
+
+
 protected:
 
   rsSparsePolynomial<TPar> num, den;
