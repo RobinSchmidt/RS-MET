@@ -1035,11 +1035,25 @@ public:
     updateDelayLineLength();
   }
 
+  void removePreDelay()
+  {
+    int preDelay = num.getPower(0);
+    // We assume here the the 0-th term is the one with the lowest power! This invariant should be
+    // checked in isFilterValid().
+
+
+    num.shiftPowers(-preDelay);
+    updateDelayLineLength();
+  }
+
   /** Turns the filter into its inverse. This basically amounts to swapping numerator and 
   denominator and possibly applying some scaling of the coefficients if b0 != 1. */
   void invert()
   {
     rsAssert(isFilterValid());
+
+    removePreDelay();
+
     rsAssert(num.getPower(0) == 0);
     rsAssert(num.getCoeff(0) != 0);
     // We assume here that the 0-th num coefficient is the one that multiplies z^0 in the transfer
@@ -1094,6 +1108,8 @@ public:
 
     // Do more checks: like, the minimum power being >= zero in num and den, powers don't appear
     // twice, powers are ordered (but maybe they don't have to be - not sure yet) etc.
+
+    // ok &= num.getMinPowerIndex() == 0
 
     return ok;
   }
