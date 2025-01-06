@@ -1350,7 +1350,8 @@ void dampedAllpassBiComb_1p()
   //Complex z(0.5, 0.7);                          // z is inside the unit circle.
   //Complex z(0.6, 0.8);                          // z is on the unit circle.
   Complex z(0.7, 0.8);                          // z outside unit circle - z^-n goes to 0
-  Complex H = ap.getCombTransferFunctionAt(z);
+  //Complex H = ap.getCombTransferFunctionAt(z);
+  Complex H = sf.getTransferFunctionAt(z);
   Complex Ht = 0;
   for(int n = 0; n < N; n++)
     Ht += hc[n] * rsPow(z, Complex(-n));

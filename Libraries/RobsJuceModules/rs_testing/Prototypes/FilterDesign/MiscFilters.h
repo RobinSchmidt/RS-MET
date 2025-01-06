@@ -1062,7 +1062,25 @@ public:
   }
 
 
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const
+  {
+    using Complex = rsComplex<TPar>;
+    //Complex one(TPar(1));                              // 1 + 0i
+    //Complex z1 = one/z;                                // z^-1
 
+    // Compute numerator N(z):
+    Complex N(0);
+    for(int i = 0; i < num.getNumTerms(); i++)
+      N += num.getCoeff(i) * rsPow(z, Complex(-num.getPower(i)));
+
+    // Compute denominator D(z):
+    Complex D(0);
+    for(int i = 0; i < den.getNumTerms(); i++)  
+      D += den.getCoeff(i) * rsPow(z, Complex(-den.getPower(i)));
+
+    // Compute transfer function H(z) = N(z) / D(z):
+    return N / D;
+  }
 
 
 
