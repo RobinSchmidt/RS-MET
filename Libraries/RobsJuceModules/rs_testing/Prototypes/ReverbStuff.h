@@ -1210,7 +1210,8 @@ protected:
   //
   // - The feedback gain k is of type TSig rather than TPar to allow usage with TSig == complex and
   //   then allowing complex feedback factors. There is some experiment that does this. It's 
-  //   interesting.
+  //   interesting. ...but maybe make k of type TPar anyway. We cna still do this experiment by
+  //   just useing TPar = complex as well. I think, it makes more sense this way.
   //
   // - Maybe be more flexible with the order of the damping filter by letting numerator and 
   //   denominator have different orders. Maybe replace dmpOrd by two variables bOrd, aOrd or 
@@ -1699,6 +1700,11 @@ public:
   rsComplex<TPar> getCombTransferFunctionAt(const rsComplex<TPar>& z) const;
 
 
+  /** Converts the weighted sum of the two comb filters into a (sparse) direct form filter. The
+  object is passed as pointer - the passed rsSparseFilter object serves as output variable. */
+  void convertCombSumToDirectForm(rsSparseFilter<TSig, TPar>* sparseDirectFormFilter);
+
+
 
   TSig getSampleCombs(TSig in)
   {
@@ -1910,6 +1916,50 @@ rsComplex<TPar> rsDampedAllpassBiComb_1p<TSig, TPar>::getCombTransferFunctionAt(
   //   the two transfer functions of the two combs and forming a weighted sum of them. Maybe that 
   //   would be more efficient. Maybe keep that implementation for testing and eductaional purposes
   //   in some derived class as well.
+}
+
+template<class TSig, class TPar>
+void rsDampedAllpassBiComb_1p<TSig, TPar>::convertCombSumToDirectForm(
+  rsSparseFilter<TSig, TPar>* sparseDirectFormFilter)
+{
+  // Set up feedforward coeffs:
+  sparseDirectFormFilter->setNumNumeratorTerms(9);
+  auto setB = [&](int index, int delay, TSig coeff)
+  {
+    sparseDirectFormFilter->setNumeratorTerm(index, coeff, delay);
+  };
+  setB(0, 0,    g1 + g2);
+  setB(1, 1,    a11*g1 + a21*g1 + a11*g2 + a21*g2);
+  setB(2, 2,    a11*a21*g1 + a11*a21*g2);
+  setB(3, M1+1, b10*g2*k1);
+  setB(4, M1+2, a21*b10*g2*k1 + b11*g2*k1);
+  setB(5, M1+3, a21*b11*g2*k1);
+  setB(6, M2+1, b20*g1*k2);
+  setB(7, M2+2, a11*b20*g1*k2 + b21*g1*k2);
+  setB(8, M2+3, a11*b21*g1*k2);
+  // ToDo: switch between two modes: with and without the compensation filters
+  // Optimize!
+
+
+  // Set up feedback coeffs:
+  sparseDirectFormFilter->setNumDenominatorTerms(11);
+  auto setA = [&](int index, int delay, TSig coeff)
+  {
+    sparseDirectFormFilter->setDenominatorTerm(index, coeff, delay);
+  };
+  setA( 0, 1,       a11 + a21);
+  setA( 1, 2,       a11 * a21);
+  setA( 2, M1+1,    b10 * k1);
+  setA( 3, M1+2,    (a21*b10 + b11) * k1);
+  setA( 4, M1+3,    a21 * b11 * k1);
+  setA( 5, M2+1,    b20 * k2);
+  setA( 6, M2+2,    (a11*b20 + b21) * k2);
+  setA( 7, M2+3,    a11 * b21 * k2);
+  setA( 8, M1+M2+2, b10*b20 * k1*k2);
+  setA( 9, M1+M2+3, (b11*b20 + b10*b21) * k1*k2);
+  setA(10, M1+M2+4, b11*b21 * k1*k2);
+
+  int dummy = 0;
 }
 
 

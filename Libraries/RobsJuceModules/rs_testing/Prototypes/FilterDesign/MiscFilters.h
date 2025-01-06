@@ -816,13 +816,22 @@ public:
     terms.reserve(amount);
   }
 
+  void setNumTerms(int newNumTerms)
+  {
+    terms.resize(newNumTerms);
+  }
+
+  void setTerm(int index, T coeff, int power)
+  {
+    rsAssert(index >= 0 && index < getNumTerms());
+    terms[index].setup(coeff, power);
+  }
 
   void setPower(int index, int newPower)
   {
     rsAssert(index >= 0 && index < getNumTerms());
     terms[index].setPower(newPower);
   }
-
 
   void setCoeff(int index, T newCoeff)
   {
@@ -948,6 +957,30 @@ public:
     delayLine.setDelayInSamples(degree);
   }
   // This may allocate!
+
+
+  void setNumNumeratorTerms(int newNumTerms)
+  {
+    num.setNumTerms(newNumTerms);
+  }
+  // This may allocate!
+
+  void setNumDenominatorTerms(int newNumTerms)
+  {
+    den.setNumTerms(newNumTerms);
+  }
+  // This may allocate!
+
+  void setNumeratorTerm(int index, TPar coeff, int delay)
+  {
+    num.setTerm(index, coeff, power);
+  }
+
+  void setDenominatorTerm(int index, int delay, TPar coeff)
+  {
+    den.setTerm(index, coeff, power);
+  }
+
 
   /** Applies a scaling factor to the filter. This basically means to scale all numerator coeffs by
   that factor. */
