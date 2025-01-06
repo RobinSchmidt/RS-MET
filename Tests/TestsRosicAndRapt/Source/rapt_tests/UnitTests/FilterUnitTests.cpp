@@ -2779,7 +2779,6 @@ bool sparseFilterUnitTest()
   FltD df;
   setupDenseFilter(df, b, a);
   Vec hd = impulseResponse(df, N, 1.0);
-  //rsPlotVectors(hd);
 
   // Create, set up and produce impulse response of sparse filter:
   FltS sf;

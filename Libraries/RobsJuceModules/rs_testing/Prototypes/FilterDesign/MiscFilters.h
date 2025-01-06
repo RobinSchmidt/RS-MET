@@ -756,6 +756,14 @@ public:
     power = newPower;
   }
 
+
+
+  T getCoeff() const { return coeff; }
+
+  int getPower() const { return power; }
+
+
+
   T evaluateAt(T x) const { return coeff * rsPow(x, power); }
 
 
@@ -778,6 +786,8 @@ class rsSparsePolynomial
 public:
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
 
   void addTerm(T coeff, int power)
   {
@@ -797,6 +807,38 @@ public:
 
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  int getDegree() const
+  {
+    int maxPower = 0;
+    for(auto& term : terms)
+      maxPower = rsMax(maxPower, term.getPower());
+    return maxPower;
+  }
+
+  int getNumTerms() const
+  {
+    return (int) terms.size();
+  }
+
+  T getCoeff(int index) const
+  {
+    rsAssert(index >= 0 && index < getNumTerms());
+    return terms[index].getCoeff();
+  }
+
+  int getPower(int index) const
+  {
+    rsAssert(index >= 0 && index < getNumTerms());
+    return terms[index].getPower();
+  }
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
 
   T evaluateAt(T x) const 
   { 
@@ -809,6 +851,7 @@ public:
     
     return y;
   }
+  // Not yet tested
 
 
 
@@ -829,6 +872,8 @@ class rsSparseFilter
 public:
 
 
+
+  // This may allocate!
   void setupFromDenseCoeffs(const std::vector<TPar>& numCoeffs, const std::vector<TPar>& denCoeffs)
   {
     num.clear();
@@ -847,16 +892,32 @@ public:
         den.addTerm(denCoeffs[i], (int)i);
     }
 
-    // ToDo:
-    //
-    // - Implement and call num.reserve() / den.reserve() to avoid excessive re-allocations in 
-    //   the addTerm() calls (which use push_back on a std::vector)  ...done!
+    int degree = rsMax(num.getDegree(), den.getDegree());
+    delayLine.setMaximumDelayInSamples(degree);
+    delayLine.setDelayInSamples(degree);
   }
 
 
   TSig getSample(TSig in)
   {
-    return 0;  // Preliminary
+    // Sanity checks:
+    rsAssert(num.getNumTerms() > 0 && den.getNumTerms() > 0);
+    rsAssert(den.getPower(0) == 0 && den.getCoeff(0) == TPar(1)); // Assume a0 == 1 normalization
+
+    // Apply feedback part:
+    TSig tmp = in;
+    for(int i = 1; i < den.getNumTerms(); i++)
+      tmp -= den.getCoeff(i) * delayLine.readOutputAt(den.getPower(i));
+    delayLine.writeInputNoUpdate(tmp);
+
+    // Apply feedforward path:
+    tmp = 0;
+    for(int i = 0; i < num.getNumTerms(); i++)
+      tmp += num.getCoeff(i) * delayLine.readOutputAt(num.getPower(i));
+
+    // Update delayline and return result:
+    delayLine.incrementTapPointers();
+    return tmp;
   }
 
   void reset()
@@ -867,11 +928,8 @@ public:
 
 protected:
 
-  rsSparsePolynomial<TPar> num, den;
-
-  rsBasicDelayLine<TSig> delayLine;
-  // The delayline use for the direct form 2 implementation
+  rsSparsePolynomial<TPar> num, den;    // Numerator and denominator of transfer function
+  rsBasicDelayLine<TSig> delayLine;     // Delayline used for the direct form 2 implementation
 
 };
-
 
