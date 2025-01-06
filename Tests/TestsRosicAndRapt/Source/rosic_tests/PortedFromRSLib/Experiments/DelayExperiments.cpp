@@ -1268,7 +1268,7 @@ void dampedAllpassBiComb_1p()
   using Complex      = rsComplex<Real>;
   using Vec          = std::vector<Real>;
   using Allpass      = rsDampedAllpassBiComb_1p<Real, Real>;
-  using AllpassT     = rsDampedAllpassBiComb_1p_Test<Real, Real>;  // May be soon obsolete
+  //using AllpassT     = rsDampedAllpassBiComb_1p_Test<Real, Real>;  // May be soon obsolete
   using SparseFilter = rsSparseFilter<Real, Real>;
 
 
@@ -1300,42 +1300,36 @@ void dampedAllpassBiComb_1p()
     hc[n] = ap.getSampleCombs(0.0);
   //rsPlotVectors(hc);
 
-  // Produce the impulse response of the combs with the alternative (direct form 1 and 2) 
-  // algorithms:
-  AllpassT apt;
-  apt.setMaxDelayInSamples(delay2);
-  apt.setup(delay1, g1, k1, b10, b11, a11,
-            delay2, g2, k2, b20, b21, a21);
+  //// Produce the impulse response of the combs with the alternative (direct form 1 and 2) 
+  //// algorithms:
+  //AllpassT apt;
+  //apt.setMaxDelayInSamples(delay2);
+  //apt.setup(delay1, g1, k1, b10, b11, a11,
+  //          delay2, g2, k2, b20, b21, a21);
 
-  // With direct form 1:
-  apt.reset();
-  Vec hc2(N);
-  hc2[0] = apt.getSampleCombsDF1(1.0);
-  for(int n = 1; n < N; n++)
-    hc2[n] = apt.getSampleCombsDF1(0.0);
+  //// With direct form 1:
+  //apt.reset();
+  //Vec hc2(N);
+  //hc2[0] = apt.getSampleCombsDF1(1.0);
+  //for(int n = 1; n < N; n++)
+  //  hc2[n] = apt.getSampleCombsDF1(0.0);
 
-  // With direct form 2:
-  apt.reset();
-  Vec hc3(N);
-  hc3[0] = apt.getSampleCombsDF2(1.0);
-  for(int n = 1; n < N; n++)
-    hc3[n] = apt.getSampleCombsDF2(0.0);
+  //// With direct form 2:
+  //apt.reset();
+  //Vec hc3(N);
+  //hc3[0] = apt.getSampleCombsDF2(1.0);
+  //for(int n = 1; n < N; n++)
+  //  hc3[n] = apt.getSampleCombsDF2(0.0);
 
   // Let the ap convert itself into a sparse direct form filter and check that this converted 
   // filter has the same impulse response:
   SparseFilter sf;
   ap.convertCombSumToDirectForm(&sf);
-  Vec hc4 = impulseResponse(sf, N, 1.0);
-
-
-
+  Vec hc4 = impulseResponse(sf, N, 1.0);  // rename to hc2
 
   bool ok = true;
-  ok &= rsIsCloseTo(hc, hc2, 1.e-15);
-  ok &= rsIsCloseTo(hc, hc3, 1.e-15);
   ok &= rsIsCloseTo(hc, hc4, 1.e-15);
-
-  rsPlotVectors(hc, hc2, hc3, hc4);
+  rsPlotVectors(hc, hc4);
 
 
 
@@ -1369,13 +1363,13 @@ void dampedAllpassBiComb_1p()
   // diverges.
 
 
-  // Try inverting the bi-comb:
-  Vec hci(N);
-  apt.reset();
-  for(int n = 0; n < N; n++)
-    hci[n] = apt.applyInverse(hc[n]);
+  //// Try inverting the bi-comb:
+  //Vec hci(N);
+  //apt.reset();
+  //for(int n = 0; n < N; n++)
+  //  hci[n] = apt.applyInverse(hc[n]);
 
-  rsPlotVectors(hci);  // Should be a unit impulse
+  //rsPlotVectors(hci);  // Should be a unit impulse
   // Nope! It explodes! ...Hmmm...maybe the inverse filter is indeed unstable? If that is the case,
   // the whole idea may not work out. But verify the implementation. Maybe it's just buggy. But I
   // think the filter can't really be inverted anyway because the first output spike occurs at M1.
