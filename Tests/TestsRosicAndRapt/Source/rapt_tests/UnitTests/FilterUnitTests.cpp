@@ -2690,6 +2690,14 @@ bool dampedSchroederAllpassUnitTest()
   //   the class should enforce and assert this limit.
 }
 
+bool dampedAllpassBiCombUnitTest()
+{
+  bool ok = true;
+
+
+  return ok;
+}
+
 bool allpassUnitTest()
 {
   bool ok = true;
@@ -2704,6 +2712,7 @@ bool allpassUnitTest()
   ok &= dampedAllpassCombUnitTest2();
   ok &= dampedAllpassCombUnitTest3();
   ok &= dampedSchroederAllpassUnitTest();
+  ok &= dampedAllpassBiCombUnitTest();
 
   return ok;
 }

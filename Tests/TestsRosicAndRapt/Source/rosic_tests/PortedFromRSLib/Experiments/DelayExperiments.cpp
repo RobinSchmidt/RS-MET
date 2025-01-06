@@ -1352,8 +1352,12 @@ void dampedAllpassBiComb_1p()
   // that we want to use:
   sf.reflectZeros();
   y = filterResponse(sf, N, hc);
-  ok &= isAllpass(y, 1.e-3);
-  rsPlotVectors(y);
+  ok &= isAllpass(y, 1.e-4);
+  //rsPlotVectors(y);
+
+  //// Test the whole filter, i.e. the comb-sum with corrector applied:
+  Vec h = impulseResponse(ap, N, 1.0);
+  ok &= isAllpass(h, 1.e-4);
 
 
   int dummy = 0;

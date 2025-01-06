@@ -1416,6 +1416,8 @@ void rsSetupHighDamp(rsDampedAllpassComb<TSig, TPar>& flt,
   flt.setup(delay, feedback, 1, b, a, predelay);
 }
 
+
+
 // Under construction. Should set up the flt such that it achieves a given overall decay time in 
 // samples (in the sense of RT60, i.e. reverb time to decay to -60 dB) and having scaled deacy 
 // times for low and high frequencies. The scale factors are given as raw factors for the RT60 and
@@ -1668,9 +1670,9 @@ void rsSetupHighDamp(rsDampedAllpassComb_1p<TSig, TPar>& flt,
 
 //=================================================================================================
 
-/** UNDER CONSTRUCTION. Just a stub at the moment.
-
-Like rsDampedAllpassComb_1p but with two combs in parallel instead of just one 
+/** Like rsDampedAllpassComb_1p but with two combs in parallel instead of just one. The outputs of
+the two combs are scaled by weighting factors and then added together. Then, a compensation filter
+is applied to that to make the whole filter allpass..
 
 ...TBC... see AllpassStuff.txt in the private repo for more details  */
 
@@ -1683,7 +1685,7 @@ public:
 
   rsDampedAllpassBiComb_1p() 
   {
-
+    // Maybe pre-allocate some memory here.
   }
 
 
@@ -1692,7 +1694,8 @@ public:
   void setup(
     int delay1, TPar gain1, TSig feedback1, TPar coeffB10, TPar coeffB11, TPar coeffA11,
     int delay2, TPar gain2, TSig feedback2, TPar coeffB20, TPar coeffB21, TPar coeffA21);
-  // ToDo: add a parameter for switching the mode of operation
+  // ToDo: Add a parameter for switching the mode of operation. I'm not yet sure if we should have
+  // 2 or 3 modes operation, though. We'll see...
 
 
 
@@ -1705,11 +1708,23 @@ public:
 
 
 
+
+
+
+  TSig getSample(TSig in)
+  {
+    return applyCorrector(getSampleCombs(in));
+  }
+
   TSig getSampleCombs(TSig in)
   {
     return g1 * getSampleComb1(in) + g2 * getSampleComb2(in);
   }
 
+  TSig applyCorrector(TSig combOutput)
+  {
+    return corrector.getSample(combOutput);
+  }
 
   void reset();
 
@@ -1773,7 +1788,7 @@ protected:
 
 
   // The two delayines for the two parallel comb filters:
-  rsBasicDelayLine<TSig> mainDelay1;  // Rename to combDelay1
+  rsBasicDelayLine<TSig> mainDelay1;  // Rename to combDelay1 or delayLine1
   rsBasicDelayLine<TSig> mainDelay2;
 
   // Correction filter to turn the whole filter into an allpass:
@@ -1810,6 +1825,7 @@ protected:
 
   // Switch between two modes of operation:
   bool dampCompensated = true;
+  //bool dampCompensated = false;
   // ToDo: maybe have 3 modes - include one with predelay where the delays sit in the numerator.
 
 };
@@ -1951,6 +1967,10 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
 {
   mainDelay1.setDelayInSamples(M1);
   mainDelay2.setDelayInSamples(M2);
+
+  convertCombSumToDirectForm(&corrector);
+  corrector.invert();  // This could potentially allocate for the vector swap. Figure this out!
+  corrector.reflectZeros();
 }
 
 
