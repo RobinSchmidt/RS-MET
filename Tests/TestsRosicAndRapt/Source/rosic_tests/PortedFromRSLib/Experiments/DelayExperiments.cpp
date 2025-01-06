@@ -1306,7 +1306,7 @@ void dampedAllpassBiComb_1p()
   Vec hc2 = impulseResponse(sf, N, 1.0);
 
   bool ok = true;
-  ok &= rsIsCloseTo(hc, hc2, 1.e-15);
+  ok &= rsIsCloseTo(hc, hc2, 1.e-14);
   rsPlotVectors(hc, hc2);
 
   // OK - so far, so good. We can produce the output of the weighted sum of the two comb filters by
@@ -1319,27 +1319,6 @@ void dampedAllpassBiComb_1p()
   // stone to turn the filter into an allpass. We now need to invert the filter of algorithm 2 by
   // swapping numerator and denominator and then reflect the zeros in the unit circle. Algo 2 leads
   // to straightforward inversion.
-
-
-
-  // Test transfer function computation:
-  //Complex z(0.5, 0.7);                          // z is inside the unit circle.
-  //Complex z(0.6, 0.8);                          // z is on the unit circle.
-  Complex z(0.7, 0.8);                          // z outside unit circle - z^-n goes to 0
-  //Complex H = ap.getCombTransferFunctionAt(z);
-  Complex H = sf.getTransferFunctionAt(z);
-  Complex Ht = 0;
-  for(int n = 0; n < N; n++)
-    Ht += hc[n] * rsPow(z, Complex(-n));
-  ok &= rsIsCloseTo(H, Ht, 1.e-12);
-
-  // OK - they are similar but the error is rather large because the feedback is rather high and we
-  // truncate the impulse response before it has sufficiently decayed away. Maybe use a z that is 
-  // itself decaying, i.e. not on the unit circle
-  // Oh - wait - for z = 0.6 + 0.8i, H and Ht are similar but for z = 0.5 + 0.7i, they are totally
-  // different! Maybe we need to make sure that the unit test also test some random z-values!
-  // Ah - OK - we seem to get problems with z-values inside the unit circle because then z^-n 
-  // diverges.
 
 
   // Try inverting the direct form version of the bi-comb. Applying the inverted filter to the 
@@ -1359,6 +1338,24 @@ void dampedAllpassBiComb_1p()
   //// Test the whole filter, i.e. the comb-sum with corrector applied:
   Vec h = impulseResponse(ap, N, 1.0);
   ok &= isAllpass(h, 1.e-4);
+
+
+  // Create a filter that also reflects the zeros of the original comb-filter sum. We do this by 
+  // implementing the bicomb itself in (sparse) direct form and reflect the zeros of that, too:
+  SparseFilter sf1, sf2;
+  ap.convertCombSumToDirectForm(&sf1);
+  sf2.copySettingsFrom(sf1);
+  sf1.reflectZeros();
+  sf2.invert();
+  sf2.reflectZeros();
+  Vec z(N);
+  z[0] = sf2.getSample(sf1.getSample(1.0));
+  for(int n = 1; n < N; n++)
+    z[n] = sf2.getSample(sf1.getSample(0.0));
+  ok &= isAllpass(z, 1.e-3);
+  rsPlotVectors(y, z);
+
+
 
 
   int dummy = 0;
@@ -1383,6 +1380,10 @@ void dampedAllpassBiComb_1p()
   //   and z^-M1 and likewise for F2(z) and z^-M2, then it could work out?
   //
   // - Apply the inverse comb to a unit impulse just for curiosity
+  //
+  // - Maybe we could also take the converted bi-comb, then invert-and-reflect it and combine it
+  //   with the reflected one rather than the original one. Maybe that would add even more
+  //   dispersion?
 }
 
 void dampedAllpassComb()

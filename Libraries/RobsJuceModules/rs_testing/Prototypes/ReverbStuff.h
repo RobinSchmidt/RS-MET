@@ -1912,25 +1912,25 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::convertCombSumToDirectForm(
   {
     setB(0, 0,    g1 + g2);
     setB(1, 1,    g1*(a11+a21) + g2*(a11+a21));
-    setB(2, 2,    a11*a21*g1 + a11*a21*g2);
-    setB(3, M1+1, b10*g2*k1);
+    setB(2, 2,    g1*a11*a21 + g2*a11*a21);
+    setB(3, M1+1, g2*k1*b10);
     setB(4, M1+2, g2*k1*(a21*b10 + b11));
-    setB(5, M1+3, a21*b11*g2*k1);
-    setB(6, M2+1, b20*g1*k2);
+    setB(5, M1+3, g2*k1*a21*b11);
+    setB(6, M2+1, g1*k2*b20);
     setB(7, M2+2, g1*k2*(a11*b20 + b21));
-    setB(8, M2+3, a11*b21*g1*k2);
+    setB(8, M2+3, g1*k2*a11*b21);
   }
   else
   {
     setB(0, 0,    b10*g1 + b20*g2);
-    setB(1, 1,    a21*b10*g1 + a11*b20*g2 + b11*g1 + b21*g2);
-    setB(2, 2,    a21*b11*g1 + a11*b21*g2);
-    setB(3, M1+1, b10*b20*g2*k1);
-    setB(4, M1+2, b11*b20*g2*k1 + b10*b21*g2*k1);
-    setB(5, M1+3, b11*b21*g2*k1);
-    setB(6, M2+1, b10*b20*g1*k2);
-    setB(7, M2+2, b11*b20*g1*k2 + b10*b21*g1*k2);
-    setB(8, M2+3, b11*b21*g1*k2);
+    setB(1, 1,    g1*(a21*b10 + b11) + g2*(a11*b20 + b21));
+    setB(2, 2,    g1*a21*b11 + g2*a11*b21);
+    setB(3, M1+1, g2*k1*b10*b20);
+    setB(4, M1+2, g2*k1*(b11*b20 + b10*b21));
+    setB(5, M1+3, g2*k1*b11*b21);
+    setB(6, M2+1, g1*k2*b10*b20);
+    setB(7, M2+2, g1*k2*(b11*b20 + b10*b21));
+    setB(8, M2+3, g1*k2*b11*b21);
   }
   // ToDo: Maybe have 3 modes - the third is with the z^-M1, z^-M2 in the numerator. But that 
   // filter is not invertible. But maybe it's invertible up to delay? That would actually be good
@@ -1959,6 +1959,11 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::convertCombSumToDirectForm(
 
   // Update the length of the delayline:
   sparseFilter->updateDelayLineLength();
+
+  // ToDo:
+  //
+  // - Maybe extract common subexpressions like (a21*b10 + b11), (b11*b20 + b10*b21), g1*k2,
+  //   etc.
 }
 
 

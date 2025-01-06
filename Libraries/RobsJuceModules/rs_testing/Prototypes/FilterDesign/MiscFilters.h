@@ -1090,6 +1090,14 @@ public:
   // the same but the coeffs should be reversed. Wait! No! We need to modify the powers from p
   // to deg-p. Then the term array will be sorted in reverse order so we should reverse it
 
+  void copySettingsFrom(const rsSparseFilter<TSig, TPar>& other)
+  {
+    num = other.num;
+    den = other.den;
+    updateDelayLineLength();
+  }
+
+
 
   /** Performs some sanity checks. Is meant for debug assertions. */
   bool isFilterValid() const
