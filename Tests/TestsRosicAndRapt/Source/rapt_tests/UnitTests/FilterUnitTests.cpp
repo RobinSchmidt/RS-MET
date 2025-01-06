@@ -2835,6 +2835,15 @@ bool sparseFilterUnitTest()
 
 
   sf.reflectZeros();
+  Vec hps2 = impulseResponse(sf, N, 1.0);
+  ok &= rsIsCloseTo(hps, hps2, 1.e-6);   
+  // Why do we need such a big tolerance here? That is weird!
+
+
+  rsPlotVectors(hps, hps2, hps - hps2);
+
+
+
 
   return ok;
 

@@ -1327,38 +1327,7 @@ void rsArrayTools::removeMean(T *buffer, int length)
     buffer[i] -= m;
 }
 
-/*
-// old:
-template <class T>
-void rsArrayTools::reverse(T *buffer, int length)
-{
-  T tmp;
-  int lengthMinus1 = length-1;
-  for(int i = 0; i <= (length-2)/2; i++)
-  {
-    tmp                    = buffer[lengthMinus1-i];
-    buffer[lengthMinus1-i] = buffer[i];
-    buffer[i]              = tmp;
-  }
-}
-*/
 
-// new:
-template <class T>
-void rsArrayTools::reverse(T* x, int N)
-{
-  for(int i = 0; i < N/2; i++)
-    rsSwap(x[i], x[N-i-1]);
-}
-
-
-template <class T>
-void rsArrayTools::reverse(const T* x, T* y, int N)
-{
-  if(x == y) { reverse(y, N); return; }  // reverse in place
-  for(int i = 0; i < N; i++)
-    y[i] = x[N-1-i];
-}
 
 template <class T>
 void rsArrayTools::rightShift(T *buffer, int length, int numPlaces)

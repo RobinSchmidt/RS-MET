@@ -774,13 +774,13 @@ public:
 
   /** Reverses the order of the elements the passed array. */
   template <class T>
-  static void reverse(T *buffer, int length);
+  static inline void reverse(T *buffer, int length);
 
   /** Fills array y with the reversed content of array x. x and y should not be overlapping except
   if they point to the same array, in which case we fall back to reverse(T*, int) - the in-place 
   version with just one array parameter. */
   template <class T>
-  static void reverse(const T* x, T* y, int length);
+  static inline void reverse(const T* x, T* y, int length);
 
   /** Shifts the content of the buffer numPlaces to the right, filling it up with zeros from the
   left. */
@@ -1264,6 +1264,38 @@ inline void rsArrayTools::pushFrontPopBack4(T x, T* a)
 // todo: make versions for 1,2,3,N (using a loop or memmove) -> make performance tests, 
 // which version is fastest for what range of lengths maybe rename to updateFifoBuffer4
 // maybe make a version that returns the (old) a[3] element - the caller may be interested in it
+
+/*
+// old:
+template <class T>
+inline void rsArrayTools::reverse(T *buffer, int length)
+{
+  T tmp;
+  int lengthMinus1 = length-1;
+  for(int i = 0; i <= (length-2)/2; i++)
+  {
+    tmp                    = buffer[lengthMinus1-i];
+    buffer[lengthMinus1-i] = buffer[i];
+    buffer[i]              = tmp;
+  }
+}
+*/
+
+// new:
+template <class T>
+inline void rsArrayTools::reverse(T* x, int N)
+{
+  for(int i = 0; i < N/2; i++)
+    rsSwap(x[i], x[N-i-1]);
+}
+
+template <class T>
+inline void rsArrayTools::reverse(const T* x, T* y, int N)
+{
+  if(x == y) { reverse(y, N); return; }  // reverse in place
+  for(int i = 0; i < N; i++)
+    y[i] = x[N-1-i];
+}
 
 template <class T1, class T2>
 inline void rsArrayTools::scale(T1 *buffer, int length, T2 scaleFactor)

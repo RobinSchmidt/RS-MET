@@ -852,7 +852,7 @@ public:
 
   void reverse()
   {
-    //rsReverse(terms);  // Doesn't compile
+    rsReverse(terms);
   }
 
   //-----------------------------------------------------------------------------------------------
