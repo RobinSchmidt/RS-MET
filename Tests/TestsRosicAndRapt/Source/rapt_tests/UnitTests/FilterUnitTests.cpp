@@ -2797,6 +2797,13 @@ bool sparseFilterUnitTest()
   //rsPlotVectors(y);
 
 
+  sf.invert();
+  y = filterResponse(sf, N, hs);
+  ok &= rsIsUnitImpulse(y, 1.e-14);
+  rsPlotVectors(y);
+
+
+
 
 
   return ok;

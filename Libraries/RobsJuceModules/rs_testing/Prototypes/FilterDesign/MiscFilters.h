@@ -756,6 +756,14 @@ public:
     power = newPower;
   }
 
+  void setCoeff(T newCoeff)
+  {
+    coeff = newCoeff;
+  }
+
+  // void setPower(...)
+
+
 
 
   T getCoeff() const { return coeff; }
@@ -803,6 +811,23 @@ public:
   void reserve(size_t amount)
   {
     terms.reserve(amount);
+  }
+
+  void setCoeff(int index, T newCoeff)
+  {
+    rsAssert(index >= 0 && index < getNumTerms());
+    terms[index].setCoeff(newCoeff);
+  }
+
+  void scaleCoeff(int index, T scaler)
+  {
+    setCoeff(index, scaler*getCoeff(index));
+  }
+
+  void scale(T scaler)
+  {
+    for(int i = 0; i < getNumTerms(); i++)
+      scaleCoeff(i, scaler);
   }
 
 
@@ -898,11 +923,59 @@ public:
   }
 
 
+  void scale(TPar scaler)
+  {
+    num.scale(scaler);
+  }
+
+  void invert()
+  {
+    rsAssert(isFilterValid());
+    rsAssert(num.getPower(0) == 0);
+    rsAssert(num.getCoeff(0) != 0);
+    // We assume here that the 0-th num coefficient is the one that multiplies z^0 in the transfer
+    // function and scales x[n] in the difference equation. Maybe we can relax that later to allow
+    // the z^0 coeff to appear at a different position in the array
+
+    // Needs test:
+    TPar s = TPar(1) / num.getCoeff(0);
+    scale(s);
+    rsSwap(num, den);
+    scale(s);
+
+    int dummy = 0;
+  }
+
+
+
+  /** Performs soem sanity checks. Is meant for debug assertions. */
+  bool isFilterValid() const
+  {
+    bool ok = true;
+
+    ok &= num.getNumTerms() > 0 && den.getNumTerms() > 0;
+    ok &= den.getPower(0) == 0  && den.getCoeff(0) == TPar(1); // Assume a0 == 1 normalization
+
+    // Do more checks - like the delayline length matching the maximum power, the minimum power
+    // being >= zero in num and den, powers don't appear twice, powers are ordered (but maybe they
+    // don't have to be - not sure set) etc.
+
+    return ok;
+  }
+
+
+
+
+
+
   TSig getSample(TSig in)
   {
     // Sanity checks:
-    rsAssert(num.getNumTerms() > 0 && den.getNumTerms() > 0);
-    rsAssert(den.getPower(0) == 0 && den.getCoeff(0) == TPar(1)); // Assume a0 == 1 normalization
+    //rsAssert(num.getNumTerms() > 0 && den.getNumTerms() > 0);
+    //rsAssert(den.getPower(0) == 0 && den.getCoeff(0) == TPar(1)); // Assume a0 == 1 normalization
+
+    rsAssert(isFilterValid());
+
 
     // Apply feedback part:
     TSig tmp = in;
@@ -927,6 +1000,10 @@ public:
 
 
 protected:
+
+
+
+ 
 
   rsSparsePolynomial<TPar> num, den;    // Numerator and denominator of transfer function
   rsBasicDelayLine<TSig> delayLine;     // Delayline used for the direct form 2 implementation
