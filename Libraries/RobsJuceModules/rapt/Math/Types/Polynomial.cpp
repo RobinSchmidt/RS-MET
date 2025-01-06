@@ -1843,36 +1843,60 @@ so we may use rsBigInteger
 fraction expansion
 
 
+
 ToDo: 
--in the low-level function interfaces, use consistently "degree" or "aDeg", "bDeg" etc. 
- instead of the generic N, aN, bN etc. to make it clear to the caller that the degree must be 
- passed and *NOT* the length of the coefficient array (which is one more than the degree). 
- Conflating the two is a constant source of confusion and off-by-one bugs and even heap 
- corruptions.
--use consistently input arrays as first and output arrays as last parameters for example in
- interpolant, fitQuadraticDirect -> this will silenty break client code, so be extra careful to
- adapt the code at *every* call site - it should be a consistent pattern through the library:
- inputs first, then outputs...hmm - but that doesn't really work well when we want to have some
- inputs optional - optional parameters must come last...hmmmm....maybe use:
- required inputs, outputs, optional inputs - what about optional outputs? (for example, when we
- fill an output-array only when a non-nullptr is passed?)...see what rsArrayTools does...
- ...or maybe such an enforced consistency might not be a good idea, after all?
--implement greatest common divisor algorithm (maybe the one for the integers can be
- used as is?)
--implement missing operators:
- -operator() that takes a polynomial and returns another polynomial as result (implements 
-  nesting)
- -arithmetic operators that take a number as second (left or right) argument
- -maybe we could meaningfully define <,<=, ...? look at how python or other scientific libraries
-  handle that - in my own python polynomial class, i'm taking the asymptotic behavior
--In the rs_testing module, we have instantiations for float, double, std::complex<double>, 
- rsFraction<int> but not yet for std::complex<float>, int because this does not yet work.
- -> Make it so! We also still get warnings from the rsFraction instantiation -> fix them! Try 
- to also instatiate it for more complicated types such as rsBigFloat, rsMatrix, rsMultiVector 
- and maybe even for rsPolynomial itself and/or rsRationalFunction. Make rational functions of 
- matrices and matrices of rational functions - this should all work together nicely.
--We may also want bivariate rational functions to implement and investigate some interesting 
- math
+
+- Document the intention of the  evaluateTyped()  function. It is for covering the case that the
+  type of the x- and y-values of the polynomial is different from the type of the coefficients. 
+  For example, we could have a polynomial with real coefficients which accepts complex arguments
+  and produces complex outputs. It may be tempting to give the class two template parameters for 
+  that purpose like  TCoef  and  TArg or TVal. But with evaluateTyped, we sidestep that. On the
+  other hand, it seems like we would then also need similar "Typed" evaluation functions for 
+  derivatives, integrals, etc. But it would actually be sufficient to implement only the the 
+  "Typed" versions. The untyped ones could then just call these with TArg = T which would just 
+  make the tpye conversion go away. I'm not sure, what's the better approach. Maybe the rule of 
+  thumb should be: use two template params only when you actually need to have members of both 
+  types which we don't have here, so maybe using just one T and going with the evaluateTyped functions 
+  is more appropriate.
+
+- In the low-level function interfaces, use consistently "degree" or "aDeg", "bDeg" etc. 
+  instead of the generic N, aN, bN etc. to make it clear to the caller that the degree must be 
+  passed and *NOT* the length of the coefficient array (which is one more than the degree). 
+  Conflating the two is a constant source of confusion and off-by-one bugs and even heap 
+  corruptions.
+
+- Use consistently input arrays as first and output arrays as last parameters for example in
+  interpolant, fitQuadraticDirect -> this will silenty break client code, so be extra careful to
+  adapt the code at *every* call site - it should be a consistent pattern through the library:
+  inputs first, then outputs...hmm - but that doesn't really work well when we want to have some
+  inputs optional - optional parameters must come last...hmmmm....maybe use:
+  required inputs, outputs, optional inputs - what about optional outputs? (for example, when we
+  fill an output-array only when a non-nullptr is passed?)...see what rsArrayTools does...
+  ...or maybe such an enforced consistency might not be a good idea, after all?
+
+- Implement greatest common divisor algorithm (maybe the one for the integers can be
+  used as is?). See rsRationalFunction. There is an implementation already.
+
+- Implement missing operators:
+  -operator() that takes a polynomial and returns another polynomial as result (implements 
+   nesting) (done?)
+  -arithmetic operators that take a number as second (left or right) argument
+  -maybe we could meaningfully define <,<=, ...? look at how python or other scientific libraries
+   handle that - in my own python polynomial class, i'm taking the asymptotic behavior
+
+- In the rs_testing module, we have instantiations for float, double, std::complex<double>, 
+  rsFraction<int> but not yet for std::complex<float>, int because this does not yet work.
+  -> Make it so! We also still get warnings from the rsFraction instantiation -> fix them! Try 
+  to also instantiate it for more complicated types such as rsBigFloat, rsMatrix, rsMultiVector,
+  rsMatrix2x2, rsModularInteger (done?) and maybe even for rsPolynomial itself and/or 
+  rsRationalFunction. Make rational functions of matrices and matrices of rational functions. 
+  This should all work together nicely to arbitrary nesting levels.
+
+- We may also want bivariate rational functions to implement and investigate some interesting 
+  math
+
+
+
 
  Other methods for root finding (here, we use the Laguerre method:)
  https://en.wikipedia.org/wiki/Durand%E2%80%93Kerner_method

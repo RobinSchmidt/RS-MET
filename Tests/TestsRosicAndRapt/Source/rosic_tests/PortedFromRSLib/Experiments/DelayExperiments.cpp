@@ -1377,6 +1377,11 @@ void dampedAllpassBiComb_1p()
   // functions. VecS should be a vector of signal values and VecI an integer vector. When we have 
   // that working, we can better assess if the implementation of apt.applyInverse() makes any 
   // sense.
+  //
+  // Or better: implement a class rsSparseFilter based on a class rsSparsePolynomial. The latter
+  // should have a std::vector<Monomial<T>> where Monomial is a simple struct containing a
+  // "T coeff" and "int power".
+  // https://en.wikipedia.org/wiki/Monomial
 
 
 

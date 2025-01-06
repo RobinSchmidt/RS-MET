@@ -732,3 +732,70 @@ void directFormToStateSpace(std::vector<T> b, std::vector<T> a,
   // - Create unit tests that also test some edge cases like empty a and/or b, a[0] != 1, etc.
 }
 
+
+//=================================================================================================
+
+
+template<class T> 
+class rsMonomial
+{
+
+public:
+
+  void setup(T newCoeff, int newPower)
+  {
+    coeff = newCoeff;
+    power = newPower;
+  }
+
+  T evaluateAt(T x) const { return coeff * rsPow(x, power); }
+
+
+protected:
+
+  T   coeff = T(0);
+  int power = T(0);
+
+};
+
+template<class T>
+class rsSparsePolynomial
+{
+
+public:
+
+
+  T evaluateAt(T x) const 
+  { 
+    T y = 0;
+    for(auto& term : terms)
+      y += term.evaluateAt(x);
+
+    //for(size_t i = 0; i < terms.size(); i++)
+    //  y += terms[i].evaluateAt(x);
+    
+    return y;
+  }
+
+
+protected:
+
+  std::vector<rsMonomial<T>> terms;
+
+};
+
+
+template<class TSig, class TPar>
+class rsSparseFilter
+{
+
+public:
+
+
+protected:
+
+  rsSparsePolynomial<TPar> num, den;
+
+};
+
+

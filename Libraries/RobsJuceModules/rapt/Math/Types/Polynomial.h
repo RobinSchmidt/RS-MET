@@ -1,11 +1,11 @@
 #ifndef RAPT_POLYNOMIAL_H
 #define RAPT_POLYNOMIAL_H
 
-/** A class for representing polynomials and doing computations with them. Much of the code is 
-implemented as static member functions that operate directly on arrays of the type T, so you don't
-have to create an instance of class rsPolynomial to use its functionality. However, for 
-convenience, you may also instantiate polynomial objects and then you can do arithmetic operations
-with these objects directly, for example writing code like:
+/** A class for representing polynomials and doing computations with them. Much of the actual 
+number crunching code is implemented as static member functions that operate directly on arrays of
+the type T, so you don't have to create an instance of class rsPolynomial to use its functionality.
+However, for convenience, you may also instantiate polynomial objects and then you can do 
+arithmetic operations with these objects directly, for example writing code like:
 
   rsPolynomial<double> r = p*q;
 
@@ -22,11 +22,7 @@ and std::complex<R> for the complex type. This is done because this class templa
 to be instantiated for real and complex types "T", so using the same template parameter could lead
 to confusion like the compiler using a nested complex type which makes no sense.
 
-ToDo: 
-
-  - Make it work for rsModularInteger
-
-....documentation under construction....tbc...  */
+...TBC...   */
 
 template<class T>
 class rsPolynomial
@@ -398,6 +394,7 @@ public:
 
   /** Evaluates the polynomial at the given input x. */
   T evaluate(T x) const { return evaluate(x, &coeffs[0], getDegree()); }
+  // ToDo: rename to evaluateAt for consistency
 
   /** Evaluates the first derivative of this polynomial at the given x. */
   T derivativeAt(const T& x) const
