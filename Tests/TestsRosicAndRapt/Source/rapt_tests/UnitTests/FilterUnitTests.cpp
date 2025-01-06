@@ -2817,25 +2817,16 @@ bool sparseFilterUnitTest()
 
   using Real = double;
   using Vec  = std::vector<Real>;
-  using Poly = rsPolynomial<Real>;
+  //using Poly = rsPolynomial<Real>;
   using FltD = rsDirectFormFilter<Real, Real>;   // Dense filter type
   using FltS = rsSparseFilter<Real, Real>;       // Sparse filter type
 
   int N = 128;
 
-  // Use:
-  //
-  //  b0 = 0.5, b2 = -0.7, b6 =  0.3
-  //  a0 = 1.0, a3 =  0.6, a5 = -0.1
-  //
-  // But I'm not sure, if that's stable and minimum phase, though. Maybe we should use coeffs that
-  // ensure this.
-
-
-  //Vec b( {1.0, 0.0, -0.7, 0.0, 0.0,  0.0, 0.3});   // Test with b0 = 1 (scaling doesn't matter in inversion)
+  // Define the filter coefficient arrays to be used. The sparse implementation will only store the
+  // nonzero coeffs:
   Vec b({ 0.5, 0.0, -0.7, 0.0, 0.0,  0.0, 0.3});
   Vec a({ 1.0, 0.0,  0.0, 0.6, 0.1, -0.1     });
-
 
   // Helper function to set up a dense filter. We need this because the dense filter does not (yet)
   // support different orders for numerator and denominator, so we need to zero-pad the shorter
@@ -2847,7 +2838,6 @@ bool sparseFilterUnitTest()
     Vec A = a; A.resize(size);
     flt.setCoefficients(&A[0], &B[0], (int)size - 1);
   };
-
 
   // Create, set up and produce impulse response of dense filter:
   FltD df;
@@ -2890,13 +2880,13 @@ bool sparseFilterUnitTest()
   ok &= rsIsCloseTo(hd, hs, 1.e-14);
 
   // Get the "phased" impulse response of the sparse filter, i.e. the one with the numerator array
-  // reversed:
+  // reversed. This transformation should only affect the phase response and leave the magnitude 
+  // response as is:
   Vec hps(N);
   hps[0] = sf.getSamplePhased(1.0);
   for(int n = 1; n < N; n++)
     hps[n] = sf.getSamplePhased(0.0);
   //rsPlotVectors(hs, hps);
-
   Vec mags  = rsSpectralMagnitudes(hs);
   Vec magsP = rsSpectralMagnitudes(hps);
   ok &= rsIsCloseTo(mags, magsP, 1.e-5); 
@@ -2904,21 +2894,29 @@ bool sparseFilterUnitTest()
   //rsPlotVectors(mags, magsP); 
   //rsPlotVectors(mags - magsP); 
 
+  // Now do the phase transform on the actual filter coeffs and check the result:
   sf.reflectZeros();
   Vec hps2 = impulseResponse(sf, N, 1.0);
   ok &= rsIsCloseTo(hps, hps2, 1.e-6);
+  //rsPlotVectors(hps, hps2, hps - hps2);
   // Why do we need such a big tolerance here? That is weird! Commenting out the num.reverse() 
   // call in reflectZeros doesn't seem to help.
 
 
-  //rsPlotVectors(hps, hps2, hps - hps2);
-
-
-  // Try inversion when b0 != 0. In this case, we can only invert up to a delay:
+  // Try inversion when b0 != 0 by introducing a predelay. In this case, we can only invert up to a
+  // delay:
+  int preDelay = 10;
   sf.setupFromDenseCoeffs(b, a);      // Start fresh
-  sf.addPreDelay(10);
+  sf.addPreDelay(preDelay);
   hs = impulseResponse(sf, N, 1.0);
-  rsPlotVectors(hd, hs);
+
+  // Check, if the newly computed hs matches our earlier hd - but with the predelay. We don't seem
+  // to need a tolerance here (at least not with the Microsoft compiler):
+  for(int n = 0; n < preDelay; n++)
+    ok &= hs[n] == 0.0;
+  for(int n = preDelay; n < N; n++)
+    ok &= hs[n] == hd[n-preDelay];
+  //rsPlotVectors(hd, hs);
 
   return ok;
 
