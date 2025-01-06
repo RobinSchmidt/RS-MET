@@ -747,7 +747,7 @@ class rsMonomial
 
 public:
 
-  rsMonomial(T newCoeff, int newPower) : coeff(newCoeff), power(newPower) { }
+  rsMonomial(T newCoeff = T(0), int newPower = 0) : coeff(newCoeff), power(newPower) { }
 
 
   void setup(T newCoeff, int newPower)
@@ -952,9 +952,13 @@ public:
         den.addTerm(denCoeffs[i], (int)i);
     }
 
-    int degree = rsMax(num.getDegree(), den.getDegree());
-    delayLine.setMaximumDelayInSamples(degree);
-    delayLine.setDelayInSamples(degree);
+
+    //// Factor out into function updateDelayLine
+    //int degree = rsMax(num.getDegree(), den.getDegree());
+    //delayLine.setMaximumDelayInSamples(degree);
+    //delayLine.setDelayInSamples(degree);
+
+    updateDelayLineLength();
   }
   // This may allocate!
 
@@ -973,13 +977,24 @@ public:
 
   void setNumeratorTerm(int index, TPar coeff, int delay)
   {
-    num.setTerm(index, coeff, power);
+    num.setTerm(index, coeff, delay);
   }
 
-  void setDenominatorTerm(int index, int delay, TPar coeff)
+  void setDenominatorTerm(int index, TPar coeff, int delay)
   {
-    den.setTerm(index, coeff, power);
+    den.setTerm(index, coeff, delay);
   }
+
+  /** Updates the length of the delayline according to the maximum power of z^-1 that occurs in
+  numerator and denominator polynomial. */
+  void updateDelayLineLength()
+  {
+    int maxDegree = rsMax(num.getDegree(), den.getDegree());
+    delayLine.setMaximumDelayInSamples(maxDegree);
+    delayLine.setDelayInSamples(maxDegree);
+  }
+
+
 
 
   /** Applies a scaling factor to the filter. This basically means to scale all numerator coeffs by
@@ -1015,7 +1030,8 @@ public:
     int deg = num.getDegree();
     for(int i = 0; i < num.getNumTerms(); i++)
       num.setPower(i, deg - num.getPower(i));
-    num.reverse();
+
+    num.reverse();  // To make the array ordered by ascending powers
   }
   // not yet tested
 
@@ -1024,17 +1040,23 @@ public:
   // to deg-p. Then the term array will be sorted in reverse order so we should reverse it
 
 
-  /** Performs soem sanity checks. Is meant for debug assertions. */
+  /** Performs some sanity checks. Is meant for debug assertions. */
   bool isFilterValid() const
   {
     bool ok = true;
 
+    // Numerator and denominator polynomials should not be empty:
     ok &= num.getNumTerms() > 0 && den.getNumTerms() > 0;
-    ok &= den.getPower(0) == 0  && den.getCoeff(0) == TPar(1); // Assume a0 == 1 normalization
 
-    // Do more checks - like the delayline length matching the maximum power, the minimum power
-    // being >= zero in num and den, powers don't appear twice, powers are ordered (but maybe they
-    // don't have to be - not sure set) etc.
+    // Filter should satisfy the a0 == 1 normalization property:
+    ok &= den.getPower(0) == 0  && den.getCoeff(0) == TPar(1);
+
+    // Length of delayline should match the maximum of the degrees of numerator and denominator:
+    int maxDelay = rsMax(num.getDegree(), den.getDegree());
+    ok &= delayLine.getDelayInSamples() == maxDelay;
+
+    // Do more checks: like, the minimum power being >= zero in num and den, powers don't appear
+    // twice, powers are ordered (but maybe they don't have to be - not sure yet) etc.
 
     return ok;
   }
@@ -1092,7 +1114,8 @@ public:
 
 
   /** Computes a sample at a time of a filter that has the numerator transformed from min-phase to
-  max-phase or vice versa. */
+  max-phase or vice versa. For mixed phase filters, it inverts the mix. We reflect the zeros in
+  the unit circle. */
   TSig getSamplePhased(TSig in)
   {
     rsAssert(isFilterValid());

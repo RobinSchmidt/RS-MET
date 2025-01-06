@@ -2828,8 +2828,7 @@ bool sparseFilterUnitTest()
   Vec mags  = rsSpectralMagnitudes(hs);
   Vec magsP = rsSpectralMagnitudes(hps);
   ok &= rsIsCloseTo(mags, magsP, 1.e-5); 
-  // A big tolerance needed here due to truncation of the impulse response at N samples.
-
+  // A big tolerance needed here due to truncation of the impulse response at N samples. 
   //rsPlotVectors(mags, magsP); 
   //rsPlotVectors(mags - magsP); 
 
@@ -2837,13 +2836,11 @@ bool sparseFilterUnitTest()
   sf.reflectZeros();
   Vec hps2 = impulseResponse(sf, N, 1.0);
   ok &= rsIsCloseTo(hps, hps2, 1.e-6);   
-  // Why do we need such a big tolerance here? That is weird!
+  // Why do we need such a big tolerance here? That is weird! Commenting out the num.reverse() 
+  // call in reflectZeros doesn't seem to help.
 
 
-  rsPlotVectors(hps, hps2, hps - hps2);
-
-
-
+  //rsPlotVectors(hps, hps2, hps - hps2);
 
   return ok;
 

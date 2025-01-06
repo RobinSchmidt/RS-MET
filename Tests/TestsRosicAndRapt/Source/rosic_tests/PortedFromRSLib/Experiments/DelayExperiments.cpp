@@ -1264,11 +1264,12 @@ void dampedAllpassBiComb_1p()
 
 
   // Define types to be used:
-  using Real     = double;
-  using Complex  = rsComplex<Real>;
-  using Vec      = std::vector<Real>;
-  using Allpass  = rsDampedAllpassBiComb_1p<Real, Real>;
-  using AllpassT = rsDampedAllpassBiComb_1p_Test<Real, Real>;
+  using Real         = double;
+  using Complex      = rsComplex<Real>;
+  using Vec          = std::vector<Real>;
+  using Allpass      = rsDampedAllpassBiComb_1p<Real, Real>;
+  using AllpassT     = rsDampedAllpassBiComb_1p_Test<Real, Real>;  // May be soon obsolete
+  using SparseFilter = rsSparseFilter<Real, Real>;
 
 
   int  N      = 1000;    // Number of samples to render
@@ -1320,11 +1321,25 @@ void dampedAllpassBiComb_1p()
   for(int n = 1; n < N; n++)
     hc3[n] = apt.getSampleCombsDF2(0.0);
 
-  rsPlotVectors(hc, hc2, hc3);
+  // Let the ap convert itself into a sparse direct form filter and check that this converted 
+  // filter has the same impulse response:
+  SparseFilter sf;
+  ap.convertCombSumToDirectForm(&sf);
+  Vec hc4 = impulseResponse(sf, N, 1.0);
+
+
+
 
   bool ok = true;
   ok &= rsIsCloseTo(hc, hc2, 1.e-15);
   ok &= rsIsCloseTo(hc, hc3, 1.e-15);
+  ok &= rsIsCloseTo(hc, hc4, 1.e-15);
+
+  rsPlotVectors(hc, hc2, hc3, hc4);
+
+
+
+
 
   // OK - so far, so good. We can produce the output of the weighted sum of the two comb filters by
   // two different algorithms: 

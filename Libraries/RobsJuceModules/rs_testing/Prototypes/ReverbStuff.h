@@ -1920,13 +1920,13 @@ rsComplex<TPar> rsDampedAllpassBiComb_1p<TSig, TPar>::getCombTransferFunctionAt(
 
 template<class TSig, class TPar>
 void rsDampedAllpassBiComb_1p<TSig, TPar>::convertCombSumToDirectForm(
-  rsSparseFilter<TSig, TPar>* sparseDirectFormFilter)
+  rsSparseFilter<TSig, TPar>* sparseFilter)
 {
   // Set up feedforward coeffs:
-  sparseDirectFormFilter->setNumNumeratorTerms(9);
+  sparseFilter->setNumNumeratorTerms(9);
   auto setB = [&](int index, int delay, TSig coeff)
   {
-    sparseDirectFormFilter->setNumeratorTerm(index, coeff, delay);
+    sparseFilter->setNumeratorTerm(index, coeff, delay);
   };
   setB(0, 0,    g1 + g2);
   setB(1, 1,    a11*g1 + a21*g1 + a11*g2 + a21*g2);
@@ -1942,23 +1942,26 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::convertCombSumToDirectForm(
 
 
   // Set up feedback coeffs:
-  sparseDirectFormFilter->setNumDenominatorTerms(11);
+  sparseFilter->setNumDenominatorTerms(12);
   auto setA = [&](int index, int delay, TSig coeff)
   {
-    sparseDirectFormFilter->setDenominatorTerm(index, coeff, delay);
+    sparseFilter->setDenominatorTerm(index, coeff, delay);
   };
-  setA( 0, 1,       a11 + a21);
-  setA( 1, 2,       a11 * a21);
-  setA( 2, M1+1,    b10 * k1);
-  setA( 3, M1+2,    (a21*b10 + b11) * k1);
-  setA( 4, M1+3,    a21 * b11 * k1);
-  setA( 5, M2+1,    b20 * k2);
-  setA( 6, M2+2,    (a11*b20 + b21) * k2);
-  setA( 7, M2+3,    a11 * b21 * k2);
-  setA( 8, M1+M2+2, b10*b20 * k1*k2);
-  setA( 9, M1+M2+3, (b11*b20 + b10*b21) * k1*k2);
-  setA(10, M1+M2+4, b11*b21 * k1*k2);
+  setA( 0, 0,       TPar(1));
+  setA( 1, 1,       a11 + a21);
+  setA( 2, 2,       a11 * a21);
+  setA( 3, M1+1,    b10 * k1);
+  setA( 4, M1+2,    (a21*b10 + b11) * k1);
+  setA( 5, M1+3,    a21 * b11 * k1);
+  setA( 6, M2+1,    b20 * k2);
+  setA( 7, M2+2,    (a11*b20 + b21) * k2);
+  setA( 8, M2+3,    a11 * b21 * k2);
+  setA( 9, M1+M2+2, b10*b20 * k1*k2);
+  setA(10, M1+M2+3, (b11*b20 + b10*b21) * k1*k2);
+  setA(11, M1+M2+4, b11*b21 * k1*k2);
 
+  // Update the length of the delayline:
+  sparseFilter->updateDelayLineLength();
   int dummy = 0;
 }
 
@@ -2026,7 +2029,13 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
 /** A subclass of rsDampedAllpassBiComb_1p that implements some additional functionality that is 
 only relevant in a testing and experimentation setting. Foremostly, we want to try to implement the
 whole filter in direct form just to verify that the SageMath output for the direct form is correct.
-If that works, we can continue working from there - but it doesn't work yet .... */
+If that works, we can continue working from there - but it doesn't work yet .... 
+
+May be soon obsolete. We should now use the conversion to rsSparseFilter. When we can successfully 
+convert the rsDampedAllpassBiComb_1p into an rsSparseFilter object, we don't need this class 
+anymore.
+
+*/
 
 template<class TSig, class TPar>
 class rsDampedAllpassBiComb_1p_Test : public rsDampedAllpassBiComb_1p<TSig, TPar>
