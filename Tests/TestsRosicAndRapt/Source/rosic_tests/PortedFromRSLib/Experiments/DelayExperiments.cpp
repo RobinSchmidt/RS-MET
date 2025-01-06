@@ -1354,6 +1354,8 @@ void dampedAllpassBiComb_1p()
   Complex Ht = 0;
   for(int n = 0; n < N; n++)
     Ht += hc[n] * rsPow(z, Complex(-n));
+  ok &= rsIsCloseTo(H, Ht, 1.e-12);
+
   // OK - they are similar but the error is rather large because the feedback is rather high and we
   // truncate teh impulse response before it has sufficiently decayed away. Maybe use a z that is 
   // itself decaying, i.e. not on the unit circle
