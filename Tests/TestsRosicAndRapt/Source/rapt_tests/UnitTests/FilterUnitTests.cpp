@@ -2922,17 +2922,8 @@ bool sparseFilterUnitTest()
   // should be a shifted unit impulse:
   sf.invert();
   y = filterResponse(sf, N, hs);
-  for(int n = 0; n < N; n++)
-  {
-    if(n == preDelay)
-      ok &= rsIsCloseTo(y[n], 1.0, 1.e-14);
-    else
-      ok &= rsIsCloseTo(y[n], 0.0, 1.e-14);
-  }
-  // Maybe factor out into rsIsShiftedUnitImpulse
-
-
-  rsPlotVectors(y); // Should be shifted unit impulse
+  ok &= rsIsShiftedUnitImpulse(y, preDelay, 1.e-14);
+  //rsPlotVectors(y);
 
 
   // Check also getSampleInverse(), getSamplePhased, reflectZeros, etc. How does that work with

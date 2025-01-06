@@ -254,6 +254,20 @@ bool rsIsUnitImpulse(const std::vector<T>& x, T tol)
   return maxErr <= tol;
 }
 
+template<class T>
+bool rsIsShiftedUnitImpulse(const std::vector<T>& x, int shift, T tol)
+{
+  bool ok = true;
+  for(int n = 0; n < (int) x.size(); n++)
+  {
+    if(n == shift)
+      ok &= rsIsCloseTo(x[n], 1.0, tol);
+    else
+      ok &= rsIsCloseTo(x[n], 0.0, tol);
+  }
+  return ok;
+}
+
 /** Returns N samples of the impulse response of the passed filter as std::vector. It is necessary
 for you to pass a scale factor of the type of the filter's output signal (for example: 1.0 for
 double), such that the compiler can deduce the template parameter. We also use it to scale the
