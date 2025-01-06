@@ -736,11 +736,19 @@ void directFormToStateSpace(std::vector<T> b, std::vector<T> a,
 //=================================================================================================
 
 
+/** A class for representing (univariate) monomials, i.e. expressions of the form  c * x^p  for
+some coefficient c and integer power (or exponent) p.
+
+See: https://en.wikipedia.org/wiki/Monomial   */
+
 template<class T> 
 class rsMonomial
 {
 
 public:
+
+  rsMonomial(T newCoeff, int newPower) : coeff(newCoeff), power(newPower) { }
+
 
   void setup(T newCoeff, int newPower)
   {
@@ -758,11 +766,36 @@ protected:
 
 };
 
+
+
+/** A class for representing sparse polynomials, i.e. polynomials that have many zero coefficients.
+we represent such sparse polynomials basically as a std::vector of monomials. */
+
 template<class T>
 class rsSparsePolynomial
 {
 
 public:
+
+
+
+  void addTerm(T coeff, int power)
+  {
+    terms.push_back(rsMonomial<T>(coeff, power));
+    // Maybe we could use emplace_back?
+  }
+
+  void clear()
+  {
+    terms.clear();
+  }
+
+  void reserve(size_t amount)
+  {
+    terms.reserve(amount);
+  }
+
+
 
 
   T evaluateAt(T x) const 
@@ -778,12 +811,16 @@ public:
   }
 
 
+
 protected:
 
   std::vector<rsMonomial<T>> terms;
 
 };
 
+
+/** A class for representing sparse filters in direct form. We represent them using two sparse
+polynomials. one for the numerator and one for the denominator of the transer function. */
 
 template<class TSig, class TPar>
 class rsSparseFilter
@@ -792,11 +829,48 @@ class rsSparseFilter
 public:
 
 
+  void setupFromDenseCoeffs(const std::vector<TPar>& numCoeffs, const std::vector<TPar>& denCoeffs)
+  {
+    num.clear();
+    num.reserve(numCoeffs.size());
+    for(size_t i = 0; i < numCoeffs.size(); i++)
+    {
+      if(numCoeffs[i] != TPar(0))               // Maybe we need a tolerance?
+        num.addTerm(numCoeffs[i], (int)i);
+    }
+
+    den.clear();
+    den.reserve(denCoeffs.size());
+    for(size_t i = 0; i < denCoeffs.size(); i++)
+    {
+      if(denCoeffs[i] != TPar(0))               // Maybe we need a tolerance?
+        den.addTerm(denCoeffs[i], (int)i);
+    }
+
+    // ToDo:
+    //
+    // - Implement and call num.reserve() / den.reserve() to avoid excessive re-allocations in 
+    //   the addTerm() calls (which use push_back on a std::vector)  ...done!
+  }
+
+
+  TSig getSample(TSig in)
+  {
+    return 0;  // Preliminary
+  }
+
+  void reset()
+  {
+    delayLine.reset();
+  }
 
 
 protected:
 
   rsSparsePolynomial<TPar> num, den;
+
+  rsBasicDelayLine<TSig> delayLine;
+  // The delayline use for the direct form 2 implementation
 
 };
 

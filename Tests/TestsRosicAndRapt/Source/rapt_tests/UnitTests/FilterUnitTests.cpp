@@ -2749,6 +2749,8 @@ bool sparseFilterUnitTest()
   using FltD = rsDirectFormFilter<Real, Real>;   // Dense filter type
   using FltS = rsSparseFilter<Real, Real>;       // Sparse filter type
 
+  int N = 100;
+
   // Use:
   //
   //  b0 = 0.5, b2 = -0.7, b6 =  0.3
@@ -2757,14 +2759,14 @@ bool sparseFilterUnitTest()
   // But I'm not sure, if that's stable and minimum phase, though. Maybe we should use coeffs that
   // ensure this.
 
-  Vec b( {0.5, 0, -0.7, 0,   0,  0, 0.3});
-  Vec a( {1.0, 0,  0.0, 0.6, 0, -0.1   });
+  Vec b( {0.5, 0.0, -0.7, 0.0, 0.0,  0.0, 0.3});
+  Vec a( {1.0, 0.0,  0.0, 0.6, 0.1, -0.1     });
 
 
   // Helper function to set up a dense filter. We need this because the dense filter does not (yet)
   // support different orders for numerator and denominator, so we need to zero-pad the shorter
   // coeff array:
-  auto setupFilter = [](FltD& flt, const Vec& b, const Vec& a)
+  auto setupDenseFilter = [](FltD& flt, const Vec& b, const Vec& a)
   {
     size_t size = std::max(b.size(), a.size());
     Vec B = b; B.resize(size);
@@ -2773,14 +2775,14 @@ bool sparseFilterUnitTest()
   };
 
 
-
-
-
   FltD df;
-  setupFilter(df, b, a);
+  setupDenseFilter(df, b, a);
+  Vec h = impulseResponse(df, N, 1.0);
+  rsPlotVectors(h);
 
 
   FltS sf;
+  sf.setupFromDenseCoeffs(b, a);
 
 
 
