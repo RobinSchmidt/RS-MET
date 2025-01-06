@@ -1736,24 +1736,13 @@ protected:
     y11di = y;
     return y;
   }
-
-
-
   TSig getSampleComb1(TSig in)
   {
-    // Old:
-    //combOut1 = mainDelay1.getSample(in - k1 * applyDamper1(combOut1));
-    //return combOut1;
-
-    // New:
     combOut1 = applyDamper1(in - k1 * mainDelay1.getSample(combOut1));
-    return applyInverseDamper1(combOut1);
-
-    //return combOut1; 
-
-    
-    // ToDo: Maybe also try something like  return applyInverseDamper1(combOut1);  Maybe that works
-    // better? Not yet sure...still experimenting and researching...
+    if(dampCompensated)
+      return applyInverseDamper1(combOut1);
+    else
+      return combOut1;
   }
 
 
@@ -1771,18 +1760,13 @@ protected:
     y21di = y;
     return y;
   }
-
   TSig getSampleComb2(TSig in)
   {
-    //// Old:
-    //combOut2 = mainDelay2.getSample(in - k2 * applyDamper2(combOut2));
-    //return combOut2;
-
-
-    // New:
     combOut2 = applyDamper2(in - k2 * mainDelay2.getSample(combOut2));
-    return applyInverseDamper2(combOut2);
-    //return combOut2; 
+    if(dampCompensated)
+      return applyInverseDamper2(combOut2);
+    else
+      return combOut2;
   }
 
 
@@ -1825,6 +1809,9 @@ protected:
   std::vector<int>  ffDelays, fbDelays;
   // The coeffs are of type TSig (rather than TPar) because some involve k1 and/or k2 which we have
   // also made TSig in order to allow for complex feedback. 
+
+ 
+  bool dampCompensated = true;
 
 
   //rsSparseFilter<TSig, TPar> corrector;
@@ -1937,7 +1924,10 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::convertCombSumToDirectForm(
   setB(6, M2+1, b20*g1*k2);
   setB(7, M2+2, a11*b20*g1*k2 + b21*g1*k2);
   setB(8, M2+3, a11*b21*g1*k2);
-  // ToDo: switch between two modes: with and without the compensation filters
+  // ToDo: switch between two modes: with and without the compensation filters. Or maybe have 3 
+  // modes - the third is with the z^-M1, z^-M2 in the numerator. But that filter is not 
+  // invertible. But maybe it's invertible up to delay? That would actually be good enough.
+  // The modes could be given in an enum: withPredelay, compensated, uncompensated
   // Optimize!
 
 
@@ -1962,7 +1952,6 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::convertCombSumToDirectForm(
 
   // Update the length of the delayline:
   sparseFilter->updateDelayLineLength();
-  int dummy = 0;
 }
 
 
