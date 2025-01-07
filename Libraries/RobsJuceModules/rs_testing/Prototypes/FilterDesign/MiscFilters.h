@@ -903,6 +903,10 @@ public:
   /** Reverses the array of terms. */
   void reverse() { rsReverse(terms); }
 
+
+  void canonicalize();
+  // Under construction
+
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
@@ -975,6 +979,24 @@ void rsSparsePolynomial<T>::setupFromDenseCoeffs(const std::vector<T>& newCoeffs
 
 
 template<class T>
+void rsSparsePolynomial<T>::canonicalize()
+{
+  //rsHeapSort(&terms[0], (int) terms.size(), &rsLessByPower);
+
+  using Mon = rsMonomial<T>;
+  std::sort(terms.begin(), terms.end(), 
+            [](const Mon& lhs, const Mon& rhs){ return lhs.getPower() < rhs.getPower(); });
+
+
+  // ToDo: consolidate terms with equal exponent into single terms
+
+
+  int dummy = 0;
+}
+
+
+
+template<class T>
 int rsSparsePolynomial<T>::getMinPower() const
 {
   if(isEmpty())
@@ -1039,6 +1061,33 @@ T rsSparsePolynomial<T>::evaluateAt(T x) const
     y += term.evaluateAt(x);
   return y;
 }
+
+
+// Naive implementation of a weighted sum of two sparse polynomials:
+template<class T>
+rsSparsePolynomial<T> weightedSumNaive(
+  const rsSparsePolynomial<T>& p, T wp, const rsSparsePolynomial<T>& q, T wq)
+{
+  int Np = p.getNumTerms();      // Number of terms in left operand
+  int Nq = q.getNumTerms();      // Number of terms in right operand
+  int Nr = Np + Nq;              // Number of terms in result
+
+  rsSparsePolynomial<T> r;
+  r.setNumTerms(Nr);
+  for(int i = 0; i < Np; i++)
+    r.setTerm(i, wp * p.getCoeff(i), p.getPower(i));
+  for(int i = 0; i < Nq; i++)
+    r.setTerm(Np + i, wq * q.getCoeff(i), q.getPower(i));
+  // r.canonicalize();
+
+
+  return r;
+}
+
+
+
+
+
 
 
 

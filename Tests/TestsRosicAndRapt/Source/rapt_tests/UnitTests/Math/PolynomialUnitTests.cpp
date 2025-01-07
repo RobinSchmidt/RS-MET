@@ -2639,20 +2639,38 @@ bool testSparsePolynomial()
   ok &= ps1.isCanonical()    == true;
 
 
+  // Create a non-canonical representation of a sparse polynomial. The terms are not ordered by 
+  // increasing powers. The powers all apear only once, though:
+  ps1.clear();
+  ps1.setNumTerms(5);
+  ps1.setTerm(0, +2.0, 3);
+  ps1.setTerm(1, -3.0, 1);
+  ps1.setTerm(2, +5.0, 4);
+  ps1.setTerm(3, -7.0, 2);
+  ps1.setTerm(4, +4.0, 0);
+  y1 = ps1.evaluateAt(x);
+  ok &= ps1.isCanonical() == false;
+  ps1.canonicalize();
+  y2 = ps1.evaluateAt(x);
+  ok &= rsIsCloseTo(y1, y2, 1.e-15);
+  ok &= ps1.isCanonical() == true;
 
 
+  // Create a non-canonical representation of a sparse polynomial. The terms are not ordered by 
+  // increasing powers and the power 1 appears twice:
+  ps1.clear();
+  ps1.setNumTerms(5);
+  ps1.setTerm(0, +2.0, 3);
+  ps1.setTerm(1, -3.0, 1);
+  ps1.setTerm(2, +5.0, 4);
+  ps1.setTerm(3, -7.0, 2);
+  ps1.setTerm(4, +2.0, 1);
 
-  // Create a non-canonical representation of a sparse polynomial:
 
-
-
-  
-  
-
-
-
-
-
+  // ToDo:
+  // 
+  // - Check behavior of canonicalization when we have a cancellation of the coeffs of terms with 
+  //   the same exponent. Maybe use a power of 2 and 3 terms with coeffs +2, +3, -5. 
 
   return ok;
 }
