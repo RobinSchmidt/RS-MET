@@ -956,8 +956,7 @@ public:
 
   /** Checks if this sparse polynomial is in canonical representation. A representation is 
   canonical if it has no zero coefficients (up to a given tolerance) and if the powers are strictly
-  increasing (as function of term-index). It also needs to have at least one term (otherwise, it's
-  an invalid representation anyway). */
+  increasing (as function of term-index). */
   bool isCanonical(T tol = T(0)) const;
   // Maybe we should also accept the empty polynomial (i.e. without any terms) as canonical 
   // representation. If we don't, we have another problem: we would have to represent the zero 
@@ -965,6 +964,7 @@ public:
   // be zero (actually, in this case, the power could be anything). But that goes against our rule 
   // that we should not store zero coeffs. Hmmm....seems like we can't maintain both invariants at 
   // the same time. They are incompatible.
+  // OK - done.
 
 
 
@@ -1001,8 +1001,11 @@ void rsSparsePolynomial<T>::setupFromDenseCoeffs(const std::vector<T>& newCoeffs
   for(int i = 0; i < (int) newCoeffs.size(); i++)
   {
     if(newCoeffs[i] != T(0))                // Maybe we need a tolerance?
-      terms.push_back(rsMonomial<T>(newCoeffs[i], i));
-    // Maybe we could use emplace_back? Would that be better?
+    {
+      //terms.push_back(rsMonomial<T>(newCoeffs[i], i));
+      terms.emplace_back(rsMonomial<T>(newCoeffs[i], i));
+      // Maybe we could use emplace_back? Would that be better?
+    }
   }
 }
 
@@ -1011,29 +1014,30 @@ void rsSparsePolynomial<T>::setupFromDenseCoeffs(const std::vector<T>& newCoeffs
 template<class T>
 bool rsSparsePolynomial<T>::isCanonical(T tol = T(0)) const
 {
-  if(getNumTerms() < 1)
+  if(isEmpty())
+    return true;                                 // Edge case. Empty polynomials are canonical.
+
+  if(rsAbs(getCoeff(0)) <= tol)
     return false;
 
-  if(rsAbs(getCoeff(0) <= tol))
-    return false;
-
-  int prevPow = getPower(0);                // Previous power
+  int prevPow = getPower(0);                     // Previous power
 
   for(int i = 1; i < getNumTerms(); i++)
   {
-    if(rsAbs(getCoeff(i) <= tol))
+    // Coeffs should be nonzero:
+    if(rsAbs(getCoeff(i)) <= tol)
       return false;
 
-    int curPow = getPower(i);               // Current power
+    // Powers should be strictly increasing:
+    int curPow = getPower(i);                    // Current power
     if(curPow <= prevPow)
       return false;
-
     prevPow = curPow;
   }
 
   return true;
 }
-// Needs test
+// Needs tests
 
 
 // ToDo:

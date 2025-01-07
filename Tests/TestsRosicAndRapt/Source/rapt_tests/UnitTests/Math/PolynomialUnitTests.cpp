@@ -2589,6 +2589,16 @@ bool testSparsePolynomial()
   PolyS ps1(coeffs1);
 
 
+  ok &= ps1.isValidIndex(-1) == false;
+  ok &= ps1.isValidIndex( 0) == true;
+  ok &= ps1.isValidIndex( 2) == true;   // There are 3 nonzero coeffs so max valid index is 2.
+  ok &= ps1.isValidIndex( 3) == false;
+  ok &= ps1.isEmpty()        == false;
+  ok &= ps1.isCanonical()    == true;
+
+
+
+
 
 
   return ok;
