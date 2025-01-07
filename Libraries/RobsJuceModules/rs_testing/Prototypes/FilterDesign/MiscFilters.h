@@ -980,6 +980,21 @@ public:
 
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Low Level API */
+
+
+  static void weightedSum(
+    const rsSparsePolynomial<T>& p, T wp,
+    const rsSparsePolynomial<T>& q, T wq,
+    rsSparsePolynomial<T>* r, T tol);
+
+
+
+
+
+
+
 protected:
 
   std::vector<rsMonomial<T>> terms;
@@ -1106,8 +1121,6 @@ bool rsSparsePolynomial<T>::isCanonical(T tol = T(0)) const
 
   return true;
 }
-// Needs more tests
-
 
 template<class T>
 T rsSparsePolynomial<T>::evaluateAt(T x) const 
@@ -1117,6 +1130,28 @@ T rsSparsePolynomial<T>::evaluateAt(T x) const
     y += term.evaluateAt(x);
   return y;
 }
+
+
+template<class T>
+void rsSparsePolynomial<T>::weightedSum(
+  const rsSparsePolynomial<T>& p, T wp,
+  const rsSparsePolynomial<T>& q, T wq,
+  rsSparsePolynomial<T>* r, T tol)
+{
+  int Np = p.getNumTerms();      // Number of terms in left operand
+  int Nq = q.getNumTerms();      // Number of terms in right operand
+  int Nr = Np + Nq;              // Number of terms in result (before canonicalization)
+
+  r->setNumTerms(Nr);
+  for(int i = 0; i < Np; i++)
+    r->setTerm(i, wp * p.getCoeff(i), p.getPower(i));
+  for(int i = 0; i < Nq; i++)
+    r->setTerm(Np + i, wq * q.getCoeff(i), q.getPower(i));
+
+  r->canonicalize(tol);
+}
+
+
 
 
 // Naive implementation of a weighted sum of two sparse polynomials:
@@ -1138,7 +1173,6 @@ rsSparsePolynomial<T> rsWeightedSumNaive(
   r.canonicalize(tol);
   return r;
 }
-
 
 template<class T>
 rsSparsePolynomial<T> rsAddNaive(
@@ -1166,24 +1200,20 @@ rsSparsePolynomial<T> rsMultiplyNaive(
   int Nq = q.getNumTerms();      // Number of terms in right operand
   int Nr = Np * Nq;              // Number of terms in result (before canonicalization)
 
-
   rsSparsePolynomial<T> r;
   r.setNumTerms(Nr);
   for(int i = 0; i < Np; i++)
-  {
     for(int j = 0; j < Nq; j++)
-    {
       r.setTerm(i*Nq+j, p.getCoeff(i) * q.getCoeff(j), p.getPower(i) + q.getPower(j));
-    }
-  }
-
-
-
 
   r.canonicalize(tol);
   return r;
 }
 
+// I'm not really sure, if I can come up with better algorithms to perform these tasks. Maybe the
+// algorithms should indeed be used in production. If so, add them as static member functions to 
+// the class. They should take the result r as ouput parameter (by pointer). Then implement the
+// +,-,* operators based on these functions. Try to implement division with remainder, too.
 
 
 

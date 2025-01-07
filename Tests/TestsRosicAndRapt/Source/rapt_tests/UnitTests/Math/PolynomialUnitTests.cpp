@@ -2701,7 +2701,8 @@ bool testSparsePolynomial()
   p = PolyS({ Mon(3.0, 2), Mon(-2.0, 1) });
   q = PolyS({ Mon(2.0, 3), Mon(-3.0, 4), Mon(5.0, 0) });
 
-  r = rsWeightedSumNaive(p, wp, q, wq, tol);
+  //r = rsWeightedSumNaive(p, wp, q, wq, tol);
+  PolyS::weightedSum(p, wp, q, wq, &r, tol);
   y1 = wp * p(x) + wq * q(x);
   y2 = r(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
