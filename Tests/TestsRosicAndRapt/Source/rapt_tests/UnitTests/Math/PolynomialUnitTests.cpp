@@ -2591,23 +2591,20 @@ bool testSparsePolynomial()
   Vec coeffs1({ 0.5, 0.0, -0.7, 0.0, tiny, 0.3});
 
   PolyD pd1(coeffs1);
-
-  //PolyS ps1(coeffs1, tol);
-  PolyS ps1;
+  PolyS ps1, ps2;
   ps1.setupFromDenseCoeffs(coeffs1, tol);
 
   // Test inquiry functions:
   ok &= ps1.isEmpty()        == false;
-  ok &= ps1.getNumTerms()    ==  3;
-  ok &= ps1.getMinPower()    ==  0;
-  ok &= ps1.getMaxPower()    ==  5;
-  ok &= ps1.getDegree()      ==  5;
+  ok &= ps1.getNumTerms()    == 3;
+  ok &= ps1.getMinPower()    == 0;
+  ok &= ps1.getMaxPower()    == 5;
+  ok &= ps1.getDegree()      == 5;
   ok &= ps1.isValidIndex(-1) == false;
   ok &= ps1.isValidIndex( 0) == true;
   ok &= ps1.isValidIndex( 2) == true;   // There are 3 nonzero coeffs so max valid index is 2.
   ok &= ps1.isValidIndex( 3) == false;
   ok &= ps1.isCanonical()    == true;
-
   ok &= ps1.getCoeff(0)      ==  0.5;
   ok &= ps1.getCoeff(1)      == -0.7;
   ok &= ps1.getCoeff(2)      ==  0.3;
@@ -2700,6 +2697,12 @@ bool testSparsePolynomial()
 
 
   ps1 = PolyS({ Mon(3.0, 2), Mon(-2.0, 1) });
+  ps2 = PolyS({ Mon(2.0, 3), Mon(-3.0, 4), Mon(5.0, 0) });
+
+
+
+
+
 
 
 
@@ -2723,6 +2726,8 @@ bool testSparsePolynomial()
   // 
   // - Do some randomized tests. Generate random polynomials, set some coeffs to zero, 
   //   canonicalize, etc.
+  //
+  // - Implement and test copyDataFrom, copy/move constructor/assigment, etc.
 }
 
 

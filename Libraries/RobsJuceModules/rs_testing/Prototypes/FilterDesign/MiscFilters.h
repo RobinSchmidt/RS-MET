@@ -1008,16 +1008,14 @@ void rsSparsePolynomial<T>::canonicalize(T tol)
 
   // Consolidate multiple terms with equal power/exponent into single term: 
   int numTerms = getNumTerms();
-  int p = getPower(0);
+  int p = getPower(0);              // Current power
   int r = 1;                        // Read index
   int w = 0;                        // Write index
-  while(r < numTerms)
+  while(r < numTerms) 
   {
     if(getPower(r) == p)
-    {
       shiftCoeff(w, getCoeff(r));
-    }
-    else
+    else 
     {
       w++;
       setTerm(w, getCoeff(r), getPower(r));
@@ -1030,13 +1028,8 @@ void rsSparsePolynomial<T>::canonicalize(T tol)
   // sense to factor it out into a function in its own right. Doing so could invite calling it on 
   // unsorted term arrays in which case we would have a bug.
 
-  // Remove zeros:
-  //auto newEnd = std::remove_if(terms.begin(), terms.end(), 
-  //                             [&](const Mon& t){ return rsAbs(t.getCoeff()) <= tol; });
-  //terms.erase(newEnd, terms.end());
-
-  rsRemoveIf(terms, [&](const Mon& t){ return rsAbs(t.getCoeff()) <= tol; });
-
+  // Remove terms with coefficient zero:
+  rsRemoveIf(terms, [&tol](const Mon& term){ return rsAbs(term.getCoeff()) <= tol; });
 
   // Sanity check in debug mode:
   rsAssert(isCanonical());
@@ -1046,11 +1039,6 @@ void rsSparsePolynomial<T>::canonicalize(T tol)
   //
   // - Maybe try using  rsHeapSort(&terms[0], (int) terms.size(), &rsLessByPower);  instead of
   //   std::sort(..)
-  //
-  // - Maybe implement a convenience function  rsRemoveIf(vec, pred)  that encapsulates the
-  //   remove/erase idiom that we see above for the removal of the zeros. I also have some 
-  //   selfmade functions that do such a thing on strings already. Maybe that could also be 
-  //   adapted and used. See  https://en.cppreference.com/w/cpp/algorithm/remove 
 }
 
 
