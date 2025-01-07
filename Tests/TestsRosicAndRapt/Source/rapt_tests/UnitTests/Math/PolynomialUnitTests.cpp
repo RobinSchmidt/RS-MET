@@ -2639,6 +2639,20 @@ bool testSparsePolynomial()
   ok &= ps1.isCanonical()    == true;
 
 
+
+  ps1.clear();
+  ps1.setNumTerms(8);
+  ps1.setTerm(0, +2.0, 3);
+  ps1.setTerm(1, -3.0, 1);
+  ps1.setTerm(2, +5.0, 2);
+  ps1.setTerm(3, -7.0, 2);
+  ps1.setTerm(4, +2.0, 1);
+  ps1.setTerm(5, +3.0, 2);
+  ps1.setTerm(6, -4.0, 4);
+  ps1.setTerm(7, +6.0, 4);
+  ps1.canonicalize();
+
+
   // Create a non-canonical representation of a sparse polynomial. The terms are not ordered by 
   // increasing powers. The powers all apear only once, though:
   ps1.clear();
@@ -2654,6 +2668,9 @@ bool testSparsePolynomial()
   y2 = ps1.evaluateAt(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
   ok &= ps1.isCanonical() == true;
+
+
+
 
 
   // Create a non-canonical representation of a sparse polynomial. The terms are not ordered by 

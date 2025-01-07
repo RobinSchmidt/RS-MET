@@ -886,6 +886,10 @@ public:
 
   void scaleCoeff(int index, T scaler) { setCoeff(index, scaler * getCoeff(index)); }
 
+
+  void shiftCoeff(int index, T amount) { setCoeff(index, amount + getCoeff(index)); }
+
+
   void shiftPower(int index, int amount) { setPower(index, amount + getPower(index)); }
 
   void scale(T scaler)
@@ -981,17 +985,53 @@ void rsSparsePolynomial<T>::setupFromDenseCoeffs(const std::vector<T>& newCoeffs
 template<class T>
 void rsSparsePolynomial<T>::canonicalize()
 {
-  //rsHeapSort(&terms[0], (int) terms.size(), &rsLessByPower);
+  // In the empty case, we have nothing to and we really *need* to return early in order to not 
+  // get an access violation in the code below (in the  int p = getPower(0);  line):
+  if(isEmpty())
+    return;
 
+  // Sort the terms by power/exponent:
   using Mon = rsMonomial<T>;
   std::sort(terms.begin(), terms.end(), 
             [](const Mon& lhs, const Mon& rhs){ return lhs.getPower() < rhs.getPower(); });
 
+  // Consolidate multiple terms with equal power/exponent into single term: 
+  int numTerms = getNumTerms();
+  int p = getPower(0);
+  int r = 1;                        // Read index
+  int w = 0;                        // Write index
+  while(r < numTerms)
+  {
+    if(getPower(r) == p)
+    {
+      shiftCoeff(w, getCoeff(r));
+    }
+    else
+    {
+      w++;
+      setTerm(w, getCoeff(r), getPower(r));
+      p = getPower(r);
+    }
+    r++;
+  }
+  setNumTerms(w+1);
+  // This algorithm works only when the terms are sorted by exponent so it doesn't really make 
+  // sense to factor it out into a function in its own right. Doing so could invite calling it on 
+  // unsorted term arrays in which case we would have a bug.
 
-  // ToDo: consolidate terms with equal exponent into single terms
+
+  // ToDo: Remove zeros. I have some functions that do such a thing on strings already. Maybe
+  // use std::remove_if
+  // https://en.cppreference.com/w/cpp/algorithm/remove
 
 
   int dummy = 0;
+
+
+  // ToDo:
+  //
+  // - Maybe try using  rsHeapSort(&terms[0], (int) terms.size(), &rsLessByPower);  instead of
+  //   std::sort(..)
 }
 
 
