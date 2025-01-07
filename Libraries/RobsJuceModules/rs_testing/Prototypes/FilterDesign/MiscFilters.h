@@ -785,7 +785,15 @@ protected:
 
 };
 
+// ToDo:
+//
+// - Implement comparison operator. It should first compare the power then the coeff. But maybe 
+//   it's better to just implement a free function rsMonomialLessByPowThenCoef. We need such a 
+//   function for sorting terms in rsSparsePolynomial.
 
+
+
+//=================================================================================================
 
 /** A class for representing sparse polynomials, i.e. polynomials that have many zero coefficients.
 we represent such sparse polynomials basically as a std::vector of monomials. */
@@ -884,9 +892,6 @@ public:
       minPower = rsMin(minPower, term.getPower());
     return minPower;
   }
-  // needs test
-
-
 
   int getNumTerms() const
   {
@@ -904,6 +909,13 @@ public:
     rsAssert(index >= 0 && index < getNumTerms());
     return terms[index].getPower();
   }
+
+  /** Checks if this sparse polynomial is in canonical representation. A representation is 
+  canonical if it has no zero coefficients (up to a given tolerance) and if the powers are strictly
+  increasing (as function of term-index). It also needs to have at least one term (otherwise, it's
+  an invalid representation anyway). */
+  bool isCanonical(T tol = T(0)) const;
+
 
 
 
@@ -931,6 +943,46 @@ protected:
 
 };
 
+
+
+template<class T>
+bool rsSparsePolynomial<T>::isCanonical(T tol = T(0)) const
+{
+  if(getNumTerms() < 1)
+    return false;
+
+  if(rsAbs(getCoeff(0) <= tol))
+    return false;
+
+  int prevPow = getPower(0);              // Previous power
+
+  for(int i = 1; i < getNumTerms(); i++)
+  {
+    if(rsAbs(getCoeff(i) <= tol))
+      return false;
+
+    int curPow = getPower(i);             // Current power
+    if(curPow <= prevPow)
+      return false;
+
+    prevPow = curPow;
+  }
+
+  return true;
+}
+// Needs test
+
+
+// ToDo:
+//
+// - Implement canonicalize (sort terms, consolidate terms with same power into single terms)
+//
+// - Implement weighted sum and, based on that, addition and subtraction
+//
+// - Implement multiplication
+
+
+//=================================================================================================
 
 /** A class for representing sparse filters in direct form. We represent them using two sparse
 polynomials. One for the numerator and one for the denominator of the transer function. The filter
@@ -1095,6 +1147,10 @@ public:
     num = other.num;
     den = other.den;
     updateDelayLineLength();
+
+    // ToDo: Use num.copyFrom(other.num), den.copyFrom(other.num). maybe have a boolean parameter
+    // copyState - if true, also copy the contents of the delayline from the other object. Or maybe
+    // split it into two functions: copyCoeffsFrom(), copyStateFrom()
   }
 
 

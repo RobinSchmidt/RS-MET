@@ -23,6 +23,7 @@ bool runUnitTestsRapt()
   // Test for the currently developed class - it's also again run down there below, but I want
   // the test for the code i'm currently working on to go first for faster edit/build/test cycles, 
   // because some of the test take longer to perfom. So this line is volatile:
+  ok &= runUnitTest(&testPolynomial,         "rsPolynomial");
   ok &= runUnitTest(&miscFiltersUnitTest,    "Misc filters");
   ok &= runUnitTest(&basicFiltersUnitTests,  "Basic filters");
   ok &= runUnitTest(&allpassUnitTest,        "Allpass filters");

@@ -2573,6 +2573,17 @@ bool testModularIntegerPolynomial()
 }
 
 
+bool testSparsePolynomial()
+{
+  bool ok = true;
+
+
+
+  return ok;
+}
+
+
+
 bool testPolynomial()
 {
   //std::string reportString = "Polynomial"; // dummy -> remove
@@ -2611,6 +2622,10 @@ bool testPolynomial()
   // dealing with rational functions is mostly manipulation of polynomials.
 
   ok &= testModularIntegerPolynomial();
+
+
+  ok &= testSparsePolynomial();
+
 
   ok &= testBivariatePolynomial();
   ok &= testBivariatePolynomial2();
