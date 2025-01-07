@@ -2590,34 +2590,34 @@ bool testSparsePolynomial()
 
   Vec coeffs1({ 0.5, 0.0, -0.7, 0.0, tiny, 0.3});
 
-  PolyD pd1(coeffs1);
-  PolyS ps1, ps2;
-  ps1.setupFromDenseCoeffs(coeffs1, tol);
+  PolyD pd(coeffs1);
+  PolyS p, q, r;
+  p.setupFromDenseCoeffs(coeffs1, tol);
 
   // Test inquiry functions:
-  ok &= ps1.isEmpty()        == false;
-  ok &= ps1.getNumTerms()    == 3;
-  ok &= ps1.getMinPower()    == 0;
-  ok &= ps1.getMaxPower()    == 5;
-  ok &= ps1.getDegree()      == 5;
-  ok &= ps1.isValidIndex(-1) == false;
-  ok &= ps1.isValidIndex( 0) == true;
-  ok &= ps1.isValidIndex( 2) == true;   // There are 3 nonzero coeffs so max valid index is 2.
-  ok &= ps1.isValidIndex( 3) == false;
-  ok &= ps1.isCanonical()    == true;
-  ok &= ps1.getCoeff(0)      ==  0.5;
-  ok &= ps1.getCoeff(1)      == -0.7;
-  ok &= ps1.getCoeff(2)      ==  0.3;
-  ok &= ps1.getPower(0)      ==  0;
-  ok &= ps1.getPower(1)      ==  2;
-  ok &= ps1.getPower(2)      ==  5;
+  ok &= p.isEmpty()        == false;
+  ok &= p.getNumTerms()    == 3;
+  ok &= p.getMinPower()    == 0;
+  ok &= p.getMaxPower()    == 5;
+  ok &= p.getDegree()      == 5;
+  ok &= p.isValidIndex(-1) == false;
+  ok &= p.isValidIndex( 0) == true;
+  ok &= p.isValidIndex( 2) == true;   // There are 3 nonzero coeffs so max valid index is 2.
+  ok &= p.isValidIndex( 3) == false;
+  ok &= p.isCanonical()    == true;
+  ok &= p.getCoeff(0)      ==  0.5;
+  ok &= p.getCoeff(1)      == -0.7;
+  ok &= p.getCoeff(2)      ==  0.3;
+  ok &= p.getPower(0)      ==  0;
+  ok &= p.getPower(1)      ==  2;
+  ok &= p.getPower(2)      ==  5;
 
   // Test evaluation:
   Real x = 1.5;                         // Don't use an integer here! See below.
   Real y1, y2;
   Real d;
-  y1 = pd1.evaluate(x);
-  y2 = ps1.evaluateAt(x);
+  y1 = pd.evaluate(x);
+  y2 = p.evaluateAt(x);
   d  = y2-y1;
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
   // We don't want x to be an integer because if it is one, we might get false positive passes
@@ -2628,82 +2628,82 @@ bool testSparsePolynomial()
   // fails when the base is erroneously converted to int. 
 
   // Clear the polynomial and check the inquiry functions in this case:
-  ps1.clear();
-  ok &= ps1.isEmpty();
-  ok &= ps1.getNumTerms()    == 0;
-  ok &= ps1.getMinPower()    == 0;
-  ok &= ps1.getMaxPower()    == 0;
-  ok &= ps1.getDegree()      == 0;
-  ok &= ps1.isValidIndex(-1) == false;
-  ok &= ps1.isValidIndex( 0) == false;
-  ok &= ps1.isValidIndex(+1) == false;
-  ok &= ps1.isCanonical()    == true;
+  p.clear();
+  ok &= p.isEmpty();
+  ok &= p.getNumTerms()    == 0;
+  ok &= p.getMinPower()    == 0;
+  ok &= p.getMaxPower()    == 0;
+  ok &= p.getDegree()      == 0;
+  ok &= p.isValidIndex(-1) == false;
+  ok &= p.isValidIndex( 0) == false;
+  ok &= p.isValidIndex(+1) == false;
+  ok &= p.isCanonical()    == true;
 
   // Create a non-canonical representation of a sparse polynomial. The terms are not ordered by 
   // increasing powers. The powers all apear only once, though:
-  ps1.clear();
-  ps1.setNumTerms(5);
-  ps1.setTerm(0, +2.0, 3);
-  ps1.setTerm(1, -3.0, 1);
-  ps1.setTerm(2, +5.0, 4);
-  ps1.setTerm(3, -7.0, 2);
-  ps1.setTerm(4, +4.0, 0);
-  ok &= ps1.isCanonical() == false;
-  y1 = ps1.evaluateAt(x);
-  ps1.canonicalize(tol);
-  ok &= ps1.isCanonical() == true;
-  y2 = ps1.evaluateAt(x);
+  p.clear();
+  p.setNumTerms(5);
+  p.setTerm(0, +2.0, 3);
+  p.setTerm(1, -3.0, 1);
+  p.setTerm(2, +5.0, 4);
+  p.setTerm(3, -7.0, 2);
+  p.setTerm(4, +4.0, 0);
+  ok &= p.isCanonical() == false;
+  y1 = p.evaluateAt(x);
+  p.canonicalize(tol);
+  ok &= p.isCanonical() == true;
+  y2 = p.evaluateAt(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
 
   // Now make it a bit harder by also having multiple terms with the same power. The 
   // canonicalization should consolidate these into single terms:
-  ps1.clear();
-  ps1.setNumTerms(8);
-  ps1.setTerm(0, +2.0, 3);
-  ps1.setTerm(1, -3.0, 1);
-  ps1.setTerm(2, +5.0, 2);
-  ps1.setTerm(3, -7.0, 2);
-  ps1.setTerm(4, +2.0, 1);
-  ps1.setTerm(5, +3.0, 2);
-  ps1.setTerm(6, -4.0, 4);
-  ps1.setTerm(7, +6.0, 4);
-  ok &= ps1.isCanonical() == false;
-  y1 = ps1.evaluateAt(x);
-  ps1.canonicalize(tol);
-  ok &= ps1.isCanonical() == true;
-  ok &= ps1.getNumTerms() == 4;
-  y2 = ps1.evaluateAt(x);
+  p.clear();
+  p.setNumTerms(8);
+  p.setTerm(0, +2.0, 3);
+  p.setTerm(1, -3.0, 1);
+  p.setTerm(2, +5.0, 2);
+  p.setTerm(3, -7.0, 2);
+  p.setTerm(4, +2.0, 1);
+  p.setTerm(5, +3.0, 2);
+  p.setTerm(6, -4.0, 4);
+  p.setTerm(7, +6.0, 4);
+  ok &= p.isCanonical() == false;
+  y1 = p.evaluateAt(x);
+  p.canonicalize(tol);
+  ok &= p.isCanonical() == true;
+  ok &= p.getNumTerms() == 4;
+  y2 = p.evaluateAt(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
 
   // Now make it even more intersting by letting the coefficients for x^2 and x^4 conspire to add
   // up to zero. Such coefficients should be removed:
-  ps1.clear();
-  ps1.setNumTerms(8);
-  ps1.setTerm(0, +2.0, 3);
-  ps1.setTerm(1, -3.0, 1);
-  ps1.setTerm(2, +5.0, 2);
-  ps1.setTerm(3, -7.0, 2);
-  ps1.setTerm(4, +2.0, 1);
-  ps1.setTerm(5, +2.0, 2);
-  ps1.setTerm(6, -4.0, 4);
-  ps1.setTerm(7, +4.0, 4);
-  ok &= ps1.isCanonical() == false;
-  y1 = ps1.evaluateAt(x);
-  ps1.canonicalize(tol);
-  ok &= ps1.isCanonical() == true;
-  ok &= ps1.getNumTerms() == 2;
-  y2 = ps1.evaluateAt(x);
+  p.clear();
+  p.setNumTerms(8);
+  p.setTerm(0, +2.0, 3);
+  p.setTerm(1, -3.0, 1);
+  p.setTerm(2, +5.0, 2);
+  p.setTerm(3, -7.0, 2);
+  p.setTerm(4, +2.0, 1);
+  p.setTerm(5, +2.0, 2);
+  p.setTerm(6, -4.0, 4);
+  p.setTerm(7, +4.0, 4);
+  ok &= p.isCanonical() == false;
+  y1 = p.evaluateAt(x);
+  p.canonicalize(tol);
+  ok &= p.isCanonical() == true;
+  ok &= p.getNumTerms() == 2;
+  y2 = p.evaluateAt(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
 
-
-  ps1 = PolyS({ Mon(3.0, 2), Mon(-2.0, 1) });
-  ps2 = PolyS({ Mon(2.0, 3), Mon(-3.0, 4), Mon(5.0, 0) });
-
-
-
-
-
-
+  // Test naive weighted sum:
+  Real wp =  0.75;
+  Real wq = -0.25;
+  p = PolyS({ Mon(3.0, 2), Mon(-2.0, 1) });
+  q = PolyS({ Mon(2.0, 3), Mon(-3.0, 4), Mon(5.0, 0) });
+  r = rsWeightedSumNaive(p, wp, q, wq, tol);
+  y1 = wp * p(x) + wq * q(x);
+  y2 = r(x);
+  ok &= rsIsCloseTo(y1, y2, 1.e-15);
 
 
 

@@ -971,6 +971,15 @@ public:
 
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Operators */
+
+  /** Evaluates the polynomial at the given input x. */
+  T operator()(T x) const { return evaluateAt(x); }
+
+
+
+
 protected:
 
   std::vector<rsMonomial<T>> terms;
@@ -1112,8 +1121,8 @@ T rsSparsePolynomial<T>::evaluateAt(T x) const
 
 // Naive implementation of a weighted sum of two sparse polynomials:
 template<class T>
-rsSparsePolynomial<T> weightedSumNaive(
-  const rsSparsePolynomial<T>& p, T wp, const rsSparsePolynomial<T>& q, T wq)
+rsSparsePolynomial<T> rsWeightedSumNaive(
+  const rsSparsePolynomial<T>& p, T wp, const rsSparsePolynomial<T>& q, T wq, T tol)
 {
   int Np = p.getNumTerms();      // Number of terms in left operand
   int Nq = q.getNumTerms();      // Number of terms in right operand
@@ -1126,7 +1135,7 @@ rsSparsePolynomial<T> weightedSumNaive(
   for(int i = 0; i < Nq; i++)
     r.setTerm(Np + i, wq * q.getCoeff(i), q.getPower(i));
 
-  r.canonicalize();
+  r.canonicalize(tol);
   return r;
 }
 
