@@ -33,8 +33,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Lifetime */
 
-  /** Creates a polynomial of given degree. Allocates memory for the coefficients and optionally
-  intializes them with zeros. */
+  /** Default constructor. Creates a polynomial of given degree (default: 0). Allocates memory for 
+  the coefficients (1 coeff in case of the degree being 0) and optionally intializes them with 
+  zeros. */
   rsPolynomial(int degree = 0, bool initWithZeros = true);
 
   /** Creates a polynomial from a std::vector of coefficients. */

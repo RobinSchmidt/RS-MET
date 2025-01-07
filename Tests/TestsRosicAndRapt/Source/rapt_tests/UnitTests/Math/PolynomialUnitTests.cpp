@@ -2577,6 +2577,18 @@ bool testSparsePolynomial()
 {
   bool ok = true;
 
+  using Real  = double;
+  using Vec   = std::vector<Real>;
+  using PolyD = rsPolynomial<Real>;         // Dense polynomials
+  using PolyS = rsSparsePolynomial<Real>;   // Sparse polynomials
+
+
+  Vec coeffs1({ 0.5, 0.0, -0.7, 0.0, 0.0, 0.3});
+
+  PolyD pd1(coeffs1);
+  PolyS ps1(coeffs1);
+
+
 
 
   return ok;

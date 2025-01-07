@@ -805,29 +805,63 @@ class rsSparsePolynomial
 public:
 
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Lifetime */
+
+  ///** Default constructor. Creates a sparse polynomial of  */
+  //rsSparsePolynomial() : terms({rsMonomial<T>(T(0), 0)}) {}
+
+  /** Default constructor. Constructs an empty sparse polynomial. */
+  rsSparsePolynomial() {}
+
+
+  /** Constructor that takes a dense std::vcetor of polynomial coefficients and initializes the 
+  object form it. In a dense representation, the index in the vector gives the power. */
+  rsSparsePolynomial(const std::vector<T>& coeffs)
+  {
+    setupFromDenseCoeffs(coeffs);
+  }
+  // Maybe it should take a tolerance parameter for sifting out the zeros
+
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
+
+  /** Reserves memory for the given number of terms. Can be called before calling functions like 
+  addTerm() to pre-allocate the desired amount of memory beforehand when multiple terms are being
+  added in a sequence. */
+  void reserve(size_t numTerms) { terms.reserve(numTerms); }
+
+  /** Clears the array of terms. */
+  void clear() { terms.clear(); }
+
+  /** Sets up the polynomial from a dense arrays of polynomial coeffs. When a coefficient in the 
+  dense representation is zero, we not create a term for that. */
+  void setupFromDenseCoeffs(const std::vector<T>& newCoeffs);
+
 
   void addTerm(T coeff, int power)
   {
     terms.push_back(rsMonomial<T>(coeff, power));
     // Maybe we could use emplace_back?
   }
+  // Maybe rename to appendTerm. Maybe optionally call canonicalize - or better: scan through the 
+  // existing coeffs to try to find a term with same exponent. If one is found, add the coeff. If 
+  // none is found, insert the coeff/power pait at the right position.
 
-  void clear()
-  {
-    terms.clear();
-  }
 
-  void reserve(size_t amount)
-  {
-    terms.reserve(amount);
-  }
+
+
 
   void setNumTerms(int newNumTerms)
   {
     terms.resize(newNumTerms);
   }
+  // This may put the terms array into a non-canonical (or even invalid) state! Maybe it shouldn't
+  // be used. We'll see....
+
 
   void setTerm(int index, T coeff, int power)
   {
@@ -877,6 +911,16 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
+  /** Returns true, iff this sparse polynomial is empty, i.e. has no terms. */
+  bool isEmpty() const { return terms.empty(); }
+
+  /** Return true, iff the given index is valid, i.e. the object has a term with given index. */
+  bool isValidIndex(int i) const { return i >= 0 && i < getNumTerms(); }
+
+  /** Returns the number of terms in this polynomial. The i-th term is a monomial of the form 
+  ci * x^pi with a coefficient ci and a power/exponent pi. */
+  int getNumTerms() const { return (int) terms.size(); }
+
   int getDegree() const
   {
     int maxPower = 0;
@@ -884,6 +928,7 @@ public:
       maxPower = rsMax(maxPower, term.getPower());
     return maxPower;
   }
+  // Maybe rename to getMaxPower - or create an alias name
 
   int getMinPower() const
   {
@@ -893,20 +938,19 @@ public:
     return minPower;
   }
 
-  int getNumTerms() const
-  {
-    return (int) terms.size();
-  }
+
 
   T getCoeff(int index) const
   {
-    rsAssert(index >= 0 && index < getNumTerms());
+    //rsAssert(index >= 0 && index < getNumTerms());
+    rsAssert(isValidIndex(index));
     return terms[index].getCoeff();
   }
 
   int getPower(int index) const
   {
-    rsAssert(index >= 0 && index < getNumTerms());
+    //rsAssert(index >= 0 && index < getNumTerms());
+    rsAssert(isValidIndex(index));
     return terms[index].getPower();
   }
 
@@ -915,7 +959,12 @@ public:
   increasing (as function of term-index). It also needs to have at least one term (otherwise, it's
   an invalid representation anyway). */
   bool isCanonical(T tol = T(0)) const;
-
+  // Maybe we should also accept the empty polynomial (i.e. without any terms) as canonical 
+  // representation. If we don't, we have another problem: we would have to represent the zero 
+  // polynomial as polynomial of degree 0 (i.e. with one coefficient) and that coefficient should
+  // be zero (actually, in this case, the power could be anything). But that goes against our rule 
+  // that we should not store zero coeffs. Hmmm....seems like we can't maintain both invariants at 
+  // the same time. They are incompatible.
 
 
 
@@ -944,6 +993,20 @@ protected:
 };
 
 
+template<class T>
+void rsSparsePolynomial<T>::setupFromDenseCoeffs(const std::vector<T>& newCoeffs)
+{
+  terms.clear();
+  terms.reserve(newCoeffs.size());
+  for(int i = 0; i < (int) newCoeffs.size(); i++)
+  {
+    if(newCoeffs[i] != T(0))                // Maybe we need a tolerance?
+      terms.push_back(rsMonomial<T>(newCoeffs[i], i));
+    // Maybe we could use emplace_back? Would that be better?
+  }
+}
+
+
 
 template<class T>
 bool rsSparsePolynomial<T>::isCanonical(T tol = T(0)) const
@@ -954,14 +1017,14 @@ bool rsSparsePolynomial<T>::isCanonical(T tol = T(0)) const
   if(rsAbs(getCoeff(0) <= tol))
     return false;
 
-  int prevPow = getPower(0);              // Previous power
+  int prevPow = getPower(0);                // Previous power
 
   for(int i = 1; i < getNumTerms(); i++)
   {
     if(rsAbs(getCoeff(i) <= tol))
       return false;
 
-    int curPow = getPower(i);             // Current power
+    int curPow = getPower(i);               // Current power
     if(curPow <= prevPow)
       return false;
 
@@ -1019,6 +1082,7 @@ public:
     updateDelayLineLength();
   }
   // This may allocate!
+  // ToDo: use num.setupFromDenseCoeffs(&numCoeffs[0], (int) numCoeffs.size(), tol)
 
 
   void setNumNumeratorTerms(int newNumTerms)
