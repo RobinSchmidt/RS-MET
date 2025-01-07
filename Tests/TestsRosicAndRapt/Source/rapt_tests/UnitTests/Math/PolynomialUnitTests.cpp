@@ -2588,14 +2588,44 @@ bool testSparsePolynomial()
   PolyD pd1(coeffs1);
   PolyS ps1(coeffs1);
 
-
+  // Test inquiry functions:
+  ok &= ps1.isEmpty()        == false;
+  ok &= ps1.isCanonical()    == true;
   ok &= ps1.isValidIndex(-1) == false;
   ok &= ps1.isValidIndex( 0) == true;
   ok &= ps1.isValidIndex( 2) == true;   // There are 3 nonzero coeffs so max valid index is 2.
   ok &= ps1.isValidIndex( 3) == false;
-  ok &= ps1.isEmpty()        == false;
-  ok &= ps1.isCanonical()    == true;
+  ok &= ps1.getNumTerms()    ==  3;
+  ok &= ps1.getDegree()      ==  5;
+  ok &= ps1.getMinPower()    ==  0;
+  ok &= ps1.getCoeff(0)      ==  0.5;
+  ok &= ps1.getCoeff(1)      == -0.7;
+  ok &= ps1.getCoeff(2)      ==  0.3;
+  ok &= ps1.getPower(0)      ==  0;
+  ok &= ps1.getPower(1)      ==  2;
+  ok &= ps1.getPower(2)      ==  5;
 
+  // Test evaluation:
+  Real x = 1.5;                         // Don't use an integer here! See below.
+  Real y1, y2;
+  Real d;
+  y1 = pd1.evaluate(x);
+  y2 = ps1.evaluateAt(x);
+  d  = y2-y1;
+  ok &= rsIsCloseTo(y1, y2, 1.e-15);
+  // We don't want x to be an integer because if it is one, we might get false positive passes
+  // (i.e. the test passes when it should fail) when we later change the implementation of
+  // rsMonomial::evaluateAt() to use rsPowInt rather than rsPow. The current rsPowInt takes two 
+  // integers. We want to replace it with one for which the base can be non-integer. And we want to
+  // catch any bugs that such a replacement may introduce. We want to make sure that the test
+  // fails when the base is erroneously converted to int. 
+
+
+
+
+  
+  
+  //Real tiny = 1.e-16;
 
 
 

@@ -157,6 +157,9 @@ RS_INLINE TInt rsNormalizedValueToIndex(float normalizedValue, TInt numIndices);
 /** Power function for unsigned integers. */
 template<class TUInt>
 RS_INLINE TUInt rsPowInt(TUInt base, TUInt exponent);
+// Get rid of this in favor of a more general rsPowInt function that can have the base of 
+// non-integer types. It should implement the binary exponentiation algo.
+
 
 /** Product of all integers between min and max (min and max inclusive). It is templated so it
 may be used for different types of integers (signed/unsigned, long/short, etc.).
@@ -282,6 +285,9 @@ RS_INLINE TUInt rsPowInt(TUInt base, TUInt exponent)
 //
 // Here is even a branchless version:
 // https://www.youtube.com/watch?v=wGSSUSeaLgA   at around 40:00
+//
+// If the exponent is negative, we should invert/reciprocate the base first and then use the abs
+// of the epxonent.
 
 
 template <class T>

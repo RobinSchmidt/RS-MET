@@ -775,8 +775,14 @@ public:
 
 
 
-  T evaluateAt(T x) const { return coeff * rsPow(x, power); }
+  T evaluateAt(T x) const { return coeff * rsPow(x, T(power)); }
+  // Preliminary. We may want to use rsPowInt for integer exponents. That may be more efficient.
+  // Here, we explicitly first convert the exponent to type T and then call rsPow(T x, T y).
+  // But currently rsPowInt is not suitably defined. It expects two unsigned ints.
 
+  //T evaluateAt(T x) const { return coeff * rsPowInt(x, power); }
+  // rsPowInt is defined for x and power being integers. We really need a function where the
+  // base is an arbitrary type and the epxonent is an integer
 
 protected:
 
@@ -809,21 +815,21 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Lifetime */
 
-  ///** Default constructor. Creates a sparse polynomial of  */
-  //rsSparsePolynomial() : terms({rsMonomial<T>(T(0), 0)}) {}
-
   /** Default constructor. Constructs an empty sparse polynomial. */
   rsSparsePolynomial() {}
 
 
   /** Constructor that takes a dense std::vcetor of polynomial coefficients and initializes the 
   object form it. In a dense representation, the index in the vector gives the power. */
-  rsSparsePolynomial(const std::vector<T>& coeffs)
-  {
-    setupFromDenseCoeffs(coeffs);
+  rsSparsePolynomial(const std::vector<T>& coeffs) 
+  { 
+    setupFromDenseCoeffs(coeffs); 
   }
   // Maybe it should take a tolerance parameter for sifting out the zeros
 
+  // It might be tempting to write a constructor that takes a dense polynomial, i.e. an object
+  // of type rsPolynomial<T>. But I think, that's not a good idea because it would introduce
+  // unnecessary coupling
 
 
   //-----------------------------------------------------------------------------------------------
