@@ -862,7 +862,7 @@ public:
   // ToDo: write a function addTerm that also adds the term but maintains a canonical 
   // representation by scanning through the existing coeffs to try to find a term with same 
   // exponent. If one is found, add the coeff. If none is found, insert the coeff/power pair at 
-  // the right position.
+  // the right position. ...done
 
 
 
@@ -1063,6 +1063,7 @@ void rsSparsePolynomial<T>::setupFromDenseCoeffs(const std::vector<T>& newCoeffs
       terms.emplace_back(rsMonomial<T>(newCoeffs[i], i));
 
   //canonicalize(); // Not sure, if we should do this automatically...maybe not
+  // ...wait - the result is actually ensured to be canonical already anyway.
 
   // It's really important to use  >  rather than  >=  in the conditional. Consider tol = 0. If we
   // would use  >=  then  >= 0  would return true when the coeff is zero, so zero coeffs would get 
