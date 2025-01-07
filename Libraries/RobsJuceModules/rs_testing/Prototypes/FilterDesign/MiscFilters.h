@@ -791,11 +791,19 @@ protected:
 
 };
 
-// ToDo:
-//
-// - Implement comparison operator. It should first compare the power then the coeff. But maybe 
-//   it's better to just implement a free function rsMonomialLessByPowThenCoef. We need such a 
-//   function for sorting terms in rsSparsePolynomial.
+/** Function to compare two monomials for a less-than relation that is defined by comparing
+the powers only. Monomials with the same power but with different coefficients are considered
+equivalent by this relation, i.e. if neither  lhs < rhs  nor  rhs < lhs  via inspecting the 
+powers only, the terms are considered equivalent. This kind of less-than relation is needed to sort
+the terms in rsSparsePolynomial to bring it into a canonical representation. */
+template<class T>
+bool rsLessByPower(const rsMonomial<T>& lhs, const rsMonomial<T>& rhs)
+{
+  if(lhs.getPower() < rhs.getPower())
+    return true;
+  return false;
+}
+// Needs tests
 
 
 
@@ -825,8 +833,6 @@ public:
   { 
     setupFromDenseCoeffs(coeffs, tol); 
   }
-  // Maybe it should take a tolerance parameter for sifting out the zeros
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -845,58 +851,42 @@ public:
   void setupFromDenseCoeffs(const std::vector<T>& newCoeffs, T tol);
 
 
-  void addTerm(T coeff, int power)
-  {
-    //terms.push_back(rsMonomial<T>(coeff, power));
-    terms.emplace_back(rsMonomial<T>(coeff, power));
-    // Maybe we could use emplace_back?
-  }
-  // Maybe rename to appendTerm. Maybe optionally call canonicalize - or better: scan through the 
-  // existing coeffs to try to find a term with same exponent. If one is found, add the coeff. If 
-  // none is found, insert the coeff/power pait at the right position.
+  /** Appends a term with given coeff and power to the end of our terms array. Beware that this 
+  may decanonicalize the representation. */
+  void appendTerm(T coeff, int power) { terms.emplace_back(rsMonomial<T>(coeff, power)); }
+  // Maybe rename to appendTerm (done). 
+  
+  // ToDo: write a function addTerm that also adds the term but maintains a canonical 
+  // representation by scanning through the existing coeffs to try to find a term with same 
+  // exponent. If one is found, add the coeff. If none is found, insert the coeff/power pair at 
+  // the right position. But maybe that should be done in a different function addTerm
 
 
 
 
-
-  void setNumTerms(int newNumTerms)
-  {
-    terms.resize(newNumTerms);
-  }
+  /** Sets the number of terms. If the new number is less than the current number, it will just 
+  cut off terms from the end. If the new number is greater than the current number, it will just
+  extend our vector of terms and the added terms at the end are uninitialized, i.e. may contain 
+  garbage. This function should only be used if you intend to set up the new terms via e.g. 
+  setTerm() after calling setNumTerms(). So, it's a function that needs a lot of care to be used
+  properly. */
+  void setNumTerms(int newNumTerms) { terms.resize(newNumTerms); }
   // This may put the terms array into a non-canonical (or even invalid) state! Maybe it shouldn't
   // be used. We'll see....
 
 
-  void setTerm(int index, T coeff, int power)
-  {
-    rsAssert(isValidIndex(index));
-    //rsAssert(index >= 0 && index < getNumTerms());
-    terms[index].setup(coeff, power);
-  }
+  void setTerm(int index, T coeff, int power) 
+  { rsAssert(isValidIndex(index));  terms[index].setup(coeff, power); }
 
   void setPower(int index, int newPower)
-  {
-    rsAssert(isValidIndex(index));
-    //rsAssert(index >= 0 && index < getNumTerms());
-    terms[index].setPower(newPower);
-  }
+  { rsAssert(isValidIndex(index)); terms[index].setPower(newPower); }
 
   void setCoeff(int index, T newCoeff)
-  {
-    rsAssert(isValidIndex(index));
-    //rsAssert(index >= 0 && index < getNumTerms());
-    terms[index].setCoeff(newCoeff);
-  }
+  { rsAssert(isValidIndex(index)); terms[index].setCoeff(newCoeff); }
 
-  void scaleCoeff(int index, T scaler)
-  {
-    setCoeff(index, scaler * getCoeff(index));
-  }
+  void scaleCoeff(int index, T scaler) { setCoeff(index, scaler * getCoeff(index)); }
 
-  void shiftPower(int index, int amount)
-  {
-    setPower(index, amount + getPower(index));
-  }
+  void shiftPower(int index, int amount) { setPower(index, amount + getPower(index)); }
 
   void scale(T scaler)
   {
@@ -910,10 +900,8 @@ public:
       shiftPower(i, amount);
   }
 
-  void reverse()
-  {
-    rsReverse(terms);
-  }
+  /** Reverses the array of terms. */
+  void reverse() { rsReverse(terms); }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
