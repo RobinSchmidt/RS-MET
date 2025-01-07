@@ -981,19 +981,34 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Low Level API */
-
-
-  static void weightedSum(
-    const rsSparsePolynomial<T>& p, T wp,
-    const rsSparsePolynomial<T>& q, T wq,
-    rsSparsePolynomial<T>* r, T tol);
+  /** \name Low Level API. These functions operate on pre-allocated output parameters (passed by 
+  pointer) which potentially avoids heap allocations. */
 
 
   static void add(
     const rsSparsePolynomial<T>& p,
     const rsSparsePolynomial<T>& q,
     rsSparsePolynomial<T>* r, T tol);
+
+  static void subtract(
+    const rsSparsePolynomial<T>& p,
+    const rsSparsePolynomial<T>& q,
+    rsSparsePolynomial<T>* r, T tol);
+
+  static void weightedSum(
+    const rsSparsePolynomial<T>& p, T wp,
+    const rsSparsePolynomial<T>& q, T wq,
+    rsSparsePolynomial<T>* r, T tol);
+
+  static void multiply(
+    const rsSparsePolynomial<T>& p,
+    const rsSparsePolynomial<T>& q,
+    rsSparsePolynomial<T>* r, T tol);
+
+
+
+
+
 
 
 
@@ -1137,27 +1152,28 @@ T rsSparsePolynomial<T>::evaluateAt(T x) const
 }
 
 
+
 template<class T>
-void rsSparsePolynomial<T>::weightedSum(
-  const rsSparsePolynomial<T>& p, T wp,
-  const rsSparsePolynomial<T>& q, T wq,
+void rsSparsePolynomial<T>::add(
+  const rsSparsePolynomial<T>& p,
+  const rsSparsePolynomial<T>& q,
   rsSparsePolynomial<T>* r, T tol)
 {
-  int Np = p.getNumTerms();      // Number of terms in left operand
-  int Nq = q.getNumTerms();      // Number of terms in right operand
-  int Nr = Np + Nq;              // Number of terms in result (before canonicalization)
+  int Np = p.getNumTerms();      // Number of terms in left operand p
+  int Nq = q.getNumTerms();      // Number of terms in right operand q
+  int Nr = Np + Nq;              // Number of terms in result r (before canonicalization)
 
   r->setNumTerms(Nr);
   for(int i = 0; i < Np; i++)
-    r->setTerm(i, wp * p.getCoeff(i), p.getPower(i));
+    r->setTerm(i, p.getCoeff(i), p.getPower(i));
   for(int i = 0; i < Nq; i++)
-    r->setTerm(Np + i, wq * q.getCoeff(i), q.getPower(i));
+    r->setTerm(Np + i, q.getCoeff(i), q.getPower(i));
 
   r->canonicalize(tol);
 }
 
 template<class T>
-void rsSparsePolynomial<T>::add(
+void rsSparsePolynomial<T>::subtract(
   const rsSparsePolynomial<T>& p,
   const rsSparsePolynomial<T>& q,
   rsSparsePolynomial<T>* r, T tol)
@@ -1170,11 +1186,48 @@ void rsSparsePolynomial<T>::add(
   for(int i = 0; i < Np; i++)
     r->setTerm(i, p.getCoeff(i), p.getPower(i));
   for(int i = 0; i < Nq; i++)
-    r->setTerm(Np + i, q.getCoeff(i), q.getPower(i));
+    r->setTerm(Np + i, -q.getCoeff(i), q.getPower(i));
 
   r->canonicalize(tol);
 }
 
+template<class T>
+void rsSparsePolynomial<T>::weightedSum(
+  const rsSparsePolynomial<T>& p, T wp,
+  const rsSparsePolynomial<T>& q, T wq,
+  rsSparsePolynomial<T>* r, T tol)
+{
+  int Np = p.getNumTerms();
+  int Nq = q.getNumTerms();
+  int Nr = Np + Nq;
+
+  r->setNumTerms(Nr);
+  for(int i = 0; i < Np; i++)
+    r->setTerm(i, wp * p.getCoeff(i), p.getPower(i));
+  for(int i = 0; i < Nq; i++)
+    r->setTerm(Np + i, wq * q.getCoeff(i), q.getPower(i));
+
+  r->canonicalize(tol);
+}
+
+
+template<class T>
+void rsSparsePolynomial<T>::multiply(
+  const rsSparsePolynomial<T>& p,
+  const rsSparsePolynomial<T>& q,
+  rsSparsePolynomial<T>* r, T tol)
+{
+  int Np = p.getNumTerms();
+  int Nq = q.getNumTerms();
+  int Nr = Np * Nq;
+
+  r->setNumTerms(Nr);
+  for(int i = 0; i < Np; i++)
+    for(int j = 0; j < Nq; j++)
+      r->setTerm(i*Nq+j, p.getCoeff(i) * q.getCoeff(j), p.getPower(i) + q.getPower(j));
+
+  r->canonicalize(tol);
+}
 
 
 
