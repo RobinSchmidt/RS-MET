@@ -747,7 +747,8 @@ class rsMonomial
 
 public:
 
-  rsMonomial(T newCoeff = T(0), int newPower = 0) : coeff(newCoeff), power(newPower) { }
+  explicit rsMonomial(T newCoeff = T(0), int newPower = 0) : coeff(newCoeff), power(newPower) { }
+  // Marked as explicit because we want to avoid hidden automatic conversions from type T
 
 
   void setup(T newCoeff, int newPower)
@@ -1331,10 +1332,6 @@ void rsDivide(
   rsSparsePolynomial<T>* rem,
   T tol)
 {
-  //rsError("Not yet implemented");
-  //return;
-  //// This function is still very much under construction.
-
   rsAssert(!den.isZero(tol));
 
   rsSparsePolynomial<T> tmp1, tmp2;    // ToDo: Let the caller pass pre-allocated objects
@@ -1392,7 +1389,24 @@ void rsDivide(
 // Needs more tests! It has already passed its first test, though.
 
 
+template<class T>
+bool rsIsCloseTo(
+  const rsSparsePolynomial<T>& p,
+  const rsSparsePolynomial<T>& q, T tol)
+{
+  if(p.getNumTerms() != q.getNumTerms())
+    return false;
 
+  for(int i = 0; i < p.getNumTerms(); i++)
+  {
+    if(p.getPower(i) != q.getPower(i))
+      return false;
+    if(rsAbs(p.getCoeff(i) - q.getCoeff(i)) > tol)
+      return false;
+  }
+
+  return true;
+}
 
 
 

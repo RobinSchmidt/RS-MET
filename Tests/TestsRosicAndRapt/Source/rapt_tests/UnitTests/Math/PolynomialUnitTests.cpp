@@ -2763,8 +2763,8 @@ bool testSparsePolynomial()
   q.canonicalize(tol);
   r = p * q;
   rsDivide(r, q, &quot, &rem, tol);
-  //ok &= rsIsCloseTo(quot, p, tol);  //
-  //ok &= rem.isZero(tol);
+  ok &= rsIsCloseTo(quot, p, tol);
+  ok &= rem.isZero(tol);
 
 
   p = PolyS({ Mon(+3.0, 1), Mon(-2.0, 3), Mon(+4.0, 8)               });
@@ -2772,11 +2772,11 @@ bool testSparsePolynomial()
   r = PolyS({ Mon(-5.0, 3), Mon(+3.0, 5)                             });
   s = p * q + r;
   rsDivide(s, q, &quot, &rem, tol);
-  //ok &= rsIsCloseTo(quot, p, tol);
-  //ok &= rsIsCloseTo(rem,  r, tol);
+  ok &= rsIsCloseTo(quot, p, tol);
+  ok &= rsIsCloseTo(rem,  r, tol);
   rsDivide(s, p, &quot, &rem, tol);
-  //ok &= rsIsCloseTo(quot, q, tol);
-  //ok &= rsIsCloseTo(rem,  r, tol);
+  ok &= rsIsCloseTo(quot, q, tol);
+  ok &= rsIsCloseTo(rem,  r, tol);
 
 
 
