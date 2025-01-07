@@ -907,9 +907,13 @@ public:
   /** Reverses the array of terms. */
   void reverse() { rsReverse(terms); }
 
-
+  /** Turns the representation of the polynomial into a canonical one. A canonical representation 
+  has the following properties: (1) The powers are strictly increasing as function of index. 
+  (2) No power appears more than once. (3) No zero coefficient appear. We achieve this by 
+  first sorting the terms, then consolidating multiple terms with equal exponents into single
+  terms and finally deleting all terms that have a coefficient zero (up to the given tolerance). */
   void canonicalize(T tol);
-  // Under construction
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
