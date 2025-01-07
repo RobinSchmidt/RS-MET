@@ -821,9 +821,9 @@ public:
 
   /** Constructor that takes a dense std::vcetor of polynomial coefficients and initializes the 
   object form it. In a dense representation, the index in the vector gives the power. */
-  rsSparsePolynomial(const std::vector<T>& coeffs) 
+  rsSparsePolynomial(const std::vector<T>& coeffs, T tol)
   { 
-    setupFromDenseCoeffs(coeffs); 
+    setupFromDenseCoeffs(coeffs, tol); 
   }
   // Maybe it should take a tolerance parameter for sifting out the zeros
 
@@ -842,7 +842,7 @@ public:
 
   /** Sets up the polynomial from a dense arrays of polynomial coeffs. When a coefficient in the 
   dense representation is zero, we not create a term for that. */
-  void setupFromDenseCoeffs(const std::vector<T>& newCoeffs);
+  void setupFromDenseCoeffs(const std::vector<T>& newCoeffs, T tol);
 
 
   void addTerm(T coeff, int power)
@@ -972,19 +972,17 @@ protected:
 
 
 template<class T>
-void rsSparsePolynomial<T>::setupFromDenseCoeffs(const std::vector<T>& newCoeffs)
+void rsSparsePolynomial<T>::setupFromDenseCoeffs(const std::vector<T>& newCoeffs, T tol)
 {
   terms.clear();
   terms.reserve(newCoeffs.size());
   for(int i = 0; i < (int) newCoeffs.size(); i++)
-  {
-    if(newCoeffs[i] != T(0))                // Maybe we need a tolerance?
-    {
-      //terms.push_back(rsMonomial<T>(newCoeffs[i], i));
+    if(rsAbs(newCoeffs[i]) > tol)
       terms.emplace_back(rsMonomial<T>(newCoeffs[i], i));
-      // Maybe we could use emplace_back? Would that be better?
-    }
-  }
+
+  // It's really important to use  >  rather than  >=  in the conditional. Consider tol = 0. If we
+  // would use  >=  then  >= 0  would return true when the coeff is zero, so zero coeffs would get 
+  // accepted which is not what we want.
 }
 
 
@@ -1002,13 +1000,16 @@ int rsSparsePolynomial<T>::getMinPower() const
 template<class T>
 int rsSparsePolynomial<T>::getMaxPower() const
 {
-  int maxPower = 0;
+  if(isEmpty())
+    return 0;
+  int maxPower = std::numeric_limits<int>::min();
   for(auto& term : terms)
     maxPower = rsMax(maxPower, term.getPower());
   return maxPower;
 
-  // Maybe if we allow negative powers/exponents at some point, we should init maxPower with
-  // std::numeric_limits<int>::min(). But then we need to catch
+  // The implementation is written in such a way that it should still work reasonably when the
+  // client code sets up terms with negative powers. The empty polynomial will still have a max
+  // power (aka degree) of zero. ...TBC...
 }
 
 template<class T>
@@ -1091,10 +1092,11 @@ public:
 
   /** Sets up the filter from dense arrays of numerator and denominator coeffs. When a coefficient
   in the dense representation is zero, we not create a term for that. */
-  void setupFromDenseCoeffs(const std::vector<TPar>& numCoeffs, const std::vector<TPar>& denCoeffs)
+  void setupFromDenseCoeffs(const std::vector<TPar>& numCoeffs, 
+    const std::vector<TPar>& denCoeffs, TPar tol)
   {
-    num.setupFromDenseCoeffs(numCoeffs);
-    den.setupFromDenseCoeffs(denCoeffs);
+    num.setupFromDenseCoeffs(numCoeffs, tol);
+    den.setupFromDenseCoeffs(denCoeffs, tol);
     updateDelayLineLength();
   }
   // This may allocate!

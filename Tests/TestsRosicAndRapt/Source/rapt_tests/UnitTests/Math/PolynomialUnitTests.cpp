@@ -2583,10 +2583,14 @@ bool testSparsePolynomial()
   using PolyS = rsSparsePolynomial<Real>;   // Sparse polynomials
 
 
-  Vec coeffs1({ 0.5, 0.0, -0.7, 0.0, 0.0, 0.3});
+  Real tiny = 1.e-16;
+  Real tol  = 1.e-14;
+
+
+  Vec coeffs1({ 0.5, 0.0, -0.7, 0.0, tiny, 0.3});
 
   PolyD pd1(coeffs1);
-  PolyS ps1(coeffs1);
+  PolyS ps1(coeffs1, tol);
 
   // Test inquiry functions:
   ok &= ps1.isEmpty()        == false;
@@ -2644,7 +2648,7 @@ bool testSparsePolynomial()
 
   
   
-  //Real tiny = 1.e-16;
+
 
 
 

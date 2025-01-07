@@ -2847,7 +2847,7 @@ bool sparseFilterUnitTest()
 
   // Create, set up and produce impulse response of sparse filter:
   FltS sf;
-  sf.setupFromDenseCoeffs(b, a);
+  sf.setupFromDenseCoeffs(b, a, 0.0);
   Vec hs = impulseResponse(sf, N, 1.0);
 
   // Check, if both impulse responses match:
@@ -2907,7 +2907,7 @@ bool sparseFilterUnitTest()
   // Try inversion when b0 != 0 by introducing a predelay. In this case, we can only invert up to a
   // delay:
   int preDelay = 10;
-  sf.setupFromDenseCoeffs(b, a);      // Start fresh
+  sf.setupFromDenseCoeffs(b, a, 0.0);      // Start fresh
   sf.addPreDelay(preDelay);
   hs = impulseResponse(sf, N, 1.0);
 
