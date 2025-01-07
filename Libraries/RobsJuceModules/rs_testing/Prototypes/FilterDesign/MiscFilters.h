@@ -1330,30 +1330,43 @@ void rsDivide(
   rsSparsePolynomial<T>* rem,
   T tol)
 {
-  rsError("Not yet implemented");
-  return;
-  // This function is still very much under construction.
-
-
+  //rsError("Not yet implemented");
+  //return;
+  //// This function is still very much under construction.
 
   rsAssert(!den.isZero(tol));
-  quot->clear();               // quot = 0
-  rem->copyDataFrom(num);      // rem  = num
 
-  rsSparsePolynomial<T> tmp1, tmp2;
+  rsSparsePolynomial<T> tmp1, tmp2;    // ToDo: Let the caller pass pre-allocated objects
+  quot->clear();                       // quot = 0
+  rem->copyDataFrom(num);              // rem  = num
 
   while(!rem->isZero(tol) && rem->getDegree() >= den.getDegree())
   {
-    ////T t = rem->getLeadingCoeff() / den.getLeadingCoeff(); // Wrong!
-    //quot->shiftCoeffs(t);
+    // t = lead(r) / lead(d):
+    int iRem = rem->getMaxPowerIndex();
+    int iDen = den. getMaxPowerIndex();
+    T   cRem = rem->getCoeff(iRem);
+    T   cDen = den. getCoeff(iDen);
+    int pRem = rem->getPower(iRem);
+    int pDen = den. getPower(iDen);
+    T cT = cRem / cDen;
+    T pT = pRem - pDen;
 
-    //tmp1.copyDataFrom(rem);
-    //tmp2.copyDataFrom(den);
-    //tmp2.scale(-t);
+    // q = q + t:
+    quot->addTerm(cT, pT, tol);
 
-    //rsSparsePolynomial<T>::add(tmp1, tmp2, &r, tol);
+    // r = r - t * d:
+    tmp1.copyDataFrom(*rem);
+    tmp2.copyDataFrom( den);
+    tmp2.scale(-cT);
+    tmp2.shiftPowers(pT);
+    rsSparsePolynomial<T>::add(tmp1, tmp2, rem, tol);
+    // Maybe instead of using the two temp polynomials, use rem->addTerm in a loop over the terms
+    // of den. But I'm not sure, if that's really better. The addTerm calls may trigger a lot of
+    // data movement, too. Maybe try both variants and do benchmarks.
   }
 }
+// Needs more tests! Has already passed its first test, though.
 
 // From: https://en.wikipedia.org/wiki/Polynomial_long_division#Pseudocode
 //

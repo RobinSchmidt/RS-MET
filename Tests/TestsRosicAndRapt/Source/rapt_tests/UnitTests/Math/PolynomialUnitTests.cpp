@@ -2759,7 +2759,11 @@ bool testSparsePolynomial()
 
   // Test division with remainder:
   PolyS quot, rem;
-  //rsDivide(r, q, &quot, &rem, tol); // Does not yet work
+  p.canonicalize(tol);
+  q.canonicalize(tol);
+  r = p * q;
+  rsDivide(r, q, &quot, &rem, tol);
+  //ok &= rsIsCloseTo(quot, p, tol);  //
 
 
 
