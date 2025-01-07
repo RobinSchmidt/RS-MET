@@ -908,7 +908,7 @@ public:
   void reverse() { rsReverse(terms); }
 
 
-  void canonicalize();
+  void canonicalize(T tol);
   // Under construction
 
   //-----------------------------------------------------------------------------------------------
@@ -983,7 +983,7 @@ void rsSparsePolynomial<T>::setupFromDenseCoeffs(const std::vector<T>& newCoeffs
 
 
 template<class T>
-void rsSparsePolynomial<T>::canonicalize()
+void rsSparsePolynomial<T>::canonicalize(T tol)
 {
   // In the empty case, we have nothing to and we really *need* to return early in order to not 
   // get an access violation in the code below (in the  int p = getPower(0);  line):
@@ -1022,8 +1022,14 @@ void rsSparsePolynomial<T>::canonicalize()
 
   // ToDo: Remove zeros. I have some functions that do such a thing on strings already. Maybe
   // use std::remove_if
-  // https://en.cppreference.com/w/cpp/algorithm/remove
+  // 
 
+
+  auto newEnd = std::remove_if(terms.begin(), terms.end(), 
+                               [&](const Mon& t){ return rsAbs(t.getCoeff()) <= tol; });
+  terms.erase(newEnd, terms.end());
+  // See  https://en.cppreference.com/w/cpp/algorithm/remove  for this remove/erase idiom
+  // Maybe encapsulate it into a convenience function rsRemoveIf(vec, pred)
 
   int dummy = 0;
 
