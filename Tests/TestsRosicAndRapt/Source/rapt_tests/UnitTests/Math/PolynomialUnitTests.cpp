@@ -2707,7 +2707,8 @@ bool testSparsePolynomial()
   y2 = r(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
 
-  r = rsAddNaive(p, q, tol);
+  //r = rsAddNaive(p, q, tol);
+  PolyS::add(p, q, &r, tol);
   y1 = p(x) + q(x);
   y2 = r(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);

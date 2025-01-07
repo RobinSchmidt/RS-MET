@@ -990,6 +990,11 @@ public:
     rsSparsePolynomial<T>* r, T tol);
 
 
+  static void add(
+    const rsSparsePolynomial<T>& p,
+    const rsSparsePolynomial<T>& q,
+    rsSparsePolynomial<T>* r, T tol);
+
 
 
 
@@ -1150,6 +1155,30 @@ void rsSparsePolynomial<T>::weightedSum(
 
   r->canonicalize(tol);
 }
+
+template<class T>
+void rsSparsePolynomial<T>::add(
+  const rsSparsePolynomial<T>& p,
+  const rsSparsePolynomial<T>& q,
+  rsSparsePolynomial<T>* r, T tol)
+{
+  int Np = p.getNumTerms();
+  int Nq = q.getNumTerms();
+  int Nr = Np + Nq;
+
+  r->setNumTerms(Nr);
+  for(int i = 0; i < Np; i++)
+    r->setTerm(i, p.getCoeff(i), p.getPower(i));
+  for(int i = 0; i < Nq; i++)
+    r->setTerm(Np + i, q.getCoeff(i), q.getPower(i));
+
+  r->canonicalize(tol);
+}
+
+
+
+
+
 
 
 
