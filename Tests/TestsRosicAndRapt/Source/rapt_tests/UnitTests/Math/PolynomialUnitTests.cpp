@@ -2699,6 +2699,31 @@ bool testSparsePolynomial()
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
   ok &= p.getLeadingCoeff() == 2.0;
 
+  // Test addTerm:
+  p.clear();
+  p.setNumTerms(5);
+  p.setTerm(0, +2.0, 0);          // 2x^0
+  p.setTerm(1, -3.0, 1);          // 2x^0 - 3x^1
+  p.setTerm(2, +5.0, 3);          // 2x^0 - 3x^1 + 5x^3
+  p.setTerm(3, -7.0, 5);          // 2x^0 - 3x^1 + 5x^3 - 7x^5
+  p.setTerm(4, +2.0, 8);          // 2x^0 - 3x^1 + 5x^3 - 7x^5 + 2x^8
+  p.addTerm(2.0, 3, tol);         // 2x^0 - 3x^1 + 7x^3 - 7x^5 + 2x^8
+  ok &= p.getNumTerms() == 5;
+  ok &= p.getCoeff(2)   == 7.0;
+  ok &= p.getPower(2)   == 3;
+  p.addTerm(4.0, 9, tol);         // 2x^0 - 3x^1 + 7x^3 - 7x^5 + 2x^8 + 4x^9
+  ok &= p.getNumTerms() == 6;
+  ok &= p.getCoeff(5)   == 4.0;
+  ok &= p.getPower(5)   == 9;
+  p.addTerm(6.0, 4, tol);         // 2x^0 - 3x^1 + 7x^3 + 6x^4 - 7x^5 + 2x^8 + 4x^9
+  ok &= p.getNumTerms() == 7;
+  ok &= p.getCoeff(3)   == 6.0;
+  ok &= p.getPower(3)   == 4;
+  p.addTerm(-7.0, 3, tol);        // 2x^0 - 3x^1 + 6x^4 - 7x^5 + 2x^8 + 4x^9
+  ok &= p.getNumTerms() == 6;
+
+
+
   // Test weighted sum:
   Real wp =  0.75;
   Real wq = -0.25;

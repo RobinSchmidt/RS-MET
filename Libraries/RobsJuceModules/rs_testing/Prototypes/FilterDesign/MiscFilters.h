@@ -850,6 +850,14 @@ public:
   may decanonicalize the representation. */
   void appendTerm(T coeff, int power) { terms.emplace_back(rsMonomial<T>(coeff, power)); } 
   
+
+  //void addTerm(const rsMonomial<T>& newTerm, T tol)
+  //{ addTerm(newTerm.getCoeff(), newTerm.getPower(), tol); }
+
+
+  void addTerm(T coeff, int power, T tol);
+
+
   // ToDo: write a function addTerm that also adds the term but maintains a canonical 
   // representation by scanning through the existing coeffs to try to find a term with same 
   // exponent. If one is found, add the coeff. If none is found, insert the coeff/power pair at 
@@ -970,6 +978,9 @@ public:
   the input variable x. */
   T getLeadingCoeff() const;
 
+  /** Returns the term (i.e. the monomial) at the given index. */
+  rsMonomial<T> getTerm(int index) const { rsAssert(isValidIndex(index)); return terms[index]; }
+
   /** Returns the coefficient of the term with given index. */
   T getCoeff(int index) const {  rsAssert(isValidIndex(index)); return terms[index].getCoeff(); }
 
@@ -1057,6 +1068,32 @@ void rsSparsePolynomial<T>::setupFromDenseCoeffs(const std::vector<T>& newCoeffs
   // accepted which is not what we want.
 }
 
+template<class T>
+void rsSparsePolynomial<T>::addTerm(T coeff, int power, T tol)
+{
+  rsAssert(isCanonical());
+
+  int i = 0;
+  while(i < getNumTerms())
+  {
+    if(getPower(i) == power)
+    {
+      shiftCoeff(i, coeff);
+      if(rsAbs(getCoeff(i)) <= tol)
+        rsRemove(terms, (size_t) i);
+      return;
+    }
+    else if(getPower(i) < power)
+    {
+      i++;
+    }
+    else
+    {
+      break;
+    }
+  }
+  rsInsert(terms, rsMonomial<T>(coeff, power), (size_t) i);
+}
 
 template<class T>
 void rsSparsePolynomial<T>::canonicalize(T tol)
@@ -1353,6 +1390,13 @@ void rsDivide(
 //   gets murky. Maybe then there is indeed a difference between the degree and the max power in
 //   the case of an empty polynomial? Maybe, for the time being, we should trap attempts to set up
 //   terms with negative powers. This can later be relaxed, if needed.
+//
+// - Maybe keep the invariant that the polynomial is in canonical representation. Implementing 
+//   algorithms for both cases is a mess. Maybe prepend a __ to those member functions that could
+//   destroy the canonical representation to signal to the caller that they are now doing something
+//   low level and potentially dangerous - like __shiftPower(int index, int amount). The regular
+//   shiftPower function can still be present. It would just call __shiftPower() and then
+//   canonicalize()
 //
 //
 // Notes:
