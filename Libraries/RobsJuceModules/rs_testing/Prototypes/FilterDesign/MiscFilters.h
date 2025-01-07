@@ -1126,7 +1126,7 @@ rsSparsePolynomial<T> rsWeightedSumNaive(
 {
   int Np = p.getNumTerms();      // Number of terms in left operand
   int Nq = q.getNumTerms();      // Number of terms in right operand
-  int Nr = Np + Nq;              // Number of terms in result
+  int Nr = Np + Nq;              // Number of terms in result (before canonicalization)
 
   rsSparsePolynomial<T> r;
   r.setNumTerms(Nr);
@@ -1157,6 +1157,35 @@ rsSparsePolynomial<T> rsSubtractNaive(
 {
   return rsWeightedSumNaive(p, T(1), q, T(-1), tol);
 }
+
+template<class T>
+rsSparsePolynomial<T> rsMultiplyNaive(
+  const rsSparsePolynomial<T>& p, const rsSparsePolynomial<T>& q, T tol)
+{
+  int Np = p.getNumTerms();      // Number of terms in left operand
+  int Nq = q.getNumTerms();      // Number of terms in right operand
+  int Nr = Np * Nq;              // Number of terms in result (before canonicalization)
+
+
+  rsSparsePolynomial<T> r;
+  r.setNumTerms(Nr);
+  for(int i = 0; i < Np; i++)
+  {
+    for(int j = 0; j < Nq; j++)
+    {
+      r.setTerm(i*Nq+j, p.getCoeff(i) * q.getCoeff(j), p.getPower(i) + q.getPower(j));
+    }
+  }
+
+
+
+
+  r.canonicalize(tol);
+  return r;
+}
+
+
+
 
 
 

@@ -2716,7 +2716,10 @@ bool testSparsePolynomial()
   y2 = r(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
 
-
+  r = rsMultiplyNaive(p, q, tol);
+  y1 = p(x) * q(x);
+  y2 = r(x);
+  ok &= rsIsCloseTo(y1, y2, 1.e-15);
 
 
 
