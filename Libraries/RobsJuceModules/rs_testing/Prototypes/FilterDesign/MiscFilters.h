@@ -1323,9 +1323,10 @@ void rsSparsePolynomial<T>::multiply(
   r->canonicalize(tol);
 }
 
-// Rename to rsDivMod:
+
+
 template<class T>
-void rsDivide(
+void rsDivMod(
   const rsSparsePolynomial<T>& num,
   const rsSparsePolynomial<T>& den,
   rsSparsePolynomial<T>* quot,
