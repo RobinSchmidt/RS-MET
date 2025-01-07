@@ -1322,6 +1322,7 @@ void rsSparsePolynomial<T>::multiply(
   r->canonicalize(tol);
 }
 
+// Rename to rsDivMod:
 template<class T>
 void rsDivide(
   const rsSparsePolynomial<T>& num,
@@ -1365,27 +1366,32 @@ void rsDivide(
     // of den. But I'm not sure, if that's really better. The addTerm calls may trigger a lot of
     // data movement, too. Maybe try both variants and do benchmarks.
   }
-}
-// Needs more tests! Has already passed its first test, though.
 
-// From: https://en.wikipedia.org/wiki/Polynomial_long_division#Pseudocode
-//
-// Inputs:    n: numerator, d: denominator
-// Outputs:   q: quotient,  r: remainder
-// Require:   d != 0
-// Invariant: n = d * q + r         This holds at each step
-//
-// q = 0
-// r = n
-// while( r != 0 and deg(r) >= deg(d) )
-// {
-//    t = lead(r) / lead(d)                  # t is a monomial
-//    q = q + t
-//    r = r - t * d
-// }
-// return (q, r)
-//
-// To implement it, we need an addTerm function
+  // The algorithm has been adapted from: 
+  //
+  //   https://en.wikipedia.org/wiki/Polynomial_long_division#Pseudocode
+  //
+  // In the following pseudocode, all variables (n,d,q,r,t) are polynomials (t is actually a 
+  // monomial, though). Wikipedia says:
+  //
+  // Inputs:    n: numerator, d: denominator
+  // Outputs:   q: quotient,  r: remainder
+  // Require:   d != 0
+  // Invariant: n = d * q + r                  # This holds at each step
+  //
+  // q = 0                                     # Init quotient to zero
+  // r = n                                     # Init remainder to numerator
+  // while( r != 0 and deg(r) >= deg(d) )
+  // {
+  //    t = lead(r) / lead(d)                  # t is a monomial
+  //    q = q + t
+  //    r = r - t * d
+  // }
+  // return (q, r)
+}
+// Needs more tests! It has already passed its first test, though.
+
+
 
 
 

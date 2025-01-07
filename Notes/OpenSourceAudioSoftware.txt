@@ -613,7 +613,11 @@ https://aubio.org/download
 https://github.com/chrisguttandin/web-audio-beat-detector
 
 
+https://github.com/Junpyer93/Audio_LLD_Extraction
+https://www.kvraudio.com/forum/viewtopic.php?t=617513
 
+https://github.com/jameshball/osci-render
+https://osci-render.com/
 
 ----------------------------------------------------------------------------------------------------
 Resources
