@@ -2654,6 +2654,7 @@ bool testSparsePolynomial()
   ok &= p.isCanonical() == true;
   y2 = p.evaluateAt(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
+  ok &= p.getLeadingCoeff() == 5.0;
 
   // Now make it a bit harder by also having multiple terms with the same power. The 
   // canonicalization should consolidate these into single terms:
@@ -2674,6 +2675,8 @@ bool testSparsePolynomial()
   ok &= p.getNumTerms() == 4;
   y2 = p.evaluateAt(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
+  ok &= p.getLeadingCoeff() == 2.0;
+
 
   // Now make it even more intersting by letting the coefficients for x^2 and x^4 conspire to add
   // up to zero. Such coefficients should be removed:
@@ -2694,6 +2697,7 @@ bool testSparsePolynomial()
   ok &= p.getNumTerms() == 2;
   y2 = p.evaluateAt(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
+  ok &= p.getLeadingCoeff() == 2.0;
 
   // Test weighted sum:
   Real wp =  0.75;
@@ -2722,6 +2726,14 @@ bool testSparsePolynomial()
   r  = p    * q;
   y2 = r(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
+
+
+  // Test division with remainder:
+  PolyS quot, rem;
+  //rsDivide(r, q, &quot, &rem, tol); // Does not yet work
+
+
+
 
 
 

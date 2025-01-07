@@ -880,23 +880,35 @@ public:
 
   void scaleCoeff(int index, T scaler) { setCoeff(index, scaler * getCoeff(index)); }
 
-
-  void shiftCoeff(int index, T amount) { setCoeff(index, amount + getCoeff(index)); }
-
-
-  void shiftPower(int index, int amount) { setPower(index, amount + getPower(index)); }
-
   void scale(T scaler)
   {
     for(int i = 0; i < getNumTerms(); i++)
       scaleCoeff(i, scaler);
   }
+  // rename to scaleCoeffs for consistency
+
+
+  void shiftCoeff(int index, T amount) { setCoeff(index, amount + getCoeff(index)); }
+
+  void shiftCoeffs(T amount)
+  {
+    for(int i = 0; i < getNumTerms(); i++)
+      shiftCoeff(i, amount);
+  }
+
+
+  void shiftPower(int index, int amount) { setPower(index, amount + getPower(index)); }
 
   void shiftPowers(int amount)
   {
     for(int i = 0; i < getNumTerms(); i++)
       shiftPower(i, amount);
   }
+
+
+
+
+
 
   /** Reverses the array of terms. */
   void reverse() { rsReverse(terms); }
@@ -908,12 +920,27 @@ public:
   terms and finally deleting all terms that have a coefficient zero (up to the given tolerance). */
   void canonicalize(T tol);
 
+  void copyDataFrom(const rsSparsePolynomial<T>& other)
+  {
+    setNumTerms(other.getNumTerms());
+    for(int i = 0; i < getNumTerms(); i++)
+      setTerm(i, other.getCoeff(i), other.getPower(i));
+  }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns true, iff this sparse polynomial is empty, i.e. has no terms. */
   bool isEmpty() const { return terms.empty(); }
+
+  bool isZero(T tol) const
+  {
+    for(int i = 0; i < getNumTerms(); i++)
+      if( rsAbs(getCoeff(i)) > tol )
+        return false;
+    return true;
+  }
 
   /** Return true, iff the given index is valid, i.e. the object has a term with given index. */
   bool isValidIndex(int i) const { return i >= 0 && i < getNumTerms(); }
@@ -929,12 +956,19 @@ public:
   highest power in a polynomial is also known as the degree or order of the polynomial. */
   int getMaxPower() const;
 
+  /** Returns the index of the maximum power. */
+  int getMaxPowerIndex() const;
+
   /** Returns the degree of the polynomial. This is mathematical term for the term with the
   highest power/exponent that has a nonzero coefficient. */
   int getDegree() const { return getMaxPower(); }
   // This is basically an alias name for getMaxPower(). I'm not sure, if it's a good idea to have 
   // two functions that do the exact same thing. Maybe get rid of it. But on the other hand, it's 
   // nice to have to be consistent with the API of class rsPolynomial. 
+
+  /** Returns the leading coefficient, i.e. the coefficient that multiplies the highest power of
+  the input variable x. */
+  T getLeadingCoeff() const;
 
   /** Returns the coefficient of the term with given index. */
   T getCoeff(int index) const {  rsAssert(isValidIndex(index)); return terms[index].getCoeff(); }
@@ -949,13 +983,11 @@ public:
   bool isCanonical(T tol = T(0)) const;
 
 
-
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
   /** Evaluates the polynomial at the given x and returns the result. */
   T evaluateAt(T x) const;
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -964,42 +996,22 @@ public:
   /** Evaluates the polynomial at the given input x. */
   T operator()(T x) const { return evaluateAt(x); }
 
-
   /** Adds two polynomials. */
   rsSparsePolynomial<T> operator+(const rsSparsePolynomial<T>& q) const 
-  {
-    rsSparsePolynomial<T> r;
-    add(*this, q, &r, T(0));
-    return r;
-  }
+  { rsSparsePolynomial<T> r; add(*this, q, &r, T(0)); return r; }
 
   /** Subtracts two polynomials. */
   rsSparsePolynomial<T> operator-(const rsSparsePolynomial<T>& q) const 
-  {
-    rsSparsePolynomial<T> r;
-    subtract(*this, q, &r, T(0));
-    return r;
-  }
+  { rsSparsePolynomial<T> r; subtract(*this, q, &r, T(0)); return r; }
 
   /** Multiplies two polynomials. */
   rsSparsePolynomial<T> operator*(const rsSparsePolynomial<T>& q) const 
-  {
-    rsSparsePolynomial<T> r;
-    multiply(*this, q, &r, T(0));
-    return r;
-  }
-
-
-
-
-
-
+  { rsSparsePolynomial<T> r; multiply(*this, q, &r, T(0)); return r; }
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Low Level API. These functions operate on pre-allocated output parameters (passed by 
   pointer) which potentially avoids heap allocations. */
-
 
   static void add(
     const rsSparsePolynomial<T>& p,
@@ -1020,15 +1032,6 @@ public:
     const rsSparsePolynomial<T>& p,
     const rsSparsePolynomial<T>& q,
     rsSparsePolynomial<T>* r, T tol);
-
-
-
-
-
-
-
-
-
 
 
 protected:
@@ -1130,6 +1133,42 @@ int rsSparsePolynomial<T>::getMaxPower() const
   // client code sets up terms with negative powers. The empty polynomial will still have a max
   // power (aka degree) of zero. ...TBC...
 }
+
+
+template<class T>
+int rsSparsePolynomial<T>::getMaxPowerIndex() const
+{
+  rsAssert(isCanonical());
+  // The output of this function is not well defined when there are multiple terms with the highest
+  // power, so this function should really only be used on canonical representations.
+
+  if(isEmpty())
+    return -1;
+
+  int maxIndex = 0;
+  int maxPower = getPower(0);
+  for(int i = 1; i < getNumTerms(); i++)
+  {
+    if(getPower(i) > maxPower)
+    {
+      maxPower = getPower(i);
+      maxIndex = i;
+    }
+  }
+
+  return maxIndex;
+}
+
+template<class T>
+T rsSparsePolynomial<T>::getLeadingCoeff() const 
+{ 
+  int i = getMaxPowerIndex();
+  if(i != -1)
+    return getCoeff(i);
+  else
+    return 0;
+}
+// Needs test.
 
 template<class T>
 bool rsSparsePolynomial<T>::isCanonical(T tol = T(0)) const
@@ -1246,10 +1285,68 @@ void rsSparsePolynomial<T>::multiply(
   r->canonicalize(tol);
 }
 
+template<class T>
+void rsDivide(
+  const rsSparsePolynomial<T>& num,
+  const rsSparsePolynomial<T>& den,
+  rsSparsePolynomial<T>* quot,
+  rsSparsePolynomial<T>* rem,
+  T tol)
+{
+  rsError("Not yet implemented");
+  return;
+  // This function is still very much under construction.
+
+
+
+  rsAssert(!den.isZero(tol));
+  quot->clear();               // quot = 0
+  rem->copyDataFrom(num);      // rem  = num
+
+  rsSparsePolynomial<T> tmp1, tmp2;
+
+  while(!rem->isZero(tol) && rem->getDegree() >= den.getDegree())
+  {
+    ////T t = rem->getLeadingCoeff() / den.getLeadingCoeff(); // Wrong!
+    //quot->shiftCoeffs(t);
+
+    //tmp1.copyDataFrom(rem);
+    //tmp2.copyDataFrom(den);
+    //tmp2.scale(-t);
+
+    //rsSparsePolynomial<T>::add(tmp1, tmp2, &r, tol);
+  }
+}
+
+// From: https://en.wikipedia.org/wiki/Polynomial_long_division#Pseudocode
+//
+// Inputs:    n: numerator, d: denominator
+// Outputs:   q: quotient,  r: remainder
+// Require:   d != 0
+// Invariant: n = d * q + r         This holds at each step
+//
+// q = 0
+// r = n
+// while( r != 0 and deg(r) >= deg(d) )
+// {
+//    t = lead(r) / lead(d)                  # t is a monomial
+//    q = q + t
+//    r = r - t * d
+// }
+// return (q, r)
+//
+// To implement it, we need an addTerm function
+
+
+
+
+
 
 // ToDo:
 //
-// - Implement division with remainder
+// - Implement division with remainder. See:
+//   https://en.wikipedia.org/wiki/Polynomial_long_division#Pseudocode
+//   https://de.wikipedia.org/wiki/Polynomdivision#Algorithmus
 //
 // - Figure out what happens if client code uses negative powers. Currently, there's nothing that
 //   prevents this and maybe it could even make sense to allow it. But then the notion of degree
