@@ -791,26 +791,26 @@ protected:
 
 };
 
-/** Function to compare two monomials for a less-than relation that is defined by comparing
-the powers only. Monomials with the same power but with different coefficients are considered
-equivalent by this relation, i.e. if neither  lhs < rhs  nor  rhs < lhs  via inspecting the 
-powers only, the terms are considered equivalent. This kind of less-than relation is needed to sort
-the terms in rsSparsePolynomial to bring it into a canonical representation. */
-template<class T>
-bool rsLessByPower(const rsMonomial<T>& lhs, const rsMonomial<T>& rhs)
-{
-  if(lhs.getPower() < rhs.getPower())
-    return true;
-  return false;
-}
-// Needs tests
+///** Function to compare two monomials for a less-than relation that is defined by comparing
+//the powers only. Monomials with the same power but with different coefficients are considered
+//equivalent by this relation, i.e. if neither  lhs < rhs  nor  rhs < lhs  via inspecting the 
+//powers only, the terms are considered equivalent. This kind of less-than relation is needed to sort
+//the terms in rsSparsePolynomial to bring it into a canonical representation. */
+//template<class T>
+//bool rsLessByPower(const rsMonomial<T>& lhs, const rsMonomial<T>& rhs)
+//{
+//  if(lhs.getPower() < rhs.getPower())
+//    return true;
+//  return false;
+//}
+//// Needs tests
 
 
 
 //=================================================================================================
 
 /** A class for representing sparse polynomials, i.e. polynomials that have many zero coefficients.
-we represent such sparse polynomials basically as a std::vector of monomials. */
+We represent such sparse polynomials basically as a std::vector of monomials. */
 
 template<class T>
 class rsSparsePolynomial
@@ -819,27 +819,15 @@ class rsSparsePolynomial
 public:
 
 
-
   //-----------------------------------------------------------------------------------------------
   /** \name Lifetime */
 
-  /** Default constructor. Constructs an empty sparse polynomial. */
+  /** Default constructor. Constructs an empty sparse polynomial. This represents, by definition,
+  the zero polynomial. */
   rsSparsePolynomial() {}
 
   /** Creates a polynomial from an initializer list for the terms. */
   rsSparsePolynomial(std::initializer_list<rsMonomial<T>> initList) : terms(initList) {}
-
-
-  ///** Constructor that takes a dense std::vcetor of polynomial coefficients and initializes the 
-  //object form it. In a dense representation, the index in the vector gives the power. */
-  //rsSparsePolynomial(const std::vector<T>& coeffs, T tol)
-  //{ 
-  //  setupFromDenseCoeffs(coeffs, tol); 
-  //}
-  //// Maybe get rid of this. It's not really clear on the call site what such a constructor call
-  //// means. Maybe the client should use setupFromDenseCoeffs() explicitly.
-
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -860,13 +848,12 @@ public:
 
   /** Appends a term with given coeff and power to the end of our terms array. Beware that this 
   may decanonicalize the representation. */
-  void appendTerm(T coeff, int power) { terms.emplace_back(rsMonomial<T>(coeff, power)); }
-  // Maybe rename to appendTerm (done). 
+  void appendTerm(T coeff, int power) { terms.emplace_back(rsMonomial<T>(coeff, power)); } 
   
   // ToDo: write a function addTerm that also adds the term but maintains a canonical 
   // representation by scanning through the existing coeffs to try to find a term with same 
   // exponent. If one is found, add the coeff. If none is found, insert the coeff/power pair at 
-  // the right position. But maybe that should be done in a different function addTerm
+  // the right position.
 
 
 
@@ -978,6 +965,35 @@ public:
   T operator()(T x) const { return evaluateAt(x); }
 
 
+  /** Adds two polynomials. */
+  rsSparsePolynomial<T> operator+(const rsSparsePolynomial<T>& q) const 
+  {
+    rsSparsePolynomial<T> r;
+    add(*this, q, &r, T(0));
+    return r;
+  }
+
+  /** Subtracts two polynomials. */
+  rsSparsePolynomial<T> operator-(const rsSparsePolynomial<T>& q) const 
+  {
+    rsSparsePolynomial<T> r;
+    subtract(*this, q, &r, T(0));
+    return r;
+  }
+
+  /** Multiplies two polynomials. */
+  rsSparsePolynomial<T> operator*(const rsSparsePolynomial<T>& q) const 
+  {
+    rsSparsePolynomial<T> r;
+    multiply(*this, q, &r, T(0));
+    return r;
+  }
+
+
+
+
+
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1030,6 +1046,8 @@ void rsSparsePolynomial<T>::setupFromDenseCoeffs(const std::vector<T>& newCoeffs
   for(int i = 0; i < (int) newCoeffs.size(); i++)
     if(rsAbs(newCoeffs[i]) > tol)
       terms.emplace_back(rsMonomial<T>(newCoeffs[i], i));
+
+  //canonicalize(); // Not sure, if we should do this automatically...maybe not
 
   // It's really important to use  >  rather than  >=  in the conditional. Consider tol = 0. If we
   // would use  >=  then  >= 0  would return true when the coeff is zero, so zero coeffs would get 
@@ -1210,7 +1228,6 @@ void rsSparsePolynomial<T>::weightedSum(
   r->canonicalize(tol);
 }
 
-
 template<class T>
 void rsSparsePolynomial<T>::multiply(
   const rsSparsePolynomial<T>& p,
@@ -1230,90 +1247,9 @@ void rsSparsePolynomial<T>::multiply(
 }
 
 
-
-
-
-
-
-
-// Naive implementation of a weighted sum of two sparse polynomials:
-template<class T>
-rsSparsePolynomial<T> rsWeightedSumNaive(
-  const rsSparsePolynomial<T>& p, T wp, const rsSparsePolynomial<T>& q, T wq, T tol)
-{
-  int Np = p.getNumTerms();      // Number of terms in left operand
-  int Nq = q.getNumTerms();      // Number of terms in right operand
-  int Nr = Np + Nq;              // Number of terms in result (before canonicalization)
-
-  rsSparsePolynomial<T> r;
-  r.setNumTerms(Nr);
-  for(int i = 0; i < Np; i++)
-    r.setTerm(i, wp * p.getCoeff(i), p.getPower(i));
-  for(int i = 0; i < Nq; i++)
-    r.setTerm(Np + i, wq * q.getCoeff(i), q.getPower(i));
-
-  r.canonicalize(tol);
-  return r;
-}
-
-template<class T>
-rsSparsePolynomial<T> rsAddNaive(
-  const rsSparsePolynomial<T>& p, const rsSparsePolynomial<T>& q, T tol)
-{
-  return rsWeightedSumNaive(p, T(1), q, T(1), tol);
-
-  // We could do a specialized an optimized implementation that gets rid of the internal 
-  // multiplications by the weights. But this "naive" function is not meant for production use 
-  // anyway, so this optimizations is not worth it.
-}
-
-template<class T>
-rsSparsePolynomial<T> rsSubtractNaive(
-  const rsSparsePolynomial<T>& p, const rsSparsePolynomial<T>& q, T tol)
-{
-  return rsWeightedSumNaive(p, T(1), q, T(-1), tol);
-}
-
-template<class T>
-rsSparsePolynomial<T> rsMultiplyNaive(
-  const rsSparsePolynomial<T>& p, const rsSparsePolynomial<T>& q, T tol)
-{
-  int Np = p.getNumTerms();      // Number of terms in left operand
-  int Nq = q.getNumTerms();      // Number of terms in right operand
-  int Nr = Np * Nq;              // Number of terms in result (before canonicalization)
-
-  rsSparsePolynomial<T> r;
-  r.setNumTerms(Nr);
-  for(int i = 0; i < Np; i++)
-    for(int j = 0; j < Nq; j++)
-      r.setTerm(i*Nq+j, p.getCoeff(i) * q.getCoeff(j), p.getPower(i) + q.getPower(j));
-
-  r.canonicalize(tol);
-  return r;
-}
-
-// I'm not really sure, if I can come up with better algorithms to perform these tasks. Maybe the
-// algorithms should indeed be used in production. If so, add them as static member functions to 
-// the class. They should take the result r as ouput parameter (by pointer). Then implement the
-// +,-,* operators based on these functions. Try to implement division with remainder, too.
-
-
-
-
-
-
-
-
-
-
-
 // ToDo:
 //
-// - Implement canonicalize (sort terms, consolidate terms with same power into single terms)
-//
-// - Implement weighted sum and, based on that, addition and subtraction
-//
-// - Implement multiplication
+// - Implement division with remainder
 //
 // - Figure out what happens if client code uses negative powers. Currently, there's nothing that
 //   prevents this and maybe it could even make sense to allow it. But then the notion of degree

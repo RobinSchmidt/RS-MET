@@ -52,7 +52,13 @@ public:
   /** Promotes a number to a 0th degree polynomial. */
   rsPolynomial(const T& number) { coeffs.resize(1); coeffs[0] = number; }
 
-  // make a constructor that initializes from a raw array
+  // ToDo:
+  // Make a constructor that initializes from a raw array. Implement copy and move constructors.
+  // See rsMatrix. This will help to avoid unnecessary copies in expressions like
+  // r = p + q; where r,p,q are polynomials. It enables return value optimization for the 
+  // operators.
+  //
+  //
 
 
   //-----------------------------------------------------------------------------------------------

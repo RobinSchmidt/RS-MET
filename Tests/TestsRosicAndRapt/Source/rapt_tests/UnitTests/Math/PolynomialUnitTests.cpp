@@ -2695,37 +2695,33 @@ bool testSparsePolynomial()
   y2 = p.evaluateAt(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
 
-  // Test naive weighted sum:
+  // Test weighted sum:
   Real wp =  0.75;
   Real wq = -0.25;
   p = PolyS({ Mon(3.0, 2), Mon(-2.0, 1) });
   q = PolyS({ Mon(2.0, 3), Mon(-3.0, 4), Mon(5.0, 0) });
 
-  //r = rsWeightedSumNaive(p, wp, q, wq, tol);
   PolyS::weightedSum(p, wp, q, wq, &r, tol);
   y1 = wp * p(x) + wq * q(x);
   y2 = r(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
 
-  //r = rsAddNaive(p, q, tol);
-  PolyS::add(p, q, &r, tol);
+
+  // Test arithmetic operators:
   y1 = p(x) + q(x);
+  r  = p    + q;
   y2 = r(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
 
-  //r = rsSubtractNaive(p, q, tol);
-  PolyS::subtract(p, q, &r, tol);
   y1 = p(x) - q(x);
+  r  = p    - q;
   y2 = r(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
 
-  //r = rsMultiplyNaive(p, q, tol);
-  PolyS::multiply(p, q, &r, tol);
   y1 = p(x) * q(x);
+  r  = p    * q;
   y2 = r(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
-
-
 
 
 
