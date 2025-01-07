@@ -1019,25 +1019,21 @@ void rsSparsePolynomial<T>::canonicalize(T tol)
   // sense to factor it out into a function in its own right. Doing so could invite calling it on 
   // unsorted term arrays in which case we would have a bug.
 
-
-  // ToDo: Remove zeros. I have some functions that do such a thing on strings already. Maybe
-  // use std::remove_if
-  // 
-
-
+  // Remove zeros:
   auto newEnd = std::remove_if(terms.begin(), terms.end(), 
                                [&](const Mon& t){ return rsAbs(t.getCoeff()) <= tol; });
   terms.erase(newEnd, terms.end());
-  // See  https://en.cppreference.com/w/cpp/algorithm/remove  for this remove/erase idiom
-  // Maybe encapsulate it into a convenience function rsRemoveIf(vec, pred)
-
-  int dummy = 0;
 
 
   // ToDo:
   //
   // - Maybe try using  rsHeapSort(&terms[0], (int) terms.size(), &rsLessByPower);  instead of
   //   std::sort(..)
+  //
+  // - Maybe implement a convenience function  rsRemoveIf(vec, pred)  that encapsulates the
+  //   remove/erase idiom that we see above for the removal of the zeros. I also have some 
+  //   selfmade functions that do such a thing on strings already. Maybe that could also be 
+  //   adapted and used. See  https://en.cppreference.com/w/cpp/algorithm/remove 
 }
 
 
