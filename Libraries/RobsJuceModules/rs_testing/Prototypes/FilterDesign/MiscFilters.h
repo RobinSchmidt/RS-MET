@@ -850,7 +850,8 @@ public:
 
   void addTerm(T coeff, int power)
   {
-    terms.push_back(rsMonomial<T>(coeff, power));
+    //terms.push_back(rsMonomial<T>(coeff, power));
+    terms.emplace_back(rsMonomial<T>(coeff, power));
     // Maybe we could use emplace_back?
   }
   // Maybe rename to appendTerm. Maybe optionally call canonicalize - or better: scan through the 
@@ -1073,22 +1074,8 @@ public:
   in the dense representation is zero, we not create a term for that. */
   void setupFromDenseCoeffs(const std::vector<TPar>& numCoeffs, const std::vector<TPar>& denCoeffs)
   {
-    num.clear();
-    num.reserve(numCoeffs.size());
-    for(size_t i = 0; i < numCoeffs.size(); i++)
-    {
-      if(numCoeffs[i] != TPar(0))               // Maybe we need a tolerance?
-        num.addTerm(numCoeffs[i], (int)i);
-    }
-
-    den.clear();
-    den.reserve(denCoeffs.size());
-    for(size_t i = 0; i < denCoeffs.size(); i++)
-    {
-      if(denCoeffs[i] != TPar(0))               // Maybe we need a tolerance?
-        den.addTerm(denCoeffs[i], (int)i);
-    }
-
+    num.setupFromDenseCoeffs(numCoeffs);
+    den.setupFromDenseCoeffs(denCoeffs);
     updateDelayLineLength();
   }
   // This may allocate!

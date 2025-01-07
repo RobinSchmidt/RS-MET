@@ -28,7 +28,10 @@ ToDo:
   also reverse the recursive part. If its minimum phase, that would lead to an unstable filter, but
   with a maximum phase original filter, it should be fine. Maybe if the original filter is minimum
   phase, one could convert it to max phase before (by reversing the b-coeff array). Do some 
-  experiments with this using rsArrayTools::filter().
+  experiments with this using rsArrayTools::filter(). Or maybe the better ide in this case would
+  be to to leave the original filter minimum phase before the conversion, then do the general
+  invert-reverse procedure and then convert the original filter to max-phase. That should give the
+  same result, right? -> Figure out!
 
 - Implement a phaser like allpass - maybe one in which all stages have the same coeffs.
 
