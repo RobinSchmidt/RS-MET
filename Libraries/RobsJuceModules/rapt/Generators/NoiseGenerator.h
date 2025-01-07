@@ -50,7 +50,7 @@ public:
     state = (1664525*state + 1013904223) & 4294967295;
     // These numbers are taken from Numerical Recipies in C, 2nd Ed, page 284. The bitmask performs
     // the modulo operation. When unsigned long is 32 bit, it's not necesarry because then the mod
-    // occurs implicitly due to overflow, but when it's 64 bit we need to do it explicitly (on mac
+    // occurs implicitly due to overflow, but when it's 64 bit we need to do it explicitly (on Mac
     // it is required). ToDo: either figure out at compile time, if it is required and use 
     // conditional compilation, or (better): make sure that it uses a 32 bit integer type (i.e. use 
     // rsUint32 instead of unsigned long for the state).

@@ -826,13 +826,20 @@ public:
   /** Default constructor. Constructs an empty sparse polynomial. */
   rsSparsePolynomial() {}
 
+  /** Creates a polynomial from an initializer list for the terms. */
+  rsSparsePolynomial(std::initializer_list<rsMonomial<T>> initList) : terms(initList) {}
 
-  /** Constructor that takes a dense std::vcetor of polynomial coefficients and initializes the 
-  object form it. In a dense representation, the index in the vector gives the power. */
-  rsSparsePolynomial(const std::vector<T>& coeffs, T tol)
-  { 
-    setupFromDenseCoeffs(coeffs, tol); 
-  }
+
+  ///** Constructor that takes a dense std::vcetor of polynomial coefficients and initializes the 
+  //object form it. In a dense representation, the index in the vector gives the power. */
+  //rsSparsePolynomial(const std::vector<T>& coeffs, T tol)
+  //{ 
+  //  setupFromDenseCoeffs(coeffs, tol); 
+  //}
+  //// Maybe get rid of this. It's not really clear on the call site what such a constructor call
+  //// means. Maybe the client should use setupFromDenseCoeffs() explicitly.
+
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1024,9 +1031,15 @@ void rsSparsePolynomial<T>::canonicalize(T tol)
   // unsorted term arrays in which case we would have a bug.
 
   // Remove zeros:
-  auto newEnd = std::remove_if(terms.begin(), terms.end(), 
-                               [&](const Mon& t){ return rsAbs(t.getCoeff()) <= tol; });
-  terms.erase(newEnd, terms.end());
+  //auto newEnd = std::remove_if(terms.begin(), terms.end(), 
+  //                             [&](const Mon& t){ return rsAbs(t.getCoeff()) <= tol; });
+  //terms.erase(newEnd, terms.end());
+
+  rsRemoveIf(terms, [&](const Mon& t){ return rsAbs(t.getCoeff()) <= tol; });
+
+
+  // Sanity check in debug mode:
+  rsAssert(isCanonical());
 
 
   // ToDo:
@@ -1124,9 +1137,8 @@ rsSparsePolynomial<T> weightedSumNaive(
     r.setTerm(i, wp * p.getCoeff(i), p.getPower(i));
   for(int i = 0; i < Nq; i++)
     r.setTerm(Np + i, wq * q.getCoeff(i), q.getPower(i));
-  // r.canonicalize();
 
-
+  r.canonicalize();
   return r;
 }
 

@@ -304,9 +304,18 @@ inline void rsRemove(std::vector<T>& v, size_t index)
   v.erase(v.begin() + index);
 }
 
+/** Removes those elements from the given vector that satisfy the given predicate. Encapsulates 
+the remove/erase idiom. See:  https://en.cppreference.com/w/cpp/algorithm/remove  */
+template<class T, class P>
+inline void rsRemoveIf(std::vector<T>& v, P pred)
+{
+  auto newEnd = std::remove_if(v.begin(), v.end(), pred);
+  v.erase(newEnd, v.end());
+}
+
 /** Removes the range indexed from first to last, both ends inclusive! Attention: in
 std::vector::erase, the "last" would be excluded - but that's really counter-intuitive and provokes
-off-by-one bugs, that's why i use a both-ends-inclusive convention. */
+off-by-one bugs, that's why I use a both-ends-inclusive convention. */
 template<class T>
 inline void rsRemoveRange(std::vector<T>& v, size_t first, size_t last)
 {

@@ -2578,6 +2578,7 @@ bool testSparsePolynomial()
   bool ok = true;
 
   using Real  = double;
+  using Mon   = rsMonomial<Real>;
   using Vec   = std::vector<Real>;
   using PolyD = rsPolynomial<Real>;         // Dense polynomials
   using PolyS = rsSparsePolynomial<Real>;   // Sparse polynomials
@@ -2590,7 +2591,10 @@ bool testSparsePolynomial()
   Vec coeffs1({ 0.5, 0.0, -0.7, 0.0, tiny, 0.3});
 
   PolyD pd1(coeffs1);
-  PolyS ps1(coeffs1, tol);
+
+  //PolyS ps1(coeffs1, tol);
+  PolyS ps1;
+  ps1.setupFromDenseCoeffs(coeffs1, tol);
 
   // Test inquiry functions:
   ok &= ps1.isEmpty()        == false;
@@ -2694,13 +2698,31 @@ bool testSparsePolynomial()
   y2 = ps1.evaluateAt(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
 
+
+  ps1 = PolyS({ Mon(3.0, 2), Mon(-2.0, 1) });
+
+
+
+
+
+  /*
+  // Do some randomized tests:
+  int numTests = 100;
+  rsNoiseGenerator<Real> prng;
+  prng.setRange(0.0, 1.0);
+  for(int i = 0; i < numTests; i++)
+  {
+
+  }
+  */
+
   return ok;
 
 
   // ToDo:
   // 
-  // - Check behavior of canonicalization when we have a cancellation of the coeffs of terms with 
-  //   the same exponent. Maybe use a power of 2 and 3 terms with coeffs +2, +3, -5. 
+  // - Do some randomized tests. Generate random polynomials, set some coeffs to zero, 
+  //   canonicalize, etc.
 }
 
 
