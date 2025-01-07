@@ -2707,6 +2707,7 @@ bool testSparsePolynomial()
   p.setTerm(2, +5.0, 3);          // 2x^0 - 3x^1 + 5x^3
   p.setTerm(3, -7.0, 5);          // 2x^0 - 3x^1 + 5x^3 - 7x^5
   p.setTerm(4, +2.0, 8);          // 2x^0 - 3x^1 + 5x^3 - 7x^5 + 2x^8
+  ok &= p.getNumTerms() == 5;
   p.addTerm(2.0, 3, tol);         // 2x^0 - 3x^1 + 7x^3 - 7x^5 + 2x^8
   ok &= p.getNumTerms() == 5;
   ok &= p.getCoeff(2)   == 7.0;
@@ -2721,7 +2722,10 @@ bool testSparsePolynomial()
   ok &= p.getPower(3)   == 4;
   p.addTerm(-7.0, 3, tol);        // 2x^0 - 3x^1 + 6x^4 - 7x^5 + 2x^8 + 4x^9
   ok &= p.getNumTerms() == 6;
-
+  p.addTerm(-2.0, 0, tol);        // -3x^1 + 6x^4 - 7x^5 + 2x^8 + 4x^9
+  ok &= p.getNumTerms() == 5;
+  p.addTerm(-4.0, 9, tol);        // -3x^1 + 6x^4 - 7x^5 + 2x^8
+  ok &= p.getNumTerms() == 4;
 
 
   // Test weighted sum:
