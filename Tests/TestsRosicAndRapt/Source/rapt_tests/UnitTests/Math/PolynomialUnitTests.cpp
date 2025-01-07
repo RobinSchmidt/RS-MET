@@ -2590,14 +2590,16 @@ bool testSparsePolynomial()
 
   // Test inquiry functions:
   ok &= ps1.isEmpty()        == false;
-  ok &= ps1.isCanonical()    == true;
+  ok &= ps1.getNumTerms()    ==  3;
+  ok &= ps1.getMinPower()    ==  0;
+  ok &= ps1.getMaxPower()    ==  5;
+  ok &= ps1.getDegree()      ==  5;
   ok &= ps1.isValidIndex(-1) == false;
   ok &= ps1.isValidIndex( 0) == true;
   ok &= ps1.isValidIndex( 2) == true;   // There are 3 nonzero coeffs so max valid index is 2.
   ok &= ps1.isValidIndex( 3) == false;
-  ok &= ps1.getNumTerms()    ==  3;
-  ok &= ps1.getDegree()      ==  5;
-  ok &= ps1.getMinPower()    ==  0;
+  ok &= ps1.isCanonical()    == true;
+
   ok &= ps1.getCoeff(0)      ==  0.5;
   ok &= ps1.getCoeff(1)      == -0.7;
   ok &= ps1.getCoeff(2)      ==  0.3;
@@ -2620,6 +2622,23 @@ bool testSparsePolynomial()
   // catch any bugs that such a replacement may introduce. We want to make sure that the test
   // fails when the base is erroneously converted to int. 
 
+  // Clear the polynomial and check the inquiry functions in this case:
+  ps1.clear();
+  ok &= ps1.isEmpty();
+  ok &= ps1.getNumTerms()    == 0;
+  ok &= ps1.getMinPower()    == 0;
+  ok &= ps1.getMaxPower()    == 0;
+  ok &= ps1.getDegree()      == 0;
+  ok &= ps1.isValidIndex(-1) == false;
+  ok &= ps1.isValidIndex( 0) == false;
+  ok &= ps1.isValidIndex(+1) == false;
+  ok &= ps1.isCanonical()    == true;
+
+
+
+
+
+  // Create a non-canonical representation of a sparse polynomial:
 
 
 

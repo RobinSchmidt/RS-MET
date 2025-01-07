@@ -827,9 +827,6 @@ public:
   }
   // Maybe it should take a tolerance parameter for sifting out the zeros
 
-  // It might be tempting to write a constructor that takes a dense polynomial, i.e. an object
-  // of type rsPolynomial<T>. But I think, that's not a good idea because it would introduce
-  // unnecessary coupling
 
 
   //-----------------------------------------------------------------------------------------------
@@ -872,19 +869,22 @@ public:
 
   void setTerm(int index, T coeff, int power)
   {
-    rsAssert(index >= 0 && index < getNumTerms());
+    rsAssert(isValidIndex(index));
+    //rsAssert(index >= 0 && index < getNumTerms());
     terms[index].setup(coeff, power);
   }
 
   void setPower(int index, int newPower)
   {
-    rsAssert(index >= 0 && index < getNumTerms());
+    rsAssert(isValidIndex(index));
+    //rsAssert(index >= 0 && index < getNumTerms());
     terms[index].setPower(newPower);
   }
 
   void setCoeff(int index, T newCoeff)
   {
-    rsAssert(index >= 0 && index < getNumTerms());
+    rsAssert(isValidIndex(index));
+    //rsAssert(index >= 0 && index < getNumTerms());
     terms[index].setCoeff(newCoeff);
   }
 
@@ -928,68 +928,39 @@ public:
   ci * x^pi with a coefficient ci and a power/exponent pi. */
   int getNumTerms() const { return (int) terms.size(); }
 
-  int getDegree() const
-  {
-    int maxPower = 0;
-    for(auto& term : terms)
-      maxPower = rsMax(maxPower, term.getPower());
-    return maxPower;
-  }
-  // Maybe rename to getMaxPower - or create an alias name
+  /** Returns the minimum power that occurs in this polynomial. */
+  int getMinPower() const;
 
-  int getMinPower() const
-  {
-    int minPower = std::numeric_limits<int>::max();
-    for(auto& term : terms)
-      minPower = rsMin(minPower, term.getPower());
-    return minPower;
-  }
+  /** Returns the maximum power that occurs in this polynomial. In mathematical jargon, the 
+  highest power in a polynomial is also known as the degree or order of the polynomial. */
+  int getMaxPower() const;
 
+  /** Returns the degree of the polynomial. This is mathematical term for the term with the
+  highest power/exponent that has a nonzero coefficient. */
+  int getDegree() const { return getMaxPower(); }
+  // This is basically an alias name for getMaxPower(). I'm not sure, if it's a good idea to have 
+  // two functions that do the exact same thing. Maybe get rid of it. But on the other hand, it's 
+  // nice to have to be consistent with the API of class rsPolynomial. 
 
+  /** Returns the coefficient of the term with given index. */
+  T getCoeff(int index) const {  rsAssert(isValidIndex(index)); return terms[index].getCoeff(); }
 
-  T getCoeff(int index) const
-  {
-    //rsAssert(index >= 0 && index < getNumTerms());
-    rsAssert(isValidIndex(index));
-    return terms[index].getCoeff();
-  }
-
-  int getPower(int index) const
-  {
-    //rsAssert(index >= 0 && index < getNumTerms());
-    rsAssert(isValidIndex(index));
-    return terms[index].getPower();
-  }
+  /** Returns the power of the term with given index. */
+  int getPower(int index) const { rsAssert(isValidIndex(index)); return terms[index].getPower(); }
 
   /** Checks if this sparse polynomial is in canonical representation. A representation is 
   canonical if it has no zero coefficients (up to a given tolerance) and if the powers are strictly
-  increasing (as function of term-index). */
+  increasing (as function of term-index). The empty polynomial is also accepted as a canonical 
+  representation. It represents the zero polynomial. */
   bool isCanonical(T tol = T(0)) const;
-  // Maybe we should also accept the empty polynomial (i.e. without any terms) as canonical 
-  // representation. If we don't, we have another problem: we would have to represent the zero 
-  // polynomial as polynomial of degree 0 (i.e. with one coefficient) and that coefficient should
-  // be zero (actually, in this case, the power could be anything). But that goes against our rule 
-  // that we should not store zero coeffs. Hmmm....seems like we can't maintain both invariants at 
-  // the same time. They are incompatible.
-  // OK - done.
 
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-  T evaluateAt(T x) const 
-  { 
-    T y = 0;
-    for(auto& term : terms)
-      y += term.evaluateAt(x);
-
-    //for(size_t i = 0; i < terms.size(); i++)
-    //  y += terms[i].evaluateAt(x);
-    
-    return y;
-  }
-  // Not yet tested
+  /** Evaluates the polynomial at the given x and returns the result. */
+  T evaluateAt(T x) const;
 
 
 
@@ -1017,18 +988,42 @@ void rsSparsePolynomial<T>::setupFromDenseCoeffs(const std::vector<T>& newCoeffs
 }
 
 
+template<class T>
+int rsSparsePolynomial<T>::getMinPower() const
+{
+  if(isEmpty())
+    return 0;
+  int minPower = std::numeric_limits<int>::max();
+  for(auto& term : terms)
+    minPower = rsMin(minPower, term.getPower());
+  return minPower;
+}
+
+template<class T>
+int rsSparsePolynomial<T>::getMaxPower() const
+{
+  int maxPower = 0;
+  for(auto& term : terms)
+    maxPower = rsMax(maxPower, term.getPower());
+  return maxPower;
+
+  // Maybe if we allow negative powers/exponents at some point, we should init maxPower with
+  // std::numeric_limits<int>::min(). But then we need to catch
+}
 
 template<class T>
 bool rsSparsePolynomial<T>::isCanonical(T tol = T(0)) const
 {
+  // An empty polynomial is the canonical representation of the zero polynomial:
   if(isEmpty())
-    return true;                                 // Edge case. Empty polynomials are canonical.
+    return true;
 
+  // Check that 0-th coeff is nonzero:
   if(rsAbs(getCoeff(0)) <= tol)
     return false;
 
+  // Check that all other coeffs are also nonzero and that the powers are strictly increasing:
   int prevPow = getPower(0);                     // Previous power
-
   for(int i = 1; i < getNumTerms(); i++)
   {
     // Coeffs should be nonzero:
@@ -1036,15 +1031,26 @@ bool rsSparsePolynomial<T>::isCanonical(T tol = T(0)) const
       return false;
 
     // Powers should be strictly increasing:
-    int curPow = getPower(i);                    // Current power
+    int curPow = getPower(i);                    // Current power..
     if(curPow <= prevPow)
       return false;
-    prevPow = curPow;
+    prevPow = curPow;                            // ..becomes previous power for next iteration.
   }
 
   return true;
 }
-// Needs tests
+// Needs more tests
+
+
+template<class T>
+T rsSparsePolynomial<T>::evaluateAt(T x) const 
+{ 
+  T y = 0;
+  for(auto& term : terms)
+    y += term.evaluateAt(x);
+  return y;
+}
+
 
 
 // ToDo:
@@ -1054,6 +1060,19 @@ bool rsSparsePolynomial<T>::isCanonical(T tol = T(0)) const
 // - Implement weighted sum and, based on that, addition and subtraction
 //
 // - Implement multiplication
+//
+// - Figure out what happens if client code uses negative powers. Currently, there's nothing that
+//   prevents this and maybe it could even make sense to allow it. But then the notion of degree
+//   gets murky. Maybe then there is indeed a difference between the degree and the max power in
+//   the case of an empty polynomial? Maybe, for the time being, we should trap attempts to set up
+//   terms with negative powers. This can later be relaxed, if needed.
+//
+//
+// Notes:
+//
+// - It might be tempting to write a constructor and/or setup function that takes a dense 
+//   polynomial, i.e. an object of type rsPolynomial<T>. But I think, that's not a good idea 
+//   because it would introduce unnecessary coupling.
 
 
 //=================================================================================================
