@@ -1140,6 +1140,26 @@ rsSparsePolynomial<T> rsWeightedSumNaive(
 }
 
 
+template<class T>
+rsSparsePolynomial<T> rsAddNaive(
+  const rsSparsePolynomial<T>& p, const rsSparsePolynomial<T>& q, T tol)
+{
+  return rsWeightedSumNaive(p, T(1), q, T(1), tol);
+
+  // We could do a specialized an optimized implementation that gets rid of the internal 
+  // multiplications by the weights. But this "naive" function is not meant for production use 
+  // anyway, so this optimizations is not worth it.
+}
+
+template<class T>
+rsSparsePolynomial<T> rsSubtractNaive(
+  const rsSparsePolynomial<T>& p, const rsSparsePolynomial<T>& q, T tol)
+{
+  return rsWeightedSumNaive(p, T(1), q, T(-1), tol);
+}
+
+
+
 
 
 
