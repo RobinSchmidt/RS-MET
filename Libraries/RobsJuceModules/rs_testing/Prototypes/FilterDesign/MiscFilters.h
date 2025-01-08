@@ -1524,36 +1524,55 @@ rsSparsePolynomial<T> rsPow(const rsSparsePolynomial<T>& p, int n)
 }
 
 
-//template<class T>
-//rsSparsePolynomial<T> rsCompose(
-//  const rsSparsePolynomial<T>& inner,
-//  const rsSparsePolynomial<T>& outer, T tol)
-//{
-//  // This implementations is very preliminary and needs to be optimized!
-//
-//  // We compute B(A(x)), i.e. A is the inner, B the outer polynomial
-//
-//
-//
-//  // Temporary polynomial for the powers of the inner polynomial:
-//  rsSparsePolynomial<T> tmp;
-//  tmp.appendTerm(T(1), 0);     // A^i  for i = 0
-//
-//  // The result:
-//  rsSparsePolynomial<T> res;
-//
-//  for(int i = 0; i < outer.getNumTerms(); i++)
-//  {
-//    rsMonomial<T> ti = outer.getTerm(i);
-//
-//
-//    res = res + ti * tmp;
-//    tmp = tmp * inner;
-//    int dummy = 0;
-//  }
-//
-//  return res;
-//}
+template<class T>
+rsSparsePolynomial<T> rsComposeNaive(
+  const rsSparsePolynomial<T>& inner,
+  const rsSparsePolynomial<T>& outer, T tol)
+{
+  // This implementations is very preliminary and needs to be optimized!
+
+  // We compute B(A(x)), i.e. A is the inner, B the outer polynomial
+
+ // The result:
+  rsSparsePolynomial<T> r;
+
+  for(int i = 0; i < outer.getNumTerms(); i++)
+  {
+    T   ci = outer.getCoeff(i);
+    int pi = outer.getPower(i);
+
+
+    rsSparsePolynomial<T> Ai = rsPow(inner, pi);
+    Ai.scale(pi);
+    // Rewrite this as Ai = ci * rsPow(inner, pi). We need an operator that takes a left operand
+    // of type T and a right operand of type rsSparesPolynomial. It may also be nice to have an 
+    // operator that takes a monomial as left operand
+
+    r = r + Ai;
+  }
+
+  return r;
+
+
+  //// Temporary polynomial for the powers of the inner polynomial:
+  //rsSparsePolynomial<T> tmp;
+  //tmp.appendTerm(T(1), 0);     // A^i  for i = 0
+
+  //// The result:
+  //rsSparsePolynomial<T> res;
+
+  //for(int i = 0; i < outer.getNumTerms(); i++)
+  //{
+  //  rsMonomial<T> ti = outer.getTerm(i);
+
+
+  //  res = res + ti * tmp;
+  //  tmp = tmp * inner;
+  //  int dummy = 0;
+  //}
+
+  //return res;
+}
 
 
 

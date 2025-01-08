@@ -2814,10 +2814,20 @@ bool testSparsePolynomial()
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
 
 
-  //// Test composition:
-  //r = rsCompose(p, q, tol);
-  //y1 = q(p(x));
-  //y2 = r(x);
+  // Test composition:
+
+  p.clear();
+  p.setNumTerms(3);
+  p.setTerm(0, +2.0, 0);
+  p.setTerm(1, -3.0, 1);
+  p.setTerm(2, +5.0, 2);
+  q.clear();
+  q.setNumTerms(2);
+  q.setTerm(0, +4.0, 2);
+  q.setTerm(1, -6.0, 3);
+  r = rsComposeNaive(p, q, tol);
+  y1 = q(p(x));
+  y2 = r(x);
 
 
 
