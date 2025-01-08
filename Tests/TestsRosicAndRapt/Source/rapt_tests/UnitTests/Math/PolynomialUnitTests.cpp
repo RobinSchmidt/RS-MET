@@ -1344,14 +1344,48 @@ bool testPolynomialOperators()
   return testResult;
 }
 
+
+bool testRationalFunctionAlgos()
+{
+  bool ok = true;
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  using RF   = rsRationalFunction<Real>;
+  //using Poly = rsPolynomial<Real>;
+
+  Real tol = 0.0;
+
+  // Test the greatest common divisor algorithm:
+  Vec p({  6,  7, 1 }); 
+  Vec q({ -6, -5, 1 });
+  Vec gcd = RF::polyGCD(p, q, tol);   // Result is 1 + x. Is this correct? Ask SageMath!
+  Vec r = RF::polyDiv(p, gcd, tol);
+  Vec s = RF::polyDiv(q, gcd, tol);
+  Vec u = RF::polyMul(r, gcd); ok &= u == p;
+  Vec v = RF::polyMul(s, gcd); ok &= v == q;
+
+
+  // Try it with other polynomials, too! We want more complex test cases.
+
+
+
+
+
+  return ok;
+}
+
 bool testRationalFunction()
 {
   bool ok = true;
 
-  typedef rsPolynomial<double> PL;
-  typedef rsRationalFunction<double> RF;
+  ok &= testRationalFunctionAlgos();
 
-  std::vector<double> p({ 6,7,1 }), q({-6,-5,1}), g;
+  using Real = double;
+  using PL   = rsPolynomial<Real>;
+  using RF   = rsRationalFunction<Real>;
+
+  std::vector<Real> p({ 6,7,1 }), q({-6,-5,1}), g;
   g = RF::polyGCD(p, q, 0.0);  // result is 1 + x
 
   RF r({ 1,2,3 }, { 4, 5, 6, 7 });
@@ -1365,7 +1399,7 @@ bool testRationalFunction()
   t = r - s; ok &= t == RF({ -15,-32,-20,-28,-9 }, { 20,53,109,132,115,77 });
 
   // test nesting:
-  double x= 4, y1, y2;  // input and outputs
+  Real x= 4, y1, y2;  // input and outputs
   t = r(s);             // compose/nest functions r and s (r is outer, s is inner)
   y1 = r(s(x));         // evaluate s at x, pass result to r and evaluate r at s(x)
   y2 = t(x);            // evaluate the compsed function t = r(s)
@@ -1386,7 +1420,7 @@ bool testRationalFunction()
   //  -(259*x^3 - 90*x^2 + 377*x - 140)/(20*x^3 - 36*x^2 - 195*x + 400)),
   //  -31.0926829268293
 
-  double tol = 1.e-10;
+  Real tol = 1.e-10;
   s = RF({ 2,3 }, { 5,-2 });        // inner
   r = RF({ 2,-3,4,-5 }, { 2, 3 });  // outer
   t = r(s); // 700,-2165, 1204,-1475,518;  2000,-1775,210,172,-40
@@ -2817,32 +2851,6 @@ bool testSparsePolynomial()
   ok &= quot.isCloseTo(q, tol);
   ok &= rem.isCloseTo( r, tol);
 
-  // Test greatest common divisor:
-  p = PolyS({ Mon(+3.0, 0), Mon(-2.0, 1), Mon(+4.0, 2)               });
-  q = PolyS({ Mon(+2.0, 0), Mon(-3.0, 1), Mon(+5.0, 2), Mon(-5.0, 3) });
-  r = PolyS({ Mon(-5.0, 0), Mon(+3.0, 1)                             });
-  s = p*r;
-  t = q*r;
-  //u = rsGreatestCommonDivisor(s, t, tol, false);
-  u = rsGreatestCommonDivisor(t, s, 1.e-13, false);
-  u = rsGreatestCommonDivisor(s, t, 1.e-13, false);
-  // Triggers assertion! Maybe we need a higher tolerance? ..ok - that fixed the assertion. But the
-  // result is wrong. Maybe compare stepping throgh the algo with
-  // rsRationalFunction<T>::polyGCD
-
-  using RatFunc = rsRationalFunction<Real>;
-  Vec pv({+3.0, -2.0, +4.0       });
-  Vec qv({+2.0, -3.0, +5.0, -5.0 });
-  Vec rv({-5.0, -3.0, +4.0       });
-  Vec sv = RatFunc::polyMul(pv, rv, tol);
-  Vec tv = RatFunc::polyMul(qv, rv, tol);
-  Vec uv = RatFunc::polyGCD(sv, tv, tol, false);
-  // u and uv partially match - but u is shorter by one. Could the RatFunc::polyGCD() function 
-  // already be buggy? Add some test cases for that!
-
-
-
-
   // Test power function:
   r  = rsPow(p, 3);
   y1 = p(x) * p(x) * p(x);
@@ -2869,6 +2877,35 @@ bool testSparsePolynomial()
   y1 = p(q(x));
   y2 = r(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
+
+
+  // Under construction - the stuff from here doesn't work yet:
+
+  // Test greatest common divisor:
+  p = PolyS({ Mon(+3.0, 0), Mon(-2.0, 1), Mon(+4.0, 2)               });
+  q = PolyS({ Mon(+2.0, 0), Mon(-3.0, 1), Mon(+5.0, 2), Mon(-5.0, 3) });
+  r = PolyS({ Mon(-5.0, 0), Mon(+3.0, 1)                             });
+  s = p*r;
+  t = q*r;
+  //u = rsGreatestCommonDivisor(s, t, tol, false);
+  u = rsGreatestCommonDivisor(t, s, 1.e-13, false);
+  u = rsGreatestCommonDivisor(s, t, 1.e-13, false);
+  // I think u should be equal to r, i.e. r should be the gcd of s,t. But that doesn't wokr yet.
+  // Triggers assertion! Maybe we need a higher tolerance? ..ok - that fixed the assertion. But the
+  // result is wrong. Maybe compare stepping throgh the algo with
+  // rsRationalFunction<T>::polyGCD
+
+  using RatFunc = rsRationalFunction<Real>;
+  Vec pv({+3.0, -2.0, +4.0       });
+  Vec qv({+2.0, -3.0, +5.0, -5.0 });
+  Vec rv({-5.0, -3.0, +4.0       });
+  Vec sv = RatFunc::polyMul(pv, rv, tol);
+  Vec tv = RatFunc::polyMul(qv, rv, tol);
+  Vec uv = RatFunc::polyGCD(sv, tv, tol, false);
+  // u and uv partially match - but u is shorter by one. Could the RatFunc::polyGCD() function 
+  // already be buggy? Add some test cases for that!
+
+
 
 
 
