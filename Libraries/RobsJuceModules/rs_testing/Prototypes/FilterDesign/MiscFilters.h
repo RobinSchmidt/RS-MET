@@ -1504,12 +1504,12 @@ void rsDivMod(
 
 
 
-// Maybe get rid and use the member P.iscloseTo directly in client code!
-template<class T>
-bool rsIsCloseTo(const rsSparsePolynomial<T>& p, const rsSparsePolynomial<T>& q, T tol)
-{
-  return p.isCloseTo(q, tol);
-}
+//// Maybe get rid and use the member P.iscloseTo directly in client code!
+//template<class T>
+//bool rsIsCloseTo(const rsSparsePolynomial<T>& p, const rsSparsePolynomial<T>& q, T tol)
+//{
+//  return p.isCloseTo(q, tol);
+//}
 
 
 

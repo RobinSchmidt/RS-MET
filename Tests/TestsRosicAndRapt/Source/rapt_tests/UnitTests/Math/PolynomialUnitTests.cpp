@@ -2794,20 +2794,18 @@ bool testSparsePolynomial()
   q.canonicalize(tol);
   r = p * q;
   rsDivMod(r, q, &quot, &rem, tol);
-  ok &= rsIsCloseTo(quot, p, tol);
+  ok &= quot.isCloseTo(p, tol);
   ok &= rem.isZero(tol);
-
-
   p = PolyS({ Mon(+3.0, 1), Mon(-2.0, 3), Mon(+4.0, 8)               });
   q = PolyS({ Mon(+2.0, 2), Mon(-3.0, 3), Mon(+5.0, 7), Mon(-5.0, 9) });
   r = PolyS({ Mon(-5.0, 3), Mon(+3.0, 5)                             });
   s = p * q + r;
   rsDivMod(s, q, &quot, &rem, tol);
-  ok &= rsIsCloseTo(quot, p, tol);
-  ok &= rsIsCloseTo(rem,  r, tol);
+  ok &= quot.isCloseTo(p, tol);
+  ok &= rem.isCloseTo( r, tol);
   rsDivMod(s, p, &quot, &rem, tol);
-  ok &= rsIsCloseTo(quot, q, tol);
-  ok &= rsIsCloseTo(rem,  r, tol);
+  ok &= quot.isCloseTo(q, tol);
+  ok &= rem.isCloseTo( r, tol);
 
 
 
