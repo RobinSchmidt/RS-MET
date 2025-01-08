@@ -1445,40 +1445,6 @@ void rsSparsePolynomial<T>::multiply(
   r->canonicalize(tol);
 }
 
-
-
-
-
-
-
-// Get rid - use the member P.iscloseTo directly in client code!
-template<class T>
-bool rsIsCloseTo(
-  const rsSparsePolynomial<T>& p,
-  const rsSparsePolynomial<T>& q, T tol)
-{
-  return p.isCloseTo(q, tol);
-
-
-  //if(p.getNumTerms() != q.getNumTerms())
-  //  return false;
-
-  //for(int i = 0; i < p.getNumTerms(); i++)
-  //{
-  //  if(p.getPower(i) != q.getPower(i))
-  //    return false;
-  //  if(rsAbs(p.getCoeff(i) - q.getCoeff(i)) > tol)
-  //    return false;
-  //}
-
-  //return true;
-}
-
-
-
-
-
-
 template<class T>
 void rsDivMod(
   const rsSparsePolynomial<T>& num,
@@ -1499,7 +1465,8 @@ void rsDivMod(
     rem->addScaled(den, -t, tol);                                      // r = r - t * d
 
     // Check the loop invariant n = d*q + r:
-    rsAssert(rsIsCloseTo(num, den * *quot + *rem, tol), "Loop invariant violated");
+    rsAssert(num.isCloseTo(den * *quot + *rem, tol), "Loop invariant violated");
+    //rsAssert(rsIsCloseTo(num, den * *quot + *rem, tol), "Loop invariant violated");
     // Maybe use
     // num->isCloseTo(den * *quot + *rem, tol)
   }
@@ -1537,6 +1504,12 @@ void rsDivMod(
 
 
 
+// Maybe get rid and use the member P.iscloseTo directly in client code!
+template<class T>
+bool rsIsCloseTo(const rsSparsePolynomial<T>& p, const rsSparsePolynomial<T>& q, T tol)
+{
+  return p.isCloseTo(q, tol);
+}
 
 
 
