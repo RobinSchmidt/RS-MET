@@ -804,6 +804,8 @@ public:
   // If q.power > this->power, this will lead to a negative power in the result. Should we do 
   // something about this like triggering an rsAssert?
 
+  // ToDo: Implement unary minus
+
 
 protected:
 
@@ -872,11 +874,15 @@ public:
   void appendTerm(T coeff, int power) { terms.emplace_back(rsMonomial<T>(coeff, power)); } 
   
 
-  //void addTerm(const rsMonomial<T>& newTerm, T tol)
-  //{ addTerm(newTerm.getCoeff(), newTerm.getPower(), tol); }
-
 
   void addTerm(T coeff, int power, T tol);
+
+  void addTerm(const rsMonomial<T>& newTerm, T tol)
+  { addTerm(newTerm.getCoeff(), newTerm.getPower(), tol); }
+
+  void subtractTerm(const rsMonomial<T>& newTerm, T tol)
+  { addTerm(-newTerm.getCoeff(), newTerm.getPower(), tol); }
+
 
 
   // ToDo: write a function addTerm that also adds the term but maintains a canonical 
@@ -939,6 +945,21 @@ public:
       shiftPower(i, amount);
   }
 
+  void multiplyBy(const rsMonomial<T>& factor)
+  {
+    scaleCoeffs(factor.getCoeff());
+    shiftPowers(factor.getPower());
+  }
+  // Needs tests.
+
+
+  void divideBy(const rsMonomial<T>& divisor)
+  {
+    scaleCoeffs(T(1) / divisor.getCoeff());
+    shiftPowers(     - divisor.getPower());
+  }
+  // Needs tests. 
+  // Maybe assert that this->getPower() >= divisor.getPower() to avoid producing negative powers.
 
 
 
@@ -1424,17 +1445,28 @@ void rsDivMod(
     T   cDen = den. getCoeff(iDen);
     int pRem = rem->getPower(iRem);
     int pDen = den. getPower(iDen);
-    T cT = cRem / cDen;
-    T pT = pRem - pDen;
+    T   cT   = cRem / cDen;
+    int pT   = pRem - pDen;
+
+    rsMonomial<T> t = rem->getLeadingTerm() / den.getLeadingTerm();
+
 
     // q = q + t:
-    quot->addTerm(cT, pT, tol);
+    //quot->addTerm(cT, pT, tol);  // old
+    quot->addTerm(t, tol);         // new
+
 
     // r = r - t * d:
     tmp1.copyDataFrom(*rem);
     tmp2.copyDataFrom( den);
+
+    // Replace by tmp2.subtractTerm(t)
     tmp2.scaleCoeffs(-cT);
     tmp2.shiftPowers( pT);
+
+    //tmp2.subtractTerm(t, tol);  // Wrong! we need  tmp2.multiplyBy(-t)
+
+
     rsSparsePolynomial<T>::add(tmp1, tmp2, rem, tol);
     // Maybe instead of using the two temp polynomials, use rem->addTerm in a loop over the terms
     // of den. But I'm not sure, if that's really better. The addTerm calls may trigger a lot of
