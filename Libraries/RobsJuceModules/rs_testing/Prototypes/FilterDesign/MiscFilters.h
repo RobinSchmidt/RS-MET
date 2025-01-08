@@ -1522,6 +1522,8 @@ void rsSparsePolynomial<T>::divide(
 
 
 
+
+
 template<class T>
 rsSparsePolynomial<T> rsPow(const rsSparsePolynomial<T>& p, int n)
 {
@@ -1537,40 +1539,21 @@ rsSparsePolynomial<T> rsPow(const rsSparsePolynomial<T>& p, int n)
   //   once it has been adapted to allow for arbitrary types for the base.
 }
 
-
 template<class T>
 rsSparsePolynomial<T> rsComposeNaive(
   const rsSparsePolynomial<T>& inner,
   const rsSparsePolynomial<T>& outer, T tol)
 {
-  // This implementations is very preliminary and needs to be optimized!
-
-  // We compute B(A(x)), i.e. A is the inner, B the outer polynomial
-
- // The result:
   rsSparsePolynomial<T> r;
-
   for(int i = 0; i < outer.getNumTerms(); i++)
-  {
-    T   ci = outer.getCoeff(i);
-    int pi = outer.getPower(i);
-
-
-    //rsSparsePolynomial<T> Ai = rsPow(inner, pi);
-    //Ai.scale(ci);
-    //// Rewrite this as Ai = ci * rsPow(inner, pi). We need an operator that takes a left operand
-    //// of type T and a right operand of type rsSparesPolynomial. It may also be nice to have an 
-    //// operator that takes a monomial as left operand
-
-    //r = r + Ai;
-
-
-
-    rsSparsePolynomial<T> Ai = rsPow(inner, pi);
-    r = r + ci * Ai;
-  }
-
+    r = r + outer.getCoeff(i) * rsPow(inner, outer.getPower(i));
   return r;
+
+  // Notes:
+  //
+  // - This implementation is very inefficient and not meant for production use. There are a lot 
+  //   of temporary objects created. A production version should avoid this. This version can be
+  //   used to produce target output for the production version in unit tests, though.
 }
 
 
