@@ -2807,15 +2807,13 @@ bool testSparsePolynomial()
   ok &= quot.isCloseTo(q, tol);
   ok &= rem.isCloseTo( r, tol);
 
-  // Test power function
+  // Test power function:
   r  = rsPow(p, 3);
   y1 = p(x) * p(x) * p(x);
   y2 = r(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
 
-
   // Test composition:
-
   p.clear();
   p.setNumTerms(3);
   p.setTerm(0, +2.0, 0);
@@ -2825,9 +2823,17 @@ bool testSparsePolynomial()
   q.setNumTerms(2);
   q.setTerm(0, +4.0, 2);
   q.setTerm(1, -6.0, 3);
+
   r = rsComposeNaive(p, q, tol);
   y1 = q(p(x));
   y2 = r(x);
+  ok &= rsIsCloseTo(y1, y2, 1.e-15);
+
+  r = rsComposeNaive(q, p, tol);
+  y1 = p(q(x));
+  y2 = r(x);
+  ok &= rsIsCloseTo(y1, y2, 1.e-15);
+
 
 
 

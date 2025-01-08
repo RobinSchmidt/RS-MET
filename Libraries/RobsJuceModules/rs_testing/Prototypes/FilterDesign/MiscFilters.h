@@ -1543,7 +1543,7 @@ rsSparsePolynomial<T> rsComposeNaive(
 
 
     rsSparsePolynomial<T> Ai = rsPow(inner, pi);
-    Ai.scale(pi);
+    Ai.scale(ci);
     // Rewrite this as Ai = ci * rsPow(inner, pi). We need an operator that takes a left operand
     // of type T and a right operand of type rsSparesPolynomial. It may also be nice to have an 
     // operator that takes a monomial as left operand
