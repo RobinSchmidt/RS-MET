@@ -1570,15 +1570,18 @@ template<class T>
 void rsSparsePolynomial<T>::greatestCommonDivisor(
   const rsSparsePolynomial<T>& p,
   const rsSparsePolynomial<T>& q,
-  rsSparsePolynomial<T>* gcd,
+  rsSparsePolynomial<T>* a,
   T tol, bool monic)
 {
   // Temporaries
-  rsSparsePolynomial<T> b = q, tmp, dummy;
+  rsSparsePolynomial<T> b, tmp, dummy;
+
+
   // ToDo: let the user pass pointers to them. Maybe have a destructive in-place version in which p 
   // and/or q are used also for the temporaries.
 
-  gcd->copyDataFrom(p);
+  a->copyDataFrom(p);
+  b.copyDataFrom(q);
 
   while(!b.isZero(tol))
   {
@@ -1586,13 +1589,14 @@ void rsSparsePolynomial<T>::greatestCommonDivisor(
 
     tmp.copyDataFrom(b);
 
-    rsSparsePolynomial<T>::divide(*gcd, tmp, &dummy, &b, tol);
-    gcd->copyDataFrom(tmp);
+    rsSparsePolynomial<T>::divide(*a, tmp, &dummy, &b, tol);
+    a->copyDataFrom(tmp);
   }
   if(monic)
-    gcd->makeMonic();
+    a->makeMonic();
 
 
+  // Maybe re-use p for the result, i.e. let a == p. Also, let b == q;
 }
 
 
