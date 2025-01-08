@@ -2911,9 +2911,6 @@ bool testSparsePolynomial()
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
 
 
-  // Under construction - the stuff from here doesn't work yet:
-
-
   // Test greatest common divisor algorithm:
 
   // Produce target result using rsRationalFunction:
@@ -2933,22 +2930,18 @@ bool testSparsePolynomial()
   r.setupFromDenseCoeffs(rv, tol);
   s = p*r;
   t = q*r;
-  u = rsGreatestCommonDivisor(s, t, 1.e-13, false);
+  u = rsGreatestCommonDivisor(s, t, tol, false);
   ok &= u.isCloseTo(tgt, tol);
-  u = rsGreatestCommonDivisor(t, s, 1.e-13, false);
+  u = rsGreatestCommonDivisor(t, s, tol, false);
   ok &= u.isCloseTo(tgt, tol);
 
-  // I think u should be equal to r, i.e. r should be the gcd of s,t. But that doesn't wokr yet.
-  // Triggers assertion! Maybe we need a higher tolerance? ..ok - that fixed the assertion. But the
-  // result is wrong. Maybe compare stepping throgh the algo with
-  // rsRationalFunction<T>::polyGCD
-
-
-  // u and uv partially match - but u is shorter by one. Could the RatFunc::polyGCD() function 
-  // already be buggy? Add some test cases for that!
-
-
-
+  // Now with normalization to make the gcd monic:
+  uv = RatFunc::polyGCD(sv, tv, tol, true);
+  tgt.setupFromDenseCoeffs(uv, tol);
+  u = rsGreatestCommonDivisor(s, t, tol, true);
+  ok &= u.isCloseTo(tgt, tol);
+  u = rsGreatestCommonDivisor(t, s, tol, true);
+  ok &= u.isCloseTo(tgt, tol);
 
 
 

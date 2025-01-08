@@ -1573,15 +1573,9 @@ rsSparsePolynomial<T> rsGreatestCommonDivisor(
   return a;
 
 
-  //// From rsRationalFunction<T>::polyGCD:
-  //std::vector<T> a = p, b = q, t;
-  //while(!isAllZeros(b, tol)) {
-  //  t = b;
-  //  b = polyMod(a, b, tol);
-  //  a = t; }
-  //if(monic)
-  //  makeMonic(a);
-  //return a;
+  // Notes:
+  //
+  // - Algorithm implementation has been adapted from rsRationalFunction<T>::polyGCD
 }
 
 
