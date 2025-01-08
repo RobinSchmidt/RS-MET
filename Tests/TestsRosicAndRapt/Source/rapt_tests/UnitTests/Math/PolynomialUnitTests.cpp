@@ -2818,10 +2818,17 @@ bool testSparsePolynomial()
   ok &= rem.isCloseTo( r, tol);
 
   // Test greatest common divisor:
+  p = PolyS({ Mon(+3.0, 0), Mon(-2.0, 1), Mon(+4.0, 2)               });
+  q = PolyS({ Mon(+2.0, 0), Mon(-3.0, 1), Mon(+5.0, 2), Mon(-5.0, 3) });
+  r = PolyS({ Mon(-5.0, 0), Mon(+3.0, 1)                             });
   s = p*r;
   t = q*r;
-  u = rsGreatestCommonDivisor(s, t, tol, false);
-  // Triggers assertion! Maybe we need a higher tolerance?
+  //u = rsGreatestCommonDivisor(s, t, tol, false);
+  u = rsGreatestCommonDivisor(t, s, 1.e-13, false);
+  u = rsGreatestCommonDivisor(s, t, 1.e-13, false);
+  // Triggers assertion! Maybe we need a higher tolerance? ..ok - that fixed the assertion. But the
+  // result is wrong. Maybe compare stepping throgh the algo with
+  // rsRationalFunction<T>::polyGCD
 
 
   // Test power function:
