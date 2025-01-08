@@ -1571,11 +1571,12 @@ void rsSparsePolynomial<T>::greatestCommonDivisorInPlace(
   rsSparsePolynomial<T>* a, 
   rsSparsePolynomial<T>* b,
 
-  rsSparsePolynomial<T>* notUsed,
+  rsSparsePolynomial<T>* tmp1,
+
   T tol, bool monic)
 {
   // Temporaries
-  rsSparsePolynomial<T> tmp, dummy;
+  rsSparsePolynomial<T> dummy;
 
 
   // ToDo: let the user pass pointers to them. Maybe have a destructive in-place version in which p 
@@ -1583,10 +1584,10 @@ void rsSparsePolynomial<T>::greatestCommonDivisorInPlace(
 
   while(!b->isZero(tol))
   {
-    tmp.copyDataFrom(*b);
+    tmp1->copyDataFrom(*b);
 
-    rsSparsePolynomial<T>::divide(*a, tmp, &dummy, b, tol);
-    a->copyDataFrom(tmp);
+    rsSparsePolynomial<T>::divide(*a, *tmp1, &dummy, b, tol);
+    a->copyDataFrom(*tmp1);
   }
   if(monic)
     a->makeMonic();
