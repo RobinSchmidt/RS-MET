@@ -1244,6 +1244,20 @@ void rsSparsePolynomial<T>::canonicalize(T tol)
   //   std::sort(..)
 }
 
+
+/** Multiplies a coefficient and a sparse polynomial. */
+template<class T>
+inline rsSparsePolynomial<T> operator*(const T& s, const rsSparsePolynomial<T>& p)
+{
+  rsSparsePolynomial<T> r;
+  r.copyDataFrom(p);
+  r.scale(s);
+  return r;
+}
+// ToDo: write an operator that takes a monomial as left operand. It should scale r by the 
+// monomial's coeff as above and shift the powers of r by the monomial's power.
+
+
 template<class T>
 bool rsSparsePolynomial<T>::isCloseTo(const rsSparsePolynomial<T>& q, T tol) const
 {
@@ -1542,36 +1556,21 @@ rsSparsePolynomial<T> rsComposeNaive(
     int pi = outer.getPower(i);
 
 
-    rsSparsePolynomial<T> Ai = rsPow(inner, pi);
-    Ai.scale(ci);
-    // Rewrite this as Ai = ci * rsPow(inner, pi). We need an operator that takes a left operand
-    // of type T and a right operand of type rsSparesPolynomial. It may also be nice to have an 
-    // operator that takes a monomial as left operand
+    //rsSparsePolynomial<T> Ai = rsPow(inner, pi);
+    //Ai.scale(ci);
+    //// Rewrite this as Ai = ci * rsPow(inner, pi). We need an operator that takes a left operand
+    //// of type T and a right operand of type rsSparesPolynomial. It may also be nice to have an 
+    //// operator that takes a monomial as left operand
 
-    r = r + Ai;
+    //r = r + Ai;
+
+
+
+    rsSparsePolynomial<T> Ai = rsPow(inner, pi);
+    r = r + ci * Ai;
   }
 
   return r;
-
-
-  //// Temporary polynomial for the powers of the inner polynomial:
-  //rsSparsePolynomial<T> tmp;
-  //tmp.appendTerm(T(1), 0);     // A^i  for i = 0
-
-  //// The result:
-  //rsSparsePolynomial<T> res;
-
-  //for(int i = 0; i < outer.getNumTerms(); i++)
-  //{
-  //  rsMonomial<T> ti = outer.getTerm(i);
-
-
-  //  res = res + ti * tmp;
-  //  tmp = tmp * inner;
-  //  int dummy = 0;
-  //}
-
-  //return res;
 }
 
 
