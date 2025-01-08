@@ -1367,24 +1367,18 @@ bool testRationalFunctionAlgos()
   Vec u = RF::polyMul(s, gcd); ok &= u == q;
 
 
-  // Try it with other polynomials, too! We want more complex test cases.
-
+  // Try it with with a gcd that isn't monic:
   p = Vec({+3.0, -2.0, +4.0       });  //  3 - 2*x + 4*x^2
   q = Vec({+2.0, -3.0, +5.0, -5.0 });  //  2 - 3*x + 5*x^2 - 5*x^3
   r = Vec({-5.0, -3.0, +4.0       });  // -5 - 3*x + 4*x^2
   s = RF::polyMul(p, r, tol);
   t = RF::polyMul(q, r, tol);
   u = RF::polyGCD(s, t, tol, true);
-  ok &= rsIsCloseTo(u, 0.25*r, tol);
+  ok &= rsIsCloseTo(u, 0.25*r, tol);   // 0.25 = 1/4 is needed because the leading coeff of r is 4.
   u = RF::polyGCD(s, t, tol, false);
   ok &= rsIsMultipleOf(u, r, tol);
 
-
-  // I think, u should be equal to r - but it isn't! I think it has to do with making the  result
-  // monic or not or scaling it by some other factor? Aha! Yes! That's it!
-
-
-  // The following SageMath code seems to work:
+  // This is how is could be done in SageMath (for reference, if something goes wrong):
   //
   // def gcd(f, g):
   //   while g != 0:
@@ -1402,9 +1396,7 @@ bool testRationalFunctionAlgos()
   // t = expand(q * r)
   // s,t, 4*gcd(s,t)
   //
-  // We need to multiply the end result by 4 to get the original result back.
-
-
+  // We need to multiply the end result by 4 to get the original r back.
 
 
 
@@ -2921,20 +2913,10 @@ bool testSparsePolynomial()
 
   // Under construction - the stuff from here doesn't work yet:
 
-  // Test greatest common divisor:
-  p = PolyS({ Mon(+3.0, 0), Mon(-2.0, 1), Mon(+4.0, 2)               });
-  q = PolyS({ Mon(+2.0, 0), Mon(-3.0, 1), Mon(+5.0, 2), Mon(-5.0, 3) });
-  r = PolyS({ Mon(-5.0, 0), Mon(+3.0, 1)                             });
-  s = p*r;
-  t = q*r;
-  //u = rsGreatestCommonDivisor(s, t, tol, false);
-  u = rsGreatestCommonDivisor(t, s, 1.e-13, false);
-  u = rsGreatestCommonDivisor(s, t, 1.e-13, false);
-  // I think u should be equal to r, i.e. r should be the gcd of s,t. But that doesn't wokr yet.
-  // Triggers assertion! Maybe we need a higher tolerance? ..ok - that fixed the assertion. But the
-  // result is wrong. Maybe compare stepping throgh the algo with
-  // rsRationalFunction<T>::polyGCD
 
+  // Test greatest common divisor algorithm:
+
+  // Produce target result using rsRationalFunction:
   using RatFunc = rsRationalFunction<Real>;
   Vec pv({+3.0, -2.0, +4.0       });
   Vec qv({+2.0, -3.0, +5.0, -5.0 });
@@ -2942,6 +2924,26 @@ bool testSparsePolynomial()
   Vec sv = RatFunc::polyMul(pv, rv, tol);
   Vec tv = RatFunc::polyMul(qv, rv, tol);
   Vec uv = RatFunc::polyGCD(sv, tv, tol, false);
+  PolyS tgt;
+  tgt.setupFromDenseCoeffs(uv, tol);
+
+  // Produce result and check against target:
+  p.setupFromDenseCoeffs(pv, tol);
+  q.setupFromDenseCoeffs(qv, tol);
+  r.setupFromDenseCoeffs(rv, tol);
+  s = p*r;
+  t = q*r;
+  u = rsGreatestCommonDivisor(s, t, 1.e-13, false);
+  ok &= u.isCloseTo(tgt, tol);
+  u = rsGreatestCommonDivisor(t, s, 1.e-13, false);
+  ok &= u.isCloseTo(tgt, tol);
+
+  // I think u should be equal to r, i.e. r should be the gcd of s,t. But that doesn't wokr yet.
+  // Triggers assertion! Maybe we need a higher tolerance? ..ok - that fixed the assertion. But the
+  // result is wrong. Maybe compare stepping throgh the algo with
+  // rsRationalFunction<T>::polyGCD
+
+
   // u and uv partially match - but u is shorter by one. Could the RatFunc::polyGCD() function 
   // already be buggy? Add some test cases for that!
 
