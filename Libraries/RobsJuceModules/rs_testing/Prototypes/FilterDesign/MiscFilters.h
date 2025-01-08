@@ -1476,11 +1476,12 @@ void rsDivMod(
   {
     rsMonomial<T> t = rem->getLeadingTerm() / den.getLeadingTerm();    // t = lead(r) / lead(d)
     quot->addTerm(t, tol);                                             // q = q + t
+    rem->addScaled(den, -t, tol);                                      // r = r - t * d
 
-    tmp1.copyDataFrom(*rem);
-    tmp2.copyDataFrom( den);
-    tmp2.multiplyBy(-t);
-    rsSparsePolynomial<T>::add(tmp1, tmp2, rem, tol);                  // r = r - t * d
+    //tmp1.copyDataFrom(*rem);
+    //tmp2.copyDataFrom( den);
+    //tmp2.multiplyBy(-t);
+    //rsSparsePolynomial<T>::add(tmp1, tmp2, rem, tol);                  // r = r - t * d
 
 
     // Maybe instead of using the two temp polynomials, use rem->addTerm in a loop over the terms
