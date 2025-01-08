@@ -2944,8 +2944,10 @@ bool testSparsePolynomial()
   ok &= u.isCloseTo(tgt, tol);
 
   // Now with the static member function:
-  PolyS::greatestCommonDivisor(s, t, &u, tol, true);
-  ok &= u.isCloseTo(tgt, tol);
+  //PolyS::greatestCommonDivisor(s, t, &u, tol, true);
+
+  PolyS::greatestCommonDivisorInPlace(&s, &t, &u, tol, true);
+  ok &= s.isCloseTo(tgt, tol);
 
 
 
