@@ -786,6 +786,12 @@ public:
   // base is an arbitrary type and the epxonent is an integer
 
 
+  /** Returns the negative of this monomial. */
+  rsMonomial<T> operator-() const
+  { 
+    return rsMonomial<T>(-getCoeff(), getPower());
+  }
+
 
   /** Multiplies two monomials. */
   rsMonomial<T> operator*(const rsMonomial<T>& q) const
@@ -805,6 +811,8 @@ public:
   // something about this like triggering an rsAssert?
 
   // ToDo: Implement unary minus
+
+
 
 
 protected:
@@ -1439,14 +1447,14 @@ void rsDivMod(
   while(!rem->isZero(tol) && rem->getDegree() >= den.getDegree())
   {
     // t = lead(r) / lead(d):
-    int iRem = rem->getMaxPowerIndex();
-    int iDen = den. getMaxPowerIndex();
-    T   cRem = rem->getCoeff(iRem);
-    T   cDen = den. getCoeff(iDen);
-    int pRem = rem->getPower(iRem);
-    int pDen = den. getPower(iDen);
-    T   cT   = cRem / cDen;
-    int pT   = pRem - pDen;
+    //int iRem = rem->getMaxPowerIndex();
+    //int iDen = den. getMaxPowerIndex();
+    //T   cRem = rem->getCoeff(iRem);
+    //T   cDen = den. getCoeff(iDen);
+    //int pRem = rem->getPower(iRem);
+    //int pDen = den. getPower(iDen);
+    //T   cT   = cRem / cDen;
+    //int pT   = pRem - pDen;
 
     rsMonomial<T> t = rem->getLeadingTerm() / den.getLeadingTerm();
 
@@ -1461,10 +1469,11 @@ void rsDivMod(
     tmp2.copyDataFrom( den);
 
     // Replace by tmp2.subtractTerm(t)
-    tmp2.scaleCoeffs(-cT);
-    tmp2.shiftPowers( pT);
+    //tmp2.scaleCoeffs(-cT);
+    //tmp2.shiftPowers( pT);
 
     //tmp2.subtractTerm(t, tol);  // Wrong! we need  tmp2.multiplyBy(-t)
+    tmp2.multiplyBy(-t);
 
 
     rsSparsePolynomial<T>::add(tmp1, tmp2, rem, tol);
