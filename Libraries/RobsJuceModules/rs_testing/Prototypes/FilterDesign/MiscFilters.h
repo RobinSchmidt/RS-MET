@@ -786,6 +786,10 @@ public:
   // base is an arbitrary type and the epxonent is an integer
 
 
+  template<class TArg>
+  TArg evaluateTyped(TArg z) const { return TArg(coeff) * rsPow(z, TArg(power)); }
+
+
 
   /** Evaluates the monomial at the given input x. */
   T operator()(T x) const { return evaluateAt(x); }
@@ -1078,12 +1082,25 @@ public:
   /** Evaluates the polynomial at the given x and returns the result. */
   T evaluateAt(T x) const;
 
+  template<class TArg>
+  TArg evaluateTyped(const TArg& z) const;
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
   /** Evaluates the polynomial at the given input x. */
   T operator()(T x) const { return evaluateAt(x); }
+
+  /** Evaluates the function at the given input z whose type may be different from the 
+  coefficient type, for example, for evaluating functions with real coeffs at complex arguments.
+  WARNING: the same considerations as for @see rsPolynomial::operator(TArg) apply. */
+  template<class TArg>
+  TArg operator()(TArg z) const 
+  { 
+    return evaluateTyped(z);
+  }
 
   /** Adds two polynomials. */
   rsSparsePolynomial<T> operator+(const rsSparsePolynomial<T>& q) const 
@@ -1448,6 +1465,15 @@ T rsSparsePolynomial<T>::evaluateAt(T x) const
   return y;
 }
 
+template<class T>
+template<class TArg>
+TArg rsSparsePolynomial<T>::evaluateTyped(const TArg& z) const
+{
+  TArg w = TArg(0);
+  for(auto& term : terms)
+    w += term.evaluateTyped(z);
+  return w;
+}
 
 
 template<class T>
@@ -1688,6 +1714,35 @@ class rsSparseRationalFunction
 
 public:
 
+
+
+  void setupFromDenseCoeffs(
+    const std::vector<T>& newNumeratorCoeffs,
+    const std::vector<T>& newDenominatorCoeffs,
+    T tol)
+  {
+    num.setupFromDenseCoeffs(newNumeratorCoeffs,   tol);
+    den.setupFromDenseCoeffs(newDenominatorCoeffs, tol);
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Operators */
+
+  /** Evaluates the function at the given input x. */
+  T operator()(T x) const
+  {
+    return num(x) / den(x);
+  }
+
+  /** Evaluates the function at the given input z whose type may be different from the 
+  coefficient type, for example, for evaluating functions with real coeffs at complex arguments.
+  WARNING: the same considerations as for @see rsPolynomial::operator(TArg) apply. */
+  template<class TArg>
+  TArg operator()(TArg z) const 
+  { 
+    return num(z) / den(z);
+  }
 
 
 

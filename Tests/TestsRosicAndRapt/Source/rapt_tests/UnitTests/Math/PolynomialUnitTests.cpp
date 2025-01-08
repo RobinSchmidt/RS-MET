@@ -2981,18 +2981,47 @@ bool testSparseRationalFunction()
 
   bool ok = true;
 
-  using Real  = double;
-  using Vec   = std::vector<Real>;
-  //using Mon   = rsMonomial<Real>;
-  //using PolyD = rsPolynomial<Real>;              // Dense polynomials
-  //using PolyS = rsSparsePolynomial<Real>;        // Sparse polynomials
-  using RatD  = rsRationalFunction<Real>;        // Dense rational functions
-  using RatS  = rsSparseRationalFunction<Real>;  // Sparse rational functions
+  using Real    = double;
+  using Complex = rsComplex<Real>;
+  using Vec     = std::vector<Real>;
+  using RatD    = rsRationalFunction<Real>;        // Dense rational functions
+  using RatS    = rsSparseRationalFunction<Real>;  // Sparse rational functions
+
+  Real tol = 1.e-14;
+  Real y1, y2;
+  Real x = 1.5;
+
+  Complex z(1.5, -0.5);
+  Complex w1, w2;
+
+  RatD rd, sd, td;
+  rd = RatD({ 1,2,3 }, { 4, 5, 6, 7 });
+  sd = RatD({ 5,6 }, { 5, 7, 11 });
+
+  RatS rs, ss, ts;
+  rs.setupFromDenseCoeffs(rd.getNumerator(), rd.getDenominator(), tol);
+  ss.setupFromDenseCoeffs(sd.getNumerator(), sd.getDenominator(), tol);
+
+  // Test evaluation:
+  y1 = rd(x);
+  y2 = rs(x);
+  ok &= rsIsCloseTo(y1, y2, tol);
+
+  // Test evaluation at complex argument:
+  w1 = rd(z);
+  w2 = rs(z);
+
+
 
 
 
 
   return ok;
+
+  // ToDo:
+  //
+  // - Implement and test evaluation at complex arguments when the type T is a real number
+  //   type (try it with rsComplex and std::complex), arithmetic operators, ...
 }
 
 
