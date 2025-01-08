@@ -1468,9 +1468,8 @@ void rsDivMod(
 {
   rsAssert(!den.isZero(tol));
 
-  rsSparsePolynomial<T> tmp1, tmp2;    // ToDo: Let the caller pass pre-allocated objects
-  quot->clear();                       // q = 0
-  rem->copyDataFrom(num);              // r = n, Invariant holds: n = d*q + r = d*0 + r = r
+  quot->clear();             // q = 0
+  rem->copyDataFrom(num);    // r = n, Invariant holds: n = d*q + r = d*0 + r = r
 
   while(!rem->isZero(tol) && rem->getDegree() >= den.getDegree())
   {
@@ -1478,28 +1477,10 @@ void rsDivMod(
     quot->addTerm(t, tol);                                             // q = q + t
     rem->addScaled(den, -t, tol);                                      // r = r - t * d
 
-    //tmp1.copyDataFrom(*rem);
-    //tmp2.copyDataFrom( den);
-    //tmp2.multiplyBy(-t);
-    //rsSparsePolynomial<T>::add(tmp1, tmp2, rem, tol);                  // r = r - t * d
-
-
-    // Maybe instead of using the two temp polynomials, use rem->addTerm in a loop over the terms
-    // of den. But I'm not sure, if that's really better. The addTerm calls may trigger a lot of
-    // data movement, too. Maybe try both variants and do benchmarks. Like so:
-    //
-    //   tmp2.copyDataFrom( den);
-    //   tmp2.multiplyBy(-t);
-    //   rem->add(tmp2, tol);
-    //
-    // Or maybe even better:
-    //
-    //   rem->addScaled(den, -t, tol);
-
-
-
     // Check the loop invariant n = d*q + r:
     rsAssert(rsIsCloseTo(num, den * *quot + *rem, tol), "Loop invariant violated");
+    // Maybe use
+    // num->isCloseTo(den * *quot + *rem, tol)
   }
 
   // The algorithm has been adapted from: 
@@ -1523,6 +1504,12 @@ void rsDivMod(
   //    r = r - t * d
   // }
   // return (q, r)
+  //
+  //
+  // ToDo:
+  //
+  // - Maybe at some point, when the function is battle tested well enough, we can get rid of the
+  //   code that checks the loop invariant.
 }
 
 

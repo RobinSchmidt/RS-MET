@@ -420,6 +420,16 @@ public:
   // Maybe use the equals function to mean exactly equal and have another function isCloseTo for
   // comparison with tolerance.
 
+
+
+  //bool equals(const rsMatrixView<T>& rhs, T tolerance = T(0)) const
+  //{
+  //  return areSameShape(*this, rhs)
+  //    && rsArrayTools::almostEqual(dataPointer, rhs.dataPointer, getSize(), tolerance);
+  //}
+
+
+
   /** Returns true, iff this matrix has the given shape. */
   bool hasShape(int numRows, int numCols) const
   { return this->numRows == numRows && this->numCols == numCols; }
