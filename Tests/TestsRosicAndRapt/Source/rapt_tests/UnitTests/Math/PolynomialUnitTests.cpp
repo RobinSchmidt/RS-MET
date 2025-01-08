@@ -2948,7 +2948,8 @@ bool testSparsePolynomial()
   PolyS tmp1, tmp2;
   PolyS::greatestCommonDivisorInPlace(&s, &t, &tmp1, &tmp2, tol, true);
   ok &= s.isCloseTo(tgt, tol);
-  // t contains now garbage! ...or has the content of t meaning? Figure out!
+  // t contains now garbage! ...or has the content of t meaning? Figure out! Oh - i think, it 
+  // should be zero on return
 
 
 

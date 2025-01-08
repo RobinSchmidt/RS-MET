@@ -1146,17 +1146,28 @@ public:
     rsSparsePolynomial<T>* quotient,
     rsSparsePolynomial<T>* remainder, T tol);
 
+  /** Computes the greatest common divisor of two polynomials. It works in place meaning that it
+  allocates no temporary sparse polynomials internally. The first parameter is an input/output 
+  parameter. On input it should contain the first argument. On return, it will contain the result,
+  i.e. the GCD. The second parameter is the second argument and will also be used internally for 
+  temporary data such that on return, it will be destroyed (it will be zeroed out by the 
+  algorithm). The algorithm also needs two additional temporaries that you need to pass. Their 
+  content on output is undefined. On input, they may contain anything - it doesn't matter. */
   static void greatestCommonDivisorInPlace(
     rsSparsePolynomial<T>* FirstArgAndResult,
     rsSparsePolynomial<T>* SecondArg2,
     rsSparsePolynomial<T>* tmp1,
     rsSparsePolynomial<T>* tmp2,
     T tol, bool monic);
-  // This allocates temporary objects! ToDo: Let the user pass pointers to the temporaries. Maybe
-  // re-use p,q for the temporaries as well, i.e. let it work destructively
+  // I think, if all passed polynomials have large enough capacity, then the function should not
+  // (re)allocate any heap memory. Verify and document this! How large is "large enough"?
 
 
-  // ToDo: compose, greatestCommonDivisor, lowestCommonMultiple
+
+
+
+  // ToDo: compose, lowestCommonMultiple, add a more convenient GCD function that returns the GCD
+
 
 
 
@@ -1575,28 +1586,14 @@ void rsSparsePolynomial<T>::greatestCommonDivisorInPlace(
   rsSparsePolynomial<T>* tmp2,
   T tol, bool monic)
 {
-  // Temporaries
-  //rsSparsePolynomial<T> dummy;
-
-
-  // ToDo: let the user pass pointers to them. Maybe have a destructive in-place version in which p 
-  // and/or q are used also for the temporaries.
-
   while(!b->isZero(tol))
   {
     tmp1->copyDataFrom(*b);
-
-    //rsSparsePolynomial<T>::divide(*a, *tmp1, &dummy, b, tol);
-
     rsSparsePolynomial<T>::divide(*a, *tmp1, tmp2, b, tol);
-
     a->copyDataFrom(*tmp1);
   }
   if(monic)
     a->makeMonic();
-
-
-  // Maybe re-use p for the result, i.e. let a == p. Also, let b == q;
 }
 
 
@@ -1624,6 +1621,11 @@ rsSparsePolynomial<T> rsGreatestCommonDivisor(
   //
   // - Algorithm implementation has been adapted from rsRationalFunction<T>::polyGCD. Keep it
   //   for reference even when an optimzed version is available. This code here more readable.
+  //
+  //
+  // ToDo:
+  //
+  // - Maybe call greatestCommonDivisorInPlace()
 }
 
 
