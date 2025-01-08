@@ -2943,11 +2943,12 @@ bool testSparsePolynomial()
   u = rsGreatestCommonDivisor(t, s, tol, true);
   ok &= u.isCloseTo(tgt, tol);
 
-  // Now with the static member function:
+  // Now with the static member function that works destructively:
   //PolyS::greatestCommonDivisor(s, t, &u, tol, true);
-
-  PolyS::greatestCommonDivisorInPlace(&s, &t, &u, tol, true);
+  PolyS tmp1, tmp2;
+  PolyS::greatestCommonDivisorInPlace(&s, &t, &tmp1, &tmp2, tol, true);
   ok &= s.isCloseTo(tgt, tol);
+  // t contains now garbage! ...or has the content of t meaning? Figure out!
 
 
 

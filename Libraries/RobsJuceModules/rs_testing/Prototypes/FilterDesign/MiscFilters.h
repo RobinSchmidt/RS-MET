@@ -1147,9 +1147,10 @@ public:
     rsSparsePolynomial<T>* remainder, T tol);
 
   static void greatestCommonDivisorInPlace(
-    rsSparsePolynomial<T>* p, 
-    rsSparsePolynomial<T>* q,
-    rsSparsePolynomial<T>* gcd,
+    rsSparsePolynomial<T>* FirstArgAndResult,
+    rsSparsePolynomial<T>* SecondArg2,
+    rsSparsePolynomial<T>* tmp1,
+    rsSparsePolynomial<T>* tmp2,
     T tol, bool monic);
   // This allocates temporary objects! ToDo: Let the user pass pointers to the temporaries. Maybe
   // re-use p,q for the temporaries as well, i.e. let it work destructively
@@ -1570,13 +1571,12 @@ template<class T>
 void rsSparsePolynomial<T>::greatestCommonDivisorInPlace(
   rsSparsePolynomial<T>* a, 
   rsSparsePolynomial<T>* b,
-
   rsSparsePolynomial<T>* tmp1,
-
+  rsSparsePolynomial<T>* tmp2,
   T tol, bool monic)
 {
   // Temporaries
-  rsSparsePolynomial<T> dummy;
+  //rsSparsePolynomial<T> dummy;
 
 
   // ToDo: let the user pass pointers to them. Maybe have a destructive in-place version in which p 
@@ -1586,7 +1586,10 @@ void rsSparsePolynomial<T>::greatestCommonDivisorInPlace(
   {
     tmp1->copyDataFrom(*b);
 
-    rsSparsePolynomial<T>::divide(*a, *tmp1, &dummy, b, tol);
+    //rsSparsePolynomial<T>::divide(*a, *tmp1, &dummy, b, tol);
+
+    rsSparsePolynomial<T>::divide(*a, *tmp1, tmp2, b, tol);
+
     a->copyDataFrom(*tmp1);
   }
   if(monic)
