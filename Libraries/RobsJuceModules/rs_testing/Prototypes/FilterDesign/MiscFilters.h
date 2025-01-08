@@ -1118,11 +1118,12 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Static member functions */
 
+  /** Computes the greatest common divisor of the polynomials p and q. */
   template<class T>
   static rsSparsePolynomial<T> greatestCommonDivisor(
     const rsSparsePolynomial<T>& p, 
     const rsSparsePolynomial<T>& q, 
-    T tol, bool monic)
+    T tol, bool monic = true)
   {
     rsSparsePolynomial<T> a = p, b = q, tmp1, tmp2;
     rsSparsePolynomial<T>::greatestCommonDivisorInPlace(&a, &b, &tmp1, &tmp2, tol, monic);
@@ -1160,6 +1161,7 @@ public:
     const rsSparsePolynomial<T>& q,
     rsSparsePolynomial<T>* r, T tol);
 
+  /** Implements polynomial division with remainder. ...TBC... */
   static void divide(
     const rsSparsePolynomial<T>& numerator,
     const rsSparsePolynomial<T>& denominator,
@@ -1172,25 +1174,21 @@ public:
   i.e. the GCD. The second parameter is the second argument and will also be used internally for 
   temporary data such that on return, it will be destroyed (it will be zeroed out by the 
   algorithm). The algorithm also needs two additional temporaries that you need to pass. Their 
-  content on output is undefined. On input, they may contain anything - it doesn't matter. */
+  content on output is undefined. On input, they may contain anything - it doesn't matter. For 
+  example usage, see the greatestCommonDivisor() function which basically serves as convenience 
+  function for the in-place version. */
   static void greatestCommonDivisorInPlace(
     rsSparsePolynomial<T>* FirstArgAndResult,
-    rsSparsePolynomial<T>* SecondArg2,
-    rsSparsePolynomial<T>* tmp1,
-    rsSparsePolynomial<T>* tmp2,
+    rsSparsePolynomial<T>* SecondArg,
+    rsSparsePolynomial<T>* temp1,
+    rsSparsePolynomial<T>* temp2,
     T tol, bool monic);
   // I think, if all passed polynomials have large enough capacity, then the function should not
   // (re)allocate any heap memory. Verify and document this! How large is "large enough"?
 
 
 
-
-
-
-
-
-
-  // ToDo: compose, lowestCommonMultiple, add a more convenient GCD function that returns the GCD
+  // ToDo: compose (see free function rsComposeNaive() below), lowestCommonMultiple
 
 
 
@@ -1399,18 +1397,8 @@ int rsSparsePolynomial<T>::getMaxPowerIndex() const
 template<class T>
 T rsSparsePolynomial<T>::getLeadingCoeff() const 
 { 
-  // New:
   return getLeadingTerm().getCoeff();
-
-
-  //// Old:
-  //int i = getMaxPowerIndex();
-  //if(i != -1)
-  //  return getCoeff(i);
-  //else
-  //  return 0;
 }
-// Needs test.
 
 template<class T>
 rsMonomial<T> rsSparsePolynomial<T>::getLeadingTerm() const 
@@ -1419,9 +1407,8 @@ rsMonomial<T> rsSparsePolynomial<T>::getLeadingTerm() const
   if(i != -1)
     return getTerm(i);
   else
-    return rsMonomial<T>(T(0), 0);
+    return rsMonomial<T>(T(0), 0);  // This branch has no test coverage yet
 }
-// Needs test.
 
 template<class T>
 bool rsSparsePolynomial<T>::isCanonical(T tol) const
@@ -1619,9 +1606,7 @@ void rsSparsePolynomial<T>::greatestCommonDivisorInPlace(
   if(monic)
     a->makeMonic();
 
-  // Notes:
-  //
-  // - Algorithm implementation has been adapted from rsRationalFunction<T>::polyGCD. 
+  // Algorithm implementation has been adapted from rsRationalFunction<T>::polyGCD. 
 }
 
 
@@ -1653,17 +1638,15 @@ rsSparsePolynomial<T> rsComposeNaive(
   // Notes:
   //
   // - This implementation is very inefficient and not meant for production use. There are a lot 
-  //   of temporary objects created. A production version should avoid this. This version can be
-  //   used to produce target output for the production version in unit tests, though.
+  //   of temporary objects created. A (yet to be written) production version should avoid this. 
+  //   This version can be used to produce target output for the production version in unit tests,
+  //   though.
 }
 
 
 
 // ToDo:
 //
-// - [DONE] Implement division with remainder. See:
-//   https://en.wikipedia.org/wiki/Polynomial_long_division#Pseudocode
-//   https://de.wikipedia.org/wiki/Polynomdivision#Algorithmus
 //
 // - Figure out what happens if client code uses negative powers. Currently, there's nothing that
 //   prevents this and maybe it could even make sense to allow it. But then the notion of degree
@@ -1671,26 +1654,49 @@ rsSparsePolynomial<T> rsComposeNaive(
 //   the case of an empty polynomial? Maybe, for the time being, we should trap attempts to set up
 //   terms with negative powers. This can later be relaxed, if needed.
 //
-// - Maybe keep the invariant that the polynomial is in canonical representation. Implementing 
-//   algorithms for both cases is a mess. Maybe prepend a __ to those member functions that could
-//   destroy the canonical representation to signal to the caller that they are now doing something
-//   low level and potentially dangerous - like __shiftPower(int index, int amount). The regular
-//   shiftPower function can still be present. It would just call __shiftPower() and then
-//   canonicalize()
+// - Maybe keep the class invariant that the polynomial is in canonical representation. 
+//   Implementing algorithms for both cases is a mess. Maybe prepend a __ to those member functions
+//   that could destroy the canonical representation to signal to the caller that they are now 
+//   doing something low level and potentially dangerous. Like __shiftPower(int index, int amount). 
+//   The regular shiftPower function can still be present. It would just call __shiftPower() and 
+//   then canonicalize(). Or maybe just scan through the terms to find a term with the same power
+//   and if one is found, consolidate the two terms into one.
 //
-// - Implement greatest common divisor, composition.
-//
-// - Implement a class rsSparseRationalFunction. See rsRationalFunction.
+// - Implement a class rsSparseRationalFunction. Model it after rsRationalFunction.
 //
 // - Use class rsSparseRationalFunction in rsSparseFilter (maybe as a member H). We can then 
 //   implement getTransferFunctionAt() as H.evaluateTyped(z)...or maybe just H(z). That would be 
 //   neat.
+//
 //
 // Notes:
 //
 // - It might be tempting to write a constructor and/or setup function that takes a dense 
 //   polynomial, i.e. an object of type rsPolynomial<T>. But I think, that's not a good idea 
 //   because it would introduce unnecessary coupling.
+
+
+//=================================================================================================
+
+// Under construction
+
+/** Implements a sparse rational function. ...TBC... */
+
+template<class T>
+class rsSparseRationalFunction
+{
+
+public:
+
+
+
+
+protected:
+
+  rsSparsePolynomial<T> num, den;
+
+};
+
 
 
 //=================================================================================================
@@ -1987,6 +1993,11 @@ protected:
 
   rsSparsePolynomial<TPar> num, den;    // Numerator and denominator of transfer function
   rsBasicDelayLine<TSig> delayLine;     // Delayline used for the direct form 2 implementation
+
+  // Later use:
+  //rsSparseRationalFunction<TPar> H;  
+  // or
+  //rsSparseRationalFunction<TPar> transFunc;  // Transfer function
 
 };
 

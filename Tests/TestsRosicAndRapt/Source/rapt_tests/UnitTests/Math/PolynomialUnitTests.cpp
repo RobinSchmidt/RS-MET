@@ -2653,16 +2653,11 @@ bool testSparsePolynomial()
   Real tiny = 1.e-16;
   Real tol  = 1.e-14;
 
-
-
-
-
   Vec coeffs1({ 0.5, 0.0, -0.7, 0.0, tiny, 0.3});
 
   PolyD pd(coeffs1);
   PolyS p, q, r, s, t, u;
   p.setupFromDenseCoeffs(coeffs1, tol);
-
 
 
   // Test inquiry functions:
@@ -2980,6 +2975,28 @@ bool testSparsePolynomial()
 }
 
 
+bool testSparseRationalFunction()
+{
+  // Under construction...
+
+  bool ok = true;
+
+  using Real  = double;
+  using Vec   = std::vector<Real>;
+  //using Mon   = rsMonomial<Real>;
+  //using PolyD = rsPolynomial<Real>;              // Dense polynomials
+  //using PolyS = rsSparsePolynomial<Real>;        // Sparse polynomials
+  using RatD  = rsRationalFunction<Real>;        // Dense rational functions
+  using RatS  = rsSparseRationalFunction<Real>;  // Sparse rational functions
+
+
+
+
+  return ok;
+}
+
+
+
 
 bool testPolynomial()
 {
@@ -3022,6 +3039,7 @@ bool testPolynomial()
 
 
   ok &= testSparsePolynomial();
+  ok &= testSparseRationalFunction();
 
 
   ok &= testBivariatePolynomial();
