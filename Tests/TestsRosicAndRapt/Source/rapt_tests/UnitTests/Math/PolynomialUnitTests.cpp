@@ -2838,7 +2838,7 @@ bool testSparsePolynomial()
   Vec tv = RatFunc::polyMul(qv, rv, tol);
   Vec uv = RatFunc::polyGCD(sv, tv, tol, false);
   // u and uv partially match - but u is shorter by one. Could the RatFunc::polyGCD() function 
-  // already be buggy? But I think, we have unit tests for it. Check them...
+  // already be buggy? Add some test cases for that!
 
 
 
