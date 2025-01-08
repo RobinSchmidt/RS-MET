@@ -1756,6 +1756,7 @@ public:
 protected:
 
   rsSparsePolynomial<T> num, den;
+  // Maybe make them public
 
 };
 
@@ -1931,7 +1932,7 @@ public:
     ok &= num.getNumTerms() > 0 && den.getNumTerms() > 0;
 
     // Filter should satisfy the a0 == 1 normalization property:
-    ok &= den.getPower(0) == 0  && getDenCoeff(0) == TPar(1);
+    ok &= den.getPower(0) == 0  && den.getCoeff(0) == TPar(1);
 
     // Length of delayline should match the maximum of the degrees of numerator and denominator:
     int maxDelay = rsMax(num.getDegree(), den.getDegree()); // wrap into getOrder()
@@ -1951,12 +1952,12 @@ public:
     // Compute numerator N(z):
     rsComplex<TPar> N(0);
     for(int i = 0; i < num.getNumTerms(); i++)
-      N += getNumCoeff(i) * rsPow(z, rsComplex<TPar>(-num.getPower(i)));
+      N += num.getCoeff(i) * rsPow(z, rsComplex<TPar>(-num.getPower(i)));
 
     // Compute denominator D(z):
     rsComplex<TPar> D(0);
     for(int i = 0; i < den.getNumTerms(); i++)  
-      D += getDenCoeff(i) * rsPow(z, rsComplex<TPar>(-den.getPower(i)));
+      D += den.getCoeff(i) * rsPow(z, rsComplex<TPar>(-den.getPower(i)));
 
     // Compute transfer function H(z) = N(z) / D(z):
     return N / D;
@@ -1972,13 +1973,13 @@ public:
     // Apply denominator as feedback part:
     TSig tmp = in;
     for(int i = 1; i < den.getNumTerms(); i++)
-      tmp -= getDenCoeff(i) * delayLine.readOutputAt(den.getPower(i));
+      tmp -= den.getCoeff(i) * delayLine.readOutputAt(den.getPower(i));
     delayLine.writeInputNoUpdate(tmp);
 
     // Apply numerator as feedforward path:
     tmp = 0;
     for(int i = 0; i < num.getNumTerms(); i++)
-      tmp += getNumCoeff(i) * delayLine.readOutputAt(num.getPower(i));
+      tmp += num.getCoeff(i) * delayLine.readOutputAt(num.getPower(i));
 
     // Update delayline and return result:
     delayLine.incrementTapPointers();
@@ -1997,13 +1998,13 @@ public:
     TPar s = TPar(1) / num.getCoeff(0);
     TSig tmp = in;
     for(int i = 1; i < num.getNumTerms(); i++)
-      tmp -= s * getNumCoeff(i) * delayLine.readOutputAt(num.getPower(i));
+      tmp -= s * num.getCoeff(i) * delayLine.readOutputAt(num.getPower(i));
     delayLine.writeInputNoUpdate(tmp);
 
     // Apply scaled denominator as feedforward path:
     tmp = 0;
     for(int i = 0; i < den.getNumTerms(); i++)
-      tmp += s * getDenCoeff(i) * delayLine.readOutputAt(den.getPower(i));
+      tmp += s * den.getCoeff(i) * delayLine.readOutputAt(den.getPower(i));
 
     // Update delayline and return result:
     delayLine.incrementTapPointers();
@@ -2021,14 +2022,14 @@ public:
     // Apply denominator as feedback part:
     TSig tmp = in;
     for(int i = 1; i < den.getNumTerms(); i++)
-      tmp -= getDenCoeff(i) * delayLine.readOutputAt(den.getPower(i));
+      tmp -= den.getCoeff(i) * delayLine.readOutputAt(den.getPower(i));
     delayLine.writeInputNoUpdate(tmp);
 
     // Apply reversed numerator as feedforward path:
     int deg = num.getDegree();
     tmp = 0;
     for(int i = 0; i < num.getNumTerms(); i++)
-      tmp += getNumCoeff(i) * delayLine.readOutputAt(deg - num.getPower(i));
+      tmp += num.getCoeff(i) * delayLine.readOutputAt(deg - num.getPower(i));
 
     // Update delayline and return result:
     delayLine.incrementTapPointers();
@@ -2053,12 +2054,14 @@ public:
 
 protected:
 
-  rsSparsePolynomial<TPar>& getNum() { return num; }
-  rsSparsePolynomial<TPar>& getDen() { return den; }
+  //rsSparsePolynomial<TPar>& getNum() { return num; }
+  //rsSparsePolynomial<TPar>& getDen() { return den; }
 
-  // Maybe make public
-  TPar getNumCoeff(int i) const { return num.getCoeff(i); }
-  TPar getDenCoeff(int i) const { return den.getCoeff(i); }
+  //// Maybe make public
+  //TPar getNumCoeff(int i) const { return num.getCoeff(i); }
+  //TPar getDenCoeff(int i) const { return den.getCoeff(i); }
+  //int getNumDegree() const { return num.getDegree(); }
+  //int getDenDegree() const { return den.getDegree(); }
 
 
   rsSparsePolynomial<TPar> num, den;    // Numerator and denominator of transfer function
