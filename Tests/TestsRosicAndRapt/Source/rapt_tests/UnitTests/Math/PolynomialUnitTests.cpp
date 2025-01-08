@@ -2771,7 +2771,7 @@ bool testSparsePolynomial()
 
 
 
-  // Test arithmetic operators:
+  // Test arithmetic operators +,-,*:
   y1 = p(x) + q(x);
   r  = p    + q;
   y2 = r(x);
@@ -2786,7 +2786,6 @@ bool testSparsePolynomial()
   r  = p    * q;
   y2 = r(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
-
 
   // Test division with remainder:
   PolyS quot, rem;
@@ -2806,6 +2805,20 @@ bool testSparsePolynomial()
   PolyS::divide(s, p, &quot, &rem, tol);
   ok &= quot.isCloseTo(q, tol);
   ok &= rem.isCloseTo( r, tol);
+
+  // Test division and modulo operator:
+  s = p * q + r;
+  quot = s / q;
+  rem  = s % q;
+  ok &= quot.isCloseTo(p, tol);
+  ok &= rem.isCloseTo( r, tol);
+  quot = s / p;
+  rem  = s % p;
+  ok &= quot.isCloseTo(q, tol);
+  ok &= rem.isCloseTo( r, tol);
+
+
+
 
   // Test power function:
   r  = rsPow(p, 3);

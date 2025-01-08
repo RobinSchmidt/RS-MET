@@ -1094,6 +1094,24 @@ public:
   { rsSparsePolynomial<T> r; multiply(*this, q, &r, T(0)); return r; }
 
 
+
+  rsSparsePolynomial<T> operator/(const rsSparsePolynomial<T>& q) const 
+  { 
+    rsSparsePolynomial<T> quot, rem;
+    divide(*this, q, &quot, &rem, T(0));
+    return quot;
+  }
+
+
+  rsSparsePolynomial<T> operator%(const rsSparsePolynomial<T>& q) const 
+  { 
+    rsSparsePolynomial<T> quot, rem;
+    divide(*this, q, &quot, &rem, T(0));
+    return rem;
+  }
+
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Low Level API. These functions operate on pre-allocated output parameters (passed by 
   pointer) which potentially avoids heap allocations. */
