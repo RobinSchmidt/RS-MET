@@ -98,7 +98,7 @@ void rsFilterSpecificationZPK<T>::sortPolesAndZeros()
 }
 
 template <class T>
-bool rsFilterSpecificationZPK<T>::equals(const rsFilterSpecificationZPK& zpk, T tol)
+bool rsFilterSpecificationZPK<T>::isCloseTo(const rsFilterSpecificationZPK& zpk, T tol)
 {
   bool r = sampleRate == zpk.sampleRate; // sample-rate uses exact comparison - it's not supposed to be subject to roundoff error
   r &= abs(k-zpk.k) <= tol;

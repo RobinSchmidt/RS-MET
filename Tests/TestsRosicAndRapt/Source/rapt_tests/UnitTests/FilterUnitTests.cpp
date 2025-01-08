@@ -219,7 +219,7 @@ bool filterSpecUnitTest()
   // now, we convert back from ba to zpk and check, if we get our original zpk specifiction
   // properly reconstructed:
   ZPK zpkTmp = ba32.toZPK();
-  r &= zpkTmp.equals(zpk32, tol);
+  r &= zpkTmp.isCloseTo(zpk32, tol);
 
   // Digital case:
   //             (1-q1/z)*(1-q2/z)*(1-q3/z)     b0 + b1/z + b2/z^2 + b3/z^3
@@ -248,7 +248,7 @@ bool filterSpecUnitTest()
 
   // BA -> ZPK:
   zpkTmp = ba32.toZPK();
-  r &= zpkTmp.equals(zpk32, tol);
+  r &= zpkTmp.isCloseTo(zpk32, tol);
 
   // test of conversions is done - now we evaluate the transfer-function at a couple of randomly
   // selected values for s or z an see, if both representations (ZPK and BA) give the same results:

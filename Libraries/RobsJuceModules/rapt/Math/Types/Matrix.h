@@ -412,7 +412,7 @@ public:
   { return A.numCols == B.numRows; }
 
   /** Returns true, iff the rhs matrix is equal to this matrix with an optional tolerance. */
-  bool equals(const rsMatrixView<T>& rhs, T tolerance = T(0)) const
+  bool isCloseTo(const rsMatrixView<T>& rhs, T tolerance = T(0)) const
   {
     return areSameShape(*this, rhs)
       && rsArrayTools::almostEqual(dataPointer, rhs.dataPointer, getSize(), tolerance);
@@ -425,7 +425,7 @@ public:
   //bool equals(const rsMatrixView<T>& rhs, T tolerance = T(0)) const
   //{
   //  return areSameShape(*this, rhs)
-  //    && rsArrayTools::almostEqual(dataPointer, rhs.dataPointer, getSize(), tolerance);
+  //    && rsArrayTools::equals(dataPointer, rhs.dataPointer, getSize(), tolerance);
   //}
 
 

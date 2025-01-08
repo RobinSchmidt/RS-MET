@@ -380,7 +380,7 @@ bool testTridiagonalSystemNew()
   LA::solve(A2, X, B2);
   B2 = A*X;  // should give back B
   double tol = 1.e-14;
-  ok &= B2.equals(B, tol);
+  ok &= B2.isCloseTo(B, tol);
 
   // Solve the system via the tridiagonal algorithm:
   Vec L({+3,+2,+5,-3});
@@ -415,7 +415,7 @@ bool testTridiagonalSystemNew()
   B2 = B;
   LA::solveTridiagonal(&L[0], &D2[0], &U[0], X, B2);
   B2 = A*X;
-  ok &= B2.equals(B, tol);
+  ok &= B2.isCloseTo(B, tol);
 
   // Now let's use the Sherman-Morrison-Woodbury formula for a "wrapped" system, where the 
   // secondary diagonals wrap around row-wise:
@@ -425,7 +425,7 @@ bool testTridiagonalSystemNew()
   B2 = B;
   LA::solve(A2, X, B2);      // for reference
   B2 = A*X;                  // should give back B
-  ok &= B2.equals(B, tol);
+  ok &= B2.isCloseTo(B, tol);
 
   // That was just for getting reference output, now really via Sherman:
   Vec L2 = L; D2 = D; U2 = U; b2 = b;
@@ -599,7 +599,7 @@ bool testLinearSystemViaGauss2()
   // check matrix inversion:
   Matrix At(3, 3, {-0.5,1.9,-3.7, 0.0,-0.2,0.6, 0.5,-0.9,1.7 }); // target matrix
   Matrix Ai = LA::inverse(A);
-  r &= Ai.equals(At, tol);
+  r &= Ai.isCloseTo(At, tol);
 
   // solve some systems with 3x3 matrix and 3x2 solution vector:
   Matrix X(3, 2, {1,4, 2,5, 3,6});
@@ -609,7 +609,7 @@ bool testLinearSystemViaGauss2()
   Matrix tmpB = B;
   Matrix X2(3,2);
   LA::solve(tmpA, X2, tmpB);  // destroys tmpA and tempB
-  r &= X2.equals(X, tol);
+  r &= X2.isCloseTo(X, tol);
 
   // Sage:
   // A = matrix([[2,1,4],[3,10,3],[1,5,1]])

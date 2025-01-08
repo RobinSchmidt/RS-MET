@@ -1313,7 +1313,7 @@ rsMonomial<T> rsSparsePolynomial<T>::getLeadingTerm() const
 // Needs test.
 
 template<class T>
-bool rsSparsePolynomial<T>::isCanonical(T tol = T(0)) const
+bool rsSparsePolynomial<T>::isCanonical(T tol) const
 {
   // An empty polynomial is the canonical representation of the zero polynomial:
   if(isEmpty())
