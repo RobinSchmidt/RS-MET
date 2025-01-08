@@ -1197,26 +1197,12 @@ void rsSparsePolynomial<T>::addTerm(T coeff, int power, T tol)
   rsInsert(terms, rsMonomial<T>(coeff, power), (size_t) i);
 }
 
-// Move to RAPT DebugTools.h
-template<class T1, class T2>
-bool rsAreAdressesDistinct(const T1& x, const T2& y)
-{
-  void* px = (void*) &x;
-  void* py = (void*) &y;
-  return px != py;
-}
-
-
 template<class T>
 void rsSparsePolynomial<T>::addScaled(
   const rsSparsePolynomial<T>& q, const rsMonomial<T>& s, T tol)
 {
-  // For debug - figure out addressed of this and q:
-  //void* pThis = (void*) this;
-  //void* pQ    = (void*) &q;
-
-  rsAssert(rsAreAdressesDistinct(*this, q), 
-           "rsSparsePolynomial::addScaled can't be used in place");
+  rsAssert(rsAreAddressesDistinct(*this, q), 
+           "rsSparsePolynomial::addScaled() can't be used in place.");
 
   for(int i = 0; i < q.getNumTerms(); i++)
     addTerm(s.getCoeff() * q.getCoeff(i), s.getPower() + q.getPower(i), tol);
@@ -1511,11 +1497,19 @@ void rsSparsePolynomial<T>::divide(
   rsSparsePolynomial<T>* rem,
   T tol)
 {
+  // Sanity checks:
+  rsAssert(rsAreAddressesDistinct(num,   *quot));
+  rsAssert(rsAreAddressesDistinct(num,   *rem ));
+  rsAssert(rsAreAddressesDistinct(den,   *quot));
+  rsAssert(rsAreAddressesDistinct(den,   *rem ));
+  rsAssert(rsAreAddressesDistinct(*quot, *rem ));
   rsAssert(!den.isZero(tol));
 
+  // Initialization:
   quot->clear();             // q = 0
   rem->copyDataFrom(num);    // r = n, Invariant holds: n = d*q + r = d*0 + r = r
 
+  // Main loop:
   while(!rem->isZero(tol) && rem->getDegree() >= den.getDegree())
   {
     rsMonomial<T> t = rem->getLeadingTerm() / den.getLeadingTerm();    // t = lead(r) / lead(d)
@@ -1552,7 +1546,10 @@ void rsSparsePolynomial<T>::divide(
   // ToDo:
   //
   // - Maybe at some point, when the function is battle tested well enough, we can get rid of the
-  //   code that checks the loop invariant.
+  //   code that checks the loop invariant. But maybe leave it in. It helped me a lot to find a bug
+  //   that I had initially in the computation of the greatest common divisor, i.e. a bug 
+  //   elsewhere. It had to do with attempting to do in place processing. It would now be caught by
+  //   rsAssert(rsAreAddressesDistinct(den, *rem);  which I didn't have back then.
 }
 
 
@@ -1566,7 +1563,7 @@ rsSparsePolynomial<T> rsGreatestCommonDivisor(
   while(!b.isZero(tol))
   {
     t = b;
-    rsSparsePolynomial<T>::divide(a, b, &dummy, &b, tol);  // b = a % b
+    rsSparsePolynomial<T>::divide(a, t, &dummy, &b, tol);  // b = a % b
     a = t;
   }
   if(monic)

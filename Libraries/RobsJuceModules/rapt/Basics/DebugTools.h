@@ -74,6 +74,18 @@ inline void rsStaticAssert(bool expression, const char* errorMessage = nullptr)
 #endif
 }
 
+/** Checks if the memory addresses of the two givne objects are distinct. Can be used to catch 
+erroneous attempts to do some in-place processing where in-place operation is not supported. */
+template<class T1, class T2>
+bool rsAreAddressesDistinct(const T1& x, const T2& y)
+{
+  void* px = (void*) &x;
+  void* py = (void*) &y;
+  return px != py;
+}
+// Maybe rename to rsAreDistinct...but no - that's ambiguous. It could be interpreted as having
+// distict values.
+
 
 /*
 Some Notes on hard to catch bugs
