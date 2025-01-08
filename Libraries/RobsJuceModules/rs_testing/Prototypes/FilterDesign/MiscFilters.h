@@ -1720,15 +1720,15 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  rsSparsePolynomial<T>& getNumeratorRef()
-  {
-    return num;
-  }
+  //rsSparsePolynomial<T>& getNumeratorRef()
+  //{
+  //  return num;
+  //}
 
-  rsSparsePolynomial<T>& getDenominatorRef()
-  {
-    return den;
-  }
+  //rsSparsePolynomial<T>& getDenominatorRef()
+  //{
+  //  return den;
+  //}
 
 
 
@@ -1753,10 +1753,10 @@ public:
 
 
 
-protected:
+//protected:
 
   rsSparsePolynomial<T> num, den;
-  // Maybe make them public
+  // Numerator and denominator are public because it's really more convenient that way.
 
 };
 
@@ -1781,8 +1781,8 @@ public:
   void setupFromDenseCoeffs(const std::vector<TPar>& numCoeffs, 
     const std::vector<TPar>& denCoeffs, TPar tol)
   {
-    num.setupFromDenseCoeffs(numCoeffs, tol);
-    den.setupFromDenseCoeffs(denCoeffs, tol);
+    H.num.setupFromDenseCoeffs(numCoeffs, tol);
+    H.den.setupFromDenseCoeffs(denCoeffs, tol);
     updateDelayLineLength();
   }
   // This may allocate!
@@ -1791,24 +1791,24 @@ public:
 
   void setNumNumeratorTerms(int newNumTerms)
   {
-    num.setNumTerms(newNumTerms);
+    H.num.setNumTerms(newNumTerms);
   }
   // This may allocate!
 
   void setNumDenominatorTerms(int newNumTerms)
   {
-    den.setNumTerms(newNumTerms);
+    H.den.setNumTerms(newNumTerms);
   }
   // This may allocate!
 
   void setNumeratorTerm(int index, TPar coeff, int delay)
   {
-    num.setTerm(index, coeff, delay);
+    H.num.setTerm(index, coeff, delay);
   }
 
   void setDenominatorTerm(int index, TPar coeff, int delay)
   {
-    den.setTerm(index, coeff, delay);
+    H.den.setTerm(index, coeff, delay);
   }
   // Actually, we really should call updateDelayLineLength() after setting a term because it 
   // potentially requires a change of the length. But: updateDelayLineLength() is expensive and 
@@ -1822,7 +1822,7 @@ public:
   numerator and denominator polynomial. */
   void updateDelayLineLength()
   {
-    int maxDegree = rsMax(num.getDegree(), den.getDegree());
+    int maxDegree = rsMax(H.num.getDegree(), H.den.getDegree());
     delayLine.setMaximumDelayInSamples(maxDegree);
     delayLine.setDelayInSamples(maxDegree);
   }
@@ -1834,7 +1834,7 @@ public:
   that factor. */
   void scale(TPar scaler)
   {
-    num.scale(scaler);
+    H.num.scale(scaler);
   }
 
   /** Adds an overall predelay to the whole filter by shifting all exponents of z^-1 by the given 
@@ -1851,18 +1851,18 @@ public:
       // then just reduce the predelay to zero.
     }
 
-    num.shiftPowers(amountInSamples);
+    H.num.shiftPowers(amountInSamples);
     updateDelayLineLength();
   }
 
   void removePreDelay()
   {
-    int preDelay = num.getPower(0);
+    int preDelay = H.num.getPower(0);
     // We assume here the the 0-th term is the one with the lowest power! This invariant should be
     // checked in isFilterValid().
 
 
-    num.shiftPowers(-preDelay);
+    H.num.shiftPowers(-preDelay);
     updateDelayLineLength();
   }
 
@@ -1874,15 +1874,15 @@ public:
 
     removePreDelay();
 
-    rsAssert(num.getPower(0) == 0);
-    rsAssert(num.getCoeff(0) != 0);
+    rsAssert(H.num.getPower(0) == 0);
+    rsAssert(H.num.getCoeff(0) != 0);
     // We assume here that the 0-th num coefficient is the one that multiplies z^0 in the transfer
     // function and scales x[n] in the difference equation. Maybe we can relax that later to allow
     // the z^0 coeff to appear at a different position in the array
 
-    TPar s = TPar(1) / num.getCoeff(0);
+    TPar s = TPar(1) / H.num.getCoeff(0);
     scale(s);
-    rsSwap(num, den);
+    rsSwap(H.num, H.den);
     scale(s);
 
     // Figure out if rsSwap causes memory allocations when swapping the underlying std::vectors. 
@@ -1898,11 +1898,11 @@ public:
 
   void reflectZeros()
   {
-    int deg = num.getDegree();
-    for(int i = 0; i < num.getNumTerms(); i++)
-      num.setPower(i, deg - num.getPower(i));
+    int deg = H.num.getDegree();
+    for(int i = 0; i < H.num.getNumTerms(); i++)
+      H.num.setPower(i, deg - H.num.getPower(i));
 
-    num.reverse();  // To make the array ordered by ascending powers
+    H.num.reverse();  // To make the array ordered by ascending powers
   }
   // not yet tested
 
@@ -1912,8 +1912,13 @@ public:
 
   void copySettingsFrom(const rsSparseFilter<TSig, TPar>& other)
   {
-    num = other.num;
-    den = other.den;
+    //num = other.num;
+    //den = other.den;
+
+    H.num.copyDataFrom(other.H.num);
+    H.den.copyDataFrom(other.H.den);
+    // Factor out into H.copyDataFrom(other.H);
+
     updateDelayLineLength();
 
     // ToDo: Use num.copyFrom(other.num), den.copyFrom(other.num). maybe have a boolean parameter
@@ -1929,13 +1934,13 @@ public:
     bool ok = true;
 
     // Numerator and denominator polynomials should not be empty:
-    ok &= num.getNumTerms() > 0 && den.getNumTerms() > 0;
+    ok &= H.num.getNumTerms() > 0 && H.den.getNumTerms() > 0;
 
     // Filter should satisfy the a0 == 1 normalization property:
-    ok &= den.getPower(0) == 0  && den.getCoeff(0) == TPar(1);
+    ok &= H.den.getPower(0) == 0  && H.den.getCoeff(0) == TPar(1);
 
     // Length of delayline should match the maximum of the degrees of numerator and denominator:
-    int maxDelay = rsMax(num.getDegree(), den.getDegree()); // wrap into getOrder()
+    int maxDelay = rsMax(H.num.getDegree(), H.den.getDegree()); // wrap into getOrder()
     ok &= delayLine.getDelayInSamples() == maxDelay;
 
     // Do more checks: like, the minimum power being >= zero in num and den, powers don't appear
@@ -1949,18 +1954,29 @@ public:
 
   rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const
   {
-    // Compute numerator N(z):
-    rsComplex<TPar> N(0);
-    for(int i = 0; i < num.getNumTerms(); i++)
-      N += num.getCoeff(i) * rsPow(z, rsComplex<TPar>(-num.getPower(i)));
+    // New:
+    return H(TPar(1)/z);
+    // Reciprocation is needed because we actually store the coeffs of H(z^-1)
 
-    // Compute denominator D(z):
-    rsComplex<TPar> D(0);
-    for(int i = 0; i < den.getNumTerms(); i++)  
-      D += den.getCoeff(i) * rsPow(z, rsComplex<TPar>(-den.getPower(i)));
 
-    // Compute transfer function H(z) = N(z) / D(z):
-    return N / D;
+    // Old:
+    //// Compute numerator N(z):
+    //rsComplex<TPar> N(0);
+    //for(int i = 0; i < H.num.getNumTerms(); i++)
+    //  N += H.num.getCoeff(i) * rsPow(z, rsComplex<TPar>(-H.num.getPower(i)));
+
+    //// Compute denominator D(z):
+    //rsComplex<TPar> D(0);
+    //for(int i = 0; i < H.den.getNumTerms(); i++)  
+    //  D += H.den.getCoeff(i) * rsPow(z, rsComplex<TPar>(-H.den.getPower(i)));
+
+
+    //rsComplex<TPar> w1 = N/D;
+    //rsComplex<TPar> w2 = H(TPar(1)/z);
+
+
+    //// Compute transfer function H(z) = N(z) / D(z):
+    //return N / D;
   }
 
 
@@ -1972,14 +1988,14 @@ public:
 
     // Apply denominator as feedback part:
     TSig tmp = in;
-    for(int i = 1; i < den.getNumTerms(); i++)
-      tmp -= den.getCoeff(i) * delayLine.readOutputAt(den.getPower(i));
+    for(int i = 1; i < H.den.getNumTerms(); i++)
+      tmp -= H.den.getCoeff(i) * delayLine.readOutputAt(H.den.getPower(i));
     delayLine.writeInputNoUpdate(tmp);
 
     // Apply numerator as feedforward path:
     tmp = 0;
-    for(int i = 0; i < num.getNumTerms(); i++)
-      tmp += num.getCoeff(i) * delayLine.readOutputAt(num.getPower(i));
+    for(int i = 0; i < H.num.getNumTerms(); i++)
+      tmp += H.num.getCoeff(i) * delayLine.readOutputAt(H.num.getPower(i));
 
     // Update delayline and return result:
     delayLine.incrementTapPointers();
@@ -1991,20 +2007,20 @@ public:
   TSig getSampleInverse(TSig in)
   {
     rsAssert(isFilterValid());
-    rsAssert(num.getPower(0) == 0);
-    rsAssert(num.getCoeff(0) != 0);
+    rsAssert(H.num.getPower(0) == 0);
+    rsAssert(H.num.getCoeff(0) != 0);
 
     // Apply scaled numerator as feedback part:
-    TPar s = TPar(1) / num.getCoeff(0);
+    TPar s = TPar(1) / H.num.getCoeff(0);
     TSig tmp = in;
-    for(int i = 1; i < num.getNumTerms(); i++)
-      tmp -= s * num.getCoeff(i) * delayLine.readOutputAt(num.getPower(i));
+    for(int i = 1; i < H.num.getNumTerms(); i++)
+      tmp -= s * H.num.getCoeff(i) * delayLine.readOutputAt(H.num.getPower(i));
     delayLine.writeInputNoUpdate(tmp);
 
     // Apply scaled denominator as feedforward path:
     tmp = 0;
-    for(int i = 0; i < den.getNumTerms(); i++)
-      tmp += s * den.getCoeff(i) * delayLine.readOutputAt(den.getPower(i));
+    for(int i = 0; i < H.den.getNumTerms(); i++)
+      tmp += s * H.den.getCoeff(i) * delayLine.readOutputAt(H.den.getPower(i));
 
     // Update delayline and return result:
     delayLine.incrementTapPointers();
@@ -2021,15 +2037,15 @@ public:
 
     // Apply denominator as feedback part:
     TSig tmp = in;
-    for(int i = 1; i < den.getNumTerms(); i++)
-      tmp -= den.getCoeff(i) * delayLine.readOutputAt(den.getPower(i));
+    for(int i = 1; i < H.den.getNumTerms(); i++)
+      tmp -= H.den.getCoeff(i) * delayLine.readOutputAt(H.den.getPower(i));
     delayLine.writeInputNoUpdate(tmp);
 
     // Apply reversed numerator as feedforward path:
-    int deg = num.getDegree();
+    int deg = H.num.getDegree();
     tmp = 0;
-    for(int i = 0; i < num.getNumTerms(); i++)
-      tmp += num.getCoeff(i) * delayLine.readOutputAt(deg - num.getPower(i));
+    for(int i = 0; i < H.num.getNumTerms(); i++)
+      tmp += H.num.getCoeff(i) * delayLine.readOutputAt(deg - H.num.getPower(i));
 
     // Update delayline and return result:
     delayLine.incrementTapPointers();
@@ -2054,23 +2070,8 @@ public:
 
 protected:
 
-  //rsSparsePolynomial<TPar>& getNum() { return num; }
-  //rsSparsePolynomial<TPar>& getDen() { return den; }
-
-  //// Maybe make public
-  //TPar getNumCoeff(int i) const { return num.getCoeff(i); }
-  //TPar getDenCoeff(int i) const { return den.getCoeff(i); }
-  //int getNumDegree() const { return num.getDegree(); }
-  //int getDenDegree() const { return den.getDegree(); }
-
-
-  rsSparsePolynomial<TPar> num, den;    // Numerator and denominator of transfer function
-  rsBasicDelayLine<TSig> delayLine;     // Delayline used for the direct form 2 implementation
-
-  // Later use:
-  //rsSparseRationalFunction<TPar> H;  
-  // or
-  //rsSparseRationalFunction<TPar> transFunc;  // Transfer function
+  rsBasicDelayLine<TSig> delayLine;  // Delayline used for the direct form 2 implementation.
+  rsSparseRationalFunction<TPar> H;  // Our transfer function H(z^-1). Contains all filter coeffs.
 
 };
 
