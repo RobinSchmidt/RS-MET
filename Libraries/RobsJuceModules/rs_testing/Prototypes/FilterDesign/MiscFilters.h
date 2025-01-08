@@ -1764,9 +1764,10 @@ public:
 
 //=================================================================================================
 
-/** A class for representing sparse filters in direct form. We represent them using two sparse
-polynomials. One for the numerator and one for the denominator of the transer function. The filter
-is implemented in direct form 2 using a single delayline. */
+/** A class for representing sparse filters in direct form. We represent them using an object of
+type rsSparseRationalFunction to store the coefficients of the transfer function H(z). Well, we
+actually store the coeffs of H(z-^1) there because that's what's needed for implementation of the
+difference equation. The filter is implemented in direct form 2 using a single delayline. */
 
 template<class TSig, class TPar>
 class rsSparseFilter
@@ -1789,27 +1790,15 @@ public:
   // ToDo: use num.setupFromDenseCoeffs(&numCoeffs[0], (int) numCoeffs.size(), tol)
 
 
-  void setNumNumeratorTerms(int newNumTerms)
-  {
-    H.num.setNumTerms(newNumTerms);
-  }
+  void setNumNumeratorTerms(int newNumTerms) { H.num.setNumTerms(newNumTerms); }
   // This may allocate!
 
-  void setNumDenominatorTerms(int newNumTerms)
-  {
-    H.den.setNumTerms(newNumTerms);
-  }
+  void setNumDenominatorTerms(int newNumTerms) { H.den.setNumTerms(newNumTerms); }
   // This may allocate!
 
-  void setNumeratorTerm(int index, TPar coeff, int delay)
-  {
-    H.num.setTerm(index, coeff, delay);
-  }
+  void setNumeratorTerm(int index, TPar coeff, int delay) { H.num.setTerm(index, coeff, delay); }
 
-  void setDenominatorTerm(int index, TPar coeff, int delay)
-  {
-    H.den.setTerm(index, coeff, delay);
-  }
+  void setDenominatorTerm(int index, TPar coeff, int delay) { H.den.setTerm(index, coeff, delay); }
   // Actually, we really should call updateDelayLineLength() after setting a term because it 
   // potentially requires a change of the length. But: updateDelayLineLength() is expensive and 
   // setting terms is an operation that might be called in a loop or sequence in which case only
@@ -1823,6 +1812,9 @@ public:
   void updateDelayLineLength()
   {
     int maxDegree = rsMax(H.num.getDegree(), H.den.getDegree());
+    // factor out into getFilterOrder()
+
+
     delayLine.setMaximumDelayInSamples(maxDegree);
     delayLine.setDelayInSamples(maxDegree);
   }
@@ -1928,6 +1920,8 @@ public:
 
 
 
+
+
   /** Performs some sanity checks. Is meant for debug assertions. */
   bool isFilterValid() const
   {
@@ -1951,34 +1945,9 @@ public:
     return ok;
   }
 
-
-  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const
-  {
-    // New:
-    return H(TPar(1)/z);
-    // Reciprocation is needed because we actually store the coeffs of H(z^-1)
-
-
-    // Old:
-    //// Compute numerator N(z):
-    //rsComplex<TPar> N(0);
-    //for(int i = 0; i < H.num.getNumTerms(); i++)
-    //  N += H.num.getCoeff(i) * rsPow(z, rsComplex<TPar>(-H.num.getPower(i)));
-
-    //// Compute denominator D(z):
-    //rsComplex<TPar> D(0);
-    //for(int i = 0; i < H.den.getNumTerms(); i++)  
-    //  D += H.den.getCoeff(i) * rsPow(z, rsComplex<TPar>(-H.den.getPower(i)));
-
-
-    //rsComplex<TPar> w1 = N/D;
-    //rsComplex<TPar> w2 = H(TPar(1)/z);
-
-
-    //// Compute transfer function H(z) = N(z) / D(z):
-    //return N / D;
-  }
-
+  /** Computes the transfer function of this filter at the given complex value z. */
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const { return H(TPar(1)/z); }
+    // Reciprocation of z needed because H actually stores the coeffs of H(z^-1)
 
 
   /** Computes one output sample at a time using a direct form 2 implementation. */
@@ -1986,13 +1955,13 @@ public:
   {
     rsAssert(isFilterValid());
 
-    // Apply denominator as feedback part:
+    // Apply denominator of H as feedback part:
     TSig tmp = in;
     for(int i = 1; i < H.den.getNumTerms(); i++)
       tmp -= H.den.getCoeff(i) * delayLine.readOutputAt(H.den.getPower(i));
     delayLine.writeInputNoUpdate(tmp);
 
-    // Apply numerator as feedforward path:
+    // Apply numerator of H as feedforward path:
     tmp = 0;
     for(int i = 0; i < H.num.getNumTerms(); i++)
       tmp += H.num.getCoeff(i) * delayLine.readOutputAt(H.num.getPower(i));
@@ -2010,14 +1979,14 @@ public:
     rsAssert(H.num.getPower(0) == 0);
     rsAssert(H.num.getCoeff(0) != 0);
 
-    // Apply scaled numerator as feedback part:
+    // Apply scaled numerator of H as feedback part:
     TPar s = TPar(1) / H.num.getCoeff(0);
     TSig tmp = in;
     for(int i = 1; i < H.num.getNumTerms(); i++)
       tmp -= s * H.num.getCoeff(i) * delayLine.readOutputAt(H.num.getPower(i));
     delayLine.writeInputNoUpdate(tmp);
 
-    // Apply scaled denominator as feedforward path:
+    // Apply scaled denominator of H as feedforward path:
     tmp = 0;
     for(int i = 0; i < H.den.getNumTerms(); i++)
       tmp += s * H.den.getCoeff(i) * delayLine.readOutputAt(H.den.getPower(i));
@@ -2035,13 +2004,13 @@ public:
   {
     rsAssert(isFilterValid());
 
-    // Apply denominator as feedback part:
+    // Apply denominator of H as feedback part:
     TSig tmp = in;
     for(int i = 1; i < H.den.getNumTerms(); i++)
       tmp -= H.den.getCoeff(i) * delayLine.readOutputAt(H.den.getPower(i));
     delayLine.writeInputNoUpdate(tmp);
 
-    // Apply reversed numerator as feedforward path:
+    // Apply reversed numerator of H as feedforward path:
     int deg = H.num.getDegree();
     tmp = 0;
     for(int i = 0; i < H.num.getNumTerms(); i++)
@@ -2052,7 +2021,7 @@ public:
     return tmp;
   }
   // Needs test! This is perhaps not great for realtime use because the num.getDegree() call must
-  // iterate through the whole numerator. Maybe that value coudl be cached. Not sure.
+  // iterate through the whole numerator. Maybe that value could be cached. Not sure.
 
 
 
