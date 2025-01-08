@@ -1118,6 +1118,21 @@ public:
     const rsSparsePolynomial<T>& q,
     rsSparsePolynomial<T>* r, T tol);
 
+  static void divide(
+    const rsSparsePolynomial<T>& numerator,
+    const rsSparsePolynomial<T>& denominator,
+    rsSparsePolynomial<T>* quotient,
+    rsSparsePolynomial<T>* remainder, T tol);
+
+
+
+
+
+  //static void divide(const T* dividend, int dividendDegree, const T* divisor, int divisorDegree,
+  //  T* quotient, T* remainder);
+
+
+
 
 protected:
 
@@ -1446,6 +1461,63 @@ void rsSparsePolynomial<T>::multiply(
 }
 
 template<class T>
+void rsSparsePolynomial<T>::divide(
+  const rsSparsePolynomial<T>& num,
+  const rsSparsePolynomial<T>& den,
+  rsSparsePolynomial<T>* quot,
+  rsSparsePolynomial<T>* rem,
+  T tol)
+{
+  rsAssert(!den.isZero(tol));
+
+  quot->clear();             // q = 0
+  rem->copyDataFrom(num);    // r = n, Invariant holds: n = d*q + r = d*0 + r = r
+
+  while(!rem->isZero(tol) && rem->getDegree() >= den.getDegree())
+  {
+    rsMonomial<T> t = rem->getLeadingTerm() / den.getLeadingTerm();    // t = lead(r) / lead(d)
+    quot->addTerm(t, tol);                                             // q = q + t
+    rem->addScaled(den, -t, tol);                                      // r = r - t * d
+
+    // Check the loop invariant n = d*q + r:
+    rsAssert(num.isCloseTo(den * *quot + *rem, tol), "Loop invariant violated");
+  }
+
+  // The algorithm has been adapted from: 
+  //
+  //   https://en.wikipedia.org/wiki/Polynomial_long_division#Pseudocode
+  //
+  // In the following pseudocode, all variables (n,d,q,r,t) are polynomials (t is actually a 
+  // monomial, though). Wikipedia says:
+  //
+  // Inputs:    n: numerator, d: denominator
+  // Outputs:   q: quotient,  r: remainder
+  // Require:   d != 0
+  // Invariant: n = d * q + r                  # This holds at each step
+  //
+  // q = 0                                     # Init quotient to zero
+  // r = n                                     # Init remainder to numerator
+  // while( r != 0 and deg(r) >= deg(d) )
+  // {
+  //    t = lead(r) / lead(d)                  # t is a monomial
+  //    q = q + t
+  //    r = r - t * d
+  // }
+  // return (q, r)
+  //
+  //
+  // ToDo:
+  //
+  // - Maybe at some point, when the function is battle tested well enough, we can get rid of the
+  //   code that checks the loop invariant.
+}
+
+
+
+
+
+// Move as member function int the class:
+template<class T>
 void rsDivMod(
   const rsSparsePolynomial<T>& num,
   const rsSparsePolynomial<T>& den,
@@ -1453,6 +1525,10 @@ void rsDivMod(
   rsSparsePolynomial<T>* rem,
   T tol)
 {
+  rsSparsePolynomial<T>::divide(num, den, quot, rem, tol);
+  return;
+
+
   rsAssert(!den.isZero(tol));
 
   quot->clear();             // q = 0
@@ -1499,20 +1575,6 @@ void rsDivMod(
   // - Maybe at some point, when the function is battle tested well enough, we can get rid of the
   //   code that checks the loop invariant.
 }
-
-
-
-
-
-//// Maybe get rid and use the member P.iscloseTo directly in client code!
-//template<class T>
-//bool rsIsCloseTo(const rsSparsePolynomial<T>& p, const rsSparsePolynomial<T>& q, T tol)
-//{
-//  return p.isCloseTo(q, tol);
-//}
-
-
-
 
 
 
