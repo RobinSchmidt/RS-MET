@@ -2943,6 +2943,11 @@ bool testSparsePolynomial()
   u = rsGreatestCommonDivisor(t, s, tol, true);
   ok &= u.isCloseTo(tgt, tol);
 
+  // Now with the static member function:
+  PolyS::greatestCommonDivisor(s, t, &u, tol, true);
+  ok &= u.isCloseTo(tgt, tol);
+
+
 
 
 
@@ -2958,6 +2963,7 @@ bool testSparsePolynomial()
   }
   */
 
+  //rsAssert(ok);
   return ok;
 
 

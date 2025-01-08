@@ -1146,6 +1146,15 @@ public:
     rsSparsePolynomial<T>* quotient,
     rsSparsePolynomial<T>* remainder, T tol);
 
+  static void greatestCommonDivisor(
+    const rsSparsePolynomial<T>& p, 
+    const rsSparsePolynomial<T>& q,
+    rsSparsePolynomial<T>* gcd,
+    T tol, bool monic);
+  // This allocates temporary objects! ToDo: Let the user pass pointers to the temporaries. Maybe
+  // re-use p,q for the temporaries as well, i.e. let it work destructively
+
+
   // ToDo: compose, greatestCommonDivisor, lowestCommonMultiple
 
 
@@ -1557,8 +1566,38 @@ void rsSparsePolynomial<T>::divide(
 }
 
 
+template<class T>
+void rsSparsePolynomial<T>::greatestCommonDivisor(
+  const rsSparsePolynomial<T>& p,
+  const rsSparsePolynomial<T>& q,
+  rsSparsePolynomial<T>* gcd,
+  T tol, bool monic)
+{
+  // Temporaries
+  rsSparsePolynomial<T> b = q, tmp, dummy;
+  // ToDo: let the user pass pointers to them. Maybe have a destructive in-place version in which p 
+  // and/or q are used also for the temporaries.
+
+  gcd->copyDataFrom(p);
+
+  while(!b.isZero(tol))
+  {
+    //tmp = b;
+
+    tmp.copyDataFrom(b);
+
+    rsSparsePolynomial<T>::divide(*gcd, tmp, &dummy, &b, tol);
+    gcd->copyDataFrom(tmp);
+  }
+  if(monic)
+    gcd->makeMonic();
 
 
+}
+
+
+
+// Make member function!
 template<class T>
 rsSparsePolynomial<T> rsGreatestCommonDivisor(
   const rsSparsePolynomial<T>& p, const rsSparsePolynomial<T>& q, T tol, bool monic)
@@ -1579,7 +1618,8 @@ rsSparsePolynomial<T> rsGreatestCommonDivisor(
 
   // Notes:
   //
-  // - Algorithm implementation has been adapted from rsRationalFunction<T>::polyGCD
+  // - Algorithm implementation has been adapted from rsRationalFunction<T>::polyGCD. Keep it
+  //   for reference even when an optimzed version is available. This code here more readable.
 }
 
 
