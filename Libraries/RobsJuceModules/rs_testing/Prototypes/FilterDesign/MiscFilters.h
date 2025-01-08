@@ -889,12 +889,17 @@ public:
 
   void scaleCoeff(int index, T scaler) { setCoeff(index, scaler * getCoeff(index)); }
 
-  void scale(T scaler)
+  void scaleCoeffs(T scaler)
   {
     for(int i = 0; i < getNumTerms(); i++)
       scaleCoeff(i, scaler);
   }
-  // rename to scaleCoeffs for consistency
+
+  /** Alias for scaleCoeffs() for compatibility with API of rsPolynomial. */
+  void scale(T scaler)
+  {
+    scaleCoeffs(scaler);
+  }
 
 
   void shiftCoeff(int index, T amount) { setCoeff(index, amount + getCoeff(index)); }
@@ -968,8 +973,9 @@ public:
   /** Returns the index of the maximum power. */
   int getMaxPowerIndex() const;
 
-  /** Returns the degree of the polynomial. This is mathematical term for the term with the
-  highest power/exponent that has a nonzero coefficient. */
+  /** Alias for getMaxPower() for compatibility with API of rsPolynomial. Returns the degree of
+  the polynomial. This is mathematical term for the term with the highest power/exponent that has 
+  a nonzero coefficient. */
   int getDegree() const { return getMaxPower(); }
   // This is basically an alias name for getMaxPower(). I'm not sure, if it's a good idea to have 
   // two functions that do the exact same thing. Maybe get rid of it. But on the other hand, it's 
@@ -1326,69 +1332,9 @@ void rsSparsePolynomial<T>::multiply(
 
 
 
-template<class T>
-void rsDivMod(
-  const rsSparsePolynomial<T>& num,
-  const rsSparsePolynomial<T>& den,
-  rsSparsePolynomial<T>* quot,
-  rsSparsePolynomial<T>* rem,
-  T tol)
-{
-  rsAssert(!den.isZero(tol));
 
-  rsSparsePolynomial<T> tmp1, tmp2;    // ToDo: Let the caller pass pre-allocated objects
-  quot->clear();                       // quot = 0
-  rem->copyDataFrom(num);              // rem  = num
 
-  while(!rem->isZero(tol) && rem->getDegree() >= den.getDegree())
-  {
-    // t = lead(r) / lead(d):
-    int iRem = rem->getMaxPowerIndex();
-    int iDen = den. getMaxPowerIndex();
-    T   cRem = rem->getCoeff(iRem);
-    T   cDen = den. getCoeff(iDen);
-    int pRem = rem->getPower(iRem);
-    int pDen = den. getPower(iDen);
-    T cT = cRem / cDen;
-    T pT = pRem - pDen;
 
-    // q = q + t:
-    quot->addTerm(cT, pT, tol);
-
-    // r = r - t * d:
-    tmp1.copyDataFrom(*rem);
-    tmp2.copyDataFrom( den);
-    tmp2.scale(-cT);
-    tmp2.shiftPowers(pT);
-    rsSparsePolynomial<T>::add(tmp1, tmp2, rem, tol);
-    // Maybe instead of using the two temp polynomials, use rem->addTerm in a loop over the terms
-    // of den. But I'm not sure, if that's really better. The addTerm calls may trigger a lot of
-    // data movement, too. Maybe try both variants and do benchmarks.
-  }
-
-  // The algorithm has been adapted from: 
-  //
-  //   https://en.wikipedia.org/wiki/Polynomial_long_division#Pseudocode
-  //
-  // In the following pseudocode, all variables (n,d,q,r,t) are polynomials (t is actually a 
-  // monomial, though). Wikipedia says:
-  //
-  // Inputs:    n: numerator, d: denominator
-  // Outputs:   q: quotient,  r: remainder
-  // Require:   d != 0
-  // Invariant: n = d * q + r                  # This holds at each step
-  //
-  // q = 0                                     # Init quotient to zero
-  // r = n                                     # Init remainder to numerator
-  // while( r != 0 and deg(r) >= deg(d) )
-  // {
-  //    t = lead(r) / lead(d)                  # t is a monomial
-  //    q = q + t
-  //    r = r - t * d
-  // }
-  // return (q, r)
-}
-// Needs more tests! It has already passed its first test, though.
 
 
 template<class T>
@@ -1414,9 +1360,87 @@ bool rsIsCloseTo(
 
 
 
+
+template<class T>
+void rsDivMod(
+  const rsSparsePolynomial<T>& num,
+  const rsSparsePolynomial<T>& den,
+  rsSparsePolynomial<T>* quot,
+  rsSparsePolynomial<T>* rem,
+  T tol)
+{
+  rsAssert(!den.isZero(tol));
+
+  rsSparsePolynomial<T> tmp1, tmp2;    // ToDo: Let the caller pass pre-allocated objects
+  quot->clear();                       // q = 0
+  rem->copyDataFrom(num);              // r = n, Invariant holds: n = d*q + r = d*0 + r = r
+
+  while(!rem->isZero(tol) && rem->getDegree() >= den.getDegree())
+  {
+    // t = lead(r) / lead(d):
+    int iRem = rem->getMaxPowerIndex();
+    int iDen = den. getMaxPowerIndex();
+    T   cRem = rem->getCoeff(iRem);
+    T   cDen = den. getCoeff(iDen);
+    int pRem = rem->getPower(iRem);
+    int pDen = den. getPower(iDen);
+    T cT = cRem / cDen;
+    T pT = pRem - pDen;
+
+    // q = q + t:
+    quot->addTerm(cT, pT, tol);
+
+    // r = r - t * d:
+    tmp1.copyDataFrom(*rem);
+    tmp2.copyDataFrom( den);
+    tmp2.scale(-cT);
+    tmp2.shiftPowers(pT);
+    rsSparsePolynomial<T>::add(tmp1, tmp2, rem, tol);
+    // Maybe instead of using the two temp polynomials, use rem->addTerm in a loop over the terms
+    // of den. But I'm not sure, if that's really better. The addTerm calls may trigger a lot of
+    // data movement, too. Maybe try both variants and do benchmarks.
+
+    // Check the loop invariant n = d*q + r:
+    rsAssert(rsIsCloseTo(num, den * *quot + *rem, tol), "Loop invariant violated");
+  }
+
+  // The algorithm has been adapted from: 
+  //
+  //   https://en.wikipedia.org/wiki/Polynomial_long_division#Pseudocode
+  //
+  // In the following pseudocode, all variables (n,d,q,r,t) are polynomials (t is actually a 
+  // monomial, though). Wikipedia says:
+  //
+  // Inputs:    n: numerator, d: denominator
+  // Outputs:   q: quotient,  r: remainder
+  // Require:   d != 0
+  // Invariant: n = d * q + r                  # This holds at each step
+  //
+  // q = 0                                     # Init quotient to zero
+  // r = n                                     # Init remainder to numerator
+  // while( r != 0 and deg(r) >= deg(d) )
+  // {
+  //    t = lead(r) / lead(d)                  # t is a monomial
+  //    q = q + t
+  //    r = r - t * d
+  // }
+  // return (q, r)
+}
+
+
+
+
+
+
+
+
+
+
+
+
 // ToDo:
 //
-// - Implement division with remainder. See:
+// - [DONE] Implement division with remainder. See:
 //   https://en.wikipedia.org/wiki/Polynomial_long_division#Pseudocode
 //   https://de.wikipedia.org/wiki/Polynomdivision#Algorithmus
 //
@@ -1433,6 +1457,13 @@ bool rsIsCloseTo(
 //   shiftPower function can still be present. It would just call __shiftPower() and then
 //   canonicalize()
 //
+// - Implement greatest common divisor, composition.
+//
+// - Implement a class rsSparseRationalFunction. See rsRationalFunction.
+//
+// - Use class rsSparseRationalFunction in rsSparseFilter (maybe as a member H). We can then 
+//   implement getTransferFunctionAt() as H.evaluateTyped(z)...or maybe just H(z). That would be 
+//   neat.
 //
 // Notes:
 //
