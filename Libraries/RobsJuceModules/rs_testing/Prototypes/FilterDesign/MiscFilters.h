@@ -941,6 +941,10 @@ public:
     scaleCoeffs(scaler);
   }
 
+  /** Makes the polynomial monic by dividing all coeffs by the leading coeff. A monic polynomial is
+  a polynomial in which the leading coefficient is unity (aka one).*/
+  void makeMonic() { scale(T(1) / getLeadingCoeff()); }
+
 
   void shiftCoeff(int index, T amount) { setCoeff(index, amount + getCoeff(index)); }
 
@@ -1560,6 +1564,7 @@ rsSparsePolynomial<T> rsGreatestCommonDivisor(
   const rsSparsePolynomial<T>& p, const rsSparsePolynomial<T>& q, T tol, bool monic)
 {
   rsSparsePolynomial<T> a = p, b = q, t, dummy;
+
   while(!b.isZero(tol))
   {
     t = b;
@@ -1567,9 +1572,8 @@ rsSparsePolynomial<T> rsGreatestCommonDivisor(
     a = t;
   }
   if(monic)
-  {
-    a.scale(T(1) / a.getLeadingCoeff());    // Maybe factor out into member a.makeMonic()
-  }
+    a.makeMonic();
+
   return a;
 
 
