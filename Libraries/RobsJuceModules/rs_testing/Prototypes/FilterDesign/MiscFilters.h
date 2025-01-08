@@ -1097,10 +1097,7 @@ public:
   coefficient type, for example, for evaluating functions with real coeffs at complex arguments.
   WARNING: the same considerations as for @see rsPolynomial::operator(TArg) apply. */
   template<class TArg>
-  TArg operator()(TArg z) const 
-  { 
-    return evaluateTyped(z);
-  }
+  TArg operator()(TArg z) const { return evaluateTyped(z); }
 
   /** Adds two polynomials. */
   rsSparsePolynomial<T> operator+(const rsSparsePolynomial<T>& q) const 
@@ -1114,22 +1111,13 @@ public:
   rsSparsePolynomial<T> operator*(const rsSparsePolynomial<T>& q) const 
   { rsSparsePolynomial<T> r; multiply(*this, q, &r, T(0)); return r; }
 
-
-
+  /** Divides two polynomials. */
   rsSparsePolynomial<T> operator/(const rsSparsePolynomial<T>& q) const 
-  { 
-    rsSparsePolynomial<T> quot, rem;
-    divide(*this, q, &quot, &rem, T(0));
-    return quot;
-  }
+  { rsSparsePolynomial<T> quot, rem; divide(*this, q, &quot, &rem, T(0)); return quot; }
 
-
+  /** Computes remainder of polynomial division, i.e. implements the modulo operation. */
   rsSparsePolynomial<T> operator%(const rsSparsePolynomial<T>& q) const 
-  { 
-    rsSparsePolynomial<T> quot, rem;
-    divide(*this, q, &quot, &rem, T(0));
-    return rem;
-  }
+  { rsSparsePolynomial<T> quot, rem; divide(*this, q, &quot, &rem, T(0)); return rem; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1715,6 +1703,8 @@ class rsSparseRationalFunction
 public:
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
 
   void setupFromDenseCoeffs(
     const std::vector<T>& newNumeratorCoeffs,
@@ -1724,6 +1714,23 @@ public:
     num.setupFromDenseCoeffs(newNumeratorCoeffs,   tol);
     den.setupFromDenseCoeffs(newDenominatorCoeffs, tol);
   }
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  rsSparsePolynomial<T>& getNumeratorRef()
+  {
+    return num;
+  }
+
+  rsSparsePolynomial<T>& getDenominatorRef()
+  {
+    return den;
+  }
+
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -2045,6 +2052,10 @@ public:
 
 
 protected:
+
+  rsSparsePolynomial<TPar>& getNum() { return num; }
+  rsSparsePolynomial<TPar>& getDen() { return den; }
+
 
   rsSparsePolynomial<TPar> num, den;    // Numerator and denominator of transfer function
   rsBasicDelayLine<TSig> delayLine;     // Delayline used for the direct form 2 implementation

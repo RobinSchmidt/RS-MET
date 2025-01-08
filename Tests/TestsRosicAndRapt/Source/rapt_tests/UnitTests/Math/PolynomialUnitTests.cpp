@@ -3010,8 +3010,7 @@ bool testSparseRationalFunction()
   // Test evaluation at complex argument:
   w1 = rd(z);
   w2 = rs(z);
-
-
+  ok &= rsIsCloseTo(w1, w2, tol);
 
 
 
