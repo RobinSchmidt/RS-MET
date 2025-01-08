@@ -980,7 +980,7 @@ public:
   // Maybe assert that this->getPower() >= divisor.getPower() to avoid producing negative powers.
 
 
-  void addScaled(const rsSparsePolynomial<T> summand, const rsMonomial<T>& scaler, T tol);
+  void addScaled(const rsSparsePolynomial<T>& summand, const rsMonomial<T>& scaler, T tol);
   // ToDop: implement add(summand, tol), i.e. the same thing but without the scaler.
 
 
@@ -1197,10 +1197,27 @@ void rsSparsePolynomial<T>::addTerm(T coeff, int power, T tol)
   rsInsert(terms, rsMonomial<T>(coeff, power), (size_t) i);
 }
 
+// Move to RAPT DebugTools.h
+template<class T1, class T2>
+bool rsAreAdressesDistinct(const T1& x, const T2& y)
+{
+  void* px = (void*) &x;
+  void* py = (void*) &y;
+  return px != py;
+}
+
 
 template<class T>
-void rsSparsePolynomial<T>::addScaled(const rsSparsePolynomial<T> q, const rsMonomial<T>& s, T tol)
+void rsSparsePolynomial<T>::addScaled(
+  const rsSparsePolynomial<T>& q, const rsMonomial<T>& s, T tol)
 {
+  // For debug - figure out addressed of this and q:
+  //void* pThis = (void*) this;
+  //void* pQ    = (void*) &q;
+
+  rsAssert(rsAreAdressesDistinct(*this, q), 
+           "rsSparsePolynomial::addScaled can't be used in place");
+
   for(int i = 0; i < q.getNumTerms(); i++)
     addTerm(s.getCoeff() * q.getCoeff(i), s.getPower() + q.getPower(i), tol);
 
@@ -1537,6 +1554,40 @@ void rsSparsePolynomial<T>::divide(
   // - Maybe at some point, when the function is battle tested well enough, we can get rid of the
   //   code that checks the loop invariant.
 }
+
+
+
+
+template<class T>
+rsSparsePolynomial<T> rsGreatestCommonDivisor(
+  const rsSparsePolynomial<T>& p, const rsSparsePolynomial<T>& q, T tol, bool monic)
+{
+  rsSparsePolynomial<T> a = p, b = q, t, dummy;
+  while(!b.isZero(tol))
+  {
+    t = b;
+    rsSparsePolynomial<T>::divide(a, b, &dummy, &b, tol);  // b = a % b
+    a = t;
+  }
+  if(monic)
+  {
+    a.scale(T(1) / a.getLeadingCoeff());    // Maybe factor out into member a.makeMonic()
+  }
+  return a;
+
+
+  //// From rsRationalFunction<T>::polyGCD:
+  //std::vector<T> a = p, b = q, t;
+  //while(!isAllZeros(b, tol)) {
+  //  t = b;
+  //  b = polyMod(a, b, tol);
+  //  a = t; }
+  //if(monic)
+  //  makeMonic(a);
+  //return a;
+}
+
+
 
 
 

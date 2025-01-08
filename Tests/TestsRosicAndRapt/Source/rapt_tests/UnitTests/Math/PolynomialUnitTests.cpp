@@ -2594,7 +2594,7 @@ bool testSparsePolynomial()
   Vec coeffs1({ 0.5, 0.0, -0.7, 0.0, tiny, 0.3});
 
   PolyD pd(coeffs1);
-  PolyS p, q, r, s;
+  PolyS p, q, r, s, t, u;
   p.setupFromDenseCoeffs(coeffs1, tol);
 
 
@@ -2787,6 +2787,14 @@ bool testSparsePolynomial()
   y2 = r(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
 
+
+  // Temporarily copied above the division tests for debugging:
+  s = p*r;
+  t = q*r;
+  u = rsGreatestCommonDivisor(s, t, tol, false);
+
+
+
   // Test division with remainder:
   PolyS quot, rem;
   p.canonicalize(tol);
@@ -2816,6 +2824,15 @@ bool testSparsePolynomial()
   rem  = s % p;
   ok &= quot.isCloseTo(q, tol);
   ok &= rem.isCloseTo( r, tol);
+
+  // Test greatest common divisor:
+  s = p*r;
+  t = q*r;
+  u = rsGreatestCommonDivisor(s, t, tol, false);
+  // Triggers assertion!
+  // In rsSparsePolynomial<T>::divide, the "den" variable seems to modified during the loop. That
+  // shouldn't happen - it's a const input variable!
+  // The call to  rem->addScaled(den, -t, tol);  modifies den! WTF!
 
 
 
