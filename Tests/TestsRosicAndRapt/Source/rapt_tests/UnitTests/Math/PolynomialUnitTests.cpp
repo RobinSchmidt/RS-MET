@@ -2793,23 +2793,31 @@ bool testSparsePolynomial()
   p.canonicalize(tol);
   q.canonicalize(tol);
   r = p * q;
-  rsDivMod(r, q, &quot, &rem, tol);
+  PolyS::divide(r, q, &quot, &rem, tol);
   ok &= quot.isCloseTo(p, tol);
   ok &= rem.isZero(tol);
   p = PolyS({ Mon(+3.0, 1), Mon(-2.0, 3), Mon(+4.0, 8)               });
   q = PolyS({ Mon(+2.0, 2), Mon(-3.0, 3), Mon(+5.0, 7), Mon(-5.0, 9) });
   r = PolyS({ Mon(-5.0, 3), Mon(+3.0, 5)                             });
   s = p * q + r;
-  rsDivMod(s, q, &quot, &rem, tol);
+  PolyS::divide(s, q, &quot, &rem, tol);
   ok &= quot.isCloseTo(p, tol);
   ok &= rem.isCloseTo( r, tol);
-  rsDivMod(s, p, &quot, &rem, tol);
+  PolyS::divide(s, p, &quot, &rem, tol);
   ok &= quot.isCloseTo(q, tol);
   ok &= rem.isCloseTo( r, tol);
 
+  // Test power function
+  r  = rsPow(p, 3);
+  y1 = p(x) * p(x) * p(x);
+  y2 = r(x);
+  ok &= rsIsCloseTo(y1, y2, 1.e-15);
 
 
-
+  //// Test composition:
+  //r = rsCompose(p, q, tol);
+  //y1 = q(p(x));
+  //y2 = r(x);
 
 
 

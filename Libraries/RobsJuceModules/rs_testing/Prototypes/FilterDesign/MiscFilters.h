@@ -1124,13 +1124,7 @@ public:
     rsSparsePolynomial<T>* quotient,
     rsSparsePolynomial<T>* remainder, T tol);
 
-
-
-
-
-  //static void divide(const T* dividend, int dividendDegree, const T* divisor, int divisorDegree,
-  //  T* quotient, T* remainder);
-
+  // ToDo: compose, greatestCommonDivisor, lowestCommonMultiple
 
 
 
@@ -1514,68 +1508,52 @@ void rsSparsePolynomial<T>::divide(
 
 
 
-
-
-// Move as member function int the class:
 template<class T>
-void rsDivMod(
-  const rsSparsePolynomial<T>& num,
-  const rsSparsePolynomial<T>& den,
-  rsSparsePolynomial<T>* quot,
-  rsSparsePolynomial<T>* rem,
-  T tol)
+rsSparsePolynomial<T> rsPow(const rsSparsePolynomial<T>& p, int n)
 {
-  rsSparsePolynomial<T>::divide(num, den, quot, rem, tol);
-  return;
+  rsSparsePolynomial<T> r;
+  r.appendTerm(T(1), 0);
+  for(int i = 1; i <= n; i++)
+    r = r * p;
+  return r;
 
-
-  rsAssert(!den.isZero(tol));
-
-  quot->clear();             // q = 0
-  rem->copyDataFrom(num);    // r = n, Invariant holds: n = d*q + r = d*0 + r = r
-
-  while(!rem->isZero(tol) && rem->getDegree() >= den.getDegree())
-  {
-    rsMonomial<T> t = rem->getLeadingTerm() / den.getLeadingTerm();    // t = lead(r) / lead(d)
-    quot->addTerm(t, tol);                                             // q = q + t
-    rem->addScaled(den, -t, tol);                                      // r = r - t * d
-
-    // Check the loop invariant n = d*q + r:
-    rsAssert(num.isCloseTo(den * *quot + *rem, tol), "Loop invariant violated");
-    //rsAssert(rsIsCloseTo(num, den * *quot + *rem, tol), "Loop invariant violated");
-    // Maybe use
-    // num->isCloseTo(den * *quot + *rem, tol)
-  }
-
-  // The algorithm has been adapted from: 
-  //
-  //   https://en.wikipedia.org/wiki/Polynomial_long_division#Pseudocode
-  //
-  // In the following pseudocode, all variables (n,d,q,r,t) are polynomials (t is actually a 
-  // monomial, though). Wikipedia says:
-  //
-  // Inputs:    n: numerator, d: denominator
-  // Outputs:   q: quotient,  r: remainder
-  // Require:   d != 0
-  // Invariant: n = d * q + r                  # This holds at each step
-  //
-  // q = 0                                     # Init quotient to zero
-  // r = n                                     # Init remainder to numerator
-  // while( r != 0 and deg(r) >= deg(d) )
-  // {
-  //    t = lead(r) / lead(d)                  # t is a monomial
-  //    q = q + t
-  //    r = r - t * d
-  // }
-  // return (q, r)
-  //
-  //
   // ToDo:
   //
-  // - Maybe at some point, when the function is battle tested well enough, we can get rid of the
-  //   code that checks the loop invariant.
+  // - Use the binary exponentiation algorithm. Maybe we can even use the generic rsPowInt function
+  //   once it has been adapted to allow for arbitrary types for the base.
 }
 
+
+//template<class T>
+//rsSparsePolynomial<T> rsCompose(
+//  const rsSparsePolynomial<T>& inner,
+//  const rsSparsePolynomial<T>& outer, T tol)
+//{
+//  // This implementations is very preliminary and needs to be optimized!
+//
+//  // We compute B(A(x)), i.e. A is the inner, B the outer polynomial
+//
+//
+//
+//  // Temporary polynomial for the powers of the inner polynomial:
+//  rsSparsePolynomial<T> tmp;
+//  tmp.appendTerm(T(1), 0);     // A^i  for i = 0
+//
+//  // The result:
+//  rsSparsePolynomial<T> res;
+//
+//  for(int i = 0; i < outer.getNumTerms(); i++)
+//  {
+//    rsMonomial<T> ti = outer.getTerm(i);
+//
+//
+//    res = res + ti * tmp;
+//    tmp = tmp * inner;
+//    int dummy = 0;
+//  }
+//
+//  return res;
+//}
 
 
 
