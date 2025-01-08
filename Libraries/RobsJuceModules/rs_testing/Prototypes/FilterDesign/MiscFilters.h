@@ -1115,6 +1115,26 @@ public:
   }
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Static member functions */
+
+  template<class T>
+  static rsSparsePolynomial<T> greatestCommonDivisor(
+    const rsSparsePolynomial<T>& p, 
+    const rsSparsePolynomial<T>& q, 
+    T tol, bool monic)
+  {
+    rsSparsePolynomial<T> a = p, b = q, tmp1, tmp2;
+    rsSparsePolynomial<T>::greatestCommonDivisorInPlace(&a, &b, &tmp1, &tmp2, tol, monic);
+    return a;
+  }
+
+
+
+
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Low Level API. These functions operate on pre-allocated output parameters (passed by 
@@ -1161,6 +1181,10 @@ public:
     T tol, bool monic);
   // I think, if all passed polynomials have large enough capacity, then the function should not
   // (re)allocate any heap memory. Verify and document this! How large is "large enough"?
+
+
+
+
 
 
 
@@ -1594,44 +1618,11 @@ void rsSparsePolynomial<T>::greatestCommonDivisorInPlace(
   }
   if(monic)
     a->makeMonic();
-}
-
-
-
-// Make member function!
-template<class T>
-rsSparsePolynomial<T> rsGreatestCommonDivisor(
-  const rsSparsePolynomial<T>& p, const rsSparsePolynomial<T>& q, T tol, bool monic)
-{
-  rsSparsePolynomial<T> a = p, b = q, t, dummy;
-
-  while(!b.isZero(tol))
-  {
-    t = b;
-    rsSparsePolynomial<T>::divide(a, t, &dummy, &b, tol);  // b = a % b
-    a = t;
-  }
-  if(monic)
-    a.makeMonic();
-
-  return a;
-
 
   // Notes:
   //
-  // - Algorithm implementation has been adapted from rsRationalFunction<T>::polyGCD. Keep it
-  //   for reference even when an optimzed version is available. This code here more readable.
-  //
-  //
-  // ToDo:
-  //
-  // - Maybe call greatestCommonDivisorInPlace()
+  // - Algorithm implementation has been adapted from rsRationalFunction<T>::polyGCD. 
 }
-
-
-
-
-
 
 
 template<class T>

@@ -2930,17 +2930,17 @@ bool testSparsePolynomial()
   r.setupFromDenseCoeffs(rv, tol);
   s = p*r;
   t = q*r;
-  u = rsGreatestCommonDivisor(s, t, tol, false);
+  u = PolyS::greatestCommonDivisor(s, t, tol, false);
   ok &= u.isCloseTo(tgt, tol);
-  u = rsGreatestCommonDivisor(t, s, tol, false);
+  u = PolyS::greatestCommonDivisor(t, s, tol, false);
   ok &= u.isCloseTo(tgt, tol);
 
   // Now with normalization to make the gcd monic:
   uv = RatFunc::polyGCD(sv, tv, tol, true);
   tgt.setupFromDenseCoeffs(uv, tol);
-  u = rsGreatestCommonDivisor(s, t, tol, true);
+  u = PolyS::greatestCommonDivisor(s, t, tol, true);
   ok &= u.isCloseTo(tgt, tol);
-  u = rsGreatestCommonDivisor(t, s, tol, true);
+  u = PolyS::greatestCommonDivisor(t, s, tol, true);
   ok &= u.isCloseTo(tgt, tol);
 
   // Now with the static member function that works destructively:
@@ -2953,7 +2953,7 @@ bool testSparsePolynomial()
 
 
 
-
+  //PolyS::greatestCommonDivisor
 
 
   /*
