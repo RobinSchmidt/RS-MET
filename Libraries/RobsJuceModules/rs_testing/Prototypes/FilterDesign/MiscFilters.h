@@ -786,6 +786,12 @@ public:
   // base is an arbitrary type and the epxonent is an integer
 
 
+
+  /** Evaluates the monomial at the given input x. */
+  T operator()(T x) const { return evaluateAt(x); }
+
+
+
   /** Returns the negative of this monomial. */
   rsMonomial<T> operator-() const
   { 
@@ -953,6 +959,10 @@ public:
       shiftPower(i, amount);
   }
 
+
+
+
+
   void multiplyBy(const rsMonomial<T>& factor)
   {
     scaleCoeffs(factor.getCoeff());
@@ -970,7 +980,8 @@ public:
   // Maybe assert that this->getPower() >= divisor.getPower() to avoid producing negative powers.
 
 
-
+  void addScaled(const rsSparsePolynomial<T> summand, const rsMonomial<T>& scaler, T tol);
+  // ToDop: implement add(summand, tol), i.e. the same thing but without the scaler.
 
 
   /** Reverses the array of terms. */
@@ -1155,6 +1166,23 @@ void rsSparsePolynomial<T>::addTerm(T coeff, int power, T tol)
   }
   rsInsert(terms, rsMonomial<T>(coeff, power), (size_t) i);
 }
+
+
+template<class T>
+void rsSparsePolynomial<T>::addScaled(const rsSparsePolynomial<T> q, const rsMonomial<T>& s, T tol)
+{
+  for(int i = 0; i < q.getNumTerms(); i++)
+    addTerm(s.getCoeff() * q.getCoeff(i), s.getPower() + q.getPower(i), tol);
+
+  // ToDo:
+  //
+  // - The algorithm above that calls addTerm in a loop may potentially trigger a lot of data 
+  //   movement because each call potentially moves data. Maybe try to implement a different 
+  //   algorithm that just appends the (scaled) content of q to our terms array and then calls 
+  //   canonicalize(). Benchmark both variants and then choose the faster (but keep the slower 
+  //   around for reference and unit tests).
+}
+
 
 template<class T>
 void rsSparsePolynomial<T>::canonicalize(T tol)
@@ -1446,40 +1474,28 @@ void rsDivMod(
 
   while(!rem->isZero(tol) && rem->getDegree() >= den.getDegree())
   {
-    // t = lead(r) / lead(d):
-    //int iRem = rem->getMaxPowerIndex();
-    //int iDen = den. getMaxPowerIndex();
-    //T   cRem = rem->getCoeff(iRem);
-    //T   cDen = den. getCoeff(iDen);
-    //int pRem = rem->getPower(iRem);
-    //int pDen = den. getPower(iDen);
-    //T   cT   = cRem / cDen;
-    //int pT   = pRem - pDen;
+    rsMonomial<T> t = rem->getLeadingTerm() / den.getLeadingTerm();    // t = lead(r) / lead(d)
+    quot->addTerm(t, tol);                                             // q = q + t
 
-    rsMonomial<T> t = rem->getLeadingTerm() / den.getLeadingTerm();
-
-
-    // q = q + t:
-    //quot->addTerm(cT, pT, tol);  // old
-    quot->addTerm(t, tol);         // new
-
-
-    // r = r - t * d:
     tmp1.copyDataFrom(*rem);
     tmp2.copyDataFrom( den);
-
-    // Replace by tmp2.subtractTerm(t)
-    //tmp2.scaleCoeffs(-cT);
-    //tmp2.shiftPowers( pT);
-
-    //tmp2.subtractTerm(t, tol);  // Wrong! we need  tmp2.multiplyBy(-t)
     tmp2.multiplyBy(-t);
+    rsSparsePolynomial<T>::add(tmp1, tmp2, rem, tol);                  // r = r - t * d
 
 
-    rsSparsePolynomial<T>::add(tmp1, tmp2, rem, tol);
     // Maybe instead of using the two temp polynomials, use rem->addTerm in a loop over the terms
     // of den. But I'm not sure, if that's really better. The addTerm calls may trigger a lot of
-    // data movement, too. Maybe try both variants and do benchmarks.
+    // data movement, too. Maybe try both variants and do benchmarks. Like so:
+    //
+    //   tmp2.copyDataFrom( den);
+    //   tmp2.multiplyBy(-t);
+    //   rem->add(tmp2, tol);
+    //
+    // Or maybe even better:
+    //
+    //   rem->addScaled(den, -t, tol);
+
+
 
     // Check the loop invariant n = d*q + r:
     rsAssert(rsIsCloseTo(num, den * *quot + *rem, tol), "Loop invariant violated");

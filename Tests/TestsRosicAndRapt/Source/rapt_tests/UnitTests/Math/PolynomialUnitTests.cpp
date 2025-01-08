@@ -2588,11 +2588,16 @@ bool testSparsePolynomial()
   Real tol  = 1.e-14;
 
 
+
+
+
   Vec coeffs1({ 0.5, 0.0, -0.7, 0.0, tiny, 0.3});
 
   PolyD pd(coeffs1);
   PolyS p, q, r, s;
   p.setupFromDenseCoeffs(coeffs1, tol);
+
+
 
   // Test inquiry functions:
   ok &= p.isEmpty()        == false;
@@ -2702,32 +2707,53 @@ bool testSparsePolynomial()
   // Test addTerm:
   p.clear();
   p.setNumTerms(5);
-  p.setTerm(0, +2.0, 0);              // 2x^0
-  p.setTerm(1, -3.0, 1);              // 2x^0 - 3x^1
-  p.setTerm(2, +5.0, 3);              // 2x^0 - 3x^1 + 5x^3
-  p.setTerm(3, -7.0, 5);              // 2x^0 - 3x^1 + 5x^3 - 7x^5
-  p.setTerm(4, +2.0, 8);              // 2x^0 - 3x^1 + 5x^3 - 7x^5 + 2x^8
+  p.setTerm(0, +2.0, 0);               // 2x^0
+  p.setTerm(1, -3.0, 1);               // 2x^0 - 3x^1
+  p.setTerm(2, +5.0, 3);               // 2x^0 - 3x^1 + 5x^3
+  p.setTerm(3, -7.0, 5);               // 2x^0 - 3x^1 + 5x^3 - 7x^5
+  p.setTerm(4, +2.0, 8);               // 2x^0 - 3x^1 + 5x^3 - 7x^5 + 2x^8
   ok &= p.getNumTerms() == 5;
-  p.addTerm(2.0, 3, tol);             // 2x^0 - 3x^1 + 7x^3 - 7x^5 + 2x^8
+  p.addTerm(2.0, 3, tol);              // 2x^0 - 3x^1 + 7x^3 - 7x^5 + 2x^8
   ok &= p.getNumTerms() == 5;
   ok &= p.getCoeff(2)   == 7.0;
   ok &= p.getPower(2)   == 3;
-  p.addTerm(4.0, 9, tol);             // 2x^0 - 3x^1 + 7x^3 - 7x^5 + 2x^8 + 4x^9
+  p.addTerm(4.0, 9, tol);              // 2x^0 - 3x^1 + 7x^3 - 7x^5 + 2x^8 + 4x^9
   ok &= p.getNumTerms() == 6;
   ok &= p.getCoeff(5)   == 4.0;
   ok &= p.getPower(5)   == 9;
-  p.addTerm(6.0, 4, tol);             // 2x^0 - 3x^1 + 7x^3 + 6x^4 - 7x^5 + 2x^8 + 4x^9
+  p.addTerm(6.0, 4, tol);              // 2x^0 - 3x^1 + 7x^3 + 6x^4 - 7x^5 + 2x^8 + 4x^9
   ok &= p.getNumTerms() == 7;
   ok &= p.getCoeff(3)   == 6.0;
   ok &= p.getPower(3)   == 4;
-  p.addTerm(-7.0, 3, tol);            // 2x^0 - 3x^1 + 6x^4 - 7x^5 + 2x^8 + 4x^9
+  p.addTerm(-7.0, 3, tol);             // 2x^0 - 3x^1 + 6x^4 - 7x^5 + 2x^8 + 4x^9
   ok &= p.getNumTerms() == 6;
-  p.addTerm(-2.0, 0, tol);            // -3x^1 + 6x^4 - 7x^5 + 2x^8 + 4x^9
+  p.addTerm(-2.0, 0, tol);             // -3x^1 + 6x^4 - 7x^5 + 2x^8 + 4x^9
   ok &= p.getNumTerms() == 5;
-  p.addTerm(-4.0, 9, tol);            // -3x^1 + 6x^4 - 7x^5 + 2x^8
+  p.addTerm(-4.0, 9, tol);             // -3x^1 + 6x^4 - 7x^5 + 2x^8
   ok &= p.getNumTerms() == 4;
-  p.subtractTerm(Mon(6.0, 4), tol);   // -3x^1 - 7x^5 + 2x^8
+  p.subtractTerm(Mon(6.0, 4), tol);    // -3x^1 - 7x^5 + 2x^8
   ok &= p.getNumTerms() == 3;
+
+
+  // Test add and addScaled:
+  p.clear();
+  p.setNumTerms(3);
+  p.setTerm(0, +2.0, 0);
+  p.setTerm(1, -3.0, 1);
+  p.setTerm(2, +5.0, 2);
+  q.clear();
+  q.setNumTerms(2);
+  q.setTerm(0, -3.0, 2);
+  q.setTerm(1, +2.0, 3);
+  r = p;
+  Mon m(2.0, 3);
+  r.addScaled(q, m, tol);              // r = p + m*q
+  y1 = p(x) + m(x) * q(x);
+  y2 = r(x);
+  ok &= rsIsCloseTo(y1, y2, 1.e-15);
+  // ToDo: Check, if  r = p  (re)allocates. If r already has enough space, it shouldn't. It should
+  // only copy the data from p over.
+
 
 
   // Test weighted sum:
@@ -2740,6 +2766,9 @@ bool testSparsePolynomial()
   y1 = wp * p(x) + wq * q(x);
   y2 = r(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
+
+  // ToDo: implement a weighted sum that uses a monomial as weight
+
 
 
   // Test arithmetic operators:
