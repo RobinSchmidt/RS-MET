@@ -1016,6 +1016,9 @@ public:
     return true;
   }
 
+  /** Returns true, iff the rhs polynomial equals this polynomial up to the given tolerance. */
+  bool isCloseTo(const rsSparsePolynomial<T>& rhs, T tol) const;
+
   /** Return true, iff the given index is valid, i.e. the object has a term with given index. */
   bool isValidIndex(int i) const { return i >= 0 && i < getNumTerms(); }
 
@@ -1232,7 +1235,22 @@ void rsSparsePolynomial<T>::canonicalize(T tol)
   //   std::sort(..)
 }
 
+template<class T>
+bool rsSparsePolynomial<T>::isCloseTo(const rsSparsePolynomial<T>& q, T tol) const
+{
+  if(getNumTerms() != q.getNumTerms())
+    return false;
 
+  for(int i = 0; i < getNumTerms(); i++)
+  {
+    if(getPower(i) != q.getPower(i))
+      return false;
+    if(rsAbs(getCoeff(i) - q.getCoeff(i)) > tol)
+      return false;
+  }
+
+  return true;
+}
 
 template<class T>
 int rsSparsePolynomial<T>::getMinPower() const
@@ -1433,24 +1451,27 @@ void rsSparsePolynomial<T>::multiply(
 
 
 
-
+// Get rid - use the member P.iscloseTo directly in client code!
 template<class T>
 bool rsIsCloseTo(
   const rsSparsePolynomial<T>& p,
   const rsSparsePolynomial<T>& q, T tol)
 {
-  if(p.getNumTerms() != q.getNumTerms())
-    return false;
+  return p.isCloseTo(q, tol);
 
-  for(int i = 0; i < p.getNumTerms(); i++)
-  {
-    if(p.getPower(i) != q.getPower(i))
-      return false;
-    if(rsAbs(p.getCoeff(i) - q.getCoeff(i)) > tol)
-      return false;
-  }
 
-  return true;
+  //if(p.getNumTerms() != q.getNumTerms())
+  //  return false;
+
+  //for(int i = 0; i < p.getNumTerms(); i++)
+  //{
+  //  if(p.getPower(i) != q.getPower(i))
+  //    return false;
+  //  if(rsAbs(p.getCoeff(i) - q.getCoeff(i)) > tol)
+  //    return false;
+  //}
+
+  //return true;
 }
 
 
