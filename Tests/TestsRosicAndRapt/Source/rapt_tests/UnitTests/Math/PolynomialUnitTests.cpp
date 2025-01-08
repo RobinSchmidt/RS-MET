@@ -1362,17 +1362,57 @@ bool testRationalFunctionAlgos()
   Vec gcd = RF::polyGCD(p, q, tol);   // Result is 1 + x. Is this correct? Ask SageMath!
   Vec r = RF::polyDiv(p, gcd, tol);
   Vec s = RF::polyDiv(q, gcd, tol);
-  Vec u = RF::polyMul(r, gcd); ok &= u == p;
-  Vec v = RF::polyMul(s, gcd); ok &= v == q;
+
+  Vec t = RF::polyMul(r, gcd); ok &= t == p;
+  Vec u = RF::polyMul(s, gcd); ok &= u == q;
 
 
   // Try it with other polynomials, too! We want more complex test cases.
+
+  p = Vec({+3.0, -2.0, +4.0       });  //  3 - 2*x + 4*x^2
+  q = Vec({+2.0, -3.0, +5.0, -5.0 });  //  2 - 3*x + 5*x^2 - 5*x^3
+  r = Vec({-5.0, -3.0, +4.0       });  // -5 - 3*x + 4*x^2
+  s = RF::polyMul(p, r, tol);
+  t = RF::polyMul(q, r, tol);
+  u = RF::polyGCD(s, t, tol, true);
+  ok &= rsIsCloseTo(u, 0.25*r, tol);
+  u = RF::polyGCD(s, t, tol, false);
+  ok &= rsIsMultipleOf(u, r, tol);
+
+
+  // I think, u should be equal to r - but it isn't! I think it has to do with making the  result
+  // monic or not or scaling it by some other factor? Aha! Yes! That's it!
+
+
+  // The following SageMath code seems to work:
+  //
+  // def gcd(f, g):
+  //   while g != 0:
+  //     r = g
+  //     g = f % g
+  //     f = r
+  //   return f/f.lc()
+  //
+  // R.<x> = PolynomialRing(QQ)
+  //
+  // p =  3 - 2*x + 4*x^2
+  // q =  2 - 3*x + 5*x^2 - 5*x^3
+  // r = -5 - 3*x + 4*x^2
+  // s = expand(p * r)
+  // t = expand(q * r)
+  // s,t, 4*gcd(s,t)
+  //
+  // We need to multiply the end result by 4 to get the original result back.
 
 
 
 
 
   return ok;
+
+  // ToDo:
+  //
+  // - Test it also with Real = rsFraction<int>
 }
 
 bool testRationalFunction()

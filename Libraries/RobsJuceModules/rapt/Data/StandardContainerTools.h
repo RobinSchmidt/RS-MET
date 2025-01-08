@@ -564,6 +564,16 @@ T rsMaxDeviation(const std::vector<T>& x, const std::vector<T>& y)
   return rsArrayTools::maxDeviation(&x[0], &y[0], (int)x.size());
 }
 
+
+/** Returns the first index for which vector v has a nonzero value or -1 if all values are zero. */
+template<class T>
+int rsIndexOfFirstNonZero(const std::vector<T>& v)
+{
+  return rsArrayTools::firstIndexWithNonZeroValue(&v[0], (int)v.size()); 
+  // todo: rename that to rsIndexOfFirstNonZero, too -> shorter and consistent
+}
+
+
 template<class T>
 bool rsIsAllZeros(const std::vector<T>& x, T tol = T(0))
 {
@@ -578,6 +588,31 @@ bool rsIsCloseTo(const std::vector<T>& x, const std::vector<T>& y, T tol)
   return rsArrayTools::almostEqual(&x[0], &y[0], (int) x.size(), tol);
 }
 
+/** Returns true, if the array y is some multiple of the array x, i.e. y[i] = s * x[i] for all i 
+and a fixed s. As usual, up to some tolerance. */
+template<class T>
+bool rsIsMultipleOf(const std::vector<T>& x, const std::vector<T>& y, T tol)
+{
+  if(x.size() != y.size())
+    return false;
+
+  int N  = (int)x.size();
+  int im = rsArrayTools::maxAbsIndex(&x[0], N);
+
+  if(rsAbs(x[im]) <= tol)
+    return rsArrayTools::isAllZeros(&y[0], N, tol);
+
+  T s  = y[im] / x[im];
+  for(int i = 0; i < N; i++)
+  {
+    if(rsAbs(y[i] - s*x[i]) > tol)
+      return false;
+  }
+
+  return true;
+}
+// Needs tests
+
 //template<class T>
 //T rsMaxValue(const std::vector<T>& x)
 //{
@@ -591,13 +626,7 @@ bool rsIsCloseTo(const std::vector<T>& x, const std::vector<T>& y, T tol)
   //}
   //return max;
 
-/** Returns the first index for which vector v has a nonzero value or -1 if all values are zero. */
-template<class T>
-int rsIndexOfFirstNonZero(const std::vector<T>& v)
-{
-  return rsArrayTools::firstIndexWithNonZeroValue(&v[0], (int)v.size()); 
-  // todo: rename that to rsIndexOfFirstNonZero, too -> shorter and consistent
-}
+
 
 /** Returns the number of nonzero values in the vector v. */
 template<class T>
