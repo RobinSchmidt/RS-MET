@@ -785,6 +785,26 @@ public:
   // rsPowInt is defined for x and power being integers. We really need a function where the
   // base is an arbitrary type and the epxonent is an integer
 
+
+
+  /** Multiplies two monomials. */
+  rsMonomial<T> operator*(const rsMonomial<T>& q) const
+  { 
+    return rsMonomial<T>(getCoeff() * q.getCoeff(), getPower() + q.getPower());
+  }
+  // Needs tests
+
+
+  /** Divides two monomials. */
+  rsMonomial<T> operator/(const rsMonomial<T>& q) const
+  { 
+    return rsMonomial<T>(getCoeff() / q.getCoeff(), getPower() - q.getPower());
+  }
+  // Needs tests. 
+  // If q.power > this->power, this will lead to a negative power in the result. Should we do 
+  // something about this like triggering an rsAssert?
+
+
 protected:
 
   T   coeff = T(0);
@@ -987,6 +1007,10 @@ public:
 
   /** Returns the term (i.e. the monomial) at the given index. */
   rsMonomial<T> getTerm(int index) const { rsAssert(isValidIndex(index)); return terms[index]; }
+
+  /** Returns the leading term in this polynomial, i.e. the monomial  cn x^n  that has the highest
+  exponent n. */
+  rsMonomial<T> getLeadingTerm() const;
 
   /** Returns the coefficient of the term with given index. */
   T getCoeff(int index) const {  rsAssert(isValidIndex(index)); return terms[index].getCoeff(); }
@@ -1207,11 +1231,27 @@ int rsSparsePolynomial<T>::getMaxPowerIndex() const
 template<class T>
 T rsSparsePolynomial<T>::getLeadingCoeff() const 
 { 
+  // New:
+  return getLeadingTerm().getCoeff();
+
+
+  //// Old:
+  //int i = getMaxPowerIndex();
+  //if(i != -1)
+  //  return getCoeff(i);
+  //else
+  //  return 0;
+}
+// Needs test.
+
+template<class T>
+rsMonomial<T> rsSparsePolynomial<T>::getLeadingTerm() const 
+{ 
   int i = getMaxPowerIndex();
   if(i != -1)
-    return getCoeff(i);
+    return getTerm(i);
   else
-    return 0;
+    return rsMonomial<T>(T(0), 0);
 }
 // Needs test.
 
@@ -1393,8 +1433,8 @@ void rsDivMod(
     // r = r - t * d:
     tmp1.copyDataFrom(*rem);
     tmp2.copyDataFrom( den);
-    tmp2.scale(-cT);
-    tmp2.shiftPowers(pT);
+    tmp2.scaleCoeffs(-cT);
+    tmp2.shiftPowers( pT);
     rsSparsePolynomial<T>::add(tmp1, tmp2, rem, tol);
     // Maybe instead of using the two temp polynomials, use rem->addTerm in a loop over the terms
     // of den. But I'm not sure, if that's really better. The addTerm calls may trigger a lot of
