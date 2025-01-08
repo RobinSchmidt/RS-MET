@@ -2830,6 +2830,18 @@ bool testSparsePolynomial()
   // result is wrong. Maybe compare stepping throgh the algo with
   // rsRationalFunction<T>::polyGCD
 
+  using RatFunc = rsRationalFunction<Real>;
+  Vec pv({+3.0, -2.0, +4.0       });
+  Vec qv({+2.0, -3.0, +5.0, -5.0 });
+  Vec rv({-5.0, -3.0, +4.0       });
+  Vec sv = RatFunc::polyMul(pv, rv, tol);
+  Vec tv = RatFunc::polyMul(qv, rv, tol);
+  Vec uv = RatFunc::polyGCD(sv, tv, tol, false);
+  // u and uv partially match - but u is shorter by one. Could the RatFunc::polyGCD() function 
+  // already be buggy? But I think, we have unit tests for it. Check them...
+
+
+
 
   // Test power function:
   r  = rsPow(p, 3);
