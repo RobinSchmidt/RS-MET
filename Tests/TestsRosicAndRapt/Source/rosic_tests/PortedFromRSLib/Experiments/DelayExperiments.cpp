@@ -1048,7 +1048,16 @@ void dampedAllpassComb6()
   int dummy = 0;
 
 
-
+  // ToDo:
+  //
+  // - Create 3 comb filters with different values for the delay M. Then get their comb transfer
+  //   functions and form a weighted sum of them. Then set up an rsSparseFilter object with it.
+  //   Check that the sparse filter produces the same impulse response. Then form a suitable 
+  //   corrector filter by invert-reversing the sparse filter. Using that corrector filter in
+  //   series with either the weighted sum of 3 combs or the sparse filter should give an allpass
+  //   response. Try that. Try also reversing the original sparse filter. That should give another
+  //   variation.
+  //
   // - Maybe implement a musically tunable reverb algorithm based on that idea. Maybe call it 
   //   TuniVerb. It should give the user the possibility to set up a parallel connection of (up to)
   //   some number N of combs which are then turned into an allpass via out transfer function 
