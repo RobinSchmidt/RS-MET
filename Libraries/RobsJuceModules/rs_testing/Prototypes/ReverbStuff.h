@@ -1107,7 +1107,7 @@ public:
   rsComplex<TPar> getCorrectorTransferFunctionAt(const rsComplex<TPar>& z) const;
 
 
-
+  rsSparseRationalFunction<TPar> getCombTransferFunction() const;
 
   rsSparseRationalFunction<TPar> getDamperTransferFunction() const;
 
@@ -1342,6 +1342,24 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCorrectorTransferFunctionAt(
   //   naive implementation. But before doing this, implement a unit test for the transfer function
   //   computation
 }
+
+template<class TSig, class TPar>
+rsSparseRationalFunction<TPar> rsDampedAllpassComb<TSig, TPar>::getCombTransferFunction() const
+{
+  using TF = rsSparseRationalFunction<TPar>;
+
+  TF one; one.num.appendTerm(TPar(1), 0);
+  TF z1;  z1.num.appendTerm( TPar(1), 1);
+
+  TF F = getDamperTransferFunction();       // Feedback filter
+  TF D; D.num.appendTerm(TPar(1), M);       // Delay filter
+
+  return D / (one + k * z1 * F * D);
+  // ToDo: We need to switch between the modes.
+
+  
+}
+
 
 template<class TSig, class TPar>
 rsSparseRationalFunction<TPar> rsDampedAllpassComb<TSig, TPar>::getDamperTransferFunction() const

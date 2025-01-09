@@ -1816,14 +1816,17 @@ public:
   /** \name Lifetime */
 
 
-  rsSparseRationalFunction() {}
+  rsSparseRationalFunction() 
+  {
+    den.appendTerm(T(1), 0);
+  }
 
 
   rsSparseRationalFunction(
     const rsSparsePolynomial<T>& numerator, const rsSparsePolynomial<T>& denominator) 
     : num(numerator), den(denominator)  {}
 
-  // Maybe implement it for const rsSparsePolynomial<T>&&, too. Or maybe this one is enough?
+  // Maybe implement it for const rsSparsePolynomial<T>&&, too. Or maybe that one is enough?
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1847,6 +1850,10 @@ public:
     den.setupFromDenseCoeffs(newDenominatorCoeffs, newNumDenominatorTerms, tol);
   }
 
+
+  /** Applies a scaling factor to this rational function. This basically means to scale all 
+  numerator coeffs by that factor. */
+  void scale(T scaler) { num.scale(scaler); }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1936,6 +1943,15 @@ void rsSparseRationalFunction<T>::weightedSum(
   // allocations. We may also use the gcd instead of just cross-mutiplying the denominators.
 }
 
+
+/** Multiplies a coefficient and a sparse rational function. */
+template<class T>
+inline rsSparseRationalFunction<T> operator*(const T& s, const rsSparseRationalFunction<T>& p)
+{
+  rsSparseRationalFunction<T> r(p);
+  r.scale(s);
+  return r;
+}
 
 
 

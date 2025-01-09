@@ -1020,10 +1020,29 @@ void dampedAllpassComb6()
   // Create and set up the allpass filter:
   Allpass ap;
   ap.setMaxDelayInSamples(delay);
-  rsSetupDecayTimes(ap, delay, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
+  rsSetupDecayTimes(ap, delay, decaySamples, lowOmega, lowScale, highOmega, highScale, true);
 
   // Retrieve the transfer function objects:
   TransFunc tfDamp = ap.getDamperTransferFunction();
+  TransFunc tfComb = ap.getCombTransferFunction();
+
+
+  //Real tol = 1.e-14;
+
+  bool ok = true;
+
+
+  Complex z(0.6, 0.8);
+  Complex z1 = Real(1) / z;
+  Complex w1, w2;            // Use H1, H2
+
+  w1 = ap.getDamperTransferFunctionAt(z);
+  w2 = tfDamp(z1);
+  ok &= rsIsCloseTo(w1, w2, 1.e-15);
+
+  w1 = ap.getCombTransferFunctionAt(z);
+  w2 = tfComb(z1);
+  ok &= rsIsCloseTo(w1, w2, 1.e-13);
 
 
   int dummy = 0;
