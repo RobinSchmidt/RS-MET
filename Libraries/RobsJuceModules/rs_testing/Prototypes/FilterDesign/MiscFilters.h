@@ -1798,6 +1798,7 @@ public:
   }
   // This may allocate!
   // ToDo: use num.setupFromDenseCoeffs(&numCoeffs[0], (int) numCoeffs.size(), tol)
+  // use  H.setupFromDenseCoeffs(numCoeffs, denCoeffs, tol)
 
 
   void setNumNumeratorTerms(int newNumTerms) { H.num.setNumTerms(newNumTerms); }
@@ -1821,23 +1822,21 @@ public:
   numerator and denominator polynomial. */
   void updateDelayLineLength()
   {
-    int maxDegree = rsMax(H.num.getDegree(), H.den.getDegree());
-    // factor out into getFilterOrder()
-
-
-    delayLine.setMaximumDelayInSamples(maxDegree);
-    delayLine.setDelayInSamples(maxDegree);
+    int order = getFilterOrder();
+    delayLine.setMaximumDelayInSamples(order);
+    delayLine.setDelayInSamples(order);
   }
-
+  // Maybe do not set the maximum delay here - just the delay. For setting the max delay, we should
+  // have an extra function. Then we can simplify the implementation to
+  // delayLine.setDelayInSamples(getFilterOrder());
+  // I'm not even sure, if we need setting the delay. We never really use the tapOut pointer of
+  // the delayline
 
 
 
   /** Applies a scaling factor to the filter. This basically means to scale all numerator coeffs by
   that factor. */
-  void scale(TPar scaler)
-  {
-    H.num.scale(scaler);
-  }
+  void scale(TPar scaler) { H.num.scale(scaler); }
 
   /** Adds an overall predelay to the whole filter by shifting all exponents of z^-1 by the given 
   amount. */
@@ -1911,7 +1910,7 @@ public:
   }
   // not yet tested
 
-  // ToDo: reflectPoles/reflectZeros - shoulv reverse the coeff arrays. i.e. the powers should remain
+  // ToDo: reflectPoles/reflectZeros - should reverse the coeff arrays. i.e. the powers should remain
   // the same but the coeffs should be reversed. Wait! No! We need to modify the powers from p
   // to deg-p. Then the term array will be sorted in reverse order so we should reverse it
 
@@ -1962,7 +1961,7 @@ public:
 
 
 
-  /** Computes the transfer function of this filter at the given complex value z. */
+  /** Computes the transfer function H(z) of this filter at the given complex value z. */
   rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const { return H(TPar(1)/z); }
     // Reciprocation of z needed because H actually stores the coeffs of H(z^-1)
 
@@ -2001,6 +2000,8 @@ public:
     rsAssert(isFilterValid());
     rsAssert(H.num.getPower(0) == 0);
     rsAssert(H.num.getCoeff(0) != 0);
+    // Maybe we can relax this? If we do not expect the power of the 0-th coeff to be 0, we will 
+    // just produce an inverted filter up to delay?
 
     // Apply scaled numerator of H as feedback part:
     TPar s = TPar(1) / H.num.getCoeff(0);
@@ -2047,7 +2048,7 @@ public:
   // iterate through the whole numerator. Maybe that value could be cached. Not sure. Although,
   // If we assume H.num to be in canonical representation (which it is, I think), then getDegree()
   // can be replaced by  H.getCoeff(H.getNumTerms()-1)  which avoids the iteration. Maybe such a 
-  // call could even be encapsulated into something like H.getLastPower(). Maybe add and
+  // call could even be encapsulated into something like H.getLastPower(). Maybe add an
   // H.isCanonical() check to isFilterValid().
 
 
