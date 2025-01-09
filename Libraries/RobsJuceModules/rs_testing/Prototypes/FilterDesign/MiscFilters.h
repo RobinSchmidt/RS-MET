@@ -1229,14 +1229,14 @@ protected:
 template<class T>
 void rsSparsePolynomial<T>::setupFromDenseCoeffs(const std::vector<T>& newCoeffs, T tol)
 {
-  terms.clear();
-  terms.reserve(newCoeffs.size());
-  for(int i = 0; i < (int) newCoeffs.size(); i++)
-    if(rsAbs(newCoeffs[i]) > tol)
-      terms.emplace_back(rsMonomial<T>(newCoeffs[i], i));
+  //terms.clear();
+  //terms.reserve(newCoeffs.size());
+  //for(int i = 0; i < (int) newCoeffs.size(); i++)
+  //  if(rsAbs(newCoeffs[i]) > tol)
+  //    terms.emplace_back(rsMonomial<T>(newCoeffs[i], i));
 
   // ToDo - use:
-  // setupFromDenseCoeffs(&newCoeffs[0], (int) newCoeffs.size(), tol);
+  setupFromDenseCoeffs(&newCoeffs[0], (int) newCoeffs.size(), tol);
 }
 
 template<class T>
@@ -1867,48 +1867,29 @@ public:
   /** \name Operators */
 
   /** Evaluates the function at the given input x. */
-  T operator()(T x) const
-  {
-    return num(x) / den(x);
-  }
+  T operator()(T x) const { return num(x) / den(x); }
 
   /** Evaluates the function at the given input z whose type may be different from the 
   coefficient type, for example, for evaluating functions with real coeffs at complex arguments.
   WARNING: the same considerations as for @see rsPolynomial::operator(TArg) apply. */
   template<class TArg>
-  TArg operator()(TArg z) const 
-  { 
-    return num(z) / den(z);
-  }
-
+  TArg operator()(TArg z) const { return num(z) / den(z); }
 
   /** Adds two rational functions. */
   rsSparseRationalFunction<T> operator+(const rsSparseRationalFunction<T>& q) const 
-  { 
-    rsSparseRationalFunction<T> r;
-    weightedSum(*this, T(1), q, T(1), &r, T(0));
-    return r;
-  }
+  { rsSparseRationalFunction<T> r; weightedSum(*this, T(1), q, T(1), &r, T(0)); return r; }
 
   /** Subtracts two rational functions. */
   rsSparseRationalFunction<T> operator-(const rsSparseRationalFunction<T>& q) const 
-  { 
-    rsSparseRationalFunction<T> r;
-    weightedSum(*this, T(1), q, T(-1), &r, T(0));
-    return r;
-  }
+  { rsSparseRationalFunction<T> r; weightedSum(*this, T(1), q, T(-1), &r, T(0)); return r; }
 
   /** Multiplies two rational functions. */
   rsSparseRationalFunction<T> operator*(const rsSparseRationalFunction<T>& q) const 
-  { 
-    return rsSparseRationalFunction(num * q.num, den * q.den);
-  }
+  { return rsSparseRationalFunction(num * q.num, den * q.den); }
 
   /** Divides two rational functions. */
   rsSparseRationalFunction<T> operator/(const rsSparseRationalFunction<T>& q) const 
-  { 
-    return rsSparseRationalFunction(num * q.den, den * q.num);
-  }
+  { return rsSparseRationalFunction(num * q.den, den * q.num); }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1922,28 +1903,6 @@ public:
 
 };
 
-
-template<class T>
-void rsSparseRationalFunction<T>::weightedSum(
-  const rsSparseRationalFunction<T>& p, T wp,
-  const rsSparseRationalFunction<T>& q, T wq,
-  rsSparseRationalFunction<T>* r, T tol)
-{
-  //rsSparsePolynomial<T> numR, denR;
-  //denR = p.den * q.den;
-  //numR = wp * p.num * q.den  +  wq * q.num * p.den;
-  //return rsSparseRationalFunction(numR, denR);
-
-  r->den = p.den * q.den;
-  r->num = wp * p.num * q.den  +  wq * q.num * p.den;
-
-
-
-  // This can probably be optimized with respect to avoid unnecessary temporary objects and heap
-  // allocations. We may also use the gcd instead of just cross-mutiplying the denominators.
-}
-
-
 /** Multiplies a coefficient and a sparse rational function. */
 template<class T>
 inline rsSparseRationalFunction<T> operator*(const T& s, const rsSparseRationalFunction<T>& p)
@@ -1952,6 +1911,22 @@ inline rsSparseRationalFunction<T> operator*(const T& s, const rsSparseRationalF
   r.scale(s);
   return r;
 }
+
+template<class T>
+void rsSparseRationalFunction<T>::weightedSum(
+  const rsSparseRationalFunction<T>& p, T wp,
+  const rsSparseRationalFunction<T>& q, T wq,
+  rsSparseRationalFunction<T>* r, T tol)
+{
+  r->den = p.den * q.den;
+  r->num = wp * p.num * q.den  +  wq * q.num * p.den;
+
+  // This can probably be optimized with respect to avoid unnecessary temporary objects and heap
+  // allocations. We may also use the gcd instead of just cross-mutiplying the denominators.
+}
+
+
+
 
 
 
