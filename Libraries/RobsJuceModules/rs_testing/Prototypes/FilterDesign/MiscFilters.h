@@ -2108,8 +2108,8 @@ public:
     // Reciprocation of z needed because H actually stores the coeffs of H(z^-1)
 
 
-
-
+  /** Returns a const reference to our transfer function object H(z). */
+  const rsSparseRationalFunction<TPar>& getTransferFunction() const { return H; }
 
 
 

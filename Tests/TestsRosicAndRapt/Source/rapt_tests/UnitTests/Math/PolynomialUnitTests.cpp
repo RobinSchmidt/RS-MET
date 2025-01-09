@@ -3002,36 +3002,15 @@ bool testSparseRationalFunction()
   rs.setupFromDenseCoeffs(rd.getNumerator(), rd.getDenominator(), tol);
   ss.setupFromDenseCoeffs(sd.getNumerator(), sd.getDenominator(), tol);
 
-  // Test evaluation:
-  y1 = rd(x);
-  y2 = rs(x);
-  ok &= rsIsCloseTo(y1, y2, tol);
-
-  // Test evaluation at complex argument:
-  w1 = rd(z);
-  w2 = rs(z);
-  ok &= rsIsCloseTo(w1, w2, tol);
+  // Test evaluation for real and complex argument:
+  y1 = rd(x); y2 = rs(x);  ok &= rsIsCloseTo(y1, y2, tol);
+  w1 = rd(z); w2 = rs(z);  ok &= rsIsCloseTo(w1, w2, tol);
 
   // Test arithmetic operators:
-  ts = rs + ss;
-  y1 = rs(x) + ss(x);
-  y2 = ts(x);
-  ok &= rsIsCloseTo(y1, y2, tol);
-
-  ts = rs - ss;
-  y1 = rs(x) - ss(x);
-  y2 = ts(x);
-  ok &= rsIsCloseTo(y1, y2, tol);
-
-  ts = rs * ss;
-  y1 = rs(x) * ss(x);
-  y2 = ts(x);
-  ok &= rsIsCloseTo(y1, y2, tol);
-
-  ts = rs / ss;
-  y1 = rs(x) / ss(x);
-  y2 = ts(x);
-  ok &= rsIsCloseTo(y1, y2, tol);
+  y1 = rs(x) + ss(x);  ts = rs + ss; y2 = ts(x);  ok &= rsIsCloseTo(y1, y2, tol);
+  y1 = rs(x) - ss(x);  ts = rs - ss; y2 = ts(x);  ok &= rsIsCloseTo(y1, y2, tol);
+  y1 = rs(x) * ss(x);  ts = rs * ss; y2 = ts(x);  ok &= rsIsCloseTo(y1, y2, tol);
+  y1 = rs(x) / ss(x);  ts = rs / ss; y2 = ts(x);  ok &= rsIsCloseTo(y1, y2, tol);
 
 
 

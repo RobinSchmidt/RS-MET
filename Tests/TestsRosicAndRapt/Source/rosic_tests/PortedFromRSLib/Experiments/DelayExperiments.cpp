@@ -986,6 +986,25 @@ void dampedAllpassComb5()
   //   the decay times add up?
 }
 
+void dampedAllpassComb6()
+{
+  // Under construction.
+  //
+  // We want to extract the transfer function from an rsDampedAllpassComb object as 
+  // rsSparseRationalFunction and then use that to set up an rsSparseFilter object. They should
+  // both have the same impulse response.
+
+  // Define types to be used:
+  using Real    = double;
+  using Vec     = std::vector<Real>;
+  using Allpass = rsDampedAllpassComb<Real, Real>;
+
+
+  Allpass ap;
+
+}
+
+
 void dampedAllpassCombComplex()
 {
   // We instantiate rsDampedAllpassComb with a complex datatype for the signals. The feedback gain
@@ -1388,7 +1407,8 @@ void dampedAllpassBiComb_1p()
 
 void dampedAllpassComb()
 {
-  dampedAllpassBiComb_1p();
+  dampedAllpassComb6();
+  //dampedAllpassBiComb_1p();
   //dampedAllpassComb5();
 
   dampedAllpassComb1();
@@ -1396,6 +1416,7 @@ void dampedAllpassComb()
   dampedAllpassComb3();
   dampedAllpassComb4();
   dampedAllpassComb5();
+  dampedAllpassComb6();
   dampedAllpassCombComplex();
   dampedAllpassCombNonLin();
   dampedAllpassDelayContent();
