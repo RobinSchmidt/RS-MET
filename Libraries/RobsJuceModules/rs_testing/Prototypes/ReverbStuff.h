@@ -1613,7 +1613,7 @@ protected:
   TSig x1di = 0, y1di = 0;
   TSig y1c  = 0;
 
-  TSig k   = 0;
+  TSig k   = 0;  // Use TPar
   TSig r0  = 0; 
   TSig r1  = 0; 
   TPar rM1 = 0;
@@ -2319,7 +2319,7 @@ public:
     k = feedback;
 
     inDelay.setDelayInSamples( M);
-    outDelay.setDelayInSamples(M-P-1);               // -1 compnesates for implicit feedback delay
+    outDelay.setDelayInSamples(M-P-1);               // -1 compensates for implicit feedback delay
     outFilter.setImpulseResponse(dampCoeffsB, P+1);
     inFilter.setImpulseResponse( dampCoeffsB, P+1);
     outFilter.reverseImpulseResponse();

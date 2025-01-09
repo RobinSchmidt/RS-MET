@@ -1022,25 +1022,22 @@ void dampedAllpassComb6()
   ap.setMaxDelayInSamples(delay);
   rsSetupDecayTimes(ap, delay, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
 
-  // Retrieve the transfer function objects:
-  TransFunc tfDamp = ap.getDamperTransferFunction();
-  TransFunc tfComb = ap.getCombTransferFunction();
 
-
-  //Real tol = 1.e-14;
+  // Check retrieval of the transfer function objects:
 
   bool ok = true;
 
-
   Complex z(0.6, 0.8);
   Complex z1 = Real(1) / z;
-  Complex w1, w2;            // Use H1, H2
+  Complex w1, w2;
 
   w1 = ap.getDamperTransferFunctionAt(z);
+  TransFunc tfDamp = ap.getDamperTransferFunction();
   w2 = tfDamp(z1);
   ok &= rsIsCloseTo(w1, w2, 1.e-15);
 
   w1 = ap.getCombTransferFunctionAt(z);
+  TransFunc tfComb = ap.getCombTransferFunction();
   w2 = tfComb(z1);
   ok &= rsIsCloseTo(w1, w2, 1.e-13);
 
