@@ -880,7 +880,8 @@ public:
 
   /** Sets up the polynomial from a dense arrays of polynomial coeffs. When a coefficient in the 
   dense representation is zero, we not create a term for that. */
-  void setupFromDenseCoeffs(const std::vector<T>& newCoeffs, T tol);
+  void setupFromDenseCoeffs(const std::vector<T>& newCoeffs, T tol)
+  { setupFromDenseCoeffs(&newCoeffs[0], (int) newCoeffs.size(), tol); }
 
 
   void setupFromDenseCoeffs(const T* newCoeffs, int newNumTerms, T tol);
@@ -1225,19 +1226,6 @@ protected:
 
 };
 
-
-template<class T>
-void rsSparsePolynomial<T>::setupFromDenseCoeffs(const std::vector<T>& newCoeffs, T tol)
-{
-  //terms.clear();
-  //terms.reserve(newCoeffs.size());
-  //for(int i = 0; i < (int) newCoeffs.size(); i++)
-  //  if(rsAbs(newCoeffs[i]) > tol)
-  //    terms.emplace_back(rsMonomial<T>(newCoeffs[i], i));
-
-  // ToDo - use:
-  setupFromDenseCoeffs(&newCoeffs[0], (int) newCoeffs.size(), tol);
-}
 
 template<class T>
 void rsSparsePolynomial<T>::setupFromDenseCoeffs(const T* newCoeffs, int newNumTerms, T tol)
@@ -1851,6 +1839,14 @@ public:
   }
 
 
+  void copyDataFrom(const rsSparseRationalFunction<T>& q)
+  {
+    num.copyDataFrom(q.num);
+    den.copyDataFrom(q.den);
+  }
+
+
+
   /** Applies a scaling factor to this rational function. This basically means to scale all 
   numerator coeffs by that factor. */
   void scale(T scaler) { num.scale(scaler); }
@@ -1957,6 +1953,19 @@ public:
   // This may allocate!
   // ToDo: use num.setupFromDenseCoeffs(&numCoeffs[0], (int) numCoeffs.size(), tol)
   // use  H.setupFromDenseCoeffs(numCoeffs, denCoeffs, tol)
+
+
+  void setup(const rsSparseRationalFunction<TPar>& newTransferFunction)
+  {
+    //H = newTransferFunction; 
+    // This will always allocate, I guess?
+
+    
+    H.copyDataFrom(newTransferFunction);
+    // This will allocate only when H has not enough capacity...I think
+
+    updateDelayLineLength();
+  }
 
 
   void setNumNumeratorTerms(int newNumTerms) { H.num.setNumTerms(newNumTerms); }

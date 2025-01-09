@@ -1000,6 +1000,7 @@ void dampedAllpassComb6()
   using Vec       = std::vector<Real>;
   using Allpass   = rsDampedAllpassComb<Real, Real>;
   using TransFunc = rsSparseRationalFunction<Real>;
+  using SparseFlt = rsSparseFilter<Real, Real>;
 
   // User parameters:
   Real sampleRate = 48000;     // Sampling rate.
@@ -1040,6 +1041,36 @@ void dampedAllpassComb6()
   TransFunc tfComb = ap.getCombTransferFunction();
   w2 = tfComb(z1);
   ok &= rsIsCloseTo(w1, w2, 1.e-13);
+
+
+  // Create comb impulse response by the allpass:
+  int N = numSamples;
+  Vec hc(N);
+  ap.reset();
+  hc[0] = ap.getSampleComb(1.0);
+  for(int n = 1; n < N; n++)
+    hc[n] = ap.getSampleComb(0.0);
+
+  // Create comb impulse response by the sparse filter:
+  SparseFlt sf;
+  sf.setup(tfComb);
+  Vec hcs = impulseResponse(sf, N, 1.0);
+
+  ok &= rsIsCloseTo(hc, hcs, 1.e-15);
+
+
+  rsPlotVectors(hc, hcs);
+  
+
+  //sf.reset();
+  //Vec hcs(N);
+
+  //hcs[0] = ap.getSampleComb(1.0);
+  //for(int n = 1; n < N; n++)
+  //  hcs[n] = ap.getSampleComb(0.0);
+
+
+
 
 
   int dummy = 0;

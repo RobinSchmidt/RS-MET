@@ -1108,7 +1108,7 @@ public:
 
 
   rsSparseRationalFunction<TPar> getCombTransferFunction() const;
-  // Allocates!
+  // Allocates! Actually returns H(z^-1)
 
   rsSparseRationalFunction<TPar> getDamperTransferFunction() const;
   // Allocates!
@@ -1352,7 +1352,7 @@ rsSparseRationalFunction<TPar> rsDampedAllpassComb<TSig, TPar>::getCombTransferF
 
   TF one; one.num.appendTerm(TPar(1), 0);
   TF z1;  z1.num.appendTerm( TPar(1), 1);
-  TF zM; zM.num.appendTerm(TPar(1), M);          // Delay filter z^-M
+  TF zM;  zM.num.appendTerm( TPar(1), M);        // Delay filter z^-M
   TF F = getDamperTransferFunction();            // Feedback filter F(z)
   if(preDelay)
     return zM  / (one + k * z1 * F * zM);        // U(z) = z^-M / (1 + k * z^-1 * F(z) * z^-M)
