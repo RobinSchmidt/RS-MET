@@ -883,6 +883,9 @@ public:
   void setupFromDenseCoeffs(const std::vector<T>& newCoeffs, T tol);
 
 
+  void setupFromDenseCoeffs(const T* newCoeffs, int newNumTerms, T tol);
+
+
   /** Appends a term with given coeff and power to the end of our terms array. Beware that this 
   may decanonicalize the representation. */
   void appendTerm(T coeff, int power) { terms.emplace_back(rsMonomial<T>(coeff, power)); } 
@@ -1229,6 +1232,19 @@ void rsSparsePolynomial<T>::setupFromDenseCoeffs(const std::vector<T>& newCoeffs
   terms.clear();
   terms.reserve(newCoeffs.size());
   for(int i = 0; i < (int) newCoeffs.size(); i++)
+    if(rsAbs(newCoeffs[i]) > tol)
+      terms.emplace_back(rsMonomial<T>(newCoeffs[i], i));
+
+  // ToDo - use:
+  // setupFromDenseCoeffs(&newCoeffs[0], (int) newCoeffs.size(), tol);
+}
+
+template<class T>
+void rsSparsePolynomial<T>::setupFromDenseCoeffs(const T* newCoeffs, int newNumTerms, T tol)
+{
+  terms.clear();
+  terms.reserve(newNumTerms);
+  for(int i = 0; i < newNumTerms; i++)
     if(rsAbs(newCoeffs[i]) > tol)
       terms.emplace_back(rsMonomial<T>(newCoeffs[i], i));
 
@@ -1820,6 +1836,15 @@ public:
   {
     num.setupFromDenseCoeffs(newNumeratorCoeffs,   tol);
     den.setupFromDenseCoeffs(newDenominatorCoeffs, tol);
+  }
+
+  void setupFromDenseCoeffs(
+    const T* newNumeratorCoeffs,   int newNumNumeratorTerms, 
+    const T* newDenominatorCoeffs, int newNumDenominatorTerms,
+    T tol)
+  {
+    num.setupFromDenseCoeffs(newNumeratorCoeffs,   newNumNumeratorTerms,   tol);
+    den.setupFromDenseCoeffs(newDenominatorCoeffs, newNumDenominatorTerms, tol);
   }
 
 

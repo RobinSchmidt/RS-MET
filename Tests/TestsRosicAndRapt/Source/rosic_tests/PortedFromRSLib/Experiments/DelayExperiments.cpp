@@ -995,12 +995,51 @@ void dampedAllpassComb6()
   // both have the same impulse response.
 
   // Define types to be used:
-  using Real    = double;
-  using Vec     = std::vector<Real>;
-  using Allpass = rsDampedAllpassComb<Real, Real>;
+  using Real      = double;
+  using Complex   = rsComplex<Real>;
+  using Vec       = std::vector<Real>;
+  using Allpass   = rsDampedAllpassComb<Real, Real>;
+  using TransFunc = rsSparseRationalFunction<Real>;
 
+  // User parameters:
+  Real sampleRate = 48000;     // Sampling rate.
+  int  numSamples = 24000;     // Number of samples to render.
+  int  delay      =    50;     // Delay in samples.
+  Real decayTime  =     1.0;   // Decay time for mid frequencies in seconds.
+  Real lowFreq    =   250.0;   // Crossover freq between low and mid frequencies in Hz.
+  Real lowScale   =     1.5;   // Decay time scaler for low frequencies.
+  Real highFreq   =  4000.0;   // Crossover freq between mid and high frequencies in Hz.
+  Real highScale  =     0.2;   // Decay time scaler for high frequencies.
 
+  // Compute intermediate values:
+  Real decaySamples = decayTime     * sampleRate;
+  Real lowOmega     = 2*PI*lowFreq  / sampleRate;
+  Real highOmega    = 2*PI*highFreq / sampleRate;
+  Real spikeFreq    = Real(sampleRate) / Real(delay);  // Frequency of the spikes
+
+  // Create and set up the allpass filter:
   Allpass ap;
+  ap.setMaxDelayInSamples(delay);
+  rsSetupDecayTimes(ap, delay, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
+
+  // Retrieve the transfer function objects:
+  TransFunc tfDamp = ap.getDamperTransferFunction();
+
+
+  int dummy = 0;
+
+
+
+  // - Maybe implement a musically tunable reverb algorithm based on that idea. Maybe call it 
+  //   TuniVerb. It should give the user the possibility to set up a parallel connection of (up to)
+  //   some number N of combs which are then turned into an allpass via out transfer function 
+  //   inversion-and-reversal magic. We may want tune the combs to musical notes.
+  //
+  // - Maybe the combs should all have the same decay time. Or maybe the higher combs should have 
+  //   a shorter decay time. Or maybe make the scaling of the decay-time with comb-freq a user 
+  //   param.
+  //
+  // - The user should be able to switch between all and odd harmonics - maybe per comb.
 
 }
 
