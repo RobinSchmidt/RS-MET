@@ -984,8 +984,19 @@ public:
   // Maybe assert that this->getPower() >= divisor.getPower() to avoid producing negative powers.
 
 
+
+
   void addScaled(const rsSparsePolynomial<T>& summand, const rsMonomial<T>& scaler, T tol);
   // ToDo: implement add(summand, tol), i.e. the same thing but without the scaler.
+  // ...and maybe one with eth scaler being a simple coeff
+
+
+  //void multiplyBy(const rsSparsePolynomial<T>& factor);
+  // Tf this is p and factor is q and M = deg(p), N = deg(q), this function should resize the
+  // terms array (to M+N+1, I think) and then fill the new array by forming all products of terms.
+  // It should start reading and writing at the *end* (the loop should iterate down to zero) so it
+  // can be used in place. Similar to rsArrayTools::convolve.
+
 
 
   /** Reverses the array of terms. */
@@ -1090,7 +1101,8 @@ public:
   T operator()(T x) const { return evaluateAt(x); }
 
   /** Evaluates the function at the given input z whose type may be different from the 
-  coefficient type, for example, for evaluating functions with real coeffs at complex arguments.
+  coefficient type T. This may be used, for example, for evaluating polynomials with real coeffs at
+  complex arguments. 
   WARNING: the same considerations as for @see rsPolynomial::operator(TArg) apply. */
   template<class TArg>
   TArg operator()(TArg z) const { return evaluateTyped(z); }
@@ -1267,7 +1279,7 @@ void rsSparsePolynomial<T>::addScaled(
 
   // ToDo:
   //
-  // - The algorithm above that calls addTerm in a loop may potentially trigger a lot of data 
+  // - The algorithm above that calls addTerm() in a loop may potentially trigger a lot of data 
   //   movement because each call potentially moves data. Maybe try to implement a different 
   //   algorithm that just appends the (scaled) content of q to our terms array and then calls 
   //   canonicalize(). Benchmark both variants and then choose the faster (but keep the slower 
@@ -1305,7 +1317,7 @@ void rsSparsePolynomial<T>::canonicalize(T tol)
     }
     r++;
   }
-  setNumTerms(w+1);
+  setNumTerms(w+1);                 // Possibly shorten the terms array
   // This algorithm works only when the terms are sorted by exponent so it doesn't really make 
   // sense to factor it out into a function in its own right. Doing so could invite calling it on 
   // unsorted term arrays in which case we would have a bug.
@@ -1313,14 +1325,23 @@ void rsSparsePolynomial<T>::canonicalize(T tol)
   // Remove terms with coefficient zero:
   rsRemoveIf(terms, [&tol](const Mon& term){ return rsAbs(term.getCoeff()) <= tol; });
 
-  // Sanity check in debug mode:
-  rsAssert(isCanonical());
+  // Sanity check:
+  rsAssert(isCanonical(), "Canonicalization failed");
+  // If this triggers, there's a bug in the canonicalization code above and/or in the 
+  // implementation of isCanonical().
 
 
   // ToDo:
   //
-  // - Maybe try using  rsHeapSort(&terms[0], (int) terms.size(), &rsLessByPower);  instead of
-  //   std::sort(..)
+  // - Maybe try using  rsHeapSort()  instead of  std::sort(). Do benchmarks with different sorting
+  //   algorithms and choose the best. The sorting algorithm should have good performance 
+  //   especially in the size range of a handful up to dozens or maybe hundreds. That's what we 
+  //   typically deal with in digital filters which is the main intended use for this class. I'm 
+  //   not sure, if we should care about the algo being a stable sort or not. But if it's not 
+  //   stable, the roundoff behavior may be different and - what is more important - unpredictable.
+  //   With a stable sort, the rounding that occurs in the consolidation of coeffs for terms with 
+  //   equal powers, would be the same every time. That might be thing that we might want to have. 
+  //   Or maybe it doesn't matter. We'll see.....
 }
 
 
@@ -1333,8 +1354,10 @@ inline rsSparsePolynomial<T> operator*(const T& s, const rsSparsePolynomial<T>& 
   r.scale(s);
   return r;
 }
-// ToDo: write an operator that takes a monomial as left operand. It should scale r by the 
-// monomial's coeff as above and shift the powers of r by the monomial's power.
+// ToDo: Write an operator that takes a monomial as left operand. It should scale r by the 
+// monomial's coeff as above and shift the powers of r by the monomial's power. Maybe the 
+// "copyDataFrom" function should already include the possible sclaing and shifting. But then
+// we should call it copyScaledDataFrom and/or copyScaledAndShiftedDataFrom.
 
 
 template<class T>
@@ -1377,7 +1400,14 @@ int rsSparsePolynomial<T>::getMaxPower() const
 
   // The implementation is written in such a way that it should still work reasonably when the
   // client code sets up terms with negative powers. The empty polynomial will still have a max
-  // power (aka degree) of zero. ...TBC...
+  // power (aka degree) of zero. I'm not yet sure, if we should allow for negative powers, though.
+  // For causal filters, it's not needed. But maybe there could be other applications where it 
+  // makes more sense. We'll see...
+  //
+  // Maybe init with maxPower = terms[0].getPower(). We can do this because at that point, we know
+  // that the terms array is not empty. Then we can start the loop at 1, i.e. don't use a 
+  // range-based loop. The range based loop should still work though - but it does one superfluous
+  // iteration.
 }
 
 
@@ -1386,7 +1416,12 @@ int rsSparsePolynomial<T>::getMaxPowerIndex() const
 {
   rsAssert(isCanonical());
   // The output of this function is not well defined when there are multiple terms with the highest
-  // power, so this function should really only be used on canonical representations.
+  // power, so this function should really only be used on canonical representations. But wait:
+  // In a canonical representation, the index of the maximum power is already known so we don't 
+  // need to do a search in this cas. It's always at terms.size()-1. Maybe we should do a test 
+  // like: rsAssert(arePowersUnique()) - but such a check would be expensive (O(N^2)) on an 
+  // unsorted terms array. It would even need temporary memory. On the other hand, it's only 
+  // compiled into debug versions anyway.
 
   if(isEmpty())
     return -1;
@@ -1533,6 +1568,12 @@ void rsSparsePolynomial<T>::multiply(
   const rsSparsePolynomial<T>& q,
   rsSparsePolynomial<T>* r, T tol)
 {
+  // Sanity checks:
+  rsAssert(rsAreAddressesDistinct(p, *r));
+  rsAssert(rsAreAddressesDistinct(q, *r));
+  // This function cannot be used in place (yet?)
+
+
   int Np = p.getNumTerms();
   int Nq = q.getNumTerms();
   int Nr = Np * Nq;
@@ -1543,6 +1584,12 @@ void rsSparsePolynomial<T>::multiply(
       r->setTerm(i*Nq+j, p.getCoeff(i) * q.getCoeff(j), p.getPower(i) + q.getPower(j));
 
   r->canonicalize(tol);
+
+  // ToDo:
+  //
+  // - Maybe loop through the elements backwards. I think, when we do this, we can actually allow
+  //   in-place operation, i.e. the address of r may then be the same as that of p and/or q. But 
+  //   this should then be thoroughly unit tested.
 }
 
 template<class T>
@@ -1633,6 +1680,8 @@ void rsSparsePolynomial<T>::greatestCommonDivisorInPlace(
 template<class T>
 rsSparsePolynomial<T> rsPow(const rsSparsePolynomial<T>& p, int n)
 {
+  rsWarning("rsPow(rsSparsePolynomial&) is preliminary");
+
   rsSparsePolynomial<T> r;
   r.appendTerm(T(1), 0);
   for(int i = 1; i <= n; i++)
@@ -1642,7 +1691,8 @@ rsSparsePolynomial<T> rsPow(const rsSparsePolynomial<T>& p, int n)
   // ToDo:
   //
   // - Use the binary exponentiation algorithm. Maybe we can even use the generic rsPowInt function
-  //   once it has been adapted to allow for arbitrary types for the base.
+  //   once it has been adapted to allow for arbitrary types for the base. Maybe rename this to
+  //   rsPowNaive()
 }
 
 template<class T>
@@ -1658,9 +1708,9 @@ rsSparsePolynomial<T> rsComposeNaive(
   // Notes:
   //
   // - This implementation is very inefficient and not meant for production use. There are a lot 
-  //   of temporary objects created. A (yet to be written) production version should avoid this. 
-  //   This version can be used to produce target output for the production version in unit tests,
-  //   though.
+  //   of temporary objects created that could be avoided in a more clever (yet to be written) 
+  //   production version. This version can be used to produce target output for the production 
+  //   version in unit tests, though.
 }
 
 
@@ -1710,6 +1760,43 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
+  /** \name Data */
+
+  /** Numerator and denominator polynomials. These data members are public because it's really more
+  convenient that way. We could do some sort of facade pattern and delegation but it would 
+  literally just be boilerplate - here and in client code - and a lot of it. We would have to 
+  implement functions like:
+
+    void setNumeratorCoeff(int index, T newCoeff) { num.setCoeff(index, newCoeff); }
+
+  and then client code would call things like:
+
+    r.setNumeratorCoeff(...);
+
+  instead of:
+
+    r.num.setCoeff(...);
+
+  We would have to do this basically for all setters and getters of rsSparsePolynomial - twice. 
+  And there are a lot of setters and getters. Nope. Just nope! Let's make num and den public 
+  instead. Yes, I'm fully aware that it goes against OOP encapsulation practices. I know the rules 
+  and break them deliberately here. We do not really have to maintain any class invariants or 
+  anything like that so it's ok to let client code directly access and manipulate the numerator and 
+  denominator. The only donwside may be that the variable names "num" and "den" now become part of
+  the public API of the class and can't be changed later. I can live with that. */
+  rsSparsePolynomial<T> num, den;
+  // ...well...wait: There actually is a class invariant that (maybe) should be maintained: The 
+  // denominator should be nonzero...hmmm...well...or maybe we just take the position that the onus 
+  // is on the client to avoid divisions by zero. That's actually also how it works for int and 
+  // float. Such variables (and also rsFraction) also do not nanny the programmer that way. So why
+  // should we? Or maybe I'm just too lazy to write the boilerplate and trying to rationalize it? 
+  // But it's not just about writing the boilerplate. It's also about readability and bloat - not 
+  // on the binary code side (the delegations would be inlined) but on the source code side. 
+  // We'll see.....
+
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   void setupFromDenseCoeffs(
@@ -1725,17 +1812,6 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
-
-  //rsSparsePolynomial<T>& getNumeratorRef()
-  //{
-  //  return num;
-  //}
-
-  //rsSparsePolynomial<T>& getDenominatorRef()
-  //{
-  //  return den;
-  //}
-
 
 
 
@@ -1759,14 +1835,7 @@ public:
 
 
 
-//protected:
 
-  rsSparsePolynomial<T> num, den;
-  // Numerator and denominator are public because it's really more convenient that way. We could do
-  // some sort of facade pattern and delegation but it would literally just be boilerplate and a 
-  // lot of it. Like:  setNumeratorCoeff(int index, T newCoeff) { num.setCoeff(index, newCoeff); }
-  // We do not really have to maintain any class invariants or anything like that so it's ok to let
-  // client code directly access and manipulate the numerator and denominator.
 
 };
 
