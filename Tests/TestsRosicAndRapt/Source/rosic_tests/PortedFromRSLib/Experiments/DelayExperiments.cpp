@@ -1020,7 +1020,7 @@ void dampedAllpassComb6()
   // Create and set up the allpass filter:
   Allpass ap;
   ap.setMaxDelayInSamples(delay);
-  rsSetupDecayTimes(ap, delay, decaySamples, lowOmega, lowScale, highOmega, highScale, true);
+  rsSetupDecayTimes(ap, delay, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
 
   // Retrieve the transfer function objects:
   TransFunc tfDamp = ap.getDamperTransferFunction();

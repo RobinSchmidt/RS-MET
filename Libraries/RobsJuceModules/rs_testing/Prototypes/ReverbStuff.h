@@ -1108,8 +1108,10 @@ public:
 
 
   rsSparseRationalFunction<TPar> getCombTransferFunction() const;
+  // Allocates!
 
   rsSparseRationalFunction<TPar> getDamperTransferFunction() const;
+  // Allocates!
 
 
 
@@ -1215,8 +1217,8 @@ protected:
   //
   // - The feedback gain k is of type TSig rather than TPar to allow usage with TSig == complex and
   //   then allowing complex feedback factors. There is some experiment that does this. It's 
-  //   interesting. ...but maybe make k of type TPar anyway. We cna still do this experiment by
-  //   just useing TPar = complex as well. I think, it makes more sense this way.
+  //   interesting. ...but maybe make k of type TPar anyway. We can still do this experiment by
+  //   just using TPar = complex as well. I think, it makes more sense this way.
   //
   // - Maybe be more flexible with the order of the damping filter by letting numerator and 
   //   denominator have different orders. Maybe replace dmpOrd by two variables bOrd, aOrd or 
@@ -1283,14 +1285,14 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCombTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
   using Complex = rsComplex<TPar>;
-  Complex one(TPar(1));                         // 1 + 0i
-  Complex zM = rsPow(z, Complex(-M));           // z^-M
-  Complex z1 = one/z;                           // z^-1
-  Complex F  = getDamperTransferFunctionAt(z);  // F(z)
+  Complex one(TPar(1));                          // 1 + 0i
+  Complex zM = rsPow(z, Complex(-M));            // z^-M
+  Complex z1 = one/z;                            // z^-1
+  Complex F  = getDamperTransferFunctionAt(z);   // F(z)
   if(preDelay)
-    return zM  / (one + k * z1 * F * zM);       // U(z) = z^-M / (1 + k * z^-1 * F(z) * z^-M)
+    return zM  / (one + k * z1 * F * zM);        // U(z) = z^-M / (1 + k * z^-1 * F(z) * z^-M)
   else
-    return one / (one + k * z1 * F * zM);       // U(z) =   1  / (1 + k * z^-1 * F(z) * z^-M)
+    return one / (one + k * z1 * F * zM);        // U(z) =   1  / (1 + k * z^-1 * F(z) * z^-M)
 
   // Notes:
   //
@@ -1309,7 +1311,7 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getDamperTransferFunctionAt(
   Complex num = 0, den = 0;
   for(int i = 0; i <= dmpOrd; i++)
   {
-    Complex zi = rsPow(z, Complex(-i));  // z^-i
+    Complex zi = rsPow(z, Complex(-i));          // z^-i
     num += b[i] * zi;
     den += a[i] * zi;
   }
@@ -1350,14 +1352,12 @@ rsSparseRationalFunction<TPar> rsDampedAllpassComb<TSig, TPar>::getCombTransferF
 
   TF one; one.num.appendTerm(TPar(1), 0);
   TF z1;  z1.num.appendTerm( TPar(1), 1);
-
-  TF F = getDamperTransferFunction();       // Feedback filter
-  TF D; D.num.appendTerm(TPar(1), M);       // Delay filter
-
-  return D / (one + k * z1 * F * D);
-  // ToDo: We need to switch between the modes.
-
-  
+  TF zM; zM.num.appendTerm(TPar(1), M);          // Delay filter z^-M
+  TF F = getDamperTransferFunction();            // Feedback filter F(z)
+  if(preDelay)
+    return zM  / (one + k * z1 * F * zM);        // U(z) = z^-M / (1 + k * z^-1 * F(z) * z^-M)
+  else
+    return one / (one + k * z1 * F * zM);        // U(z) =   1  / (1 + k * z^-1 * F(z) * z^-M)
 }
 
 
