@@ -1488,6 +1488,17 @@ void rsSetupDecayTimes(rsDampedAllpassComb<TSig, TPar>& flt, int delay, TPar dec
   //   account the effect of the damping filter (which itself may also introduce a frequency 
   //   dependent delay). I think, what we want is to have the correct fractional delay at DC or
   //   maybe at the resonance frequency, so we can tune it exactly.
+  //
+  // - Maybe implement a musically tunable reverb algorithm based on that idea. Maybe call it 
+  //   TuniVerb. It should give the user the possibility to set up a parallel connection of (up to)
+  //   some number N of combs which are then turned into an allpass via out transfer function 
+  //   inversion-and-reversal magic. We may want tune the combs to musical notes.
+  //
+  // - Maybe the combs should all have the same decay time. Or maybe the higher combs should have 
+  //   a shorter decay time. Or maybe make the scaling of the decay-time with comb-freq a user 
+  //   param.
+  //
+  // - The user should be able to switch between all and odd harmonics - maybe per comb.
 }
 
 // Notes:
