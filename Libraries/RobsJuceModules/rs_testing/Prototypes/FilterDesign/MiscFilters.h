@@ -820,10 +820,6 @@ public:
   // If q.power > this->power, this will lead to a negative power in the result. Should we do 
   // something about this like triggering an rsAssert?
 
-  // ToDo: Implement unary minus
-
-
-
 
 protected:
 
@@ -989,7 +985,7 @@ public:
 
 
   void addScaled(const rsSparsePolynomial<T>& summand, const rsMonomial<T>& scaler, T tol);
-  // ToDop: implement add(summand, tol), i.e. the same thing but without the scaler.
+  // ToDo: implement add(summand, tol), i.e. the same thing but without the scaler.
 
 
   /** Reverses the array of terms. */
@@ -1134,7 +1130,13 @@ public:
     rsSparsePolynomial<T>::greatestCommonDivisorInPlace(&a, &b, &tmp1, &tmp2, tol, monic);
     return a;
   }
-
+  // ToDo: document the tol and monic parameters. tol is the usual numeric tolerance for floating 
+  // point numbers (we have to check against zero polynomials in the algo) and monic defines if the
+  // returned gcd should be normalized to be monic. The gcd of polynomials is unique only up to a 
+  // constant scale factor, so it may make sense to make it well defined by requiring it to be
+  // monic. If monic is false, the returned gcd may be scaled by some arbitrary scale factor which
+  // depends on the details of the algorithm but has no mathematical significance (I think). But
+  // maybe it has? Figure out!
 
 
 
@@ -1143,8 +1145,12 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Low Level API. These functions operate on pre-allocated output parameters (passed by 
-  pointer) which potentially avoids heap allocations. */
+  /** \name Low level API. These functions operate on pre-allocated output parameters passed by 
+  pointer (to make it obvious at the call site that the parameter may be modified). Using these 
+  functions with pre-allocated sparse polynomials may potentially avoid heap allocations which the 
+  more convenient functions that return sparse polynomials do. This includes the +,-,*,/,% 
+  operators. So, for real time code, these operators are actually forbidden and one has to resort 
+  to the low level API. */
 
   static void add(
     const rsSparsePolynomial<T>& p,
@@ -1272,7 +1278,7 @@ void rsSparsePolynomial<T>::addScaled(
 template<class T>
 void rsSparsePolynomial<T>::canonicalize(T tol)
 {
-  // In the empty case, we have nothing to and we really *need* to return early in order to not 
+  // In the empty case, we have nothing to do and we really *need* to return early in order to not 
   // get an access violation in the code below (in the  int p = getPower(0);  line):
   if(isEmpty())
     return;
@@ -1756,7 +1762,11 @@ public:
 //protected:
 
   rsSparsePolynomial<T> num, den;
-  // Numerator and denominator are public because it's really more convenient that way.
+  // Numerator and denominator are public because it's really more convenient that way. We could do
+  // some sort of facade pattern and delegation but it would literally just be boilerplate and a 
+  // lot of it. Like:  setNumeratorCoeff(int index, T newCoeff) { num.setCoeff(index, newCoeff); }
+  // We do not really have to maintain any class invariants or anything like that so it's ok to let
+  // client code directly access and manipulate the numerator and denominator.
 
 };
 
@@ -1865,12 +1875,13 @@ public:
     rsAssert(isFilterValid());
 
     removePreDelay();
-
     rsAssert(H.num.getPower(0) == 0);
     rsAssert(H.num.getCoeff(0) != 0);
-    // We assume here that the 0-th num coefficient is the one that multiplies z^0 in the transfer
-    // function and scales x[n] in the difference equation. Maybe we can relax that later to allow
-    // the z^0 coeff to appear at a different position in the array
+    // A filter with predelay cannot be inverted in realtime. The best thing we can do in this 
+    // case is to invert the filter up to the predelay. Removing the predelay ensures that the
+    // 0-th term in the numerator has power of 0, i.e. it's a  b0 * z^-0  term and not some crazy
+    // b7 * z^-7  term.
+
 
     TPar s = TPar(1) / H.num.getCoeff(0);
     scale(s);
@@ -1886,6 +1897,8 @@ public:
     // realtime). In this case, the best we can do is to invert the filter up to a delay. I think, 
     // we can do this by first figuring out the minimum exponent of the numerator and the 
     // subtracting that from all the numerator exponents. After that, we can invert as usual.
+
+    // What about H.num == empty ...but that shouldn't be allowed anyway
   }
 
   void reflectZeros()
@@ -1918,8 +1931,9 @@ public:
     // split it into two functions: copyCoeffsFrom(), copyStateFrom()
   }
 
-
-
+  /** Returns the order of the filter. This is the maximum amount of delay needed to implement 
+  the filter. */
+  int getFilterOrder() const { return rsMax(H.num.getDegree(), H.den.getDegree()); }
 
 
   /** Performs some sanity checks. Is meant for debug assertions. */
@@ -1930,24 +1944,33 @@ public:
     // Numerator and denominator polynomials should not be empty:
     ok &= H.num.getNumTerms() > 0 && H.den.getNumTerms() > 0;
 
+    // We assume the filter polynomials to be in canonical shape:
+    ok &= H.num.isCanonical();
+    ok &= H.den.isCanonical();
+    // Maybe that can be relaxed. But thne the code below mayke no sense anymore. 
+    // H.den.getPower(0)  and  H.den.getCoeff(0)  assume the  a0 * z^0  term to be at index 0.
+    // So, maybe we indeed need to enforce a canonical representation.
+
     // Filter should satisfy the a0 == 1 normalization property:
-    ok &= H.den.getPower(0) == 0  && H.den.getCoeff(0) == TPar(1);
+    ok &= H.den.getPower(0) == 0 && H.den.getCoeff(0) == TPar(1);
 
     // Length of delayline should match the maximum of the degrees of numerator and denominator:
-    int maxDelay = rsMax(H.num.getDegree(), H.den.getDegree()); // wrap into getOrder()
-    ok &= delayLine.getDelayInSamples() == maxDelay;
-
-    // Do more checks: like, the minimum power being >= zero in num and den, powers don't appear
-    // twice, powers are ordered (but maybe they don't have to be - not sure yet) etc.
-
-    // ok &= num.getMinPowerIndex() == 0
+    ok &= delayLine.getDelayInSamples() == getFilterOrder();
 
     return ok;
   }
 
+
+
   /** Computes the transfer function of this filter at the given complex value z. */
   rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const { return H(TPar(1)/z); }
     // Reciprocation of z needed because H actually stores the coeffs of H(z^-1)
+
+
+
+
+
+
 
 
   /** Computes one output sample at a time using a direct form 2 implementation. */
@@ -2020,8 +2043,12 @@ public:
     delayLine.incrementTapPointers();
     return tmp;
   }
-  // Needs test! This is perhaps not great for realtime use because the num.getDegree() call must
-  // iterate through the whole numerator. Maybe that value could be cached. Not sure.
+  // Needs test! This is perhaps not great for realtime use because the H.num.getDegree() call must
+  // iterate through the whole numerator. Maybe that value could be cached. Not sure. Although,
+  // If we assume H.num to be in canonical representation (which it is, I think), then getDegree()
+  // can be replaced by  H.getCoeff(H.getNumTerms()-1)  which avoids the iteration. Maybe such a 
+  // call could even be encapsulated into something like H.getLastPower(). Maybe add and
+  // H.isCanonical() check to isFilterValid().
 
 
 
