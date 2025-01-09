@@ -1849,6 +1849,23 @@ public:
     return num(z) / den(z);
   }
 
+
+  /** Adds two rational functions. */
+  rsSparseRationalFunction<T> operator+(const rsSparseRationalFunction<T>& q) const 
+  { 
+    rsSparseRationalFunction<T> r;
+    weightedSum(*this, T(1), q, T(1), &r, T(0));
+    return r;
+  }
+
+  /** Subtracts two rational functions. */
+  rsSparseRationalFunction<T> operator-(const rsSparseRationalFunction<T>& q) const 
+  { 
+    rsSparseRationalFunction<T> r;
+    weightedSum(*this, T(1), q, T(-1), &r, T(0));
+    return r;
+  }
+
   /** Multiplies two rational functions. */
   rsSparseRationalFunction<T> operator*(const rsSparseRationalFunction<T>& q) const 
   { 
@@ -1862,8 +1879,38 @@ public:
   }
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Low level API.  */
+
+
+  static void weightedSum(
+    const rsSparseRationalFunction<T>& p, T wp,
+    const rsSparseRationalFunction<T>& q, T wq,
+    rsSparseRationalFunction<T>* r, T tol);
 
 };
+
+
+template<class T>
+void rsSparseRationalFunction<T>::weightedSum(
+  const rsSparseRationalFunction<T>& p, T wp,
+  const rsSparseRationalFunction<T>& q, T wq,
+  rsSparseRationalFunction<T>* r, T tol)
+{
+  //rsSparsePolynomial<T> numR, denR;
+  //denR = p.den * q.den;
+  //numR = wp * p.num * q.den  +  wq * q.num * p.den;
+  //return rsSparseRationalFunction(numR, denR);
+
+  r->den = p.den * q.den;
+  r->num = wp * p.num * q.den  +  wq * q.num * p.den;
+
+
+
+  // This can probably be optimized with respect to avoid unnecessary temporary objects and heap
+  // allocations. We may also use the gcd instead of just cross-mutiplying the denominators.
+}
+
 
 
 

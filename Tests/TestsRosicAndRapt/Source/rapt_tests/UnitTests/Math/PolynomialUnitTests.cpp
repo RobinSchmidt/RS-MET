@@ -3013,6 +3013,16 @@ bool testSparseRationalFunction()
   ok &= rsIsCloseTo(w1, w2, tol);
 
   // Test arithmetic operators:
+  ts = rs + ss;
+  y1 = rs(x) + ss(x);
+  y2 = ts(x);
+  ok &= rsIsCloseTo(y1, y2, tol);
+
+  ts = rs - ss;
+  y1 = rs(x) - ss(x);
+  y2 = ts(x);
+  ok &= rsIsCloseTo(y1, y2, tol);
+
   ts = rs * ss;
   y1 = rs(x) * ss(x);
   y2 = ts(x);
