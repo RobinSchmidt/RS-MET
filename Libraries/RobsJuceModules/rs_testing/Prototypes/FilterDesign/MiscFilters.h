@@ -1797,6 +1797,20 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
+  /** \name Lifetime */
+
+
+  rsSparseRationalFunction() {}
+
+
+  rsSparseRationalFunction(
+    const rsSparsePolynomial<T>& numerator, const rsSparsePolynomial<T>& denominator) 
+    : num(numerator), den(denominator)  {}
+
+  // Maybe implement it for const rsSparsePolynomial<T>&&, too. Or maybe this one is enough?
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   void setupFromDenseCoeffs(
@@ -1812,6 +1826,8 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
+
+
 
 
 
@@ -1833,7 +1849,17 @@ public:
     return num(z) / den(z);
   }
 
+  /** Multiplies two rational functions. */
+  rsSparseRationalFunction<T> operator*(const rsSparseRationalFunction<T>& q) const 
+  { 
+    return rsSparseRationalFunction(num * q.num, den * q.den);
+  }
 
+  /** Divides two rational functions. */
+  rsSparseRationalFunction<T> operator/(const rsSparseRationalFunction<T>& q) const 
+  { 
+    return rsSparseRationalFunction(num * q.den, den * q.num);
+  }
 
 
 
