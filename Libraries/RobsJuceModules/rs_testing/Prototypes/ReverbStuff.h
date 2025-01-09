@@ -1480,6 +1480,14 @@ void rsSetupDecayTimes(rsDampedAllpassComb<TSig, TPar>& flt, int delay, TPar dec
   //   5-point biquad design method that takes 5 omegas and 5 magnitudes. The omegas would be
   //   DC, loFreq, sqrt(loFreq*hiFreq), hiFreq, fs/2. But what if loFreq==hiFreq? I guess, we would
   //   get a singular system of equations.
+  //
+  // - Pass flt by pointer
+  //
+  // - Maybe implement a filter that realizes a fractional delay by introducing another 1st order 
+  //   allpass - like in allpass interpolation. Maybe the allpass should be adjusted to take into
+  //   account the effect of the damping filter (which itself may also introduce a frequency 
+  //   dependent delay). I think, what we want is to have the correct fractional delay at DC or
+  //   maybe at the resonance frequency, so we can tune it exactly.
 }
 
 // Notes:
