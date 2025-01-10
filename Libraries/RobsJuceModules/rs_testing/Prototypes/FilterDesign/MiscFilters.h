@@ -2043,7 +2043,8 @@ public:
   }
 
 
-
+  // How about a reflectPoles() function? But that would turn stable filters into unstable ones,
+  // so it's usefulness is questionable.
 
   /** Performs some sanity checks. Is meant for debug assertions. */
   bool isCanonical() const
@@ -2189,8 +2190,7 @@ public:
     // Doesn't change the required delayline length so we don't need to call updateDelayLineLength
   }
 
-  // How about a reflectPoles() function? But that would turn stable filters into unstable ones,
-  // so it's usefulness is questionable.
+
 
 
   void copySettingsFrom(const rsSparseFilter<TSig, TPar>& other)
@@ -2307,6 +2307,19 @@ public:
   // can be replaced by  H.getCoeff(H.getNumTerms()-1)  which avoids the iteration. Maybe such a 
   // call could even be encapsulated into something like H.getLastPower(). Maybe add an
   // H.isCanonical() check to isFilterValid().
+  //
+  // Maybe factor out the getSample() functions into free functions like 
+  //
+  // TSig rsGetSample(TSig in,
+  //        const rsSparseDigitalTransferFunction<TPar>& H, rsBasicDelayLine<TSig>* delay);
+  //
+  // This facilitates memory optimizations in situations where we have multiple filters with the
+  // same set of coeffs but independent states, i.e. independent delaylines. We can store the
+  // coeffs of H once and use them with different delaylines. As is currently is, we would have to
+  // create a sparse filter object for each of the filters and therfore store the coeffs 
+  // redundantly. This might become a general pattern for implementing filters: separate coeffs and
+  // state and provide free functions that take a const ref to the coeffs and (mutable) a pointer
+  // to the state.
 
 
 
