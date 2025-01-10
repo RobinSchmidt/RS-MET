@@ -1796,6 +1796,12 @@ public:
   // should we? Or maybe I'm just too lazy to write the boilerplate and trying to rationalize it? 
   // But it's not just about writing the boilerplate. It's also about readability and bloat - not 
   // on the binary code side (the delegations would be inlined) but on the source code side. 
+  //
+  // Hmm...but maybe the assumption that we really want expose all the setters and getters for the
+  // two polynomials is wrong? Maybe we actually want to deal with a higher level interface here?
+  // If really access to the full functionality of rsSparsPolynomial is needed, we could provide
+  // getters liek getNumerator/DenominatorReference() for that.
+  //
   // We'll see.....
 
 
@@ -1851,12 +1857,21 @@ public:
   numerator coeffs by that factor. */
   void scale(T scaler) { num.scale(scaler); }
 
+  //void canonicalize();
+  // Should: (1) Divide out the GCD of num and den. (2) Canonicalize num and den. 
+  // (3) Divide num and den by the leading coeff of den (i.e. make den monic)
+  //
+  // But maybe it could also make sense to define a canonical representation as one with monic
+  // numerator? But no! This can't represent the zero function.
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
 
-
+  // isCanonical()
+  // A canonical representation has canonical numerator and denominator with no common factors
+  // and the denominator is monic
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1920,6 +1935,58 @@ void rsSparseRationalFunction<T>::weightedSum(
   // This can probably be optimized with respect to avoid unnecessary temporary objects and heap
   // allocations. We may also use the gcd instead of just cross-mutiplying the denominators.
 }
+
+
+//=================================================================================================
+
+
+/** A subclass of rsSparseRationalFunction that is meant to deal specifically with transfer 
+functions of digital filters. It implements some functionality on top of its baseclass that is 
+specific to such transfer functions. ...TBC... */
+
+
+template<class T>
+class rsSparseDigitalTransferFunction : public rsSparseRationalFunction<T>
+{
+
+public:
+
+  using Base = rsSparseRationalFunction<T>;    // For convenience
+  using Base::Base;                            // Inherit constructors
+
+
+
+  /** Performs some sanity checks. Is meant for debug assertions. */
+  bool isCanonical() const
+  {
+    bool ok = true;
+
+    // Numerator and denominator polynomials should not be empty:
+    ok &= num.getNumTerms() > 0 && den.getNumTerms() > 0;
+
+    // We assume the filter polynomials to be in canonical shape:
+    ok &= num.isCanonical();
+    ok &= den.isCanonical();
+    // Maybe that can be relaxed. But then the code below mayke no sense anymore. 
+    // den.getPower(0)  and  den.getCoeff(0)  assume the  a0 * z^0  term to be at index 0.
+    // So, maybe we indeed need to enforce a canonical representation.
+
+    // Filter should satisfy the a0 == 1 normalization property:
+    ok &= den.getPower(0) == 0 && den.getCoeff(0) == T(1);
+
+
+    return ok;
+  }
+  // Maybe rename to something like isCanonical
+
+
+
+
+  // Maybe override the () operator to compute H(1/z) instead of H(z)
+  // add function like isNormalized(), isAllpass(), etc.
+
+
+};
 
 
 
@@ -2107,18 +2174,8 @@ public:
   {
     bool ok = true;
 
-    // Numerator and denominator polynomials should not be empty:
-    ok &= H.num.getNumTerms() > 0 && H.den.getNumTerms() > 0;
-
-    // We assume the filter polynomials to be in canonical shape:
-    ok &= H.num.isCanonical();
-    ok &= H.den.isCanonical();
-    // Maybe that can be relaxed. But thne the code below mayke no sense anymore. 
-    // H.den.getPower(0)  and  H.den.getCoeff(0)  assume the  a0 * z^0  term to be at index 0.
-    // So, maybe we indeed need to enforce a canonical representation.
-
-    // Filter should satisfy the a0 == 1 normalization property:
-    ok &= H.den.getPower(0) == 0 && H.den.getCoeff(0) == TPar(1);
+    // The transfer function should satisfy some constraints (such as a0 = 1, etc.):
+    ok &= H.isCanonical();
 
     // Length of delayline should match the maximum of the degrees of numerator and denominator:
     ok &= delayLine.getDelayInSamples() == getFilterOrder();
@@ -2234,8 +2291,12 @@ public:
 
 protected:
 
-  rsBasicDelayLine<TSig> delayLine;  // Delayline used for the direct form 2 implementation.
-  rsSparseRationalFunction<TPar> H;  // Our transfer function H(z^-1). Contains all filter coeffs.
+  rsBasicDelayLine<TSig> delayLine;         // Delayline used for the direct form 2 implementation.
+  rsSparseDigitalTransferFunction<TPar> H;  // Transfer function H(z^-1). Contains filter coeffs.
+
+
+  //rsSparseRationalFunction<TPar> H;  // Our transfer function H(z^-1). Contains all filter coeffs.
+
 
 };
 
