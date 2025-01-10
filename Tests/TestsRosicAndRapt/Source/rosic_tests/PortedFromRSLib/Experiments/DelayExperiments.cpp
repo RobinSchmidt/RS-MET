@@ -1056,12 +1056,32 @@ void dampedAllpassComb6()
   TransFunc C = U;
   C.invert();
   C.reflectZeros();
-
   SparseFlt corr;
   corr.setMaxDelayInSamples(C.getFilterOrder());
   corr.setup(C);
   Vec h = filterResponse(corr, N, hu);
   rsPlotVector(h);
+
+  // Transform the comb to max-phase and obtain the impulse response:
+  comb.reflectZeros();
+  Vec hur = impulseResponse(comb, N, 1.0);  // Rename to hup - p for phased
+  rsPlotVector(hur);
+
+  // Apply the corrector to the phased comb output:
+  Vec hr = filterResponse(corr, N, hur);
+  rsPlotVector(hr);
+
+
+
+
+
+
+
+
+  rosic::writeToMonoWaveFile("TriCombAllpass_CombSum.wav",   &hu[0], N, sampleRate);
+  rosic::writeToMonoWaveFile("TriCombAllpass_Corrected.wav", &h[0],  N, sampleRate);
+  rosic::writeToMonoWaveFile("TriCombAllpass_CombSum_Phased.wav", &hur[0], N, sampleRate); 
+  rosic::writeToMonoWaveFile("TriCombAllpass_Corrected_Phased.wav", &hr[0], N, sampleRate); 
 
 
 
@@ -1070,7 +1090,8 @@ void dampedAllpassComb6()
   // - The impulse response of the comb-sum shows spikes at the products of the delays, i.e. at
   //   713 = 23*31, 943 = 23*41, 1271 = 31*41 and their multiples, i.e. 1426 = 2 * 713, etc.
   //
-  // - The impulse response of the corrected comb sum has a strong initial bipolar spike
+  // - The impulse response of the corrected comb sum has a strong initial bipolar spike and is 
+  //   rather quiet after that
 
 
   int dummy = 0;
