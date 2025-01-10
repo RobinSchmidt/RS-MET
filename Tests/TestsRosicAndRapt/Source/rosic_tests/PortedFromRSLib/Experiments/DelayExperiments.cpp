@@ -1020,6 +1020,10 @@ void dampedAllpassComb6()
   Real highFreq   =  4000.0;   // Crossover freq between mid and high frequencies in Hz.
   Real highScale  =     0.2;   // Decay time scaler for high frequencies.
 
+
+  decayTime = 0.2;               // Test
+  //lowScale = highScale = 1.0;  // Test
+
   // Compute intermediate values:
   Real decaySamples = decayTime     * sampleRate;
   Real lowOmega     = 2*PI*lowFreq  / sampleRate;
@@ -1082,9 +1086,15 @@ void dampedAllpassComb6()
   //   713 = 23*31, 943 = 23*41, 1271 = 31*41 and their multiples, i.e. 1426 = 2 * 713, etc.
   //
   // - The impulse response of the corrected comb sum has a strong initial bipolar spike and is 
-  //   rather quiet after that
+  //   rather quiet after that. But with shorter decay times, the effect becomes smaller. Also,
+  //   the spikes at 713, .. become less pronounced.
   //
   // - Try it with a full series of harmonics and with odd harmonic only (this is the current case)
+  //
+  //
+  // Conclusions:
+  //
+  // - The filter should perhaps be best used with shorter decay times and with a phased comb sum.
   //
   //
   // ToDo:
@@ -1107,6 +1117,10 @@ void dampedAllpassComb6()
   //   param.
   //
   // - The user should be able to switch between all and odd harmonics - maybe per comb.
+  //
+  // - Try to implement a fractional delay by using allpass interpolation of the delayline. This
+  //   will probably also solve the spikes problem when the delays are chosen in suitable 
+  //   irrational ratios.
 }
 
 
