@@ -2076,6 +2076,15 @@ public:
   // add function like isNormalized(), isAllpass(), etc.
 
 
+
+  T operator()(T x) const { return num(x) / den(x); }
+  // Should use 1/x
+
+  template<class TArg>
+  TArg operator()(TArg z) const { return num(z) / den(z); }
+  // Should use 1/z
+
+
 };
 
 
@@ -2164,44 +2173,29 @@ public:
 
   /** Adds an overall predelay to the whole filter by shifting all exponents of z^-1 by the given 
   amount. */
-  void addPreDelay(int amountInSamples)
-  {
-    H.addPreDelay(amountInSamples);
-    updateDelayLineLength();
-  }
+  void addPreDelay(int delayInSamples) { H.addPreDelay(delayInSamples); updateDelayLineLength(); }
 
-  void removePreDelay()
-  {
-    H.removePreDelay();
-    updateDelayLineLength();
-  }
+  /** Removes any predelay that may be present in the filter. */
+  void removePreDelay() { H.removePreDelay(); updateDelayLineLength(); }
 
   /** Turns the filter into its inverse. This basically amounts to swapping numerator and 
   denominator and possibly applying some scaling of the coefficients if b0 != 1. */
-  void invert()
-  {
-    H.invert();
-    updateDelayLineLength();
-  }
-
-  void reflectZeros()
-  {
-    H.reflectZeros();
-    // Doesn't change the required delayline length so we don't need to call updateDelayLineLength
-  }
+  void invert() { H.invert(); updateDelayLineLength(); }
 
 
+  void reflectZeros() { H.reflectZeros(); }
+  // Doesn't change the required delayline length so we don't need to call updateDelayLineLength
 
 
+  /** Copies the settings (i.e. the coefficients) from the given other filter into this object and
+  possibly adjusts the delayline length, if necessary. */
   void copySettingsFrom(const rsSparseFilter<TSig, TPar>& other)
-  {
-    H.copyDataFrom(other.H);
-    updateDelayLineLength();
+  { H.copyDataFrom(other.H); updateDelayLineLength(); }
 
-    // Maybe rename to copyCoeffsFrom() and also provide a copyStateFrom() method. We could then 
-    // also have a function copyDataFrom that calls both. Maybe the delayline class should also 
-    // have a function copyStateFrom (or maybe copyDataFrom)
-  }
+  // Maybe also provide a copyStateFrom() method which would also copy the content of the 
+  // delayline. We could then also have a function copyDataFrom that calls both. Maybe the 
+  // delayline class should also have a function copyStateFrom (or maybe copyDataFrom)
+
 
   /** Returns the order of the filter. This is the maximum amount of delay needed to implement 
   the filter. */
