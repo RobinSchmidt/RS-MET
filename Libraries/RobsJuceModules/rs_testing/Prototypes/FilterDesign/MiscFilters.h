@@ -1954,7 +1954,15 @@ public:
   using Base = rsSparseRationalFunction<T>;    // For convenience
   using Base::Base;                            // Inherit constructors
 
+  void removePreDelay()
+  {
+    int preDelay = num.getPower(0);
+    // We assume here the the 0-th term is the one with the lowest power! This invariant should be
+    // checked in isFilterValid().
 
+
+    num.shiftPowers(-preDelay);
+  }
 
   /** Performs some sanity checks. Is meant for debug assertions. */
   bool isCanonical() const
@@ -2092,12 +2100,15 @@ public:
 
   void removePreDelay()
   {
-    int preDelay = H.num.getPower(0);
-    // We assume here the the 0-th term is the one with the lowest power! This invariant should be
-    // checked in isFilterValid().
+    //int preDelay = H.num.getPower(0);
+    //// We assume here the the 0-th term is the one with the lowest power! This invariant should be
+    //// checked in isFilterValid().
 
 
-    H.num.shiftPowers(-preDelay);
+    //H.num.shiftPowers(-preDelay);
+
+
+    H.removePreDelay();
     updateDelayLineLength();
   }
 
