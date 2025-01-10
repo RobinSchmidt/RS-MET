@@ -2032,14 +2032,15 @@ public:
     // What about H.num == empty ...but that shouldn't be allowed anyway
   }
 
-
+  /** Reflects the zeros of the filter about the unit circle. This will turn a minimum phase 
+  filter into a maximum phase one and vice versa. For mixed phase filters, it inverts the mix. 
+  It doesn't affect stability or filter order. */
   void reflectZeros()
   {
     int deg = num.getDegree();
     for(int i = 0; i < num.getNumTerms(); i++)
       num.setPower(i, deg - num.getPower(i));
-
-    num.reverse();  // To make the array ordered by ascending powers
+    num.reverse();                               // Order array by ascending powers again
   }
 
 
@@ -2153,6 +2154,8 @@ class rsSparseFilter
 public:
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
 
   /** Sets up the filter from dense arrays of numerator and denominator coeffs. When a coefficient
   in the dense representation is zero, we not create a term for that. */
@@ -2188,6 +2191,13 @@ public:
   // we should use other functions like setNumeratorTermSuppressDelayUpdate. Or maybe give the 
   // function a boolean parameter updateDelayLength which defaults tor true
 
+  // Maybe call them setNumeratorTermNoUpdate(). ...or maybe get rid of these function entirely and
+  // instead give the user functions like
+  // rsSparsePolynomial<TPar>& getNumeratorRef() for low level access. That breaks encapsulation
+  // though. Maybe move them into some extra section "Low level API"
+
+
+
   /** Ensures that the delayline has enough memory allocated to support the desired transfer
   function. This may re-allocate heap memory in cases where the delayline does not already have
   enough capacity, so you don't want to call it on a realtime thread. */
@@ -2202,20 +2212,29 @@ public:
   numerator and denominator polynomial. */
   void updateDelayLineLength()
   { 
-    rsAssert(hasEnoughDelayMemory());
+    rsAssert(hasEnoughDelayMemory(), "Not enough delay memory!");
+    // When this happens, it means that you are trying to request a transfer function from the
+    // filter that it can't support because you didn't pre-allocate enough delay memory. At some 
+    // point, you need to call setMaxDelayInSamples() where you set up the maximum possible delay
+    // and therefore the maximum possible filter order. If you don't allocate enough and request a
+    // too high filter order later, this assertion will trigger. We do not just re-allocate here 
+    // because this function is designed to be realtime safe. In a realtime context, you really
+    // need to pre-allocate enough on construction or in some prepareToPlay() function or something
+    // like that.
 
-    int deg = getFilterOrder();
-
-
-    //delayLine.setMaxDelayInSamples(deg);
-  
-    delayLine.setDelayInSamples(deg);
+    delayLine.setDelayInSamples(getFilterOrder()); 
   }
-  // Maybe do not set the maximum delay here - just the delay. For setting the max delay, we should
-  // have an extra function. Then we can simplify the implementation to
-  // delayLine.setDelayInSamples(getFilterOrder());
-  // I'm not even sure, if we need setting the delay. We never really use the tapOut pointer of
-  // the delayline
+  // Maybe we actually should re-allocate if necessary but still leave the assertion in. Maybe 
+  // that's the most benign way to recover from the error condition in a release build? But nah!
+  //
+  // ToDo: Figure out and document what happens, when we ignore this error. I think, the delay
+  // time will be wrapped around / bitmasked by the actual maxDelay in rsBasicDelayLine member.
+  // I say "actual" because the vaue you set up via setMaxDelayInSamples() may be "rounded up"
+  // to the next power of two minus one...or something. See implementation of 
+  // rsBasicDelayLine::readOutputAt(). So if the actual maxDelay is 15, all delays will be 
+  // interpreted modulo 16, so readOutputAt(20) would actually amount to a delay of 
+  // 20 % 16 = 4 rather than 20. ...verify this!
+
 
 
 
@@ -2230,11 +2249,10 @@ public:
   /** Removes any predelay that may be present in the filter. */
   void removePreDelay() { H.removePreDelay(); updateDelayLineLength(); }
 
-  /** Turns the filter into its inverse. This basically amounts to swapping numerator and 
-  denominator and possibly applying some scaling of the coefficients if b0 != 1. */
+  /** Turns the filter into its inverse. */
   void invert() { H.invert(); updateDelayLineLength(); }
 
-
+  /** Reflects the zeros of the filter about the unit circle. */
   void reflectZeros() { H.reflectZeros(); }
   // Doesn't change the required delayline length so we don't need to call updateDelayLineLength
 
@@ -2249,11 +2267,16 @@ public:
   // delayline class should also have a function copyStateFrom (or maybe copyDataFrom)
 
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
   /** Returns the order of the filter. This is the maximum amount of delay needed to implement 
   the filter. */
   int getFilterOrder() const { return rsMax(H.num.getDegree(), H.den.getDegree()); }
 
   int getMaxDelayInSamples() const { return delayLine.getMaxDelayInSamples(); }
+  // Maybe rename to getMaxFilterOrder
 
 
   /** Performs some sanity checks. Is meant for debug assertions. */
@@ -2263,12 +2286,10 @@ public:
 
 
   /** Computes the transfer function H(z) of this filter at the given complex value z. */
-  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const 
-  { 
-    return H(z);
-    
-    // return H(TPar(1)/z); // Old
-  }
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const { return H(z); }
+  // Yes - that's right! "return H(z)" is the whole implementation. Isn't that elegant? :-D
+
+
   // Reciprocation of z needed because H actually stores the coeffs of H(z^-1)
   // ToDo: factor the reciprocation out into the () operator of
   // rsSparseDigitalTransferFunction ...done!
@@ -2278,6 +2299,10 @@ public:
   const rsSparseRationalFunction<TPar>& getTransferFunction() const { return H; }
 
 
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
 
 
   /** Computes one output sample at a time using a direct form 2 implementation. */
@@ -2379,31 +2404,31 @@ public:
 
 
   /** Resets the filter's state. This clears the delayline. */
-  void reset()
-  {
-    delayLine.reset();
-  }
+  void reset() { delayLine.reset(); }
 
 
 
 protected:
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Self test */
 
-  /** Function that checks if the maximum delay required by the transfer function is consistent 
-  with the length of the delayline. This is meant for internal sanity checks. */
+  /** Checks if the maximum delay required by the transfer function (i.e. the highest power of 
+  z^-1 that occurrs) is consistent with the length of the delayline. This is meant for internal 
+  sanity checks. */
   bool areDelaysConsistent() const { return delayLine.getDelayInSamples() == getFilterOrder(); }
 
-
+  /** Checks, if the delayline has enough memory allocated to support the transfer function H(z).
+  The maximum possible delay must be greater or equal to the order of the filter. */
   bool hasEnoughDelayMemory() const 
   { return delayLine.getMaxDelayInSamples() >= getFilterOrder(); }
 
 
-  rsBasicDelayLine<TSig> delayLine;         // Delayline used for the direct form 2 implementation.
-  rsSparseDigitalTransferFunction<TPar> H;  // Transfer function H(z^-1). Contains filter coeffs.
+  //-----------------------------------------------------------------------------------------------
+  /** \name Data */
 
-
-  //rsSparseRationalFunction<TPar> H;  // Our transfer function H(z^-1). Contains all filter coeffs.
-
+  rsBasicDelayLine<TSig> delayLine;         // Delayline for the direct form 2 implementation.
+  rsSparseDigitalTransferFunction<TPar> H;  // Transfer function H(z). Contains filter coeffs.
 
 };
 

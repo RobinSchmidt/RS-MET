@@ -1029,7 +1029,6 @@ void dampedAllpassComb6()
   bool ok = true;
 
   Complex z(0.6, 0.8);
-  //Complex z1 = Real(1) / z;
   Complex w1, w2;
 
   w1 = ap.getDamperTransferFunctionAt(z);
@@ -1045,8 +1044,7 @@ void dampedAllpassComb6()
   w1 = ap.getTransferFunctionAt(z);
   TransFunc H = ap.getTransferFunction();
   w2 = H(z);
-  //ok &= rsIsCloseTo(w1, w2, 1.e-13);
-  // Still FAILS - predictably so - see comment in rsDampedAllpassComb::getTransferFunction()
+  ok &= rsIsCloseTo(w1, w2, 1.e-13);
 
 
   // Create comb impulse response by the allpass:

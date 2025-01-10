@@ -2504,6 +2504,10 @@ bool dampedAllpassCombUnitTest2()
   //   DelayExperiments.cpp. Also, do all the tests also with the mode with predelay.
 }
 
+// Maybe rename it to dampedAllpassCombTransFuncUnitTest
+// Give it a boolean parameter that we can pass on to ap.setup() so we can do the test in both
+// opertational modes
+
 bool dampedAllpassCombUnitTest3()
 {
   // We test the computation of the transfer function in rsDampedAllpassComb, i.e. the 
@@ -2608,6 +2612,15 @@ bool dampedAllpassCombUnitTest3()
   // overall getTransferFunctionAt() function not the separate partial functions 
   // getCombTransferFunctionAt(), getCorrectorTransferFunctionAt(). 
   ok &= testTransferFunction(ap, z, N, 1.e-8);
+
+  // Test retrieving the full transfer function:
+  rsSparseDigitalTransferFunction<Real> tf;
+  tf = ap.getTransferFunction();
+  Complex H2 = tf(z);
+  ok &= rsIsCloseTo(H, Ht, 1.e-8);
+
+  // ToDo: Maybe create and set up a rsSparseFilter object from H2 and produce its impulse response
+
 
 
   return ok;

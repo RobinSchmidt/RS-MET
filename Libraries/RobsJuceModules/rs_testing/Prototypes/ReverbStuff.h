@@ -1356,13 +1356,8 @@ rsSparseDigitalTransferFunction<TPar> rsDampedAllpassComb<TSig, TPar>::getTransf
 
   TF U = getCombTransferFunction();
   TF C = U;
-
-  // These functions do not exist:
-  //C.invert();
-  //C.reflectZeros();
-  // ToDo: make a subclass rsSparseTransferFunction that has these methods. ...and some more like
-  // isNormalized(), isAllpass(), etc.
-
+  C.invert();
+  C.reflectZeros();
   return U * C;
 }
 
