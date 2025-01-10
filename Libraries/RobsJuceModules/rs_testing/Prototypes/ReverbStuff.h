@@ -1764,10 +1764,7 @@ public:
 
 
 
-  int getCombSumOrder() const 
-  {
-    return M1+M2+4;
-  }
+  int getCombSumOrder() const { return M1+M2+4; }
   // Verify this! I think, this is the total resulting order of the filter. It can be read off from
   // the line  setA(11, M1+M2+4, b11*b21 * k1*k2);   in  convertCombSumToDirectForm
 
@@ -1786,20 +1783,11 @@ public:
 
 
 
-  TSig getSample(TSig in)
-  {
-    return applyCorrector(getSampleCombs(in));
-  }
+  TSig getSample(TSig in) { return applyCorrector(getSampleCombs(in)); }
 
-  TSig getSampleCombs(TSig in)
-  {
-    return g1 * getSampleComb1(in) + g2 * getSampleComb2(in);
-  }
+  TSig getSampleCombs(TSig in) { return g1 * getSampleComb1(in) + g2 * getSampleComb2(in); }
 
-  TSig applyCorrector(TSig combOutput)
-  {
-    return corrector.getSample(combOutput);
-  }
+  TSig applyCorrector(TSig combOutput) { return corrector.getSample(combOutput); }
 
   void reset();
 
@@ -1932,15 +1920,8 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
   int maxM = newMaxDelay - 1;
   mainDelay1.setMaxDelayInSamples(maxM);
   mainDelay2.setMaxDelayInSamples(maxM);
-
-
   corrector.setMaxDelayInSamples(2*maxM+4);
   // See convertCombSumToDirectForm(). The maximum delay that occurs there is: M1+M2+4.
-
-
-  //corrector.setMaxDelayInSamples(maxM+1);
-  // I think, we need +1 because of the 1st order feedback filter. -> Verify this!
-
 }
 
 template<class TSig, class TPar>

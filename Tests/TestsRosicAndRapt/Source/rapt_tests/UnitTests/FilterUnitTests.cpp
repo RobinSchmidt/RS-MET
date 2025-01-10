@@ -2731,14 +2731,15 @@ bool dampedAllpassBiCombUnitTest()
   SparseFilter sf;
 
   //sf.setMaxDelayInSamples(delay1 + delay2 + 4);  // use ap.getFilterOrder()
-
-  int order = ap.getCombSumOrder();
+  //int order = ap.getCombSumOrder();
 
   sf.setMaxDelayInSamples(ap.getCombSumOrder());
-
   ap.convertCombSumToDirectForm(&sf);
+  ok &= ap.getCombSumOrder() == sf.getFilterOrder();
   Vec hc2 = impulseResponse(sf, N, 1.0);
   ok &= rsIsCloseTo(hc, hc2, 1.e-14);
+
+
   //ok &= rsIsCloseTo(hc, hc2, 1.e-15);
   //rsPlotVectors(hc, hc2);
 
