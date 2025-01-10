@@ -2021,6 +2021,16 @@ public:
   }
 
 
+  void reflectZeros()
+  {
+    int deg = num.getDegree();
+    for(int i = 0; i < num.getNumTerms(); i++)
+      num.setPower(i, deg - num.getPower(i));
+
+    num.reverse();  // To make the array ordered by ascending powers
+  }
+
+
 
 
   /** Performs some sanity checks. Is meant for debug assertions. */
@@ -2163,32 +2173,22 @@ public:
 
   void reflectZeros()
   {
-    int deg = H.num.getDegree();
-    for(int i = 0; i < H.num.getNumTerms(); i++)
-      H.num.setPower(i, deg - H.num.getPower(i));
-
-    H.num.reverse();  // To make the array ordered by ascending powers
+    H.reflectZeros();
+    // Doesn't change the required delayline length so we don't need to call updateDelayLineLength
   }
-  // not yet tested
 
-  // ToDo: reflectPoles/reflectZeros - should reverse the coeff arrays. i.e. the powers should remain
-  // the same but the coeffs should be reversed. Wait! No! We need to modify the powers from p
-  // to deg-p. Then the term array will be sorted in reverse order so we should reverse it
+  // How about a reflectPoles() function? But that would turn stable filters into unstable ones,
+  // so it's usefulness is questionable.
+
 
   void copySettingsFrom(const rsSparseFilter<TSig, TPar>& other)
   {
-    //num = other.num;
-    //den = other.den;
-
-    H.num.copyDataFrom(other.H.num);
-    H.den.copyDataFrom(other.H.den);
-    // Factor out into H.copyDataFrom(other.H);
-
+    H.copyDataFrom(other.H);
     updateDelayLineLength();
 
-    // ToDo: Use num.copyFrom(other.num), den.copyFrom(other.num). maybe have a boolean parameter
-    // copyState - if true, also copy the contents of the delayline from the other object. Or maybe
-    // split it into two functions: copyCoeffsFrom(), copyStateFrom()
+    // Maybe rename to copyCoeffsFrom() and also provide a copyStateFrom() method. We could then 
+    // also have a function copyDataFrom that calls both. Maybe the delayline class should also 
+    // have a function copyStateFrom (or maybe copyDataFrom)
   }
 
   /** Returns the order of the filter. This is the maximum amount of delay needed to implement 
