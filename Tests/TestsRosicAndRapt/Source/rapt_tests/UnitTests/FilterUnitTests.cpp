@@ -2729,18 +2729,11 @@ bool dampedAllpassBiCombUnitTest()
   // Let the ap convert itself into a sparse direct form filter and check that this converted 
   // filter has the same impulse response:
   SparseFilter sf;
-
-  //sf.setMaxDelayInSamples(delay1 + delay2 + 4);  // use ap.getFilterOrder()
-  //int order = ap.getCombSumOrder();
-
   sf.setMaxDelayInSamples(ap.getCombSumOrder());
   ap.convertCombSumToDirectForm(&sf);
   ok &= ap.getCombSumOrder() == sf.getFilterOrder();
   Vec hc2 = impulseResponse(sf, N, 1.0);
   ok &= rsIsCloseTo(hc, hc2, 1.e-14);
-
-
-  //ok &= rsIsCloseTo(hc, hc2, 1.e-15);
   //rsPlotVectors(hc, hc2);
 
   // Test transfer function computation:
@@ -2754,7 +2747,6 @@ bool dampedAllpassBiCombUnitTest()
 
   // Test the whole filter, i.e. the comb-sum with corrector applied:
   Vec h = impulseResponse(ap, N, 1.0);
-  //ok &= isAllpass(h, 1.e-3);
   ok &= isAllpass(h, 1.e-4);
 
   return ok;

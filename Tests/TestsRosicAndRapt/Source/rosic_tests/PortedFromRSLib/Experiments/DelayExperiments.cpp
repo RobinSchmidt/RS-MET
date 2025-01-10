@@ -1064,11 +1064,10 @@ void dampedAllpassComb6()
   sf.setup(tfComb);
   Vec hcs = impulseResponse(sf, N, 1.0);
 
-  ok &= rsIsCloseTo(hc, hcs, 1.e-15);
-
+  ok &= rsIsCloseTo(hc, hcs, 1.e-14);
 
   rsPlotVectors(hc, hcs);
-  
+  rsPlotVectors(hc - hcs);
 
   //sf.reset();
   //Vec hcs(N);

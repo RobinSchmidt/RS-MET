@@ -1947,14 +1947,14 @@ functions of digital filters. A general transfer function for a digital filter l
   H(z) = ----------------------------------------------
           1  + a1 * z^-1 + a2 * z^-2 + ... + aM * z^-M
 
-Note that this actually a rational function not in z itself but in z^-1. We override the function
-evaluation operator () to take care of this reciprocation of z. We also implement some additional 
-functionality on top of the baseclass that is specific to such transfer functions. For example,
-digital filter transfer functions are usually normalized to a0 = 1, as seen above. We implement
-a check for that condition (and a few others) isCanonical(). We also provide function to invert
-the transfer function (basically, swapping numertaor and denominator but making sure that the 
-a0 = 1 still holds after the swap), reflecting the zeros about the unit circle (turning minimum 
-phase filters into maximum phase ones), etc. ...TBC... */
+Note that this is actually a rational function not in z itself but in z^-1. We override the 
+function evaluation operator () to take care of this reciprocation of z. We also implement some 
+additional functionality on top of the baseclass that is specific to such transfer functions. For 
+example, digital filter transfer functions are usually normalized to a0 = 1, as seen above. We 
+implement a check for that condition (and a few others) isCanonical(). We also provide functions to
+invert the transfer function (basically, swapping numerator and denominator but maintaining that 
+the a0 = 1 still holds after the swap), reflecting the zeros about the unit circle (turning 
+minimum phase filters into maximum phase ones), etc. ...TBC... */
 
 
 template<class T>
@@ -1983,20 +1983,20 @@ public:
     }
 
     num.shiftPowers(amountInSamples);
+
+
+    // Maybe do num.shiftPowers(rsMax(amountInSamples, -getPreDelay()) );
   }
 
 
 
 
-  void removePreDelay()
-  {
-    int preDelay = num.getPower(0);
-    // We assume here the the 0-th term is the one with the lowest power! This invariant should be
-    // checked in isFilterValid().
-
-
-    num.shiftPowers(-preDelay);
+  void removePreDelay() 
+  { 
+    //num.shiftPowers(-num.getPower(0)); 
+    num.shiftPowers(-getPreDelay()); 
   }
+
 
 
   /** Turns the filter into its inverse. This basically amounts to swapping numerator and 
@@ -2046,6 +2046,14 @@ public:
   // How about a reflectPoles() function? But that would turn stable filters into unstable ones,
   // so it's usefulness is questionable.
 
+
+
+  int getPreDelay() const
+  {
+    return num.getPower(0);
+  }
+
+
   /** Performs some sanity checks. Is meant for debug assertions. */
   bool isCanonical() const
   {
@@ -2077,12 +2085,22 @@ public:
 
 
 
-  T operator()(T x) const { return num(x) / den(x); }
-  // Should use 1/x
+  T operator()(T x) const 
+  { 
+    T xr = T(1) / x;
+    return num(xr) / den(xr); 
+  }
+
 
   template<class TArg>
-  TArg operator()(TArg z) const { return num(z) / den(z); }
-  // Should use 1/z
+  TArg operator()(TArg z) const 
+  { 
+    TArg zr = TArg(1) / z;
+    return num(zr) / den(zr);
+  }
+  // Reciprocation of z needed because we store the coeffs of H(z^-1)
+
+
 
 
 };
@@ -2216,10 +2234,15 @@ public:
 
 
   /** Computes the transfer function H(z) of this filter at the given complex value z. */
-  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const { return H(TPar(1)/z); }
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const 
+  { 
+    return H(z);
+    
+    // return H(TPar(1)/z); // Old
+  }
   // Reciprocation of z needed because H actually stores the coeffs of H(z^-1)
   // ToDo: factor the reciprocation out into the () operator of
-  // rsSparseDigitalTransferFunction
+  // rsSparseDigitalTransferFunction ...done!
 
 
   /** Returns a const reference to our transfer function object H(z). */
