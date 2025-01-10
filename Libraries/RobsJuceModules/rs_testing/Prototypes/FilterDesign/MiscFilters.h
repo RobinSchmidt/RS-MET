@@ -2055,6 +2055,12 @@ public:
   }
 
 
+  /** Returns the order of the filter. This is the maximum exponent of z^-1 that occurs in the 
+  transfer function. */
+  int getFilterOrder() const { return rsMax(num.getDegree(), den.getDegree()); }
+
+
+
   /** Performs some sanity checks. Is meant for debug assertions. */
   bool isCanonical() const
   {
@@ -2173,6 +2179,7 @@ public:
 
   void setup(const rsSparseRationalFunction<TPar>& newTransferFunction)
   { H.copyDataFrom(newTransferFunction); updateDelayLineLength(); }
+  // The parameter should really be of type rsSparseDigitalTransferFunction
 
 
   void setNumNumeratorTerms(int newNumTerms) { H.num.setNumTerms(newNumTerms); }
@@ -2273,7 +2280,11 @@ public:
 
   /** Returns the order of the filter. This is the maximum amount of delay needed to implement 
   the filter. */
-  int getFilterOrder() const { return rsMax(H.num.getDegree(), H.den.getDegree()); }
+  int getFilterOrder() const 
+  { 
+    return H.getFilterOrder();
+    //return rsMax(H.num.getDegree(), H.den.getDegree()); 
+  }
 
   int getMaxDelayInSamples() const { return delayLine.getMaxDelayInSamples(); }
   // Maybe rename to getMaxFilterOrder
@@ -2417,6 +2428,7 @@ protected:
   z^-1 that occurrs) is consistent with the length of the delayline. This is meant for internal 
   sanity checks. */
   bool areDelaysConsistent() const { return delayLine.getDelayInSamples() == getFilterOrder(); }
+  // Maybe rename to areDelayAndOrderConsistent, doesDelayMatchOrder
 
   /** Checks, if the delayline has enough memory allocated to support the transfer function H(z).
   The maximum possible delay must be greater or equal to the order of the filter. */

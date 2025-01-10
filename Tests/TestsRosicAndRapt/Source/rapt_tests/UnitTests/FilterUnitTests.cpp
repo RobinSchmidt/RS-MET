@@ -2508,7 +2508,7 @@ bool dampedAllpassCombUnitTest2()
 // Give it a boolean parameter that we can pass on to ap.setup() so we can do the test in both
 // opertational modes
 
-bool dampedAllpassCombUnitTest3()
+bool dampedAllpassCombUnitTest3(bool withPreDelay)
 {
   // We test the computation of the transfer function in rsDampedAllpassComb, i.e. the 
   // getTransferFunctionAt(complex z) etc. methods. We use the same setup as in dampedAllpassComb4
@@ -2535,7 +2535,7 @@ bool dampedAllpassCombUnitTest3()
   // filter and the overall filter. We use a setup with predelay here:
   Allpass ap;
   ap.setMaxDelayInSamples(delay);
-  ap.setup(delay, feedback, 2, b, a, true);
+  ap.setup(delay, feedback, 2, b, a, withPreDelay);
   Vec d(N); d[0] = 1;                         // Unit impulse aka Dirac delta function d[n]
   Vec u(N), c(N), h(N);                       // Imp-resps of comb, corrector and allpass
   for(int n = 0; n < N; n++)
@@ -2575,9 +2575,9 @@ bool dampedAllpassCombUnitTest3()
 
   // Compute the transfer functions using the respective methods and check if the results match the
   // naively computed target values:
-  Complex U = ap.getCombTransferFunctionAt(z);      ok &= rsIsCloseTo(U, Ut, 1.e-8);
-  Complex C = ap.getCorrectorTransferFunctionAt(z); ok &= rsIsCloseTo(C, Ct, 1.e-8);
-  Complex H = ap.getTransferFunctionAt(z);          ok &= rsIsCloseTo(H, Ht, 1.e-8);
+  Complex Uz = ap.getCombTransferFunctionAt(z);      ok &= rsIsCloseTo(Uz, Ut, 1.e-8);
+  Complex Cz = ap.getCorrectorTransferFunctionAt(z); ok &= rsIsCloseTo(Cz, Ct, 1.e-8);
+  Complex Hz = ap.getTransferFunctionAt(z);          ok &= rsIsCloseTo(Hz, Ht, 1.e-8);
 
 
   // Now do the same test for the mode without predelay:
@@ -2603,9 +2603,9 @@ bool dampedAllpassCombUnitTest3()
   Ha = rsAbs(Ht);
   ok &= rsIsCloseTo(Ha, 1.0, 1.e-9);
 
-  U = ap.getCombTransferFunctionAt(z);      ok &= rsIsCloseTo(U, Ut, 1.e-8);
-  C = ap.getCorrectorTransferFunctionAt(z); ok &= rsIsCloseTo(C, Ct, 1.e-8);
-  H = ap.getTransferFunctionAt(z);          ok &= rsIsCloseTo(H, Ht, 1.e-8);
+  Uz = ap.getCombTransferFunctionAt(z);      ok &= rsIsCloseTo(Uz, Ut, 1.e-8);
+  Cz = ap.getCorrectorTransferFunctionAt(z); ok &= rsIsCloseTo(Cz, Ct, 1.e-8);
+  Hz = ap.getTransferFunctionAt(z);          ok &= rsIsCloseTo(Hz, Ht, 1.e-8);
 
 
   // Now do a test using our testTransferFunction() helper function. This will only test the 
@@ -2613,14 +2613,22 @@ bool dampedAllpassCombUnitTest3()
   // getCombTransferFunctionAt(), getCorrectorTransferFunctionAt(). 
   ok &= testTransferFunction(ap, z, N, 1.e-8);
 
-  // Test retrieving the full transfer function:
-  rsSparseDigitalTransferFunction<Real> tf;
-  tf = ap.getTransferFunction();
-  Complex H2 = tf(z);
-  ok &= rsIsCloseTo(H, Ht, 1.e-8);
+  // Test retrieving and evaluating the full transfer functions:
+  rsSparseDigitalTransferFunction<Real> U, C, H;
+  U = ap.getCombTransferFunction();
+  C = ap.getCorrectorTransferFunction();
+  H = ap.getTransferFunction();
+  ok &= rsIsCloseTo(Uz, U(z), 1.e-13);
+  ok &= rsIsCloseTo(Cz, C(z), 1.e-13);
+  ok &= rsIsCloseTo(Hz, H(z), 1.e-13);
 
-  // ToDo: Maybe create and set up a rsSparseFilter object from H2 and produce its impulse response
-
+  // Create and set up a rsSparseFilter object from H2 and produce its impulse response:
+  rsSparseFilter<Real, Real> sp;
+  sp.setMaxDelayInSamples(H.getFilterOrder());
+  sp.setup(H);
+  Vec h2 = impulseResponse(sp, N, 1.0);
+  ok &= rsIsCloseTo(h, h2, 1.e-13);
+  //rsPlotVectors(h2-h);
 
 
   return ok;
@@ -2787,7 +2795,8 @@ bool allpassUnitTest()
   ok &= multiPoleAllpassDelayUnitTest();
   ok &= dampedAllpassCombUnitTest1();
   ok &= dampedAllpassCombUnitTest2();
-  ok &= dampedAllpassCombUnitTest3();
+  ok &= dampedAllpassCombUnitTest3(false);
+  ok &= dampedAllpassCombUnitTest3(true);
   ok &= dampedSchroederAllpassUnitTest();
   ok &= dampedAllpassBiCombUnitTest();
 

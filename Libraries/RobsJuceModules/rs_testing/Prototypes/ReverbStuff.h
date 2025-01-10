@@ -1117,7 +1117,8 @@ public:
   rsSparseDigitalTransferFunction<TPar> getDamperTransferFunction() const;
   // Allocates!
 
-
+  rsSparseDigitalTransferFunction<TPar> getCorrectorTransferFunction() const;
+  // Allocates!
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1387,6 +1388,20 @@ rsSparseDigitalTransferFunction<TPar> rsDampedAllpassComb<TSig, TPar>
   H.setupFromDenseCoeffs(b, dmpOrd+1, a, dmpOrd+1, TPar(0));
   return H;
 }
+
+template<class TSig, class TPar>
+rsSparseDigitalTransferFunction<TPar> rsDampedAllpassComb<TSig, TPar>
+                                      ::getCorrectorTransferFunction() const
+{
+  using TF = rsSparseDigitalTransferFunction<TPar>;
+
+  TF C = getCombTransferFunction();
+  C.invert();
+  C.reflectZeros();
+
+  return C;
+}
+
 
 template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::reset()
