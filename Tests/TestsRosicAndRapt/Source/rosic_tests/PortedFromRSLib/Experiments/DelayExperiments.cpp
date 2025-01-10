@@ -1007,12 +1007,12 @@ void dampedAllpassComb6()
   int  numSamples = 24000;     // Number of samples to render.
 
   int  delay1     =    23;     // Delay of 1st delayline
-  int  delay2     =    31; 
-  int  delay3     =    41; 
+  int  delay2     =    31;     //          2nd
+  int  delay3     =    41;     //          3rd
 
-  Real gain1      =     1.0;
-  Real gain2      =     1.0;
-  Real gain3      =     1.0;
+  Real gain1      =     1.0;   // Gain of 1st delayline
+  Real gain2      =     1.0;   //         2nd
+  Real gain3      =     1.0;   //         3rd
 
   Real decayTime  =     1.0;   // Decay time for mid frequencies in seconds.
   Real lowFreq    =   250.0;   // Crossover freq between low and mid frequencies in Hz.
@@ -1042,7 +1042,6 @@ void dampedAllpassComb6()
   TransFunc U2 = ap2.getCombTransferFunction();
   TransFunc U3 = ap3.getCombTransferFunction();
 
-
   // Combine the comb transfer functions into one, set up a sparse filter that realizes that sum
   // of combs and retrieve its impulse response:
   TransFunc U = gain1 * U1  +  gain2 * U2  +  gain3 * U3;
@@ -1064,25 +1063,17 @@ void dampedAllpassComb6()
 
   // Transform the comb to max-phase and obtain the impulse response:
   comb.reflectZeros();
-  Vec hur = impulseResponse(comb, N, 1.0);  // Rename to hup - p for phased
-  rsPlotVector(hur);
+  Vec hup = impulseResponse(comb, N, 1.0);
+  rsPlotVector(hup);
 
   // Apply the corrector to the phased comb output:
-  Vec hr = filterResponse(corr, N, hur);
-  rsPlotVector(hr);
+  Vec hp = filterResponse(corr, N, hup);
+  rsPlotVector(hp);
 
-
-
-
-
-
-
-
-  rosic::writeToMonoWaveFile("TriCombAllpass_CombSum.wav",   &hu[0], N, sampleRate);
-  rosic::writeToMonoWaveFile("TriCombAllpass_Corrected.wav", &h[0],  N, sampleRate);
-  rosic::writeToMonoWaveFile("TriCombAllpass_CombSum_Phased.wav", &hur[0], N, sampleRate); 
-  rosic::writeToMonoWaveFile("TriCombAllpass_Corrected_Phased.wav", &hr[0], N, sampleRate); 
-
+  rosic::writeToMonoWaveFile("TriCombAllpass_CombSum.wav",          &hu[0],  N, sampleRate);
+  rosic::writeToMonoWaveFile("TriCombAllpass_Corrected.wav",        &h[0],   N, sampleRate);
+  rosic::writeToMonoWaveFile("TriCombAllpass_CombSum_Phased.wav",   &hup[0], N, sampleRate); 
+  rosic::writeToMonoWaveFile("TriCombAllpass_Corrected_Phased.wav", &hp[0],  N, sampleRate); 
 
 
   // Observations:
@@ -1092,78 +1083,10 @@ void dampedAllpassComb6()
   //
   // - The impulse response of the corrected comb sum has a strong initial bipolar spike and is 
   //   rather quiet after that
-
-
-  int dummy = 0;
-
-
-  // 23, 31, 41, 53
-
-  // 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71. 73, 79, 83, 89, 
-  // 97, 101, 103, 107, 109, 113. 127, 131, 137, 139, 149, 151, 157
-
-
-
-
-  /*
-
-  // Obsolete - this is now covered in an actual unit test
-  // Check retrieval of the transfer function objects:
-
-  bool ok = true;
-
-  Complex z(0.6, 0.8);
-  Complex w1, w2;
-
-  w1 = ap.getDamperTransferFunctionAt(z);
-  TransFunc tfDamp = ap.getDamperTransferFunction();
-  w2 = tfDamp(z);
-  ok &= rsIsCloseTo(w1, w2, 1.e-15);
-
-  w1 = ap.getCombTransferFunctionAt(z);
-  TransFunc tfComb = ap.getCombTransferFunction();
-  w2 = tfComb(z);
-  ok &= rsIsCloseTo(w1, w2, 1.e-13);
-
-  w1 = ap.getTransferFunctionAt(z);
-  TransFunc H = ap.getTransferFunction();
-  w2 = H(z);
-  ok &= rsIsCloseTo(w1, w2, 1.e-13);
-
-
-  // Create comb impulse response by the allpass:
-  int N = numSamples;
-  Vec hc(N);
-  ap.reset();
-  hc[0] = ap.getSampleComb(1.0);
-  for(int n = 1; n < N; n++)
-    hc[n] = ap.getSampleComb(0.0);
-
-  // Create comb impulse response by the sparse filter:
-  SparseFlt sf;
-  //sf.setMaxDelayInSamples(ap.getCombSumOrder());
-  sf.setMaxDelayInSamples(100);  // Preliminary! Allocates too much!
-  sf.setup(tfComb);
-  Vec hcs = impulseResponse(sf, N, 1.0);
-
-  ok &= rsIsCloseTo(hc, hcs, 1.e-14);
-
-  rsPlotVectors(hc, hcs);
-  rsPlotVectors(hc - hcs);
-
-  */
-
-
-
-  //sf.reset();
-  //Vec hcs(N);
-
-  //hcs[0] = ap.getSampleComb(1.0);
-  //for(int n = 1; n < N; n++)
-  //  hcs[n] = ap.getSampleComb(0.0);
-
-
-
+  //
+  // - Try it with a full series of harmonics and with odd harmonic only (this is the current case)
+  //
+  //
   // ToDo:
   //
   // - Create 3 comb filters with different values for the delay M. Then get their comb transfer
@@ -1184,7 +1107,6 @@ void dampedAllpassComb6()
   //   param.
   //
   // - The user should be able to switch between all and odd harmonics - maybe per comb.
-
 }
 
 
