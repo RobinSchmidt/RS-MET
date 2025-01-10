@@ -1042,6 +1042,12 @@ void dampedAllpassComb6()
   w2 = tfComb(z1);
   ok &= rsIsCloseTo(w1, w2, 1.e-13);
 
+  w1 = ap.getTransferFunctionAt(z);
+  TransFunc H = ap.getTransferFunction();
+  w2 = H(z1);
+  ok &= rsIsCloseTo(w1, w2, 1.e-13);
+  // Still FAILS - predictably so - see comment in rsDampedAllpassComb::getTransferFunction()
+
 
   // Create comb impulse response by the allpass:
   int N = numSamples;

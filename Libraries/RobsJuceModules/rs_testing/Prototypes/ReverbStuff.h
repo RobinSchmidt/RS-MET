@@ -1107,8 +1107,12 @@ public:
   rsComplex<TPar> getCorrectorTransferFunctionAt(const rsComplex<TPar>& z) const;
 
 
-  rsSparseRationalFunction<TPar> getCombTransferFunction() const;
+
+  rsSparseRationalFunction<TPar> getTransferFunction() const;
   // Allocates! Actually returns H(z^-1)
+
+  rsSparseRationalFunction<TPar> getCombTransferFunction() const;
+  // Allocates! 
 
   rsSparseRationalFunction<TPar> getDamperTransferFunction() const;
   // Allocates!
@@ -1346,6 +1350,23 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCorrectorTransferFunctionAt(
 }
 
 template<class TSig, class TPar>
+rsSparseRationalFunction<TPar> rsDampedAllpassComb<TSig, TPar>::getTransferFunction() const
+{
+  using TF = rsSparseRationalFunction<TPar>;
+
+  TF U = getCombTransferFunction();
+  TF C = U;
+
+  // These functions do not exist:
+  //C.invert();
+  //C.reflectZeros();
+  // ToDo: make a subclass rsSparseTransferFunction that has these methods. ...and some more like
+  // isNormalized(), isAllpass(), etc.
+
+  return U * C;
+}
+
+template<class TSig, class TPar>
 rsSparseRationalFunction<TPar> rsDampedAllpassComb<TSig, TPar>::getCombTransferFunction() const
 {
   using TF = rsSparseRationalFunction<TPar>;
@@ -1354,6 +1375,7 @@ rsSparseRationalFunction<TPar> rsDampedAllpassComb<TSig, TPar>::getCombTransferF
   TF z1;  z1.num.appendTerm( TPar(1), 1);
   TF zM;  zM.num.appendTerm( TPar(1), M);        // Delay filter z^-M
   TF F = getDamperTransferFunction();            // Feedback filter F(z)
+
   if(preDelay)
     return zM  / (one + k * z1 * F * zM);        // U(z) = z^-M / (1 + k * z^-1 * F(z) * z^-M)
   else

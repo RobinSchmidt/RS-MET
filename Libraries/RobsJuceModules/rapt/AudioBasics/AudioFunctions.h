@@ -325,7 +325,9 @@ inline T rsDecayTimeToFeedbackGain(T decayTime, T roundTripLength, T targetAmpli
   // after an elapsed time of "t", we need to solve:  a = k^(t/d)  for the feedback gain factor
   // k. The result is k = a^(d/t).
   //
-  // ToDo: Maybe optimize based on exp or exp2
+  // ToDo: Maybe optimize based on exp or exp2, Maybe move into class rsBandwidthConverter - which 
+  // should really be renamed to something like rsFilterParameterConverter. It could also include 
+  // things like cutoffFreqToTimeConstant
 }
 
 
