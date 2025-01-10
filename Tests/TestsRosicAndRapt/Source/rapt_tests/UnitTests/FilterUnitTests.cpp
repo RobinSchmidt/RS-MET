@@ -2729,6 +2729,13 @@ bool dampedAllpassBiCombUnitTest()
   // Let the ap convert itself into a sparse direct form filter and check that this converted 
   // filter has the same impulse response:
   SparseFilter sf;
+
+  //sf.setMaxDelayInSamples(delay1 + delay2 + 4);  // use ap.getFilterOrder()
+
+  int order = ap.getCombSumOrder();
+
+  sf.setMaxDelayInSamples(ap.getCombSumOrder());
+
   ap.convertCombSumToDirectForm(&sf);
   Vec hc2 = impulseResponse(sf, N, 1.0);
   ok &= rsIsCloseTo(hc, hc2, 1.e-14);
@@ -2847,6 +2854,7 @@ bool sparseFilterUnitTest()
 
   // Create, set up and produce impulse response of sparse filter:
   FltS sf;
+  sf.setMaxDelayInSamples((int)rsMax(b.size()-1, a.size()-1));  // Verify the -1!
   sf.setupFromDenseCoeffs(b, a, 0.0);
   Vec hs = impulseResponse(sf, N, 1.0);
 
@@ -2907,6 +2915,7 @@ bool sparseFilterUnitTest()
   // Try inversion when b0 != 0 by introducing a predelay. In this case, we can only invert up to a
   // delay:
   int preDelay = 10;
+  sf.setMaxDelayInSamples(sf.getMaxDelayInSamples() + preDelay);
   sf.setupFromDenseCoeffs(b, a, 0.0);      // Start fresh
   sf.addPreDelay(preDelay);
   hs = impulseResponse(sf, N, 1.0);

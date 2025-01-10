@@ -1763,12 +1763,26 @@ public:
   rsComplex<TPar> getCombTransferFunctionAt(const rsComplex<TPar>& z) const;
 
 
+
+  int getCombSumOrder() const 
+  {
+    return M1+M2+4;
+  }
+  // Verify this! I think, this is the total resulting order of the filter. It can be read off from
+  // the line  setA(11, M1+M2+4, b11*b21 * k1*k2);   in  convertCombSumToDirectForm
+
+
   /** Converts the weighted sum of the two comb filters into a (sparse) direct form filter. The
-  object is passed as pointer - the passed rsSparseFilter object serves as output variable. */
+  object is passed as pointer - the passed rsSparseFilter object serves as output variable.  */
   void convertCombSumToDirectForm(rsSparseFilter<TSig, TPar>* sparseDirectFormFilter);
-
-
-
+  // Not true anymore:
+  // The function may trigger a memory allocation in the passed filter object if it doesn't 
+  // already have enough memory allocated. You probably wan to avoid calling it on a realtime 
+  // thread, or if you do, make very sure that the filter object already has enough delay 
+  // capacity.
+  // ToDo: document, how much delay memory the filter object needs to have pre-allocated. I think
+  // it's M1+M2+4. see setMaxDelayInSamples(). We actually use this function internally with our
+  // corrector member
 
 
 
@@ -1918,6 +1932,15 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
   int maxM = newMaxDelay - 1;
   mainDelay1.setMaxDelayInSamples(maxM);
   mainDelay2.setMaxDelayInSamples(maxM);
+
+
+  corrector.setMaxDelayInSamples(2*maxM+4);
+  // See convertCombSumToDirectForm(). The maximum delay that occurs there is: M1+M2+4.
+
+
+  //corrector.setMaxDelayInSamples(maxM+1);
+  // I think, we need +1 because of the 1st order feedback filter. -> Verify this!
+
 }
 
 template<class TSig, class TPar>
@@ -2019,6 +2042,7 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::convertCombSumToDirectForm(
   setA(11, M1+M2+4, b11*b21 * k1*k2);
 
   // Update the length of the delayline:
+  //sparseFilter->ensureEnoughDelayMemory();  // May allocate!
   sparseFilter->updateDelayLineLength();
 
   // ToDo:

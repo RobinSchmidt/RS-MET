@@ -1059,6 +1059,8 @@ void dampedAllpassComb6()
 
   // Create comb impulse response by the sparse filter:
   SparseFlt sf;
+  //sf.setMaxDelayInSamples(ap.getCombSumOrder());
+  sf.setMaxDelayInSamples(100);  // Preliminary! Allocates too much!
   sf.setup(tfComb);
   Vec hcs = impulseResponse(sf, N, 1.0);
 

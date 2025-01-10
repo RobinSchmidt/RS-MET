@@ -2141,6 +2141,11 @@ public:
   // we should use other functions like setNumeratorTermSuppressDelayUpdate. Or maybe give the 
   // function a boolean parameter updateDelayLength which defaults tor true
 
+  /** Ensures that the delayline has enough memory allocated to support the desired transfer
+  function. This may re-allocate heap memory in cases where the delayline does not already have
+  enough capacity, so you don't want to call it on a realtime thread. */
+  void ensureEnoughDelayMemory()
+  { setMaxDelayInSamples(rsMax(getMaxDelayInSamples(), getFilterOrder())); }
 
   void setMaxDelayInSamples(int newMaxDelay)
   { delayLine.setMaxDelayInSamples(newMaxDelay); }
@@ -2150,9 +2155,12 @@ public:
   numerator and denominator polynomial. */
   void updateDelayLineLength()
   { 
-    int deg = getFilterOrder(); 
-  
-    delayLine.setMaxDelayInSamples(deg);
+    rsAssert(hasEnoughDelayMemory());
+
+    int deg = getFilterOrder();
+
+
+    //delayLine.setMaxDelayInSamples(deg);
   
     delayLine.setDelayInSamples(deg);
   }
@@ -2198,7 +2206,7 @@ public:
   the filter. */
   int getFilterOrder() const { return rsMax(H.num.getDegree(), H.den.getDegree()); }
 
-
+  int getMaxDelayInSamples() const { return delayLine.getMaxDelayInSamples(); }
 
 
   /** Performs some sanity checks. Is meant for debug assertions. */
@@ -2333,6 +2341,9 @@ protected:
   with the length of the delayline. This is meant for internal sanity checks. */
   bool areDelaysConsistent() const { return delayLine.getDelayInSamples() == getFilterOrder(); }
 
+
+  bool hasEnoughDelayMemory() const 
+  { return delayLine.getMaxDelayInSamples() >= getFilterOrder(); }
 
 
   rsBasicDelayLine<TSig> delayLine;         // Delayline used for the direct form 2 implementation.

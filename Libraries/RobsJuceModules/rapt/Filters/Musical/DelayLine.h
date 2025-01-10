@@ -34,7 +34,7 @@ public:
   length of the delayline can be the respective power-of-two itself) - if it isn't, the next
   power-of-two-minus-one will be used. */
   void setMaxDelayInSamples(int newMaxDelay);
-  // rename to setMaxDelayInSamples 
+  // Maybe rename to setMaxDelay
 
   /** Sets the delay-time in samples. If the passed value exceeds the length of the delayline,
   new memory will be allocated which is large enough to support the desired delay. You probably
@@ -62,10 +62,8 @@ public:
   };
 
   /** Returns the maximum delay that this delayline can produce */
-  int getMaxDelayInSamples() const
-  {
-    return maxDelay;
-  }
+  int getMaxDelayInSamples() const { return maxDelay; }
+  // Maybe rename to getMaxDelay
 
 
   //-----------------------------------------------------------------------------------------------
