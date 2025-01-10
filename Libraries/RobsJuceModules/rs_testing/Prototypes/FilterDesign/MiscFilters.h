@@ -1941,8 +1941,20 @@ void rsSparseRationalFunction<T>::weightedSum(
 
 
 /** A subclass of rsSparseRationalFunction that is meant to deal specifically with transfer 
-functions of digital filters. It implements some functionality on top of its baseclass that is 
-specific to such transfer functions. ...TBC... */
+functions of digital filters. A general transfer function for a digital filter looks like:
+
+          b0 + b1 * z^-1 + b2 * z^-2 + ... + bN * z^-N
+  H(z) = ----------------------------------------------
+          1  + a1 * z^-1 + a2 * z^-2 + ... + aM * z^-M
+
+Note that this actually a rational function not in z itself but in z^-1. We override the function
+evaluation operator () to take care of this reciprocation of z. We also implement some additional 
+functionality on top of the baseclass that is specific to such transfer functions. For example,
+digital filter transfer functions are usually normalized to a0 = 1, as seen above. We implement
+a check for that condition (and a few others) isCanonical(). We also provide function to invert
+the transfer function (basically, swapping numertaor and denominator but making sure that the 
+a0 = 1 still holds after the swap), reflecting the zeros about the unit circle (turning minimum 
+phase filters into maximum phase ones), etc. ...TBC... */
 
 
 template<class T>
@@ -2196,28 +2208,19 @@ public:
   int getFilterOrder() const { return rsMax(H.num.getDegree(), H.den.getDegree()); }
 
 
+
+
   /** Performs some sanity checks. Is meant for debug assertions. */
-  bool isFilterValid() const
-  {
-    return H.isCanonical() && (delayLine.getDelayInSamples() == getFilterOrder());
-
-
-    //bool ok = true;
-
-    //// The transfer function should satisfy some constraints (such as a0 = 1, etc.):
-    //ok &= H.isCanonical();
-
-    //// Length of delayline should match the maximum of the degrees of numerator and denominator:
-    //ok &= delayLine.getDelayInSamples() == getFilterOrder();
-
-    //return ok;
-  }
+  bool isFilterValid() const { return H.isCanonical() && areDelaysConsistent(); }
+  // ToDo: Elaborate documentation. Give some details about what it checks.
 
 
 
   /** Computes the transfer function H(z) of this filter at the given complex value z. */
   rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const { return H(TPar(1)/z); }
-    // Reciprocation of z needed because H actually stores the coeffs of H(z^-1)
+  // Reciprocation of z needed because H actually stores the coeffs of H(z^-1)
+  // ToDo: factor the reciprocation out into the () operator of
+  // rsSparseDigitalTransferFunction
 
 
   /** Returns a const reference to our transfer function object H(z). */
@@ -2320,6 +2323,13 @@ public:
 
 
 protected:
+
+
+  /** Function that checks if the maximum delay required by the transfer function is consistent 
+  with the length of the delayline. This is meant for internal sanity checks. */
+  bool areDelaysConsistent() const { return delayLine.getDelayInSamples() == getFilterOrder(); }
+
+
 
   rsBasicDelayLine<TSig> delayLine;         // Delayline used for the direct form 2 implementation.
   rsSparseDigitalTransferFunction<TPar> H;  // Transfer function H(z^-1). Contains filter coeffs.
