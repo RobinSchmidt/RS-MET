@@ -2122,16 +2122,7 @@ public:
 
 
   void setup(const rsSparseRationalFunction<TPar>& newTransferFunction)
-  {
-    //H = newTransferFunction; 
-    // This will always allocate, I guess?
-
-    
-    H.copyDataFrom(newTransferFunction);
-    // This will allocate only when H has not enough capacity...I think
-
-    updateDelayLineLength();
-  }
+  { H.copyDataFrom(newTransferFunction); updateDelayLineLength(); }
 
 
   void setNumNumeratorTerms(int newNumTerms) { H.num.setNumTerms(newNumTerms); }
@@ -2154,9 +2145,9 @@ public:
   /** Updates the length of the delayline according to the maximum power of z^-1 that occurs in
   numerator and denominator polynomial. */
   void updateDelayLineLength()
-  {
-    int order = getFilterOrder();
-    delayLine.setMaximumDelayInSamples(order);
+  { 
+    int order = getFilterOrder(); 
+    delayLine.setMaximumDelayInSamples(order); 
     delayLine.setDelayInSamples(order);
   }
   // Maybe do not set the maximum delay here - just the delay. For setting the max delay, we should
