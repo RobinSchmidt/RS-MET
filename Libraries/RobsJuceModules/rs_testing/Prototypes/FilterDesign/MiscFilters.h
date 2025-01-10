@@ -2157,33 +2157,8 @@ public:
   denominator and possibly applying some scaling of the coefficients if b0 != 1. */
   void invert()
   {
-    rsAssert(isFilterValid());
-
-    removePreDelay();
-    rsAssert(H.num.getPower(0) == 0);
-    rsAssert(H.num.getCoeff(0) != 0);
-    // A filter with predelay cannot be inverted in realtime. The best thing we can do in this 
-    // case is to invert the filter up to the predelay. Removing the predelay ensures that the
-    // 0-th term in the numerator has power of 0, i.e. it's a  b0 * z^-0  term and not some crazy
-    // b7 * z^-7  term.
-
-
-    TPar s = TPar(1) / H.num.getCoeff(0);
-    scale(s);
-    rsSwap(H.num, H.den);
-    scale(s);
-
-    // Figure out if rsSwap causes memory allocations when swapping the underlying std::vectors. 
-    // Actually, swapping two vectors would only require pointer adjustments under the hood. Maybe
-    // std::swap is clever enough to implement it that way?
-
-    // When the filter has an initial delay, i.e. the first power in the numerator is not equal to 
-    // zero, then we actually cannot invert the filter. A delay cannot be undone (at least not in
-    // realtime). In this case, the best we can do is to invert the filter up to a delay. I think, 
-    // we can do this by first figuring out the minimum exponent of the numerator and the 
-    // subtracting that from all the numerator exponents. After that, we can invert as usual.
-
-    // What about H.num == empty ...but that shouldn't be allowed anyway
+    H.invert();
+    updateDelayLineLength();
   }
 
   void reflectZeros()
