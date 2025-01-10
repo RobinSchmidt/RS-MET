@@ -2199,15 +2199,18 @@ public:
   /** Performs some sanity checks. Is meant for debug assertions. */
   bool isFilterValid() const
   {
-    bool ok = true;
+    return H.isCanonical() && (delayLine.getDelayInSamples() == getFilterOrder());
 
-    // The transfer function should satisfy some constraints (such as a0 = 1, etc.):
-    ok &= H.isCanonical();
 
-    // Length of delayline should match the maximum of the degrees of numerator and denominator:
-    ok &= delayLine.getDelayInSamples() == getFilterOrder();
+    //bool ok = true;
 
-    return ok;
+    //// The transfer function should satisfy some constraints (such as a0 = 1, etc.):
+    //ok &= H.isCanonical();
+
+    //// Length of delayline should match the maximum of the degrees of numerator and denominator:
+    //ok &= delayLine.getDelayInSamples() == getFilterOrder();
+
+    //return ok;
   }
 
 
