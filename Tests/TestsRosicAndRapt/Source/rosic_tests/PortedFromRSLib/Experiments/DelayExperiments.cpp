@@ -1069,6 +1069,8 @@ void dampedAllpassComb6()
   //
   // - The impulse response of the comb-sum shows spikes at the products of the delays, i.e. at
   //   713 = 23*31, 943 = 23*41, 1271 = 31*41 and their multiples, i.e. 1426 = 2 * 713, etc.
+  //
+  // - The impulse response of the corrected comb sum has a strong initial bipolar spike
 
 
   int dummy = 0;
