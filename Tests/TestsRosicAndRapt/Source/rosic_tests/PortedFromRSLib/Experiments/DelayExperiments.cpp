@@ -999,7 +999,7 @@ void dampedAllpassComb6()
   using Complex   = rsComplex<Real>;
   using Vec       = std::vector<Real>;
   using Allpass   = rsDampedAllpassComb<Real, Real>;
-  using TransFunc = rsSparseRationalFunction<Real>;
+  using TransFunc = rsSparseDigitalTransferFunction<Real>;
   using SparseFlt = rsSparseFilter<Real, Real>;
 
   // User parameters:
@@ -1029,22 +1029,22 @@ void dampedAllpassComb6()
   bool ok = true;
 
   Complex z(0.6, 0.8);
-  Complex z1 = Real(1) / z;
+  //Complex z1 = Real(1) / z;
   Complex w1, w2;
 
   w1 = ap.getDamperTransferFunctionAt(z);
   TransFunc tfDamp = ap.getDamperTransferFunction();
-  w2 = tfDamp(z1);
+  w2 = tfDamp(z);
   ok &= rsIsCloseTo(w1, w2, 1.e-15);
 
   w1 = ap.getCombTransferFunctionAt(z);
   TransFunc tfComb = ap.getCombTransferFunction();
-  w2 = tfComb(z1);
+  w2 = tfComb(z);
   ok &= rsIsCloseTo(w1, w2, 1.e-13);
 
   w1 = ap.getTransferFunctionAt(z);
   TransFunc H = ap.getTransferFunction();
-  w2 = H(z1);
+  w2 = H(z);
   //ok &= rsIsCloseTo(w1, w2, 1.e-13);
   // Still FAILS - predictably so - see comment in rsDampedAllpassComb::getTransferFunction()
 

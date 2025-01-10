@@ -2101,11 +2101,40 @@ public:
   // Reciprocation of z needed because we store the coeffs of H(z^-1)
 
 
+  // This boilerplate is needed to have the desired arithmetic operators available also for the 
+  // derived class. They can not be inherited from the baseclass because their parameter and
+  // return types are different. It may work with pointer-types but not with value-types (I guess):
+
+
+  rsSparseDigitalTransferFunction<T> operator+(const rsSparseDigitalTransferFunction<T>& q) const 
+  { rsSparseDigitalTransferFunction<T> r; weightedSum(*this, T(1), q, T(1), &r, T(0)); return r; }
+
+
+  rsSparseDigitalTransferFunction<T> operator-(const rsSparseDigitalTransferFunction<T>& q) const 
+  { rsSparseDigitalTransferFunction<T> r; weightedSum(*this, T(1), q, T(-1), &r, T(0)); return r; }
+
+
+  rsSparseDigitalTransferFunction<T> operator*(const rsSparseDigitalTransferFunction<T>& q) const 
+  { return rsSparseDigitalTransferFunction(num * q.num, den * q.den); }
+
+  rsSparseDigitalTransferFunction<T> operator/(const rsSparseDigitalTransferFunction<T>& q) const 
+  { return rsSparseDigitalTransferFunction(num * q.den, den * q.num); }
+
+
+
 
 
 };
 
-
+/** Multiplies a coefficient and a sparse digital transfer function. */
+template<class T>
+inline rsSparseDigitalTransferFunction<T> operator*(
+  const T& s, const rsSparseDigitalTransferFunction<T>& p)
+{
+  rsSparseDigitalTransferFunction<T> r(p);
+  r.scale(s);
+  return r;
+}
 
 
 

@@ -1108,13 +1108,13 @@ public:
 
 
 
-  rsSparseRationalFunction<TPar> getTransferFunction() const;
-  // Allocates! Actually returns H(z^-1)
+  rsSparseDigitalTransferFunction<TPar> getTransferFunction() const;
+  // Allocates!
 
-  rsSparseRationalFunction<TPar> getCombTransferFunction() const;
+  rsSparseDigitalTransferFunction<TPar> getCombTransferFunction() const;
   // Allocates! 
 
-  rsSparseRationalFunction<TPar> getDamperTransferFunction() const;
+  rsSparseDigitalTransferFunction<TPar> getDamperTransferFunction() const;
   // Allocates!
 
 
@@ -1350,9 +1350,9 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCorrectorTransferFunctionAt(
 }
 
 template<class TSig, class TPar>
-rsSparseRationalFunction<TPar> rsDampedAllpassComb<TSig, TPar>::getTransferFunction() const
+rsSparseDigitalTransferFunction<TPar> rsDampedAllpassComb<TSig, TPar>::getTransferFunction() const
 {
-  using TF = rsSparseRationalFunction<TPar>;
+  using TF = rsSparseDigitalTransferFunction<TPar>;
 
   TF U = getCombTransferFunction();
   TF C = U;
@@ -1367,9 +1367,10 @@ rsSparseRationalFunction<TPar> rsDampedAllpassComb<TSig, TPar>::getTransferFunct
 }
 
 template<class TSig, class TPar>
-rsSparseRationalFunction<TPar> rsDampedAllpassComb<TSig, TPar>::getCombTransferFunction() const
+rsSparseDigitalTransferFunction<TPar> rsDampedAllpassComb<TSig, TPar>
+                                      ::getCombTransferFunction() const
 {
-  using TF = rsSparseRationalFunction<TPar>;
+  using TF = rsSparseDigitalTransferFunction<TPar>;
 
   TF one; one.num.appendTerm(TPar(1), 0);
   TF z1;  z1.num.appendTerm( TPar(1), 1);
@@ -1384,9 +1385,10 @@ rsSparseRationalFunction<TPar> rsDampedAllpassComb<TSig, TPar>::getCombTransferF
 
 
 template<class TSig, class TPar>
-rsSparseRationalFunction<TPar> rsDampedAllpassComb<TSig, TPar>::getDamperTransferFunction() const
+rsSparseDigitalTransferFunction<TPar> rsDampedAllpassComb<TSig, TPar>
+                                      ::getDamperTransferFunction() const
 {
-  rsSparseRationalFunction<TPar> H;
+  rsSparseDigitalTransferFunction<TPar> H;
   H.setupFromDenseCoeffs(b, dmpOrd+1, a, dmpOrd+1, TPar(0));
   return H;
 }
