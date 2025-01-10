@@ -1050,8 +1050,20 @@ void dampedAllpassComb6()
   comb.setMaxDelayInSamples(U.getFilterOrder());
   comb.setup(U);
   Vec hu = impulseResponse(comb, N, 1.0);
+  rsPlotVector(hu);
 
-  rsPlotVectors(hu);
+  // Create the corrector filter and apply it to the comb impulse response:
+  TransFunc C = U;
+  C.invert();
+  C.reflectZeros();
+
+  SparseFlt corr;
+  corr.setMaxDelayInSamples(C.getFilterOrder());
+  corr.setup(C);
+  Vec h = filterResponse(corr, N, hu);
+  rsPlotVector(h);
+
+
 
   // Observations:
   //
