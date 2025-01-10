@@ -1954,6 +1954,28 @@ public:
   using Base = rsSparseRationalFunction<T>;    // For convenience
   using Base::Base;                            // Inherit constructors
 
+
+
+  /** Adds an overall predelay to the whole filter by shifting all exponents of z^-1 by the given 
+  amount. */
+  void addPreDelay(int amountInSamples)
+  {
+    if(amountInSamples < 0)
+    {
+      rsError("Negative predelay is not allowed");
+      return;
+      // We could allow it if we already have some predelay and the given amount would just 
+      // reduce it. Maybe we can relax the restriction to amountInSamples >= -num.getMinPower() or
+      // something. If the minimum power is 3, we could allow a predelay amount of -3. This would 
+      // then just reduce the predelay to zero.
+    }
+
+    num.shiftPowers(amountInSamples);
+  }
+
+
+
+
   void removePreDelay()
   {
     int preDelay = num.getPower(0);
@@ -2084,30 +2106,12 @@ public:
   amount. */
   void addPreDelay(int amountInSamples)
   {
-    if(amountInSamples < 0)
-    {
-      rsError("Negative predelay is not allowed");
-      return;
-      // We could allow it if we already have some predelay and the given amount would just 
-      // reduce it. Maybe we can relax the restriction to amountInSamples >= -num.getMinPower() or
-      // something. If the minimum power is 3, we could allow a predelay amount of -3. This would 
-      // then just reduce the predelay to zero.
-    }
-
-    H.num.shiftPowers(amountInSamples);
+    H.addPreDelay(amountInSamples);
     updateDelayLineLength();
   }
 
   void removePreDelay()
   {
-    //int preDelay = H.num.getPower(0);
-    //// We assume here the the 0-th term is the one with the lowest power! This invariant should be
-    //// checked in isFilterValid().
-
-
-    //H.num.shiftPowers(-preDelay);
-
-
     H.removePreDelay();
     updateDelayLineLength();
   }
