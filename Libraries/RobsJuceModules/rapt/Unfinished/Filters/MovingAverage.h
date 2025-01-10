@@ -29,7 +29,7 @@ public:
 
   void setMaxLengthInSamples(int newMaxLength)
   {
-    delayLine.setMaximumDelayInSamples(newMaxLength);
+    delayLine.setMaxDelayInSamples(newMaxLength);
   }
 
   /** Computes the leakage coefficient a1 from a specified maximum deviation of the

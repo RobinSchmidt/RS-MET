@@ -2142,13 +2142,19 @@ public:
   // function a boolean parameter updateDelayLength which defaults tor true
 
 
+  void setMaxDelayInSamples(int newMaxDelay)
+  { delayLine.setMaxDelayInSamples(newMaxDelay); }
+
+
   /** Updates the length of the delayline according to the maximum power of z^-1 that occurs in
   numerator and denominator polynomial. */
   void updateDelayLineLength()
   { 
-    int order = getFilterOrder(); 
-    delayLine.setMaximumDelayInSamples(order); 
-    delayLine.setDelayInSamples(order);
+    int deg = getFilterOrder(); 
+  
+    delayLine.setMaxDelayInSamples(deg);
+  
+    delayLine.setDelayInSamples(deg);
   }
   // Maybe do not set the maximum delay here - just the delay. For setting the max delay, we should
   // have an extra function. Then we can simplify the implementation to

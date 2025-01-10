@@ -33,12 +33,12 @@ public:
   delayline. For effciiency reasion, this should be a power-of-two-minus-one (such that the
   length of the delayline can be the respective power-of-two itself) - if it isn't, the next
   power-of-two-minus-one will be used. */
-  void setMaximumDelayInSamples(int newMaxDelay);
+  void setMaxDelayInSamples(int newMaxDelay);
   // rename to setMaxDelayInSamples 
 
   /** Sets the delay-time in samples. If the passed value exceeds the length of the delayline,
   new memory will be allocated which is large enough to support the desired delay. You probably
-  want to avoid this (this could introduce artifacts) by calling setMaximumDelayInSamples in some
+  want to avoid this (this could introduce artifacts) by calling setMaxDelayInSamples in some
   safe place in your client code with a value that is larger than the largest delay, you
   expect. */
   void setDelayInSamples(int newDelay);

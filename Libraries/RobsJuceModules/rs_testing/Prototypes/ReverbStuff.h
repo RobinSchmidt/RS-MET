@@ -138,8 +138,8 @@ public:
 
   void setMaxDelayInSamples(int newMaxDelay)
   {
-    inputDelayLine.setMaximumDelayInSamples(newMaxDelay);
-    outputDelayLine.setMaximumDelayInSamples(newMaxDelay);
+    inputDelayLine.setMaxDelayInSamples(newMaxDelay);
+    outputDelayLine.setMaxDelayInSamples(newMaxDelay);
   }
 
   void setDelayInSamples(int newDelay)
@@ -205,7 +205,7 @@ public:
   void setMaxDelayInSamples(int nestLevel, int newMaxDelay) 
   { 
     if(nestLevel == 0)
-      delayLine.setMaximumDelayInSamples(newMaxDelay);
+      delayLine.setMaxDelayInSamples(newMaxDelay);
     else
       nestedAllpass.setMaxDelayInSamples(newMaxDelay);
   }
@@ -293,7 +293,7 @@ public:
   void setMaxDelayInSamples(int nestLevel, int newMaxDelay) 
   { 
     if(nestLevel == 0)
-      delayLine.setMaximumDelayInSamples(newMaxDelay);
+      delayLine.setMaxDelayInSamples(newMaxDelay);
     else
       nestedAllpass.setMaxDelayInSamples(nestLevel-1, newMaxDelay);
   }
@@ -379,7 +379,7 @@ public:
   void setMaxDelayInSamples(int nestLevel, int newMaxDelay) 
   { 
     if(nestLevel == 0)
-      delayLine.setMaximumDelayInSamples(newMaxDelay);
+      delayLine.setMaxDelayInSamples(newMaxDelay);
     else
       nestedAllpass.setMaxDelayInSamples(nestLevel-1, newMaxDelay);
   }
@@ -459,10 +459,10 @@ public:
 
   void setMaxDelayInSamples(int newMaxDelay)
   {
-    inputDelayLine1. setMaximumDelayInSamples(  newMaxDelay);
-    outputDelayLine1.setMaximumDelayInSamples(  newMaxDelay);
-    inputDelayLine2. setMaximumDelayInSamples(2*newMaxDelay);
-    outputDelayLine2.setMaximumDelayInSamples(2*newMaxDelay);
+    inputDelayLine1. setMaxDelayInSamples(  newMaxDelay);
+    outputDelayLine1.setMaxDelayInSamples(  newMaxDelay);
+    inputDelayLine2. setMaxDelayInSamples(2*newMaxDelay);
+    outputDelayLine2.setMaxDelayInSamples(2*newMaxDelay);
   }
 
   void setDelayInSamples(int newDelay)
@@ -619,7 +619,7 @@ protected:
 
   void allocateMemory()
   {
-    delayLine.setMaximumDelayInSamples(N * maxM);
+    delayLine.setMaxDelayInSamples(N * maxM);
     c.resize(N+1);
     v.resize(N+1);
     // We use lengths of N+1 to better match the indices used in the math equations. This is just 
@@ -709,7 +709,7 @@ protected:
 
   void allocateMemory()
   {
-    delayLine.setMaximumDelayInSamples(N * maxM);
+    delayLine.setMaxDelayInSamples(N * maxM);
     c.resize(N);
   }
 
@@ -865,9 +865,9 @@ template<class TSig, class TPar>
 void rsDampedAllpassCombNaive<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
-  mainDelay .setMaximumDelayInSamples(maxM);
-  corDelayM1.setMaximumDelayInSamples(maxM+1);
-  corDelayM2.setMaximumDelayInSamples(maxM+2);
+  mainDelay .setMaxDelayInSamples(maxM);
+  corDelayM1.setMaxDelayInSamples(maxM+1);
+  corDelayM2.setMaxDelayInSamples(maxM+2);
 }
 
 template<class TSig, class TPar>
@@ -1233,8 +1233,8 @@ template<class TSig, class TPar>
 void rsDampedAllpassComb<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
-  mainDelay .setMaximumDelayInSamples(maxM);
-  corrDelay.setMaximumDelayInSamples(maxM+maxDmpOrd+1);
+  mainDelay .setMaxDelayInSamples(maxM);
+  corrDelay.setMaxDelayInSamples(maxM+maxDmpOrd+1);
 }
 
 template<class TSig, class TPar>
@@ -1651,8 +1651,8 @@ template<class TSig, class TPar>
 void rsDampedAllpassComb_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
-  mainDelay .setMaximumDelayInSamples(maxM);
-  corrDelay.setMaximumDelayInSamples(maxM+2);
+  mainDelay .setMaxDelayInSamples(maxM);
+  corrDelay.setMaxDelayInSamples(maxM+2);
 }
 
 template<class TSig, class TPar>
@@ -1916,8 +1916,8 @@ template<class TSig, class TPar>
 void rsDampedAllpassBiComb_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
-  mainDelay1.setMaximumDelayInSamples(maxM);
-  mainDelay2.setMaximumDelayInSamples(maxM);
+  mainDelay1.setMaxDelayInSamples(maxM);
+  mainDelay2.setMaxDelayInSamples(maxM);
 }
 
 template<class TSig, class TPar>
@@ -2094,7 +2094,7 @@ public:
 
   void setMaxDelayInSamples(int newMaxDelay)
   {
-    delayLine.setMaximumDelayInSamples(newMaxDelay);
+    delayLine.setMaxDelayInSamples(newMaxDelay);
   }
 
   void setMaxDampOrder(int newMaxDampOrder)
@@ -2234,8 +2234,8 @@ public:
 
   void setMaxDelayInSamples(int newMaxDelay)
   {
-    inDelay.setMaximumDelayInSamples( newMaxDelay);
-    outDelay.setMaximumDelayInSamples(newMaxDelay);
+    inDelay.setMaxDelayInSamples( newMaxDelay);
+    outDelay.setMaxDelayInSamples(newMaxDelay);
   }
 
   void setup(int delay, TSig feedback, int dampOrder, const TPar* dampCoeffsB)
@@ -2330,8 +2330,8 @@ public:
 
   void setMaxDelayInSamples(int newMaxDelay)
   {
-    inDelay.setMaximumDelayInSamples( newMaxDelay);
-    outDelay.setMaximumDelayInSamples(newMaxDelay);
+    inDelay.setMaxDelayInSamples( newMaxDelay);
+    outDelay.setMaxDelayInSamples(newMaxDelay);
   }
 
   void setup(int delay, TSig feedback, int dampOrder, const TPar* dampCoeffsB)

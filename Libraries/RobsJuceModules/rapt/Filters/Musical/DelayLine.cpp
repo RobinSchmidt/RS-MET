@@ -29,7 +29,7 @@ rsBasicDelayLine<T>::~rsBasicDelayLine()
 // Setup:
 
 template<class T>
-void rsBasicDelayLine<T>::setMaximumDelayInSamples(int newMaxDelay)
+void rsBasicDelayLine<T>::setMaxDelayInSamples(int newMaxDelay)
 {
   if( newMaxDelay > maxDelay )
   {

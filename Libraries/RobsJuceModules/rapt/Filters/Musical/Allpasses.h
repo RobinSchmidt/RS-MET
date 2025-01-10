@@ -43,7 +43,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  void setMaxDelayInSamples(int newMaxDelay) { delayLine.setMaximumDelayInSamples(newMaxDelay); }
+  void setMaxDelayInSamples(int newMaxDelay) { delayLine.setMaxDelayInSamples(newMaxDelay); }
 
   void setDelayInSamples(int newDelay) { delayLine.setDelayInSamples(newDelay); }
 
@@ -109,7 +109,7 @@ public:
 
   void setMaxDelayInSamples(int newMaxDelay)
   {
-    delayLine.setMaximumDelayInSamples(2*newMaxDelay);
+    delayLine.setMaxDelayInSamples(2*newMaxDelay);
 
     // ToDo: if the new max delay is less than the current M, reduce the current M accordingly
   }
@@ -213,7 +213,7 @@ public:
   void setMaxDelayInSamples(int stageIndex, int newMaxDelay)
   {
     RAPT::rsAssert(stageIndex < getMaxNumStages());
-    delayLines[stageIndex].setMaximumDelayInSamples(newMaxDelay);
+    delayLines[stageIndex].setMaxDelayInSamples(newMaxDelay);
   }
 
   void setMaxDelayInSamples(int newMaxDelay)

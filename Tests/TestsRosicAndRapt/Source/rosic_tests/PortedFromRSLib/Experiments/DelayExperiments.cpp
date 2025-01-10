@@ -73,7 +73,7 @@ void basicIntegerDelayLine()
   double t[N], h[N];
   RAPT::rsArrayTools::fillWithIndex(t, N);
   rsBasicDelayLineD dl;
-  dl.setMaximumDelayInSamples(5);
+  dl.setMaxDelayInSamples(5);
   dl.setDelayInSamples(5);
   RAPT::getImpulseResponse(dl, h, N);
   plotData(N, t, h);
@@ -282,7 +282,7 @@ void dampedAllpassComb1()
 
   // Create and set up the two given filters for A(z) and F(z):
   Delay apf;                                // Allpass filter
-  apf.setMaximumDelayInSamples(M);
+  apf.setMaxDelayInSamples(M);
   apf.setDelayInSamples(M);
 
   OnePole fbf;                              // Feedback filter
@@ -362,10 +362,10 @@ void dampedAllpassComb1()
   // Naive implementation using for each desired delay its own delayline:
   ud.reset();
   Delay dlM1;
-  dlM1.setMaximumDelayInSamples(M+1);
+  dlM1.setMaxDelayInSamples(M+1);
   dlM1.setDelayInSamples(M+1);
   Delay dlM2;
-  dlM2.setMaximumDelayInSamples(M+2);
+  dlM2.setMaxDelayInSamples(M+2);
   dlM2.setDelayInSamples(M+2);
 
   // Helper function to produce correction with alterntative correction filter:
