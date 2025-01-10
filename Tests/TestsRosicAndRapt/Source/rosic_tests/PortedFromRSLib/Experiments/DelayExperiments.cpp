@@ -1005,7 +1005,15 @@ void dampedAllpassComb6()
   // User parameters:
   Real sampleRate = 48000;     // Sampling rate.
   int  numSamples = 24000;     // Number of samples to render.
-  int  delay      =    50;     // Delay in samples.
+
+  int  delay1     =    23;     // Delay of 1st delayline
+  int  delay2     =    31; 
+  int  delay3     =    41; 
+
+  Real gain1      =     1.0;
+  Real gain2      =     1.0;
+  Real gain3      =     1.0;
+
   Real decayTime  =     1.0;   // Decay time for mid frequencies in seconds.
   Real lowFreq    =   250.0;   // Crossover freq between low and mid frequencies in Hz.
   Real lowScale   =     1.5;   // Decay time scaler for low frequencies.
@@ -1016,14 +1024,55 @@ void dampedAllpassComb6()
   Real decaySamples = decayTime     * sampleRate;
   Real lowOmega     = 2*PI*lowFreq  / sampleRate;
   Real highOmega    = 2*PI*highFreq / sampleRate;
-  Real spikeFreq    = Real(sampleRate) / Real(delay);  // Frequency of the spikes
+  Real spikeFreq1   = Real(sampleRate) / Real(delay1);  // Frequency of the spikes
+  int  N            = numSamples;
 
-  // Create and set up the allpass filter:
-  Allpass ap;
-  ap.setMaxDelayInSamples(delay);
-  rsSetupDecayTimes(ap, delay, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
+  // Create and set up the prototype allpass filters. We are interested mostyl in the comb transfer
+  // functions here:
+  Allpass ap1, ap2, ap3;
+  ap1.setMaxDelayInSamples(delay1);
+  rsSetupDecayTimes(ap1, delay1, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
+  ap2.setMaxDelayInSamples(delay2);
+  rsSetupDecayTimes(ap2, delay2, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
+  ap3.setMaxDelayInSamples(delay3);
+  rsSetupDecayTimes(ap3, delay3, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
+
+  // Retrieve the comb transfer functions:
+  TransFunc U1 = ap1.getCombTransferFunction();
+  TransFunc U2 = ap2.getCombTransferFunction();
+  TransFunc U3 = ap3.getCombTransferFunction();
 
 
+  // Combine the comb transfer functions into one, set up a sparse filter that realizes that sum
+  // of combs and retrieve its impulse response:
+  TransFunc U = gain1 * U1  +  gain2 * U2  +  gain3 * U3;
+  SparseFlt comb;
+  comb.setMaxDelayInSamples(U.getFilterOrder());
+  comb.setup(U);
+  Vec hu = impulseResponse(comb, N, 1.0);
+
+  rsPlotVectors(hu);
+
+  // Observations:
+  //
+  // - The impulse response of the comb-sum shows spikes at the products of the delays, i.e. at
+  //   713 = 23*31, 943 = 23*41, 1271 = 31*41 and their multiples, i.e. 1426 = 2 * 713, etc.
+
+
+  int dummy = 0;
+
+
+  // 23, 31, 41, 53
+
+  // 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71. 73, 79, 83, 89, 
+  // 97, 101, 103, 107, 109, 113. 127, 131, 137, 139, 149, 151, 157
+
+
+
+
+  /*
+
+  // Obsolete - this is now covered in an actual unit test
   // Check retrieval of the transfer function objects:
 
   bool ok = true;
@@ -1067,6 +1116,10 @@ void dampedAllpassComb6()
   rsPlotVectors(hc, hcs);
   rsPlotVectors(hc - hcs);
 
+  */
+
+
+
   //sf.reset();
   //Vec hcs(N);
 
@@ -1074,11 +1127,6 @@ void dampedAllpassComb6()
   //for(int n = 1; n < N; n++)
   //  hcs[n] = ap.getSampleComb(0.0);
 
-
-
-
-
-  int dummy = 0;
 
 
   // ToDo:

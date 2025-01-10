@@ -1353,13 +1353,7 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCorrectorTransferFunctionAt(
 template<class TSig, class TPar>
 rsSparseDigitalTransferFunction<TPar> rsDampedAllpassComb<TSig, TPar>::getTransferFunction() const
 {
-  using TF = rsSparseDigitalTransferFunction<TPar>;
-
-  TF U = getCombTransferFunction();
-  TF C = getCorrectorTransferFunction();
-  //C.invert();
-  //C.reflectZeros();
-  return U * C;
+  return getCombTransferFunction() * getCorrectorTransferFunction();
 }
 
 template<class TSig, class TPar>
@@ -1378,7 +1372,6 @@ rsSparseDigitalTransferFunction<TPar> rsDampedAllpassComb<TSig, TPar>
   else
     return one / (one + k * z1 * F * zM);        // U(z) =   1  / (1 + k * z^-1 * F(z) * z^-M)
 }
-
 
 template<class TSig, class TPar>
 rsSparseDigitalTransferFunction<TPar> rsDampedAllpassComb<TSig, TPar>
