@@ -1356,9 +1356,9 @@ rsSparseDigitalTransferFunction<TPar> rsDampedAllpassComb<TSig, TPar>::getTransf
   using TF = rsSparseDigitalTransferFunction<TPar>;
 
   TF U = getCombTransferFunction();
-  TF C = U;
-  C.invert();
-  C.reflectZeros();
+  TF C = getCorrectorTransferFunction();
+  //C.invert();
+  //C.reflectZeros();
   return U * C;
 }
 
