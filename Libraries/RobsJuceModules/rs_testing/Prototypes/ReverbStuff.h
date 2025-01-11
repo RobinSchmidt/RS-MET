@@ -2171,7 +2171,7 @@ public:
   /** Sets up the delay, feedback gain the damping filter. The damping filter must be an FIR 
   filter and the caller is supposed to pass its coefficients and order. The order is the length of
   the coefficient array plus one. */
-  void setup(int delay, TSig feedback, int dampOrder, const TPar* dampCoeffsB)
+  void setup(int delay, TPar feedback, int dampOrder, const TPar* dampCoeffsB)
   {
     delayLine.setDelayInSamples(delay);
     M = delay;
@@ -2264,7 +2264,7 @@ protected:
 
   rsBasicDelayLine<TSig> delayLine;
   std::vector<TPar> b;
-  TSig k;            // Should be TPar?
+  TPar k;
   int M = 0;
 
 };

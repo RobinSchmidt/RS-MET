@@ -1573,8 +1573,8 @@ void dampedAllpassBiComb_1p()
 
 void dampedCombAllpasses()
 {
-  dampedCombAllpassComplex();
-  //dampedCombAllpass6();
+  //dampedCombAllpassComplex();
+  dampedCombAllpass6();          // rename to dampedMultCombAllpass
   //dampedAllpassBiComb_1p();
   //dampedCombAllpass5();
 
