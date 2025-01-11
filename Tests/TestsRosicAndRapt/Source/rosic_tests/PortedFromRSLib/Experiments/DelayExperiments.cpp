@@ -1160,8 +1160,8 @@ void dampedCombAllpassComplex()
   using Complex = std::complex<Real>;
   using VecR    = std::vector<Real>;
   using VecC    = std::vector<Complex>;
-  using Allpass = rsDampedCombAllpass<Complex, Real>;
-  //using Allpass = rsDampedCombAllpass<Complex, Complex>;
+  //using Allpass = rsDampedCombAllpass<Complex, Real>;
+  using Allpass = rsDampedCombAllpass<Complex, Complex>;
 
   // User parameters:
   int  delay      =   100;
@@ -1181,7 +1181,7 @@ void dampedCombAllpassComplex()
   ap.setMaxDelayInSamples(delay);
 
   //ap.setupHighDamp(delay, fb, w, dampGain, false);
-  rsSetupHighDamp(ap, delay, fb, w, dampGain, false);
+  rsSetupHighDampComplex(ap, delay, fb, w, dampGain, false);
 
 
   VecC h = impulseResponse(ap, N, Complex(1));
