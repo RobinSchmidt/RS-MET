@@ -1161,6 +1161,7 @@ void dampedCombAllpassComplex()
   using VecR    = std::vector<Real>;
   using VecC    = std::vector<Complex>;
   using Allpass = rsDampedCombAllpass<Complex, Real>;
+  //using Allpass = rsDampedCombAllpass<Complex, Complex>;
 
   // User parameters:
   int  delay      =   100;
@@ -1178,8 +1179,11 @@ void dampedCombAllpassComplex()
   Real    w  = 2*PI*dampFreq/sampleRate;
   int     N  = numSamples;
   ap.setMaxDelayInSamples(delay);
+
   //ap.setupHighDamp(delay, fb, w, dampGain, false);
   rsSetupHighDamp(ap, delay, fb, w, dampGain, false);
+
+
   VecC h = impulseResponse(ap, N, Complex(1));
   plotComplexVectorReIm(h);                      // Doesn't accept rsComplex - fix that!
 
@@ -1550,7 +1554,8 @@ void dampedAllpassBiComb_1p()
 
 void dampedCombAllpasses()
 {
-  dampedCombAllpass6();
+  dampedCombAllpassComplex();
+  //dampedCombAllpass6();
   //dampedAllpassBiComb_1p();
   //dampedCombAllpass5();
 

@@ -1476,6 +1476,38 @@ void rsSetupHighDamp(rsDampedCombAllpass<TSig, TPar>& flt,
 
 
 
+/*
+template<class TSig, class TPar>
+void rsSetupHighDamp(rsDampedCombAllpass<TSig, TPar>& flt,
+  int delay, TPar feedback, TPar dampOmega, TPar dampGain, bool predelay)
+{
+  TPar a[2], b[2]; a[0] = 1;
+  rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
+  flt.setup(delay, feedback, 1, b, a, predelay);
+}
+
+// This is needed for the case when we want ot have a complex TPar. It's a bit dirty to use 
+// the explicit type double. Maybe it should be a third template parameter TReal or something.
+template<class TSig, class TPar>
+void rsSetupHighDamp(rsDampedCombAllpass<TSig, TPar>& flt,
+  int delay, TPar feedback, double dampOmega, double dampGain, bool predelay)
+{
+  double a[2], b[2]; a[0] = 1;
+  rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
+  TPar A[2], B[2]; 
+  A[0] = TPar(a[0]);
+  A[1] = TPar(a[1]);
+  B[0] = TPar(b[0]);
+  B[1] = TPar(b[1]);
+
+  flt.setup(delay, feedback, 1, b, a, predelay);
+}
+*/
+
+
+
+
+
 // Under construction. Should set up the flt such that it achieves a given overall decay time in 
 // samples (in the sense of RT60, i.e. reverb time to decay to -60 dB) and having scaled deacy 
 // times for low and high frequencies. The scale factors are given as raw factors for the RT60 and
