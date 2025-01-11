@@ -1484,8 +1484,6 @@ void rsSetupFractional(rsDampedCombAllpass<TSig, TPar>& flt,
 {
   int  delayInt  = (int) rsFloor(delay);
   TPar delayFrac = delay - (TPar) delayInt;
-
-    
   TPar a[2], b[2]; 
   a[0] = 1;
 
@@ -1496,17 +1494,25 @@ void rsSetupFractional(rsDampedCombAllpass<TSig, TPar>& flt,
   }
   else
   {
+    // Verify these:
+    TPar x     = delayFrac;  // Or should it be 1-delayFrac?
+    TPar coeff = x;          // For warped allpass: coeff = (1-x)/(1+x)
 
+    b[0] = coeff;
+    b[1] = 1;
+    a[0] = 1;
+    a[1] = coeff; 
+    //a[1] = 0.999*coeff;         // rsInterpolator scales this by 0.999 - may we should, too?
+    // This gives unstable filters!
 
+    // Test - linear interpolation:
+    b[0] = coeff;
+    b[1] = 1 - coeff;
+    a[0] = 1;
+    a[1] = 0;
 
-
+    flt.setup(delayInt, feedback, 1, b, a, predelay);
   }
-
-
-  //rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
-
-
-  //flt.setup(delay, feedback, 1, b, a, predelay);
 }
 
 // Under construction. Should set up the flt such that it achieves a given overall decay time in 
@@ -1553,6 +1559,8 @@ void rsSetupDecayTimes(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay, TPar de
   }
   else
   {
+    // Under construction:
+
     // Design an interpolation allpass. See getSampleAllpass() and getSampleWarpedAllpass() in 
     // rsInterpolator for the formulas
 

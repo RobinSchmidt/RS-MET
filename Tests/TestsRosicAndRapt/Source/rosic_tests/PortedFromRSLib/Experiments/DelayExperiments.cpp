@@ -1012,7 +1012,7 @@ void dampedCombAllpassFractional1()
   using Allpass   = rsDampedCombAllpass<Real, Real>;
 
   int  numSamples = 5000;     // Number of samples to render.
-  Real delay      =  100.0;   // Delay in samples - not necessarily integer, though 
+  Real delay      =  100.5;   // Delay in samples - not necessarily integer, though 
   Real feedback   =    0.9;
 
   int  N        = numSamples;
