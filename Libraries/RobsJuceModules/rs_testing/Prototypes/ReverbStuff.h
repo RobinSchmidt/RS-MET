@@ -1081,7 +1081,7 @@ public:
   delayline length M is given by delay-1. That is: the delay user parameter means the total 
   roundtrip delay which includes the delayline delay and the implicit delay in the feedback 
   loop. */
-  void setup(int delay, TSig feedback, 
+  void setup(int delay, TPar feedback, 
     int dampOrder, const TPar* dampCoeffsB, const TPar* dampCoeffsA, bool predelayMode);
 
   /** Initializes all settings to default values. */
@@ -1240,7 +1240,7 @@ void rsDampedCombAllpass<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 }
 
 template<class TSig, class TPar>
-void rsDampedCombAllpass<TSig, TPar>::setup(int delay, TSig feedback, int dampOrder,
+void rsDampedCombAllpass<TSig, TPar>::setup(int delay, TPar feedback, int dampOrder,
   const TPar* dampCoeffsB, const TPar* dampCoeffsA, bool predelayMode)
 {
   if(dampOrder > maxDmpOrd) 
@@ -1468,7 +1468,7 @@ TSig rsDampedCombAllpass<TSig, TPar>::applyCorrector(TSig in)
 // A free function to set up the object with a more convenient parametrization:
 template<class TSig, class TPar>
 void rsSetupHighDamp(rsDampedCombAllpass<TSig, TPar>& flt,
-  int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay)
+  int delay, TPar feedback, TPar dampOmega, TPar dampGain, bool predelay)
 {
   TPar a[2], b[2]; a[0] = 1;
   rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
