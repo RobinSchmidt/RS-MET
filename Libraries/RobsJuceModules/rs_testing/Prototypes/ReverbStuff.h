@@ -1711,50 +1711,89 @@ public:
 
 
 
-  void setSampleRate(TPar newSampleRate)
-  {
-    sampleRate = newSampleRate;
-  }
+  void setSampleRate(TPar newSampleRate)        { sampleRate = newSampleRate;    dirty = true;}
+
+  void setFrequency(TPar newFrequency)          { frequency = newFrequency;      dirty = true;}
+
+  void setDecayTimeInSeconds(TPar newDecayTime) { decayTime = newDecayTime;      dirty = true;}
+
+  void setLowCrossoverFreq(TPar newFreq)        { lowCrossFreq = newFreq;        dirty = true;}
+
+  void setLowDecayScale(TPar newTimeScale)      { lowDecayScale = newTimeScale;  dirty = true;}
+
+  void setHighCrossoverFreq(TPar newFreq)       { highCrossFreq = newFreq;       dirty = true;}
+
+  void setHighDecayScale(TPar newTimeScale)     { highDecayScale = newTimeScale; dirty = true;}
+
+
+
+
+
+  // ToDo compare function name to what we have in the FDN classes and make the consistent
+
 
 
   void setup(std::vector<CombSettings>& newSettings)
   {
-    rsCopy(newSettings, settings);
+    rsCopy(newSettings, settings);  
     // Allocates only when settings has not enough capacity
 
-    updateFilters();
-    // This currently always allocates. This is not yet realtime ready.
+    dirty = true;
+  }
+  // Rename to setCombSettings. Maybe take a raw pointer and length
+
+
+  TSig getSample(TSig in)
+  {
+    rsAssert(combs.size() == correctors.size());
+
+    if(dirty)
+      updateFilters();
+
+    TSig tmp = in;
+    for(size_t i = 0; i < combs.size(); i++)
+    {
+      tmp = combs[i].getSample(tmp);
+      tmp = correctors[i].getSample(tmp);
+    }
+    return tmp;
   }
 
 
-
 protected:
-
-
 
 
   void updateFilters();
   // Allocates! Not yet realtime ready.
 
 
+
   std::vector<CombSettings> settings;
-  std::vector<rsSparseFilter<TSig, TPar>>  filters;
+  std::vector<rsSparseFilter<TSig, TPar>> combs;
+  std::vector<rsSparseFilter<TSig, TPar>> correctors;
 
 
   TPar sampleRate     = TPar(44100);
   TPar frequency      = TPar(440);
   TPar decayTime      = TPar(0.25);
+  TPar lowCrossFreq   = TPar(250);
   TPar lowDecayScale  = TPar(2.0);
+  TPar highCrossFreq  = TPar(4000);
   TPar highDecayScale = TPar(0.5);
+
+  bool dirty = true;
 };
 
 
 template<class TSig, class TPar>
 void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
 {
-  rsAssert(settings.size() == filters.size());
+  size_t N = settings.size();
+  rsAssert(N == combs.size());
+  rsAssert(N == correctors.size());
 
-  for(size_t i = 0; i < settings.size(); i++)
+
+  for(size_t i = 0; i < N; i++)
   {
 
 

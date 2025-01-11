@@ -1278,15 +1278,43 @@ void dampedMultiCombAllpass2()
   using Settings = Filter::CombSettings;
 
 
+  Real sampleRate = 48000;
+  Real frequency  =   440.0;   // Reference frequency
+  Real decayTime  =     1.0;   // Decay time for mid frequencies in seconds.
+  Real lowFreq    =   250.0;   // Crossover freq between low and mid frequencies in Hz.
+  Real lowScale   =     1.5;   // Decay time scaler for low frequencies.
+  Real highFreq   =  4000.0;   // Crossover freq between mid and high frequencies in Hz.
+  Real highScale  =     0.2;   // Decay time scaler for high frequencies.
 
-  Settings settings1, settings2;
 
 
 
+  Settings s1, s2;
+
+  s1.freqScale = 1.0;
+  s1.gain      = 1.0;
+  s1.onlyOdds  = true;
+
+  s2.freqScale = 1.5;
+  s2.gain      = 1.0;
+  s2.onlyOdds  = true;
+
+  std::vector<Settings> combSettings({s1,s2});
 
 
-
+  // Create and set up the filter:
   Filter flt;
+  flt.setSampleRate(sampleRate);
+  flt.setFrequency(frequency);
+  flt.setDecayTimeInSeconds(decayTime);
+  flt.setLowCrossoverFreq(lowFreq);
+  flt.setLowDecayScale(lowScale);
+  flt.setHighCrossoverFreq(highFreq);
+  flt.setHighDecayScale(highScale);
+  flt.setup(combSettings);
+  //flt.updateFilters();
+
+
 
 
 }
