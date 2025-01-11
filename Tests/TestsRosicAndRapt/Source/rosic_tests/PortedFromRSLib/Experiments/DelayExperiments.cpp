@@ -1003,8 +1003,11 @@ void dampedCombAllpass5()
 
 void dampedCombAllpassFractional1()
 {
-  // Under construction
-  //
+  // We set up an rsDampedCombAllpass with a fractional amount of delay. This is implemented by 
+  // using a (linear) interpolation filter in the feedback path. In this case here, we don't really
+  // have any damping filter in the feedback path (other than the interpolation filter which does
+  // a high frequency damping dependning on the amount of fractional delay - it'S most severe when
+  // the fraxctional delay is 0.5 in which case there's a zero at z = -1).
 
   // Define types to be used:
   using Real      = double;
@@ -1012,7 +1015,7 @@ void dampedCombAllpassFractional1()
   using Allpass   = rsDampedCombAllpass<Real, Real>;
 
   int  numSamples = 5000;     // Number of samples to render.
-  Real delay      =  100.5;  // Delay in samples - not necessarily integer, though 
+  Real delay      =  100.3;   // Delay in samples - not necessarily integer, though 
   Real feedback   =    0.9;
 
   int  N        = numSamples;
@@ -1023,32 +1026,35 @@ void dampedCombAllpassFractional1()
   ap.setMaxDelayInSamples(maxDelay);
   rsSetupFractional(ap, delay, feedback, false);
 
-  // Get output of comb:
+  // Get impulse response of comb:
   Vec hc(N);
   hc[0] = ap.getSampleComb(1.0);
   for(int n = 1; n < N; n++)
     hc[n] = ap.getSampleComb(0.0);
   rsPlotVectors(hc);
 
-
+  // Get impulse response of full allpass:
   Vec h = impulseResponse(ap, N, 1.0);
   rsPlotVectors(h);
 
+
   // Observations:
   //
-  // - Witth delay = 100.25, we get a sort of "mexican hat" shape in the second spike of the 
+  // - With delay = 100.25, we get a sort of "mexican hat" shape in the second spike of the 
   //   allpass response
+  //
+  //
+  // ToDo:
+  //
+  // - Try implementing allpass interpolation. I did already try but with no success, so far. The 
+  //   combs became unstable. But I'm not totally convinced that it is impossible. Maybe I just did
+  //   something wrong.
 }
-
-
 
 void dampedCombAllpassFractional2()
 {
-  // Under construction
-  //
-  // We want to create a damped comb allpass with a fractional delay using allpass interpolation 
-  // for the delayline. They way we do this is to absorb the interpolation allpass filter into the
-  // feedback filter. We want to use fractional delay and nontrivial damping filters here ...TBC...
+  // Now we wanto to create damped allpass with fractional delay and some actual dampling filters.
+  // They way we do this is to absorb the interpolation filter into the damping filter.
 
   // Define types to be used:
   using Real      = double;
@@ -1058,8 +1064,7 @@ void dampedCombAllpassFractional2()
   // User parameters:
   Real sampleRate = 48000;     // Sampling rate.
   int  numSamples = 12000;     // Number of samples to render.
-
-  Real delay      =   100.25;  // Delay in samples - not necessarily integer, though 
+  Real delay      =   100.3;   // Delay in samples - not necessarily integer, though 
   Real decayTime  =     0.5;   // Decay time for mid frequencies in seconds.
   Real lowFreq    =   250.0;   // Crossover freq between low and mid frequencies in Hz.
   Real lowScale   =     1.5;   // Decay time scaler for low frequencies.
@@ -1264,6 +1269,12 @@ void dampedMultiCombAllpass()
   // - Try phasing (i.e. zero-reflecting) the damping filters (per comb).
 }
 
+
+void dampedMultiCombAllpass2()
+{
+
+
+}
 
 
 // This is needed for the case when we want ot have a complex TPar. It's a bit dirty to use 
@@ -1691,9 +1702,10 @@ void dampedAllpassBiComb_1p()
 void dampedCombAllpasses()
 {
   //dampedCombAllpass5();
-  //dampedCombAllpassFractional1();
+  dampedCombAllpassFractional1();
   dampedCombAllpassFractional2();
-  //dampedMultiCombAllpass();
+  dampedMultiCombAllpass();
+  dampedMultiCombAllpass2();
 
 
   dampedCombAllpass1();

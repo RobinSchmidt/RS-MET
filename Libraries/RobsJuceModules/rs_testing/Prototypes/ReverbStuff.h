@@ -1503,7 +1503,8 @@ void rsSetupFractional(rsDampedCombAllpass<TSig, TPar>& flt,
     //b[1] = 1;
     //a[0] = 1;
     //a[1] = c;
-    //// Doesn't work! Gives unstable comb filters!
+    //// Doesn't work! Gives unstable comb filters! Maybe the meaning of y[n-1] is different in
+    //// context here?
 
     // Linear interpolation:
     b[0] = 1 - d;
