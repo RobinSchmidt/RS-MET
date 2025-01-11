@@ -790,14 +790,14 @@ DelayExperiments.cpp  ...TBC...
 */
 
 template<class TSig, class TPar>
-class rsDampedAllpassCombNaive
+class rsDampedCombAllpassNaive
 {
 
-  // Maybe rename to rsDampedAllpassComb. 
+  // Maybe rename to rsDampedCombAllpass. 
 
 public:
 
-  rsDampedAllpassCombNaive()
+  rsDampedCombAllpassNaive()
   {
 
   }
@@ -862,7 +862,7 @@ protected:
 };
 
 template<class TSig, class TPar>
-void rsDampedAllpassCombNaive<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
+void rsDampedCombAllpassNaive<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
   mainDelay .setMaxDelayInSamples(maxM);
@@ -871,7 +871,7 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 }
 
 template<class TSig, class TPar>
-void rsDampedAllpassCombNaive<TSig, TPar>::setup(
+void rsDampedCombAllpassNaive<TSig, TPar>::setup(
   int delay, TSig feedback, int dampOrder, TPar* b, TPar* a, bool predelay)
 {
   rsAssert(dampOrder == 1, "We currently only support 1st order damping filters");
@@ -905,7 +905,7 @@ void rsDampedAllpassCombNaive<TSig, TPar>::setup(
 }
 
 template<class TSig, class TPar>
-void rsDampedAllpassCombNaive<TSig, TPar>::reset()
+void rsDampedCombAllpassNaive<TSig, TPar>::reset()
 {
   mainDelay.reset();
   damper.reset();
@@ -918,13 +918,13 @@ void rsDampedAllpassCombNaive<TSig, TPar>::reset()
 }
 
 template<class TSig, class TPar>
-TSig rsDampedAllpassCombNaive<TSig, TPar>::getSample(TSig in)
+TSig rsDampedCombAllpassNaive<TSig, TPar>::getSample(TSig in)
 {
   return applyCorrector(getSampleComb(in));
 }
 
 template<class TSig, class TPar>
-TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleComb(TSig in)
+TSig rsDampedCombAllpassNaive<TSig, TPar>::getSampleComb(TSig in)
 {
   if(preDelay)
   {
@@ -940,13 +940,13 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::getSampleComb(TSig in)
     // that will be used in the next call. And that state needs to have the damper applied.
   }
 
-  // In the dampedAllpassComb1() experiment where I derived all of this, I actually use a negative
+  // In the dampedCombAllpass1() experiment where I derived all of this, I actually use a negative
   // sign for the feedback signal. There's some comment about why, but I'm a bit shaky on this. But 
   // this might explain why we have 
 }
 
 template<class TSig, class TPar>
-TSig rsDampedAllpassCombNaive<TSig, TPar>::applyCorrector(TSig in)
+TSig rsDampedCombAllpassNaive<TSig, TPar>::applyCorrector(TSig in)
 {
   // Apply 1-pole:
   TSig t = corPoles.getSample(in);
@@ -972,7 +972,7 @@ TSig rsDampedAllpassCombNaive<TSig, TPar>::applyCorrector(TSig in)
 
 // A free function to set up the object with a more convenient parametrization:
 template<class TSig, class TPar>
-void rsSetupHighDamp(rsDampedAllpassCombNaive<TSig, TPar>& flt,
+void rsSetupHighDamp(rsDampedCombAllpassNaive<TSig, TPar>& flt,
   int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay)
 {
   TPar a[2], b[2]; a[0] = 1;
@@ -995,7 +995,7 @@ There is a delayline of length M around which we have a feedback loop with a fee
 and a scalar feedback gain k and a unit delay z^-1 in the loop to make it realizable. This part
 of the filter so far, taken by itself, implements a comb filter. The strategy is now to apply an 
 appropriate compensation filter C(z) to make the overall structure allpass in nature. The 
-derivation of this filter C(z) is outlined in Notes/DSP/DampedAllpassComb.txt. The short version 
+derivation of this filter C(z) is outlined in Notes/DSP/DampedCombAllpass.txt. The short version 
 of it that the comb part has a transfer function:
 
                    z^-M
@@ -1042,7 +1042,7 @@ or with shelving or peak/bell filters with negative dB gains.
 */
 
 template<class TSig, class TPar>
-class rsDampedAllpassComb
+class rsDampedCombAllpass
 {
 
 
@@ -1053,7 +1053,7 @@ public:
   // \name Lifetime
 
   /** Standard constructor. Initializes the settings and resets the state to initial conditions. */
-  rsDampedAllpassComb()
+  rsDampedCombAllpass()
   {
     initSettings();
     reset();
@@ -1231,7 +1231,7 @@ protected:
 };
 
 template<class TSig, class TPar>
-void rsDampedAllpassComb<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
+void rsDampedCombAllpass<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
   mainDelay .setMaxDelayInSamples(maxM);
@@ -1239,7 +1239,7 @@ void rsDampedAllpassComb<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 }
 
 template<class TSig, class TPar>
-void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOrder,
+void rsDampedCombAllpass<TSig, TPar>::setup(int delay, TSig feedback, int dampOrder,
   const TPar* dampCoeffsB, const TPar* dampCoeffsA, bool predelayMode)
 {
   if(dampOrder > maxDmpOrd) 
@@ -1263,7 +1263,7 @@ void rsDampedAllpassComb<TSig, TPar>::setup(int delay, TSig feedback, int dampOr
 }
 
 template<class TSig, class TPar>
-void rsDampedAllpassComb<TSig, TPar>::initSettings()
+void rsDampedCombAllpass<TSig, TPar>::initSettings()
 {
   mainDelay.setDelayInSamples(0);
   corrDelay.setDelayInSamples(0);
@@ -1279,14 +1279,14 @@ void rsDampedAllpassComb<TSig, TPar>::initSettings()
 }
 
 template<class TSig, class TPar>
-rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getTransferFunctionAt(
+rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
   return getCombTransferFunctionAt(z) * getCorrectorTransferFunctionAt(z);
 }
 
 template<class TSig, class TPar>
-rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCombTransferFunctionAt(
+rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getCombTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
   using Complex = rsComplex<TPar>;
@@ -1309,7 +1309,7 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCombTransferFunctionAt(
 }
 
 template<class TSig, class TPar>
-rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getDamperTransferFunctionAt(
+rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getDamperTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
   using Complex = rsComplex<TPar>;
@@ -1330,7 +1330,7 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getDamperTransferFunctionAt(
 }
 
 template<class TSig, class TPar>
-rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCorrectorTransferFunctionAt(
+rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getCorrectorTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
   using Complex = rsComplex<TPar>;
@@ -1351,13 +1351,13 @@ rsComplex<TPar> rsDampedAllpassComb<TSig, TPar>::getCorrectorTransferFunctionAt(
 }
 
 template<class TSig, class TPar>
-rsSparseDigitalTransferFunction<TPar> rsDampedAllpassComb<TSig, TPar>::getTransferFunction() const
+rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>::getTransferFunction() const
 {
   return getCombTransferFunction() * getCorrectorTransferFunction();
 }
 
 template<class TSig, class TPar>
-rsSparseDigitalTransferFunction<TPar> rsDampedAllpassComb<TSig, TPar>
+rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
                                       ::getCombTransferFunction() const
 {
   using TF = rsSparseDigitalTransferFunction<TPar>;
@@ -1374,7 +1374,7 @@ rsSparseDigitalTransferFunction<TPar> rsDampedAllpassComb<TSig, TPar>
 }
 
 template<class TSig, class TPar>
-rsSparseDigitalTransferFunction<TPar> rsDampedAllpassComb<TSig, TPar>
+rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
                                       ::getDamperTransferFunction() const
 {
   rsSparseDigitalTransferFunction<TPar> H;
@@ -1383,7 +1383,7 @@ rsSparseDigitalTransferFunction<TPar> rsDampedAllpassComb<TSig, TPar>
 }
 
 template<class TSig, class TPar>
-rsSparseDigitalTransferFunction<TPar> rsDampedAllpassComb<TSig, TPar>
+rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
                                       ::getCorrectorTransferFunction() const
 {
   using TF = rsSparseDigitalTransferFunction<TPar>;
@@ -1397,7 +1397,7 @@ rsSparseDigitalTransferFunction<TPar> rsDampedAllpassComb<TSig, TPar>
 
 
 template<class TSig, class TPar>
-void rsDampedAllpassComb<TSig, TPar>::reset()
+void rsDampedCombAllpass<TSig, TPar>::reset()
 {
   mainDelay.reset();
   corrDelay.reset();
@@ -1412,7 +1412,7 @@ void rsDampedAllpassComb<TSig, TPar>::reset()
 }
 
 template<class TSig, class TPar>
-TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
+TSig rsDampedCombAllpass<TSig, TPar>::getSampleComb(TSig in)
 {
   if(preDelay) 
   {
@@ -1437,7 +1437,7 @@ TSig rsDampedAllpassComb<TSig, TPar>::getSampleComb(TSig in)
 }
 
 template<class TSig, class TPar>
-TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
+TSig rsDampedCombAllpass<TSig, TPar>::applyCorrector(TSig in)
 {
   // Apply the poles:
   TSig t = applyCorrectorPoles(in);
@@ -1466,7 +1466,7 @@ TSig rsDampedAllpassComb<TSig, TPar>::applyCorrector(TSig in)
 
 // A free function to set up the object with a more convenient parametrization:
 template<class TSig, class TPar>
-void rsSetupHighDamp(rsDampedAllpassComb<TSig, TPar>& flt,
+void rsSetupHighDamp(rsDampedCombAllpass<TSig, TPar>& flt,
   int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay)
 {
   TPar a[2], b[2]; a[0] = 1;
@@ -1481,7 +1481,7 @@ void rsSetupHighDamp(rsDampedAllpassComb<TSig, TPar>& flt,
 // times for low and high frequencies. The scale factors are given as raw factors for the RT60 and
 // crossover frequencies are given as omega.
 template<class TSig, class TPar>
-void rsSetupDecayTimes(rsDampedAllpassComb<TSig, TPar>& flt, int delay, TPar decayTimeInSamples,
+void rsSetupDecayTimes(rsDampedCombAllpass<TSig, TPar>& flt, int delay, TPar decayTimeInSamples,
   TPar lowOmega, TPar lowTimeScale, TPar highOmega, TPar highTimeScale, bool predelay)
 {
   // Compute desired feedback gains for low, mid and high frequencies:
@@ -1580,19 +1580,20 @@ class rsDampedAllpassMultiComb
 };
 */
 
-// ToDo: Rename the ...AllpassComb.. classes in ...CombAllpass...
+// ToDo: Rename the ...CombAllpass.. classes in ...CombAllpass...
+
 
 
 
 //=================================================================================================
 
-/** This is a special trimmed down version of rsDampedAllpassComb that only allows for a first 
+/** This is a special trimmed down version of rsDampedCombAllpass that only allows for a first 
 order filter in the feedback loop. I think, this is a common case that is worth to have some 
 optimized code for. The general version with arbitrary feedback filters needs a much more
 complicated implementation. */
 
 template<class TSig, class TPar>
-class rsDampedAllpassComb_1p
+class rsDampedCombAllpass_1p
 {
 
 public:
@@ -1669,7 +1670,7 @@ protected:
 };
 
 template<class TSig, class TPar>
-void rsDampedAllpassComb_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
+void rsDampedCombAllpass_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
   mainDelay .setMaxDelayInSamples(maxM);
@@ -1677,7 +1678,7 @@ void rsDampedAllpassComb_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 }
 
 template<class TSig, class TPar>
-void rsDampedAllpassComb_1p<TSig, TPar>::setup(int delay, TSig feedback, 
+void rsDampedCombAllpass_1p<TSig, TPar>::setup(int delay, TSig feedback, 
   TPar dampCoeffB0, TPar dampCoeffB1, TPar dampCoeffA1, bool predelay)
 {
   M = delay - 1;
@@ -1692,7 +1693,7 @@ void rsDampedAllpassComb_1p<TSig, TPar>::setup(int delay, TSig feedback,
 }
 
 template<class TSig, class TPar>
-void rsDampedAllpassComb_1p<TSig, TPar>::reset()
+void rsDampedCombAllpass_1p<TSig, TPar>::reset()
 {
   mainDelay.reset();
   unitDelay.reset();
@@ -1706,13 +1707,13 @@ void rsDampedAllpassComb_1p<TSig, TPar>::reset()
 }
 
 template<class TSig, class TPar>
-TSig rsDampedAllpassComb_1p<TSig, TPar>::getSample(TSig in)
+TSig rsDampedCombAllpass_1p<TSig, TPar>::getSample(TSig in)
 {
   return applyCorrector(getSampleComb(in));
 }
 
 template<class TSig, class TPar>
-TSig rsDampedAllpassComb_1p<TSig, TPar>::getSampleComb(TSig in)
+TSig rsDampedCombAllpass_1p<TSig, TPar>::getSampleComb(TSig in)
 {
   if(preDelay)
   {
@@ -1727,7 +1728,7 @@ TSig rsDampedAllpassComb_1p<TSig, TPar>::getSampleComb(TSig in)
 }
 
 template<class TSig, class TPar>
-TSig rsDampedAllpassComb_1p<TSig, TPar>::applyCorrector(TSig in)
+TSig rsDampedCombAllpass_1p<TSig, TPar>::applyCorrector(TSig in)
 {
   TSig t = applyCorrectorOnePole(in);
 
@@ -1741,7 +1742,7 @@ TSig rsDampedAllpassComb_1p<TSig, TPar>::applyCorrector(TSig in)
 }
 
 template<class TSig, class TPar>
-void rsSetupHighDamp(rsDampedAllpassComb_1p<TSig, TPar>& flt,
+void rsSetupHighDamp(rsDampedCombAllpass_1p<TSig, TPar>& flt,
   int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay)
 {
   TPar a[2], b[2]; a[0] = 1;
@@ -1752,7 +1753,7 @@ void rsSetupHighDamp(rsDampedAllpassComb_1p<TSig, TPar>& flt,
 
 //=================================================================================================
 
-/** Like rsDampedAllpassComb_1p but with two combs in parallel instead of just one. The outputs of
+/** Like rsDampedCombAllpass_1p but with two combs in parallel instead of just one. The outputs of
 the two combs are scaled by weighting factors and then added together. Then, a compensation filter
 is applied to that to make the whole filter allpass..
 
@@ -2068,10 +2069,10 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
 
 //=================================================================================================
 
-/** A nonlinear extension of rsDampedAllpassComb. At the moment, it's just an experimental stub. */
+/** A nonlinear extension of rsDampedCombAllpass. At the moment, it's just an experimental stub. */
 
 template<class TSig, class TPar>
-class rsDampedAllpassCombNonLin : public rsDampedAllpassComb<TSig, TPar>
+class rsDampedCombAllpassNonLin : public rsDampedCombAllpass<TSig, TPar>
 {
 
 public:

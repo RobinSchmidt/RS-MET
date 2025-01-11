@@ -2315,15 +2315,15 @@ bool multiPoleAllpassDelayUnitTest()
 }
 
 
-bool dampedAllpassCombUnitTest1()
+bool dampedCombAllpassUnitTest1()
 {
   bool ok = true;
 
   using Real      = double;
   using Vec       = std::vector<Real>;
-  using CombNaive = rsDampedAllpassCombNaive<Real, Real>;
-  using Comb      = rsDampedAllpassComb<Real, Real>;
-  using Comb_1p   = rsDampedAllpassComb_1p<Real, Real>;
+  using CombNaive = rsDampedCombAllpassNaive<Real, Real>;
+  using Comb      = rsDampedCombAllpass<Real, Real>;
+  using Comb_1p   = rsDampedCombAllpass_1p<Real, Real>;
 
   // Test parameters:
   int  d =   50;       // Main delay roundtrip length in samples
@@ -2412,13 +2412,13 @@ bool dampedAllpassCombUnitTest1()
 
   // ToDo:
   //
-  // - Testa also rsDampedAllpassComb_1p
+  // - Testa also rsDampedCombAllpass_1p
 
 }
 
-bool dampedAllpassCombUnitTest2()
+bool dampedCombAllpassUnitTest2()
 {
-  // We test rsDampedAllpassComb with higher order damping filters. We do this by starting with
+  // We test rsDampedCombAllpass with higher order damping filters. We do this by starting with
   // coefficient arrays of first order shelving filters and to get higher order filters, we 
   // iteratively convolve the coeff array of the current filter with the coeff array of the 1st 
   // order shelver. This way, the higher order filters represent series connections of shelvers 
@@ -2429,7 +2429,7 @@ bool dampedAllpassCombUnitTest2()
 
   using Real = double;
   using Vec  = std::vector<Real>;
-  using Comb = rsDampedAllpassComb<Real, Real>;
+  using Comb = rsDampedCombAllpass<Real, Real>;
   using AT   = rsArrayTools;
 
   // Test parameters:
@@ -2486,7 +2486,7 @@ bool dampedAllpassCombUnitTest2()
 
   // ToDo:
   //
-  // - I'd really like rsDampedAllpassComb::getMaxDampingOrder(); be a static member function and
+  // - I'd really like rsDampedCombAllpass::getMaxDampingOrder(); be a static member function and
   //   then use  maxDampOrder = Comb::.getMaxDampingOrder();  rather than 
   //   maxDampOrder = flt.getMaxDampingOrder();  but it seems, I can't combine static with 
   //   constexpr. Figure out, if this is possible! But maybe we should eventually let the max 
@@ -2500,24 +2500,24 @@ bool dampedAllpassCombUnitTest2()
   // - Try it with feedback filters with different numbers of poles and zeros, i.e. where either a
   //   or b has a tail of zeros
   //
-  // - Integrate tests for the transfer function computations. See dampedAllpassCombTransFunc() in
+  // - Integrate tests for the transfer function computations. See dampedCombAllpassTransFunc() in
   //   DelayExperiments.cpp. Also, do all the tests also with the mode with predelay.
 }
 
-// Maybe rename it to dampedAllpassCombTransFuncUnitTest
+// Maybe rename it to dampedCombAllpassTransFuncUnitTest
 // Give it a boolean parameter that we can pass on to ap.setup() so we can do the test in both
 // opertational modes
 
-bool dampedAllpassCombUnitTest3(bool withPreDelay)
+bool dampedCombAllpassUnitTest3(bool withPreDelay)
 {
-  // We test the computation of the transfer function in rsDampedAllpassComb, i.e. the 
-  // getTransferFunctionAt(complex z) etc. methods. We use the same setup as in dampedAllpassComb4
+  // We test the computation of the transfer function in rsDampedCombAllpass, i.e. the 
+  // getTransferFunctionAt(complex z) etc. methods. We use the same setup as in dampedCombAllpass4
 
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
   using Complex = rsComplex<Real>;
-  using Allpass = rsDampedAllpassComb<Real, Real>;
+  using Allpass = rsDampedCombAllpass<Real, Real>;
 
   int  N        = 8192;
   int  delay    = 50;
@@ -2793,10 +2793,10 @@ bool allpassUnitTest()
   ok &= allpassDisperserUnitTest();
   ok &= twoPoleAllpassDelayUnitTest();
   ok &= multiPoleAllpassDelayUnitTest();
-  ok &= dampedAllpassCombUnitTest1();
-  ok &= dampedAllpassCombUnitTest2();
-  ok &= dampedAllpassCombUnitTest3(false);
-  ok &= dampedAllpassCombUnitTest3(true);
+  ok &= dampedCombAllpassUnitTest1();
+  ok &= dampedCombAllpassUnitTest2();
+  ok &= dampedCombAllpassUnitTest3(false);
+  ok &= dampedCombAllpassUnitTest3(true);
   ok &= dampedSchroederAllpassUnitTest();
   ok &= dampedAllpassBiCombUnitTest();
 

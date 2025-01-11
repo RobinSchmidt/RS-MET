@@ -218,11 +218,11 @@ void twoPoleAllpassDelay()
   //   frequency. Maybe  omega*delay = 2*pi*f/fs  or  omega/delay = 2*pi*f/fs?
 }
 
-void dampedAllpassComb1()
+void dampedCombAllpass1()
 {
   // This experiment is basically my initial step by step derivation of what later became the class
-  // rsDampedAllpassCombNaive. It's based on the idea that I explain in the dcoument:
-  // Notes/DSP/DampedAllpassComb.txt
+  // rsDampedCombAllpassNaive. It's based on the idea that I explain in the dcoument:
+  // Notes/DSP/DampedCombAllpass.txt
   //
   // I implement an idea for starting with an arbitrary given allpass filter A(z) and arbitrary 
   // given feedback filter F(z) that sits in a feedback loop with unit delay around that allpass. I 
@@ -507,9 +507,9 @@ void dampedAllpassComb1()
   //   the other value.
 }
 
-void dampedAllpassComb2()
+void dampedCombAllpass2()
 {
-  // Now, we use the class rsDampedAllpassComb which encapsulates the algorithm derived above into a 
+  // Now, we use the class rsDampedCombAllpass which encapsulates the algorithm derived above into a 
   // class. We use that class here to test some different options for the sign of the feedback gain
   // and the swapping of damper and delay. This leads to 4 different modes that all have different
   // properties and sound different.
@@ -517,7 +517,7 @@ void dampedAllpassComb2()
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Allpass = rsDampedAllpassComb<Real, Real>;
+  using Allpass = rsDampedCombAllpass<Real, Real>;
 
   // User parameters:
   int  delay      =   100;     // Main delay roundtrip length in samples. Is M-1 in the algo
@@ -589,14 +589,14 @@ void dampedAllpassComb2()
   //   artificially introduce an additional sample of delay in "pre-delay" mode.
 }
 
-void dampedAllpassComb3()
+void dampedCombAllpass3()
 {
   // Now, we create a chain of 4 such allpass comb filters and produce its impulse response.
 
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Allpass = rsDampedAllpassComb<Real, Real>;
+  using Allpass = rsDampedCombAllpass<Real, Real>;
 
   // User parameters:
   int  delay1     =    53;     // 1st main delay roundtrip length in samples. Is M-1 in the algo
@@ -713,7 +713,7 @@ void dampedAllpassComb3()
   //   and negative and positive k.
 }
 
-void dampedAllpassComb4()
+void dampedCombAllpass4()
 {
   // Here, we try to use higher order feedback damping filters. Specifically, we use a biquad that
   // realized a wide-band dip (i.e. downward bell) frequency response.
@@ -722,7 +722,7 @@ void dampedAllpassComb4()
   using Real    = double;
   using Vec     = std::vector<Real>;
   using Complex = rsComplex<Real>;
-  using Allpass = rsDampedAllpassComb<Real, Real>;
+  using Allpass = rsDampedCombAllpass<Real, Real>;
 
   // User parameters:
   int  N        = 8192;
@@ -748,23 +748,23 @@ void dampedAllpassComb4()
   //
   // - Add more dispersion to the feedback path by using a maximum phase rather than minimum phase
   //   biquad. This can be achieved by reversing the b-array, i.e. swapping b[0] and b[2]. But then
-  //   we can't use the mode without predelay. See documentation of rsDampedAllpassComb. But maybe
+  //   we can't use the mode without predelay. See documentation of rsDampedCombAllpass. But maybe
   //   it can actually be made to work if we don't use the inverse damping filter as is but reflect
   //   its poles.
 }
 
-void dampedAllpassComb5()
+void dampedCombAllpass5()
 {
   // Under construction.
   //
-  // We want to set up an rsDampedAllpassComb that achieves a desired overall decay time (in the 
+  // We want to set up an rsDampedCombAllpass that achieves a desired overall decay time (in the 
   // RT60 sense) and also allows that decay time to be scaled at low and high frequencies via 
   // shelving filters. ...TBC...
 
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Allpass = rsDampedAllpassComb<Real, Real>;
+  using Allpass = rsDampedCombAllpass<Real, Real>;
 
   // User parameters:
   Real sampleRate = 48000;     // Sampling rate.
@@ -986,11 +986,11 @@ void dampedAllpassComb5()
   //   the decay times add up?
 }
 
-void dampedAllpassComb6()
+void dampedCombAllpass6()
 {
   // Under construction.
   //
-  // We want to extract the transfer function from an rsDampedAllpassComb object as 
+  // We want to extract the transfer function from an rsDampedCombAllpass object as 
   // rsSparseRationalFunction and then use that to set up an rsSparseFilter object. They should
   // both have the same impulse response.
 
@@ -998,7 +998,7 @@ void dampedAllpassComb6()
   using Real      = double;
   using Complex   = rsComplex<Real>;
   using Vec       = std::vector<Real>;
-  using Allpass   = rsDampedAllpassComb<Real, Real>;
+  using Allpass   = rsDampedCombAllpass<Real, Real>;
   using TransFunc = rsSparseDigitalTransferFunction<Real>;
   using SparseFlt = rsSparseFilter<Real, Real>;
 
@@ -1144,9 +1144,9 @@ void dampedAllpassComb6()
 }
 
 
-void dampedAllpassCombComplex()
+void dampedCombAllpassComplex()
 {
-  // We instantiate rsDampedAllpassComb with a complex datatype for the signals. The feedback gain
+  // We instantiate rsDampedCombAllpass with a complex datatype for the signals. The feedback gain
   // is also complex. Using a complex feedback gain further increases the space of the things that 
   // we can do with this filter. 
 
@@ -1156,7 +1156,7 @@ void dampedAllpassCombComplex()
   using Complex = std::complex<Real>;
   using VecR    = std::vector<Real>;
   using VecC    = std::vector<Complex>;
-  using Allpass = rsDampedAllpassComb<Complex, Real>;
+  using Allpass = rsDampedCombAllpass<Complex, Real>;
 
   // User parameters:
   int  delay      =   100;
@@ -1217,12 +1217,12 @@ void dampedAllpassCombComplex()
   //   frequency. Figure this out!
 }
 
-void dampedAllpassCombNonLin()
+void dampedCombAllpassNonLin()
 {
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Allpass = rsDampedAllpassCombNonLin<Real, Real>;
+  using Allpass = rsDampedCombAllpassNonLin<Real, Real>;
 
   // User parameters:
   int  delay      =   100;     // Main delay roundtrip length in samples. Is M-1 in the algo
@@ -1255,7 +1255,7 @@ void dampedAllpassCombNonLin()
 
 void dampedAllpassDelayContent()
 {
-  // An experiment that lets us look at the content of the delaylines of rsDampedAllpassComb. To 
+  // An experiment that lets us look at the content of the delaylines of rsDampedCombAllpass. To 
   // make this experiment work, one needs to temporarily move the mainDelay, corrDelay members
   // into the public section. Then one can uncomment the line:
   //
@@ -1268,7 +1268,7 @@ void dampedAllpassDelayContent()
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Allpass = rsDampedAllpassComb<Real, Real>;
+  using Allpass = rsDampedCombAllpass<Real, Real>;
 
   // User parameters:
   int  delay      =    10;
@@ -1544,20 +1544,20 @@ void dampedAllpassBiComb_1p()
   //   dispersion?
 }
 
-void dampedAllpassComb()
+void dampedCombAllpass()
 {
-  dampedAllpassComb6();
+  dampedCombAllpass6();
   //dampedAllpassBiComb_1p();
-  //dampedAllpassComb5();
+  //dampedCombAllpass5();
 
-  dampedAllpassComb1();
-  dampedAllpassComb2();
-  dampedAllpassComb3();
-  dampedAllpassComb4();
-  dampedAllpassComb5();
-  dampedAllpassComb6();
-  dampedAllpassCombComplex();
-  dampedAllpassCombNonLin();
+  dampedCombAllpass1();
+  dampedCombAllpass2();
+  dampedCombAllpass3();
+  dampedCombAllpass4();
+  dampedCombAllpass5();
+  dampedCombAllpass6();
+  dampedCombAllpassComplex();
+  dampedCombAllpassNonLin();
   dampedAllpassDelayContent();
   dampedSchroederAllpass();
   dampedAllpassBiComb_1p();
