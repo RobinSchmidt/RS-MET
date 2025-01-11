@@ -1009,7 +1009,7 @@ void dampedAllpassComb6()
   int  delay1     =    23;     // Delay of 1st delayline
   int  delay2     =    31;     //          2nd
   int  delay3     =    41;     //          3rd
-  int  delayScale =     5;     // Scale factor for all delays
+  int  delayScale =     1;     // Scale factor for all delays
 
   Real gain1      =     1.0;   // Gain of 1st delayline
   Real gain2      =     1.0;   //         2nd

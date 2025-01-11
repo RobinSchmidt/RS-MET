@@ -1570,6 +1570,22 @@ void rsSetupDecayTimes(rsDampedAllpassComb<TSig, TPar>& flt, int delay, TPar dec
 
 //=================================================================================================
 
+/*
+template<class TSig, class TPar>
+class rsDampedAllpassMultiComb
+{
+
+
+
+};
+*/
+
+// ToDo: Rename the ...AllpassComb.. classes in ...CombAllpass...
+
+
+
+//=================================================================================================
+
 /** This is a special trimmed down version of rsDampedAllpassComb that only allows for a first 
 order filter in the feedback loop. I think, this is a common case that is worth to have some 
 optimized code for. The general version with arbitrary feedback filters needs a much more
