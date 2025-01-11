@@ -1248,7 +1248,10 @@ void dampedMultiCombAllpass()
   //
   // - Try to implement a fractional delay by using allpass interpolation of the delayline. This
   //   will probably also solve the spikes problem when the delays are chosen in suitable 
-  //   irrational ratios.
+  //   irrational ratios. I tried to bake the allpass interpolator into the feedback filter. But 
+  //   with allpass interpolation, it didn't work - the combs were unstable. It did seem to work 
+  //   with linear interpolation, though. I'm not sure anymore if the idea of baking the 
+  //   interpolator into the feedback filter is right to begin with.
   //
   // - Try longer delay lengths. They are chosen pretty short in the experiment (even the longets 
   //   is less than a millisecond). Maybe try something on the order of 10-20 milliseconds. That 

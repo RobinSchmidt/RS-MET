@@ -1495,35 +1495,20 @@ void rsSetupFractional(rsDampedCombAllpass<TSig, TPar>& flt,
   else
   {
     TPar d = delayFrac;
-    TPar c = (1-d) / (1+d);
 
-    b[0] = c;
-    b[1] = 1;
+    //// Allpass interpolation:
+    //TPar c = (1-d) / (1+d);
+    //b[0] = c;
+    //b[1] = 1;
+    //a[0] = 1;
+    //a[1] = c;
+    // Doesn't work! Gives unstable filters!
+
+    // Linear interpolation:
+    b[0] = 1 - d;
+    b[1] = d;
     a[0] = 1;
-    a[1] = c;
-
-    //// Verify these:
-    //TPar x = delayFrac;  // Or should it be 1-delayFrac?
-    //TPar c = x;          // For warped allpass: coeff = (1-x)/(1+x)
-
-    //b[0] = (1-c)/c;
-    //b[1] = 1;
-    //a[0] = 1;
-    //a[1] = (1-c)/c;
-
-
-    //b[0] = coeff;
-    //b[1] = 1;
-    //a[0] = 1;
-    //a[1] = coeff; 
-    //a[1] = 0.99*coeff;         // rsInterpolator scales this by 0.999 - may we should, too?
-    // This gives unstable filters!
-
-    //// Test - linear interpolation:
-    //b[0] = coeff;
-    //b[1] = 1 - coeff;
-    //a[0] = 1;
-    //a[1] = 0;
+    a[1] = 0;
 
     flt.setup(delayInt, feedback, 1, b, a, predelay);
   }
