@@ -1012,7 +1012,7 @@ void dampedCombAllpassFractional1()
   using Allpass   = rsDampedCombAllpass<Real, Real>;
 
   int  numSamples = 5000;     // Number of samples to render.
-  Real delay      =  100.25;  // Delay in samples - not necessarily integer, though 
+  Real delay      =  100.5;  // Delay in samples - not necessarily integer, though 
   Real feedback   =    0.9;
 
   int  N        = numSamples;
@@ -1034,7 +1034,10 @@ void dampedCombAllpassFractional1()
   Vec h = impulseResponse(ap, N, 1.0);
   rsPlotVectors(h);
 
-
+  // Observations:
+  //
+  // - Witth delay = 100.25, we get a sort of "mexican hat" shape in the second spike of the 
+  //   allpass response
 }
 
 
@@ -1056,12 +1059,12 @@ void dampedCombAllpassFractional2()
   Real sampleRate = 48000;     // Sampling rate.
   int  numSamples = 12000;     // Number of samples to render.
 
-  Real delay      =   100.5;   // Delay in samples - not necessarily integer, though 
+  Real delay      =   100.25;  // Delay in samples - not necessarily integer, though 
   Real decayTime  =     0.5;   // Decay time for mid frequencies in seconds.
   Real lowFreq    =   250.0;   // Crossover freq between low and mid frequencies in Hz.
-  Real lowScale   =     1.0;   // Decay time scaler for low frequencies.
+  Real lowScale   =     1.5;   // Decay time scaler for low frequencies.
   Real highFreq   =  4000.0;   // Crossover freq between mid and high frequencies in Hz.
-  Real highScale  =     1.0;   // Decay time scaler for high frequencies.
+  Real highScale  =     0.2;   // Decay time scaler for high frequencies.
 
   // Compute intermediate values and define abbreviations:
   Real decaySamples = decayTime     * sampleRate;
@@ -1082,15 +1085,13 @@ void dampedCombAllpassFractional2()
     hc[n] = ap.getSampleComb(0.0);
   rsPlotVectors(hc);
 
-
-  //Vec h = impulseResponse(ap, N, 1.0);
-  //rsPlotVectors(h);
-
+  Vec h = impulseResponse(ap, N, 1.0);
+  rsPlotVectors(h);
 
 
   // ToDo:
   //
-  // - Maybe create 3 filters: onde with floor(delay), one with delay and one with ceil(delay) and 
+  // - Maybe create 3 filters: one with floor(delay), one with delay and one with ceil(delay) and 
   //   compare their outputs
 }
 
@@ -1251,7 +1252,10 @@ void dampedMultiCombAllpass()
   //   irrational ratios. I tried to bake the allpass interpolator into the feedback filter. But 
   //   with allpass interpolation, it didn't work - the combs were unstable. It did seem to work 
   //   with linear interpolation, though. I'm not sure anymore if the idea of baking the 
-  //   interpolator into the feedback filter is right to begin with.
+  //   interpolator into the feedback filter is right to begin with. I think, at least, when the 
+  //   interpolation (allpass) filter is combined with another filter (such as the damping filter)
+  //   it may not work because the combination with other filter changes the meaning of y[n-1].
+  //   ...I'm not really sure about all of this. More research is needed.
   //
   // - Try longer delay lengths. They are chosen pretty short in the experiment (even the longets 
   //   is less than a millisecond). Maybe try something on the order of 10-20 milliseconds. That 
@@ -1687,7 +1691,8 @@ void dampedAllpassBiComb_1p()
 void dampedCombAllpasses()
 {
   //dampedCombAllpass5();
-  dampedCombAllpassFractional1();
+  //dampedCombAllpassFractional1();
+  dampedCombAllpassFractional2();
   //dampedMultiCombAllpass();
 
 

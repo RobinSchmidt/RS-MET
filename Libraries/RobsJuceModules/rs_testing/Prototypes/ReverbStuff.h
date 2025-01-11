@@ -1497,28 +1497,24 @@ void rsSetupFractional(rsDampedCombAllpass<TSig, TPar>& flt,
     TPar d = delayFrac;
 
     //// Allpass interpolation:
+    //// See: https://ccrma.stanford.edu/~jos/pasp/First_Order_Allpass_Interpolation.html
     //TPar c = (1-d) / (1+d);
     //b[0] = c;
     //b[1] = 1;
     //a[0] = 1;
     //a[1] = c;
-    // Doesn't work! Gives unstable filters!
+    //// Doesn't work! Gives unstable comb filters!
 
     // Linear interpolation:
     b[0] = 1 - d;
     b[1] = d;
     a[0] = 1;
     a[1] = 0;
+    // This seems to work.
 
     flt.setup(delayInt, feedback, 1, b, a, predelay);
   }
 
-  // See:
-  // https://ccrma.stanford.edu/~jos/pasp/First_Order_Allpass_Interpolation.html
-
-  // Ahh! I'm stupid! I can't bake the allpass into the feedback filter! It must be part of the
-  // delayline read-out! It has nothing to do with the feedback filter, I think!
-  //
 }
 
 // Under construction. Should set up the flt such that it achieves a given overall decay time in 
@@ -1554,48 +1550,33 @@ void rsSetupDecayTimes(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay, TPar de
   rsArrayTools::convolve(aL, 2, aH, 2, a);
   rsArrayTools::convolve(bL, 2, bH, 2, b);
 
+  // Possibly also bake an interpolation filter into the feedback filter to achieve fractional 
+  // delay times:
   int  delayInt  = (int) rsFloor(delay);
   TPar delayFrac = delay - (TPar) delayInt;
-
-
-  // Set up the allpass filter:
   if(delayFrac == TPar(0))
   {
-    flt.setup(delay, kM, 2, b, a, predelay);
+    // In the integer delay case, we only need the 2nd order feedback filter that we already have:
+    flt.setup(delayInt, kM, 2, b, a, predelay);
   }
   else
   {
-    // Under construction:
+    // In the fractional delay case, we create a linear interpolation filter and bake it into the 
+    // existing 2nd order feedback filter, thereby turning it into a 3rd order filter:
 
-    // Design an interpolation allpass. See getSampleAllpass() and getSampleWarpedAllpass() in 
-    // rsInterpolator for the formulas
+    TPar d = delayFrac;
 
-    // Verify these:
-    TPar x     = delayFrac;  // Or should it be 1-delayFrac?
-    TPar coeff = x;          // For warped allpass: coeff = (1-x)/(1+x)
+    // Design linear interpolation filter:
+    TPar aI[2], bI[2];
+    bI[0] = 1 - d;
+    bI[1] = d;
+    aI[0] = 1;
+    aI[1] = 0;
 
-    TPar aA[2], bA[2];
-    bA[0] = coeff;
-    bA[1] = 1;
-    aA[0] = 1;
-    aA[1] = coeff; 
-    //aA[1] = 0.999*coeff;         // rsInterpolator scales this by 0.999 - may we should, too?
-    // This gives unstable filters!
-
-    // Test - linear interpolation:
-    bA[0] = coeff;
-    bA[1] = 1 - coeff;
-    aA[0] = 1;
-    aA[1] = 0;
-
-
-    // Bake the interpolation allpass into the b,a, arrays:
-    rsArrayTools::convolve(a, 3, aA, 2, a);
-    rsArrayTools::convolve(b, 3, bA, 2, b);
+    // Bake the interpolation filter into the b,a, arrays:
+    rsArrayTools::convolve(a, 3, aI, 2, a);
+    rsArrayTools::convolve(b, 3, bI, 2, b);
     flt.setup(delay, kM, 3, b, a, predelay);
-
-
-    //rsError("Fractional delay not yet implemented");
   }
 
 
@@ -1639,20 +1620,6 @@ void rsSetupDecayTimes(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay, TPar de
   //   arrays, then bake them into a,b. The allpass can then use the same temp arrays as the 
   //   hi shelf and then also bake them into a,b
 }
-// ToDo: roll back to the olde version with trying to do fractional delay. It's harder than I 
-// expected and needs more research
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // Notes:
