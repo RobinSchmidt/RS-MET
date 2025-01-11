@@ -806,7 +806,7 @@ public:
   void setMaxDelayInSamples(int newMaxDelay);
 
 
-  void setup(int delay, TSig feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA, 
+  void setup(int delay, TPar feedback, int dampOrder, TPar* dampCoeffsB, TPar* dampCoeffsA, 
              bool predelay);
 
   // We use the convention that we use  M = delay - 1  for the delayline to compensate for the unit
@@ -855,8 +855,8 @@ protected:
   TSig out = TSig(0);
 
   // Coefficients:
-  TSig k;
-  TSig r0, r1, rM1, rM2;
+  TPar k;
+  TPar r0, r1, rM1, rM2;
 
   bool preDelay = false;
 };
@@ -872,7 +872,7 @@ void rsDampedCombAllpassNaive<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 
 template<class TSig, class TPar>
 void rsDampedCombAllpassNaive<TSig, TPar>::setup(
-  int delay, TSig feedback, int dampOrder, TPar* b, TPar* a, bool predelay)
+  int delay, TPar feedback, int dampOrder, TPar* b, TPar* a, bool predelay)
 {
   rsAssert(dampOrder == 1, "We currently only support 1st order damping filters");
   // The signature allows for higher order damping filters in anticipation of supporting those
@@ -973,7 +973,7 @@ TSig rsDampedCombAllpassNaive<TSig, TPar>::applyCorrector(TSig in)
 // A free function to set up the object with a more convenient parametrization:
 template<class TSig, class TPar>
 void rsSetupHighDamp(rsDampedCombAllpassNaive<TSig, TPar>& flt,
-  int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay)
+  int delay, TPar feedback, TPar dampOmega, TPar dampGain, bool predelay)
 {
   TPar a[2], b[2]; a[0] = 1;
   rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
@@ -1209,7 +1209,7 @@ protected:
   TSig yc[maxDmpOrd];                  // State for the poles of the correction filter
 
   // Coefficients:
-  TSig k = 0;                          // Feedback gain
+  TPar k = 0;                          // Feedback gain
   TPar b[maxDmpOrd+1];                 // Damping filter feedforward coeffs
   TPar a[maxDmpOrd+1];                 // Damping filter feedback coeffs
 
@@ -1224,6 +1224,7 @@ protected:
   //   then allowing complex feedback factors. There is some experiment that does this. It's 
   //   interesting. ...but maybe make k of type TPar anyway. We can still do this experiment by
   //   just using TPar = complex as well. I think, it makes more sense this way.
+  //   ...has been changed back to TPar...
   //
   // - Maybe be more flexible with the order of the damping filter by letting numerator and 
   //   denominator have different orders. Maybe replace dmpOrd by two variables bOrd, aOrd or 
