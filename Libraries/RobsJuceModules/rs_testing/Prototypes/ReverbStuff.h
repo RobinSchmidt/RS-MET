@@ -1494,25 +1494,46 @@ void rsSetupFractional(rsDampedCombAllpass<TSig, TPar>& flt,
   }
   else
   {
-    // Verify these:
-    TPar x     = delayFrac;  // Or should it be 1-delayFrac?
-    TPar coeff = x;          // For warped allpass: coeff = (1-x)/(1+x)
+    TPar d = delayFrac;
+    TPar c = (1-d) / (1+d);
 
-    b[0] = coeff;
+    b[0] = c;
     b[1] = 1;
     a[0] = 1;
-    a[1] = coeff; 
-    //a[1] = 0.999*coeff;         // rsInterpolator scales this by 0.999 - may we should, too?
+    a[1] = c;
+
+    //// Verify these:
+    //TPar x = delayFrac;  // Or should it be 1-delayFrac?
+    //TPar c = x;          // For warped allpass: coeff = (1-x)/(1+x)
+
+    //b[0] = (1-c)/c;
+    //b[1] = 1;
+    //a[0] = 1;
+    //a[1] = (1-c)/c;
+
+
+    //b[0] = coeff;
+    //b[1] = 1;
+    //a[0] = 1;
+    //a[1] = coeff; 
+    //a[1] = 0.99*coeff;         // rsInterpolator scales this by 0.999 - may we should, too?
     // This gives unstable filters!
 
-    // Test - linear interpolation:
-    b[0] = coeff;
-    b[1] = 1 - coeff;
-    a[0] = 1;
-    a[1] = 0;
+    //// Test - linear interpolation:
+    //b[0] = coeff;
+    //b[1] = 1 - coeff;
+    //a[0] = 1;
+    //a[1] = 0;
 
     flt.setup(delayInt, feedback, 1, b, a, predelay);
   }
+
+  // See:
+  // https://ccrma.stanford.edu/~jos/pasp/First_Order_Allpass_Interpolation.html
+
+  // Ahh! I'm stupid! I can't bake the allpass into the feedback filter! It must be part of the
+  // delayline read-out! It has nothing to do with the feedback filter, I think!
+  //
 }
 
 // Under construction. Should set up the flt such that it achieves a given overall decay time in 
@@ -1633,6 +1654,8 @@ void rsSetupDecayTimes(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay, TPar de
   //   arrays, then bake them into a,b. The allpass can then use the same temp arrays as the 
   //   hi shelf and then also bake them into a,b
 }
+// ToDo: roll back to the olde version with trying to do fractional delay. It's harder than I 
+// expected and needs more research
 
 
 
