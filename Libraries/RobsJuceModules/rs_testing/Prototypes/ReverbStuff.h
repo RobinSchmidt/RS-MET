@@ -1481,7 +1481,7 @@ void rsSetupHighDamp(rsDampedCombAllpass<TSig, TPar>& flt,
 // times for low and high frequencies. The scale factors are given as raw factors for the RT60 and
 // crossover frequencies are given as omega.
 template<class TSig, class TPar>
-void rsSetupDecayTimes(rsDampedCombAllpass<TSig, TPar>& flt, int delay, TPar decayTimeInSamples,
+void rsSetupDecayTimes(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay, TPar decayTimeInSamples,
   TPar lowOmega, TPar lowTimeScale, TPar highOmega, TPar highTimeScale, bool predelay)
 {
   // Compute desired feedback gains for low, mid and high frequencies:
@@ -1509,8 +1509,21 @@ void rsSetupDecayTimes(rsDampedCombAllpass<TSig, TPar>& flt, int delay, TPar dec
   rsArrayTools::convolve(aL, 2, aH, 2, a);
   rsArrayTools::convolve(bL, 2, bH, 2, b);
 
+  int  delayInt  = (int) rsFloor(delay);
+  TPar delayFrac = delay - (TPar) delayInt;
+
+
   // Set up the allpass filter:
-  flt.setup(delay, kM, 2, b, a, predelay);
+  if(delayFrac == TPar(0))
+  {
+    flt.setup(delay, kM, 2, b, a, predelay);
+  }
+  else
+  {
+    rsError("Fractional delay not yet implemented");
+  }
+
+
 
   // ToDo:
   //

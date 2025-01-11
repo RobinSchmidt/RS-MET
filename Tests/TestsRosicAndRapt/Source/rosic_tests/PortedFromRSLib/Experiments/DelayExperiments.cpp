@@ -769,7 +769,7 @@ void dampedCombAllpass5()
   // User parameters:
   Real sampleRate = 48000;     // Sampling rate.
   int  numSamples = 24000;     // Number of samples to render.
-  int  delay      =    50;     // Delay in samples.
+  Real delay      =    50;     // Delay in samples.
   Real decayTime  =     1.0;   // Decay time for mid frequencies in seconds.
   Real lowFreq    =   250.0;   // Crossover freq between low and mid frequencies in Hz.
   Real lowScale   =     1.5;   // Decay time scaler for low frequencies.
@@ -1052,10 +1052,10 @@ void dampedMultiCombAllpass()
   Real sampleRate = 48000;     // Sampling rate.
   int  numSamples = 24000;     // Number of samples to render.
 
-  int  delay1     =    23;     // Delay of 1st delayline
-  int  delay2     =    31;     //          2nd
-  int  delay3     =    41;     //          3rd
-  int  delayScale =     5;     // Scale factor for all delays
+  Real delay1     =    23;     // Delay of 1st delayline
+  Real delay2     =    31;     //          2nd
+  Real delay3     =    41;     //          3rd
+  Real delayScale =     5;     // Scale factor for all delays
 
   Real gain1      =     1.0;   // Gain of 1st delayline
   Real gain2      =     1.0;   //         2nd
