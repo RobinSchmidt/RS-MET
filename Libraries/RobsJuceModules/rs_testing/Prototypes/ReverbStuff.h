@@ -1568,19 +1568,56 @@ void rsSetupDecayTimes(rsDampedCombAllpass<TSig, TPar>& flt, int delay, TPar dec
 //   plausible, though.
 
 
+
 //=================================================================================================
 
-/*
-template<class TSig, class TPar>
-class rsDampedAllpassMultiComb
+/** Under construction
+
+A class for representing the high-level user parameters of a damped comb allpass filter. */
+
+
+template<class T>
+struct rsCombAllpassSettings
 {
+  // The settings are deliberately initialized to invalid values in order to force client code to
+  // set them up to proper values. The invalid settings will be detected and trapped by assertions.
+  // This should help catching bugs where client code forgets to initialize them.
+  
+  T frequency      = T(0);
+  T decayTime      = T(0);
+  T lowDecayScale  = T(0);
+  T highDecayScale = T(0);
 
 
+  bool onlyOddHarmonics = false;  // Combs can produce full series or only odd harmonics
+  bool maxPhaseDamper   = false;  // Damping filter can be min or max pahse (min is default)
 
 };
-*/
 
-// ToDo: Rename the ...CombAllpass.. classes in ...CombAllpass...
+
+//=================================================================================================
+
+/** Under construction
+
+A class that creates an allpass filter out of a linear combination of multiple combs. 
+
+...TBC... */
+
+
+template<class TSig, class TPar>
+class rsDampedMultiCombAllpass
+{
+
+public:
+
+
+
+
+protected:
+
+  std::vector<rsCombAllpassSettings<TPar>> settings;
+
+};
 
 
 

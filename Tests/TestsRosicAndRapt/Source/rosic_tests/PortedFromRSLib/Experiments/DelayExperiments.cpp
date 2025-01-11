@@ -1009,7 +1009,7 @@ void dampedCombAllpass6()
   int  delay1     =    23;     // Delay of 1st delayline
   int  delay2     =    31;     //          2nd
   int  delay3     =    41;     //          3rd
-  int  delayScale =     1;     // Scale factor for all delays
+  int  delayScale =     5;     // Scale factor for all delays
 
   Real gain1      =     1.0;   // Gain of 1st delayline
   Real gain2      =     1.0;   //         2nd
@@ -1098,7 +1098,9 @@ void dampedCombAllpass6()
   //   713 = 23*31, 943 = 23*41, 1271 = 31*41 and their multiples, i.e. 1426 = 2 * 713, etc.
   //
   // - With delayScale = 5 and decayTime = 0.2, there's actually a build-up phase in the
-  //   "corrected-phased" version.
+  //   "corrected-phased" version. It sounds like breath-noise of some flute-ish instrument 
+  //   combined with a little "thump" or "pop" transient. Th just corrected one without the 
+  //   "phased" sound like a pure breath-noise without the pop.
   //
   // - The impulse response of the corrected comb sum has a strong initial bipolar spike and is 
   //   rather quiet after that. But with shorter decay times, the effect becomes smaller. Also,
@@ -1141,6 +1143,8 @@ void dampedCombAllpass6()
   // - Try longer delay lengths. They are chosen pretty short in the experiment (even the longets 
   //   is less than a millisecond). Maybe try something on the order of 10-20 milliseconds. That 
   //   should be suitable for reverb.
+  //
+  // - Try phasing (i.e. zero-reflecting) the damping filters (per comb).
 }
 
 
@@ -1544,7 +1548,7 @@ void dampedAllpassBiComb_1p()
   //   dispersion?
 }
 
-void dampedCombAllpass()
+void dampedCombAllpasses()
 {
   dampedCombAllpass6();
   //dampedAllpassBiComb_1p();
