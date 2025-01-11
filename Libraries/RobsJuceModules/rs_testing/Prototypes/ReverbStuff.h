@@ -2302,7 +2302,7 @@ public:
     outDelay.setMaxDelayInSamples(newMaxDelay);
   }
 
-  void setup(int delay, TSig feedback, int dampOrder, const TPar* dampCoeffsB)
+  void setup(int delay, TPar feedback, int dampOrder, const TPar* dampCoeffsB)
   {
     M = delay;
     k = feedback;
@@ -2368,7 +2368,7 @@ protected:
   rsBasicDelayLine<TSig> inDelay;
   rsBasicDelayLine<TSig> outDelay;
   std::vector<TPar> b;
-  TSig k;
+  TPar k;
   int M = 0;
 
 };
@@ -2398,7 +2398,7 @@ public:
     outDelay.setMaxDelayInSamples(newMaxDelay);
   }
 
-  void setup(int delay, TSig feedback, int dampOrder, const TPar* dampCoeffsB)
+  void setup(int delay, TPar feedback, int dampOrder, const TPar* dampCoeffsB)
   {
     M = delay;
     P = dampOrder;
@@ -2442,7 +2442,7 @@ protected:
   rosic::ConvolverBruteForce inFilter;
   rosic::ConvolverBruteForce outFilter;
 
-  TSig k;
+  TPar k;
   int M = 0;   // Delay in samples
   int P = 0;   // Order of feedback- and feedforward filter
 
