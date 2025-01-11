@@ -1278,6 +1278,7 @@ void dampedMultiCombAllpass2()
   using Settings = Filter::CombSettings;
 
 
+  int  numSamples = 12000;
   Real sampleRate = 48000;
   Real frequency  =   440.0;   // Reference frequency
   Real decayTime  =     1.0;   // Decay time for mid frequencies in seconds.
@@ -1293,17 +1294,18 @@ void dampedMultiCombAllpass2()
 
   s1.freqScale = 1.0;
   s1.gain      = 1.0;
-  s1.onlyOdds  = true;
+  //s1.onlyOdds  = true;
 
   s2.freqScale = 1.5;
   s2.gain      = 1.0;
-  s2.onlyOdds  = true;
+  //s2.onlyOdds  = true;
 
   std::vector<Settings> combSettings({s1,s2});
 
 
   // Create and set up the filter:
   Filter flt;
+  flt.setFilterOrderLimits(8191, 4);
   flt.setSampleRate(sampleRate);
   flt.setFrequency(frequency);
   flt.setDecayTimeInSeconds(decayTime);
@@ -1311,9 +1313,12 @@ void dampedMultiCombAllpass2()
   flt.setLowDecayScale(lowScale);
   flt.setHighCrossoverFreq(highFreq);
   flt.setHighDecayScale(highScale);
-  flt.setup(combSettings);
+  //flt.setup(combSettings);
   //flt.updateFilters();
 
+  // Get the impulse response:
+  int N = numSamples;
+  Vec h = impulseResponse(flt, N, 1.0);
 
 
 

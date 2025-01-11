@@ -1692,12 +1692,46 @@ class rsDampedMultiCombAllpass
 public:
 
 
+  /*
+  rsDampedMultiCombAllpass(int maxNumCombs, int maxDelayInSamples)
+  {
+    this->maxNumCombs = maxNumCombs;
+    this->maxDelay    = maxDelayInSamples;
+
+    protoAllpass.setMaxDelayInSamples(maxDelay);
+
+    settings.resize(maxNumCombs);
+
+    // ToDo:
+    // combBank.setMaxDelayInSamples(...);
+    // correctors.setMaxDelayInSamples(...);
+  }
+  */
+
+
+  void setFilterOrderLimits(int newMaxDelayInSamples, int newMaxNumCombs)
+  {
+    maxNumCombs = maxNumCombs;
+    maxDelay    = newMaxDelayInSamples;
+    protoAllpass.setMaxDelayInSamples(maxDelay);
+    settings.resize(maxNumCombs);
+
+
+    // ToDo:
+    // combBank.setMaxDelayInSamples(...);
+    // correctors.setMaxDelayInSamples(...);
+  }
+
+
+
   /** Struct for the settings that we have per comb */
   struct CombSettings
   {
     TPar freqScale = TPar(1);
     TPar gain      = TPar(1);
-    bool onlyOdds  = false;
+
+
+    //bool onlyOdds  = false;
 
     //bool maxPhaseLoShelf = false;
     //bool maxPhaseHiShelf = false;
@@ -1708,7 +1742,6 @@ public:
     // but nontrivial allpasses, I think. ...but figure this out! Or maybe we can come up with a
     // different 1st order shelver design that actually is neutral with neutral settings?
   };
-
 
 
   void setSampleRate(TPar newSampleRate)        { sampleRate = newSampleRate;    dirty = true;}
@@ -1729,34 +1762,31 @@ public:
 
 
 
+
+
   // ToDo compare function name to what we have in the FDN classes and make the consistent
 
 
 
-  void setup(std::vector<CombSettings>& newSettings)
-  {
-    rsCopy(newSettings, settings);  
-    // Allocates only when settings has not enough capacity
 
-    dirty = true;
-  }
-  // Rename to setCombSettings. Maybe take a raw pointer and length
+
+  
+  int getNumCombs() { return numCombs; }
+  
 
 
   TSig getSample(TSig in)
   {
-    rsAssert(combs.size() == correctors.size());
-
     if(dirty)
-      updateFilters();
+      updateFilters(); // rename to updateCoeffs
 
-    TSig tmp = in;
-    for(size_t i = 0; i < combs.size(); i++)
-    {
-      tmp = combs[i].getSample(tmp);
-      tmp = correctors[i].getSample(tmp);
-    }
-    return tmp;
+    return corrector.getSample(combBank.getSample(in));
+  }
+
+  void reset()
+  {
+    combBank.reset();
+    corrector.reset();
   }
 
 
@@ -1767,12 +1797,27 @@ protected:
   // Allocates! Not yet realtime ready.
 
 
+  // Embedded DSP objects:
+  //std::vector<rsSparseFilter<TSig, TPar>> combs;
+  //std::vector<rsSparseFilter<TSig, TPar>> correctors;
 
+
+  rsSparseFilter<TSig, TPar> combBank;
+  rsSparseFilter<TSig, TPar> corrector;
+
+
+  // A damped comb allpass object used prototype to compute the filter coeffs:
+  rsDampedCombAllpass<TSig, TPar> protoAllpass; 
+  // This is not ideal! It contains itself two delaylines which are not needed here and therefore
+  // just waste memory. ToDo: Refactor such that the coefficient calculation can be done without
+  // having to use such an object. Maybe the coeff calculation can be done by a static member 
+  // function? We'll see...
+
+
+  // Per comb settings:
   std::vector<CombSettings> settings;
-  std::vector<rsSparseFilter<TSig, TPar>> combs;
-  std::vector<rsSparseFilter<TSig, TPar>> correctors;
 
-
+  // Global settings:
   TPar sampleRate     = TPar(44100);
   TPar frequency      = TPar(440);
   TPar decayTime      = TPar(0.25);
@@ -1781,6 +1826,18 @@ protected:
   TPar highCrossFreq  = TPar(4000);
   TPar highDecayScale = TPar(0.5);
 
+
+  // Maximum number of available combs and max delayline length. Must be set up on construction:
+  int maxNumCombs = 4;
+  int maxDelay    = 16383;  // 16383 = 2^-14 - 1
+  // ToDo: provide a setter for these. This setter should only be called in suspended state, 
+  // though. It may re-allocate
+
+  // Current number of combs:
+  int numCombs    = 1;
+
+
+  // Flag to indicate that a call to updateFilters() is needed before doing any DSP:
   bool dirty = true;
 };
 
@@ -1788,18 +1845,49 @@ protected:
 template<class TSig, class TPar>
 void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
 {
-  size_t N = settings.size();
-  rsAssert(N == combs.size());
-  rsAssert(N == correctors.size());
+  using TransFunc = rsSparseDigitalTransferFunction<TPar>;
+
+  TPar decaySamples =      decayTime     * sampleRate;
+  TPar lowOmega     = 2*PI*lowCrossFreq  / sampleRate;
+  TPar highOmega    = 2*PI*highCrossFreq / sampleRate;
+
+  // ToDo: catch special case of numCombs == 0. In this case, we should set up a trivial bypass 
+  // filter
 
 
-  for(size_t i = 0; i < N; i++)
+  //combBank.initTransferFunction();  // U(z) = 1
+
+  // Accumulate the transfer function of the comb bank:
+  TransFunc U;                        // U(z) = 0
+
+  //U.setupFromDenseCoeffs({1}, {1}); // U(z) = 1
+
+  for(int i = 0; i < numCombs; i++)
   {
+    const CombSettings& s = settings[i];
+
+    TPar delay = sampleRate / (s.freqScale * frequency);  // Verify!
+
+    // Maybe in case of only odd harmonics, we should scale the freq up by 2? The rational is that 
+    // when using odd harmonics only (by way of the feedback sign), the fundamental frequency 
+    // actually goes an octave lower.
+
+
+    rsSetupDecayTimes(protoAllpass, 
+                      delay, decaySamples, 
+                      lowOmega,  lowDecayScale, 
+                      highOmega, highDecayScale,
+                      false);
+    // This needs an additional parameter to determine the sign of the feedback, i.e. switch 
+    // between all and only odd harmonics
 
 
 
     int dummy = 0;
   }
+
+
+  dirty = false;
 }
 
 

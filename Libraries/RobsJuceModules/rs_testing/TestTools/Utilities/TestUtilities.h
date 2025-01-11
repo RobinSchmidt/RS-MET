@@ -272,7 +272,9 @@ bool rsIsShiftedUnitImpulse(const std::vector<T>& x, int shift, T tol)
 for you to pass a scale factor of the type of the filter's output signal (for example: 1.0 for
 double), such that the compiler can deduce the template parameter. We also use it to scale the
 input impulse to the filter, so it actually gets some purpose besides satisfying the compiler. The
-filter class must support the functions reset() and getSample() */
+filter class must support the functions reset() and getSample(). We basically use duck typing here.
+Any object that has these two member functions with the correct signature (and hopefully also the
+correct semantics) can be passed as filter. */
 template<class TSig, class TFlt>
 inline std::vector<TSig> impulseResponse(TFlt &filter, int length, TSig scale)
 {
@@ -280,7 +282,7 @@ inline std::vector<TSig> impulseResponse(TFlt &filter, int length, TSig scale)
   filter.reset();
   y[0] = filter.getSample(scale);
   for(int n = 1; n < length; n++)
-    y[n] = filter.getSample(0.0);
+    y[n] = filter.getSample(TSig(0));
   return y;
 }
 
