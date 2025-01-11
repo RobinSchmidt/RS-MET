@@ -1636,7 +1636,7 @@ class rsDampedCombAllpass_1p
 public:
 
   void setMaxDelayInSamples(int newMaxDelay);
-  void setup(int delay, TSig feedback, 
+  void setup(int delay, TPar feedback, 
     TPar dampCoeffB0, TPar dampCoeffB1, TPar dampCoeffA1, bool predelay);
 
   TSig getSample(TSig in);
@@ -1694,9 +1694,9 @@ protected:
   TSig x1di = 0, y1di = 0;
   TSig y1c  = 0;
 
-  TSig k   = 0;  // Use TPar
-  TSig r0  = 0; 
-  TSig r1  = 0; 
+  TPar k   = 0;  // Use TPar
+  TPar r0  = 0; 
+  TPar r1  = 0; 
   TPar rM1 = 0;
   TPar b0 = 0, b1 = 0, a1 = 0;
   // Get rid of the r-coeffs! r0 = k*b1, r1 = k*b0, rM1 = a1. Use that directly
@@ -1715,7 +1715,7 @@ void rsDampedCombAllpass_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 }
 
 template<class TSig, class TPar>
-void rsDampedCombAllpass_1p<TSig, TPar>::setup(int delay, TSig feedback, 
+void rsDampedCombAllpass_1p<TSig, TPar>::setup(int delay, TPar feedback, 
   TPar dampCoeffB0, TPar dampCoeffB1, TPar dampCoeffA1, bool predelay)
 {
   M = delay - 1;
@@ -1780,7 +1780,7 @@ TSig rsDampedCombAllpass_1p<TSig, TPar>::applyCorrector(TSig in)
 
 template<class TSig, class TPar>
 void rsSetupHighDamp(rsDampedCombAllpass_1p<TSig, TPar>& flt,
-  int delay, TSig feedback, TPar dampOmega, TPar dampGain, bool predelay)
+  int delay, TPar feedback, TPar dampOmega, TPar dampGain, bool predelay)
 {
   TPar a[2], b[2]; a[0] = 1;
   rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
