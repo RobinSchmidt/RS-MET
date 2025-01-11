@@ -1650,7 +1650,7 @@ void rsSetupDecayTimes(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay, TPar de
 
 A class for representing the high-level user parameters of a damped comb allpass filter. */
 
-
+/*
 template<class T>
 struct rsCombAllpassSettings
 {
@@ -1669,10 +1669,11 @@ struct rsCombAllpassSettings
   //bool maxPhaseDamper   = false;  // Damping filter can be min or max phase (min is default)
   // We could actually ste the min/max phase property separately for the low- and high-shelving 
   // part of the damper - so maybe have separate maxPhaseLoShelf and maxPhaseHiShelf parameters.
-  // So, we have 4 damper types: min/min, min/max, max/min, max/max
+  // So, we have 4 damper types: min/min, min/max, max/min, max/max.
 
 
 };
+*/
 
 
 //=================================================================================================
@@ -1691,15 +1692,76 @@ class rsDampedMultiCombAllpass
 public:
 
 
+  /** Struct for the settings that we have per comb */
+  struct CombSettings
+  {
+    TPar freqScale = TPar(1);
+    TPar gain      = TPar(1);
+    bool onlyOdds  = false;
+
+    //bool maxPhaseLoShelf = false;
+    //bool maxPhaseHiShelf = false;
+
+    //bool bypassLoShelf   = false;
+    //bool bypassHiShelf   = false;
+    // The bypass switches are need because shelves with neutral settings are not really neutral
+    // but nontrivial allpasses, I think. ...but figure this out! Or maybe we can come up with a
+    // different 1st order shelver design that actually is neutral with neutral settings?
+  };
+
+
+
+  void setSampleRate(TPar newSampleRate)
+  {
+    sampleRate = newSampleRate;
+  }
+
+
+  void setup(std::vector<CombSettings>& newSettings)
+  {
+    rsCopy(newSettings, settings);
+    // Allocates only when settings has not enough capacity
+
+    updateFilters();
+    // This currently always allocates. This is not yet realtime ready.
+  }
+
 
 
 protected:
 
-  std::vector<rsCombAllpassSettings<TPar>> settings;
 
+
+
+  void updateFilters();
+  // Allocates! Not yet realtime ready.
+
+
+  std::vector<CombSettings> settings;
+  std::vector<rsSparseFilter<TSig, TPar>>  filters;
+
+
+  TPar sampleRate     = TPar(44100);
+  TPar frequency      = TPar(440);
+  TPar decayTime      = TPar(0.25);
+  TPar lowDecayScale  = TPar(2.0);
+  TPar highDecayScale = TPar(0.5);
 };
 
 
+template<class TSig, class TPar>
+void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
+{
+  rsAssert(settings.size() == filters.size());
+
+  for(size_t i = 0; i < settings.size(); i++)
+  {
+
+
+
+    int dummy = 0;
+  }
+}
 
 
 //=================================================================================================

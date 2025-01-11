@@ -1272,6 +1272,21 @@ void dampedMultiCombAllpass()
 
 void dampedMultiCombAllpass2()
 {
+  using Real     = double;
+  using Vec      = std::vector<Real>;
+  using Filter   = rsDampedMultiCombAllpass<Real, Real>;
+  using Settings = Filter::CombSettings;
+
+
+
+  Settings settings1, settings2;
+
+
+
+
+
+
+  Filter flt;
 
 
 }
@@ -1702,9 +1717,9 @@ void dampedAllpassBiComb_1p()
 void dampedCombAllpasses()
 {
   //dampedCombAllpass5();
-  dampedCombAllpassFractional1();
-  dampedCombAllpassFractional2();
-  dampedMultiCombAllpass();
+  //dampedCombAllpassFractional1();
+  //dampedCombAllpassFractional2();
+  //dampedMultiCombAllpass();
   dampedMultiCombAllpass2();
 
 
