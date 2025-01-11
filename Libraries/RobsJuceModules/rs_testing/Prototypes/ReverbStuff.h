@@ -1678,7 +1678,7 @@ struct rsCombAllpassSettings
 
 //=================================================================================================
 
-/** Under construction
+/** UNDER CONSTRUCTION
 
 A class that creates an allpass filter out of a linear combination of multiple combs. 
 
@@ -1691,24 +1691,6 @@ class rsDampedMultiCombAllpass
 
 public:
 
-
-  /*
-  rsDampedMultiCombAllpass(int maxNumCombs, int maxDelayInSamples)
-  {
-    this->maxNumCombs = maxNumCombs;
-    this->maxDelay    = maxDelayInSamples;
-
-    protoAllpass.setMaxDelayInSamples(maxDelay);
-
-    settings.resize(maxNumCombs);
-
-    // ToDo:
-    // combBank.setMaxDelayInSamples(...);
-    // correctors.setMaxDelayInSamples(...);
-  }
-  */
-
-
   void setFilterOrderLimits(int newMaxDelayInSamples, int newMaxNumCombs)
   {
     maxNumCombs = maxNumCombs;
@@ -1717,9 +1699,14 @@ public:
     settings.resize(maxNumCombs);
 
 
-    // ToDo:
-    // combBank.setMaxDelayInSamples(...);
-    // correctors.setMaxDelayInSamples(...);
+    int maxBankDelay = maxDelay * maxNumCombs + 4;
+    // VERIFY this formula! theoretically and practically (by making a unit test using the maxmimum
+    // number of combs each at the maximum possible delay) This is just a first rough guess and 
+    // might be wrong!
+
+
+    combBank.setMaxDelayInSamples(maxBankDelay);
+    corrector.setMaxDelayInSamples(maxBankDelay);
   }
 
 
@@ -1749,6 +1736,9 @@ public:
   void setFrequency(TPar newFrequency)          { frequency = newFrequency;      dirty = true;}
 
   void setDecayTimeInSeconds(TPar newDecayTime) { decayTime = newDecayTime;      dirty = true;}
+
+  // ToDo:
+  // setMaxPhaseCombBank
 
   void setLowCrossoverFreq(TPar newFreq)        { lowCrossFreq = newFreq;        dirty = true;}
 
@@ -1798,10 +1788,6 @@ protected:
 
 
   // Embedded DSP objects:
-  //std::vector<rsSparseFilter<TSig, TPar>> combs;
-  //std::vector<rsSparseFilter<TSig, TPar>> correctors;
-
-
   rsSparseFilter<TSig, TPar> combBank;
   rsSparseFilter<TSig, TPar> corrector;
 
@@ -1836,6 +1822,8 @@ protected:
   // Current number of combs:
   int numCombs    = 1;
 
+  bool maxPhaseCombBank = false;
+
 
   // Flag to indicate that a call to updateFilters() is needed before doing any DSP:
   bool dirty = true;
@@ -1855,19 +1843,13 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
   // filter
 
 
-  //combBank.initTransferFunction();  // U(z) = 1
-
   // Accumulate the transfer function of the comb bank:
   TransFunc U;                        // U(z) = 0
-
-  //U.setupFromDenseCoeffs({1}, {1}); // U(z) = 1
-
   for(int i = 0; i < numCombs; i++)
   {
     const CombSettings& s = settings[i];
 
     TPar delay = sampleRate / (s.freqScale * frequency);  // Verify!
-
     // Maybe in case of only odd harmonics, we should scale the freq up by 2? The rational is that 
     // when using odd harmonics only (by way of the feedback sign), the fundamental frequency 
     // actually goes an octave lower.
@@ -1883,7 +1865,31 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
 
 
 
+    // Accumulate the current transfer function U_i into our total sum U:
+    TransFunc Ui = protoAllpass.getCombTransferFunction();
+    U = U + Ui;
+    // This is where all the allocations happen! This must be re-implemented in a non-allocating 
+    // way.
+
     int dummy = 0;
+  }
+
+
+  if(maxPhaseCombBank)
+  {
+    U.reflectZeros();      // Reflect zeros of comb bank
+    combBank.setup(U);    
+    U.reflectZeros();      // Undo reflection. U is now back to normal.
+    U.invert();            // Swap poles and zeros of U.
+    U.reflectZeros();      // Reflect zeros of inverse U.
+    corrector.setup(U);
+  }
+  else
+  {
+    combBank.setup(U);
+    U.invert();
+    U.reflectZeros();
+    corrector.setup(U);
   }
 
 

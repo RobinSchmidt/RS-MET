@@ -1319,6 +1319,7 @@ void dampedMultiCombAllpass2()
   // Get the impulse response:
   int N = numSamples;
   Vec h = impulseResponse(flt, N, 1.0);
+  rsPlotVectors(h);
 
 
 
