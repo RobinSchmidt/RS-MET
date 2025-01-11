@@ -1548,6 +1548,19 @@ void rsSetupDecayTimes(rsDampedCombAllpass<TSig, TPar>& flt, int delay, TPar dec
   //   maybe at the resonance frequency, so we can tune it exactly.
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Notes:
 // 
 // - I checked the contents of mainDelay and corrDelay to see if we can use a shared delayline but
@@ -1590,7 +1603,12 @@ struct rsCombAllpassSettings
 
 
   bool onlyOddHarmonics = false;  // Combs can produce full series or only odd harmonics
-  bool maxPhaseDamper   = false;  // Damping filter can be min or max pahse (min is default)
+
+  //bool maxPhaseDamper   = false;  // Damping filter can be min or max phase (min is default)
+  // We could actually ste the min/max phase property separately for the low- and high-shelving 
+  // part of the damper - so maybe have separate maxPhaseLoShelf and maxPhaseHiShelf parameters.
+  // So, we have 4 damper types: min/min, min/max, max/min, max/max
+
 
 };
 
