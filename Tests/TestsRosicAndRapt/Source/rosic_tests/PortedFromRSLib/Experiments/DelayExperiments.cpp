@@ -986,7 +986,7 @@ void dampedCombAllpass5()
   //   the decay times add up?
 }
 
-void dampedCombAllpass6()
+void dampedMultiCombAllpass()
 {
   // Under construction.
   //
@@ -1574,7 +1574,7 @@ void dampedAllpassBiComb_1p()
 void dampedCombAllpasses()
 {
   //dampedCombAllpassComplex();
-  dampedCombAllpass6();          // rename to dampedMultCombAllpass
+  dampedMultiCombAllpass();          // rename to dampedMultCombAllpass
   //dampedAllpassBiComb_1p();
   //dampedCombAllpass5();
 
@@ -1583,7 +1583,7 @@ void dampedCombAllpasses()
   dampedCombAllpass3();
   dampedCombAllpass4();
   dampedCombAllpass5();
-  dampedCombAllpass6();
+  dampedMultiCombAllpass();
   dampedCombAllpassComplex();
   dampedCombAllpassNonLin();
   dampedAllpassDelayContent();
