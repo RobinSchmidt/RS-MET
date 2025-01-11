@@ -1812,8 +1812,8 @@ public:
   void setMaxDelayInSamples(int newMaxDelay);
 
   void setup(
-    int delay1, TPar gain1, TSig feedback1, TPar coeffB10, TPar coeffB11, TPar coeffA11,
-    int delay2, TPar gain2, TSig feedback2, TPar coeffB20, TPar coeffB21, TPar coeffA21);
+    int delay1, TPar gain1, TPar feedback1, TPar coeffB10, TPar coeffB11, TPar coeffA11,
+    int delay2, TPar gain2, TPar feedback2, TPar coeffB20, TPar coeffB21, TPar coeffA21);
   // ToDo: Add a parameter for switching the mode of operation. I'm not yet sure if we should have
   // 2 or 3 modes operation, though. We'll see...
 
@@ -1921,8 +1921,8 @@ protected:
   TSig combOut2 = TSig(0);
 
   // Feedback gains:
-  TSig k1 = 0;
-  TSig k2 = 0;
+  TPar k1 = 0;
+  TPar k2 = 0;
   // Maybe make them TPar - we don't really want to use it with complex valued feedback...or do we?
 
   // Gains or weights for the two comb outputs:
@@ -1985,8 +1985,8 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 
 template<class TSig, class TPar>
 void rsDampedAllpassBiComb_1p<TSig, TPar>::setup(
-  int delay1, TPar gain1, TSig feedback1, TPar coeffB10, TPar coeffB11, TPar coeffA11,
-  int delay2, TPar gain2, TSig feedback2, TPar coeffB20, TPar coeffB21, TPar coeffA21)
+  int delay1, TPar gain1, TPar feedback1, TPar coeffB10, TPar coeffB11, TPar coeffA11,
+  int delay2, TPar gain2, TPar feedback2, TPar coeffB20, TPar coeffB21, TPar coeffA21)
 {
   M1 = delay1 - 1;
   M2 = delay2 - 1;
@@ -2264,7 +2264,7 @@ protected:
 
   rsBasicDelayLine<TSig> delayLine;
   std::vector<TPar> b;
-  TSig k;
+  TSig k;            // Should be TPar?
   int M = 0;
 
 };
