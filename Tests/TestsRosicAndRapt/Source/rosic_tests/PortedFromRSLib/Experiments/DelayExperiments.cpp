@@ -777,23 +777,30 @@ void dampedCombAllpass5()
   Real highScale  =     0.2;   // Decay time scaler for high frequencies.
 
   // Test:
-  //lowScale  = 0.6; highScale = 0.2;
+  //lowScale  = 1.0; highScale = 1.0;
 
   // Compute intermediate values:
   Real decaySamples = decayTime     * sampleRate;
   Real lowOmega     = 2*PI*lowFreq  / sampleRate;
   Real highOmega    = 2*PI*highFreq / sampleRate;
   Real spikeFreq    = Real(sampleRate) / Real(delay);  // Frequency of the spikes
+  int  N            = numSamples;
+
 
   // Create and set up the allpass filter:
   Allpass ap;
   ap.setMaxDelayInSamples(delay);
   rsSetupDecayTimes(ap, delay, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
 
-  // Get impulse response:
-  int N = numSamples;
-  Vec h = impulseResponse(ap, N, 1.0);
+  // Get comb impulse response:
+  Vec hc(N);
+  hc[0] = ap.getSample(1.0);
+  for(int n = 1; n < N; n++)
+    hc[n] = ap.getSample(0.0);
+  //rsPlotVectors(hc);
 
+  // Get impulse response:
+  Vec h = impulseResponse(ap, N, 1.0);
 
   // Split the impulse response into low, mid and high parts:
   Vec hL(N), hM(N), hH(N);
@@ -920,6 +927,13 @@ void dampedCombAllpass5()
 
   // Observations:
   //
+  //
+  // - With highScale == lowScale == 1, I would expec it to behave exatly like without any 
+  //   feedback filter. But this is not the case! Apparently, the shelvers become nontrivial
+  //   allpass filters in this case! This is not good - I think. ...or maybe it can be good from
+  //   the perspective of diffusion - which might be a goal in some contexts. But we really should
+  //   reconsider the shelver design and maybe try others!
+  //
   // - With longer decay times, the initial spike grows larger with respect to the decaying tail.
   //
   // - The bandpassed decay profiles look kind of as expected but they seem to feature a sort of
@@ -986,13 +1000,52 @@ void dampedCombAllpass5()
   //   the decay times add up?
 }
 
-void dampedCombAllpassFractional()
+
+void dampedCombAllpassFractional1()
+{
+  // Under construction
+  //
+
+  // Define types to be used:
+  using Real      = double;
+  using Vec       = std::vector<Real>;
+  using Allpass   = rsDampedCombAllpass<Real, Real>;
+
+  int  numSamples = 5000;     // Number of samples to render.
+  Real delay      =  100.0;   // Delay in samples - not necessarily integer, though 
+  Real feedback   =    0.9;
+
+  int  N        = numSamples;
+  int  maxDelay = (int) rsCeil(delay);   // Verify!
+
+  // Create and set up the allpass filter:
+  Allpass ap;
+  ap.setMaxDelayInSamples(maxDelay);
+  rsSetupFractional(ap, delay, feedback, false);
+
+  // Get output of comb:
+  Vec hc(N);
+  hc[0] = ap.getSampleComb(1.0);
+  for(int n = 1; n < N; n++)
+    hc[n] = ap.getSampleComb(0.0);
+  rsPlotVectors(hc);
+
+
+  Vec h = impulseResponse(ap, N, 1.0);
+  rsPlotVectors(h);
+
+
+}
+
+
+
+void dampedCombAllpassFractional2()
 {
   // Under construction
   //
   // We want to create a damped comb allpass with a fractional delay using allpass interpolation 
   // for the delayline. They way we do this is to absorb the interpolation allpass filter into the
-  // feedback filter ...TBC...
+  // feedback filter. We want to use fractional delay and nontrivial damping filters here ...TBC...
 
   // Define types to be used:
   using Real      = double;
@@ -1001,27 +1054,37 @@ void dampedCombAllpassFractional()
 
   // User parameters:
   Real sampleRate = 48000;     // Sampling rate.
-  int  numSamples = 24000;     // Number of samples to render.
+  int  numSamples = 12000;     // Number of samples to render.
 
-  Real delay      =   100.0;   // Delay in samples - not necessarily integer, though 
-  Real decayTime  =     1.0;   // Decay time for mid frequencies in seconds.
+  Real delay      =   100.5;   // Delay in samples - not necessarily integer, though 
+  Real decayTime  =     0.5;   // Decay time for mid frequencies in seconds.
   Real lowFreq    =   250.0;   // Crossover freq between low and mid frequencies in Hz.
-  Real lowScale   =     1.5;   // Decay time scaler for low frequencies.
+  Real lowScale   =     1.0;   // Decay time scaler for low frequencies.
   Real highFreq   =  4000.0;   // Crossover freq between mid and high frequencies in Hz.
-  Real highScale  =     0.2;   // Decay time scaler for high frequencies.
+  Real highScale  =     1.0;   // Decay time scaler for high frequencies.
 
   // Compute intermediate values and define abbreviations:
   Real decaySamples = decayTime     * sampleRate;
   Real lowOmega     = 2*PI*lowFreq  / sampleRate;
   Real highOmega    = 2*PI*highFreq / sampleRate;
   int  N            = numSamples;
-  int maxDelay      = (int) rsCeil(delay);   // Verify!
+  int  maxDelay     = (int) rsCeil(delay);   // Verify!
 
   // Create and set up the allpass filter:
   Allpass ap;
   ap.setMaxDelayInSamples(maxDelay);
   rsSetupDecayTimes(ap, delay, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
-  // The delay gets converted to int - which we don't want!
+
+  // Get output of comb:
+  Vec hc(N);
+  hc[0] = ap.getSampleComb(1.0);
+  for(int n = 1; n < N; n++)
+    hc[n] = ap.getSampleComb(0.0);
+  rsPlotVectors(hc);
+
+
+  //Vec h = impulseResponse(ap, N, 1.0);
+  //rsPlotVectors(h);
 
 
 
@@ -1620,7 +1683,8 @@ void dampedAllpassBiComb_1p()
 
 void dampedCombAllpasses()
 {
-  dampedCombAllpassFractional();
+  //dampedCombAllpass5();
+  dampedCombAllpassFractional1();
   //dampedMultiCombAllpass();
 
 
@@ -1629,7 +1693,8 @@ void dampedCombAllpasses()
   dampedCombAllpass3();
   dampedCombAllpass4();
   dampedCombAllpass5();
-  dampedCombAllpassFractional();
+  dampedCombAllpassFractional1();
+  dampedCombAllpassFractional2();
   dampedMultiCombAllpass();
   dampedCombAllpassComplex();
   dampedCombAllpassNonLin();

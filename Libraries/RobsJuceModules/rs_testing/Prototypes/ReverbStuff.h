@@ -1465,6 +1465,7 @@ TSig rsDampedCombAllpass<TSig, TPar>::applyCorrector(TSig in)
   // naive prototype, we should do it with the additional filters.
 }
 
+
 // A free function to set up the object with a more convenient parametrization:
 template<class TSig, class TPar>
 void rsSetupHighDamp(rsDampedCombAllpass<TSig, TPar>& flt,
@@ -1475,6 +1476,38 @@ void rsSetupHighDamp(rsDampedCombAllpass<TSig, TPar>& flt,
   flt.setup(delay, feedback, 1, b, a, predelay);
 }
 
+
+
+template<class TSig, class TPar>
+void rsSetupFractional(rsDampedCombAllpass<TSig, TPar>& flt,
+  TPar delay, TPar feedback, bool predelay)
+{
+  int  delayInt  = (int) rsFloor(delay);
+  TPar delayFrac = delay - (TPar) delayInt;
+
+    
+  TPar a[2], b[2]; 
+  a[0] = 1;
+
+  if(delayFrac == TPar(0))
+  {
+    b[0] = 1;
+    flt.setup(delayInt, feedback, 0, b, a, predelay);
+  }
+  else
+  {
+
+
+
+
+  }
+
+
+  //rsMake1stOrderHighShelf(dampOmega, dampGain, &b[0], &b[1], &a[1]);
+
+
+  //flt.setup(delay, feedback, 1, b, a, predelay);
+}
 
 // Under construction. Should set up the flt such that it achieves a given overall decay time in 
 // samples (in the sense of RT60, i.e. reverb time to decay to -60 dB) and having scaled deacy 
@@ -1505,7 +1538,7 @@ void rsSetupDecayTimes(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay, TPar de
   TPar aH[2], bH[2]; aH[0] = 1; rsMake1stOrderHighShelf(highOmega, gH, &bH[0], &bH[1], &aH[1]);
 
   // Combine low- and high shelver into biquad:
-  TPar a[3], b[3];
+  TPar a[4], b[4];
   rsArrayTools::convolve(aL, 2, aH, 2, a);
   rsArrayTools::convolve(bL, 2, bH, 2, b);
 
@@ -1520,7 +1553,35 @@ void rsSetupDecayTimes(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay, TPar de
   }
   else
   {
-    rsError("Fractional delay not yet implemented");
+    // Design an interpolation allpass. See getSampleAllpass() and getSampleWarpedAllpass() in 
+    // rsInterpolator for the formulas
+
+    // Verify these:
+    TPar x     = delayFrac;  // Or should it be 1-delayFrac?
+    TPar coeff = x;          // For warped allpass: coeff = (1-x)/(1+x)
+
+    TPar aA[2], bA[2];
+    bA[0] = coeff;
+    bA[1] = 1;
+    aA[0] = 1;
+    aA[1] = coeff; 
+    //aA[1] = 0.999*coeff;         // rsInterpolator scales this by 0.999 - may we should, too?
+    // This gives unstable filters!
+
+    // Test - linear interpolation:
+    bA[0] = coeff;
+    bA[1] = 1 - coeff;
+    aA[0] = 1;
+    aA[1] = 0;
+
+
+    // Bake the interpolation allpass into the b,a, arrays:
+    rsArrayTools::convolve(a, 3, aA, 2, a);
+    rsArrayTools::convolve(b, 3, bA, 2, b);
+    flt.setup(delay, kM, 3, b, a, predelay);
+
+
+    //rsError("Fractional delay not yet implemented");
   }
 
 
@@ -1559,6 +1620,10 @@ void rsSetupDecayTimes(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay, TPar de
   //   account the effect of the damping filter (which itself may also introduce a frequency 
   //   dependent delay). I think, what we want is to have the correct fractional delay at DC or
   //   maybe at the resonance frequency, so we can tune it exactly.
+  //
+  // - Can be optimized: design the low shelf directly into a,b, the high shelf into some tmp 
+  //   arrays, then bake them into a,b. The allpass can then use the same temp arrays as the 
+  //   hi shelf and then also bake them into a,b
 }
 
 

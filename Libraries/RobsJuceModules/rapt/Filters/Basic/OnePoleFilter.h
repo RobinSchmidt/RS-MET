@@ -135,6 +135,8 @@ public:
     *b1 = t + c;
     *a1 = -t;
   }
+  // It seems to create a (nontrivial) allpass for g == 1. Verify and document this! I would have
+  // expected an identity filter.
 
   template<class T>
   static inline void coeffsHighShelfBLT(T w, T g, T* b0, T* b1, T* a1)
