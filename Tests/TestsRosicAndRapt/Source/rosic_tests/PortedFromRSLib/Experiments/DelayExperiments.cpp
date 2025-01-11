@@ -986,13 +986,59 @@ void dampedCombAllpass5()
   //   the decay times add up?
 }
 
+void dampedCombAllpassFractional()
+{
+  // Under construction
+  //
+  // We want to create a damped comb allpass with a fractional delay using allpass interpolation 
+  // for the delayline. They way we do this is to absorb the interpolation allpass filter into the
+  // feedback filter ...TBC...
+
+  // Define types to be used:
+  using Real      = double;
+  using Vec       = std::vector<Real>;
+  using Allpass   = rsDampedCombAllpass<Real, Real>;
+
+  // User parameters:
+  Real sampleRate = 48000;     // Sampling rate.
+  int  numSamples = 24000;     // Number of samples to render.
+
+  Real delay      =   100.0;   // Delay in samples - not necessarily integer, though 
+  Real decayTime  =     1.0;   // Decay time for mid frequencies in seconds.
+  Real lowFreq    =   250.0;   // Crossover freq between low and mid frequencies in Hz.
+  Real lowScale   =     1.5;   // Decay time scaler for low frequencies.
+  Real highFreq   =  4000.0;   // Crossover freq between mid and high frequencies in Hz.
+  Real highScale  =     0.2;   // Decay time scaler for high frequencies.
+
+  // Compute intermediate values and define abbreviations:
+  Real decaySamples = decayTime     * sampleRate;
+  Real lowOmega     = 2*PI*lowFreq  / sampleRate;
+  Real highOmega    = 2*PI*highFreq / sampleRate;
+  int  N            = numSamples;
+  int maxDelay      = (int) rsCeil(delay);   // Verify!
+
+  // Create and set up the allpass filter:
+  Allpass ap;
+  ap.setMaxDelayInSamples(maxDelay);
+  rsSetupDecayTimes(ap, delay, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
+  // The delay gets converted to int - which we don't want!
+
+
+
+  // ToDo:
+  //
+  // - Maybe create 3 filters: onde with floor(delay), one with delay and one with ceil(delay) and 
+  //   compare their outputs
+}
+
+
 void dampedMultiCombAllpass()
 {
-  // Under construction.
-  //
-  // We want to extract the transfer function from an rsDampedCombAllpass object as 
-  // rsSparseRationalFunction and then use that to set up an rsSparseFilter object. They should
-  // both have the same impulse response.
+  // We extract the transfer functions from 3 rsDampedCombAllpass objects with different delays as
+  // rsSparseRationalFunction and then use a weighted sum of them as our "multi comb" transfer 
+  // function. Then we apply the usual inversion/reflection mumbo jumbo to tunn the multicomb into
+  // an allpass.
+  
 
   // Define types to be used:
   using Real      = double;
@@ -1094,8 +1140,9 @@ void dampedMultiCombAllpass()
 
   // Observations:
   //
-  // - The impulse response of the comb-sum shows spikes at the products of the delays, i.e. at
-  //   713 = 23*31, 943 = 23*41, 1271 = 31*41 and their multiples, i.e. 1426 = 2 * 713, etc.
+  // - With decayTime = 1.0, the impulse response of the comb-sum shows spikes at the products of 
+  //   the delays, i.e. at 713 = 23*31, 943 = 23*41, 1271 = 31*41 and their multiples, i.e. 
+  //   1426 = 2 * 713, etc.
   //
   // - With delayScale = 5 and decayTime = 0.2, there's actually a build-up phase in the
   //   "corrected-phased" version. It sounds like breath-noise of some flute-ish instrument 
@@ -1573,16 +1620,16 @@ void dampedAllpassBiComb_1p()
 
 void dampedCombAllpasses()
 {
-  //dampedCombAllpassComplex();
-  dampedMultiCombAllpass();          // rename to dampedMultCombAllpass
-  //dampedAllpassBiComb_1p();
-  //dampedCombAllpass5();
+  dampedCombAllpassFractional();
+  //dampedMultiCombAllpass();
+
 
   dampedCombAllpass1();
   dampedCombAllpass2();
   dampedCombAllpass3();
   dampedCombAllpass4();
   dampedCombAllpass5();
+  dampedCombAllpassFractional();
   dampedMultiCombAllpass();
   dampedCombAllpassComplex();
   dampedCombAllpassNonLin();
