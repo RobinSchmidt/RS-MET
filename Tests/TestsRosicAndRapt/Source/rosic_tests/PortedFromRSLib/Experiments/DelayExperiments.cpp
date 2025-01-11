@@ -1009,6 +1009,7 @@ void dampedAllpassComb6()
   int  delay1     =    23;     // Delay of 1st delayline
   int  delay2     =    31;     //          2nd
   int  delay3     =    41;     //          3rd
+  int  delayScale =     5;     // Scale factor for all delays
 
   Real gain1      =     1.0;   // Gain of 1st delayline
   Real gain2      =     1.0;   //         2nd
@@ -1021,15 +1022,21 @@ void dampedAllpassComb6()
   Real highScale  =     0.2;   // Decay time scaler for high frequencies.
 
 
+
+
   decayTime = 0.2;               // Test
   //lowScale = highScale = 1.0;  // Test
 
-  // Compute intermediate values:
+  // Compute intermediate values and define abbreviations:
   Real decaySamples = decayTime     * sampleRate;
   Real lowOmega     = 2*PI*lowFreq  / sampleRate;
   Real highOmega    = 2*PI*highFreq / sampleRate;
   Real spikeFreq1   = Real(sampleRate) / Real(delay1);  // Frequency of the spikes
   int  N            = numSamples;
+
+  delay1 *= delayScale;
+  delay2 *= delayScale;
+  delay3 *= delayScale;
 
   // Create and set up the prototype allpass filters. We are interested mostyl in the comb transfer
   // functions here:
@@ -1053,6 +1060,10 @@ void dampedAllpassComb6()
   comb.setMaxDelayInSamples(U.getFilterOrder());
   comb.setup(U);
   Vec hu = impulseResponse(comb, N, 1.0);
+
+  double densityNum = U.getNumeratorDensity(); 
+  double densityDen = U.getDenominatorDensity(); 
+  double densitySep = U.getDensity();                // Just for inspection
   rsPlotVector(hu);
 
   // Create the corrector filter and apply it to the comb impulse response:
@@ -1074,6 +1085,7 @@ void dampedAllpassComb6()
   Vec hp = filterResponse(corr, N, hup);
   rsPlotVector(hp);
 
+
   rosic::writeToMonoWaveFile("TriCombAllpass_CombSum.wav",          &hu[0],  N, sampleRate);
   rosic::writeToMonoWaveFile("TriCombAllpass_Corrected.wav",        &h[0],   N, sampleRate);
   rosic::writeToMonoWaveFile("TriCombAllpass_CombSum_Phased.wav",   &hup[0], N, sampleRate); 
@@ -1085,11 +1097,22 @@ void dampedAllpassComb6()
   // - The impulse response of the comb-sum shows spikes at the products of the delays, i.e. at
   //   713 = 23*31, 943 = 23*41, 1271 = 31*41 and their multiples, i.e. 1426 = 2 * 713, etc.
   //
+  // - With delayScale = 5 and decayTime = 0.2, there's actually a build-up phase in the
+  //   "corrected-phased" version.
+  //
   // - The impulse response of the corrected comb sum has a strong initial bipolar spike and is 
   //   rather quiet after that. But with shorter decay times, the effect becomes smaller. Also,
   //   the spikes at 713, .. become less pronounced.
   //
   // - Try it with a full series of harmonics and with odd harmonic only (this is the current case)
+  //
+  // - U has 49/56 terms and therefore C has 56/49 terms. The maximum delay (i.e. total filter 
+  //   order) is 101 and determined by the 56th term (index 55) of the denominator of U. That's a 
+  //   pretty high density actually. Maybe define the density of a sparse filter as the number of
+  //   coeffs it actually has divided by the maximum number that it could have for the given order.
+  //   The maximum number it could have would be 2*max(deg(num)+1, deg(den)), I think.
+  //   Looks like the desnity is 0.5833333. ...but verify the definition of the formula - if it
+  //   makes sense to define density that way.
   //
   //
   // Conclusions:
@@ -1099,17 +1122,10 @@ void dampedAllpassComb6()
   //
   // ToDo:
   //
-  // - Create 3 comb filters with different values for the delay M. Then get their comb transfer
-  //   functions and form a weighted sum of them. Then set up an rsSparseFilter object with it.
-  //   Check that the sparse filter produces the same impulse response. Then form a suitable 
-  //   corrector filter by invert-reversing the sparse filter. Using that corrector filter in
-  //   series with either the weighted sum of 3 combs or the sparse filter should give an allpass
-  //   response. Try that. Try also reversing the original sparse filter. That should give another
-  //   variation.
   //
   // - Maybe implement a musically tunable reverb algorithm based on that idea. Maybe call it 
   //   TuniVerb. It should give the user the possibility to set up a parallel connection of (up to)
-  //   some number N of combs which are then turned into an allpass via out transfer function 
+  //   some number N of combs which are then turned into an allpass via our transfer function 
   //   inversion-and-reversal magic. We may want tune the combs to musical notes.
   //
   // - Maybe the combs should all have the same decay time. Or maybe the higher combs should have 
@@ -1121,6 +1137,10 @@ void dampedAllpassComb6()
   // - Try to implement a fractional delay by using allpass interpolation of the delayline. This
   //   will probably also solve the spikes problem when the delays are chosen in suitable 
   //   irrational ratios.
+  //
+  // - Try longer delay lengths. They are chosen pretty short in the experiment (even the longets 
+  //   is less than a millisecond). Maybe try something on the order of 10-20 milliseconds. That 
+  //   should be suitable for reverb.
 }
 
 

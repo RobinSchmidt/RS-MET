@@ -1968,7 +1968,7 @@ public:
 
 
 
-  /** Adds an overall predelay to the whole filter by shifting all exponents of z^-1 by the given 
+  /** Adds an overall predelay to the whole filter by shifting all exponents of z^-1 by the given
   amount. */
   void addPreDelay(int amountInSamples)
   {
@@ -1991,15 +1991,15 @@ public:
 
 
 
-  void removePreDelay() 
-  { 
+  void removePreDelay()
+  {
     //num.shiftPowers(-num.getPower(0)); 
-    num.shiftPowers(-getPreDelay()); 
+    num.shiftPowers(-getPreDelay());
   }
 
 
 
-  /** Turns the filter into its inverse. This basically amounts to swapping numerator and 
+  /** Turns the filter into its inverse. This basically amounts to swapping numerator and
   denominator and possibly applying some scaling of the coefficients if b0 != 1. */
   void invert()
   {
@@ -2032,8 +2032,8 @@ public:
     // What about H.num == empty ...but that shouldn't be allowed anyway
   }
 
-  /** Reflects the zeros of the filter about the unit circle. This will turn a minimum phase 
-  filter into a maximum phase one and vice versa. For mixed phase filters, it inverts the mix. 
+  /** Reflects the zeros of the filter about the unit circle. This will turn a minimum phase
+  filter into a maximum phase one and vice versa. For mixed phase filters, it inverts the mix.
   It doesn't affect stability or filter order. */
   void reflectZeros()
   {
@@ -2055,7 +2055,7 @@ public:
   }
 
 
-  /** Returns the order of the filter. This is the maximum exponent of z^-1 that occurs in the 
+  /** Returns the order of the filter. This is the maximum exponent of z^-1 that occurs in the
   transfer function. */
   int getFilterOrder() const { return rsMax(num.getDegree(), den.getDegree()); }
 
@@ -2083,6 +2083,37 @@ public:
     return ok;
   }
   // Maybe rename to something like isCanonical
+
+  /**  */
+  double getDensity() const
+  {
+    int numPossibleCoeffs = num.getDegree()+1 + den.getDegree();
+    int numActualCoeffs   = num.getNumTerms() + (den.getNumTerms()-1);
+    return double(numActualCoeffs) / double(numPossibleCoeffs);
+  }
+  // Maybe this could be moved into the baseclass. But I'm not sure, if the +1 fo the num and
+  // no +1 for the den also applies there...well...I think, it does when we assume a canonical
+  // representation with monic denomionator. Here we normalize the denominator to a0=1 - but
+  // whatever way we normalize the function, the denominator has always one degree of freedom
+  // less than the numerator (for the same degree). A degree 1 polynomial has 2 coeffs and a degree
+  // N polynomial has N+1 coeffs. That number applies to the numerator as is. But the denominator
+  // is normalized so we lose one degree of freedom and subtract 1 again.
+
+  // Maybe have functions getNumeratorDensity(), getDenominatorDensity()
+  // Maybe define a different notion of density that doesn't distiguish between deg(num) and 
+  // deg(den), i.e. numPossibleCoeffs = 2 * (max(num.getDegree()+1, den.getDegree()+1)) - 1;
+  // ...I think. This is the number of coeffs a filter of the given order could have in general
+  // Maybe have functions getSeparatedDensity, getCombinedDensity
+
+  double getNumeratorDensity() const
+  {
+    return double(num.getNumTerms()) / double(num.getDegree()+1);
+  }
+
+  double getDenominatorDensity() const
+  {
+    return double(den.getNumTerms()-1) / double(den.getDegree());
+  }
 
 
 
@@ -2293,6 +2324,8 @@ public:
   /** Performs some sanity checks. Is meant for debug assertions. */
   bool isFilterValid() const { return H.isCanonical() && areDelaysConsistent(); }
   // ToDo: Elaborate documentation. Give some details about what it checks.
+
+
 
 
 
