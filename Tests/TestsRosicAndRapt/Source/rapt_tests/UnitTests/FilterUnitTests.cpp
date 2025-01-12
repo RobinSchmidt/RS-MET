@@ -2646,6 +2646,100 @@ bool dampedCombAllpassUnitTest3(bool withPreDelay)
   return ok;
 }
 
+
+bool dampedMultiCombAllpassUnit()
+{
+  // We compare creating a multicomb allpass directly by combining the transfer functions of 3 
+  // single comb alppases appropriately with the result of the sMultiCombAllpass class that 
+  // encapsulates that.
+
+  bool ok = true;
+
+  // Define types to be used:
+  using Real             = double;
+  using Complex          = rsComplex<Real>;
+  using Vec              = std::vector<Real>;
+  using CombAllpass      = rsDampedCombAllpass<Real, Real>;
+  using MultiCombAllpass = rsDampedMultiCombAllpass<Real, Real>;
+  using TransFunc        = rsSparseDigitalTransferFunction<Real>;
+  using SparseFlt        = rsSparseFilter<Real, Real>;
+
+  // User parameters:
+  Real sampleRate = 48000;     // Sampling rate.
+  int  numSamples =  2000;     // Number of samples to render.
+
+  Real delay1     =    21.3;   // Delay of 1st delayline
+  Real delay2     =    31.2;   //          2nd
+  Real delay3     =    41.6;   //          3rd
+
+  Real gain1      =     0.8;   // Gain of 1st delayline
+  Real gain2      =    -0.7;   //         2nd
+  Real gain3      =     0.3;   //         3rd
+
+  Real decayTime  =     0.2;   // Decay time for mid frequencies in seconds.
+  Real lowFreq    =   250.0;   // Crossover freq between low and mid frequencies in Hz.
+  Real lowScale   =     1.5;   // Decay time scaler for low frequencies.
+  Real highFreq   =  4000.0;   // Crossover freq between mid and high frequencies in Hz.
+  Real highScale  =     0.2;   // Decay time scaler for high frequencies.
+
+  // Compute intermediate values and define abbreviations:
+  Real decaySamples = decayTime     * sampleRate;
+  Real lowOmega     = 2*PI*lowFreq  / sampleRate;
+  Real highOmega    = 2*PI*highFreq / sampleRate;
+
+
+  int  N            = numSamples;
+
+  // Create and set up the prototype allpass filters. We are interested mostyl in the comb transfer
+  // functions here:
+  CombAllpass ap1, ap2, ap3;
+  ap1.setMaxDelayInSamples(delay1);
+  rsSetupDecayTimes(ap1, delay1, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
+  ap2.setMaxDelayInSamples(delay2);
+  rsSetupDecayTimes(ap2, delay2, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
+  ap3.setMaxDelayInSamples(delay3);
+  rsSetupDecayTimes(ap3, delay3, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
+
+  // Retrieve the comb transfer functions:
+  TransFunc U1 = ap1.getCombTransferFunction();
+  TransFunc U2 = ap2.getCombTransferFunction();
+  TransFunc U3 = ap3.getCombTransferFunction();
+
+  // Combine the comb transfer functions into one:
+  TransFunc U = gain1 * U1  +  gain2 * U2  +  gain3 * U3;
+
+  // Create the corrector and complete transfer function:
+  TransFunc C = U;
+  C.invert();
+  C.reflectZeros();
+  TransFunc H = U * C;
+
+  // Create and set up the multicomb allpass:
+
+  // TPar delay = sampleRate / frequency;
+
+  Real frequency = sampleRate / delay1;
+  MultiCombAllpass flt;
+  flt.setFilterOrderLimits(8191, 4);
+  flt.setSampleRate(sampleRate);
+  flt.setFrequency(frequency);
+  flt.setDecayTimeInSeconds(decayTime);
+  flt.setLowCrossoverFreq(lowFreq);
+  flt.setLowDecayScale(lowScale);
+  flt.setHighCrossoverFreq(highFreq);
+  flt.setHighDecayScale(highScale);
+  flt.setNumCombs(3);
+  flt.setCombFreqScale(1, delay1 / delay2);
+  flt.setCombFreqScale(2, delay1 / delay3);
+  flt.getSample(0.0);  // Triggers update of the coeffs
+
+
+
+
+  return ok;
+}
+
+
 bool dampedSchroederAllpassUnitTest()
 {
   // We test rsDampedSchroederAllpass for different feedback filter orders. This structure only
@@ -2809,6 +2903,7 @@ bool allpassUnitTest()
   ok &= dampedCombAllpassUnitTest2();
   ok &= dampedCombAllpassUnitTest3(false);
   ok &= dampedCombAllpassUnitTest3(true);
+  ok &= dampedMultiCombAllpassUnit();
   ok &= dampedSchroederAllpassUnitTest();
   ok &= dampedAllpassBiCombUnitTest();
 
