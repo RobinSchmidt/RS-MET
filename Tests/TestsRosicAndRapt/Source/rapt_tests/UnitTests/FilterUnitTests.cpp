@@ -2646,8 +2646,7 @@ bool dampedCombAllpassUnitTest3(bool withPreDelay)
   return ok;
 }
 
-
-bool dampedMultiCombAllpassUnit()
+bool dampedMultiCombAllpassUnitTest()
 {
   // We compare creating a multicomb allpass directly by combining the transfer functions of 3 
   // single comb alppases appropriately with the result of the sMultiCombAllpass class that 
@@ -2666,7 +2665,7 @@ bool dampedMultiCombAllpassUnit()
 
   // User parameters:
   Real sampleRate = 48000;     // Sampling rate.
-  int  numSamples =  2000;     // Number of samples to render.
+  //int  numSamples =  2000;     // Number of samples to render.
 
   Real delay1     =    21.3;   // Delay of 1st delayline
   Real delay2     =    31.2;   //          2nd
@@ -2686,9 +2685,7 @@ bool dampedMultiCombAllpassUnit()
   Real decaySamples = decayTime     * sampleRate;
   Real lowOmega     = 2*PI*lowFreq  / sampleRate;
   Real highOmega    = 2*PI*highFreq / sampleRate;
-
-
-  int  N            = numSamples;
+  //int  N            = numSamples;
 
   // Create and set up the prototype allpass filters. We are interested mostyl in the comb transfer
   // functions here:
@@ -2715,9 +2712,6 @@ bool dampedMultiCombAllpassUnit()
   TransFunc H = U * C;
 
   // Create and set up the multicomb allpass:
-
-  // TPar delay = sampleRate / frequency;
-
   Real frequency = sampleRate / delay1;
   MultiCombAllpass flt;
   flt.setFilterOrderLimits(8191, 4);
@@ -2731,12 +2725,27 @@ bool dampedMultiCombAllpassUnit()
   flt.setNumCombs(3);
   flt.setCombFreqScale(1, delay1 / delay2);
   flt.setCombFreqScale(2, delay1 / delay3);
-  flt.getSample(0.0);  // Triggers update of the coeffs
+  flt.setCombGain(0, gain1);
+  flt.setCombGain(1, gain2);
+  flt.setCombGain(2, gain3);
+  flt.getSample(0.0);                            // Triggers update of the coeffs
 
-
-
+  // Compare the multicomb transfer functions with the manually created ones:
+  TransFunc Um, Cm, Hm;
+  Um = flt.getCombTransferFunction();
+  Cm = flt.getCorrectorTransferFunction();
+  Hm = flt.getTransferFunction();
+  ok &= Um.isCloseTo(U, 1.e-12);
+  ok &= Cm.isCloseTo(C, 1.e-12);
+  ok &= Hm.isCloseTo(H, 1.e-11);
 
   return ok;
+
+
+  // ToDo:
+  //
+  // - Maybe set up rsSparseFilter objects with the obtained transfer functionand produce impulse
+  //   responses and compare them. See dampedMultiCombAllpass().
 }
 
 
@@ -2903,7 +2912,7 @@ bool allpassUnitTest()
   ok &= dampedCombAllpassUnitTest2();
   ok &= dampedCombAllpassUnitTest3(false);
   ok &= dampedCombAllpassUnitTest3(true);
-  ok &= dampedMultiCombAllpassUnit();
+  ok &= dampedMultiCombAllpassUnitTest();
   ok &= dampedSchroederAllpassUnitTest();
   ok &= dampedAllpassBiCombUnitTest();
 

@@ -1814,6 +1814,30 @@ public:
   
 
 
+  rsSparseDigitalTransferFunction<TPar> getTransferFunction() const
+  {
+    return getCombTransferFunction() * getCorrectorTransferFunction();
+  }
+
+  rsSparseDigitalTransferFunction<TPar> getCombTransferFunction() const
+  {
+    return combBank.getTransferFunction();
+    //return U;  should also work
+  }
+  // allocates - creates copy of the transfer function object.
+  // Maybe return a const ref?
+
+  rsSparseDigitalTransferFunction<TPar> getCorrectorTransferFunction() const
+  {
+    return corrector.getTransferFunction();
+  }
+
+
+
+
+
+
+
   TSig getSample(TSig in)
   {
     if(dirty)
