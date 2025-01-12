@@ -1428,14 +1428,14 @@ void rsDampedCombAllpass<TSig, TPar>::getCombTransferFunction(
 
   getDamperTransferFunction(tf);        // tf = F
   tf->multiplyBy(k_zM1);                // tf = F * k * z^-1 * z^-M
-  //tf->addConstant(TPar(1));             // tf = 1 + F * k * z^-1 * z^-M
-  //tf->invert();                         // tf = 1 / (1 +  F * k * z^-1 * z^-M)
+  tf->addConstant(TPar(1), TPar(0));    // tf = 1 + F * k * z^-1 * z^-M
+  tf->invert();                         // tf = 1 / (1 +  F * k * z^-1 * z^-M)
 
-  //if(preDelay)
-  //{
-  //  rsMonomial<TPar> zM(TPar(1), M+1);  // z^-M
-  //  tf->multiplyBy(zM);                 // tf = z^-M / (1 +  F * k * z^-1 * z^-M) 
-  //}
+  if(preDelay)
+  {
+    rsMonomial<TPar> zM(TPar(1), M+1);  // z^-M
+    tf->multiplyBy(zM);                 // tf = z^-M / (1 +  F * k * z^-1 * z^-M) 
+  }
 
 
 }

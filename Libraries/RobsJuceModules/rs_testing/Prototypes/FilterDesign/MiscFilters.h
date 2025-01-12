@@ -909,6 +909,16 @@ public:
   { addTerm(-newTerm.getCoeff(), newTerm.getPower(), tol); }
 
 
+  void addScaledPolynomial(const rsSparsePolynomial<T> p, T scaler, T tol)
+  {
+    for(int i = 0; i < p.getNumTerms(); i++)
+      addTerm(scaler * p.getCoeff(i), p.getPower(i), tol);
+  }
+  // Maybe it would be better to just append a scaled version and then canonicalize? This may 
+  // result in less data movement - but it may blow up the required memory temporarily. 
+
+
+
 
   // ToDo: write a function addTerm that also adds the term but maintains a canonical 
   // representation by scanning through the existing coeffs to try to find a term with same 
@@ -1866,6 +1876,11 @@ public:
 
 
   void multiplyBy(rsMonomial<T> factor) { num.multiplyBy(factor); }
+
+  void addConstant(T constant, T tol)
+  {
+    num.addScaledPolynomial(den, constant, tol);
+  }
 
 
   //void canonicalize();
