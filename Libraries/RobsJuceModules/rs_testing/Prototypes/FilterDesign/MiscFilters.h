@@ -1599,10 +1599,18 @@ void rsSparsePolynomial<T>::multiply(
   int Nq = q.getNumTerms();
   int Nr = Np * Nq;
 
+  //// Old:
+  //r->setNumTerms(Nr);
+  //for(int i = 0; i < Np; i++)
+  //  for(int j = 0; j < Nq; j++)
+  //    r->setTerm(i*Nq+j, p.getCoeff(i) * q.getCoeff(j), p.getPower(i) + q.getPower(j));
+
+  // New:
   r->setNumTerms(Nr);
-  for(int i = 0; i < Np; i++)
-    for(int j = 0; j < Nq; j++)
+  for(int i = Np-1; i >= 0; i--)
+    for(int j = Nq-1; j >= 0; j--)
       r->setTerm(i*Nq+j, p.getCoeff(i) * q.getCoeff(j), p.getPower(i) + q.getPower(j));
+
 
   r->canonicalize(tol);
 
