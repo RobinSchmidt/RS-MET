@@ -2498,6 +2498,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_rs_testing.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\HeapAllocationLogger.h"/>
     <ClInclude Include="..\..\Source\Misc\Misc.h"/>
     <ClInclude Include="..\..\Source\PerformanceTests\PerformanceTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\RaptTests.h"/>

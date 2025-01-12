@@ -2,6 +2,9 @@
 // in rapt.h - that's bad - figure out a better solution - maybe define it in the jucer-file
 // when nothing else helps
 
+#include "HeapAllocationLogger.h" // Must be included before everything else
+// This is under construction 
+
 #include "../JuceLibraryCode/JuceHeader.h"
 
 // includes for unity build:
