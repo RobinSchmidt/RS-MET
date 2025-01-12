@@ -2,8 +2,9 @@
 // in rapt.h - that's bad - figure out a better solution - maybe define it in the jucer-file
 // when nothing else helps
 
-#include "HeapAllocationLogger.h" // Must be included before everything else
-// This is under construction 
+//#include "HeapAllocationLogger.h" // Must be included before everything else
+// This is under construction - it doesn't work yet
+
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
@@ -11,9 +12,7 @@
 //#include "Shared/Shared.h"
 
 
-
 #include "rapt_tests/RaptTests.h"
-
 
 
 // get rid of these includes - the best would be, to move all that stuff into the rs_testing juce

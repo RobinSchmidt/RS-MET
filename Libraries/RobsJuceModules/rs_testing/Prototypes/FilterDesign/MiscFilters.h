@@ -866,6 +866,13 @@ public:
   /** Creates a polynomial from an initializer list for the terms. */
   rsSparsePolynomial(std::initializer_list<rsMonomial<T>> initList) : terms(initList) {}
 
+  // What about copy- and move constructors and copy- and move assignment operators? Do we need to
+  // define them or can we rely on the auto-generated ones? It's important that swapping two
+  // sparse polynomials can be done allocation free. This is needed for inverting sparse filters by
+  // swapping numerator and denominator of their transfer functions (plus some extra stuff to 
+  // maintain the a0 = 1 normalization). This is an an operation that we need to do in a realtime 
+  // safe manner. Verify and document this!
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
@@ -1968,6 +1975,9 @@ public:
 
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
   /** Adds an overall predelay to the whole filter by shifting all exponents of z^-1 by the given
   amount. */
   void addPreDelay(int amountInSamples)
@@ -1985,51 +1995,35 @@ public:
     num.shiftPowers(amountInSamples);
 
 
-    // Maybe do num.shiftPowers(rsMax(amountInSamples, -getPreDelay()) );
+    // Maybe do num.shiftPowers(rsMax(amountInSamples, -getPreDelay()) ); and write unit tests for
+    // this
   }
 
-
-
-
-  void removePreDelay()
-  {
-    //num.shiftPowers(-num.getPower(0)); 
-    num.shiftPowers(-getPreDelay());
-  }
-
-
+  /** Removes the predelay from this filter, if any is present. This makes sure that the lowest
+  exponent of z^-1 in the numerator is zero. see getPreDelay(), addPreDelay()  */
+  void removePreDelay() { num.shiftPowers(-getPreDelay()); }
 
   /** Turns the filter into its inverse. This basically amounts to swapping numerator and
   denominator and possibly applying some scaling of the coefficients if b0 != 1. */
   void invert()
   {
-    //rsAssert(isFilterValid());
     rsAssert(isCanonical());
 
-    removePreDelay();
-    rsAssert(num.getPower(0) == 0);
-    rsAssert(num.getCoeff(0) != 0);
     // A filter with predelay cannot be inverted in realtime. The best thing we can do in this 
     // case is to invert the filter up to the predelay. Removing the predelay ensures that the
     // 0-th term in the numerator has power of 0, i.e. it's a  b0 * z^-0  term and not some crazy
-    // b7 * z^-7  term.
+    // b7 * z^-7  term:
+    removePreDelay();
+    rsAssert(num.getPower(0) == 0); // Numerator is already asserted to be non-empty in isCanoncial
+    rsAssert(num.getCoeff(0) != 0); // so we can access the 0-th element without risk here
 
+    // Swap numerator and denominator while maintaining the a0 = 0 normalization condition:
     T s = T(1) / num.getCoeff(0);
     scale(s);
-    rsSwap(num, den);
+    std::swap(num, den);
     scale(s);
 
-    // Figure out if rsSwap causes memory allocations when swapping the underlying std::vectors. 
-    // Actually, swapping two vectors would only require pointer adjustments under the hood. Maybe
-    // std::swap is clever enough to implement it that way?
-
-    // When the filter has an initial delay, i.e. the first power in the numerator is not equal to 
-    // zero, then we actually cannot invert the filter. A delay cannot be undone (at least not in
-    // realtime). In this case, the best we can do is to invert the filter up to a delay. I think, 
-    // we can do this by first figuring out the minimum exponent of the numerator and the 
-    // subtracting that from all the numerator exponents. After that, we can invert as usual.
-
-    // What about H.num == empty ...but that shouldn't be allowed anyway
+    // I'm pretty sure it doesnt' allocate. Verify and document.
   }
 
   /** Reflects the zeros of the filter about the unit circle. This will turn a minimum phase
@@ -2041,25 +2035,24 @@ public:
     for(int i = 0; i < num.getNumTerms(); i++)
       num.setPower(i, deg - num.getPower(i));
     num.reverse();                               // Order array by ascending powers again
+
+    // How about a reflectPoles() function? But that would turn stable filters into unstable ones,
+    // so it's usefulness is questionable. For the time being, we can do without.
   }
 
 
-  // How about a reflectPoles() function? But that would turn stable filters into unstable ones,
-  // so it's usefulness is questionable.
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
 
-
-
-  int getPreDelay() const
-  {
-    return num.getPower(0);
-  }
-
+  /** Returns the predelay introduced by this filter. A predelay is characterized by the fact that
+  the lowest exponent of z^-1 in the numerator is not zero. That means the numerator does not look
+  like b0 + b1*z-^1 + b2*z^-2 + ... but rather something like b7*z^-7 + b8*z^-8 + b9*z^-9 + ...
+  for a predelay of 7 samples, for example. */
+  int getPreDelay() const { return num.getPower(0); }
 
   /** Returns the order of the filter. This is the maximum exponent of z^-1 that occurs in the
   transfer function. */
   int getFilterOrder() const { return rsMax(num.getDegree(), den.getDegree()); }
-
-
 
   /** Performs some sanity checks. Is meant for debug assertions. */
   bool isCanonical() const
@@ -2072,20 +2065,16 @@ public:
     // We assume the filter polynomials to be in canonical shape:
     ok &= num.isCanonical();
     ok &= den.isCanonical();
-    // Maybe that can be relaxed. But then the code below mayke no sense anymore. 
-    // den.getPower(0)  and  den.getCoeff(0)  assume the  a0 * z^0  term to be at index 0.
-    // So, maybe we indeed need to enforce a canonical representation.
 
     // Filter should satisfy the a0 == 1 normalization property:
     ok &= den.getPower(0) == 0 && den.getCoeff(0) == T(1);
 
-
     return ok;
   }
-  // Maybe rename to something like isCanonical
+
 
   /**  */
-  double getDensity() const
+  double getSeparatedDensity() const
   {
     int numPossibleCoeffs = num.getDegree()+1 + den.getDegree();
     int numActualCoeffs   = num.getNumTerms() + (den.getNumTerms()-1);
@@ -2103,7 +2092,8 @@ public:
   // Maybe define a different notion of density that doesn't distiguish between deg(num) and 
   // deg(den), i.e. numPossibleCoeffs = 2 * (max(num.getDegree()+1, den.getDegree()+1)) - 1;
   // ...I think. This is the number of coeffs a filter of the given order could have in general
-  // Maybe have functions getSeparatedDensity, getCombinedDensity
+  // Maybe have functions getSeparatedDensity, getCombinedDensity. The above implementation would 
+  // be the getSeparatedDensity() function
 
   double getNumeratorDensity() const
   {
@@ -2340,7 +2330,7 @@ public:
 
 
   /** Returns a const reference to our transfer function object H(z). */
-  const rsSparseRationalFunction<TPar>& getTransferFunction() const { return H; }
+  const rsSparseDigitalTransferFunction<TPar>& getTransferFunction() const { return H; }
 
 
 

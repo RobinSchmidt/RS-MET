@@ -2867,6 +2867,8 @@ bool sparseFilterUnitTest()
   setupDenseFilter(df, b, a);
   Vec hd = impulseResponse(df, N, 1.0);
 
+
+
   // Create, set up and produce impulse response of sparse filter:
   FltS sf;
   sf.setMaxDelayInSamples((int)rsMax(b.size()-1, a.size()-1));  // Verify the -1!
@@ -2876,6 +2878,19 @@ bool sparseFilterUnitTest()
   // Check, if both impulse responses match:
   ok &= rsIsCloseTo(hd, hs, 1.e-14);
   //rsPlotVectors(hd, hs);
+
+  // Check density calculation:
+  double density;
+  density = sf.getTransferFunction().getNumeratorDensity();
+  ok &= density == double(3) / double (7);
+
+  density = sf.getTransferFunction().getDenominatorDensity();
+  ok &= density == double(3) / double (5);
+
+  density = sf.getTransferFunction().getSeparatedDensity();
+  ok &= density == double(6) / double (12);
+
+
 
   // Invert the dense filter and check if applying the inverse filter to the impulse response of
   // the original filter gives back a unit impulse:

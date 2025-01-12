@@ -1178,7 +1178,7 @@ void dampedMultiCombAllpass()
 
   double densityNum = U.getNumeratorDensity(); 
   double densityDen = U.getDenominatorDensity(); 
-  double densitySep = U.getDensity();                // Just for inspection
+  double densitySep = U.getSeparatedDensity();                // Just for inspection
   rsPlotVector(hu);
 
   // Create the corrector filter and apply it to the comb impulse response:
