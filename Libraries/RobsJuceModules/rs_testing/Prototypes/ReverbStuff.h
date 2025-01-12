@@ -1731,27 +1731,22 @@ public:
   };
 
 
-  void setSampleRate(TPar newSampleRate)        { sampleRate = newSampleRate;    dirty = true;}
+  void setSampleRate(TPar newSampleRate)        { sampleRate = newSampleRate;    dirty = true; }
 
-  void setFrequency(TPar newFrequency)          { frequency = newFrequency;      dirty = true;}
+  void setFrequency(TPar newFrequency)          { frequency = newFrequency;      dirty = true; }
 
-  void setDecayTimeInSeconds(TPar newDecayTime) { decayTime = newDecayTime;      dirty = true;}
+  void setDecayTimeInSeconds(TPar newDecayTime) { decayTime = newDecayTime;      dirty = true; }
 
   // ToDo:
   // setMaxPhaseCombBank
 
-  void setLowCrossoverFreq(TPar newFreq)        { lowCrossFreq = newFreq;        dirty = true;}
+  void setLowCrossoverFreq(TPar newFreq)        { lowCrossFreq = newFreq;        dirty = true; }
 
-  void setLowDecayScale(TPar newTimeScale)      { lowDecayScale = newTimeScale;  dirty = true;}
+  void setLowDecayScale(TPar newTimeScale)      { lowDecayScale = newTimeScale;  dirty = true; }
 
-  void setHighCrossoverFreq(TPar newFreq)       { highCrossFreq = newFreq;       dirty = true;}
+  void setHighCrossoverFreq(TPar newFreq)       { highCrossFreq = newFreq;       dirty = true; }
 
-  void setHighDecayScale(TPar newTimeScale)     { highDecayScale = newTimeScale; dirty = true;}
-
-
-
-
-
+  void setHighDecayScale(TPar newTimeScale)     { highDecayScale = newTimeScale; dirty = true; }
 
 
   // ToDo compare function name to what we have in the FDN classes and make the consistent
@@ -1760,8 +1755,36 @@ public:
 
 
 
+
+
+
+  void setNumCombs(int newNumber) 
+  { 
+    rsAssert(numCombs <= maxNumCombs);  
+    numCombs = rsMin(newNumber, maxNumCombs); 
+  }
+
+  void setCombFreqScale(int index, TPar newScale)
+  {
+    rsAssert(isValidCombIndex(index));
+    settings[index].freqScale = newScale;
+    dirty = true;
+  }
+
+  void setCombGain(int index, TPar newGain)
+  {
+    rsAssert(isValidCombIndex(index));
+    settings[index].gain = newGain;
+    dirty = true;
+  }
+
+
+
+
   
-  int getNumCombs() { return numCombs; }
+  int getNumCombs() const { return numCombs; }
+
+  bool isValidCombIndex(int index) const { return index <= getNumCombs(); }
   
 
 
@@ -1867,9 +1890,10 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
 
     // Accumulate the current transfer function U_i into our total sum U:
     TransFunc Ui = protoAllpass.getCombTransferFunction();
-    U = U + Ui;
-    // This is where all the allocations happen! This must be re-implemented in a non-allocating 
-    // way.
+    U = U + s.gain * Ui;
+    // This is where all the allocations happen! int get.. and in +. This must be re-implemented in
+    // a non-allocating way, i.e. using pre-allocated workspace buffers for any temporary storage
+    // that is needed during the computations.
 
     int dummy = 0;
   }
@@ -1891,6 +1915,8 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
     U.reflectZeros();
     corrector.setup(U);
   }
+  // I'm not totally sure, if U.invert may allocate. There's a swap of objects containing 
+  // std::vector members. -> check this!
 
 
   dirty = false;

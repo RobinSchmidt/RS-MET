@@ -1278,10 +1278,10 @@ void dampedMultiCombAllpass2()
   using Settings = Filter::CombSettings;
 
 
-  int  numSamples = 12000;
+  int  numSamples =  8192;
   Real sampleRate = 48000;
-  Real frequency  =   440.0;   // Reference frequency
-  Real decayTime  =     1.0;   // Decay time for mid frequencies in seconds.
+  Real frequency  =   480.0;   // Reference frequency
+  Real decayTime  =     0.2;   // Decay time for mid frequencies in seconds.
   Real lowFreq    =   250.0;   // Crossover freq between low and mid frequencies in Hz.
   Real lowScale   =     1.5;   // Decay time scaler for low frequencies.
   Real highFreq   =  4000.0;   // Crossover freq between mid and high frequencies in Hz.
@@ -1313,13 +1313,20 @@ void dampedMultiCombAllpass2()
   flt.setLowDecayScale(lowScale);
   flt.setHighCrossoverFreq(highFreq);
   flt.setHighDecayScale(highScale);
-  //flt.setup(combSettings);
-  //flt.updateFilters();
+  flt.setNumCombs(3);
+  flt.setCombFreqScale(1, 1.3352657623556);
+  flt.setCombFreqScale(2, 1.7238234123465);
+  // The numbers were just randomly created via the hsdjfgasdfhgskajdfhk method
+
+  bool ok = true;
 
   // Get the impulse response:
   int N = numSamples;
   Vec h = impulseResponse(flt, N, 1.0);
-  rsPlotVectors(h);
+  ok &= isAllpass(h, 0.02);
+  rsPlotVector(h);
+
+
 
 
 
