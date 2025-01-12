@@ -1129,6 +1129,11 @@ public:
   // convenient to use but it's sometimes necessary when one needs to compute these transfer 
   // function in a realtime thread.
 
+
+  void getCombTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const;
+  // Needs more params for temporaries
+
+
   void getDamperTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const;
 
 
@@ -1411,6 +1416,29 @@ rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
   return H;
 }
 
+template<class TSig, class TPar>
+void rsDampedCombAllpass<TSig, TPar>::getCombTransferFunction(
+  rsSparseDigitalTransferFunction<TPar>* tf) const
+{
+
+  // Does not yet compile because we do not yet have the multiplyBy() and addConstant()
+  // functions available:
+
+  //rsMonomial<TPar> k_zM1(k, M+1);       // k * z^-1 * z^-M
+
+  //getDamperTransferFunction(tf);        // tf = F
+  //tf->multiplyBy(k_k_zM1);              // tf = F * k * z^-1 * z^-M
+  //tf->addConstant(TPar(1));             // tf = 1 + F * k * z^-1 * z^-M
+  //tf->invert();                         // tf = 1 / (1 +  F * k * z^-1 * z^-M)
+
+  //if(preDelay)
+  //{
+  //  rsMonomial<TPar> zM(TPar(1), M+1);  // z^-M
+  //  tf->multiplyBy(zM);                 // tf = z^-M / (1 +  F * k * z^-1 * z^-M) 
+  //}
+
+
+}
 
 template<class TSig, class TPar>
 void rsDampedCombAllpass<TSig, TPar>::getDamperTransferFunction(

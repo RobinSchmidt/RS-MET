@@ -1177,6 +1177,12 @@ void dampedMultiCombAllpass()
   Vec hu = impulseResponse(comb, N, 1.0);
   rsPlotVector(hu);
 
+  // Test the non-allocating transfer fucntion computations:
+  TransFunc U1n;
+  ap1.getCombTransferFunction(&U1n);
+
+
+
   // Compute different notions of density for inspection:
   double densityNum = U.getNumeratorDensity();
   double densityDen = U.getDenominatorDensity();
