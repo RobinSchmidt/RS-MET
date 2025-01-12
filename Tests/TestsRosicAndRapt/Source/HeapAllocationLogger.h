@@ -11,6 +11,12 @@ using _CSTD malloc;
 
 cstdlib
 
+Also, the functions rsLoggingMalloc/Free don't compile because malloc/free are not yet defined.
+I think, it is not right to include this file as the very first thing. malloc and free have to be
+already defined. If this is to work at all, I think, it has to included in between the files that
+define malloc/free and eveything else. 
+
+
 Maybe it could be made to work by including it after that file?
 
 */
