@@ -2073,13 +2073,45 @@ public:
   }
 
 
-  /**  */
+  /** Computes the density of the numerator defined as the number of actual nonzero coeffs divided
+  by the number of potentially nonzero coeffs given the degree of the numerator. */
+  double getNumeratorDensity() const
+  {
+    return double(num.getNumTerms()) / double(num.getDegree()+1);
+  }
+
+  /** Computes the density of the denominator defined as the number of actual nonzero coeffs 
+  divided by the number of potentially nonzero coeffs given the degree of the denominator. */
+  double getDenominatorDensity() const
+  {
+    return double(den.getNumTerms()-1) / double(den.getDegree());
+  }
+
+  /** Returns the "combined density" defined as the number of actual nonzero coeffs of the filter 
+  divided by the number of potential nonzero coeffs for the given filter order. The a0 coeff 
+  doesn't count because it's always 1. */
+  double getCombinedDensity() const
+  {
+    int numPossibleCoeffs = 2*getFilterOrder() + 1;
+    int numActualCoeffs   = num.getNumTerms() + (den.getNumTerms()-1);
+    return double(numActualCoeffs) / double(numPossibleCoeffs);
+  }
+
+  /** Returns the "separated density" defined as the as number of actual nonzero coeffs in 
+  numerator and denominator divided by the number of potential nozero coeffs for the given orders
+  of numerator and denominator. */
   double getSeparatedDensity() const
   {
     int numPossibleCoeffs = num.getDegree()+1 + den.getDegree();
     int numActualCoeffs   = num.getNumTerms() + (den.getNumTerms()-1);
     return double(numActualCoeffs) / double(numPossibleCoeffs);
   }
+  // ToDo: Explain this better! We consider numerator and denominator as separate filters that can
+  // have their own orders and therefore the computation of the number of possibly nonzero coeffs
+  // is different. For example, in an Nth order allpole filter, we have a 0th order numerator. In 
+  // getCombinedDensity, we would assume that it could potentially have N+1 coeffs. Here, we assume
+  // that it can have only one because the order of the numerator is zero.
+
   // Maybe this could be moved into the baseclass. But I'm not sure, if the +1 fo the num and
   // no +1 for the den also applies there...well...I think, it does when we assume a canonical
   // representation with monic denomionator. Here we normalize the denominator to a0=1 - but
@@ -2088,28 +2120,7 @@ public:
   // N polynomial has N+1 coeffs. That number applies to the numerator as is. But the denominator
   // is normalized so we lose one degree of freedom and subtract 1 again.
 
-  // Maybe have functions getNumeratorDensity(), getDenominatorDensity()
-  // Maybe define a different notion of density that doesn't distiguish between deg(num) and 
-  // deg(den), i.e. numPossibleCoeffs = 2 * (max(num.getDegree()+1, den.getDegree()+1)) - 1;
-  // ...I think. This is the number of coeffs a filter of the given order could have in general
-  // Maybe have functions getSeparatedDensity, getCombinedDensity. The above implementation would 
-  // be the getSeparatedDensity() function
 
-  double getNumeratorDensity() const
-  {
-    return double(num.getNumTerms()) / double(num.getDegree()+1);
-  }
-
-  double getDenominatorDensity() const
-  {
-    return double(den.getNumTerms()-1) / double(den.getDegree());
-  }
-
-
-
-
-  // Maybe override the () operator to compute H(1/z) instead of H(z)
-  // add function like isNormalized(), isAllpass(), etc.
 
 
 

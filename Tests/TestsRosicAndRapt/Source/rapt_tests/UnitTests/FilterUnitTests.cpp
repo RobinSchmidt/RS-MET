@@ -2890,6 +2890,9 @@ bool sparseFilterUnitTest()
   density = sf.getTransferFunction().getSeparatedDensity();
   ok &= density == double(6) / double (12);
 
+  density = sf.getTransferFunction().getCombinedDensity();
+  ok &= density == double(6) / double (13);
+
 
 
   // Invert the dense filter and check if applying the inverse filter to the impulse response of
