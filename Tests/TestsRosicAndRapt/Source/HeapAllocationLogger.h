@@ -1,6 +1,9 @@
 #ifndef HEAPALLOCATIONLOGGER_H_INCLUDED
 #define HEAPALLOCATIONLOGGER_H_INCLUDED
 
+#include <stdlib.h>
+
+
 /*
 
 Unfotunatly, this doesn't work. At least not when trying to include this file before everything 
@@ -86,8 +89,7 @@ rsHeapAllocationLogger* rsHeapAllocationLogger::theObject = nullptr;
 
 
 
-/*
-void* rsLoggingMalloc(size_t* size)
+void* rsLoggingMalloc(size_t size)
 {
   rsHeapAllocationLogger::getInstance()->logAllocation();
   return malloc(size);
@@ -102,7 +104,7 @@ void rsLoggingFree(void* ptr)
 
   // See: https://en.cppreference.com/w/c/memory/free
 }
-*/
+
 
 
 
@@ -124,6 +126,6 @@ void rsLoggingFree(void* ptr)
 
 
 // https://valgrind.org/
-// 
+// https://learn.microsoft.com/en-us/cpp/c-runtime-library/crt-debug-heap-details?view=msvc-170
 
 #endif
