@@ -1200,6 +1200,8 @@ public:
     const rsSparsePolynomial<T>& q, T wq,
     rsSparsePolynomial<T>* r, T tol);
 
+  /** Multiplies polynomials p and q and stores the result in r. It may be used in place, i.e. the
+  result polynomial r can point to the memory location of the arguments p and/or q. */
   static void multiply(
     const rsSparsePolynomial<T>& p,
     const rsSparsePolynomial<T>& q,
@@ -1589,36 +1591,18 @@ void rsSparsePolynomial<T>::multiply(
   const rsSparsePolynomial<T>& q,
   rsSparsePolynomial<T>* r, T tol)
 {
-  //// Sanity checks:
-  //rsAssert(rsAreAddressesDistinct(p, *r));
-  //rsAssert(rsAreAddressesDistinct(q, *r));
-  //// This function cannot be used in place (yet?)
-  // Update: this is now allowed!
-
   int Np = p.getNumTerms();
   int Nq = q.getNumTerms();
   int Nr = Np * Nq;
-
-  //// Old:
-  //r->setNumTerms(Nr);
-  //for(int i = 0; i < Np; i++)
-  //  for(int j = 0; j < Nq; j++)
-  //    r->setTerm(i*Nq+j, p.getCoeff(i) * q.getCoeff(j), p.getPower(i) + q.getPower(j));
-
-  // New:
   r->setNumTerms(Nr);
+
+  // Running through the loops backwards allows us to use it in place, i.e. the polynomial r can
+  // point to the location of p and/or q:
   for(int i = Np-1; i >= 0; i--)
     for(int j = Nq-1; j >= 0; j--)
       r->setTerm(i*Nq+j, p.getCoeff(i) * q.getCoeff(j), p.getPower(i) + q.getPower(j));
 
-
   r->canonicalize(tol);
-
-  // ToDo:
-  //
-  // - Maybe loop through the elements backwards. I think, when we do this, we can actually allow
-  //   in-place operation, i.e. the address of r may then be the same as that of p and/or q. But 
-  //   this should then be thoroughly unit tested.
 }
 
 template<class T>
