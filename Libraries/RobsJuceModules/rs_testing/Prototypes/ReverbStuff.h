@@ -1905,6 +1905,7 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
   // This is still under construction. It still has allocations and it needs to treat the case 
   // numCombs == 0
 
+  using RatFunc   = rsSparseRationalFunction<TPar>;
   using TransFunc = rsSparseDigitalTransferFunction<TPar>;
 
   TPar decaySamples =      decayTime     * sampleRate;
@@ -1945,19 +1946,24 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
     // between all and only odd harmonics
 
 
-    // Old:
-    // Accumulate the current transfer function U_i into our total sum U:
-    Ui = protoAllpass.getCombTransferFunction();
-    U  = U + s.gain * Ui;
-    // This is where all the allocations happen! in get.. and in +. This must be re-implemented in
-    // a non-allocating way, i.e. using pre-allocated workspace buffers for any temporary storage
-    // that is needed during the computations.
+    //// Old:
+    //// Accumulate the current transfer function U_i into our total sum U:
+    //Ui = protoAllpass.getCombTransferFunction();
+    //U  = U + s.gain * Ui;
+    //// This is where all the allocations happen! in get.. and in +. This must be re-implemented in
+    //// a non-allocating way, i.e. using pre-allocated workspace buffers for any temporary storage
+    //// that is needed during the computations.
 
     //// New:
     //protoAllpass.getCombTransferFunction(&Ui);
     //Ui.scale(s.gain);
-    //U  = U + Ui;       // This + still allocates
+    //RatFunc::weightedSumDestructive(&U, TPar(1), &Ui, TPar(1), &U, TPar(0));
+    ////U  = U + Ui;       // This + still allocates
 
+
+    // New:
+    protoAllpass.getCombTransferFunction(&Ui);
+    RatFunc::weightedSumDestructive(&U, TPar(1), &Ui, TPar(s.gain), &U, TPar(0));
 
     int dummy = 0;
   }
