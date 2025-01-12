@@ -1424,10 +1424,10 @@ void rsDampedCombAllpass<TSig, TPar>::getCombTransferFunction(
   // Does not yet compile because we do not yet have the multiplyBy() and addConstant()
   // functions available:
 
-  //rsMonomial<TPar> k_zM1(k, M+1);       // k * z^-1 * z^-M
+  rsMonomial<TPar> k_zM1(k, M+1);       // k * z^-1 * z^-M
 
-  //getDamperTransferFunction(tf);        // tf = F
-  //tf->multiplyBy(k_k_zM1);              // tf = F * k * z^-1 * z^-M
+  getDamperTransferFunction(tf);        // tf = F
+  tf->multiplyBy(k_zM1);                // tf = F * k * z^-1 * z^-M
   //tf->addConstant(TPar(1));             // tf = 1 + F * k * z^-1 * z^-M
   //tf->invert();                         // tf = 1 / (1 +  F * k * z^-1 * z^-M)
 

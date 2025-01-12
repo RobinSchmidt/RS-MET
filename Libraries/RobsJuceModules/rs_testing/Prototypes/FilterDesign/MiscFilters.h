@@ -1864,6 +1864,10 @@ public:
   numerator coeffs by that factor. */
   void scale(T scaler) { num.scale(scaler); }
 
+
+  void multiplyBy(rsMonomial<T> factor) { num.multiplyBy(factor); }
+
+
   //void canonicalize();
   // Should: (1) Divide out the GCD of num and den. (2) Canonicalize num and den. 
   // (3) Divide num and den by the leading coeff of den (i.e. make den monic)
