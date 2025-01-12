@@ -1850,7 +1850,7 @@ protected:
     TPar freqScale = TPar(1);
     TPar gain      = TPar(1);
 
-
+    // More Settings to add later:
     //bool onlyOdds  = false;
 
     //bool maxPhaseLoShelf = false;
@@ -1893,6 +1893,7 @@ protected:
 
 
   // For computations;
+  //rsSparseDigitalTransferFunction<TPar> U; 
   //rsSparseDigitalTransferFunction<TPar> U, Ui; 
   // Not yet used
 };
@@ -1901,6 +1902,9 @@ protected:
 template<class TSig, class TPar>
 void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
 {
+  // This is still under construction. It still has allocations and it needs to treat the case 
+  // numCombs == 0
+
   using TransFunc = rsSparseDigitalTransferFunction<TPar>;
 
   TPar decaySamples =      decayTime     * sampleRate;
@@ -1912,8 +1916,16 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
 
 
   // Accumulate the transfer function of the comb bank:
-  TransFunc U, Ui;                        // U(z) = 0
-  //U.clear();                                // U(z) = 0
+  TransFunc U, Ui;                        // U(z) = 0, allocates (later)
+  // These should become member variables. Having them as local variables will cause allocations 
+  // in the code below.
+  
+  // New:
+  //TransFunc Ui;   // This must also become a member
+  //U.clear();
+  // U(z) = 0. Will not allocate when U is member with ebough pre-allocated memory. But whenwe have
+  // U as member, it doesn't work anymore. In the loop below, U remoans alway empty. Weird.
+
   for(int i = 0; i < numCombs; i++)
   {
     const CombSettings& s = settings[i];
@@ -1933,18 +1945,18 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
     // between all and only odd harmonics
 
 
-    //// Old:
-    //// Accumulate the current transfer function U_i into our total sum U:
-    //Ui = protoAllpass.getCombTransferFunction();
-    //U  = U + s.gain * Ui;
-    //// This is where all the allocations happen! int get.. and in +. This must be re-implemented in
-    //// a non-allocating way, i.e. using pre-allocated workspace buffers for any temporary storage
-    //// that is needed during the computations.
+    // Old:
+    // Accumulate the current transfer function U_i into our total sum U:
+    Ui = protoAllpass.getCombTransferFunction();
+    U  = U + s.gain * Ui;
+    // This is where all the allocations happen! int get.. and in +. This must be re-implemented in
+    // a non-allocating way, i.e. using pre-allocated workspace buffers for any temporary storage
+    // that is needed during the computations.
 
-    // New:
-    protoAllpass.getCombTransferFunction(&Ui);
-    Ui.scale(s.gain);
-    U  = U + Ui;       // This + still allocates
+    //// New:
+    //protoAllpass.getCombTransferFunction(&Ui);
+    //Ui.scale(s.gain);
+    //U  = U + Ui;       // This + still allocates
 
 
     int dummy = 0;
