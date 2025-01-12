@@ -2746,6 +2746,8 @@ bool dampedMultiCombAllpassUnitTest()
   //
   // - Maybe set up rsSparseFilter objects with the obtained transfer functionand produce impulse
   //   responses and compare them. See dampedMultiCombAllpass().
+  //
+  // - Maybe give the function a boolean parameter to switch between min- and max-phase comb mode.
 }
 
 
