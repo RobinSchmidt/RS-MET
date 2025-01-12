@@ -1890,6 +1890,11 @@ protected:
 
   // Flag to indicate that a call to updateFilters() is needed before doing any DSP:
   std::atomic<bool> dirty = true;
+
+
+  // For computations;
+  //rsSparseDigitalTransferFunction<TPar> U, Ui; 
+  // Not yet used
 };
 
 
@@ -1907,7 +1912,8 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
 
 
   // Accumulate the transfer function of the comb bank:
-  TransFunc U;                        // U(z) = 0
+  TransFunc U, Ui;                        // U(z) = 0
+  //U.clear();                                // U(z) = 0
   for(int i = 0; i < numCombs; i++)
   {
     const CombSettings& s = settings[i];
@@ -1927,13 +1933,19 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
     // between all and only odd harmonics
 
 
+    //// Old:
+    //// Accumulate the current transfer function U_i into our total sum U:
+    //Ui = protoAllpass.getCombTransferFunction();
+    //U  = U + s.gain * Ui;
+    //// This is where all the allocations happen! int get.. and in +. This must be re-implemented in
+    //// a non-allocating way, i.e. using pre-allocated workspace buffers for any temporary storage
+    //// that is needed during the computations.
 
-    // Accumulate the current transfer function U_i into our total sum U:
-    TransFunc Ui = protoAllpass.getCombTransferFunction();
-    U = U + s.gain * Ui;
-    // This is where all the allocations happen! int get.. and in +. This must be re-implemented in
-    // a non-allocating way, i.e. using pre-allocated workspace buffers for any temporary storage
-    // that is needed during the computations.
+    // New:
+    protoAllpass.getCombTransferFunction(&Ui);
+    Ui.scale(s.gain);
+    U  = U + Ui;       // This + still allocates
+
 
     int dummy = 0;
   }
@@ -1955,14 +1967,8 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
     U.reflectZeros();
     corrector.setup(U);
   }
-  // I'm not totally sure, if U.invert may allocate. There's a swap of objects containing 
-  // std::vector members. -> check this!
-
 
   setDirty(false);
-
-  //dirty.store(false);
-  //dirty = false;
 }
 
 

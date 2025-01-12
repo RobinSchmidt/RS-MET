@@ -1843,6 +1843,12 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  void clear()
+  {
+    num.clear();
+    den.clear();
+  }
+
   void setupFromDenseCoeffs(
     const std::vector<T>& newNumeratorCoeffs,
     const std::vector<T>& newDenominatorCoeffs,

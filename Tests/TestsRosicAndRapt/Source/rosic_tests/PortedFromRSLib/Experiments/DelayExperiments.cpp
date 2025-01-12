@@ -1209,6 +1209,8 @@ void dampedMultiCombAllpass()
   Vec hp = filterResponse(corr, N, hup);
   rsPlotVector(hp);
 
+  rsPlotVectors(h, hp);
+
 
   rosic::writeToMonoWaveFile("TriCombAllpass_CombSum.wav",          &hu[0],  N, sampleRate);
   rosic::writeToMonoWaveFile("TriCombAllpass_Corrected.wav",        &h[0],   N, sampleRate);
@@ -1753,8 +1755,8 @@ void dampedCombAllpasses()
   //dampedCombAllpass5();
   //dampedCombAllpassFractional1();
   //dampedCombAllpassFractional2();
-  dampedMultiCombAllpass();
-  //dampedMultiCombAllpass2();
+  //dampedMultiCombAllpass();
+  dampedMultiCombAllpass2();
 
 
   dampedCombAllpass1();

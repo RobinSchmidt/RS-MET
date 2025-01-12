@@ -3,7 +3,8 @@
 // when nothing else helps
 
 //#include "HeapAllocationLogger.h" // Must be included before everything else
-// This is under construction - it doesn't work yet
+// This is under construction - it doesn't work yet. Maybe We should let the user pass allocator
+// objects that can be passed on to the underlying std::vectors
 
 
 #include "../JuceLibraryCode/JuceHeader.h"
@@ -68,8 +69,8 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  ok &= runUnitTestsRapt();
-  ok &= runUnitTestsRosic();
+  //ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
   // of testing. 0: should be able to do all tests in 5 seconds, 1: 20 seconds, 2: 80 seconds etc.

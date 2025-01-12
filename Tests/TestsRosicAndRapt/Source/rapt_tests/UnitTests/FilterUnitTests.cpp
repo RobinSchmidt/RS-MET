@@ -2626,7 +2626,7 @@ bool dampedCombAllpassUnitTest3(bool withPreDelay)
   rsSparseDigitalTransferFunction<Real> Un, Cn, Hn;
   ap.getCombTransferFunction(&Un);
   ap.getCorrectorTransferFunction(&Cn);
-  // ap.getTransferFunction(&Hn);  // this is yet to be written
+  // ap.getTransferFunction(&Hn);          // This function is yet to be written
   ok &= Un.isCloseTo(U, 1.e-13);
   ok &= Cn.isCloseTo(C, 1.e-13);
   //ok &= Hn.isCloseTo(H, 1.e-13);

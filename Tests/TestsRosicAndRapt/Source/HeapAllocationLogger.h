@@ -95,7 +95,7 @@ void* rsLoggingDebugMalloc(size_t size, int blockUse, char const* fileName, int 
 
   // https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/malloc-dbg?view=msvc-170
 }
-// This also never gets called. I'm doing something wrong
+// This also never gets called. I'm doing something wrong. Look up how juce does it!
 
 void rsLoggingFree(void* ptr)
 {
