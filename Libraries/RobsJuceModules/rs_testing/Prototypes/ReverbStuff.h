@@ -1114,11 +1114,26 @@ public:
   rsSparseDigitalTransferFunction<TPar> getCombTransferFunction() const;
   // Allocates! 
 
+  rsSparseDigitalTransferFunction<TPar> getCorrectorTransferFunction() const;
+  // Allocates!
+
   rsSparseDigitalTransferFunction<TPar> getDamperTransferFunction() const;
   // Allocates!
 
-  rsSparseDigitalTransferFunction<TPar> getCorrectorTransferFunction() const;
-  // Allocates!
+
+
+
+  // Non-allocating versions of the transfer function getters. Well - they *may* allocate - but 
+  // will do so only if the passed output parameters and temporary objects have not enough 
+  // capacity pre-allocated. Doing so is the responsibility of the caller. They are much less 
+  // convenient to use but it's sometimes necessary when one needs to compute these transfer 
+  // function in a realtime thread.
+
+  void getDamperTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const;
+
+
+
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1376,15 +1391,6 @@ rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
 
 template<class TSig, class TPar>
 rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
-                                      ::getDamperTransferFunction() const
-{
-  rsSparseDigitalTransferFunction<TPar> H;
-  H.setupFromDenseCoeffs(b, dmpOrd+1, a, dmpOrd+1, TPar(0));
-  return H;
-}
-
-template<class TSig, class TPar>
-rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
                                       ::getCorrectorTransferFunction() const
 {
   using TF = rsSparseDigitalTransferFunction<TPar>;
@@ -1395,6 +1401,25 @@ rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
 
   return C;
 }
+
+template<class TSig, class TPar>
+rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
+                                      ::getDamperTransferFunction() const
+{
+  rsSparseDigitalTransferFunction<TPar> H;
+  H.setupFromDenseCoeffs(b, dmpOrd+1, a, dmpOrd+1, TPar(0));
+  return H;
+}
+
+
+template<class TSig, class TPar>
+void rsDampedCombAllpass<TSig, TPar>::getDamperTransferFunction(
+  rsSparseDigitalTransferFunction<TPar>* tf) const
+{
+  tf->setupFromDenseCoeffs(b, dmpOrd+1, a, dmpOrd+1, TPar(0));
+}
+
+
 
 
 template<class TSig, class TPar>
@@ -1646,35 +1671,6 @@ void rsSetupDecayTimes(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay, TPar de
 
 //=================================================================================================
 
-/** Under construction
-
-A class for representing the high-level user parameters of a damped comb allpass filter. */
-
-/*
-template<class T>
-struct rsCombAllpassSettings
-{
-  // The settings are deliberately initialized to invalid values in order to force client code to
-  // set them up to proper values. The invalid settings will be detected and trapped by assertions.
-  // This should help catching bugs where client code forgets to initialize them.
-  
-  T frequency      = T(0);
-  T decayTime      = T(0);
-  T lowDecayScale  = T(0);
-  T highDecayScale = T(0);
-
-
-  bool onlyOddHarmonics = false;  // Combs can produce full series or only odd harmonics
-
-  //bool maxPhaseDamper   = false;  // Damping filter can be min or max phase (min is default)
-  // We could actually ste the min/max phase property separately for the low- and high-shelving 
-  // part of the damper - so maybe have separate maxPhaseLoShelf and maxPhaseHiShelf parameters.
-  // So, we have 4 damper types: min/min, min/max, max/min, max/max.
-
-
-};
-*/
-
 
 //=================================================================================================
 
@@ -1686,7 +1682,7 @@ A class that creates an allpass filter out of a linear combination of multiple c
 
 
 template<class TSig, class TPar>
-class rsDampedMultiCombAllpass
+class rsDampedMultiCombAllpass   // Maybe rename to rsDampedCombBankAllpass
 {
 
 public:
@@ -1782,7 +1778,9 @@ protected:
 
   void setDirty(bool shouldBeDirty = true)
   {
-    dirty = shouldBeDirty;   // maybe use dirty.store(shouldBeDirty);
+    dirty = shouldBeDirty;   
+    // Maybe use dirty.store(shouldBeDirty). I think, it makes no difference but it may add 
+    // documentation value. We would document that this is intended to be an atomic operation.
   }
 
   void updateFilters();

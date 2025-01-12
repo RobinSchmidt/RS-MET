@@ -1175,11 +1175,14 @@ void dampedMultiCombAllpass()
   comb.setMaxDelayInSamples(U.getFilterOrder());
   comb.setup(U);
   Vec hu = impulseResponse(comb, N, 1.0);
-
-  double densityNum = U.getNumeratorDensity(); 
-  double densityDen = U.getDenominatorDensity(); 
-  double densitySep = U.getSeparatedDensity();                // Just for inspection
   rsPlotVector(hu);
+
+  // Compute different notions of density for inspection:
+  double densityNum = U.getNumeratorDensity();
+  double densityDen = U.getDenominatorDensity();
+  double densitySep = U.getSeparatedDensity();
+  double densityCmb = U.getCombinedDensity();
+
 
   // Create the corrector filter and apply it to the comb impulse response:
   TransFunc C = U;
@@ -1744,8 +1747,8 @@ void dampedCombAllpasses()
   //dampedCombAllpass5();
   //dampedCombAllpassFractional1();
   //dampedCombAllpassFractional2();
-  //dampedMultiCombAllpass();
-  dampedMultiCombAllpass2();
+  dampedMultiCombAllpass();
+  //dampedMultiCombAllpass2();
 
 
   dampedCombAllpass1();

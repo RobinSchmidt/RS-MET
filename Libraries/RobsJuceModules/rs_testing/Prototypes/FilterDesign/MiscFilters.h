@@ -2120,6 +2120,9 @@ public:
   // N polynomial has N+1 coeffs. That number applies to the numerator as is. But the denominator
   // is normalized so we lose one degree of freedom and subtract 1 again.
 
+  // ToDo: Maybe return the densities as rsFraction<int>. They are rational numbers so maybe we 
+  // should treat them as such.
+
 
 
 
