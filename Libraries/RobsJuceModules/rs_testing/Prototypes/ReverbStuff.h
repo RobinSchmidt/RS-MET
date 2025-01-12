@@ -1731,6 +1731,13 @@ public:
 
   void setFilterOrderLimits(int newMaxDelayInSamples, int newMaxNumCombs)
   {
+    // This function is not yet complete and not yet unit tested. We need to pre-allocate enough
+    // memory in all the objects here so as to avoid any re-allocations in updateFilters() called
+    // by getSample(). Failing to get this right may cause occasional (rare) memory allocations 
+    // on the audio thread which may go unnoticed most of the time and cause very rare audio 
+    // glitches.
+
+
     maxNumCombs = maxNumCombs;
     maxDelay    = newMaxDelayInSamples;
     protoAllpass.setMaxDelayInSamples(maxDelay);
@@ -1745,6 +1752,12 @@ public:
 
     combBank.setMaxDelayInSamples(maxBankDelay);
     corrector.setMaxDelayInSamples(maxBankDelay);
+
+
+    // ToDo:
+    //
+    // - Preallocate enough memory in U an Ui. For this, we need to first figure out, how much 
+    //   could be needed in the worst case.
   }
 
 
@@ -1917,16 +1930,7 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
 
 
   // Accumulate the transfer function of the comb bank:
-  //TransFunc U, Ui;                        // U(z) = 0, allocates (later)
-  // These should become member variables. Having them as local variables will cause allocations 
-  // in the code below.
-  
-  // New:
-  //TransFunc Ui;   // This must also become a member
-  U.clear();
-  // U(z) = 0. Will not allocate when U is member with ebough pre-allocated memory. But whenwe have
-  // U as member, it doesn't work anymore. In the loop below, U remoans alway empty. Weird.
-
+  U.clear();                                              // Init to U(z) = 0.
   for(int i = 0; i < numCombs; i++)
   {
     const CombSettings& s = settings[i];
@@ -1950,15 +1954,10 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
     //// Accumulate the current transfer function U_i into our total sum U:
     //Ui = protoAllpass.getCombTransferFunction();
     //U  = U + s.gain * Ui;
-    //// This is where all the allocations happen! in get.. and in +. This must be re-implemented in
-    //// a non-allocating way, i.e. using pre-allocated workspace buffers for any temporary storage
-    //// that is needed during the computations.
 
-    // New:
+    // Accumulate the i-th comb's tranfer function Ui into our total transfer function U:
     protoAllpass.getCombTransferFunction(&Ui);
     RatFunc::weightedSumDestructive(&U, TPar(1), &Ui, TPar(s.gain), &U, TPar(0));
-
-    int dummy = 0;
   }
 
 
