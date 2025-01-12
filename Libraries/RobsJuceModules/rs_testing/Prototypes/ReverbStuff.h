@@ -1130,8 +1130,11 @@ public:
   // function in a realtime thread.
 
 
+
+  void getCorrectorTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const;
+
+
   void getCombTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const;
-  // Needs more params for temporaries
 
 
   void getDamperTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const;
@@ -1416,14 +1419,16 @@ rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
   return H;
 }
 
+
+
+// void getCorrectorTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const;
+
+
+
 template<class TSig, class TPar>
 void rsDampedCombAllpass<TSig, TPar>::getCombTransferFunction(
   rsSparseDigitalTransferFunction<TPar>* tf) const
 {
-
-  // Does not yet compile because we do not yet have the multiplyBy() and addConstant()
-  // functions available:
-
   rsMonomial<TPar> k_zM1(k, M+1);       // k * z^-1 * z^-M
 
   getDamperTransferFunction(tf);        // tf = F
@@ -1436,9 +1441,18 @@ void rsDampedCombAllpass<TSig, TPar>::getCombTransferFunction(
     rsMonomial<TPar> zM(TPar(1), M+1);  // z^-M
     tf->multiplyBy(zM);                 // tf = z^-M / (1 +  F * k * z^-1 * z^-M) 
   }
-
-
 }
+// Needs unit tests
+
+template<class TSig, class TPar>
+void rsDampedCombAllpass<TSig, TPar>::getCorrectorTransferFunction(
+  rsSparseDigitalTransferFunction<TPar>* tf) const
+{
+  getCombTransferFunction(tf);
+  tf->invert();
+  tf->reflectZeros();
+}
+// Needs unit tests
 
 template<class TSig, class TPar>
 void rsDampedCombAllpass<TSig, TPar>::getDamperTransferFunction(

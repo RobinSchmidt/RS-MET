@@ -2622,6 +2622,18 @@ bool dampedCombAllpassUnitTest3(bool withPreDelay)
   ok &= rsIsCloseTo(Cz, C(z), 1.e-13);
   ok &= rsIsCloseTo(Hz, H(z), 1.e-13);
 
+  // Try retrieving the transfer functions with the non-allocation methods:
+  rsSparseDigitalTransferFunction<Real> Un, Cn, Hn;
+  ap.getCombTransferFunction(&Un);
+  ap.getCorrectorTransferFunction(&Cn);
+  // ap.getTransferFunction(&Hn);  // this is yet to be written
+  ok &= Un.isCloseTo(U, 1.e-13);
+  ok &= Cn.isCloseTo(C, 1.e-13);
+  //ok &= Hn.isCloseTo(H, 1.e-13);
+
+
+
+
   // Create and set up a rsSparseFilter object from H2 and produce its impulse response:
   rsSparseFilter<Real, Real> sp;
   sp.setMaxDelayInSamples(H.getFilterOrder());

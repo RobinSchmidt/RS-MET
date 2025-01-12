@@ -1894,6 +1894,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
+  bool isCloseTo(const rsSparseRationalFunction<T>& q, T tol) const
+  {
+    return q.num.isCloseTo(num, tol) && q.den.isCloseTo(den, tol);
+  }
+
 
   // isCanonical()
   // A canonical representation has canonical numerator and denominator with no common factors
