@@ -1839,6 +1839,7 @@ public:
   {
     num.clear();
     den.clear();
+    den.appendTerm(T(1), 0);
   }
 
   void setupFromDenseCoeffs(

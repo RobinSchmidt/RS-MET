@@ -1894,7 +1894,7 @@ protected:
 
   // For computations;
   //rsSparseDigitalTransferFunction<TPar> U; 
-  //rsSparseDigitalTransferFunction<TPar> U, Ui; 
+  rsSparseDigitalTransferFunction<TPar> U, Ui; 
   // Not yet used
 };
 
@@ -1917,13 +1917,13 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
 
 
   // Accumulate the transfer function of the comb bank:
-  TransFunc U, Ui;                        // U(z) = 0, allocates (later)
+  //TransFunc U, Ui;                        // U(z) = 0, allocates (later)
   // These should become member variables. Having them as local variables will cause allocations 
   // in the code below.
   
   // New:
   //TransFunc Ui;   // This must also become a member
-  //U.clear();
+  U.clear();
   // U(z) = 0. Will not allocate when U is member with ebough pre-allocated memory. But whenwe have
   // U as member, it doesn't work anymore. In the loop below, U remoans alway empty. Weird.
 
@@ -1953,13 +1953,6 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
     //// This is where all the allocations happen! in get.. and in +. This must be re-implemented in
     //// a non-allocating way, i.e. using pre-allocated workspace buffers for any temporary storage
     //// that is needed during the computations.
-
-    //// New:
-    //protoAllpass.getCombTransferFunction(&Ui);
-    //Ui.scale(s.gain);
-    //RatFunc::weightedSumDestructive(&U, TPar(1), &Ui, TPar(1), &U, TPar(0));
-    ////U  = U + Ui;       // This + still allocates
-
 
     // New:
     protoAllpass.getCombTransferFunction(&Ui);
