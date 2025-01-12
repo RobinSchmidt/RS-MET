@@ -1275,7 +1275,6 @@ void dampedMultiCombAllpass2()
   using Real     = double;
   using Vec      = std::vector<Real>;
   using Filter   = rsDampedMultiCombAllpass<Real, Real>;
-  using Settings = Filter::CombSettings;
 
 
   int  numSamples =  8192;
@@ -1286,21 +1285,6 @@ void dampedMultiCombAllpass2()
   Real lowScale   =     1.5;   // Decay time scaler for low frequencies.
   Real highFreq   =  4000.0;   // Crossover freq between mid and high frequencies in Hz.
   Real highScale  =     0.2;   // Decay time scaler for high frequencies.
-
-
-
-
-  Settings s1, s2;
-
-  s1.freqScale = 1.0;
-  s1.gain      = 1.0;
-  //s1.onlyOdds  = true;
-
-  s2.freqScale = 1.5;
-  s2.gain      = 1.0;
-  //s2.onlyOdds  = true;
-
-  std::vector<Settings> combSettings({s1,s2});
 
 
   // Create and set up the filter:

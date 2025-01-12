@@ -1711,39 +1711,17 @@ public:
 
 
 
-  /** Struct for the settings that we have per comb */
-  struct CombSettings
-  {
-    TPar freqScale = TPar(1);
-    TPar gain      = TPar(1);
 
 
-    //bool onlyOdds  = false;
+  void setSampleRate(TPar newSampleRate)        { sampleRate = newSampleRate;     setDirty(); }
+  void setFrequency(TPar newFrequency)          { frequency = newFrequency;       setDirty(); }
+  void setDecayTimeInSeconds(TPar newDecayTime) { decayTime = newDecayTime;       setDirty(); }
+  void setMaxPhaseCombBank(bool useMaxPhase)    { maxPhaseCombBank = useMaxPhase; setDirty(); }
 
-    //bool maxPhaseLoShelf = false;
-    //bool maxPhaseHiShelf = false;
-
-    //bool bypassLoShelf   = false;
-    //bool bypassHiShelf   = false;
-    // The bypass switches are need because shelves with neutral settings are not really neutral
-    // but nontrivial allpasses, I think. ...but figure this out! Or maybe we can come up with a
-    // different 1st order shelver design that actually is neutral with neutral settings?
-  };
-
-
-  void setSampleRate(TPar newSampleRate)        { sampleRate = newSampleRate;    dirty = true; }
-
-  void setFrequency(TPar newFrequency)          { frequency = newFrequency;      dirty = true; }
-
-  void setDecayTimeInSeconds(TPar newDecayTime) { decayTime = newDecayTime;      dirty = true; }
-
-  void setMaxPhaseCombBank(bool useMaxPhase)   { maxPhaseCombBank = useMaxPhase; dirty = true; }
-
-
-  void setLowCrossoverFreq(TPar newFreq)        { lowCrossFreq = newFreq;        dirty = true; }
-  void setLowDecayScale(TPar newTimeScale)      { lowDecayScale = newTimeScale;  dirty = true; }
-  void setHighCrossoverFreq(TPar newFreq)       { highCrossFreq = newFreq;       dirty = true; }
-  void setHighDecayScale(TPar newTimeScale)     { highDecayScale = newTimeScale; dirty = true; }
+  void setLowCrossoverFreq(TPar newFreq)        { lowCrossFreq = newFreq;        setDirty(); }
+  void setLowDecayScale(TPar newTimeScale)      { lowDecayScale = newTimeScale;  setDirty(); }
+  void setHighCrossoverFreq(TPar newFreq)       { highCrossFreq = newFreq;       setDirty(); }
+  void setHighDecayScale(TPar newTimeScale)     { highDecayScale = newTimeScale; setDirty(); }
   // ToDo compare function names to what we have in the FDN classes and make the consistent
 
   // Maybe use a setDirty() function instead of dirty = true. Maybe also have a setClean() function
@@ -1758,21 +1736,21 @@ public:
   { 
     rsAssert(numCombs <= maxNumCombs);  
     numCombs = rsMin(newNumber, maxNumCombs);
-    dirty = true;
+    setDirty();
   }
 
   void setCombFreqScale(int index, TPar newScale)
   {
     rsAssert(isValidCombIndex(index));
     settings[index].freqScale = newScale;
-    dirty = true;
+    setDirty();
   }
 
   void setCombGain(int index, TPar newGain)
   {
     rsAssert(isValidCombIndex(index));
     settings[index].gain = newGain;
-    dirty = true;
+    setDirty();
   }
 
 
@@ -1802,9 +1780,15 @@ public:
 
 protected:
 
+  void setDirty(bool shouldBeDirty = true)
+  {
+    dirty = shouldBeDirty;   // maybe use dirty.store(shouldBeDirty);
+  }
 
   void updateFilters();
   // Allocates! Not yet realtime ready.
+
+
 
 
   // Embedded DSP objects:
@@ -1819,6 +1803,25 @@ protected:
   // having to use such an object. Maybe the coeff calculation can be done by a static member 
   // function? We'll see...
 
+
+  /** Struct for the settings that we have per comb */
+  struct CombSettings
+  {
+    TPar freqScale = TPar(1);
+    TPar gain      = TPar(1);
+
+
+    //bool onlyOdds  = false;
+
+    //bool maxPhaseLoShelf = false;
+    //bool maxPhaseHiShelf = false;
+
+    //bool bypassLoShelf   = false;
+    //bool bypassHiShelf   = false;
+    // The bypass switches are need because shelves with neutral settings are not really neutral
+    // but nontrivial allpasses, I think. ...but figure this out! Or maybe we can come up with a
+    // different 1st order shelver design that actually is neutral with neutral settings?
+  };
 
   // Per comb settings:
   std::vector<CombSettings> settings;
@@ -1916,9 +1919,10 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
   // std::vector members. -> check this!
 
 
-  //dirty.store(false);
+  setDirty(false);
 
-  dirty = false;
+  //dirty.store(false);
+  //dirty = false;
 }
 
 
