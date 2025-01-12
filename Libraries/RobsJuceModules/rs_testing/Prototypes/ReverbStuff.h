@@ -1737,21 +1737,17 @@ public:
 
   void setDecayTimeInSeconds(TPar newDecayTime) { decayTime = newDecayTime;      dirty = true; }
 
-  // ToDo:
-  // setMaxPhaseCombBank
+  void setMaxPhaseCombBank(bool useMaxPhase)   { maxPhaseCombBank = useMaxPhase; dirty = true; }
+
 
   void setLowCrossoverFreq(TPar newFreq)        { lowCrossFreq = newFreq;        dirty = true; }
-
   void setLowDecayScale(TPar newTimeScale)      { lowDecayScale = newTimeScale;  dirty = true; }
-
   void setHighCrossoverFreq(TPar newFreq)       { highCrossFreq = newFreq;       dirty = true; }
-
   void setHighDecayScale(TPar newTimeScale)     { highDecayScale = newTimeScale; dirty = true; }
+  // ToDo compare function names to what we have in the FDN classes and make the consistent
 
-
-  // ToDo compare function name to what we have in the FDN classes and make the consistent
-
-
+  // Maybe use a setDirty() function instead of dirty = true. Maybe also have a setClean() function
+  // or maybe let setDirty have an optional bool parameter
 
 
 
@@ -1761,7 +1757,8 @@ public:
   void setNumCombs(int newNumber) 
   { 
     rsAssert(numCombs <= maxNumCombs);  
-    numCombs = rsMin(newNumber, maxNumCombs); 
+    numCombs = rsMin(newNumber, maxNumCombs);
+    dirty = true;
   }
 
   void setCombFreqScale(int index, TPar newScale)
@@ -1849,7 +1846,7 @@ protected:
 
 
   // Flag to indicate that a call to updateFilters() is needed before doing any DSP:
-  bool dirty = true;
+  std::atomic<bool> dirty = true;
 };
 
 
@@ -1918,6 +1915,8 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
   // I'm not totally sure, if U.invert may allocate. There's a swap of objects containing 
   // std::vector members. -> check this!
 
+
+  //dirty.store(false);
 
   dirty = false;
 }
