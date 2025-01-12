@@ -1,26 +1,15 @@
 #ifndef HEAPALLOCATIONLOGGER_H_INCLUDED
 #define HEAPALLOCATIONLOGGER_H_INCLUDED
 
-#include <stdlib.h>
+#include <stdlib.h>  // For malloc, free, etc.
+#include <crtdbg.h>  // For __malloc_dbg etc in MSVC
 
 
-/*
+/* Under construction.
 
-Unfotunatly, this doesn't work. At least not when trying to include this file before everything 
-else. In MSVC, I get compiler errors linked to the lines:
-
-using _CSTD free;
-using _CSTD malloc;
-
-cstdlib
-
-Also, the functions rsLoggingMalloc/Free don't compile because malloc/free are not yet defined.
-I think, it is not right to include this file as the very first thing. malloc and free have to be
-already defined. If this is to work at all, I think, it has to included in between the files that
-define malloc/free and eveything else. 
-
-
-Maybe it could be made to work by including it after that file?
+This is an attempt to track the memory allocations. Unfortunatly, this doesn't work yet. I want to 
+redefine malloc etc. to do addtional logging but unfortunately, my redefined functiond never get 
+called. ...this needs more research....
 
 */
 
@@ -69,7 +58,7 @@ private:
 
   rsHeapAllocationLogger(){};
 
-  static rsHeapAllocationLogger* theObject; // = nullptr;
+  static rsHeapAllocationLogger* theObject;
 
   int numAllocs   = 0;
   int numDeallocs = 0;
@@ -83,7 +72,7 @@ rsHeapAllocationLogger* rsHeapAllocationLogger::theObject = nullptr;
 
 
 // Maybe also log the allocated size. But this requires us to keep track of all the addresses of 
-// the allocated chunks and their sizes, so it would compicate the implementation a lot. That's 
+// the allocated chunks and their sizes, so it would complicate the implementation a lot. That's 
 // overkill at the moment. 
 
 
@@ -96,6 +85,17 @@ void* rsLoggingMalloc(size_t size)
 
   // See: https://en.cppreference.com/w/c/memory/malloc
 }
+// This actually doesn't get called
+
+
+void* rsLoggingDebugMalloc(size_t size, int blockUse, char const* fileName, int lineNumber)
+{
+  rsHeapAllocationLogger::getInstance()->logAllocation();
+  return _malloc_dbg(size, blockUse, fileName, lineNumber);
+
+  // https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/malloc-dbg?view=msvc-170
+}
+// This also never gets called. I'm doing something wrong
 
 void rsLoggingFree(void* ptr)
 {
@@ -106,17 +106,14 @@ void rsLoggingFree(void* ptr)
 }
 
 
+#define malloc(size) (rsLoggingMalloc(size))
+#define _malloc_dbg(size, blockUse, fileName, lineNumber) (rsLoggingDebugMalloc(size, blockUse, fileName, lineNumber))
 
-
-//#define malloc(size) (rsLoggingMalloc(size))
 //#define free(ptr)    (rsLoggingFree(ptr))
+// With this defined, I can't even compile.
+
 // I think, this also covers new, new[], delete, delete[], because they use malloc and free 
 // internally...but cant we really count on that? Also, what about realloc and calloc?
-
-
-
-
-
 
 
 // https://stackoverflow.com/questions/438515/how-to-track-memory-allocations-in-c-especially-new-delete
