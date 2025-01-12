@@ -1589,11 +1589,11 @@ void rsSparsePolynomial<T>::multiply(
   const rsSparsePolynomial<T>& q,
   rsSparsePolynomial<T>* r, T tol)
 {
-  // Sanity checks:
-  rsAssert(rsAreAddressesDistinct(p, *r));
-  rsAssert(rsAreAddressesDistinct(q, *r));
-  // This function cannot be used in place (yet?)
-
+  //// Sanity checks:
+  //rsAssert(rsAreAddressesDistinct(p, *r));
+  //rsAssert(rsAreAddressesDistinct(q, *r));
+  //// This function cannot be used in place (yet?)
+  // Update: this is now allowed!
 
   int Np = p.getNumTerms();
   int Nq = q.getNumTerms();

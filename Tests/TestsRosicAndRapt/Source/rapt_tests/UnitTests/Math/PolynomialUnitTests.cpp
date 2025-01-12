@@ -2831,17 +2831,26 @@ bool testSparsePolynomial()
   // ToDo: implement a weighted sum that uses a monomial as weight
 
 
-  // Test in-place multiplication:
+  // Test in-place multiplication in 4 cases that differ in which argument the result aliases to 
+  // and which argument is shorter:
+
   PolyS::multiply(p, q, &r, 1.e-15);   // Reference, computed out of place
 
-  //s.copyDataFrom(p);
-  //PolyS::multiply(s, q, &s, 1.e-15);   // Result is same as 1st arg
+  s.copyDataFrom(p);
+  PolyS::multiply(s, q, &s, 1.e-15);   // res == arg1, arg1 < arg2  where "<" means: shorter
+  ok &= s.isCloseTo(r, 0.0);
 
-  //t.copyDataFrom(q);
-  //PolyS::multiply(p, t, &t, 1.e-15);   // Result is same as 2nd arg
+  s.copyDataFrom(q);
+  PolyS::multiply(s, p, &s, 1.e-15);   // res == arg1, arg1 > arg2
+  ok &= s.isCloseTo(r, 0.0);
 
-  // Still fails - predictably. We need to run the loops backwards, I think.
+  s.copyDataFrom(p);
+  PolyS::multiply(q, s, &s, 1.e-15);   // res == arg2, arg1 > arg2
+  ok &= s.isCloseTo(r, 0.0);
 
+  s.copyDataFrom(q);
+  PolyS::multiply(p, s, &s, 1.e-15);   // res == arg2, arg1 < arg2
+  ok &= s.isCloseTo(r, 0.0);
 
 
   // Test arithmetic operators +,-,*:
