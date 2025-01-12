@@ -1949,7 +1949,7 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
     // Accumulate the current transfer function U_i into our total sum U:
     Ui = protoAllpass.getCombTransferFunction();
     U  = U + s.gain * Ui;
-    // This is where all the allocations happen! int get.. and in +. This must be re-implemented in
+    // This is where all the allocations happen! in get.. and in +. This must be re-implemented in
     // a non-allocating way, i.e. using pre-allocated workspace buffers for any temporary storage
     // that is needed during the computations.
 

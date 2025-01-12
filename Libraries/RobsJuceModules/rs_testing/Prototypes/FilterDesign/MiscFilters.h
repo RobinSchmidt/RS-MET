@@ -1941,6 +1941,17 @@ public:
     const rsSparseRationalFunction<T>& q, T wq,
     rsSparseRationalFunction<T>* r, T tol);
 
+
+
+  static void weightedSumDestructive(
+    rsSparseRationalFunction<T>* p, T wp,
+    rsSparseRationalFunction<T>* q, T wq,
+    rsSparseRationalFunction<T>* r, T tol);
+
+
+
+
+
 };
 
 /** Multiplies a coefficient and a sparse rational function. */
@@ -1964,6 +1975,37 @@ void rsSparseRationalFunction<T>::weightedSum(
   // This can probably be optimized with respect to avoid unnecessary temporary objects and heap
   // allocations. We may also use the gcd instead of just cross-mutiplying the denominators.
 }
+
+template<class T>
+void rsSparseRationalFunction<T>::weightedSumDestructive(
+  rsSparseRationalFunction<T>* p, T wp,
+  rsSparseRationalFunction<T>* q, T wq,
+  rsSparseRationalFunction<T>* r, T tol)
+
+{
+  rsAssert(rsAreAddressesDistinct(*p, *q));
+  //rsAssert(rsAreAddressesDistinct(*r, *p));  // We may actually allow this!
+  rsAssert(rsAreAddressesDistinct(*r, *q));
+  // Maybe we can relax this? It would be really nice if r could be equal to at least one of p or
+  // q. Requiring p and q to be distinct is not such a big problem. I think, we can allow this, if
+  // SP::weightedSum can work in place. But at the moment. I think, it can't. But maybe it can be
+  // made so. Looking at the code, it seems like it could work when the result aliases to the 1st 
+  // argument. Test and document this! A test indicates that this may indeed work out. Invetigate
+  // this further and document!
+
+  using SP = rsSparsePolynomial<T>;
+
+  SP::multiply(p->num, q->den, &p->num, tol);              // Destroys p->num
+  SP::multiply(q->num, p->den, &q->num, tol);              // Destroys q->num
+  SP::weightedSum(p->num, wp, q->num, wq, &r->num, tol);   // Establishes r->num
+  SP::multiply(p->den, q->den, &r->den, tol);              // Establishes r->den
+
+  // ToDo:
+  //
+  // - Document exactly, how it can be used with respect to which pointers must be distinct.
+}
+// Needs tests
+
 
 
 //=================================================================================================

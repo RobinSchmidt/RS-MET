@@ -3023,7 +3023,7 @@ bool testSparseRationalFunction()
   rd = RatD({ 1,2,3 }, { 4, 5, 6, 7 });
   sd = RatD({ 5,6 }, { 5, 7, 11 });
 
-  RatS rs, ss, ts;
+  RatS rs, ss, ts, us;
   rs.setupFromDenseCoeffs(rd.getNumerator(), rd.getDenominator(), tol);
   ss.setupFromDenseCoeffs(sd.getNumerator(), sd.getDenominator(), tol);
 
@@ -3037,8 +3037,25 @@ bool testSparseRationalFunction()
   y1 = rs(x) * ss(x);  ts = rs * ss; y2 = ts(x);  ok &= rsIsCloseTo(y1, y2, tol);
   y1 = rs(x) / ss(x);  ts = rs / ss; y2 = ts(x);  ok &= rsIsCloseTo(y1, y2, tol);
 
+  // Test destructive weighted sums (the function uses the parameters for temporary storage):
+  ts = 0.75 *rs + 1.5 * ss;
+  RatS::weightedSumDestructive(&rs, 0.75, &ss, 1.5, &us, tol); // Destroys rs and ss!
+  ok &= us.isCloseTo(ts, 0.0);
 
+  // Restore rs, ss and try it with the 1st arg aliasing to the result:
+  rs.setupFromDenseCoeffs(rd.getNumerator(), rd.getDenominator(), tol);
+  ss.setupFromDenseCoeffs(sd.getNumerator(), sd.getDenominator(), tol);
+  RatS::weightedSumDestructive(&rs, 0.75, &ss, 1.5, &rs, tol);
+  ok &= rs.isCloseTo(ts, 0.0);
 
+  // Restore rs, ss and try it with the 2nd arg aliasing to the result:
+  rs.setupFromDenseCoeffs(rd.getNumerator(), rd.getDenominator(), tol);
+  ss.setupFromDenseCoeffs(sd.getNumerator(), sd.getDenominator(), tol);
+  //RatS::weightedSumDestructive(&rs, 0.75, &ss, 1.5, &ss, tol);
+  //ok &= ss.isCloseTo(ts, 0.0);
+  // Nope! This doesn't work! It's not so surprising though. It's not something that could be
+  // expected. I just wanted to try it. So - that means: RatS::weightedSumDestructive can be called
+  // with the 1st argument aliasing to the result - but the 2nd argument must be distinct.
 
 
 
