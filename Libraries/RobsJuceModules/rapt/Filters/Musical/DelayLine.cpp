@@ -68,7 +68,7 @@ void rsBasicDelayLine<T>::reset()
 // construction/destruction:
 
 template<class TSig, class TPar>
-rsFractionalDelayLine<TSig, TPar>::rsFractionalDelayLine(int maximumDelayInSamples)
+rsDelayLineTempoSynced<TSig, TPar>::rsDelayLineTempoSynced(int maximumDelayInSamples)
 {
   length      = maximumDelayInSamples + 1;
   delayBuffer = new TSig[length+interpolatorMargin];
@@ -89,7 +89,7 @@ rsFractionalDelayLine<TSig, TPar>::rsFractionalDelayLine(int maximumDelayInSampl
 }
 
 template<class TSig, class TPar>
-rsFractionalDelayLine<TSig, TPar>::~rsFractionalDelayLine()
+rsDelayLineTempoSynced<TSig, TPar>::~rsDelayLineTempoSynced()
 {
   if( delayBuffer != nullptr )
   {
@@ -101,7 +101,7 @@ rsFractionalDelayLine<TSig, TPar>::~rsFractionalDelayLine()
 // parameter settings (set-functions):
 
 template<class TSig, class TPar>
-void rsFractionalDelayLine<TSig, TPar>::setSampleRate(TPar newSampleRate)
+void rsDelayLineTempoSynced<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   if(newSampleRate > 0.01)
   {
@@ -111,7 +111,7 @@ void rsFractionalDelayLine<TSig, TPar>::setSampleRate(TPar newSampleRate)
 }
 
 template<class TSig, class TPar>
-void rsFractionalDelayLine<TSig, TPar>::setDelayTime(TPar newDelayTime)
+void rsDelayLineTempoSynced<TSig, TPar>::setDelayTime(TPar newDelayTime)
 {
   //delayTime = rsClip(newDelayTime, 0.0, 4.25);
   delayTime = newDelayTime;
@@ -119,14 +119,14 @@ void rsFractionalDelayLine<TSig, TPar>::setDelayTime(TPar newDelayTime)
 }
 
 template<class TSig, class TPar>
-void rsFractionalDelayLine<TSig, TPar>::setSyncMode(bool shouldTempoSync)
+void rsDelayLineTempoSynced<TSig, TPar>::setSyncMode(bool shouldTempoSync)
 {
   tempoSync = shouldTempoSync;
   setupDelayInSamples();
 }
 
 template<class TSig, class TPar>
-void rsFractionalDelayLine<TSig, TPar>::setTempoInBPM(TPar newTempoInBPM)
+void rsDelayLineTempoSynced<TSig, TPar>::setTempoInBPM(TPar newTempoInBPM)
 {
   if(newTempoInBPM >= 0.0)
   {
@@ -138,7 +138,7 @@ void rsFractionalDelayLine<TSig, TPar>::setTempoInBPM(TPar newTempoInBPM)
 }
 
 template<class TSig, class TPar>
-void rsFractionalDelayLine<TSig, TPar>::setInterpolationMethod(int newMethod)
+void rsDelayLineTempoSynced<TSig, TPar>::setInterpolationMethod(int newMethod)
 {
   if(newMethod <= rsInterpolator<TSig>::WARPED_ALLPASS)
     interpolator.setInterpolationMethod(newMethod);
@@ -149,7 +149,7 @@ void rsFractionalDelayLine<TSig, TPar>::setInterpolationMethod(int newMethod)
 // others:
 
 template<class TSig, class TPar>
-void rsFractionalDelayLine<TSig, TPar>::clearDelayBuffer()
+void rsDelayLineTempoSynced<TSig, TPar>::clearDelayBuffer()
 {
   for(int i=0; i<length+interpolatorMargin; i++)
     delayBuffer[i] = 0.0;
@@ -157,7 +157,7 @@ void rsFractionalDelayLine<TSig, TPar>::clearDelayBuffer()
 }
 
 template<class TSig, class TPar>
-void rsFractionalDelayLine<TSig, TPar>::setupDelayInSamples()
+void rsDelayLineTempoSynced<TSig, TPar>::setupDelayInSamples()
 {
   double delayInSeconds;
   if( tempoSync )

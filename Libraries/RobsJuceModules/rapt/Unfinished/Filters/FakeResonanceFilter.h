@@ -185,7 +185,10 @@ protected:
 
 
   // processors in resonance path:
-  rsFractionalDelayLine<TSig, TPar>   dl;     // delayline
+  rsDelayLineTempoSynced<TSig, TPar>   dl;     // delayline 
+  // ToDo: Use a simpler delayline class. We don't need this tempo-sync stuff here, so it's just
+  // cruft!
+
   rsOnePoleFilter<TSig, TPar>         hpf;    // highpass
   rsModalFilterWithAttack<TSig, TPar> rf;     // resonator
 

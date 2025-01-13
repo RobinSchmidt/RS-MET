@@ -6,7 +6,7 @@
 /** This class implements a basic delay-line which allows only for integer delays. No interpolation
 algorithm is involved - that makes it especially efficient.
 
- Maybe rename to rsIntegerDelayLine and the interpolating one rsFractionalDelayLine
+ Maybe rename to rsIntegerDelayLine and the interpolating one rsDelayLineTempoSynced
 
 \todo: use only one pointer for tapIn and tapOut (see Julius Smith's pasp-book) */
 
@@ -230,14 +230,14 @@ ToDo:
   it's actually used in rsFakeResonanceFilter. But maybe we can turn this implementation into the 
   one, we want
 
-- Or rename this one into rsTimeBasedDelayLine and factor out a class rsFractionalDelayLine that
+- Or rename this one into rsTimeBasedDelayLine and factor out a class rsDelayLineTempoSynced that
   only has the stuff that is needed to set it up in terms of a frcational delay in samples. None
-  of that sampleRate, bpm, tempoSync stuff   ...or rsDelayLineTimeBased
+  of that sampleRate, bpm, tempoSync stuff   ...or rsDelayLineTempoSynced
 
 */
 
 template<class TSig, class TPar>
-class rsFractionalDelayLine
+class rsDelayLineTempoSynced
 {
 
 public:
@@ -245,10 +245,10 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor - constructs a delay-line with a given maximum number of samples delay. */
-  rsFractionalDelayLine(int maximumDelayInSamples = 65536);
+  rsDelayLineTempoSynced(int maximumDelayInSamples = 65536);
 
   /** Destructor */
-  ~rsFractionalDelayLine();
+  ~rsDelayLineTempoSynced();
 
 
   /** \name Setup */
@@ -334,8 +334,8 @@ private:
 
   // Make assignment operator and copy constructor unavailable because this class contains 
   // pointer members:
-  rsFractionalDelayLine& operator=(const rsFractionalDelayLine& /*other*/) { return *this; }
-  rsFractionalDelayLine(const rsFractionalDelayLine& /*other*/) { }
+  rsDelayLineTempoSynced& operator=(const rsDelayLineTempoSynced& /*other*/) { return *this; }
+  rsDelayLineTempoSynced(const rsDelayLineTempoSynced& /*other*/) { }
   // ToDo: use a macro for this
 
 };
@@ -344,7 +344,7 @@ private:
 // inlined functions:
 
 template<class TSig, class TPar>
-RS_INLINE int rsFractionalDelayLine<TSig, TPar>::wrapAround(int position)
+RS_INLINE int rsDelayLineTempoSynced<TSig, TPar>::wrapAround(int position)
 {
   while(position >= length)
     position =-length;
@@ -355,7 +355,7 @@ RS_INLINE int rsFractionalDelayLine<TSig, TPar>::wrapAround(int position)
 }
 
 template<class TSig, class TPar>
-TSig rsFractionalDelayLine<TSig, TPar>::getSample(TSig in)
+TSig rsDelayLineTempoSynced<TSig, TPar>::getSample(TSig in)
 {
   TSig out;
 
