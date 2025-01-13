@@ -603,9 +603,9 @@ template class rsStateVariableFilterChain<float, float>;
 template class rsStateVariableFilterChain<float, double>; 
 template class rsStateVariableFilterChain<long double, long double>; 
 
-template class rsBasicDelayLine<double>;
-template class rsBasicDelayLine<RAPT::rsComplex<double>>;
-template class rsBasicDelayLine<std::complex<double>>;
+template class rsDelayLineBasic<double>;
+template class rsDelayLineBasic<RAPT::rsComplex<double>>;
+template class rsDelayLineBasic<std::complex<double>>;
 
 
 // Physics:

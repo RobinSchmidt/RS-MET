@@ -179,8 +179,8 @@ public:
 
 protected:
 
-  RAPT::rsBasicDelayLine<TSig> inputDelayLine;
-  RAPT::rsBasicDelayLine<TSig> outputDelayLine;
+  RAPT::rsDelayLineBasic<TSig> inputDelayLine;
+  RAPT::rsDelayLineBasic<TSig> outputDelayLine;
   TPar coeff = 0.0;
 
 };
@@ -262,7 +262,7 @@ public:
 protected:
 
   TPar allpassCoeff = TPar(0);
-  RAPT::rsBasicDelayLine<TSig> delayLine;
+  RAPT::rsDelayLineBasic<TSig> delayLine;
   rsAllpassDelay<TSig, TPar> nestedAllpass;
 
 };
@@ -355,7 +355,7 @@ public:
 protected:
 
   TPar allpassCoeff = TPar(0);
-  RAPT::rsBasicDelayLine<TSig> delayLine;
+  RAPT::rsDelayLineBasic<TSig> delayLine;
 
   rsAllpassDelayNestedL1<TSig, TPar> nestedAllpass;
   // The only difference to the 1-level nesting case is that this member is now not the simple
@@ -430,7 +430,7 @@ public:
 protected:
 
   TPar allpassCoeff = TPar(0);
-  RAPT::rsBasicDelayLine<TSig> delayLine;
+  RAPT::rsDelayLineBasic<TSig> delayLine;
 
   rsAllpassDelayNestedL2<TSig, TPar> nestedAllpass;
   // The only difference to the 1-level nesting case is that this member is now not the 1-level
@@ -521,10 +521,10 @@ public:
 
 protected:
 
-  RAPT::rsBasicDelayLine<TSig> inputDelayLine1;
-  RAPT::rsBasicDelayLine<TSig> inputDelayLine2;
-  RAPT::rsBasicDelayLine<TSig> outputDelayLine1;
-  RAPT::rsBasicDelayLine<TSig> outputDelayLine2;
+  RAPT::rsDelayLineBasic<TSig> inputDelayLine1;
+  RAPT::rsDelayLineBasic<TSig> inputDelayLine2;
+  RAPT::rsDelayLineBasic<TSig> outputDelayLine1;
+  RAPT::rsDelayLineBasic<TSig> outputDelayLine2;
   TPar coeff1 = 0.0;
   TPar coeff2 = 0.0;
 };
@@ -626,7 +626,7 @@ protected:
     // a prototype so it the focus is on ease of recognition of the math concepts and formulas.
   }
 
-  RAPT::rsBasicDelayLine<TSig> delayLine;
+  RAPT::rsDelayLineBasic<TSig> delayLine;
   std::vector<TPar> c;
   std::vector<TSig> v;
 
@@ -713,7 +713,7 @@ protected:
     c.resize(N);
   }
 
-  RAPT::rsBasicDelayLine<TSig> delayLine;
+  RAPT::rsDelayLineBasic<TSig> delayLine;
   std::vector<TPar> c;
 
   int N    = 0;  // Prototype order
@@ -839,14 +839,14 @@ protected:
 
   // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
   // filter with filtered unit delay feedback:
-  rsBasicDelayLine<TSig>         mainDelay;
+  rsDelayLineBasic<TSig>         mainDelay;
   rsDirectFormFilter<TSig, TPar> damper;
 
   // Objects for the correction filter:
   rsUnitDelay<TSig>              unitDelay;
 
-  rsBasicDelayLine<TSig>         corDelayM1;
-  rsBasicDelayLine<TSig>         corDelayM2;
+  rsDelayLineBasic<TSig>         corDelayM1;
+  rsDelayLineBasic<TSig>         corDelayM2;
 
   rsDirectFormFilter<TSig, TPar> corPoles;
   rsDirectFormFilter<TSig, TPar> invDamper;
@@ -1222,8 +1222,8 @@ protected:
   static const int maxDmpOrd = 8;      // Maximum damping order
 
   // Embedded DSP objects:
-  rsBasicDelayLine<TSig> mainDelay;    // Main delayline for the comb filter
-  rsBasicDelayLine<TSig> corrDelay;    // Delayline for the correction filter
+  rsDelayLineBasic<TSig> mainDelay;    // Main delayline for the comb filter
+  rsDelayLineBasic<TSig> corrDelay;    // Delayline for the correction filter
 
   // State:
   TSig combOut = TSig(0);              // State for the unit delay feedback loop
@@ -2066,9 +2066,9 @@ protected:
   }
 
 
-  rsBasicDelayLine<TSig> mainDelay;
+  rsDelayLineBasic<TSig> mainDelay;
   rsUnitDelay<TSig>      unitDelay;
-  rsBasicDelayLine<TSig> corrDelay;
+  rsDelayLineBasic<TSig> corrDelay;
 
   TSig combOut = TSig(0);
 
@@ -2292,8 +2292,8 @@ protected:
 
 
   // The two delayines for the two parallel comb filters:
-  rsBasicDelayLine<TSig> mainDelay1;  // Rename to combDelay1 or delayLine1
-  rsBasicDelayLine<TSig> mainDelay2;
+  rsDelayLineBasic<TSig> mainDelay1;  // Rename to combDelay1 or delayLine1
+  rsDelayLineBasic<TSig> mainDelay2;
 
   // Correction filter to turn the whole filter into an allpass:
   rsSparseFilter<TSig, TPar> corrector;
@@ -2644,7 +2644,7 @@ public:
 
 protected:
 
-  rsBasicDelayLine<TSig> delayLine;
+  rsDelayLineBasic<TSig> delayLine;
   std::vector<TPar> b;
   TPar k;
   int M = 0;
@@ -2747,8 +2747,8 @@ public:
 
 protected:
 
-  rsBasicDelayLine<TSig> inDelay;
-  rsBasicDelayLine<TSig> outDelay;
+  rsDelayLineBasic<TSig> inDelay;
+  rsDelayLineBasic<TSig> outDelay;
   std::vector<TPar> b;
   TPar k;
   int M = 0;
@@ -2818,8 +2818,8 @@ public:
 
 protected:
 
-  rsBasicDelayLine<TSig> inDelay;
-  rsBasicDelayLine<TSig> outDelay;
+  rsDelayLineBasic<TSig> inDelay;
+  rsDelayLineBasic<TSig> outDelay;
 
   rosic::ConvolverBruteForce inFilter;
   rosic::ConvolverBruteForce outFilter;

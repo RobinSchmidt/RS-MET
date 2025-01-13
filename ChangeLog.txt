@@ -4,27 +4,41 @@ that break client code.
 
 Client-Code-Breaking Changes:
 
-2025/01/18: Removed RAPT::rsDelayLine.
+2025/01/18: Removed RAPT::rsDelayLine. 
+            Renamed RAPT::rsFractionalDelayLine to RAPT::rsDelayLineTempoSynced
+            Renamed RAPTrsBasicDelayLine to RAPT::rsDelayLineBasic
 
 2024/02/21: jura::Parameter's member "scaling" has now datatype Parameter::Scaling instead of int. 
             This affects all its setters and the constructors that formerly took an int for the 
             scaling.
+
 2022/08/02: jura::MediatedColleague::mediatorHasSentNotification has been renamed to 
             handleMediatorNotification and got an additional parameter
+
 2020/12/17: rsMatrix: setSize renamed to setShape
-2020/07/28: renamed rsRingBuffer to rsDelayBuffer
-            renamed rsBuffer to rsRingBuffer
+
+2020/07/28: Renamed rsRingBuffer to rsDelayBuffer
+            Renamed rsBuffer to rsRingBuffer
+
 2020/05/08: rsOnePoleFilter::applyBidirectionally: renamed to applyForwardBackward
+
 2019/11/26: renamed rsSpectrogram to rsSpectrogramProcessor
+
 2019/10/20: rsLine2D: changed output parameters from references to pointers
+
 2019/10/11: rapt::rsArray: renamed areBuffersApproximatelyEqual to almostEqual
                                    areBuffersEqual              to equal
                                    clipBuffer                   to clip
                                    copyBuffer                   to copy
+
 2019/09/09: rapt::rsScaledAndShiftedSigmoid: renamed setPrototypeSigmoid to setSigmoid
+
 2018/10/04: rosic::rsSubBandFilterDirectForm is now rsSubBandFilterMono
+
 2018/08/10: AudioModule::createEditor expects an int parameter now
-2018/08/09: ModulationSource subclasses now need to override getModulatorOutputSample() instead of updateModulationValue()
+
+2018/08/09: ModulationSource subclasses now need to override getModulatorOutputSample() instead of  
+            updateModulationValue()
 
 
 Other Changes:

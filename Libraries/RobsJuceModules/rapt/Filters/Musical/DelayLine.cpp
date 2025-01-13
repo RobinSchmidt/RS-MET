@@ -1,7 +1,7 @@
 // Construction/Destruction:
 
 template<class T>
-rsBasicDelayLine<T>::rsBasicDelayLine()
+rsDelayLineBasic<T>::rsDelayLineBasic()
 {
   maxDelay  = 3;
   delayLine = new T[maxDelay+1];
@@ -20,7 +20,7 @@ rsBasicDelayLine<T>::rsBasicDelayLine()
 }
 
 template<class T>
-rsBasicDelayLine<T>::~rsBasicDelayLine()
+rsDelayLineBasic<T>::~rsDelayLineBasic()
 {
   if( delayLine != nullptr )
     delete[] delayLine;
@@ -29,7 +29,7 @@ rsBasicDelayLine<T>::~rsBasicDelayLine()
 // Setup:
 
 template<class T>
-void rsBasicDelayLine<T>::setMaxDelayInSamples(int newMaxDelay)
+void rsDelayLineBasic<T>::setMaxDelayInSamples(int newMaxDelay)
 {
   if( newMaxDelay > maxDelay )
   {
@@ -41,7 +41,7 @@ void rsBasicDelayLine<T>::setMaxDelayInSamples(int newMaxDelay)
 }
 
 template<class T>
-void rsBasicDelayLine<T>::setDelayInSamples(int delay)
+void rsDelayLineBasic<T>::setDelayInSamples(int delay)
 {
   rsAssert(delay >= 0 && delay <= maxDelay, 
            "Delay out of range in rsBasicDelayLine::setDelayInSamples");
@@ -56,7 +56,7 @@ void rsBasicDelayLine<T>::setDelayInSamples(int delay)
 // Misc:
 
 template<class T>
-void rsBasicDelayLine<T>::reset()
+void rsDelayLineBasic<T>::reset()
 {
   for(int i = 0; i < maxDelay+1; i++)
     delayLine[i] = 0.0;
@@ -206,5 +206,10 @@ ToDo:
 - Refactor the code in such a way that delayline classes never know about sample-rates and delay
   times in seconds. They should just know about the delay in samples. This kind of information 
   should really be held at a higher level.
+
+- Maybe bring back the delayline implementation that is set up in terms of a time (in seconds) 
+  and a sample rate and call it rsDelayLineTimeBased. It's in Misc\UnusedCode\Misc.h
+
+- Use only one pointer for tapIn and tapOut (see Julius Smith's pasp-book)
 
 */

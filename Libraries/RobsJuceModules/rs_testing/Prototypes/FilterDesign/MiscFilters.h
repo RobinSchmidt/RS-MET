@@ -2340,10 +2340,10 @@ public:
   // that's the most benign way to recover from the error condition in a release build? But nah!
   //
   // ToDo: Figure out and document what happens, when we ignore this error. I think, the delay
-  // time will be wrapped around / bitmasked by the actual maxDelay in rsBasicDelayLine member.
+  // time will be wrapped around / bitmasked by the actual maxDelay in rsDelayLineBasic member.
   // I say "actual" because the vaue you set up via setMaxDelayInSamples() may be "rounded up"
   // to the next power of two minus one...or something. See implementation of 
-  // rsBasicDelayLine::readOutputAt(). So if the actual maxDelay is 15, all delays will be 
+  // rsDelayLineBasic::readOutputAt(). So if the actual maxDelay is 15, all delays will be 
   // interpreted modulo 16, so readOutputAt(20) would actually amount to a delay of 
   // 20 % 16 = 4 rather than 20. ...verify this!
 
@@ -2505,7 +2505,7 @@ public:
   // Maybe factor out the getSample() functions into free functions like 
   //
   // TSig rsGetSample(TSig in,
-  //        const rsSparseDigitalTransferFunction<TPar>& H, rsBasicDelayLine<TSig>* delay);
+  //        const rsSparseDigitalTransferFunction<TPar>& H, rsDelayLineBasic<TSig>* delay);
   //
   // This facilitates memory optimizations in situations where we have multiple filters with the
   // same set of coeffs but independent states, i.e. independent delaylines. We can store the
@@ -2546,7 +2546,7 @@ protected:
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  rsBasicDelayLine<TSig> delayLine;         // Delayline for the direct form 2 implementation.
+  rsDelayLineBasic<TSig> delayLine;         // Delayline for the direct form 2 implementation.
   rsSparseDigitalTransferFunction<TPar> H;  // Transfer function H(z). Contains filter coeffs.
 
 };

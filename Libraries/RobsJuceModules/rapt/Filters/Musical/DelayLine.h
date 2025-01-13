@@ -1,17 +1,12 @@
 #ifndef RAPT_DELAYLINE_H
 #define RAPT_DELAYLINE_H
 
-  // this file contains a couple of delayline classes with increasingly complex functionality
+// This file contains a couple of delayline classes with increasingly complex functionality
 
-/** This class implements a basic delay-line which allows only for integer delays. No interpolation
-algorithm is involved - that makes it especially efficient.
-
- Maybe rename to rsIntegerDelayLine and the interpolating one rsDelayLineTempoSynced
-
-\todo: use only one pointer for tapIn and tapOut (see Julius Smith's pasp-book) */
+/** This class implements a basic delay-line which allows only for integer delays. ...TBC...  */
 
 template<class T>
-class rsBasicDelayLine   // Maybe rename to rsDelayLine, rsDelayLineInteger
+class rsDelayLineBasic   // Maybe rename to rsDelayLine, rsDelayLineInteger
 {
 
 public:
@@ -20,10 +15,10 @@ public:
   /** \name Lifetime */
 
   /** Constructor. */
-  rsBasicDelayLine();
+  rsDelayLineBasic();
 
   /** Destructor */
-  ~rsBasicDelayLine();
+  ~rsDelayLineBasic();
 
 
   //-----------------------------------------------------------------------------------------------
@@ -175,27 +170,27 @@ protected:
 // inlined functions:
 
 template<class T>
-RS_INLINE T rsBasicDelayLine<T>::getSample(T in)
+RS_INLINE T rsDelayLineBasic<T>::getSample(T in)
 {
   incrementTapPointers();
   return getSampleSuppressTapIncrements(in);
 }
 
 template<class T>
-RS_INLINE T rsBasicDelayLine<T>::getSampleSuppressTapIncrements(T in)
+RS_INLINE T rsDelayLineBasic<T>::getSampleSuppressTapIncrements(T in)
 {
   delayLine[tapIn] = in;
   return delayLine[tapOut];
 }
 
 template<class T>
-RS_INLINE void rsBasicDelayLine<T>::addToInput(T signalToAdd)
+RS_INLINE void rsDelayLineBasic<T>::addToInput(T signalToAdd)
 {
   delayLine[tapIn] += signalToAdd;
 }
 
 template<class T>
-RS_INLINE void rsBasicDelayLine<T>::incrementTapPointers()
+RS_INLINE void rsDelayLineBasic<T>::incrementTapPointers()
 {
   tapIn  = (tapIn+1)  & maxDelay;
   tapOut = (tapOut+1) & maxDelay;

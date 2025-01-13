@@ -269,7 +269,7 @@ void dampedCombAllpass1()
 
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Delay   = RAPT::rsBasicDelayLine<Real>;      // We use a simple delay as allpass
+  using Delay   = RAPT::rsDelayLineBasic<Real>;      // We use a simple delay as allpass
   using OnePole = RAPT::rsOnePoleFilter<Real, Real>; // We use a one pole as feedback filter
 
   int  M          =   100;     // Delay
