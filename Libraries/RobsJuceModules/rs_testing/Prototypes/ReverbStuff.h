@@ -14,7 +14,7 @@
 
 
 template<class TSig, class TPar>
-class rsDelayLineLinearInterpolated
+class rsDelayLineInterpolatedLinear
 {
 
 
@@ -24,24 +24,36 @@ public:
 
   void setMaxDelayInSamples(TPar newMaxDelay)
   {
-    dl.setMaxDelayInSamples(rsCeilInt(newMaxDelay));
+    dl.setMaxDelayInSamples(rsCeilInt(newMaxDelay) + 1);
+
+    // I think, we really need to +1 because even when the user request an integer delay of 
+    // M = maxDelay, we still will access the delayline with a delay of M+1, albeit witn a 
+    // coeff of zero. Hmm...well...if we just use rsCeilInt, then trying to access the delay M+1
+    // will wrap around to another location and read a wrong sample from there. But since the 
+    // coeff is zero anyway, it doesn't really matter that we access the wrong sample. So, it
+    // may actually be ok to just use rsCeilInt(newMaxDelay) without the +1. But better safe than
+    // sorry. ...maybe do tests. Try it with maxDelay = 7 or 15. The actual maxDelay will always
+    // be 2^k-1 for some k to enable the wrapping via bitmasking
   }
 
   void setDelayInSamples(TPar newDelay)
   {
-    TPar intPart  = rsFloor(newDelay);
-    TPar fracPart = newDelay - intPart;
-    dl.setDelayInSamples(int(intPart));
-    b0 = TPar(1) - fracPart;
-    b1 = fracPart;
+    TPar i = rsFloor(newDelay);     // Integer part
+    TPar f = newDelay - i;          // Fractional part
+    dl.setDelayInSamples(int(i));
+    b0 = TPar(1) - f;
+    b1 = f;
   }
 
 
 
-  TSig getSample(TSig in)
+  TSig getSample(TSig x)
   {
+    dl.writeInputNoUpdate(x);
     TSig x0 = dl.readOutput();
     TSig x1 = dl.readOutputWithAdditionalDelay(1);
+    dl.incrementTapPointers();
+
     return b0*x0 + b1*x1;
   }
 
@@ -52,54 +64,67 @@ protected:
 
   rsDelayLineBasic<TSig> dl;  // The underlying integer delayline
 
-  TPar b0 = TPar(1);          // Fractional part of delay
-  TPar b1 = TPar(0);          // Previous output fo allpass interpolation
+  TPar b0 = TPar(1);          // Coeff for x[n-M]
+  TPar b1 = TPar(0);          // Coeff for x[n-M-1]
 
 };
 // Needs tests
+// Maybe stoe juts one coeff (b1, the fractional part of the delay) and use the one-multiply form
+// in the implementation...well...maybe try both and benchmark and choose the faster
 
 
 
 
 
-/*
+
 template<class TSig, class TPar>
-class rsDelayLineAllpassInterpolated
+class rsDelayLineInterpolatedAllpass
 {
 
 
 public:
 
-
-
-  TSig getSampleLinear(TSig in)
+  void setMaxDelayInSamples(TPar newMaxDelay)
   {
-    TSig x0 = dl.readOutput();
-    TSig x1 = dl.readOutputWithAdditionalDelay(1);
-
-    return (1-frac)*x0 + frac*x1;
-
+    dl.setMaxDelayInSamples(rsCeilInt(newMaxDelay) + 1);
   }
+
+  void setDelayInSamples(TPar newDelay)
+  {
+    TPar i = rsFloor(newDelay);
+    TPar f = newDelay - i;
+    dl.setDelayInSamples(int(i));
+    c = (1-f) / (1+f);
+  }
+
 
   TSig getSample(TSig in)
   {
+    dl.writeInputNoUpdate(x);
+    TSig x0 = dl.readOutput();
+    TSig x1 = dl.readOutputWithAdditionalDelay(1);
+    dl.incrementTapPointers();
 
+    y1 = x0 + c*x1 - c*y1;   // Verify, maybe optimize to  x0 + c*(x1-y1)
+
+    // Maybe we need to scale the feedback by some number like 0.999 to avoid a parasitic
+    // oscillations at the Nyquist freq for certain settings. See the old implemementations. The 
+    // oscillation occurs when c is close to 1. This happens the the fractional part f is zero.
   }
 
+  void reset() { y1 = 0; }
 
-  void reset() { prevOut = 0; }
 
 protected:
 
   rsDelayLineBasic<TSig> dl;    // The underlying integer delayline
 
-  TPar frac    = TPar(0);       // Fractional part of delay
-  TSig prevOut = TSig(0);       // Previous output fo allpass interpolation
+  TPar c  = TPar(0);            // Allpass filter coefficient
+  TSig y1 = TSig(0);            // Previous output
 
 };
-*/
+// Needs tests
 
-// Wait 
 
 
 

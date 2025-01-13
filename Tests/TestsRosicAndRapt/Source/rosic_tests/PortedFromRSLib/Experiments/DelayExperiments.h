@@ -2,8 +2,7 @@
 #define RS_DELAYEXPERIMENTS_H
 
 void algoVerb();
-
-void basicIntegerDelayLine();
+void delayLineBasic();
 void twoPoleAllpassDelay();
 void dampedCombAllpasses();
 

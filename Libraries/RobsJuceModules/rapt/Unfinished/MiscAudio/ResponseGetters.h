@@ -2,8 +2,9 @@
 #define RAPT_RESPONSEGETTERS_H
 
 
-// functions to obtain variuos responses of a system to various standard inputs such as an 
-// impulse, step, etc. ...maybe this should not be part of rapt
+// Functions to obtain various responses of a system to various standard inputs such as an 
+// impulse, step, etc. Maybe this should not be part of rapt. or maybe we should wrap them
+// into a class rsResponseGetter
 
 /** Fills the array h (of length N) with the impulse-response of the module that is passed by
 reference. The class to which the module belongs must provide a reset() and getSample()
@@ -37,6 +38,7 @@ inline void getResponse(TFlt &module, TSig *x, TSig *y, int N)
   for(int n = 0; n < N; n++)
     y[n] = module.getSample(x[n]);
 }
+
 
 // Convenience functions to directly return a std::vector:
 

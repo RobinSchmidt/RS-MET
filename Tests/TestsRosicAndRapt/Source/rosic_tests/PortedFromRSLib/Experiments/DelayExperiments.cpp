@@ -67,7 +67,7 @@ void algoVerb()
   //   and so on
 }
 
-void basicIntegerDelayLine()
+void delayLineBasic()
 {
   static const int N = 20;
   double t[N], h[N];
