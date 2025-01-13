@@ -104,7 +104,6 @@ void delayLineLinear()
     dl.setDelayInSamples(d);
     RAPT::getImpulseResponse(dl, h, N);
     plotData(N, t, h);
-    int dummy = 0;
   }
 
   // Observations:
@@ -114,6 +113,40 @@ void delayLineLinear()
   //   height 0.8 at 5 with a tail of 0.2 at 6 and so on. Until it reaches a spike of height 1 at 6
   //   in the 10th response. This is all as it should be.
 }
+
+void delayLineAllpass()
+{
+  // This basically replicates the code of delayLineLinear but with an allpass interpolated 
+  // delayline. Maybe templaize this function on the delayline type such that we can use the same
+  // function for both types of delayline
+
+  static const int N = 30;
+  using Real = double;
+  Real t[N], h[N];
+  RAPT::rsArrayTools::fillWithIndex(t, N);
+  rsDelayLineInterpolatedAllpass<Real, Real> dl; 
+  dl.setMaxDelayInSamples(6);
+  Real d0 = 5;                                // Reference delay
+  for(int i = 0; i <= 10; i++)
+  {
+    Real f = Real(i) / Real(10);
+    Real d = d0 + f;
+    dl.setDelayInSamples(d);
+    RAPT::getImpulseResponse(dl, h, N);
+    plotData(N, t, h);
+  }
+
+  // Observations:
+  //
+  // - The 1st impulse response is the same as for integer and linear delays. Then it gets weird.
+  //   ...TBC...
+  //
+  //
+  // ToDo:
+  //
+  // - Plot frequency responses, too.
+}
+
 
 void twoPoleAllpassDelay()
 {

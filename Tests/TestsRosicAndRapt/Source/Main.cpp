@@ -392,7 +392,8 @@ int main(int argc, char* argv[])
 
   // Delay:
   //delayLineBasic();
-  delayLineLinear();
+  //delayLineLinear();
+  delayLineAllpass();
   //twoPoleAllpassDelay();
   dampedCombAllpasses();
 

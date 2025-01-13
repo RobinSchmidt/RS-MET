@@ -98,14 +98,15 @@ public:
   }
 
 
-  TSig getSample(TSig in)
+  TSig getSample(TSig x)
   {
     dl.writeInputNoUpdate(x);
     TSig x0 = dl.readOutput();
     TSig x1 = dl.readOutputWithAdditionalDelay(1);
     dl.incrementTapPointers();
 
-    y1 = x0 + c*x1 - c*y1;   // Verify, maybe optimize to  x0 + c*(x1-y1)
+    y1 = c*x0 + x1 - c*y1;   // Verify, maybe optimize to  x1 + c*(x0-y1)
+    return y1;
 
     // Maybe we need to scale the feedback by some number like 0.999 to avoid a parasitic
     // oscillations at the Nyquist freq for certain settings. See the old implemementations. The 
