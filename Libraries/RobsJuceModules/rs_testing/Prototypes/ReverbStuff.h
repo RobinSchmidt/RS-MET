@@ -1959,8 +1959,9 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
   {
     const CombSettings& s = settings[i];
 
+
     TPar delay = sampleRate / (s.freqScale * frequency);  // Verify!
-    // Maybe in case of only odd harmonics, we should scale the freq up by 2? The rational is that 
+    // Maybe in case of only odd harmonics, we should scale the freq up by 2? The rationale is that 
     // when using odd harmonics only (by way of the feedback sign), the fundamental frequency 
     // actually goes an octave lower.
 
@@ -1973,11 +1974,6 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
     // This needs an additional parameter to determine the sign of the feedback, i.e. switch 
     // between all and only odd harmonics
 
-
-    //// Old:
-    //// Accumulate the current transfer function U_i into our total sum U:
-    //Ui = protoAllpass.getCombTransferFunction();
-    //U  = U + s.gain * Ui;
 
     // Accumulate the i-th comb's tranfer function Ui into our total transfer function U:
     protoAllpass.getCombTransferFunction(&Ui);
@@ -1992,35 +1988,6 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
   corrector.setup(U);
   corrector.invert();
   corrector.reflectZeros();
-
-  //// Old:
-  //if(maxPhaseCombBank)
-  //{
-  //  U.reflectZeros();      // Reflect zeros of comb bank
-  //  combBank.setup(U);    
-  //  U.reflectZeros();      // Undo reflection. U is now back to normal.
-  //  U.invert();            // Swap poles and zeros of U.
-  //  U.reflectZeros();      // Reflect zeros of inverse U.
-  //  corrector.setup(U);
-  //}
-  //else
-  //{
-  //  combBank.setup(U);
-  //  U.invert();
-  //  U.reflectZeros();
-  //  corrector.setup(U);
-  //}
-  //// ToDo: write it in a way that keeps U intact. Then we can use U also to implement 
-  //// getCombTranferFunction/At. ToDo this, do in the 1st branch:
-  ////
-  ////   combBank.setup(U);
-  ////   combBank.reflectZeros();
-  ////   corrector.setup(U);
-  ////   corrector.invert();
-  ////   corrector.reflectZeros()
-  ////
-  //// and in the 2nd the same but without the combBank.relectZeros.
-
 
   setDirty(false);
 }

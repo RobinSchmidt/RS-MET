@@ -1948,6 +1948,7 @@ public:
     rsSparseRationalFunction<T>* p, T wp,
     rsSparseRationalFunction<T>* q, T wq,
     rsSparseRationalFunction<T>* r, T tol);
+  // The first parameter p may alias to the result r. 
 
 
 
@@ -1991,15 +1992,19 @@ void rsSparseRationalFunction<T>::weightedSumDestructive(
   // q. Requiring p and q to be distinct is not such a big problem. I think, we can allow this, if
   // SP::weightedSum can work in place. But at the moment. I think, it can't. But maybe it can be
   // made so. Looking at the code, it seems like it could work when the result aliases to the 1st 
-  // argument. Test and document this! A test indicates that this may indeed work out. Invetigate
-  // this further and document!
+  // argument. Test and document this! A test indicates that this may indeed work out. Investigate
+  // this further and document! We could perhaps make it work to also allow r == q by swapping p 
+  // and q (and wp and wq) in this case. But what if r == p == q? ...well...in that case, we could 
+  // leave the denominator of r (and p and q) alone and just multiply the numerator by wp+wq, I 
+  // think.
 
   using SP = rsSparsePolynomial<T>;
 
-  SP::multiply(p->num, q->den, &p->num, tol);              // Destroys p->num
-  SP::multiply(q->num, p->den, &q->num, tol);              // Destroys q->num
-  SP::weightedSum(p->num, wp, q->num, wq, &r->num, tol);   // Establishes r->num
-  SP::multiply(p->den, q->den, &r->den, tol);              // Establishes r->den
+  //              arg1        arg2        result
+  SP::multiply(   p->num,     q->den,     &p->num, tol);  // Replace p->num by p->num * q->den
+  SP::multiply(   q->num,     p->den,     &q->num, tol);  // Replace q->num by q->num * p->den
+  SP::weightedSum(p->num, wp, q->num, wq, &r->num, tol);  // Establish r->num
+  SP::multiply(   p->den,     q->den,     &r->den, tol);  // Establish r->den
 
   // ToDo:
   //
