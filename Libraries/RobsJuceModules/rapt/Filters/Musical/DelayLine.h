@@ -11,7 +11,7 @@ algorithm is involved - that makes it especially efficient.
 \todo: use only one pointer for tapIn and tapOut (see Julius Smith's pasp-book) */
 
 template<class T>
-class rsBasicDelayLine
+class rsBasicDelayLine   // Maybe rename to rsDelayLine, rsDelayLineInteger
 {
 
 public:
@@ -211,6 +211,7 @@ RS_INLINE void rsBasicDelayLine<T>::incrementTapPointers()
 
 
 
+
 //=================================================================================================
 
 /**
@@ -225,7 +226,13 @@ This class implements a basic delay-line with various interpolation methods.
 
 ToDo:
 
- - Try to get rid! We want to reclaim the name for a different implementation
+- Try to get rid! We want to reclaim the name for a different implementation. But we can'T because
+  it's actually used in rsFakeResonanceFilter. But maybe we can turn this implementation into the 
+  one, we want
+
+- Or rename this one into rsTimeBasedDelayLine and factor out a class rsFractionalDelayLine that
+  only has the stuff that is needed to set it up in terms of a frcational delay in samples. None
+  of that sampleRate, bpm, tempoSync stuff   ...or rsDelayLineTimeBased
 
 */
 

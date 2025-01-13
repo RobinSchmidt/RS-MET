@@ -4,6 +4,8 @@ that break client code.
 
 Client-Code-Breaking Changes:
 
+2025/01/18: Removed RAPT::rsDelayLine.
+
 2024/02/21: jura::Parameter's member "scaling" has now datatype Parameter::Scaling instead of int. 
             This affects all its setters and the constructors that formerly took an int for the 
             scaling.
