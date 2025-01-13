@@ -70,9 +70,10 @@ void algoVerb()
 void delayLineBasic()
 {
   static const int N = 20;
-  double t[N], h[N];
+  using Real = double;
+  Real t[N], h[N];
   RAPT::rsArrayTools::fillWithIndex(t, N);
-  rsBasicDelayLineD dl;
+  rsDelayLineBasic<Real> dl; 
   dl.setMaxDelayInSamples(5);
   dl.setDelayInSamples(5);
   RAPT::getImpulseResponse(dl, h, N);
@@ -82,6 +83,31 @@ void delayLineBasic()
   //
   // - The impulse response is an impulse shifted by 5 samples, i.e. centered at sample index 5
   //   rather than 0. That's the expected result.
+}
+
+void delayLineLinear()
+{
+  static const int N = 20;
+  using Real = double;
+  Real t[N], h[N];
+  RAPT::rsArrayTools::fillWithIndex(t, N);
+  rsDelayLineInterpolatedLinear<Real, Real> dl; 
+  dl.setMaxDelayInSamples(6);
+
+  Real d0 = 5;                                // Reference delay
+
+  for(int i = 0; i <= 10; i++)
+  {
+    Real f =  Real(i) / Real(10);
+    Real d = d0 + f;
+    dl.setDelayInSamples(d);
+    RAPT::getImpulseResponse(dl, h, N);
+    plotData(N, t, h);
+    int dummy = 0;
+  }
+
+
+
 }
 
 void twoPoleAllpassDelay()

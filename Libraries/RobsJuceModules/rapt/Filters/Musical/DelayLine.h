@@ -6,7 +6,7 @@
 /** This class implements a basic delay-line which allows only for integer delays. ...TBC...  */
 
 template<class T>
-class rsDelayLineBasic   // Maybe rename to rsDelayLine, rsDelayLineInteger
+class rsDelayLineBasic   // Maybe rename to rsDelayLine, rsDelayLineInteger ..or just to rsDelay, or rsDelayInteger
 {
 
 public:

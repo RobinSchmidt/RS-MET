@@ -391,7 +391,8 @@ int main(int argc, char* argv[])
   //sineFromDecayingSines();
 
   // Delay:
-  delayLineBasic();
+  //delayLineBasic();
+  delayLineLinear();
   //twoPoleAllpassDelay();
   dampedCombAllpasses();
 
