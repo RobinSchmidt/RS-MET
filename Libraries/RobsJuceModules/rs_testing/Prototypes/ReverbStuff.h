@@ -62,7 +62,7 @@ public:
 
 protected:
 
-  rsDelayLineBasic<TSig> dl;  // The underlying integer delayline
+  rsDelay<TSig> dl;  // The underlying integer delayline
 
   TPar b0 = TPar(1);          // Coeff for x[n-M]
   TPar b1 = TPar(0);          // Coeff for x[n-M-1]
@@ -118,7 +118,7 @@ public:
 
 protected:
 
-  rsDelayLineBasic<TSig> dl;    // The underlying integer delayline
+  rsDelay<TSig> dl;    // The underlying integer delayline
 
   TPar c  = TPar(0);            // Allpass filter coefficient
   TSig y1 = TSig(0);            // Previous output
@@ -302,8 +302,8 @@ public:
 
 protected:
 
-  RAPT::rsDelayLineBasic<TSig> inputDelayLine;
-  RAPT::rsDelayLineBasic<TSig> outputDelayLine;
+  RAPT::rsDelay<TSig> inputDelayLine;
+  RAPT::rsDelay<TSig> outputDelayLine;
   TPar coeff = 0.0;
 
 };
@@ -385,7 +385,7 @@ public:
 protected:
 
   TPar allpassCoeff = TPar(0);
-  RAPT::rsDelayLineBasic<TSig> delayLine;
+  RAPT::rsDelay<TSig> delayLine;
   rsAllpassDelay<TSig, TPar> nestedAllpass;
 
 };
@@ -478,7 +478,7 @@ public:
 protected:
 
   TPar allpassCoeff = TPar(0);
-  RAPT::rsDelayLineBasic<TSig> delayLine;
+  RAPT::rsDelay<TSig> delayLine;
 
   rsAllpassDelayNestedL1<TSig, TPar> nestedAllpass;
   // The only difference to the 1-level nesting case is that this member is now not the simple
@@ -553,7 +553,7 @@ public:
 protected:
 
   TPar allpassCoeff = TPar(0);
-  RAPT::rsDelayLineBasic<TSig> delayLine;
+  RAPT::rsDelay<TSig> delayLine;
 
   rsAllpassDelayNestedL2<TSig, TPar> nestedAllpass;
   // The only difference to the 1-level nesting case is that this member is now not the 1-level
@@ -644,10 +644,10 @@ public:
 
 protected:
 
-  RAPT::rsDelayLineBasic<TSig> inputDelayLine1;
-  RAPT::rsDelayLineBasic<TSig> inputDelayLine2;
-  RAPT::rsDelayLineBasic<TSig> outputDelayLine1;
-  RAPT::rsDelayLineBasic<TSig> outputDelayLine2;
+  RAPT::rsDelay<TSig> inputDelayLine1;
+  RAPT::rsDelay<TSig> inputDelayLine2;
+  RAPT::rsDelay<TSig> outputDelayLine1;
+  RAPT::rsDelay<TSig> outputDelayLine2;
   TPar coeff1 = 0.0;
   TPar coeff2 = 0.0;
 };
@@ -749,7 +749,7 @@ protected:
     // a prototype so it the focus is on ease of recognition of the math concepts and formulas.
   }
 
-  RAPT::rsDelayLineBasic<TSig> delayLine;
+  RAPT::rsDelay<TSig> delayLine;
   std::vector<TPar> c;
   std::vector<TSig> v;
 
@@ -836,7 +836,7 @@ protected:
     c.resize(N);
   }
 
-  RAPT::rsDelayLineBasic<TSig> delayLine;
+  RAPT::rsDelay<TSig> delayLine;
   std::vector<TPar> c;
 
   int N    = 0;  // Prototype order
@@ -962,14 +962,14 @@ protected:
 
   // Objects for implementing the A(z) / (1 + k * z^-1 * F(z) * A(z)), i.e. the uncorrected comb
   // filter with filtered unit delay feedback:
-  rsDelayLineBasic<TSig>         mainDelay;
+  rsDelay<TSig>         mainDelay;
   rsDirectFormFilter<TSig, TPar> damper;
 
   // Objects for the correction filter:
   rsUnitDelay<TSig>              unitDelay;
 
-  rsDelayLineBasic<TSig>         corDelayM1;
-  rsDelayLineBasic<TSig>         corDelayM2;
+  rsDelay<TSig>         corDelayM1;
+  rsDelay<TSig>         corDelayM2;
 
   rsDirectFormFilter<TSig, TPar> corPoles;
   rsDirectFormFilter<TSig, TPar> invDamper;
@@ -1345,8 +1345,8 @@ protected:
   static const int maxDmpOrd = 8;      // Maximum damping order
 
   // Embedded DSP objects:
-  rsDelayLineBasic<TSig> mainDelay;    // Main delayline for the comb filter
-  rsDelayLineBasic<TSig> corrDelay;    // Delayline for the correction filter
+  rsDelay<TSig> mainDelay;    // Main delayline for the comb filter
+  rsDelay<TSig> corrDelay;    // Delayline for the correction filter
 
   // State:
   TSig combOut = TSig(0);              // State for the unit delay feedback loop
@@ -2189,9 +2189,9 @@ protected:
   }
 
 
-  rsDelayLineBasic<TSig> mainDelay;
+  rsDelay<TSig> mainDelay;
   rsUnitDelay<TSig>      unitDelay;
-  rsDelayLineBasic<TSig> corrDelay;
+  rsDelay<TSig> corrDelay;
 
   TSig combOut = TSig(0);
 
@@ -2415,8 +2415,8 @@ protected:
 
 
   // The two delayines for the two parallel comb filters:
-  rsDelayLineBasic<TSig> mainDelay1;  // Rename to combDelay1 or delayLine1
-  rsDelayLineBasic<TSig> mainDelay2;
+  rsDelay<TSig> mainDelay1;  // Rename to combDelay1 or delayLine1
+  rsDelay<TSig> mainDelay2;
 
   // Correction filter to turn the whole filter into an allpass:
   rsSparseFilter<TSig, TPar> corrector;
@@ -2767,7 +2767,7 @@ public:
 
 protected:
 
-  rsDelayLineBasic<TSig> delayLine;
+  rsDelay<TSig> delayLine;
   std::vector<TPar> b;
   TPar k;
   int M = 0;
@@ -2870,8 +2870,8 @@ public:
 
 protected:
 
-  rsDelayLineBasic<TSig> inDelay;
-  rsDelayLineBasic<TSig> outDelay;
+  rsDelay<TSig> inDelay;
+  rsDelay<TSig> outDelay;
   std::vector<TPar> b;
   TPar k;
   int M = 0;
@@ -2941,8 +2941,8 @@ public:
 
 protected:
 
-  rsDelayLineBasic<TSig> inDelay;
-  rsDelayLineBasic<TSig> outDelay;
+  rsDelay<TSig> inDelay;
+  rsDelay<TSig> outDelay;
 
   rosic::ConvolverBruteForce inFilter;
   rosic::ConvolverBruteForce outFilter;

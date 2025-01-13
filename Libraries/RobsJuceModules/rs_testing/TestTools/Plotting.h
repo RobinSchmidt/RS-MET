@@ -471,11 +471,11 @@ inline void addDataFunction(GNUPlotter& plt, const std::function<T(T)>& f, T xMi
 check if two delaylines have the same or related content such that one may think about getting rid 
 of one of them. */
 template<class T>
-void rsPlotDelayLineContent(const RAPT::rsDelayLineBasic<T>& dl1, 
-  const RAPT::rsDelayLineBasic<T>& dl2)
+void rsPlotDelayLineContent(const RAPT::rsDelay<T>& dl1, 
+  const RAPT::rsDelay<T>& dl2)
 {
   // Helper function to return the content of the given delayline as std::vector:
-  auto getContent = [](const RAPT::rsDelayLineBasic<T>& dl)
+  auto getContent = [](const RAPT::rsDelay<T>& dl)
   {
     // Maybe let the use switch between shwoing the full content (i.e. the full allocated memory)
     // or only up to the used length - current, we hrdcoded the used length:

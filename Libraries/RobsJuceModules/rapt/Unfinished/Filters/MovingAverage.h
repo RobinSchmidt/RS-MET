@@ -59,7 +59,7 @@ protected:
 
   /** \name Data */
 
-  rsDelayLineBasic<TSig> delayLine;
+  rsDelay<TSig> delayLine;
 
   TPar a1, bN, g;  // coefficients and output gain
   TSig y1;         // y[n-1]

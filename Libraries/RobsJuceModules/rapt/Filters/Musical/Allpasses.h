@@ -66,7 +66,7 @@ public:
 
 protected:
 
-  RAPT::rsDelayLineBasic<TSig> delayLine;
+  RAPT::rsDelay<TSig> delayLine;
   TPar c = TPar(0);
 
 };
@@ -157,7 +157,7 @@ public:
 
 protected:
 
-  RAPT::rsDelayLineBasic<TSig> delayLine;
+  RAPT::rsDelay<TSig> delayLine;
   TPar c1 = 0.0;
   TPar c2 = 0.0;
   int  M  = 0;
@@ -407,7 +407,7 @@ public:
 
 protected:
 
-  std::vector<RAPT::rsDelayLineBasic<TSig>> delayLines;
+  std::vector<RAPT::rsDelay<TSig>> delayLines;
   std::vector<TPar> coeffs;
   std::vector<TSig> tmp;
   int numStages = 0;

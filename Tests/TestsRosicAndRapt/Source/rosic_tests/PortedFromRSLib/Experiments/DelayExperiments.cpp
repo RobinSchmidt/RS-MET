@@ -73,7 +73,7 @@ void delayLineBasic()
   using Real = double;
   Real t[N], h[N];
   RAPT::rsArrayTools::fillWithIndex(t, N);
-  rsDelayLineBasic<Real> dl; 
+  rsDelay<Real> dl; 
   dl.setMaxDelayInSamples(5);
   dl.setDelayInSamples(5);
   RAPT::getImpulseResponse(dl, h, N);
@@ -333,7 +333,7 @@ void dampedCombAllpass1()
 
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Delay   = RAPT::rsDelayLineBasic<Real>;      // We use a simple delay as allpass
+  using Delay   = RAPT::rsDelay<Real>;      // We use a simple delay as allpass
   using OnePole = RAPT::rsOnePoleFilter<Real, Real>; // We use a one pole as feedback filter
 
   int  M          =   100;     // Delay

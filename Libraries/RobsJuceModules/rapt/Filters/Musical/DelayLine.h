@@ -6,7 +6,7 @@
 /** This class implements a basic delay-line which allows only for integer delays. ...TBC...  */
 
 template<class T>
-class rsDelayLineBasic   // Maybe rename to rsDelayLine, rsDelayLineInteger ..or just to rsDelay, or rsDelayInteger
+class rsDelay   // Maybe rename to rsDelayLine, rsDelayLineInteger ..or just to rsDelay, or rsDelayInteger
 {
 
 public:
@@ -15,10 +15,10 @@ public:
   /** \name Lifetime */
 
   /** Constructor. */
-  rsDelayLineBasic();
+  rsDelay();
 
   /** Destructor */
-  ~rsDelayLineBasic();
+  ~rsDelay();
 
 
   //-----------------------------------------------------------------------------------------------
@@ -185,27 +185,27 @@ protected:
 // inlined functions:
 
 template<class T>
-RS_INLINE T rsDelayLineBasic<T>::getSample(T in)
+RS_INLINE T rsDelay<T>::getSample(T in)
 {
   incrementTapPointers();
   return getSampleSuppressTapIncrements(in);
 }
 
 template<class T>
-RS_INLINE T rsDelayLineBasic<T>::getSampleSuppressTapIncrements(T in)
+RS_INLINE T rsDelay<T>::getSampleSuppressTapIncrements(T in)
 {
   delayLine[tapIn] = in;
   return delayLine[tapOut];
 }
 
 template<class T>
-RS_INLINE void rsDelayLineBasic<T>::addToInput(T signalToAdd)
+RS_INLINE void rsDelay<T>::addToInput(T signalToAdd)
 {
   delayLine[tapIn] += signalToAdd;
 }
 
 template<class T>
-RS_INLINE void rsDelayLineBasic<T>::incrementTapPointers()
+RS_INLINE void rsDelay<T>::incrementTapPointers()
 {
   tapIn  = (tapIn+1)  & maxDelay;
   tapOut = (tapOut+1) & maxDelay;
