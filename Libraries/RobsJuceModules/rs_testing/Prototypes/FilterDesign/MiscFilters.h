@@ -1996,7 +1996,7 @@ void rsSparseRationalFunction<T>::weightedSumDestructive(
   // this further and document! We could perhaps make it work to also allow r == q by swapping p 
   // and q (and wp and wq) in this case. But what if r == p == q? ...well...in that case, we could 
   // leave the denominator of r (and p and q) alone and just multiply the numerator by wp+wq, I 
-  // think.
+  // think. I think, the p == q case could possibly also be handled
 
   using SP = rsSparsePolynomial<T>;
 
