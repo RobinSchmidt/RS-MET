@@ -34,7 +34,6 @@ public:
   length of the delayline can be the respective power-of-two itself) - if it isn't, the next
   power-of-two-minus-one will be used. */
   void setMaxDelayInSamples(int newMaxDelay);
-  // Maybe rename to setMaxDelay
 
   /** Sets the delay-time in samples. If the passed value exceeds the length of the delayline,
   new memory will be allocated which is large enough to support the desired delay. You probably
@@ -64,6 +63,20 @@ public:
   /** Returns the maximum delay that this delayline can produce */
   int getMaxDelayInSamples() const { return maxDelay; }
   // Maybe rename to getMaxDelay
+
+  /** Returns the value of the transfer function H(z) at the given value of z. If M is the delay in
+  samples, then H(z) = z^-M. */
+  //rsComplex<T> getTransferFunctionAt(rsComplex<T> z) const
+  //{
+  //  int M = getDelayInSamples();           // M is our delay
+  //  return rsPow(z, rsComplex<T>(T(-M)));  // H(z) = z^-M
+  //}
+  //// Needs tests
+  //// This is problematic because when using the delayline in higher level objects then the type T
+  //// will be the TSig of the higher level object - but here, we actually want it to be the TPar.
+  //// One way to solve this might be to give the delayline also TSig,TPar template parameters. But
+  //// I'm not sure, if that's really justified just for implementing such a simple 
+  //// getTransferFunctionAt function.
 
 
   //-----------------------------------------------------------------------------------------------
@@ -206,55 +219,55 @@ seconds.
 
 */
 
-template<class TSig, class TPar>
-class rsDelayLine : public rsBasicDelayLine<TSig>
-{
+//template<class TSig, class TPar>
+//class rsDelayLine : public rsBasicDelayLine<TSig>
+//{
+//
+//public:
+//
+//  /** \name Construction/Destruction */
+//
+//  /** Constructor - constructs a delay-line with a given maximum number of samples delay. This
+//  has to be a power of two minus 1 - otherwise the next power of two minus 1 will be used. */
+//  rsDelayLine();
+//
+//  /** Destructor */
+//  ~rsDelayLine();
+//
+//
+//  /** \name Setup */
+//
+//  /** Sets the sample-rate. */
+//  void setSampleRate(TPar newSampleRate);
+//
+//  /** Sets the delay-time in samples. */
+//  void setDelayInSamples(int newDelayInSamples);
+//
+//  /** Sets the delay-time in seconds. */
+//  void setDelayInSeconds(TPar newDelayInSeconds);
+//
+//  /** Sets the delay-time in milliseconds. */
+//  void setDelayInMilliseconds(TPar newDelayInMilliseconds);
+//
+//
+//  /** \name Inquiry */
+//
+//  /** Returns the delay-time in seconds. */
+//  RS_INLINE TPar getDelayInSeconds() const { return delayInSeconds; }
+//
+//  /** Returns the delay-time in milliseconds. */
+//  RS_INLINE TPar getDelayInMilliseconds() const { return 1000.0 * delayInSeconds; }
+//
+//protected:
+//
+//  /** \name Data */
+//
+//  TPar delayInSeconds;
+//  TPar sampleRate;
+//
+//};
 
-public:
-
-  /** \name Construction/Destruction */
-
-  /** Constructor - constructs a delay-line with a given maximum number of samples delay. This
-  has to be a power of two minus 1 - otherwise the next power of two minus 1 will be used. */
-  rsDelayLine();
-
-  /** Destructor */
-  ~rsDelayLine();
-
-
-  /** \name Setup */
-
-  /** Sets the sample-rate. */
-  void setSampleRate(TPar newSampleRate);
-
-  /** Sets the delay-time in samples. */
-  void setDelayInSamples(int newDelayInSamples);
-
-  /** Sets the delay-time in seconds. */
-  void setDelayInSeconds(TPar newDelayInSeconds);
-
-  /** Sets the delay-time in milliseconds. */
-  void setDelayInMilliseconds(TPar newDelayInMilliseconds);
-
-
-  /** \name Inquiry */
-
-  /** Returns the delay-time in seconds. */
-  RS_INLINE TPar getDelayInSeconds() const { return delayInSeconds; }
-
-  /** Returns the delay-time in milliseconds. */
-  RS_INLINE TPar getDelayInMilliseconds() const { return 1000.0 * delayInSeconds; }
-
-protected:
-
-  /** \name Data */
-
-  TPar delayInSeconds;
-  TPar sampleRate;
-
-};
-
-// Try to get rid! 
+// Try to get rid! We want to reclaim the name for a different implementation
 
 //=================================================================================================
 

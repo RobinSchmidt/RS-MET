@@ -271,7 +271,7 @@ template class RAPT::rsSlewRateLimiterWithHold<double, double>;
 //template class RAPT::rsBreakpointModulator<double>;
 
 
-template class RAPT::rsDelayLine<double, double>;
+//template class RAPT::rsDelayLine<double, double>;
 template class RAPT::rsFractionalDelayLine<double, double>;
 
 

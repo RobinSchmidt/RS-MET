@@ -36,7 +36,7 @@ typedef RAPT::rsSlewRateLimiterLinear<double, double> rsSlewRateLimiterLinearDD;
 typedef RAPT::rsBreakpointModulator<double> rsBreakpointModulatorD;
 
 typedef RAPT::rsBasicDelayLine<double> rsBasicDelayLineD;
-typedef RAPT::rsDelayLine<double, double> rsDelayLineDD;
+//typedef RAPT::rsDelayLine<double, double> rsDelayLineDD;
 typedef RAPT::rsFractionalDelayLine<double, double> rsFractionalDelayLineDD;
 
 typedef RAPT::rsOnePoleFilter<double, double> rsOnePoleFilterDD;

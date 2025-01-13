@@ -2632,8 +2632,6 @@ bool dampedCombAllpassUnitTest3(bool withPreDelay)
   //ok &= Hn.isCloseTo(H, 1.e-13);
 
 
-
-
   // Create and set up a rsSparseFilter object from H2 and produce its impulse response:
   rsSparseFilter<Real, Real> sp;
   sp.setMaxDelayInSamples(H.getFilterOrder());
@@ -2642,8 +2640,12 @@ bool dampedCombAllpassUnitTest3(bool withPreDelay)
   ok &= rsIsCloseTo(h, h2, 1.e-13);
   //rsPlotVectors(h2-h);
 
-
   return ok;
+
+
+  // ToDo:
+  //
+  // - Test it with fractional delay. Maybe make the delay a parameter.
 }
 
 bool dampedMultiCombAllpassUnitTest()

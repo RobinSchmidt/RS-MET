@@ -546,36 +546,51 @@ void AciDevilModuleEditor::resized()
 
 
 Ideas:
+
 -Give the oscillators a start-phase parameter and also a polarity switch (both for main and subosc 
  separately). That's potentially important when mixing the 303 basslines with bassdrums and/or bass
  sounds. Maybe the subosc should have and adjustable detune. That would bring us actually into 2 
  osc subtractive synth territory.
+
 -Maybe instead of just blending between Saw/Pulse, let the user load custom waveforms.
+
 -Provide a pulse-width parameter. Maybe it should depend on osc frequency via some other parameter
  like PulseWidthByFreq.
+
 -The cutoff should have a lower minimum setting. See comment in createParameters().
+
 -The filter needs some more work: the resonance drops too much towards higher cutoffs for the
  mid/high resonance range - at the upper end, it seems better, but slightly below, the behavior is
  suboptimal.
+
 -Maybe implement a simple undo/redo mechanism by keeping track of the applied transformations
+
 -Maybe make a smaller headline not at the top but at the top-left - move preset section some 20 
  pixels down and say Slot1-AcidDevil - similar to FuncShaper's GUI and all the other, "smaller"
  plugins, see AudioModuleEditor::setHeadlineStyle
+
 -The sequencer should have a pair of Undo/Redo buttons They should be labeled like 
  "Undo (3)" "Redo (5)" indicating that currently there are 3 possible undo steps available and
   5 possible redo steps.
--The equencer should have an "Export" button that let's the user write a .mid file with the current
- pattern. Accented and non-accented notes should use two well defined Velocity levels. Maybe 64
- and 127. Or maybe 50 and 100 to have some headroom. Or maybe 40 and 80. Maybe AcidDevil should 
- have a switch for midi interpeting accents binary (on off based on velocity threshold) or 
- continuously. see: https://docs.juce.com/master/classMidiFile.html
- Maybe the Export function can be integrated into the the "Save" button. If the user chooses to
- save to a .mid file, it will be exported.
 
+- The equencer should have an "Export" button that let's the user write a .mid file with the 
+  current pattern. See:
+  https://docs.juce.com/master/classMidiFile.html
+  https://docs.juce.com/master/classMidiMessageSequence.html
+  https://www.youtube.com/watch?v=P27ml4M3V7A
+ 
+- Maybe the Export function can be integrated into the the "Save" button. If the user chooses to
+  save to a .mid file, it will be exported. We don't need to modify the GUI for that. But then, we
+  also need to implement midi import in Load.
+  
+- Accented and non-accented notes should use two well defined Velocity levels. 
+  Maybe 64 and 127. Or maybe 50 and 100 to have some headroom. Or maybe 40 and 80. Maybe AcidDevil 
+  should have a switch for midi interpeting accents binary (on off based on velocity threshold) or 
+  continuously.
 
--Maybe make important sliders bigger (20 or 24 pixel high): Level (maybe), Saw/Pulse, Cutoff, 
- Drive, EnvMod, Resonance ...those that the user is likely to automate. Accent is actually also a
- good automation target
+- Maybe make important sliders bigger (20 or 24 pixel high): Level (maybe), Saw/Pulse, Cutoff, 
+  Drive, EnvMod, Resonance ...those that the user is likely to automate. Accent is actually also a
+  good automation target
 
  -The distortion unit should get a mode, maybe pre/post filters and and some manipluators for the 
   transfer function and perhaps a little display for the function...or maybe not. But it should 

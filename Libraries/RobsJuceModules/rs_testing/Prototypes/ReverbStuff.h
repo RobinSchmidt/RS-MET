@@ -1315,7 +1315,13 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getCombTransferFunctionAt(
 {
   using Complex = rsComplex<TPar>;
   Complex one(TPar(1));                          // 1 + 0i
+
+
   Complex zM = rsPow(z, Complex(-M));            // z^-M
+  //zM = mainDelay.getTransferFunctionAt(z);     //  ...maybe use this later..but also call it A
+  // or maybe use A = getDelayTransferFunctionAt(z)
+
+
   Complex z1 = one/z;                            // z^-1
   Complex F  = getDamperTransferFunctionAt(z);   // F(z)
   if(preDelay)
@@ -1330,6 +1336,11 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getCombTransferFunctionAt(
   //   getSampleComb() already applies the inverse damping filter. That's why we don't see an F in 
   //   the numerator. It cancels with the same F that would appear in the denominator due to the
   //   application of the inverse damper. So, overall, the numerator turns out to be just 1.
+  //
+  // - Rename zM to A (for allpass) and retrieve it from the delaylien via a call like 
+  //   mainDelay.getTransferFunctionAt(z) which has to be implemented. We can then replace the 
+  //   integer delayline with a fractional one that implements this function also and computes the
+  //   correct transfer function for the selected interpolation method (linear, allpass, etc.).
 }
 
 template<class TSig, class TPar>

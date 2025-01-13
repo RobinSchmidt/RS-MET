@@ -1271,7 +1271,10 @@ void dampedMultiCombAllpass()
   //   interpolator into the feedback filter is right to begin with. I think, at least, when the 
   //   interpolation (allpass) filter is combined with another filter (such as the damping filter)
   //   it may not work because the combination with other filter changes the meaning of y[n-1].
-  //   ...I'm not really sure about all of this. More research is needed.
+  //   ...I'm not really sure about all of this. More research is needed. Ahhh! I think, baking the 
+  //   inteprolator into the feedback filter F(z) is wrong indeed! It needs to be baked into the 
+  //   delay filter A(z) instead! But maybe with pure FIR interpolators it really doesn't matter? 
+  //   It seems to work with the linear interpolator baked into the feedback path.
   //
   // - Try longer delay lengths. They are chosen pretty short in the experiment (even the longets 
   //   is less than a millisecond). Maybe try something on the order of 10-20 milliseconds. That 
