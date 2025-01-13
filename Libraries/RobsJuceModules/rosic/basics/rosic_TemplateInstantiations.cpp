@@ -272,7 +272,7 @@ template class RAPT::rsSlewRateLimiterWithHold<double, double>;
 
 
 //template class RAPT::rsDelayLine<double, double>;
-template class RAPT::rsDelayLineTempoSynced<double, double>;
+template class RAPT::rsDelayTempoSynced<double, double>;
 
 
 template class RAPT::rsInstantaneousFundamentalEstimator<double>; // rename

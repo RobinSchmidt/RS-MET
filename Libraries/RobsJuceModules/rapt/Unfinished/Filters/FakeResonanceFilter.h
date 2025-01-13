@@ -185,7 +185,7 @@ protected:
 
 
   // processors in resonance path:
-  rsDelayLineTempoSynced<TSig, TPar>   dl;     // delayline 
+  rsDelayTempoSynced<TSig, TPar>   dl;     // delayline 
   // ToDo: Use a simpler delayline class. We don't need this tempo-sync stuff here, so it's just
   // cruft!
 

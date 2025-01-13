@@ -240,14 +240,14 @@ ToDo:
   it's actually used in rsFakeResonanceFilter. But maybe we can turn this implementation into the 
   one, we want
 
-- Or rename this one into rsTimeBasedDelayLine and factor out a class rsDelayLineTempoSynced that
+- Or rename this one into rsTimeBasedDelayLine and factor out a class rsDelayTempoSynced that
   only has the stuff that is needed to set it up in terms of a frcational delay in samples. None
-  of that sampleRate, bpm, tempoSync stuff   ...or rsDelayLineTempoSynced
+  of that sampleRate, bpm, tempoSync stuff   ...or rsDelayTempoSynced
 
 */
 
 template<class TSig, class TPar>
-class rsDelayLineTempoSynced
+class rsDelayTempoSynced
 {
 
 public:
@@ -255,10 +255,10 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor - constructs a delay-line with a given maximum number of samples delay. */
-  rsDelayLineTempoSynced(int maximumDelayInSamples = 65536);
+  rsDelayTempoSynced(int maximumDelayInSamples = 65536);
 
   /** Destructor */
-  ~rsDelayLineTempoSynced();
+  ~rsDelayTempoSynced();
 
 
   /** \name Setup */
@@ -344,8 +344,8 @@ private:
 
   // Make assignment operator and copy constructor unavailable because this class contains 
   // pointer members:
-  rsDelayLineTempoSynced& operator=(const rsDelayLineTempoSynced& /*other*/) { return *this; }
-  rsDelayLineTempoSynced(const rsDelayLineTempoSynced& /*other*/) { }
+  rsDelayTempoSynced& operator=(const rsDelayTempoSynced& /*other*/) { return *this; }
+  rsDelayTempoSynced(const rsDelayTempoSynced& /*other*/) { }
   // ToDo: use a macro for this
 
 };
@@ -354,7 +354,7 @@ private:
 // inlined functions:
 
 template<class TSig, class TPar>
-RS_INLINE int rsDelayLineTempoSynced<TSig, TPar>::wrapAround(int position)
+RS_INLINE int rsDelayTempoSynced<TSig, TPar>::wrapAround(int position)
 {
   while(position >= length)
     position =-length;
@@ -365,7 +365,7 @@ RS_INLINE int rsDelayLineTempoSynced<TSig, TPar>::wrapAround(int position)
 }
 
 template<class TSig, class TPar>
-TSig rsDelayLineTempoSynced<TSig, TPar>::getSample(TSig in)
+TSig rsDelayTempoSynced<TSig, TPar>::getSample(TSig in)
 {
   TSig out;
 

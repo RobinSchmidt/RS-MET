@@ -68,7 +68,7 @@ void rsDelay<T>::reset()
 // construction/destruction:
 
 template<class TSig, class TPar>
-rsDelayLineTempoSynced<TSig, TPar>::rsDelayLineTempoSynced(int maximumDelayInSamples)
+rsDelayTempoSynced<TSig, TPar>::rsDelayTempoSynced(int maximumDelayInSamples)
 {
   length      = maximumDelayInSamples + 1;
   delayBuffer = new TSig[length+interpolatorMargin];
@@ -89,7 +89,7 @@ rsDelayLineTempoSynced<TSig, TPar>::rsDelayLineTempoSynced(int maximumDelayInSam
 }
 
 template<class TSig, class TPar>
-rsDelayLineTempoSynced<TSig, TPar>::~rsDelayLineTempoSynced()
+rsDelayTempoSynced<TSig, TPar>::~rsDelayTempoSynced()
 {
   if( delayBuffer != nullptr )
   {
@@ -101,7 +101,7 @@ rsDelayLineTempoSynced<TSig, TPar>::~rsDelayLineTempoSynced()
 // parameter settings (set-functions):
 
 template<class TSig, class TPar>
-void rsDelayLineTempoSynced<TSig, TPar>::setSampleRate(TPar newSampleRate)
+void rsDelayTempoSynced<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   if(newSampleRate > 0.01)
   {
@@ -111,7 +111,7 @@ void rsDelayLineTempoSynced<TSig, TPar>::setSampleRate(TPar newSampleRate)
 }
 
 template<class TSig, class TPar>
-void rsDelayLineTempoSynced<TSig, TPar>::setDelayTime(TPar newDelayTime)
+void rsDelayTempoSynced<TSig, TPar>::setDelayTime(TPar newDelayTime)
 {
   //delayTime = rsClip(newDelayTime, 0.0, 4.25);
   delayTime = newDelayTime;
@@ -119,14 +119,14 @@ void rsDelayLineTempoSynced<TSig, TPar>::setDelayTime(TPar newDelayTime)
 }
 
 template<class TSig, class TPar>
-void rsDelayLineTempoSynced<TSig, TPar>::setSyncMode(bool shouldTempoSync)
+void rsDelayTempoSynced<TSig, TPar>::setSyncMode(bool shouldTempoSync)
 {
   tempoSync = shouldTempoSync;
   setupDelayInSamples();
 }
 
 template<class TSig, class TPar>
-void rsDelayLineTempoSynced<TSig, TPar>::setTempoInBPM(TPar newTempoInBPM)
+void rsDelayTempoSynced<TSig, TPar>::setTempoInBPM(TPar newTempoInBPM)
 {
   if(newTempoInBPM >= 0.0)
   {
@@ -138,7 +138,7 @@ void rsDelayLineTempoSynced<TSig, TPar>::setTempoInBPM(TPar newTempoInBPM)
 }
 
 template<class TSig, class TPar>
-void rsDelayLineTempoSynced<TSig, TPar>::setInterpolationMethod(int newMethod)
+void rsDelayTempoSynced<TSig, TPar>::setInterpolationMethod(int newMethod)
 {
   if(newMethod <= rsInterpolator<TSig>::WARPED_ALLPASS)
     interpolator.setInterpolationMethod(newMethod);
@@ -149,7 +149,7 @@ void rsDelayLineTempoSynced<TSig, TPar>::setInterpolationMethod(int newMethod)
 // others:
 
 template<class TSig, class TPar>
-void rsDelayLineTempoSynced<TSig, TPar>::clearDelayBuffer()
+void rsDelayTempoSynced<TSig, TPar>::clearDelayBuffer()
 {
   for(int i=0; i<length+interpolatorMargin; i++)
     delayBuffer[i] = 0.0;
@@ -157,7 +157,7 @@ void rsDelayLineTempoSynced<TSig, TPar>::clearDelayBuffer()
 }
 
 template<class TSig, class TPar>
-void rsDelayLineTempoSynced<TSig, TPar>::setupDelayInSamples()
+void rsDelayTempoSynced<TSig, TPar>::setupDelayInSamples()
 {
   double delayInSeconds;
   if( tempoSync )
