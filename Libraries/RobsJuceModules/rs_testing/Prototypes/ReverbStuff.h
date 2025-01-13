@@ -14,7 +14,7 @@
 
 
 template<class TSig, class TPar>
-class rsDelayLineInterpolatedLinear  // renme to rsDelayInterpolatedLinear ..or just rsDelayLinear
+class rsDelayLinear  // renme to rsDelayInterpolatedLinear ..or just rsDelayLinear
 {
 
 
@@ -78,7 +78,7 @@ protected:
 
 
 template<class TSig, class TPar>
-class rsDelayLineInterpolatedAllpass  // renme to rsDelayInterpolatedAllpass
+class rsDelayAllpass  // renme to rsDelayInterpolatedAllpass
 {
 
 

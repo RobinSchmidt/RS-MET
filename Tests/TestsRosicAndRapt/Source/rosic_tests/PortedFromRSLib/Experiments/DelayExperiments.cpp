@@ -94,7 +94,7 @@ void delayLineLinear()
   using Real = double;
   Real t[N], h[N];
   RAPT::rsArrayTools::fillWithIndex(t, N);
-  rsDelayLineInterpolatedLinear<Real, Real> dl; 
+  rsDelayLinear<Real, Real> dl; 
   dl.setMaxDelayInSamples(6);
   Real d0 = 5;                                // Reference delay
   for(int i = 0; i <= 10; i++)
@@ -124,7 +124,7 @@ void delayLineAllpass()
   using Real = double;
   Real t[N], h[N];
   RAPT::rsArrayTools::fillWithIndex(t, N);
-  rsDelayLineInterpolatedAllpass<Real, Real> dl; 
+  rsDelayAllpass<Real, Real> dl; 
   dl.setMaxDelayInSamples(6);
   Real d0 = 5;                                // Reference delay
   for(int i = 0; i <= 10; i++)
