@@ -87,15 +87,16 @@ void delayLineBasic()
 
 void delayLineLinear()
 {
+  // We plot the impulse responses of a linearly interpolating delayline with delays of 5.0, 5.1,
+  // 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 5.9, 6.0 one after another.
+
   static const int N = 20;
   using Real = double;
   Real t[N], h[N];
   RAPT::rsArrayTools::fillWithIndex(t, N);
   rsDelayLineInterpolatedLinear<Real, Real> dl; 
   dl.setMaxDelayInSamples(6);
-
   Real d0 = 5;                                // Reference delay
-
   for(int i = 0; i <= 10; i++)
   {
     Real f =  Real(i) / Real(10);
@@ -106,8 +107,12 @@ void delayLineLinear()
     int dummy = 0;
   }
 
-
-
+  // Observations:
+  //
+  // - The 1st impulse response is an impulse shifted by 5 samples, like in the case of the integer
+  //   delayline. The 2nd has a spike oh hight 0.9 at 5 and a tail of 0.1 at 6. The 3rd a spike of
+  //   height 0.8 at 5 with a tail of 0.2 at 6 and so on. Until it reaches a spike of height 1 at 6
+  //   in the 10th response. This is all as it should be.
 }
 
 void twoPoleAllpassDelay()
