@@ -7,6 +7,103 @@
 //  bottom
 
 
+
+
+
+//=================================================================================================
+
+
+template<class TSig, class TPar>
+class rsDelayLineLinearInterpolated
+{
+
+
+public:
+
+
+
+  void setMaxDelayInSamples(TPar newMaxDelay)
+  {
+    dl.setMaxDelayInSamples(rsCeilInt(newMaxDelay));
+  }
+
+  void setDelayInSamples(TPar newDelay)
+  {
+    TPar intPart  = rsFloor(newDelay);
+    TPar fracPart = newDelay - intPart;
+    dl.setDelayInSamples(int(intPart));
+    b0 = TPar(1) - fracPart;
+    b1 = fracPart;
+  }
+
+
+
+  TSig getSample(TSig in)
+  {
+    TSig x0 = dl.readOutput();
+    TSig x1 = dl.readOutputWithAdditionalDelay(1);
+    return b0*x0 + b1*x1;
+  }
+
+  void reset() {}
+
+
+protected:
+
+  rsDelayLineBasic<TSig> dl;  // The underlying integer delayline
+
+  TPar b0 = TPar(1);          // Fractional part of delay
+  TPar b1 = TPar(0);          // Previous output fo allpass interpolation
+
+};
+// Needs tests
+
+
+
+
+
+/*
+template<class TSig, class TPar>
+class rsDelayLineAllpassInterpolated
+{
+
+
+public:
+
+
+
+  TSig getSampleLinear(TSig in)
+  {
+    TSig x0 = dl.readOutput();
+    TSig x1 = dl.readOutputWithAdditionalDelay(1);
+
+    return (1-frac)*x0 + frac*x1;
+
+  }
+
+  TSig getSample(TSig in)
+  {
+
+  }
+
+
+  void reset() { prevOut = 0; }
+
+protected:
+
+  rsDelayLineBasic<TSig> dl;    // The underlying integer delayline
+
+  TPar frac    = TPar(0);       // Fractional part of delay
+  TSig prevOut = TSig(0);       // Previous output fo allpass interpolation
+
+};
+*/
+
+// Wait 
+
+
+
+
 //=================================================================================================
 
 /** This implements a chain (i.e. series connection) of allpass delays. To achieve this effect, you

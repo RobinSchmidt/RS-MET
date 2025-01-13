@@ -118,6 +118,21 @@ public:
     return delayLine[readPos];     // Read out the delayline
   }
 
+  /** Reads the content of the delayline at a position of the current tapOut pointer minus some
+  additional delay. That means, when the delayline is set up to give a delay of M samples and the
+  normal readOutput function would return x[n-M], this function here returns x[n-(M+k)] = x[n-M-k]
+  where k is the desired additional delay. This function facilitates the implementation of 
+  fractional delaylines on top of the integer one. For example, for a delay of 10.3 samples, one
+  could set up the delayline to 10 samples, retrieve x[n-10] via readOutput and x[n-11] via
+  readOutputWithAdditionalDelay(1) and then compute the output va linear interpolation: 
+  y = 0.7*x[n-10] + 0.3*x[n-11].  */
+  inline T readOutputWithAdditionalDelay(int additionalDelay) const
+  {
+    int readPos = tapOut - additionalDelay;
+    readPos = readPos & maxDelay;
+    return delayLine[readPos];
+  }
+  // Needs tests
 
 
   inline void writeInputNoUpdate(T in) { delayLine[tapIn] = in; }
@@ -323,7 +338,7 @@ protected:
   TPar bpm;
   bool tempoSync;
 
-  rsInterpolator<TSig> interpolator;  // Why is this public?
+  rsInterpolator<TSig> interpolator;
 
 private:
 
