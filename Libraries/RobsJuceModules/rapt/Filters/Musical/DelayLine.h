@@ -207,67 +207,9 @@ RS_INLINE void rsBasicDelayLine<T>::incrementTapPointers()
     // reading/writing one sample behind the allocated memory
 }
 
-//=================================================================================================
 
-/**
 
-Extends BasicDelayLine by keeping information about the sample rate and the delay in
-seconds.
 
-\todo: facilitate tempo-sync by maintaining a bpm-value and a sync-flag
-...maybe do this in a subclass...
-
-*/
-
-//template<class TSig, class TPar>
-//class rsDelayLine : public rsBasicDelayLine<TSig>
-//{
-//
-//public:
-//
-//  /** \name Construction/Destruction */
-//
-//  /** Constructor - constructs a delay-line with a given maximum number of samples delay. This
-//  has to be a power of two minus 1 - otherwise the next power of two minus 1 will be used. */
-//  rsDelayLine();
-//
-//  /** Destructor */
-//  ~rsDelayLine();
-//
-//
-//  /** \name Setup */
-//
-//  /** Sets the sample-rate. */
-//  void setSampleRate(TPar newSampleRate);
-//
-//  /** Sets the delay-time in samples. */
-//  void setDelayInSamples(int newDelayInSamples);
-//
-//  /** Sets the delay-time in seconds. */
-//  void setDelayInSeconds(TPar newDelayInSeconds);
-//
-//  /** Sets the delay-time in milliseconds. */
-//  void setDelayInMilliseconds(TPar newDelayInMilliseconds);
-//
-//
-//  /** \name Inquiry */
-//
-//  /** Returns the delay-time in seconds. */
-//  RS_INLINE TPar getDelayInSeconds() const { return delayInSeconds; }
-//
-//  /** Returns the delay-time in milliseconds. */
-//  RS_INLINE TPar getDelayInMilliseconds() const { return 1000.0 * delayInSeconds; }
-//
-//protected:
-//
-//  /** \name Data */
-//
-//  TPar delayInSeconds;
-//  TPar sampleRate;
-//
-//};
-
-// Try to get rid! We want to reclaim the name for a different implementation
 
 //=================================================================================================
 
@@ -279,6 +221,11 @@ This class implements a basic delay-line with various interpolation methods.
 \todo: maybe get rid of the tempo-sync stuff - this is actually something for a higher level
        it would probably be best, if the delay time is set up in samples such that the class can
        be agnostic of the samplerate
+
+
+ToDo:
+
+ - Try to get rid! We want to reclaim the name for a different implementation
 
 */
 
@@ -374,7 +321,7 @@ protected:
   TPar bpm;
   bool tempoSync;
 
-  rsInterpolator<TSig> interpolator;
+  rsInterpolator<TSig> interpolator;  // Why is this public?
 
 private:
 

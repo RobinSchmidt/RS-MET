@@ -62,52 +62,6 @@ void rsBasicDelayLine<T>::reset()
     delayLine[i] = 0.0;
 }
 
-//-------------------------------------------------------------------------------------------------
-
-//// Construction/Destruction:
-//
-//template<class TSig, class TPar>
-//rsDelayLine<TSig, TPar>::rsDelayLine()
-//{
-//  delayInSeconds = TPar(0.001);
-//  sampleRate     = TPar(44100.0);
-//  setDelayInSeconds(delayInSeconds);
-//}
-//
-//template<class TSig, class TPar>
-//rsDelayLine<TSig, TPar>::~rsDelayLine()
-//{
-//
-//}
-//
-//// Setup:
-//
-//template<class TSig, class TPar>
-//void rsDelayLine<TSig, TPar>::setSampleRate(TPar newSampleRate)
-//{
-//  sampleRate = newSampleRate;
-//  setDelayInSeconds(delayInSeconds);
-//}
-//
-//template<class TSig, class TPar>
-//void rsDelayLine<TSig, TPar>::setDelayInSamples(int newDelayInSamples)
-//{
-//  rsBasicDelayLine<TSig>::setDelayInSamples(newDelayInSamples);
-//  delayInSeconds = (TPar) newDelayInSamples / sampleRate;
-//}
-//
-//template<class TSig, class TPar>
-//void rsDelayLine<TSig, TPar>::setDelayInSeconds(TPar newDelayInSeconds)
-//{
-//  delayInSeconds = rsMax(0.0, newDelayInSeconds);
-//  setDelayInSamples( rsRoundToInt(sampleRate*delayInSeconds) );
-//}
-//
-//template<class TSig, class TPar>
-//void rsDelayLine<TSig, TPar>::setDelayInMilliseconds(TPar newDelayInMilliseconds)
-//{
-//  setDelayInSeconds(0.001*newDelayInMilliseconds);
-//}
 
 //-------------------------------------------------------------------------------------------------
 
