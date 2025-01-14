@@ -47,11 +47,8 @@ public:
 
   void getTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const
   {
-    tf->num.setNumTerms(1);
-    tf->num.setTerm(0, TPar(1), dl.getDelayInSamples());
-
-    tf->densetNumTerms(1);
-    tf->num.setTerm(0, TPar(1), 0);
+    tf->num.setNumTerms(1); tf->num.setTerm(0, TPar(1), dl.getDelayInSamples());
+    tf->den.setNumTerms(1); tf->den.setTerm(0, TPar(1), 0);
   }
   // Needs tests.
 
@@ -1625,7 +1622,14 @@ rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
 
   TF one; one.num.appendTerm(TPar(1), 0);
   TF z1;  z1.num.appendTerm( TPar(1), 1);
-  TF zM;  zM.num.appendTerm( TPar(1), M);        // Delay filter z^-M
+  TF zM;  
+  
+  // Old:
+  //zM.num.appendTerm( TPar(1), M);        // Delay filter z^-M 
+
+  // New:
+  mainDelay.getTransferFunction(&zM);            // Delay filter A(z)
+
   TF F = getDamperTransferFunction();            // Feedback filter F(z)
 
   if(preDelay)

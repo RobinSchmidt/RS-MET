@@ -995,6 +995,13 @@ public:
   }
   // Needs tests.
 
+  void multiplyBy(const rsSparsePolynomial<T>& factor, T tol)
+  {
+    multiply(*this, factor, this, tol);
+  }
+  // Needs test
+
+
 
   void divideBy(const rsMonomial<T>& divisor)
   {
@@ -1003,6 +1010,8 @@ public:
   }
   // Needs tests. 
   // Maybe assert that this->getPower() >= divisor.getPower() to avoid producing negative powers.
+
+
 
 
 
@@ -1875,6 +1884,18 @@ public:
 
 
   void multiplyBy(rsMonomial<T> factor) { num.multiplyBy(factor); }
+
+  void multiplyBy(rsSparseRationalFunction<T> factor, T tol) 
+  { 
+    num.multiplyBy(factor.num, tol);
+    den.multiplyBy(factor.den, tol);
+
+    // I think, num and den may now have a common factor, so we potentially need to divide that
+    // out:
+    //canonicalize();
+  }
+
+
 
   void addConstant(T constant, T tol)
   {
