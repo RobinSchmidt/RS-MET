@@ -13,8 +13,57 @@
 //=================================================================================================
 
 
+/** This class extends the basic rsDelay class by introducing a second template parameter for the
+actualy delay in samples which is supposed to be a real number type. We do not want to burden the
+baseclass with a second template parameter but in some situations, we do want to have some 
+functionality of basic delay lines that do need such a second template parameter. Specifically, it
+is needed to provide a getTransferFunctionAt() member function. The implementation of it is rather 
+trivial for a simple integer delayline such as this, but we want to have it as member function 
+anyway in  order to have a consistent API with more complex delaylines that use various 
+interpolation methods (such as linear, allpass, etc.). The idea is that one might start to write a
+DSP algorithm using the class rsDelayRounding and later replace it by some API-compatible other 
+delay class such as rsDelayLinear or rsDelayAllpass without having to change any other code. */
+
 template<class TSig, class TPar>
-class rsDelayLinear  // renme to rsDelayInterpolatedLinear ..or just rsDelayLinear
+class rsDelayRounding : public rsDelay<TSig>
+{
+
+public:
+
+
+  using Base = rsDelay<TSig>;
+  using Base::Base;
+
+
+  void setMaxDelayInSamples(TPar newMaxDelay)
+  { Base::setMaxDelayInSamples(rsRoundToInt(newMaxDelay)); }
+
+
+  void setDelayInSamples(TPar newDelay)
+  { Base::setDelayInSamples(rsRoundToInt(newDelay)); }
+
+
+  /** Returns the value of the transfer function H(z) at the given value of z. If M is the delay in
+  samples, then H(z) = z^-M. */
+  rsComplex<TPar> getTransferFunctionAt(rsComplex<TPar> z) const
+  {
+    int M = Base::getDelayInSamples();     // M is our delay
+    return rsPow(z, rsComplex<TPar>(-M));  // H(z) = z^-M
+  }
+
+
+};
+
+// Hmmm...I think, it might be better to just have a member of type rsDelay<TSig> rather than 
+// deriving from it. We do not want expose the API of rsDelay to client code. We want the API to be
+// consistent with the ones of rsDelayLinear and rsDelayAllpass.
+
+
+
+
+
+template<class TSig, class TPar>
+class rsDelayLinear
 {
 
 
@@ -62,23 +111,20 @@ public:
 
 protected:
 
-  rsDelay<TSig> dl;  // The underlying integer delayline
+  rsDelay<TSig> dl;    // Underlying integer delayline
 
-  TPar b0 = TPar(1);          // Coeff for x[n-M]
-  TPar b1 = TPar(0);          // Coeff for x[n-M-1]
+  TPar b0 = TPar(1);   // Coeff for x[n-M]
+  TPar b1 = TPar(0);   // Coeff for x[n-M-1]
+
+  // Maybe store juts one coeff (b1, the fractional part of the delay) and use the one-multiply 
+  // form in the implementation...well...maybe try both and benchmark and choose the faster
 
 };
 // Needs tests
-// Maybe stoe juts one coeff (b1, the fractional part of the delay) and use the one-multiply form
-// in the implementation...well...maybe try both and benchmark and choose the faster
-
-
-
-
 
 
 template<class TSig, class TPar>
-class rsDelayAllpass  // renme to rsDelayInterpolatedAllpass
+class rsDelayAllpass
 {
 
 
@@ -118,10 +164,10 @@ public:
 
 protected:
 
-  rsDelay<TSig> dl;    // The underlying integer delayline
+  rsDelay<TSig> dl;    // Underlying integer delayline
 
-  TPar c  = TPar(0);            // Allpass filter coefficient
-  TSig y1 = TSig(0);            // Previous output
+  TSig y1 = TSig(0);   // Previous output
+  TPar c  = TPar(0);   // Allpass filter coefficient
 
 };
 // Needs tests

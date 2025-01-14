@@ -1,3 +1,19 @@
+
+Optimizations:
+
+- In RAPT, maybe try aligning the low-level algorithm template parameters of type TPar as the signal 
+  parameters TSig. We can use the C++11 alignas/alignof keywords for this. Rationale: when used with 
+  a SIMD type for TSig and correpsonding scalar type for TPar, arithmetic operations between signals 
+  and parameters may be faster when the parameters are properly aligned (I don't know - this is 
+  speculation -> try it and measure). For the user parameters, we may not want to do it in order to 
+  keep the object sizes smaller (alignment may cause padding). So, a filter coefficient should be 
+  aligned but a cutoff parameter should not. ...maybe... 
+
+- To minimize padding, make sure that DSP classes put their members of type TSig first (that's 
+  usually the biggest datatype - might be a SIMD vector type), then those of type TPar (typically a
+  scalar real number type), then ints, shorts, chars and bools.
+
+
 Clean up the Git Repo:
 -The file Documentation/RAPT/LaTeX/UserManual/UserManual.pdf was accidentally added to the repo at 
  some point early on. It should never have been tracked, though. When learning Git, I made mistakes.

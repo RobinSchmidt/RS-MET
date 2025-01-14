@@ -72,6 +72,7 @@ public:
   //// One way to solve this might be to give the delayline also TSig,TPar template parameters. But
   //// I'm not sure, if that's really justified just for implementing such a simple 
   //// getTransferFunctionAt function.
+  // ...ok - we now do this in rsDelayRounding which is currently in ReverbStuff.h in the prototypes
 
 
   //-----------------------------------------------------------------------------------------------

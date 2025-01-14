@@ -654,5 +654,11 @@ https://studiorack.github.io/studiorack-site/
 C++ Real-time Audio Programming with Bela:
 https://github.com/BelaPlatform/bela-online-course
 
+The KeyVa programming language
+https://github.com/garyexplains/keyva-lang
+https://www.youtube.com/watch?v=yDI1dkImLok
+- Small programming language where every variable is an associative array (KeyVa probably stands 
+  for key-value pair?). It's main usefulness might be in the demonstration of how to write a minimal
+  interpreter.
 
 https://www.joehagenmusic.com/post/a-comprehensive-guide-to-high-quality-free-plugins-that-you-ll-actually-use

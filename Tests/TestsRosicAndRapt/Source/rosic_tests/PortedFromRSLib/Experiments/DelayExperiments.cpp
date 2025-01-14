@@ -106,6 +106,7 @@ void delayLineLinear()
     plotData(N, t, h);
   }
 
+
   // Observations:
   //
   // - The 1st impulse response is an impulse shifted by 5 samples, like in the case of the integer
@@ -126,6 +127,11 @@ void delayLineAllpass()
   RAPT::rsArrayTools::fillWithIndex(t, N);
   rsDelayAllpass<Real, Real> dl; 
   dl.setMaxDelayInSamples(6);
+
+  dl.setDelayInSamples(5.01);
+  RAPT::getImpulseResponse(dl, h, N);
+  plotData(N, t, h);
+
   Real d0 = 5;                                // Reference delay
   for(int i = 0; i <= 10; i++)
   {
@@ -136,10 +142,17 @@ void delayLineAllpass()
     plotData(N, t, h);
   }
 
+
+
+
   // Observations:
   //
   // - The 1st impulse response is the same as for integer and linear delays. Then it gets weird.
   //   ...TBC...
+  //
+  // - When the delay is a little bit above an integer (like 5.01), we see an oscillation at the 
+  //   Nyquist freq. It seems, its amplitude goes down, the closer we get to the integer (good) but
+  //   its decay time goes up (bad).
   //
   //
   // ToDo:
