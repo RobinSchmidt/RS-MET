@@ -16,7 +16,8 @@
 /** This class is a lightweight wrapper around the rsDelay class that gives it an API that is 
 compatible with our more advanced interpolating delayline implementations such as rsDelayLinear
 and rsDelayAllpass. The idea is that one might start to write a DSP algorithm using the class 
-rsDelayRounding and later replace it by some API-compatible other (better) delay class. */
+rsDelayRounding (i.e. start simple) and later replace it by some API-compatible other (better) 
+delay class as refinement of the algo. */
 
 template<class TSig, class TPar>
 class rsDelayRounding
@@ -62,7 +63,8 @@ protected:
 
 
 
-
+/** A delayline class that uses linear interpolation to achieve fractional (i.e. non integer) 
+delays. */
 
 template<class TSig, class TPar>
 class rsDelayLinear
@@ -77,14 +79,16 @@ public:
   {
     dl.setMaxDelayInSamples(rsCeilInt(newMaxDelay) + 1);
 
-    // I think, we really need to +1 because even when the user request an integer delay of 
-    // M = maxDelay, we still will access the delayline with a delay of M+1, albeit witn a 
-    // coeff of zero. Hmm...well...if we just use rsCeilInt, then trying to access the delay M+1
-    // will wrap around to another location and read a wrong sample from there. But since the 
-    // coeff is zero anyway, it doesn't really matter that we access the wrong sample. So, it
-    // may actually be ok to just use rsCeilInt(newMaxDelay) without the +1. But better safe than
-    // sorry. ...maybe do tests. Try it with maxDelay = 7 or 15. The actual maxDelay will always
-    // be 2^k-1 for some k to enable the wrapping via bitmasking
+    // I think, we really need the +1 because even when the user request an integer delay of 
+    // M = maxDelay, we still will access the delayline with a delay of M+1, albeit with a 
+    // coeff of zero. Hmm...well...if we just use rsCeilInt without the +1, then trying to access 
+    // the delay M+1 may wrap around to another location and read a wrong sample from there. But 
+    // since the coeff is zero anyway, it doesn't really matter that we access the wrong sample. 
+    // So, it may actually be ok to just use rsCeilInt(newMaxDelay) without the +1. But better safe
+    // than sorry. ...maybe do tests. Try it with maxDelay = 7 or 15. The actual maxDelay will always
+    // be 2^k-1 for some k to enable the wrapping via bitmasking. If it turns out to be safe to use
+    // it without the +1, then maybe do it. I really like being tight with memory allocations, i.e.
+    // really allocate exactly as much as you need and nothing extra.
   }
 
   void setDelayInSamples(TPar newDelay)
