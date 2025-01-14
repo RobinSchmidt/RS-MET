@@ -512,8 +512,8 @@ void dampedCombAllpass1()
 
 
   // Write outputs to wavefiles for listening:
-  rosic::writeToMonoWaveFile("FeedbackAllpassUncorrected.wav", &hu[0], N, sampleRate);
-  rosic::writeToMonoWaveFile("FeedbackAllpassCorrected.wav",   &hr[0], N, sampleRate);
+  rosic::writeToMonoWaveFile("FeedbackAllpassUncorrected.wav", &hu[0], N, (int)sampleRate);
+  rosic::writeToMonoWaveFile("FeedbackAllpassCorrected.wav",   &hr[0], N, (int)sampleRate);
 
   // Plot uncorrected and reverse corrected output. These are the most interesting things:
   rsPlotVectors(hu, hr);
@@ -714,10 +714,10 @@ void dampedCombAllpass3()
   Vec h4 = filterResponse( apf4, N, h3);
 
   // Write outputs to wavefiles and plot:
-  rosic::writeToMonoWaveFile("DampedAllpasComb1.wav", &h1[0], N, sampleRate);
-  rosic::writeToMonoWaveFile("DampedAllpasComb2.wav", &h2[0], N, sampleRate);
-  rosic::writeToMonoWaveFile("DampedAllpasComb3.wav", &h3[0], N, sampleRate);
-  rosic::writeToMonoWaveFile("DampedAllpasComb4.wav", &h4[0], N, sampleRate);
+  rosic::writeToMonoWaveFile("DampedAllpasComb1.wav", &h1[0], N, (int)sampleRate);
+  rosic::writeToMonoWaveFile("DampedAllpasComb2.wav", &h2[0], N, (int)sampleRate);
+  rosic::writeToMonoWaveFile("DampedAllpasComb3.wav", &h3[0], N, (int)sampleRate);
+  rosic::writeToMonoWaveFile("DampedAllpasComb4.wav", &h4[0], N, (int)sampleRate);
   rsPlotVectors(h1, h2, h3, h4);
 
 
@@ -934,12 +934,13 @@ void dampedCombAllpass5()
   // Apply a moving average filter of length equal to the delay to smooth out the artifacts of the
   // envelope follower:
   RAPT::rsMovingAverage<Real, Real> ma;
-  ma.setMaxLengthInSamples(delay);
-  ma.setLengthInSamples(delay);
+  ma.setMaxLengthInSamples(rsCeilInt(delay));
+  ma.setLengthInSamples(rsCeilInt(delay));
   env  = filterResponse(ma, N, env );
   envL = filterResponse(ma, N, envL);
   envM = filterResponse(ma, N, envM);
   envH = filterResponse(ma, N, envH);
+  // Could we implement such a filter with fractional delay?
 
   // ToDo:
   // 
@@ -1289,10 +1290,10 @@ void dampedMultiCombAllpass()
   rsPlotVectors(h, hp);
 
 
-  rosic::writeToMonoWaveFile("TriCombAllpass_CombSum.wav",          &hu[0],  N, sampleRate);
-  rosic::writeToMonoWaveFile("TriCombAllpass_Corrected.wav",        &h[0],   N, sampleRate);
-  rosic::writeToMonoWaveFile("TriCombAllpass_CombSum_Phased.wav",   &hup[0], N, sampleRate); 
-  rosic::writeToMonoWaveFile("TriCombAllpass_Corrected_Phased.wav", &hp[0],  N, sampleRate); 
+  rosic::writeToMonoWaveFile("TriCombAllpass_CombSum.wav",          &hu[0],  N, (int)sampleRate);
+  rosic::writeToMonoWaveFile("TriCombAllpass_Corrected.wav",        &h[0],   N, (int)sampleRate);
+  rosic::writeToMonoWaveFile("TriCombAllpass_CombSum_Phased.wav",   &hup[0], N, (int)sampleRate); 
+  rosic::writeToMonoWaveFile("TriCombAllpass_Corrected_Phased.wav", &hp[0],  N, (int)sampleRate); 
 
 
   // Observations:

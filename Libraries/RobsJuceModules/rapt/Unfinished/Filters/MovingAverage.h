@@ -60,6 +60,7 @@ protected:
   /** \name Data */
 
   rsDelay<TSig> delayLine;
+  // Could we use fractional delayline here? Try it! 
 
   TPar a1, bN, g;  // coefficients and output gain
   TSig y1;         // y[n-1]
