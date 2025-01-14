@@ -45,6 +45,18 @@ public:
     return rsPow(z, rsComplex<TPar>(-M));  // H(z) = z^-M
   }
 
+  void getTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const
+  {
+    tf->num.setNumTerms(1);
+    tf->num.setTerm(0, TPar(1), dl.getDelayInSamples());
+
+    tf->densetNumTerms(1);
+    tf->num.setTerm(0, TPar(1), 0);
+  }
+  // Needs tests.
+
+
+
 
   TSig getSample(TSig x) { return dl.getSample(x); }
 
@@ -1532,11 +1544,9 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getCombTransferFunctionAt(
   using Complex = rsComplex<TPar>;
   Complex one(TPar(1));                          // 1 + 0i
 
-
-  Complex zM = rsPow(z, Complex(-M));            // z^-M
-  //zM = mainDelay.getTransferFunctionAt(z);     //  ...maybe use this later..but also call it A
+  //Complex zM = rsPow(z, Complex(-M));            // z^-M
+  Complex zM = mainDelay.getTransferFunctionAt(z);   // A(z)
   // or maybe use A = getDelayTransferFunctionAt(z)
-
 
   Complex z1 = one/z;                            // z^-1
   Complex F  = getDamperTransferFunctionAt(z);   // F(z)
