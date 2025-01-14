@@ -1401,8 +1401,9 @@ protected:
   static const int maxDmpOrd = 8;      // Maximum damping order
 
   // Embedded DSP objects:
-  rsDelay<TSig> mainDelay;    // Main delayline for the comb filter
-  rsDelay<TSig> corrDelay;    // Delayline for the correction filter
+  rsDelay<TSig> mainDelay;           // Main delayline for the comb filter    old
+  //rsDelayRounding<TSig> mainDelay;     // Main delayline for the comb filter    new
+  rsDelay<TSig>         corrDelay;     // Delayline for the correction filter
 
   // State:
   TSig combOut = TSig(0);              // State for the unit delay feedback loop
@@ -2358,7 +2359,7 @@ is applied to that to make the whole filter allpass..
 ...TBC... see AllpassStuff.txt in the private repo for more details  */
 
 template<class TSig, class TPar>
-class rsDampedAllpassBiComb_1p
+class rsDampedAllpassBiComb_1p  // rename to rsDampedBiCombAllpass
 {
 
 
