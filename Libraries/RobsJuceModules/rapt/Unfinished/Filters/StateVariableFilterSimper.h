@@ -105,7 +105,7 @@ template<class TSig, class TPar>
 void rsStateVariableFilterSimper<TSig, TPar>::setup(Mode mode, TPar omega, TPar Q, TPar A)
 {
   // Prewarping cutoff (I guess):
-  TPar tw2 = tan(0.5*omega);
+  TPar tw2 = tan(TPar(0.5)*omega);
 
   // Filter- and mixing coefficient calculations according to desired mode:
   switch(mode)

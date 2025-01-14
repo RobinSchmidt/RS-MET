@@ -598,7 +598,7 @@ std::vector<double> getFlatZap(int numStages, double lowFreq, double highFreq, d
   wz.setQShape(qShape);
 
   // Render sample:
-  int N = ceil(length * sampleRate);  // Number of samples to render
+  int N = (int) ceil(length * sampleRate);  // Number of samples to render
   using Vec = std::vector<double>;
   Vec x(N);
   x[0] = 1;
@@ -629,7 +629,7 @@ std::vector<double> getBrownZap(int numStages, double lowFreq, double highFreq, 
   pp.applyOnePoleHighpass(x, 1.0*lowFreq);
   pp.applyOnePoleHighpass(x, 1.0*lowFreq);
   pp.shortenTail(x, -60.0, 0.02, 0.25/lowFreq); 
-  int N = x.size();
+  int N = (int) x.size();
   RAPT::rsArrayTools::normalize(&x[0], N);  // implement and use sp.normalize(x);
   // Maybe a 3rd order Butterworth highpass would be better than applying a 1st order highpass 3
   // times? Try it! Maybe also try a somwhat lower cutoff for the highpass like 0.75*lowFreq.
@@ -777,7 +777,7 @@ void rsSamplePostProcessor::shortenTail(std::vector<double>& x, double threshold
   x.resize(N);
 
   // Apply a smooth fade out:
-  int fadeSamples = sampleRate * fadeOutTime;
+  int fadeSamples = rsRoundToInt(sampleRate * fadeOutTime);
   fadeSamples = rsMin(fadeSamples, N/4);
   rsFadeOut(&x[0], N-fadeSamples-1, N-1);
   //rsPlotVectors(x, env);

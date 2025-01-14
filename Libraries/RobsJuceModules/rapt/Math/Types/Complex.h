@@ -190,6 +190,12 @@ inline rsComplex<T> operator/(const T &r, const rsComplex<T> &z)
 // Elementary math functions for complex numbers:
 // \todo: pass arguments by const reference, maybe move into extra file
 
+template <class T>
+T rsReal(const rsComplex<T>& z)
+{
+  return z.re;
+}
+
 template<class T>
 rsComplex<T> rsConj(rsComplex<T> z)
 {
@@ -319,6 +325,9 @@ rsComplex<T> rsEpsilon(rsComplex<T> x)
 {
   return rsComplex<T>(std::numeric_limits<T>::epsilon(), T(0));
 }
+
+
+
 
 
 

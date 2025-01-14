@@ -24,7 +24,7 @@ bool onePoleFilterUnitTest()
   flt.setSampleRate(44100);
   flt.setCutoff(1000);
   flt.setMode(Filter::modes::HIGHSHELV_BLT);
-  flt.setShelvingGain(0.6);
+  flt.setShelvingGain(Real(0.6));
 
   Vec h = impulseResponse(flt, N, Real(1));
 
@@ -2692,7 +2692,7 @@ bool dampedMultiCombAllpassUnitTest()
   // Create and set up the prototype allpass filters. We are interested mostyl in the comb transfer
   // functions here:
   CombAllpass ap1, ap2, ap3;
-  ap1.setMaxDelayInSamples(delay1);
+  ap1.setMaxDelayInSamples(rsMax(delay1,delay2,delay3));
   rsSetupDecayTimes(ap1, delay1, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
   ap2.setMaxDelayInSamples(delay2);
   rsSetupDecayTimes(ap2, delay2, decaySamples, lowOmega, lowScale, highOmega, highScale, false);

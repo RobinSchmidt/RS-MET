@@ -320,4 +320,23 @@ template<class T>
 inline bool rsIsOdd(T x) { return x % 2 != 0; }
 
 
+
+
+template <class T>
+T rsReal(const std::complex<T>& z)
+{
+  return std::real(z);
+}
+
+template <class T>
+T rsReal(const T& z)  // This is for when z is already a real number type such as float
+{
+  return z;
+}
+
+
+
+
+
+
 #endif

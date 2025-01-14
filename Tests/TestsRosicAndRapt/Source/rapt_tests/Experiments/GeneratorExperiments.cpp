@@ -3604,7 +3604,8 @@ void flatZapperOpposingLengthTweaks()
 void showFlatZapPlots()
 {
   // We generate an impule response of the rsFlatZapper and show various plots for inspection.
-  double sampleRate = 48000;
+  //double sampleRate = 48000;
+  int sampleRate = 48000;
 
   // Here it can be selected which types of plot should be generated:
   bool plotSignal         = false;

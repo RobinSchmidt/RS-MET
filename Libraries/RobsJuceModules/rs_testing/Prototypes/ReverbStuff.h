@@ -12,6 +12,8 @@
 
 //=================================================================================================
 
+// Maybe remove TPar and replace it by double...but maybe someone wants to use float?
+
 
 /** This class is a lightweight wrapper around the rsDelay class that gives it an API that is 
 compatible with our more advanced interpolating delayline implementations such as rsDelayLinear
@@ -1242,9 +1244,41 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
+
+
+
   /** Sets the maximum desired roundtrip delay around the comb. This total roundtrip delay includes
   the z^-1 unit delay, so the delayline length is actually shorter by one. */
-  void setMaxDelayInSamples(int newMaxDelay);
+  void setMaxIntDelayInSamples(int newMaxDelay);
+
+
+
+  void setMaxDelayInSamples(TPar newMaxDelay)
+  {
+
+    //int d = (int)rsCeil(rsReal(newMaxDelay));
+
+    setMaxIntDelayInSamples((int)rsCeil(rsReal(newMaxDelay)));
+
+    // Using rsReal() here is needed for enabling instantiating this class also for TPar being a 
+    // complex type. This enables complex valued feedback etc. The delay should still be a real 
+    // type though, so we just extract the real part
+  }
+
+
+  //void setMaxDelayInSamples(double newMaxDelay)
+  //{
+  //  setMaxIntDelayInSamples((int)rsCeil(newMaxDelay));
+  //}
+  // Maybe we need a 3rd template parameter for the delay
+
+
+
+  //void setMaxDelayInSamples(TPar newMaxDelay)
+  //{
+  //  setMaxIntDelayInSamples((int)rsCeil(newMaxDelay));
+  //}
+
 
   /** Sets up the filter with the given total roundtrip delay, the scalar feedback gain and the
   coefficients of the damping filter to be used. The filter is supposed to be given in direct form
@@ -1443,7 +1477,7 @@ protected:
 };
 
 template<class TSig, class TPar>
-void rsDampedCombAllpass<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
+void rsDampedCombAllpass<TSig, TPar>::setMaxIntDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
   mainDelay .setMaxDelayInSamples(maxM);
