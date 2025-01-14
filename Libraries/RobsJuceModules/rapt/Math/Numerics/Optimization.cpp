@@ -66,7 +66,7 @@ T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
   // This function seems to work but has no proper unit tests yet.
 
   static const int maxIts = 1000;             // Maximum number of iterations.
-  T k   = (sqrt(5.) - 1.) * 0.5;              // The golden ratio - maybe rename k to phi.
+  T k   = T((sqrt(5.) - 1.) * 0.5);           // The golden ratio - maybe rename k to phi.
   T xL  = b - k * (b - a);                    // Left inner evaluation point (I think - verify!)
   T xR  = a + k * (b - a);                    // Right inner evaluattion point (I think - verify!)
   T fL  = f(xL);                              // Function value at xL

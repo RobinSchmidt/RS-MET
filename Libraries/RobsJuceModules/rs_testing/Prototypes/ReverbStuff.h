@@ -2922,7 +2922,7 @@ public:
     Complex d   = TPar(1) / z;                      // d = z^-1
     Complex num = rsPow(d, Complex(M));
     Complex den = TPar(1);
-    for(size_t i = 0; i < b.size(); i++)
+    for(int i = 0; i < (int)b.size(); i++)
     {
       num += k * b[i] * rsPow(d, Complex(i  ));
       den += k * b[i] * rsPow(d, Complex(M-i));

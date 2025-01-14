@@ -165,7 +165,7 @@ bool isInverseFunction(F1 forwardFunc, F2 maybeInverseFunc, T minValue, T maxVal
 template<class T>
 std::vector<T> rsSpectralMagnitudes(const std::vector<T>& x)
 {
-  int N = x.size();
+  int N = (int)x.size();
   rsAssert(rsIsPowerOfTwo(N), "This function currently only works for powers of 2." );
 
   // Create and set up an FFT object:
