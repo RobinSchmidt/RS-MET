@@ -13,43 +13,45 @@
 //=================================================================================================
 
 
-/** This class extends the basic rsDelay class by introducing a second template parameter for the
-actualy delay in samples which is supposed to be a real number type. We do not want to burden the
-baseclass with a second template parameter but in some situations, we do want to have some 
-functionality of basic delay lines that do need such a second template parameter. Specifically, it
-is needed to provide a getTransferFunctionAt() member function. The implementation of it is rather 
-trivial for a simple integer delayline such as this, but we want to have it as member function 
-anyway in  order to have a consistent API with more complex delaylines that use various 
-interpolation methods (such as linear, allpass, etc.). The idea is that one might start to write a
-DSP algorithm using the class rsDelayRounding and later replace it by some API-compatible other 
-delay class such as rsDelayLinear or rsDelayAllpass without having to change any other code. */
+/** This class is a lightweight wrapper around the rsDelay class that gives it an API that is 
+compatible with our more advanced interpolating delayline implementations such as rsDelayLinear
+and rsDelayAllpass. The idea is that one might start to write a DSP algorithm using the class 
+rsDelayRounding and later replace it by some API-compatible other (better) delay class. */
 
 template<class TSig, class TPar>
-class rsDelayRounding : public rsDelay<TSig>
+class rsDelayRounding
 {
 
 public:
 
 
-  using Base = rsDelay<TSig>;
-  using Base::Base;
-
 
   void setMaxDelayInSamples(TPar newMaxDelay)
-  { Base::setMaxDelayInSamples(rsRoundToInt(newMaxDelay)); }
+  { dl.setMaxDelayInSamples(rsRoundToInt(newMaxDelay)); }
 
 
   void setDelayInSamples(TPar newDelay)
-  { Base::setDelayInSamples(rsRoundToInt(newDelay)); }
+  { dl.setDelayInSamples(rsRoundToInt(newDelay)); }
 
 
   /** Returns the value of the transfer function H(z) at the given value of z. If M is the delay in
   samples, then H(z) = z^-M. */
   rsComplex<TPar> getTransferFunctionAt(rsComplex<TPar> z) const
   {
-    int M = Base::getDelayInSamples();     // M is our delay
+    int M = dl.getDelayInSamples();        // M is our delay
     return rsPow(z, rsComplex<TPar>(-M));  // H(z) = z^-M
   }
+
+
+  TSig getSample(TSig x) { return dl.getSample(x); }
+
+  void reset() { dl.reset(); }
+
+
+
+protected:
+
+  rsDelay<TSig> dl;    // Underlying integer delayline
 
 
 };
@@ -106,7 +108,7 @@ public:
     return b0*x0 + b1*x1;
   }
 
-  void reset() {}
+  void reset() { dl.reset(); }
 
 
 protected:
@@ -159,7 +161,11 @@ public:
     // oscillation occurs when c is close to 1. This happens the the fractional part f is zero.
   }
 
-  void reset() { y1 = 0; }
+  void reset() 
+  { 
+    dl.reset();
+    y1 = 0; 
+  }
 
 
 protected:
