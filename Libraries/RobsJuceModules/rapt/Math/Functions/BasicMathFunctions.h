@@ -164,6 +164,7 @@ inline void rsRangeConversionCoefficients(T inMin, T inMax, T outMin, T outMax,
 /** Rounds the given x to the closest integer. */
 template <class T>
 inline int rsRoundToInt(T x) { return (int) ::round(x); }
+// Maybe use std::round for consistency with other similar functions
 
 /** Returns +1 for x > 0, -1 for x < 0 and 0 for x == 0. */
 template <class T>

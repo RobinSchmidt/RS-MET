@@ -1401,25 +1401,33 @@ protected:
   static const int maxDmpOrd = 8;      // Maximum damping order
 
   // Embedded DSP objects:
+
   rsDelay<TSig> mainDelay;           // Main delayline for the comb filter    old
-  //rsDelayRounding<TSig> mainDelay;     // Main delayline for the comb filter    new
-  rsDelay<TSig>         corrDelay;     // Delayline for the correction filter
+
+  //rsDelayRounding<TSig, TPar> mainDelay;  // Main delayline for the comb filter    new
+  // With this new code, our dampedCombAllpassComplex() experiment doesn't compile anymore. 
+  // Something in it causes rsRoundToInt to get called with a complex argument. Maybe we are trying
+  // to set up a complex delay somewhere by having a delay parameter declared as TSig rather than 
+  // TPar in some setup function?
+
+
+  rsDelay<TSig>               corrDelay;  // Delayline for the correction filter
 
   // State:
-  TSig combOut = TSig(0);              // State for the unit delay feedback loop
-  TSig xd[maxDmpOrd], yd[maxDmpOrd];   // State for the damping filter
-  TSig xi[maxDmpOrd], yi[maxDmpOrd];   // State for the inverse damping filter
-  TSig yc[maxDmpOrd];                  // State for the poles of the correction filter
+  TSig combOut = TSig(0);                 // State for the unit delay feedback loop
+  TSig xd[maxDmpOrd], yd[maxDmpOrd];      // State for the damping filter
+  TSig xi[maxDmpOrd], yi[maxDmpOrd];      // State for the inverse damping filter
+  TSig yc[maxDmpOrd];                     // State for the poles of the correction filter
 
   // Coefficients:
-  TPar k = 0;                          // Feedback gain
-  TPar b[maxDmpOrd+1];                 // Damping filter feedforward coeffs
-  TPar a[maxDmpOrd+1];                 // Damping filter feedback coeffs
+  TPar k = 0;                             // Feedback gain
+  TPar b[maxDmpOrd+1];                    // Damping filter feedforward coeffs
+  TPar a[maxDmpOrd+1];                    // Damping filter feedback coeffs
 
   // Settings:
-  int  M        = 0;                   // Delayline length
-  int  dmpOrd   = 0;                   // Feedback damping filter order
-  bool preDelay = false;               // Switch between with/without predelay mode of operation
+  int  M        = 0;                      // Delayline length
+  int  dmpOrd   = 0;                      // Feedback damping filter order
+  bool preDelay = false;                  // Switch between with/without predelay mode of operation
 
   // Notes:
   //
