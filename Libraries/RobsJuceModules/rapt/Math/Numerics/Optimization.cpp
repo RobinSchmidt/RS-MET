@@ -89,7 +89,7 @@ T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
       fR = f(xR); }
     its++;
   }
-  return (a + b) * 0.5;
+  return (a + b) * T(0.5);
 
   // The implementation is based on the code posted here:
   // https://stackoverflow.com/questions/21144309/method-of-the-golden-ratio

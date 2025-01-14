@@ -1868,7 +1868,7 @@ void rsSetupDecayTimes(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay, TPar de
     // Bake the interpolation filter into the b,a, arrays:
     rsArrayTools::convolve(a, 3, aI, 2, a);
     rsArrayTools::convolve(b, 3, bI, 2, b);
-    flt.setup(delay, kM, 3, b, a, predelay);
+    flt.setup(delayInt, kM, 3, b, a, predelay);
   }
 
 
