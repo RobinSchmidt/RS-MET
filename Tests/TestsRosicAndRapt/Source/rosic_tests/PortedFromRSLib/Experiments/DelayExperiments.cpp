@@ -1433,6 +1433,16 @@ void dampedCombAllpassComplex()
   // is also complex. Using a complex feedback gain further increases the space of the things that 
   // we can do with this filter. 
 
+
+  // The code has been commented out because it deosn't compile anymore since we switched to using
+  // rsDelayRounding instead of rsDelay. The problem is that instantiating rsDampedCombAllpass with
+  // TPar = complex to get complex feedback interferes with using TPar for the non-integer delay 
+  // parameter (and probably also with getTransferFunctionAt() which we did not yet try to use 
+  // here). Maybe it can be solved by having a 3rd template parameter TFdbk for the feedback? Using
+  // k = TSig as we did before may solve the issue with the delay but probably not the one with
+  // getTransferFunctionAt.
+
+  /*
   // Define types to be used:
   using Real    = double;
   //using Complex = rsComplex<Real>;
@@ -1478,6 +1488,7 @@ void dampedCombAllpassComplex()
   SpecPlot plt;
   plt.setFftSize(N);
   plt.plotSpectra(N, &hr[0], &hi[0]);
+  */
 
 
   // Observations:

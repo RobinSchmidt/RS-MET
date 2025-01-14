@@ -1422,9 +1422,9 @@ protected:
 
   // Embedded DSP objects:
 
-  rsDelay<TSig> mainDelay;           // Main delayline for the comb filter    old
+  //rsDelay<TSig> mainDelay;           // Main delayline for the comb filter    old
 
-  //rsDelayRounding<TSig, TPar> mainDelay;  // Main delayline for the comb filter    new
+  rsDelayRounding<TSig, TPar> mainDelay;  // Main delayline for the comb filter    new
   // With this new code, our dampedCombAllpassComplex() experiment doesn't compile anymore. 
   // Something in it causes rsRoundToInt to get called with a complex argument. Maybe we are trying
   // to set up a complex delay somewhere by having a delay parameter declared as TSig rather than 
@@ -1460,7 +1460,10 @@ protected:
   //   then allowing complex feedback factors. There is some experiment that does this. It's 
   //   interesting. ...but maybe make k of type TPar anyway. We can still do this experiment by
   //   just using TPar = complex as well. I think, it makes more sense this way.
-  //   ...has been changed back to TPar...
+  //   ...has been changed back to TPar...Hmm...hmm... I'm not sure about it. Requiring the user
+  //   to instantiate it with Par = complex to get complex feedback interferes with using TPar for
+  //   the non-integer delay parameter ...and probably also with getTransferFunctionAt. Maybe have
+  //   a 3rd template parameter TFdbk for the feedback?
   //
   // - Maybe be more flexible with the order of the damping filter by letting numerator and 
   //   denominator have different orders. Maybe replace dmpOrd by two variables bOrd, aOrd or 
