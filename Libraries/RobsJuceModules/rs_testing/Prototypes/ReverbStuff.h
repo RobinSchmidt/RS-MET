@@ -1255,29 +1255,15 @@ public:
 
   void setMaxDelayInSamples(TPar newMaxDelay)
   {
-
-    //int d = (int)rsCeil(rsReal(newMaxDelay));
-
     setMaxIntDelayInSamples((int)rsCeil(rsReal(newMaxDelay)));
 
     // Using rsReal() here is needed for enabling instantiating this class also for TPar being a 
     // complex type. This enables complex valued feedback etc. The delay should still be a real 
-    // type though, so we just extract the real part
+    // type though, so we just extract the real part.
   }
 
 
-  //void setMaxDelayInSamples(double newMaxDelay)
-  //{
-  //  setMaxIntDelayInSamples((int)rsCeil(newMaxDelay));
-  //}
-  // Maybe we need a 3rd template parameter for the delay
 
-
-
-  //void setMaxDelayInSamples(TPar newMaxDelay)
-  //{
-  //  setMaxIntDelayInSamples((int)rsCeil(newMaxDelay));
-  //}
 
 
   /** Sets up the filter with the given total roundtrip delay, the scalar feedback gain and the
@@ -1443,6 +1429,11 @@ protected:
   // Something in it causes rsRoundToInt to get called with a complex argument. Maybe we are trying
   // to set up a complex delay somewhere by having a delay parameter declared as TSig rather than 
   // TPar in some setup function?
+  //
+  // Hmm - I think, we may need to introduce a 3rd template parameter. We may need:
+  // TSig, TCoef, TDly  ...do we really need this? It makes the API more unwieldy. But if that's 
+  // what it takes then we have to need to do it....
+
 
 
   rsDelay<TSig>               corrDelay;  // Delayline for the correction filter

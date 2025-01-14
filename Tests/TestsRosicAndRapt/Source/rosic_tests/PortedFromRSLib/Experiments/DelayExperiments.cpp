@@ -1438,7 +1438,6 @@ void dampedCombAllpassComplex()
   using Complex = std::complex<Real>;
   using VecR    = std::vector<Real>;
   using VecC    = std::vector<Complex>;
-  //using Allpass = rsDampedCombAllpass<Complex, Real>;
   using Allpass = rsDampedCombAllpass<Complex, Complex>;
 
   // User parameters:
