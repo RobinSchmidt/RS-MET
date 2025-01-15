@@ -1677,13 +1677,14 @@ void rsDampedCombAllpass<TSig, TPar>::getCombTransferFunction(
   tf->addConstant(TPar(1), TPar(0));    // tf = 1 + F * k * z^-1 * z^-M
   tf->invert();                         // tf = 1 / (1 +  F * k * z^-1 * z^-M)
 
+
   //// New:
-  //rsSparseDigitalTransferFunction<TPar> A;  // Should be a member to avoid allocations here!
+  //rsSparseDigitalTransferFunction<TPar> A; // Should be a member to avoid allocations here!
   //mainDelay.getTransferFunction(&A);    // A(z) is transfer function of the delay
   //rsMonomial<TPar> k_z1(k, 1);          // k * z^-1
   //getDamperTransferFunction(tf);        // tf = F
   //tf->multiplyBy(k_z1);                 // tf = F * k * z^-1
-  //tf->multiplyBy(A);                    // tf = F * k * z^-1 * A(z)
+  //tf->multiplyBy(A, TPar(0));           // tf = F * k * z^-1 * A(z)
   //tf->addConstant(TPar(1), TPar(0));    // tf = 1 + F * k * z^-1 * A(z)
   //tf->invert();                         // tf = 1 / (1 +  F * k * z^-1 * A(z))
 

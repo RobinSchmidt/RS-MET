@@ -1885,7 +1885,8 @@ public:
 
   void multiplyBy(rsMonomial<T> factor) { num.multiplyBy(factor); }
 
-  void multiplyBy(rsSparseRationalFunction<T> factor, T tol) 
+
+  void multiplyBy(const rsSparseRationalFunction<T>& factor, T tol) 
   { 
     num.multiplyBy(factor.num, tol);
     den.multiplyBy(factor.den, tol);
@@ -1893,7 +1894,11 @@ public:
     // I think, num and den may now have a common factor, so we potentially need to divide that
     // out:
     //canonicalize();
+
+    // Consider 14/15 * 3/4 = 42/60 = 7/10. Although both factors are in lowest terms, their 
+    // product is not. The same thing could happen with rational functions.
   }
+  
 
 
 
