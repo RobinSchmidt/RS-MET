@@ -1347,7 +1347,8 @@ public:
 
   void getDamperTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const;
 
-
+  // ToDo:
+  //void getDelayTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const;
 
 
 
@@ -1629,6 +1630,9 @@ rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
 
   // New:
   mainDelay.getTransferFunction(&zM);            // Delay filter A(z)
+
+  // ToDo: use
+  // TF A = getDelayTransferFunction();
 
   TF F = getDamperTransferFunction();            // Feedback filter F(z)
 
