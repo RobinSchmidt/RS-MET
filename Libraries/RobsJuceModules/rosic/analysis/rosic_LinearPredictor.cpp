@@ -75,3 +75,19 @@ void LinearPredictor::reset()
     updateVector[i] = 0.0;
   }
 }
+
+
+/*=================================================================================================
+
+Ideas:
+
+- Maybe instead of using one single high order predictor filter, use a series of low order 
+  predictors one after another. Each predictor operates on the prediction error signal of the 
+  previous. Maybe using just 2nd order predictors is enough - 1st order is not enough though, 
+  because it can't model complex pole pairs. Maybe a series of low order predictors converges 
+  faster? It would certainly be more interpretable - we coul easily translate each 2nd order 
+  predictor into a resonance frequency and a Q value. We could then even change these values in the
+  resynthesis!
+
+
+*/
