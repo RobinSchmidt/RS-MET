@@ -1629,7 +1629,9 @@ rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
   //zM.num.appendTerm( TPar(1), M);        // Delay filter z^-M 
 
   // New:
-  mainDelay.getTransferFunction(&zM);            // Delay filter A(z)
+  //mainDelay.getTransferFunction(&zM);            // Delay filter A(z)
+  getDelayTransferFunction(&zM);
+
 
   // ToDo: use
   // TF A = getDelayTransferFunction();
@@ -1682,22 +1684,29 @@ void rsDampedCombAllpass<TSig, TPar>::getCombTransferFunction(
   //tf->invert();                         // tf = 1 / (1 +  F * k * z^-1 * z^-M)
 
 
+  using Mon = rsMonomial<TPar>;
+
   // New:
   rsSparseDigitalTransferFunction<TPar> A; // Should be a member to avoid allocations here!
-  //mainDelay.getTransferFunction(&A);    // A(z) is transfer function of the delay
-  getDelayTransferFunction(&A);         // A(z) is transfer function of the delay
-  rsMonomial<TPar> k_z1(k, 1);          // k * z^-1
-  getDamperTransferFunction(tf);        // tf = F
-  tf->multiplyBy(k_z1);                 // tf = F * k * z^-1
-  tf->multiplyBy(A, TPar(0));           // tf = F * k * z^-1 * A(z)
-  tf->addConstant(TPar(1), TPar(0));    // tf = 1 + F * k * z^-1 * A(z)
-  tf->invert();                         // tf = 1 / (1 +  F * k * z^-1 * A(z))
+  getDelayTransferFunction(&A);            // A(z) is transfer function of the delay
+  //rsMonomial<TPar> k_z1(k, 1);             // k * z^-1
+  getDamperTransferFunction(tf);           // tf = F
+  tf->multiplyBy(Mon(k, 1));               // tf = F * k * z^-1
+  tf->multiplyBy(A, TPar(0));              // tf = F * k * z^-1 * A(z)
+  tf->addConstant(TPar(1), TPar(0));       // tf = 1 + F * k * z^-1 * A(z)
+  tf->invert();                            // tf = 1 / (1 +  F * k * z^-1 * A(z))
 
 
   if(preDelay)
   {
-    rsMonomial<TPar> zM(TPar(1), M+1);  // z^-M
-    tf->multiplyBy(zM);                 // tf = z^-M / (1 +  F * k * z^-1 * z^-M) 
+    //rsMonomial<TPar> zM(TPar(1), M+1);  // z^-M   ...why the +1?
+    //tf->multiplyBy(zM);                 // tf = z^-M / (1 +  F * k * z^-1 * z^-M) 
+
+
+    tf->multiplyBy(A, TPar(0));           // tf = A(z) / (1 +  F * k * z^-1 * z^-M)
+
+
+    // This branch doesn't seem to have test coverage yet. Why? Figure out and fix!
   }
 }
 // Needs unit tests
