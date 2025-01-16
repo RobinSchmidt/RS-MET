@@ -1347,8 +1347,8 @@ public:
 
   void getDamperTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const;
 
-  // ToDo:
-  //void getDelayTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const;
+
+  void getDelayTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const;
 
 
 
@@ -1674,23 +1674,24 @@ template<class TSig, class TPar>
 void rsDampedCombAllpass<TSig, TPar>::getCombTransferFunction(
   rsSparseDigitalTransferFunction<TPar>* tf) const
 {
-  // Old:
-  rsMonomial<TPar> k_zM1(k, M+1);       // k * z^-1 * z^-M
-  getDamperTransferFunction(tf);        // tf = F
-  tf->multiplyBy(k_zM1);                // tf = F * k * z^-1 * z^-M
-  tf->addConstant(TPar(1), TPar(0));    // tf = 1 + F * k * z^-1 * z^-M
-  tf->invert();                         // tf = 1 / (1 +  F * k * z^-1 * z^-M)
-
-
-  //// New:
-  //rsSparseDigitalTransferFunction<TPar> A; // Should be a member to avoid allocations here!
-  //mainDelay.getTransferFunction(&A);    // A(z) is transfer function of the delay
-  //rsMonomial<TPar> k_z1(k, 1);          // k * z^-1
+  //// Old:
+  //rsMonomial<TPar> k_zM1(k, M+1);       // k * z^-1 * z^-M
   //getDamperTransferFunction(tf);        // tf = F
-  //tf->multiplyBy(k_z1);                 // tf = F * k * z^-1
-  //tf->multiplyBy(A, TPar(0));           // tf = F * k * z^-1 * A(z)
-  //tf->addConstant(TPar(1), TPar(0));    // tf = 1 + F * k * z^-1 * A(z)
-  //tf->invert();                         // tf = 1 / (1 +  F * k * z^-1 * A(z))
+  //tf->multiplyBy(k_zM1);                // tf = F * k * z^-1 * z^-M
+  //tf->addConstant(TPar(1), TPar(0));    // tf = 1 + F * k * z^-1 * z^-M
+  //tf->invert();                         // tf = 1 / (1 +  F * k * z^-1 * z^-M)
+
+
+  // New:
+  rsSparseDigitalTransferFunction<TPar> A; // Should be a member to avoid allocations here!
+  //mainDelay.getTransferFunction(&A);    // A(z) is transfer function of the delay
+  getDelayTransferFunction(&A);         // A(z) is transfer function of the delay
+  rsMonomial<TPar> k_z1(k, 1);          // k * z^-1
+  getDamperTransferFunction(tf);        // tf = F
+  tf->multiplyBy(k_z1);                 // tf = F * k * z^-1
+  tf->multiplyBy(A, TPar(0));           // tf = F * k * z^-1 * A(z)
+  tf->addConstant(TPar(1), TPar(0));    // tf = 1 + F * k * z^-1 * A(z)
+  tf->invert();                         // tf = 1 / (1 +  F * k * z^-1 * A(z))
 
 
   if(preDelay)
@@ -1718,8 +1719,12 @@ void rsDampedCombAllpass<TSig, TPar>::getDamperTransferFunction(
   tf->setupFromDenseCoeffs(b, dmpOrd+1, a, dmpOrd+1, TPar(0));
 }
 
-
-
+template<class TSig, class TPar>
+void rsDampedCombAllpass<TSig, TPar>::getDelayTransferFunction(
+  rsSparseDigitalTransferFunction<TPar>* tf) const
+{
+  mainDelay.getTransferFunction(tf);
+}
 
 template<class TSig, class TPar>
 void rsDampedCombAllpass<TSig, TPar>::reset()

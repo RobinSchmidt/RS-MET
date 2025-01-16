@@ -1894,6 +1894,12 @@ public:
     // I think, num and den may now have a common factor, so we potentially need to divide that
     // out:
     //canonicalize();
+    // But maybe we should not automatically reduce the result by default because doing so may 
+    // require memory allocations (because the GCD algo needs temporaries) and we really need this
+    // function to be realtime safe (it's used in rsDampedCombAllpass::getCombTransferFunction(), 
+    // for example - and that is used in rsDampedMultiCombAllpass::updateFilters() which could 
+    // potentially be called on an audio thread). Maybe we should have a boolean parameter 
+    // "reduce"? that deafults to true but that we set to false in a realtime context?)
 
     // Consider 14/15 * 3/4 = 42/60 = 7/10. Although both factors are in lowest terms, their 
     // product is not. The same thing could happen with rational functions.
