@@ -1298,6 +1298,7 @@ public:
   loop. */
   void setup(int delay, TPar feedback, 
     int dampOrder, const TPar* dampCoeffsB, const TPar* dampCoeffsA, bool predelayMode);
+  // ToDo: should take a TPar for the delay
 
   /** Initializes all settings to default values. */
   void initSettings();
@@ -1472,7 +1473,7 @@ protected:
   bool preDelay = false;                  // Switch between with/without predelay mode of operation
 
   // Temporary object for delay transfer function A(z):
-  rsSparseDigitalTransferFunction<TPar> A;
+  mutable rsSparseDigitalTransferFunction<TPar> A;
     // This member is needed to support a non-allocating implementation of 
     // getDelayTransferFunction() ...maybe call it D(z) for delay
 
@@ -1697,31 +1698,34 @@ void rsDampedCombAllpass<TSig, TPar>::getCombTransferFunction(
   //tf->addConstant(TPar(1), TPar(0));    // tf = 1 + F * k * z^-1 * z^-M
   //tf->invert();                         // tf = 1 / (1 +  F * k * z^-1 * z^-M)
 
-
-  using Mon = rsMonomial<TPar>;
-
   // New:
-  rsSparseDigitalTransferFunction<TPar> A; // Should be a member to avoid allocations here!
-  getDelayTransferFunction(&A);            // A(z) is transfer function of the delay
-  //rsMonomial<TPar> k_z1(k, 1);             // k * z^-1
-  getDamperTransferFunction(tf);           // tf = F
+  using Mon = rsMonomial<TPar>;
+  getDelayTransferFunction(&A);            // A = A(z) is transfer function of the delay
+  getDamperTransferFunction(tf);           // tf = F, F(z) is transfer function in feedback path
   tf->multiplyBy(Mon(k, 1));               // tf = F * k * z^-1
-  tf->multiplyBy(A, TPar(0));              // tf = F * k * z^-1 * A(z)
-  tf->addConstant(TPar(1), TPar(0));       // tf = 1 + F * k * z^-1 * A(z)
-  tf->invert();                            // tf = 1 / (1 +  F * k * z^-1 * A(z))
-
+  tf->multiplyBy(A, TPar(0));              // tf = F * k * z^-1 * A
+  tf->addConstant(TPar(1), TPar(0));       // tf = 1 + F * k * z^-1 * A
+  tf->invert();                            // tf = 1 / (1 +  F * k * z^-1 * A)
 
   if(preDelay)
   {
+    // Old:
     //rsMonomial<TPar> zM(TPar(1), M+1);  // z^-M   ...why the +1?
     //tf->multiplyBy(zM);                 // tf = z^-M / (1 +  F * k * z^-1 * z^-M) 
 
 
+    // New:
     tf->multiplyBy(A, TPar(0));           // tf = A(z) / (1 +  F * k * z^-1 * z^-M)
 
 
     // This branch doesn't seem to have test coverage yet. Why? Figure out and fix!
   }
+
+  // ToDo:
+  //
+  // - Verify that all operations above are non-allocating (assuming that tf has enough capacity)
+  //   and document that fact. Our member A also needs to have enough capacity to represent the
+  //   delay filter including interpolation.
 }
 // Needs unit tests
 
