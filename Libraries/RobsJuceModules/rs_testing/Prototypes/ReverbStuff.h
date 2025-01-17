@@ -1245,6 +1245,13 @@ public:
   /** Standard constructor. Initializes the settings and resets the state to initial conditions. */
   rsDampedCombAllpass()
   {
+    // We may want to use delayline interpolation filters of order 1 (e.g. linear or 1st order 
+    // allpass) later which need two terms in numerator and denominator:
+    A.setNumTerms(2, 2);
+    // Maybe factor this out into a protected function setMaxInterpolatorOrder. The purporse of
+    // such a function would be mainly for documentation
+
+
     initSettings();
     reset();
   }
@@ -1463,6 +1470,13 @@ protected:
   int  M        = 0;                      // Delayline length
   int  dmpOrd   = 0;                      // Feedback damping filter order
   bool preDelay = false;                  // Switch between with/without predelay mode of operation
+
+  // Temporary object for delay transfer function A(z):
+  rsSparseDigitalTransferFunction<TPar> A;
+    // This member is needed to support a non-allocating implementation of 
+    // getDelayTransferFunction() ...maybe call it D(z) for delay
+
+
 
   // Notes:
   //

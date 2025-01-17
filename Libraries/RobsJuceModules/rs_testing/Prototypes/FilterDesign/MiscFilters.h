@@ -1851,6 +1851,12 @@ public:
     den.appendTerm(T(1), 0);
   }
 
+  void setNumTerms(int newNumNumeratorTerms, int newNumDenominatorTerms)
+  {
+    num.setNumTerms(newNumNumeratorTerms);
+    den.setNumTerms(newNumDenominatorTerms);
+  }
+
   void setupFromDenseCoeffs(
     const std::vector<T>& newNumeratorCoeffs,
     const std::vector<T>& newDenominatorCoeffs,
