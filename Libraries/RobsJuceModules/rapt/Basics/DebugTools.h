@@ -29,7 +29,7 @@ inline void rsError(const char *message = nullptr)
   // maybe open an error message box, etc.
 #endif
 }
-// -Maybe have an else branch that writes to some error log file and/or maybe throws and exception
+// -Maybe have an else branch that writes to some error log file and/or maybe throws an exception
 // -Maybe have a stronger version rsFatalError that also triggers some action in release builds
 // -Maybe call the error function that only affects debug builds rsDebugError
 
@@ -74,7 +74,7 @@ inline void rsStaticAssert(bool expression, const char* errorMessage = nullptr)
 #endif
 }
 
-/** Checks if the memory addresses of the two givne objects are distinct. Can be used to catch 
+/** Checks if the memory addresses of the two given objects are distinct. Can be used to catch 
 erroneous attempts to do some in-place processing where in-place operation is not supported. */
 template<class T1, class T2>
 bool rsAreAddressesDistinct(const T1& x, const T2& y)

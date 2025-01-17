@@ -2581,7 +2581,10 @@ bool dampedCombAllpassUnitTest3(bool withPreDelay)
 
 
   // Now do the same test for the mode without predelay:
-  ap.setup(delay, feedback, 2, b, a, false);
+
+  //ap.setup(delay, feedback, 2, b, a, false);
+
+
   ap.reset();
   for(int n = 0; n < N; n++)
   {

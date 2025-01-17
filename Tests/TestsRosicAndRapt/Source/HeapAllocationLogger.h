@@ -32,6 +32,7 @@ public:
   static void deleteInstance()
   {
     delete theObject;
+    theObject = nullptr;
   }
 
   void logAllocation() {  numAllocs++;  }
