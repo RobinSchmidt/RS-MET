@@ -251,7 +251,7 @@ inline void AudioPlugin::enableFitzdazzing()
 void AudioPlugin::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages)
 {
   juce::ScopedLock scopedLock(plugInLock);  // Acquire mutex lock
-  juce::ScopedNoDenormals scopedDenormals;  // Temoprarily disable denormals.
+  juce::ScopedNoDenormals scopedDenormals;  // Temoprarily disable denormals ("fitzdazzing").
 
   // Obsolete:
   // ToDo: int ftzDazState = getFtzDazState();

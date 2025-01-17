@@ -619,6 +619,10 @@ https://www.kvraudio.com/forum/viewtopic.php?t=617513
 https://github.com/jameshball/osci-render
 https://osci-render.com/
 
+
+https://github.com/bitwig/dawproject
+
+
 ----------------------------------------------------------------------------------------------------
 Resources
 
