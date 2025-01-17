@@ -1638,25 +1638,12 @@ rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
 
   TF one; one.num.appendTerm(TPar(1), 0);
   TF z1;  z1.num.appendTerm( TPar(1), 1);
-  TF zM;  
-  
-  // Old:
-  //zM.num.appendTerm( TPar(1), M);        // Delay filter z^-M 
-
-  // New:
-  //mainDelay.getTransferFunction(&zM);            // Delay filter A(z)
-  getDelayTransferFunction(&zM);
-
-
-  // ToDo: use
-  // TF A = getDelayTransferFunction();
-
   TF F = getDamperTransferFunction();            // Feedback filter F(z)
-
+  getDelayTransferFunction(&A);                  // Delay filter A(z)
   if(preDelay)
-    return zM  / (one + k * z1 * F * zM);        // U(z) = z^-M / (1 + k * z^-1 * F(z) * z^-M)
-  else
-    return one / (one + k * z1 * F * zM);        // U(z) =   1  / (1 + k * z^-1 * F(z) * z^-M)
+    return A   / (one + k * z1 * F * A);         // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
+  else 
+    return one / (one + k * z1 * F * A);         // U(z) =   1  / (1 + k * z^-1 * F(z) * A(z))
 }
 
 template<class TSig, class TPar>
@@ -1681,45 +1668,19 @@ rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
   return H;
 }
 
-
-
-// void getCorrectorTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const;
-
-
-
 template<class TSig, class TPar>
 void rsDampedCombAllpass<TSig, TPar>::getCombTransferFunction(
   rsSparseDigitalTransferFunction<TPar>* tf) const
 {
-  //// Old:
-  //rsMonomial<TPar> k_zM1(k, M+1);       // k * z^-1 * z^-M
-  //getDamperTransferFunction(tf);        // tf = F
-  //tf->multiplyBy(k_zM1);                // tf = F * k * z^-1 * z^-M
-  //tf->addConstant(TPar(1), TPar(0));    // tf = 1 + F * k * z^-1 * z^-M
-  //tf->invert();                         // tf = 1 / (1 +  F * k * z^-1 * z^-M)
-
-  // New:
   using Mon = rsMonomial<TPar>;
-  getDelayTransferFunction(&A);            // A = A(z) is transfer function of the delay
-  getDamperTransferFunction(tf);           // tf = F, F(z) is transfer function in feedback path
-  tf->multiplyBy(Mon(k, 1));               // tf = F * k * z^-1
-  tf->multiplyBy(A, TPar(0));              // tf = F * k * z^-1 * A
-  tf->addConstant(TPar(1), TPar(0));       // tf = 1 + F * k * z^-1 * A
-  tf->invert();                            // tf = 1 / (1 +  F * k * z^-1 * A)
-
+  getDelayTransferFunction(&A);        // A = A(z) is transfer function of the delay
+  getDamperTransferFunction(tf);       // tf = F, F(z) is transfer function in feedback path
+  tf->multiplyBy(Mon(k, 1));           // tf = F * k * z^-1
+  tf->multiplyBy(A, TPar(0));          // tf = F * k * z^-1 * A
+  tf->addConstant(TPar(1), TPar(0));   // tf = 1 + F * k * z^-1 * A
+  tf->invert();                        // tf = 1 / (1 + F * k * z^-1 * A)
   if(preDelay)
-  {
-    // Old:
-    //rsMonomial<TPar> zM(TPar(1), M+1);  // z^-M   ...why the +1?
-    //tf->multiplyBy(zM);                 // tf = z^-M / (1 +  F * k * z^-1 * z^-M) 
-
-
-    // New:
-    tf->multiplyBy(A, TPar(0));           // tf = A(z) / (1 +  F * k * z^-1 * z^-M)
-
-
-    // This branch doesn't seem to have test coverage yet. Why? Figure out and fix!
-  }
+    tf->multiplyBy(A, TPar(0));        // tf = A / (1 + F * k * z^-1 * A)
 
   // ToDo:
   //
@@ -1727,7 +1688,6 @@ void rsDampedCombAllpass<TSig, TPar>::getCombTransferFunction(
   //   and document that fact. Our member A also needs to have enough capacity to represent the
   //   delay filter including interpolation.
 }
-// Needs unit tests
 
 template<class TSig, class TPar>
 void rsDampedCombAllpass<TSig, TPar>::getCorrectorTransferFunction(
@@ -1737,7 +1697,6 @@ void rsDampedCombAllpass<TSig, TPar>::getCorrectorTransferFunction(
   tf->invert();
   tf->reflectZeros();
 }
-// Needs unit tests
 
 template<class TSig, class TPar>
 void rsDampedCombAllpass<TSig, TPar>::getDamperTransferFunction(
@@ -2204,24 +2163,21 @@ protected:
 
   // Maximum number of available combs and max delayline length. Must be set up on construction:
   int maxNumCombs = 4;
-  int maxDelay    = 16383;  // 16383 = 2^-14 - 1
+  int maxDelay    = 16383;  // 16383 = 2^-14 - 1, 2^k - 1 is used anyway for bit-masking
   // ToDo: provide a setter for these. This setter should only be called in suspended state, 
   // though. It may re-allocate
 
   // Current number of combs:
   int numCombs    = 1;
 
+  // Switch beween min- and max-phase comb bank:
   bool maxPhaseCombBank = false;
-
 
   // Flag to indicate that a call to updateFilters() is needed before doing any DSP:
   std::atomic<bool> dirty = true;
 
-
-  // For computations;
-  //rsSparseDigitalTransferFunction<TPar> U; 
-  rsSparseDigitalTransferFunction<TPar> U, Ui; 
-  // Not yet used
+  // Transfer function objects used for temporaries in internal computations in updateFilters():
+  rsSparseDigitalTransferFunction<TPar> U, Ui;
 };
 
 
@@ -2232,7 +2188,7 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
   // numCombs == 0
 
   using RatFunc   = rsSparseRationalFunction<TPar>;
-  using TransFunc = rsSparseDigitalTransferFunction<TPar>;
+  //using TransFunc = rsSparseDigitalTransferFunction<TPar>;
 
   TPar decaySamples =      decayTime     * sampleRate;
   TPar lowOmega     = 2*PI*lowCrossFreq  / sampleRate;
