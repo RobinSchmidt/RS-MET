@@ -1,4 +1,11 @@
-#pragma once
+#pragma once  // Replace this if #ifdef ...
+
+// ToDo:
+//
+// - Rename the Filters/Basic folder into Filters/General and move this pair of .h/.cpp files
+//   into that folder.
+
+
 
 // helper functions - maybe move into class rsFilterAnalyzer
 
