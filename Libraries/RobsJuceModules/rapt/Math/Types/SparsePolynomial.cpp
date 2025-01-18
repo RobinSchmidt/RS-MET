@@ -176,7 +176,7 @@ int rsSparsePolynomial<T>::getMaxPowerIndex() const
   // The output of this function is not well defined when there are multiple terms with the highest
   // power, so this function should really only be used on canonical representations. But wait:
   // In a canonical representation, the index of the maximum power is already known so we don't 
-  // need to do a search in this cas. It's always at terms.size()-1. Maybe we should do a test 
+  // need to do a search in this case. It's always at terms.size()-1. Maybe we should do a test 
   // like: rsAssert(arePowersUnique()) - but such a check would be expensive (O(N^2)) on an 
   // unsorted terms array. It would even need temporary memory. On the other hand, it's only 
   // compiled into debug versions anyway.
@@ -344,6 +344,7 @@ void rsSparsePolynomial<T>::divide(
   rsAssert(rsAreAddressesDistinct(den,   *rem ));
   rsAssert(rsAreAddressesDistinct(*quot, *rem ));
   rsAssert(!den.isZero(tol));
+  // What about num == den (address-wise)? I think, we should also check that this is not the case.
 
   // Initialization:
   quot->clear();             // q = 0
@@ -390,6 +391,17 @@ void rsSparsePolynomial<T>::divide(
   //   that I had initially in the computation of the greatest common divisor, i.e. a bug 
   //   elsewhere. It had to do with attempting to do in place processing. It would now be caught by
   //   rsAssert(rsAreAddressesDistinct(den, *rem);  which I didn't have back then.
+  //
+  // - Figure out and document, if it can be used in place in certain cases. If this is not the 
+  //   case, explicitly document that too and maybe explain why it's not possible. In the loop, we
+  //   do not seem to read from num, so maybe it's ok if num aliases to quot or rem? Maybe 
+  //   num == rem is ok because rem gest initialized to num anyway. But then we will violate the 
+  //   loop invariant when we allow this kind of aliasing. But that may be ok - we verify it only 
+  //   for sanity checking purposes anyway. It also looks like we only ever access 
+  //   den.getLeadingTerm() and never change den. That means, we could extract the leading term 
+  //   once outside the loop and should the be free to do whatever we want with den inside the loop
+  //   without affecting the result. Maybe it means that rem is allowed to alias to num and den is 
+  //   allowed to alias to quot? Check this! 
 }
 
 template<class T>

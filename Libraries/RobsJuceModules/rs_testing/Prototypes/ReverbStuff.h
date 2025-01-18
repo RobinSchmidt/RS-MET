@@ -1271,11 +1271,21 @@ public:
 
   void setMaxDelayInSamples(TPar newMaxDelay)
   {
-    setMaxIntDelayInSamples((int)rsCeil(rsReal(newMaxDelay)));
+    setMaxIntDelayInSamples((int)rsCeil(newMaxDelay));
+
+
+    //setMaxIntDelayInSamples((int)rsCeil(rsReal(newMaxDelay)));
 
     // Using rsReal() here is needed for enabling instantiating this class also for TPar being a 
     // complex type. This enables complex valued feedback etc. The delay should still be a real 
     // type though, so we just extract the real part.
+    //
+    // But I think, this still doesn't work. The code for the experiment with a complex feedback 
+    // is currently commented out. I think, we need to introduce a 3rd template parameter. Maybe
+    // TFdbk (for the feedback) or TDly (for the delay). But I'm not sure, if the transfer function
+    // computation will work because it may try to deal with nested complex numbers when TPar is
+    // itself complex. Maybe these function need to be templates themselves, introducing their own
+    // template parameter TComplex?)
   }
 
 
