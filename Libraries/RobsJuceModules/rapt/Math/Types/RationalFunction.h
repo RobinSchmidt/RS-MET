@@ -1,4 +1,8 @@
-#pragma once
+#ifndef RAPT_RATIONALFUNCTION_H
+#define RAPT_RATIONALFUNCTION_H
+
+
+//#pragma once
 
 //namespace RAPT
 //{
@@ -407,3 +411,6 @@ todo:
 -implement a conversion constructor that can take a polynomial and make a rationla function from it
 
 */
+
+
+#endif

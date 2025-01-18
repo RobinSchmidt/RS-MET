@@ -1,0 +1,8 @@
+#ifndef RAPT_SPARSEPOLYNOMIAL_H
+#define RAPT_SPARSEPOLYNOMIAL_H
+
+
+
+
+
+#endif

@@ -22,6 +22,8 @@ namespace RAPT
 #include "Types/Matrix.h"
 #include "Types/Polynomial.h"
 #include "Types/RationalFunction.h"
+#include "Types/SparsePolynomial.h"
+#include "Types/SparseRationalFunction.h"
 #include "Types/Fraction.h"
 #include "Types/Complex.h"
 

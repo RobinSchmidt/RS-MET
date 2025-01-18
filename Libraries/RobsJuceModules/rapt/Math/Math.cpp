@@ -35,6 +35,8 @@ namespace RAPT
 #include "Types/Matrix.cpp"
 #include "Types/Polynomial.cpp"
 #include "Types/RationalFunction.cpp"
+#include "Types/SparsePolynomial.cpp"
+#include "Types/SparseRationalFunction.cpp"
 #include "Types/Vector.cpp"
 
 #include "Geometry/Line2D.cpp"
