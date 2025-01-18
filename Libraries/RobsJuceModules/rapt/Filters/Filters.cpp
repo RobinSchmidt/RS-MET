@@ -7,6 +7,9 @@ namespace RAPT
 #include "General/OnePoleFilter.cpp"
 #include "General/SmoothingFilter.cpp"
 #include "General/Interpolator.cpp" 
+
+#include "Musical/DelayLine.cpp"
+
 #include "General/SparseFilter.cpp" 
 
 #include "Scientific/PrototypeDesigner.cpp"
@@ -32,7 +35,7 @@ namespace RAPT
 #include "Musical/PhasorFilter.cpp"
 #include "Musical/StateVariableFilterOld.cpp"
 #include "Musical/StateVariableFilter.cpp"
-#include "Musical/DelayLine.cpp"
+
 #include "Musical/Allpasses.cpp"
 
 }
