@@ -56,6 +56,49 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 */
 
 
+
+
+template<class T>
+rsSparsePolynomial<T> rsPowNaive(const rsSparsePolynomial<T>& p, int n)
+{
+  rsWarning("rsPow(rsSparsePolynomial&) is preliminary");
+
+  rsSparsePolynomial<T> r;
+  r.appendTerm(T(1), 0);
+  for(int i = 1; i <= n; i++)
+    r = r * p;
+  return r;
+
+  // ToDo:
+  //
+  // - Use the binary exponentiation algorithm. Maybe we can even use the generic rsPowInt function
+  //   once it has been adapted to allow for arbitrary types for the base. Maybe rename this to
+  //   rsPowNaive()
+}
+
+template<class T>
+rsSparsePolynomial<T> rsComposeNaive(
+  const rsSparsePolynomial<T>& inner,
+  const rsSparsePolynomial<T>& outer, T tol)
+{
+  rsSparsePolynomial<T> r;
+  for(int i = 0; i < outer.getNumTerms(); i++)
+    r = r + outer.getCoeff(i) * rsPowNaive(inner, outer.getPower(i));
+  return r;
+
+  // Notes:
+  //
+  // - This implementation is very inefficient and not meant for production use. There are a lot 
+  //   of temporary objects created that could be avoided in a more clever (yet to be written) 
+  //   production version. This version can be used to produce target output for the production 
+  //   version in unit tests, though.
+}
+
+
+
+
+
+
 /** Implements the code from here for the golden ratio algorithm:
 https://stackoverflow.com/questions/21144309/method-of-the-golden-ratio   */
 double goldenRatioMethodMax(double(*p_pFunction)(double), double a, double b);

@@ -7,7 +7,8 @@
 
 
 /** A class for representing (univariate) monomials, i.e. expressions of the form  c * x^p  for
-some coefficient c and integer power (or exponent) p.
+some coefficient c and integer power (or exponent) p. Strictly speaking, we should require p to be
+nonnegative, but we don't really enforce this here.
 
 See: https://en.wikipedia.org/wiki/Monomial   */
 
@@ -21,21 +22,11 @@ public:
   // Marked as explicit because we want to avoid hidden automatic conversions from type T
 
 
-  void setup(T newCoeff, int newPower)
-  {
-    coeff = newCoeff;
-    power = newPower;
-  }
+  void setup(T newCoeff, int newPower) { coeff = newCoeff; power = newPower; }
 
-  void setCoeff(T newCoeff)
-  {
-    coeff = newCoeff;
-  }
+  void setCoeff(T newCoeff)   { coeff = newCoeff; }
 
-  void setPower(int newPower)
-  {
-    power = newPower;
-  }
+  void setPower(int newPower) { power = newPower; }
 
 
 
@@ -67,28 +58,21 @@ public:
 
 
   /** Returns the negative of this monomial. */
-  rsMonomial<T> operator-() const
-  { 
-    return rsMonomial<T>(-getCoeff(), getPower());
-  }
+  rsMonomial<T> operator-() const { return rsMonomial<T>(-getCoeff(), getPower()); }
 
 
   /** Multiplies two monomials. */
   rsMonomial<T> operator*(const rsMonomial<T>& q) const
-  { 
-    return rsMonomial<T>(getCoeff() * q.getCoeff(), getPower() + q.getPower());
-  }
+  { return rsMonomial<T>(getCoeff() * q.getCoeff(), getPower() + q.getPower()); }
   // Needs tests
 
 
   /** Divides two monomials. */
   rsMonomial<T> operator/(const rsMonomial<T>& q) const
-  { 
-    return rsMonomial<T>(getCoeff() / q.getCoeff(), getPower() - q.getPower());
-  }
+  { return rsMonomial<T>(getCoeff() / q.getCoeff(), getPower() - q.getPower()); }
   // Needs tests. 
   // If q.power > this->power, this will lead to a negative power in the result. Should we do 
-  // something about this like triggering an rsAssert?
+  // something about this like triggering an rsAssert? And what if q.getCoeff() returns zero?
 
 
 protected:
@@ -298,7 +282,7 @@ public:
 
   /** Turns the representation of the polynomial into a canonical one. A canonical representation 
   has the following properties: (1) The powers are strictly increasing as function of index. 
-  (2) No power appears more than once. (3) No zero coefficient appear. We achieve this by 
+  (2) No power appears more than once. (3) No zero coefficients appear. We achieve this by 
   first sorting the terms, then consolidating multiple terms with equal exponents into single
   terms and finally deleting all terms that have a coefficient zero (up to the given tolerance). */
   void canonicalize(T tol);
@@ -501,7 +485,7 @@ public:
     rsSparsePolynomial<T>* SecondArg,
     rsSparsePolynomial<T>* temp1,
     rsSparsePolynomial<T>* temp2,
-    T tol, bool monic);
+    T tol, bool makeResultMonic);
   // I think, if all passed polynomials have large enough capacity, then the function should not
   // (re)allocate any heap memory. Verify and document this! How large is "large enough"?
 
@@ -528,7 +512,7 @@ inline rsSparsePolynomial<T> operator*(const T& s, const rsSparsePolynomial<T>& 
 }
 // ToDo: Write an operator that takes a monomial as left operand. It should scale r by the 
 // monomial's coeff as above and shift the powers of r by the monomial's power. Maybe the 
-// "copyDataFrom" function should already include the possible sclaing and shifting. But then
+// "copyDataFrom" function should already include the possible scaling and shifting. But then
 // we should call it copyScaledDataFrom and/or copyScaledAndShiftedDataFrom.
 
 
@@ -544,46 +528,6 @@ TArg rsSparsePolynomial<T>::evaluateTyped(const TArg& z) const
 // This implementation needs to be in the header file or we will need an explicit instantiation for
 // the member function somewhere even when we already have an explicit instatiation of the class.
 // It's probably due to the additional template parameter TArg.
-
-
-template<class T>
-rsSparsePolynomial<T> rsPow(const rsSparsePolynomial<T>& p, int n)
-{
-  rsWarning("rsPow(rsSparsePolynomial&) is preliminary");
-
-  rsSparsePolynomial<T> r;
-  r.appendTerm(T(1), 0);
-  for(int i = 1; i <= n; i++)
-    r = r * p;
-  return r;
-
-  // ToDo:
-  //
-  // - Use the binary exponentiation algorithm. Maybe we can even use the generic rsPowInt function
-  //   once it has been adapted to allow for arbitrary types for the base. Maybe rename this to
-  //   rsPowNaive()
-}
-
-template<class T>
-rsSparsePolynomial<T> rsComposeNaive(
-  const rsSparsePolynomial<T>& inner,
-  const rsSparsePolynomial<T>& outer, T tol)
-{
-  rsSparsePolynomial<T> r;
-  for(int i = 0; i < outer.getNumTerms(); i++)
-    r = r + outer.getCoeff(i) * rsPow(inner, outer.getPower(i));
-  return r;
-
-  // Notes:
-  //
-  // - This implementation is very inefficient and not meant for production use. There are a lot 
-  //   of temporary objects created that could be avoided in a more clever (yet to be written) 
-  //   production version. This version can be used to produce target output for the production 
-  //   version in unit tests, though.
-}
-
-
-
 
 
 

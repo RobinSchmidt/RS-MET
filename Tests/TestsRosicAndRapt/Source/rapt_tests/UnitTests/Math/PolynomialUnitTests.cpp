@@ -2904,10 +2904,12 @@ bool testSparsePolynomial()
   ok &= rem.isCloseTo( r, tol);
 
   // Test power function:
-  r  = rsPow(p, 3);
+  r  = rsPowNaive(p, 3);
   y1 = p(x) * p(x) * p(x);
   y2 = r(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
+  // ToDo: Implement and test a non-naive power function. It should use binary exponentiation and
+  // in-place multiplications.
 
   // Test composition:
   p.clear();
