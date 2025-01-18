@@ -534,7 +534,7 @@ protected:
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  rsDelay<TSig> delayLine;         // Delayline for the direct form 2 implementation.
+  rsDelay<TSig> delayLine;                  // Delayline for the direct form 2 implementation.
   rsSparseDigitalTransferFunction<TPar> H;  // Transfer function H(z). Contains filter coeffs.
 
 };

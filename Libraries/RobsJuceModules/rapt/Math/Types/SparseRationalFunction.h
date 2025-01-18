@@ -213,16 +213,11 @@ public:
     const rsSparseRationalFunction<T>& q, T wq,
     rsSparseRationalFunction<T>* r, T tol);
 
-
-
   static void weightedSumDestructive(
     rsSparseRationalFunction<T>* p, T wp,
     rsSparseRationalFunction<T>* q, T wq,
     rsSparseRationalFunction<T>* r, T tol);
   // The first parameter p may alias to the result r. 
-
-
-
 
 
 };
@@ -267,7 +262,8 @@ void rsSparseRationalFunction<T>::weightedSumDestructive(
   // this further and document! We could perhaps make it work to also allow r == q by swapping p 
   // and q (and wp and wq) in this case. But what if r == p == q? ...well...in that case, we could 
   // leave the denominator of r (and p and q) alone and just multiply the numerator by the scaler 
-  // (wp+wq), I think. I think, the p == q != r case could possibly also be handled
+  // (wp+wq), I think. I think, the p == q != r case could possibly also be handled - just copy p
+  // or q into r and then scale by (wp+wq)
 
   using SP = rsSparsePolynomial<T>;
 
