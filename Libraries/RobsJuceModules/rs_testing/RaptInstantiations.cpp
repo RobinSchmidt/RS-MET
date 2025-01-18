@@ -276,9 +276,6 @@ template bool rsPolynomial<double>::areRootsOnOrInsideUnitCircle(
 
 // ToDo: Verify, if they are still needed. Document why they are needed.
 
-
-
-
 template class RAPT::rsRationalFunction<std::complex<double>>;
 
 
@@ -294,6 +291,8 @@ template std::vector<std::complex<double>> RAPT::rsRationalFunction<double>::par
   const std::vector<int>& multiplicities);
 
 
+
+template class RAPT::rsSparsePolynomial<double>;
 
 
 
