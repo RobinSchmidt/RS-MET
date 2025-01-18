@@ -10,9 +10,7 @@ namespace RAPT
 #include "General/OnePoleFilter.h"
 #include "General/SmoothingFilter.h"   // maybe move to a Tool
 #include "General/Interpolator.h" 
-
-#include "Musical/DelayLine.h"         // Move file into General
-
+#include "General/DelayLine.h"         // Move file into General
 #include "General/SparseFilter.h" 
 //#include "General/OnePoleOneZero.h"
 //#include "General/TwoPoleOneZero.h"  // decaying sine, etc.

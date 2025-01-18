@@ -7,9 +7,7 @@ namespace RAPT
 #include "General/OnePoleFilter.cpp"
 #include "General/SmoothingFilter.cpp"
 #include "General/Interpolator.cpp" 
-
-#include "Musical/DelayLine.cpp"
-
+#include "General/DelayLine.cpp"
 #include "General/SparseFilter.cpp" 
 
 #include "Scientific/PrototypeDesigner.cpp"

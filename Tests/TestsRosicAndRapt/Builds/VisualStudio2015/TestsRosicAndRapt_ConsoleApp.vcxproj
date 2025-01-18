@@ -499,6 +499,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Trees.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\DelayLine.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\Interpolator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -515,9 +518,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\Allpasses.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\DelayLine.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter.cpp">
@@ -2605,13 +2605,13 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Range.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\StandardContainerTools.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Trees.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\DelayLine.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\Interpolator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\MovingWindowFilters.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\OnePoleFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\SmoothingFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\SparseFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\Allpasses.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\DelayLine.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\PhasorFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilter.h"/>
