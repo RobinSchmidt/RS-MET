@@ -6,15 +6,15 @@ namespace RAPT
   
 // make a nested namespace Filters or Filter
 
-#include "Basic/MovingWindowFilters.h"
-#include "Basic/OnePoleFilter.h"
-#include "Basic/SmoothingFilter.h"   // maybe move to a Tool
-#include "Basic/Interpolator.h" 
-//#include "Basic/OnePoleOneZero.h"
-//#include "Basic/TwoPoleOneZero.h"  // decaying sine, etc.
-//#include "Basic/Biquad.h"
-//#include "Basic/BiquadChain.h"
-//#include "Basic/CookBookFilter.h"
+#include "General/MovingWindowFilters.h"
+#include "General/OnePoleFilter.h"
+#include "General/SmoothingFilter.h"   // maybe move to a Tool
+#include "General/Interpolator.h" 
+//#include "General/OnePoleOneZero.h"
+//#include "General/TwoPoleOneZero.h"  // decaying sine, etc.
+//#include "General/Biquad.h"
+//#include "General/BiquadChain.h"
+//#include "General/CookBookFilter.h"
 //...
 
 #include "Scientific/PrototypeDesigner.h"               // unit cutoff analog prototypes

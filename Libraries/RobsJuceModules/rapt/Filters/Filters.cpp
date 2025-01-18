@@ -3,10 +3,10 @@
 namespace RAPT
 {
 
-#include "Basic/MovingWindowFilters.cpp"
-#include "Basic/OnePoleFilter.cpp"
-#include "Basic/SmoothingFilter.cpp"
-#include "Basic/Interpolator.cpp" 
+#include "General/MovingWindowFilters.cpp"
+#include "General/OnePoleFilter.cpp"
+#include "General/SmoothingFilter.cpp"
+#include "General/Interpolator.cpp" 
 
 #include "Scientific/PrototypeDesigner.cpp"
 #include "Scientific/PoleZeroMapper.cpp" 

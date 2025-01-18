@@ -1699,56 +1699,56 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/Basic/Interpolator.cpp">
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/General/Interpolator.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/Basic/Interpolator.h">
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/General/Interpolator.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/Basic/MovingWindowFilters.cpp">
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/General/MovingWindowFilters.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/Basic/MovingWindowFilters.h">
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/General/MovingWindowFilters.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/Basic/OnePoleFilter.cpp">
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/General/OnePoleFilter.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/Basic/OnePoleFilter.h">
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/General/OnePoleFilter.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/Basic/SmoothingFilter.cpp">
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/General/SmoothingFilter.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/Basic/SmoothingFilter.h">
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/General/SmoothingFilter.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>

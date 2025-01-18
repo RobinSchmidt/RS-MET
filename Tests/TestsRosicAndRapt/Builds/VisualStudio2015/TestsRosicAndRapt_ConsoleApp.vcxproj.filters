@@ -95,8 +95,8 @@
     <Filter Include="JUCE Modules\rapt\Data">
       <UniqueIdentifier>{F7AA8991-C7B0-9311-5F89-1A77252201AE}</UniqueIdentifier>
     </Filter>
-    <Filter Include="JUCE Modules\rapt\Filters\Basic">
-      <UniqueIdentifier>{8E3A0AC3-D37E-5766-8BDD-4A142E502B9C}</UniqueIdentifier>
+    <Filter Include="JUCE Modules\rapt\Filters\General">
+      <UniqueIdentifier>{B1702CB4-3FB9-3135-1920-0489D6501431}</UniqueIdentifier>
     </Filter>
     <Filter Include="JUCE Modules\rapt\Filters\Musical">
       <UniqueIdentifier>{97399398-903E-250B-4A52-DFA729FD239E}</UniqueIdentifier>
@@ -745,17 +745,17 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Trees.cpp">
       <Filter>JUCE Modules\rapt\Data</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\Interpolator.cpp">
-      <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\Interpolator.cpp">
+      <Filter>JUCE Modules\rapt\Filters\General</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\MovingWindowFilters.cpp">
-      <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\MovingWindowFilters.cpp">
+      <Filter>JUCE Modules\rapt\Filters\General</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\OnePoleFilter.cpp">
-      <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\OnePoleFilter.cpp">
+      <Filter>JUCE Modules\rapt\Filters\General</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\SmoothingFilter.cpp">
-      <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\SmoothingFilter.cpp">
+      <Filter>JUCE Modules\rapt\Filters\General</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\Allpasses.cpp">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
@@ -3057,17 +3057,17 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Trees.h">
       <Filter>JUCE Modules\rapt\Data</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\Interpolator.h">
-      <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\Interpolator.h">
+      <Filter>JUCE Modules\rapt\Filters\General</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\MovingWindowFilters.h">
-      <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\MovingWindowFilters.h">
+      <Filter>JUCE Modules\rapt\Filters\General</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\OnePoleFilter.h">
-      <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\OnePoleFilter.h">
+      <Filter>JUCE Modules\rapt\Filters\General</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\SmoothingFilter.h">
-      <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\SmoothingFilter.h">
+      <Filter>JUCE Modules\rapt\Filters\General</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\Allpasses.h">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
