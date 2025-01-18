@@ -757,6 +757,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\SmoothingFilter.cpp">
       <Filter>JUCE Modules\rapt\Filters\General</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\SparseFilter.cpp">
+      <Filter>JUCE Modules\rapt\Filters\General</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\Allpasses.cpp">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClCompile>
@@ -3067,6 +3070,9 @@
       <Filter>JUCE Modules\rapt\Filters\General</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\SmoothingFilter.h">
+      <Filter>JUCE Modules\rapt\Filters\General</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\SparseFilter.h">
       <Filter>JUCE Modules\rapt\Filters\General</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\Allpasses.h">

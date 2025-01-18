@@ -10,12 +10,15 @@ namespace RAPT
 #include "General/OnePoleFilter.h"
 #include "General/SmoothingFilter.h"   // maybe move to a Tool
 #include "General/Interpolator.h" 
+#include "General/SparseFilter.h" 
 //#include "General/OnePoleOneZero.h"
 //#include "General/TwoPoleOneZero.h"  // decaying sine, etc.
 //#include "General/Biquad.h"
 //#include "General/BiquadChain.h"
 //#include "General/CookBookFilter.h"
 //...
+
+
 
 #include "Scientific/PrototypeDesigner.h"               // unit cutoff analog prototypes
 #include "Scientific/PoleZeroMapper.h"                  // LP->LP, LP->HP, bilinear S->Z, etc.

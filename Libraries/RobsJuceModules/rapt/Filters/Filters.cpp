@@ -7,6 +7,7 @@ namespace RAPT
 #include "General/OnePoleFilter.cpp"
 #include "General/SmoothingFilter.cpp"
 #include "General/Interpolator.cpp" 
+#include "General/SparseFilter.cpp" 
 
 #include "Scientific/PrototypeDesigner.cpp"
 #include "Scientific/PoleZeroMapper.cpp" 

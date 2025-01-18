@@ -570,6 +570,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\SmoothingFilter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\SparseFilter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\Allpasses.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2665,6 +2668,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\MovingWindowFilters.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\OnePoleFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\SmoothingFilter.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\General\SparseFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\Allpasses.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\DelayLine.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter.h"/>

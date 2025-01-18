@@ -2,8 +2,8 @@
 
 // ToDo:
 //
-// - Rename the Filters/Basic folder into Filters/General and move this pair of .h/.cpp files
-//   into that folder.
+// - Rename the Filters/Basic folder into Filters/General (done) and move this pair of .h/.cpp 
+//   files into that folder.
 
 
 
