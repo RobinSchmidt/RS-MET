@@ -1,0 +1,7 @@
+#ifndef RAPT_SPARSEFILTER_H
+#define RAPT_SPARSEFILTER_H
+
+
+
+
+#endif
