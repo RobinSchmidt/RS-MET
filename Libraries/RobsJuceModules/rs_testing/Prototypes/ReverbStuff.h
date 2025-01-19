@@ -1850,7 +1850,7 @@ void rsSetupFractional_LinViaFb(rsDampedCombAllpass<TSig, TPar>& flt,
 // times for low and high frequencies. The scale factors are given as raw factors for the RT60 and
 // crossover frequencies are given as omega.
 template<class TSig, class TPar>
-void rsSetupDecayTimes(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay, TPar decayTimeInSamples,
+void rsSetupDecayTimes_LinViaFb(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay, TPar decayTimeInSamples,
   TPar lowOmega, TPar lowTimeScale, TPar highOmega, TPar highTimeScale, bool predelay)
 {
   // Compute desired feedback gains for low, mid and high frequencies:
@@ -2224,12 +2224,9 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
     // when using odd harmonics only (by way of the feedback sign), the fundamental frequency 
     // actually goes an octave lower.
 
-
-    rsSetupDecayTimes(protoAllpass, 
-                      delay, decaySamples, 
-                      lowOmega,  lowDecayScale, 
-                      highOmega, highDecayScale,
-                      false);
+    rsSetupDecayTimes_LinViaFb(
+      protoAllpass, delay, decaySamples, 
+      lowOmega,  lowDecayScale, highOmega, highDecayScale, false);
     // This needs an additional parameter to determine the sign of the feedback, i.e. switch 
     // between all and only odd harmonics
 

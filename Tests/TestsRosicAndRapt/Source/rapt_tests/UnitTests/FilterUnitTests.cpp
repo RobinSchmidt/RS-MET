@@ -2695,12 +2695,18 @@ bool dampedMultiCombAllpassUnitTest()
   // Create and set up the prototype allpass filters. We are interested mostyl in the comb transfer
   // functions here:
   CombAllpass ap1, ap2, ap3;
+
   ap1.setMaxDelayInSamples(rsMax(delay1,delay2,delay3));
-  rsSetupDecayTimes(ap1, delay1, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
+  rsSetupDecayTimes_LinViaFb(
+    ap1, delay1, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
+
   ap2.setMaxDelayInSamples(delay2);
-  rsSetupDecayTimes(ap2, delay2, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
+  rsSetupDecayTimes_LinViaFb(
+    ap2, delay2, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
+
   ap3.setMaxDelayInSamples(delay3);
-  rsSetupDecayTimes(ap3, delay3, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
+  rsSetupDecayTimes_LinViaFb(
+    ap3, delay3, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
 
   // Retrieve the comb transfer functions:
   TransFunc U1 = ap1.getCombTransferFunction();
