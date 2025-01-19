@@ -19,6 +19,7 @@ void rsSparsePolynomial<T>::setupFromDenseCoeffs(const T* newCoeffs, int newNumT
 template<class T>
 void rsSparsePolynomial<T>::addTerm(T coeff, int power, T tol)
 {
+  // We assume that this polynomial is in canonical representation:
   rsAssert(isCanonical());
 
   int i = 0;
@@ -41,6 +42,9 @@ void rsSparsePolynomial<T>::addTerm(T coeff, int power, T tol)
     }
   }
   rsInsert(terms, rsMonomial<T>(coeff, power), (size_t) i);
+
+  // After the operation, it should still be in canonical representation
+  rsAssert(isCanonical());
 }
 
 template<class T>
@@ -405,7 +409,8 @@ void rsSparsePolynomial<T>::divide(
   //   den (or its alias) inside the loop without affecting the result. Maybe it means that rem is 
   //   allowed to alias to num and den is allowed to alias to quot after we make that change? Check
   //   this! Aaah...noo...wrong! We do read from den in rem->addScaled(dem, ...). OK - so den must
-  //   be distinct-
+  //   be distinct. It could still make sense to drag den.getDegree() and den.getLeadingTerm out of
+  //   the loop as the operations are O(N) in non-canonical representations.
 }
 
 template<class T>

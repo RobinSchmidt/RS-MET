@@ -118,10 +118,21 @@ ToDo:
 
 - Document clearly under which circumstances the user can assume the polynomial to be in a 
   canonical representation (and what that even means). I'm still not quite sure myself, whether or 
-  not the API should always enforce a canonical representation as class invariant. Maintaing that at 
-  all times - in particluar when adding or modifying terms - is costly. On the other hand, certain 
-  other operations (like extracting the leading term) are cheaper when we can assume a canonical
-  representation. At the moment a canonical representation is not enforced. ...TBC...
+  not the API should always enforce a canonical representation as class invariant. Maintaining that
+  at all times - in particluar when adding or modifying terms - is costly. On the other hand, 
+  certain other operations (like extracting the leading term) are cheaper when we can assume a 
+  canonical representation. At the moment a canonical representation is not enforced. ...TBC...
+
+- Maybe prefix the low-level functions that may destroy a canonical representation by an 
+  underscore. This signals at the call site that now the low-level API is being used and special 
+  care is required, if maintaining a canonical representation is desired.
+
+- Or: maybe add suffixes _c and _n to functions that work with canonical and non-canonical 
+  representations. For setters, _c should mean that the function assumes the polynomial in 
+  canonical representation as precondition *and* ensures that this still holds when the function 
+  returns, i.e. as postcondition. For getters, only the precondition is relevant because they don't
+  change the object. Functions with suffix _n do not assume such a precondition and even in the 
+  case that the condition is met, they do not assure to maintain it.
 
 */
 
@@ -177,6 +188,8 @@ public:
   power already exists, this will just shift its coefficient. If the cofficient happens to be zero 
   after shift (up to the given tolerance), the term will be removed. */
   void addTerm(T coeff, int power, T tol);
+  // This function assumes that the polynomial is in canonical representation! Document this and 
+  // maybe reflect it in the function name. Maybe addTerm_c
 
   /** Adds the given monomial to the polynomial. */
   void addTerm(const rsMonomial<T>& newTerm, T tol)
@@ -240,7 +253,8 @@ public:
   a polynomial in which the leading coefficient is unity (aka one).*/
   void makeMonic() { scale(T(1) / getLeadingCoeff()); }
 
-
+  /** Shifts the coefficient with the given index by the given amount, i.e. adds the given amount 
+  to the coeff */
   void shiftCoeff(int index, T amount) { setCoeff(index, amount + getCoeff(index)); }
 
   void shiftCoeffs(T amount)

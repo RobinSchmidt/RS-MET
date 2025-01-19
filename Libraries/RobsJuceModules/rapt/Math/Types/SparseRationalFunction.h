@@ -175,6 +175,15 @@ public:
   // and the denominator is monic
 
 
+
+  rsSparsePolynomial<T>& getNumerator() { return num; }
+
+
+  rsSparsePolynomial<T>& getDenominator() { return den; }
+
+
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 

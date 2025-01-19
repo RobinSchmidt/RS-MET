@@ -56,3 +56,4 @@ https://github.com/RobinSchmidt/RS-MET/blob/master/Documentation/RAPT/LaTeX/User
 
 
 
+[<img src="https://api.gitsponsors.com/api/badge/img?id=71872950" height="20">](https://api.gitsponsors.com/api/badge/link?p=mvreueobscQU3dFsdnPYZk6pm7gpoXEvOxyq7Mk7DtAvagsBJAAs+ljXDz32zTf9)
