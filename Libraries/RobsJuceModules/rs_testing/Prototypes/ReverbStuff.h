@@ -1804,7 +1804,7 @@ void rsSetupHighDamp(rsDampedCombAllpass<TSig, TPar>& flt,
 
 
 template<class TSig, class TPar>
-void rsSetupFractional(rsDampedCombAllpass<TSig, TPar>& flt,
+void rsSetupFractional_LinViaFb(rsDampedCombAllpass<TSig, TPar>& flt,
   TPar delay, TPar feedback, bool predelay)
 {
   int  delayInt  = (int) rsFloor(delay);

@@ -1102,7 +1102,7 @@ void dampedCombAllpassFractional1()
   // Create and set up the allpass filter:
   Allpass ap;
   ap.setMaxDelayInSamples(maxDelay);
-  rsSetupFractional(ap, delay, feedback, false);
+  rsSetupFractional_LinViaFb(ap, delay, feedback, false);
 
   // Get impulse response of comb:
   Vec hc(N);
@@ -1843,11 +1843,11 @@ void dampedAllpassBiComb_1p()
 
 void dampedCombAllpasses()
 {
-  //dampedCombAllpass5();
+  dampedCombAllpass5();
   //dampedCombAllpassFractional1();
   //dampedCombAllpassFractional2();
   //dampedMultiCombAllpass();
-  dampedMultiCombAllpass2();
+  //dampedMultiCombAllpass2();
 
 
   dampedCombAllpass1();
