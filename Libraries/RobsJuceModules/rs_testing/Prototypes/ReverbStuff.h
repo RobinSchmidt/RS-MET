@@ -1509,8 +1509,10 @@ template<class TSig, class TPar>
 void rsDampedCombAllpass<TSig, TPar>::setMaxIntDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
-  mainDelay .setMaxDelayInSamples(maxM);
+  mainDelay.setMaxDelayInSamples(maxM);
+
   corrDelay.setMaxDelayInSamples(maxM+maxDmpOrd+1);
+  // I think, we may have to add the maximum order of the interpolator filter used in the delayline
 }
 
 template<class TSig, class TPar>
@@ -1534,7 +1536,10 @@ void rsDampedCombAllpass<TSig, TPar>::setup(int delay, TPar feedback, int dampOr
   rsArrayTools::copy(dampCoeffsB, b, dmpOrd+1);
 
   mainDelay.setDelayInSamples(M);
+
   corrDelay.setDelayInSamples(M+dmpOrd+1);
+  // I think, this may need more delay memory when we have an interpolating delayline. I think, we
+  // may have to add the order of the interpolator.
 }
 
 template<class TSig, class TPar>
