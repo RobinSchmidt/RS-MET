@@ -134,16 +134,12 @@ public:
   /** Computes the density of the numerator defined as the number of actual nonzero coeffs divided
   by the number of potentially nonzero coeffs given the degree of the numerator. */
   double getNumeratorDensity() const
-  {
-    return double(num.getNumTerms()) / double(num.getDegree()+1);
-  }
+  { return double(num.getNumTerms()) / double(num.getDegree()+1); }
 
   /** Computes the density of the denominator defined as the number of actual nonzero coeffs 
   divided by the number of potentially nonzero coeffs given the degree of the denominator. */
   double getDenominatorDensity() const
-  {
-    return double(den.getNumTerms()-1) / double(den.getDegree());
-  }
+  { return double(den.getNumTerms()-1) / double(den.getDegree()); }
 
   /** Returns the "combined density" defined as the number of actual nonzero coeffs of the filter 
   divided by the number of potential nonzero coeffs for the given filter order. The a0 coeff 
@@ -200,6 +196,8 @@ public:
   }
   // Reciprocation of z needed because we store the coeffs of H(z^-1)
 
+  // We also need to override the evaluateAt functions...or maybe get rid of them in the baseclass.
+  // Oh - looks like, we don't have such functions there. OK - good.
 
   // This boilerplate is needed to have the desired arithmetic operators available also for the 
   // derived class. They can not be inherited from the baseclass because their parameter and
@@ -209,19 +207,14 @@ public:
   rsSparseDigitalTransferFunction<T> operator+(const rsSparseDigitalTransferFunction<T>& q) const 
   { rsSparseDigitalTransferFunction<T> r; weightedSum(*this, T(1), q, T(1), &r, T(0)); return r; }
 
-
   rsSparseDigitalTransferFunction<T> operator-(const rsSparseDigitalTransferFunction<T>& q) const 
   { rsSparseDigitalTransferFunction<T> r; weightedSum(*this, T(1), q, T(-1), &r, T(0)); return r; }
-
 
   rsSparseDigitalTransferFunction<T> operator*(const rsSparseDigitalTransferFunction<T>& q) const 
   { return rsSparseDigitalTransferFunction(num * q.num, den * q.den); }
 
   rsSparseDigitalTransferFunction<T> operator/(const rsSparseDigitalTransferFunction<T>& q) const 
   { return rsSparseDigitalTransferFunction(num * q.den, den * q.num); }
-
-
-
 
 
 };
