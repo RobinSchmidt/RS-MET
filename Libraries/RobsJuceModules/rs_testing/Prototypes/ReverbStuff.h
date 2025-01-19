@@ -1842,6 +1842,8 @@ void rsSetupFractional(rsDampedCombAllpass<TSig, TPar>& flt,
   }
 
 }
+// Rename to rsSetupFractional_LinViaFb where LinViaFb stands for "linear interpolation via the 
+// feedback filter"
 
 // Under construction. Should set up the flt such that it achieves a given overall decay time in 
 // samples (in the sense of RT60, i.e. reverb time to decay to -60 dB) and having scaled deacy 
@@ -1946,6 +1948,8 @@ void rsSetupDecayTimes(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay, TPar de
   //   arrays, then bake them into a,b. The allpass can then use the same temp arrays as the 
   //   hi shelf and then also bake them into a,b
 }
+// Rename to rsSetupDecayTimes_LinViaFb where LinViaFb stands for "linear interpolation via the 
+// feedback filter"
 
 
 // Notes:

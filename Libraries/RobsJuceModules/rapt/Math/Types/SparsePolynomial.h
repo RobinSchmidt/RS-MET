@@ -18,9 +18,16 @@ class rsMonomial
 
 public:
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Lifetime */
+
   explicit rsMonomial(T newCoeff = T(0), int newPower = 0) : coeff(newCoeff), power(newPower) { }
   // Marked as explicit because we want to avoid hidden automatic conversions from type T
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
 
   void setup(T newCoeff, int newPower) { coeff = newCoeff; power = newPower; }
 
@@ -29,14 +36,16 @@ public:
   void setPower(int newPower) { power = newPower; }
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
 
-
+  /** Returns the coefficient c in the expression c * x^p. */
   T getCoeff() const { return coeff; }
 
+  /** Returns the power (aka exponent) p in the expression c * x^p. */
   int getPower() const { return power; }
 
-
-
+  /** Evaluates the expression c * x^p at the given x. */
   T evaluateAt(T x) const { return coeff * rsPow(x, T(power)); }
   // Preliminary. We may want to use rsPowInt for integer exponents. That may be more efficient.
   // Here, we explicitly first convert the exponent to type T and then call rsPow(T x, T y).
@@ -46,26 +55,26 @@ public:
   // rsPowInt is defined for x and power being integers. We really need a function where the
   // base is an arbitrary type and the epxonent is an integer
 
-
+  /** Returns the coefficient c in the expression c * x^p where the type of x may be different from
+  the type T with which the class is instantiated. Can be used, for example, to evaluate monomials
+  with real coefficients at complex arguments. */
   template<class TArg>
   TArg evaluateTyped(TArg z) const { return TArg(coeff) * rsPow(z, TArg(power)); }
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Operators */
 
   /** Evaluates the monomial at the given input x. */
   T operator()(T x) const { return evaluateAt(x); }
 
-
-
   /** Returns the negative of this monomial. */
   rsMonomial<T> operator-() const { return rsMonomial<T>(-getCoeff(), getPower()); }
-
 
   /** Multiplies two monomials. */
   rsMonomial<T> operator*(const rsMonomial<T>& q) const
   { return rsMonomial<T>(getCoeff() * q.getCoeff(), getPower() + q.getPower()); }
   // Needs tests
-
 
   /** Divides two monomials. */
   rsMonomial<T> operator/(const rsMonomial<T>& q) const
@@ -102,7 +111,19 @@ protected:
 //=================================================================================================
 
 /** A class for representing sparse polynomials, i.e. polynomials that have many zero coefficients.
-We represent such sparse polynomials basically as a std::vector of monomials. */
+We represent such sparse polynomials basically as a std::vector of monomials. 
+
+
+ToDo:
+
+- Document clearly under which circumstances the user can assume the polynomial to be in a 
+  canonical representation (and what that even means). I'm still not quite sure myself, whether or 
+  not the API should always enforce a canonical representation as class invariant. Maintaing that at 
+  all times - in particluar when adding or modifying terms - is costly. On the other hand, certain 
+  other operations (like extracting the leading term) are cheaper when we can assume a canonical
+  representation. At the moment a canonical representation is not enforced. ...TBC...
+
+*/
 
 template<class T>
 class rsSparsePolynomial
@@ -145,25 +166,27 @@ public:
   void setupFromDenseCoeffs(const std::vector<T>& newCoeffs, T tol)
   { setupFromDenseCoeffs(&newCoeffs[0], (int) newCoeffs.size(), tol); }
 
-
+  /** Like setupFromDenseCoeffs(const std::vector<T>&, ...) but for raw C-arrays. */
   void setupFromDenseCoeffs(const T* newCoeffs, int newNumTerms, T tol);
-
 
   /** Appends a term with given coeff and power to the end of our terms array. Beware that this 
   may decanonicalize the representation. */
   void appendTerm(T coeff, int power) { terms.emplace_back(rsMonomial<T>(coeff, power)); } 
   
-
-
+  /** Adds the term c * x^p with coeff c and power p to the polynomial. If a term with the same 
+  power already exists, this will just shift its coefficient. If the cofficient happens to be zero 
+  after shift (up to the given tolerance), the term will be removed. */
   void addTerm(T coeff, int power, T tol);
 
+  /** Adds the given monomial to the polynomial. */
   void addTerm(const rsMonomial<T>& newTerm, T tol)
   { addTerm(newTerm.getCoeff(), newTerm.getPower(), tol); }
 
+  /** Subtracts the given monomial from the polynomial. */
   void subtractTerm(const rsMonomial<T>& newTerm, T tol)
   { addTerm(-newTerm.getCoeff(), newTerm.getPower(), tol); }
 
-
+  /** Adds a scaled version of the given polynomial p to this polynomial. */
   void addScaledPolynomial(const rsSparsePolynomial<T> p, T scaler, T tol)
   {
     for(int i = 0; i < p.getNumTerms(); i++)
@@ -171,8 +194,6 @@ public:
   }
   // Maybe it would be better to just append a scaled version and then canonicalize? This may 
   // result in less data movement - but it may blow up the required memory temporarily. 
-
-
 
   /** Sets the number of terms. If the new number is less than the current number, it will just 
   cut off terms from the end. If the new number is greater than the current number, it will just
@@ -184,18 +205,28 @@ public:
   // This may put the terms array into a non-canonical (or even invalid) state! Maybe it shouldn't
   // be used. We'll see....
 
-
+  /** Directly sets the coefficient and power of the term with given index with no regard for 
+  maintaining a canonical representation. This is intended to be used in a sequence of calls with a 
+  subsequent manual call to canonicalize when performance matters. */
   void setTerm(int index, T coeff, int power) 
   { rsAssert(isValidIndex(index));  terms[index].setup(coeff, power); }
 
+  /** Directly sets the power of the term with given index with no regard for maintaining a 
+  canonical representation. This is intended to be used in a sequence of calls with a subsequent 
+  manual call to canonicalize when performance matters. */
   void setPower(int index, int newPower)
   { rsAssert(isValidIndex(index)); terms[index].setPower(newPower); }
 
+  /** Directly sets the coefficient of the term with given index with no regard for maintaining a 
+  canonical representation. This is intended to be used in a sequence of calls with a subsequent 
+  manual call to canonicalize when performance matters. */
   void setCoeff(int index, T newCoeff)
   { rsAssert(isValidIndex(index)); terms[index].setCoeff(newCoeff); }
 
+  /** Scales the coefficient with the given index by the given scaler. */
   void scaleCoeff(int index, T scaler) { setCoeff(index, scaler * getCoeff(index)); }
 
+  /** Scales all coefficients by the given scaler. */
   void scaleCoeffs(T scaler)
   {
     for(int i = 0; i < getNumTerms(); i++)
@@ -203,10 +234,7 @@ public:
   }
 
   /** Alias for scaleCoeffs() for compatibility with API of rsPolynomial. */
-  void scale(T scaler)
-  {
-    scaleCoeffs(scaler);
-  }
+  void scale(T scaler) { scaleCoeffs(scaler); }
 
   /** Makes the polynomial monic by dividing all coeffs by the leading coeff. A monic polynomial is
   a polynomial in which the leading coefficient is unity (aka one).*/
@@ -298,9 +326,12 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  /** Returns true, iff this sparse polynomial is empty, i.e. has no terms. */
+  /** Returns true, iff this polynomial is empty, i.e. has no terms. */
   bool isEmpty() const { return terms.empty(); }
 
+  /** Returns true, iff this polynomial is zero, i.e. all absolute values of the coefficients are 
+  below the given tolerance. So, this is a zero-test that works also on non-canonical 
+  representations. */
   bool isZero(T tol) const
   {
     for(int i = 0; i < getNumTerms(); i++)

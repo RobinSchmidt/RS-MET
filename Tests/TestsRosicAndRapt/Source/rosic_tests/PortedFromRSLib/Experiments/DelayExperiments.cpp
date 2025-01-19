@@ -1870,4 +1870,8 @@ void dampedCombAllpasses()
   // - Plot the phase-delay and group-delay as function of frequency for the damped allpass comb 
   //   and damped Schroeder allpass. We can do this by evaluating the complex frequency response 
   //   using the getTransferFunctionAt() functions.
+  //
+  // - Instantiate rsDampedCombAllpass with rsFloat64x2 for TSig and use a feedback of [+k, -k], 
+  //   i.e. different signs for the feedback for left and right channel. Thta should give 
+  //   complementary combs for left and right channel.
 }

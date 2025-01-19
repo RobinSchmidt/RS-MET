@@ -345,6 +345,8 @@ void rsSparsePolynomial<T>::divide(
   rsAssert(rsAreAddressesDistinct(*quot, *rem ));
   rsAssert(!den.isZero(tol));
   // What about num == den (address-wise)? I think, we should also check that this is not the case.
+  // But in such a case, we can just assign quot to 1 and rem to 0 and return early. Right? Also, 
+  // maybe num == rem could be ok - except for the verification of the loop invariant.
 
   // Initialization:
   quot->clear();             // q = 0
@@ -399,9 +401,11 @@ void rsSparsePolynomial<T>::divide(
   //   loop invariant when we allow this kind of aliasing. But that may be ok - we verify it only 
   //   for sanity checking purposes anyway. It also looks like we only ever access 
   //   den.getLeadingTerm() and never change den. That means, we could extract the leading term 
-  //   once outside the loop and should the be free to do whatever we want with den inside the loop
-  //   without affecting the result. Maybe it means that rem is allowed to alias to num and den is 
-  //   allowed to alias to quot? Check this! 
+  //   (and the degree) once outside the loop and should the be free to do whatever we want with 
+  //   den (or its alias) inside the loop without affecting the result. Maybe it means that rem is 
+  //   allowed to alias to num and den is allowed to alias to quot after we make that change? Check
+  //   this! Aaah...noo...wrong! We do read from den in rem->addScaled(dem, ...). OK - so den must
+  //   be distinct-
 }
 
 template<class T>
