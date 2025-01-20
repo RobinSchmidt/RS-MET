@@ -1162,7 +1162,8 @@ void dampedCombAllpassFractional2()
 
 
   // Compute settings for a linearly interpolating comb once by baking the interpolator filter into
-  // the feedback dampling filter and once by baking it into the delayline:
+  // the feedback dampling filter and once by baking it into the delayline and compare the 
+  // resulting transfer functions:
   CombSettings s1, s2;
   rsSetupDecayTimes_LinViaFb(
     s1, delay, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
@@ -1172,6 +1173,15 @@ void dampedCombAllpassFractional2()
   s1.getCombTransferFunction(&tf1);
   s2.getCombTransferFunction(&tf2);
   bool ok = tf2.isCloseTo(tf1, 1.e-14);
+  // Yep - they are indeed equal. That means, at least for the linear interpolator, we can bake it
+  // either into the delay or into the feedback filter. It doesn't matter. I think, this may be 
+  // generally true for FIR interpolators but not for IIR interpolators - at least, that's my
+  // practical experience so far. ToDo: Figure this out theoretically. Derive the full transfer 
+  // functions for a comb using a 1st order allpass interpolator baked into the delay and damping
+  // filter. It would actually be nice, if we always could bake the interpolator into the feedback
+  // filter because that would simplify the implementation of the whole comb - we wouldn't need to 
+  // use a delayline that has interpolation already built in. Although, it's no big deal to use one
+  // either.
 
 
   // Create and set up the allpass filter:
