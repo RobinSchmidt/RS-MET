@@ -1140,7 +1140,7 @@ void dampedCombAllpassFractional2()
   using Vec          = std::vector<Real>;
   using Allpass      = rsDampedCombAllpass<Real, Real>;
   using CombSettings = rsDampedCombSettings<Real>;
-  using TransFunc    =  rsSparseDigitalTransferFunction<Real>;
+  using TransFunc    = rsSparseDigitalTransferFunction<Real>;
 
 
   // User parameters:
@@ -1173,6 +1173,7 @@ void dampedCombAllpassFractional2()
   s1.getCombTransferFunction(&tf1);
   s2.getCombTransferFunction(&tf2);
   bool ok = tf2.isCloseTo(tf1, 1.e-14);
+  rsAssert(ok);
   // Yep - they are indeed equal. That means, at least for the linear interpolator, we can bake it
   // either into the delay or into the feedback filter. It doesn't matter. I think, this may be 
   // generally true for FIR interpolators but not for IIR interpolators - at least, that's my

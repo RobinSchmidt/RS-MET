@@ -1379,7 +1379,6 @@ protected:
 
   // Other settings:
   T    delay    = 0;                   // Delay in samples (may be non integer)
-  //int  M        = 0;                   // Delayline length - maybe get rid
   int  dmpOrd   = 0;                   // Feedback damping filter order
 
   // Switch between different interpolation modes:
@@ -1404,7 +1403,8 @@ protected:
     // Try to get away without hep memory here. Store the coeffs directly in arrays like
     // bI[2], aI[2] where I stands for interpolator ...maybe then rename b,a to bD,aD (D for 
     // damper). Maybe instead of declaring them as bI[2], use bI[maxIntOrd+1]. We will then need a
-    // way to mutliply a sparse transfer function by one represented by a dense array of coeffs
+    // way to mutliply a sparse transfer function by one represented by a dense array of coeffs.
+    // For this, we need a function rsSparsePolynomial::multiplyByDense(const T* coeffs, int order)
 
 
     // Maybe have a delay member of type TPar - or maybe double or TDly and then maybe get rid of
@@ -1413,18 +1413,15 @@ protected:
 };
 
 
-// Under construction....
 template<class T>
-void rsSetupDecayTimes_LinViaDly(
-  rsDampedCombSettings<T>& combSettings, 
-  T delay, T decayTimeInSamples, T lowOmega, T lowTimeScale, T highOmega, T highTimeScale, 
-  bool preDelay)
+T rsMakeDampBiShelf(T delay, T decay, T lowOmega, T lowTimeScale, T highOmega, T highTimeScale,
+  T* b, T* a)
 {
   // Compute desired feedback gains for low, mid and high frequencies:
   T a60 = T(0.001);   // = rsDbToAmp(-60.0). Target amplitude to reach after decayTimeInSamples
-  T kL  = rsDecayTimeToFeedbackGain(decayTimeInSamples * lowTimeScale , T(delay), a60);
-  T kM  = rsDecayTimeToFeedbackGain(decayTimeInSamples                , T(delay), a60);
-  T kH  = rsDecayTimeToFeedbackGain(decayTimeInSamples * highTimeScale, T(delay), a60);
+  T kL  = rsDecayTimeToFeedbackGain(decay * lowTimeScale , T(delay), a60);
+  T kM  = rsDecayTimeToFeedbackGain(decay                , T(delay), a60);
+  T kH  = rsDecayTimeToFeedbackGain(decay * highTimeScale, T(delay), a60);
   // These formulas could also be expressed as e.g.:
   //
   //   kM = rsPow(10.0, TPar(-3 * delay) / decayTimeInSamples);
@@ -1440,15 +1437,60 @@ void rsSetupDecayTimes_LinViaDly(
   T aH[2], bH[2]; aH[0] = 1; rsMake1stOrderHighShelf(highOmega, gH, &bH[0], &bH[1], &aH[1]);
 
   // Combine low- and high shelver into biquad:
-  T a[3], b[3];
   rsArrayTools::convolve(aL, 2, aH, 2, a);
   rsArrayTools::convolve(bL, 2, bH, 2, b);
+
+  // Return the (mid) feedback gain:
+  return kM;
+}
+// Rename to rsMakeFeedbackFilter...maybe
+
+
+
+// Under construction....
+template<class T>
+void rsSetupDecayTimes_LinViaDly(
+  rsDampedCombSettings<T>& combSettings, 
+  T delay, T decayTimeInSamples, T lowOmega, T lowTimeScale, T highOmega, T highTimeScale, 
+  bool preDelay)
+{
+  //// Compute desired feedback gains for low, mid and high frequencies:
+  //T a60 = T(0.001);   // = rsDbToAmp(-60.0). Target amplitude to reach after decayTimeInSamples
+  //T kL  = rsDecayTimeToFeedbackGain(decayTimeInSamples * lowTimeScale , T(delay), a60);
+  //T kM  = rsDecayTimeToFeedbackGain(decayTimeInSamples                , T(delay), a60);
+  //T kH  = rsDecayTimeToFeedbackGain(decayTimeInSamples * highTimeScale, T(delay), a60);
+  //// These formulas could also be expressed as e.g.:
+  ////
+  ////   kM = rsPow(10.0, TPar(-3 * delay) / decayTimeInSamples);
+  ////
+  //// which is how they are often seen in the FDN literature. 
+
+  //// Compute desired gains for the low and high shelver:
+  //T gL = kL / kM;
+  //T gH = kH / kM;
+
+  //// Compute coeffs for low- and high shelver:
+  //T aL[2], bL[2]; aL[0] = 1; rsMake1stOrderLowShelf( lowOmega,  gL, &bL[0], &bL[1], &aL[1]);
+  //T aH[2], bH[2]; aH[0] = 1; rsMake1stOrderHighShelf(highOmega, gH, &bH[0], &bH[1], &aH[1]);
+
+  //// Combine low- and high shelver into biquad:
+  //T a[3], b[3];
+  //rsArrayTools::convolve(aL, 2, aH, 2, a);
+  //rsArrayTools::convolve(bL, 2, bH, 2, b);
+
+
+  // Compute feedback gain and filter coeffs:
+  T a[3], b[3];
+  T kM = rsMakeDampBiShelf(delay, decayTimeInSamples, 
+                           lowOmega, lowTimeScale, highOmega, highTimeScale,
+                           b, a);
 
   // Set up the rsDampedCombSettings objects:
   using IM = rsDampedCombSettings<T>::InterpolationMethod;
   combSettings.setup(delay, IM::linear, kM, 2, b, a, preDelay);
 }
 // Maybe make that a member of rsDampedCombSettings
+// Factor out a function rsMakeDampingBiShelf(delay, decay, loOmega, loScale, hiOmega, hiScale, b, a)
 
 
 // Just for comparison/proof-of-concept:
