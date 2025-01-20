@@ -1170,6 +1170,68 @@ void rsSetupHighDamp(rsDampedCombAllpassNaive<TSig, TPar>& flt,
   flt.setup(delay, feedback, 1, b, a, predelay);
 }
 
+
+//=================================================================================================
+
+/** Under construction - just a stub at the moment 
+
+This is supposed to factor out some functionality from class rsDampedCombAllpass to facilitate 
+re-using it in e.g. rsDampedMultiCombAllpass. We want to decouple the multicomb allpass from the
+single comb allpass - mainly because keeping the coupling would require to rewrite some 
+functionality in the single comb case to support fractional delays. But that's a complication, I 
+don't want to introduce to this class. The fractional delay feature shall be reserved for the
+multicomb. We mainly want to factor out all the getTransferFunction stuff that creates the transfer
+function objects. ...TBC...  */
+
+template<class T>
+class rsDampedCombAllpassSettings
+{
+
+public:
+
+
+  enum class InterpolationMethod
+  {
+    nearest,
+    linear,
+    allpass1
+  };
+
+protected:
+
+  static const int maxDmpOrd = 8;      // Maximum damping order
+
+  // Coefficients:
+  T k = 0;                             // Feedback gain
+  T b[maxDmpOrd+1];                    // Damping filter feedforward coeffs
+  T a[maxDmpOrd+1];                    // Damping filter feedback coeffs
+
+  // Settings:
+  //int  M        = 0;                 // Delayline length
+  T    delay    = 0;                   // Delay in samples (may be non integer)
+  int  dmpOrd   = 0;                   // Feedback damping filter order
+  InterpolationMethod interpolation = InterpolationMethod::nearest;
+  bool preDelay = false;               // Switch between with/without predelay mode of operation
+
+
+
+
+  // Temporary object for delay transfer function A(z):
+  //mutable rsSparseDigitalTransferFunction<TPar> A;
+    // This member is needed to support a non-allocating implementation of 
+    // getDelayTransferFunction() ...maybe call it D(z) for delay
+
+  // Maybe have a delay member of type TPar - or maybe double or TDly and then maybe get rid of M.
+  // Have an interpolationMethod member, too
+
+};
+
+
+
+
+
+
+
 //=================================================================================================
 
 /** This class implements a delayline based allpass filter based on the following block diagram:
@@ -1451,6 +1513,7 @@ protected:
   // Embedded DSP objects:
 
   //rsDelay<TSig> mainDelay;           // Main delayline for the comb filter    old
+  // Maybe revert to this
 
   rsDelayRounding<TSig, TPar> mainDelay;  // Main delayline for the comb filter    new
   // With this new code, our dampedCombAllpassComplex() experiment doesn't compile anymore. 
@@ -1540,6 +1603,20 @@ void rsDampedCombAllpass<TSig, TPar>::setup(int delay, TPar feedback, int dampOr
   corrDelay.setDelayInSamples(M+dmpOrd+1);
   // I think, this may need more delay memory when we have an interpolating delayline. I think, we
   // may have to add the order of the interpolator.
+
+  // ToDo:
+  //
+  // - We need to take the delay as TPar to allow for non-integer delays and then pass that value
+  //   to mainDelay.setDelayInSamples(). The member variable M may then be obsolete. I think, the 
+  //   corrDelay needs to use  (int) (delay-1) + dmpOrd + 1 + interpolationOrder  but I'm not 
+  //   totally sure about that, so that needs to be verified and unit tested. Oh! But supporting
+  //   fractional delays is actually more complicated and would also require re-implementation of
+  //   applyCorrector(). The current implementation is really ony applicable to the case of an 
+  //   integer delay. Hmmmm....maybe we should revert this class to support only integer delays and 
+  //   factor out the stuff that designs comb allpasses with non-integer delays. Maybe factor out
+  //   a class rsDampedCombAllpassSettings containing  k,b,a,M,dmpOrd,predelay  as data members
+  //   and all the  getTransferFunction...  functions as member functions. And maybe some 
+  //   design/setup functions. This class here should then maintain a settings member of this type.
 }
 
 template<class TSig, class TPar>
@@ -1806,8 +1883,10 @@ void rsSetupHighDamp(rsDampedCombAllpass<TSig, TPar>& flt,
   flt.setup(delay, feedback, 1, b, a, predelay);
 }
 
-
-
+// A function to set up the object with a fractionla delay by incorporating a linear interpolation 
+// filter into the feedback filter. LinViaFb stands for "linear interpolation via the feedback 
+// filter" ...ToDo: Explain why this works. Does it actually work, though? ..I think it works for
+// FIR interpolation filters but not IIR (like allpass interpolators)
 template<class TSig, class TPar>
 void rsSetupFractional_LinViaFb(rsDampedCombAllpass<TSig, TPar>& flt,
   TPar delay, TPar feedback, bool predelay)
@@ -1855,8 +1934,9 @@ void rsSetupFractional_LinViaFb(rsDampedCombAllpass<TSig, TPar>& flt,
 // times for low and high frequencies. The scale factors are given as raw factors for the RT60 and
 // crossover frequencies are given as omega.
 template<class TSig, class TPar>
-void rsSetupDecayTimes_LinViaFb(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay, TPar decayTimeInSamples,
-  TPar lowOmega, TPar lowTimeScale, TPar highOmega, TPar highTimeScale, bool predelay)
+void rsSetupDecayTimes_LinViaFb(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay, 
+  TPar decayTimeInSamples, TPar lowOmega, TPar lowTimeScale, TPar highOmega, TPar highTimeScale, 
+  bool predelay)
 {
   // Compute desired feedback gains for low, mid and high frequencies:
   TPar a60 = TPar(0.001); // = rsDbToAmp(-60.0). Target amplitude to reach after decayTimeInSamples
