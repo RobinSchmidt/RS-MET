@@ -1132,13 +1132,16 @@ void dampedCombAllpassFractional1()
 
 void dampedCombAllpassFractional2()
 {
-  // Now we wanto to create damped allpass with fractional delay and some actual dampling filters.
+  // Now we wanto to create damped allpass with fractional delay and some actual damping filters.
   // They way we do this is to absorb the interpolation filter into the damping filter.
 
   // Define types to be used:
-  using Real      = double;
-  using Vec       = std::vector<Real>;
-  using Allpass   = rsDampedCombAllpass<Real, Real>;
+  using Real         = double;
+  using Vec          = std::vector<Real>;
+  using Allpass      = rsDampedCombAllpass<Real, Real>;
+  using CombSettings = rsDampedCombSettings<Real>;
+  using TransFunc    =  rsSparseDigitalTransferFunction<Real>;
+
 
   // User parameters:
   Real sampleRate = 48000;     // Sampling rate.
@@ -1156,6 +1159,20 @@ void dampedCombAllpassFractional2()
   Real highOmega    = 2*PI*highFreq / sampleRate;
   int  N            = numSamples;
   int  maxDelay     = (int) rsCeil(delay);   // Verify!
+
+
+  // Compute settings for a linearly interpolating comb once by baking the interpolator filter into
+  // the feedback dampling filter and once by baking it into the delayline:
+  CombSettings s1, s2;
+  rsSetupDecayTimes_LinViaFb(
+    s1, delay, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
+  rsSetupDecayTimes_LinViaDly(
+    s2, delay, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
+  TransFunc tf1, tf2;
+  s1.getCombTransferFunction(&tf1);
+  s2.getCombTransferFunction(&tf2);
+  bool ok = tf2.isCloseTo(tf1, 1.e-14);
+
 
   // Create and set up the allpass filter:
   Allpass ap;
@@ -1851,9 +1868,9 @@ void dampedAllpassBiComb_1p()
 
 void dampedCombAllpasses()
 {
-  dampedCombAllpass5();
+  //dampedCombAllpass5();
   //dampedCombAllpassFractional1();
-  //dampedCombAllpassFractional2();
+  dampedCombAllpassFractional2();
   //dampedMultiCombAllpass();
   //dampedMultiCombAllpass2();
 
