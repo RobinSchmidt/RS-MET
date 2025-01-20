@@ -1190,12 +1190,85 @@ class rsDampedCombAllpassSettings
 public:
 
 
+  /*
   enum class InterpolationMethod
   {
     nearest,
     linear,
     allpass1
   };
+  */
+
+
+  void setup(int delayInSamples, T feedback, int dampOrder,
+    const T* dampCoeffsB, const T* dampCoeffsA, bool predelayMode)
+  {
+    if(dampOrder > maxDmpOrd) 
+    {
+      rsError("Such high damping order is not supported.");
+      initSettings();
+      return;
+    }
+
+
+    delay    = delayInSamples - 1;    // -1 corrects for unit delay in feedback path
+    M        = delay;                 // Maybe get rid
+    k        = feedback;
+    preDelay = predelayMode;
+    dmpOrd   = dampOrder;
+
+    rsAssert(dampCoeffsA[0] == TPar(1));  
+    // May be relaxed later by dividing through all coeffs by a[0]
+
+
+    rsArrayTools::copy(dampCoeffsA, a, dmpOrd+1);
+    rsArrayTools::copy(dampCoeffsB, b, dmpOrd+1);
+  }
+
+
+
+
+
+  void getCorrectorTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
+  {
+    getCombTransferFunction(tf);
+    tf->invert();
+    tf->reflectZeros();
+  }
+
+  void getCombTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
+  {
+    using Mon = rsMonomial<T>;
+    getDelayTransferFunction(&A);   // A = A(z) is transfer function of the delay
+    getDamperTransferFunction(tf);  // tf = F, F(z) is transfer function in feedback path
+    tf->multiplyBy(Mon(k, 1));      // tf = F * k * z^-1
+    tf->multiplyBy(A, T(0));        // tf = F * k * z^-1 * A
+    tf->addConstant(T(1), T(0));    // tf = 1 + F * k * z^-1 * A
+    tf->invert();                   // tf = 1 / (1 + F * k * z^-1 * A)
+    if(preDelay)
+      tf->multiplyBy(A, T(0));      // tf = A / (1 + F * k * z^-1 * A)
+
+    // ToDo:
+    //
+    // - Verify that all operations above are non-allocating (assuming that tf has enough capacity)
+    //   and document that fact. Our member A also needs to have enough capacity to represent the
+    //   delay filter including interpolation.
+  }
+
+
+  void getDamperTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
+  {
+    tf->setupFromDenseCoeffs(b, dmpOrd+1, a, dmpOrd+1, TPar(0));
+  }
+
+
+  void getDelayTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
+  {
+    //mainDelay.getTransferFunction(tf);
+  }
+
+
+
 
 protected:
 
@@ -1207,17 +1280,17 @@ protected:
   T a[maxDmpOrd+1];                    // Damping filter feedback coeffs
 
   // Settings:
-  //int  M        = 0;                 // Delayline length
+  int  M        = 0;                   // Delayline length - maybe get rid
   T    delay    = 0;                   // Delay in samples (may be non integer)
   int  dmpOrd   = 0;                   // Feedback damping filter order
-  InterpolationMethod interpolation = InterpolationMethod::nearest;
+  //InterpolationMethod interpolation = InterpolationMethod::nearest;
   bool preDelay = false;               // Switch between with/without predelay mode of operation
 
 
 
 
   // Temporary object for delay transfer function A(z):
-  //mutable rsSparseDigitalTransferFunction<TPar> A;
+  mutable rsSparseDigitalTransferFunction<T> A;
     // This member is needed to support a non-allocating implementation of 
     // getDelayTransferFunction() ...maybe call it D(z) for delay
 
