@@ -1216,37 +1216,24 @@ public:
 
   void init()
   {
-    delay    = 0;
-    //M        = 0;
-    k        = 0;
-    dmpOrd   = 0;
-    preDelay = false;
+    delay         = 0;
+    interpolation = InterpolationMethod::nearest;
+    k             = 0;
+    dmpOrd        = 0;
+    preDelay      = false;
 
     using AT = rsArrayTools;
     AT::clear(b, maxDmpOrd+1);
     AT::clear(a, maxDmpOrd+1);
 
-    interpolation = InterpolationMethod::nearest;
-
     A.setNumTerms(2, 2);      // (2,2) reserves enough memory to avoid allocations later
     A.clear();                // ...but at the moment, it's just empty
-
-
-    //A.setNumTerms(1, 1);      // ...but at the moment, we just need (1,1) terms
-    //A.num.setTerm(0, 0, 0);
-    //A.den.setTerm(0, 1, 0);
-    // Maybe factor this out into a protected function setMaxInterpolatorOrder. The purpose of
-    // such a function would be mainly for documentation. Or mabe have a function 
-    // reserveDelayTransFuncMemory
   }
-  // Rename to init
 
 
-
-
-  void setup(T delayInSamples, T feedback, 
-             int dampOrder, const T* dampCoeffsB, const T* dampCoeffsA, 
-             bool preDelayMode)
+  void setup(T delayInSamples, InterpolationMethod interpolationMethod,
+    T feedback, int dampOrder, const T* dampCoeffsB, const T* dampCoeffsA, 
+    bool preDelayMode)
   {
     if(dampOrder > maxDmpOrd) 
     {
@@ -1256,11 +1243,11 @@ public:
     }
 
 
-    delay    = delayInSamples - 1;    // -1 corrects for unit delay in feedback path
-    //M        = delay;                 // Maybe get rid
-    k        = feedback;
-    preDelay = preDelayMode;
-    dmpOrd   = dampOrder;
+    delay         = delayInSamples - 1;      // -1 corrects for unit delay in feedback path
+    interpolation = interpolationMethod;
+    k             = feedback;
+    preDelay      = preDelayMode;
+    dmpOrd        = dampOrder;
 
     rsAssert(dampCoeffsA[0] == T(1));  
     // May be relaxed later by dividing through all coeffs by a[0]
@@ -1428,8 +1415,9 @@ protected:
 
 // Under construction....
 template<class T>
-void rsSetupDecayTimes_LinViaDly(rsDampedCombSettings<T>& combSettings, T delay, 
-  T decayTimeInSamples, T lowOmega, T lowTimeScale, T highOmega, T highTimeScale, 
+void rsSetupDecayTimes_LinViaDly(
+  rsDampedCombSettings<T>& combSettings, 
+  T delay, T decayTimeInSamples, T lowOmega, T lowTimeScale, T highOmega, T highTimeScale, 
   bool preDelay)
 {
   // Compute desired feedback gains for low, mid and high frequencies:
@@ -1457,7 +1445,8 @@ void rsSetupDecayTimes_LinViaDly(rsDampedCombSettings<T>& combSettings, T delay,
   rsArrayTools::convolve(bL, 2, bH, 2, b);
 
   // Set up the rsDampedCombSettings objects:
-  combSettings.setup(delay, kM, 2, b, a, preDelay);
+  using IM = rsDampedCombSettings<T>::InterpolationMethod;
+  combSettings.setup(delay, IM::linear, kM, 2, b, a, preDelay);
 }
 // Maybe make that a member of rsDampedCombSettings
 
@@ -1494,12 +1483,13 @@ void rsSetupDecayTimes_LinViaFb(rsDampedCombSettings<T>& combSettings, T delay,
 
   // Possibly also bake an interpolation filter into the feedback filter to achieve fractional 
   // delay times:
+  using IM = rsDampedCombSettings<T>::InterpolationMethod;
   int delayInt  = (int) rsFloor(delay);
   T   delayFrac = delay - (T) delayInt;
   if(delayFrac == T(0))
   {
     // In the integer delay case, we only need the 2nd order feedback filter that we already have:
-    combSettings.setup(delayInt, kM, 2, b, a, predelay);
+    combSettings.setup(delayInt, IM::nearest, kM, 2, b, a, predelay);
   }
   else
   {
@@ -1518,7 +1508,7 @@ void rsSetupDecayTimes_LinViaFb(rsDampedCombSettings<T>& combSettings, T delay,
     // Bake the interpolation filter into the b,a, arrays:
     rsArrayTools::convolve(a, 3, aI, 2, a);
     rsArrayTools::convolve(b, 3, bI, 2, b);
-    combSettings.setup(delayInt, kM, 3, b, a, predelay);
+    combSettings.setup(delayInt, IM::nearest, kM, 3, b, a, predelay);
   }
 }
 // ToDo: create tests, creating a linearly interpolating damped comb in 2 ways: (1) baking the
@@ -2511,31 +2501,12 @@ protected:
     // documentation value. We would document that this is intended to be an atomic operation.
   }
 
-  void updateFilters();
-  // Allocates! Not yet realtime ready.
-
-
+  void updateFilters(); // Allocates! Not yet realtime ready. ...might be fixed....verify!
 
 
   // Embedded DSP objects:
   rsSparseFilter<TSig, TPar> combBank;
   rsSparseFilter<TSig, TPar> corrector;
-
-
-  // A damped comb allpass object used prototype to compute the filter coeffs:
-  //rsDampedCombAllpass<TSig, TPar> protoAllpass; 
-  // This is not ideal! It contains itself two delaylines which are not needed here and therefore
-  // just waste memory. ToDo: Refactor such that the coefficient calculation can be done without
-  // having to use such an object. Maybe the coeff calculation can be done by a static member 
-  // function? We'll see...
-  // Nah - we should use class rsDampedCombAllpassSettings
-
-
-
-  rsDampedCombSettings<TPar> protoComb;
-  // This should eventually replace the protoAllpass above
-
-
 
 
 
@@ -2586,6 +2557,11 @@ protected:
   // Flag to indicate that a call to updateFilters() is needed before doing any DSP:
   std::atomic<bool> dirty = true;
 
+
+
+  // This object will be used compute the filter coeffs of the prototype combs:
+  rsDampedCombSettings<TPar> protoComb;
+
   // Transfer function objects used for temporaries in internal computations in updateFilters():
   rsSparseDigitalTransferFunction<TPar> U, Ui;
 };
@@ -2620,28 +2596,15 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
     // when using odd harmonics only (by way of the feedback sign), the fundamental frequency 
     // actually goes an octave lower.
 
-    //// Old:
-    //rsSetupDecayTimes_LinViaFb(
-    //  protoAllpass, delay, decaySamples, 
-    //  lowOmega,  lowDecayScale, highOmega, highDecayScale, false);
-    //// This needs an additional parameter to determine the sign of the feedback, i.e. switch 
-    //// between all and only odd harmonics
 
-    //protoAllpass.getCombTransferFunction(&Ui);
-
-
-    // New:
     rsSetupDecayTimes_LinViaFb(protoComb, delay, decaySamples, 
       lowOmega, lowDecayScale, highOmega, highDecayScale, false);
-    //rsSparseDigitalTransferFunction<TPar> Ui2;   // For develop/debug
-    protoComb.getCombTransferFunction(&Ui);
-    // Check, if this matches Ui. Later, we want to use this call to assign Ui itself.
-    //bool ok = Ui2.isCloseTo(Ui, 0.0);
-
-
+    // This needs an additional parameter to determine the sign of the feedback, i.e. switch 
+    // between all and only odd harmonics
 
 
     // Accumulate the i-th comb's transfer function Ui into our total transfer function U:
+    protoComb.getCombTransferFunction(&Ui);
     RatFunc::weightedSumDestructive(&U, TPar(1), &Ui, TPar(s.gain), &U, TPar(0));
   }
 
