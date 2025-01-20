@@ -1173,7 +1173,7 @@ void rsSetupHighDamp(rsDampedCombAllpassNaive<TSig, TPar>& flt,
 
 //=================================================================================================
 
-/** Under construction - just a stub at the moment 
+/** Under construction
 
 This is supposed to factor out some functionality from class rsDampedCombAllpass to facilitate 
 re-using it in e.g. rsDampedMultiCombAllpass. We want to decouple the multicomb allpass from the
@@ -1181,28 +1181,13 @@ single comb allpass - mainly because keeping the coupling would require to rewri
 functionality in the single comb case to support fractional delays. But that's a complication, I 
 don't want to introduce to this class. The fractional delay feature shall be reserved for the
 multicomb. We mainly want to factor out all the getTransferFunction stuff that creates the transfer
-function objects. 
-
-Maybe rename the class into rsDampedCombSettings and have only the comb-related stuff here
-
-
-...TBC...  */
+function objects. ...TBC...  */
 
 template<class T>
 class rsDampedCombSettings
 {
 
 public:
-
-
-
-  ///** Standard constructor. Initializes the settings and resets the state to initial conditions. */
-  //rsDampedCombSettings()
-  //{
-  //  init();
-  //}
-  //// Maybe factor this out into an init() method
-
 
   
   enum class InterpolationMethod
@@ -1256,32 +1241,10 @@ public:
     rsArrayTools::copy(dampCoeffsA, a, dmpOrd+1);
     rsArrayTools::copy(dampCoeffsB, b, dmpOrd+1);
   }
-  // Should have an interpolationMethod parameter
   // Maybe rename to setupFromAlgoParams and have a similar setupFromUserParams function that uses
   // higher level parameters such as decay times at various frequencies, i.e. the currently free
   // function rsSetupDecayTimes_LinViaDly ...Maybe setupViaDecayTimes...the low level function 
   // could be called setupViaCoeffs
-
-
-
-
-  /*
-  void getCorrectorTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
-  {
-    getCombTransferFunction(tf);
-    tf->invert();
-    tf->reflectZeros();
-  }
-  // Maybe turn into an getInverseTransferFunction and leave out the reflectZeros() part
-  */
-
-  /*
-  void getInverseTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
-  {
-    getCombTransferFunction(tf);
-    tf->invert();
-  }
-  */
 
 
   void getCombTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
