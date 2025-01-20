@@ -1442,43 +1442,52 @@ T rsMakeDampBiShelf(T delay, T decay, T loOmega, T loScale, T hiOmega, T hiScale
 
   // Return the (mid) feedback gain:
   return kM;
+
+
+  // ToDo:
+  //
+  // - Maybe optionally turn the low- and/or high-shelver into a maximum phase version. Maybe 
+  //   optionally let the user also add an allpass filter for additional dispersion in the feedback
+  //   path.
+  //
+  // - Compare to implementation of FeedbackDelayNetwork16::updateDampingAndCorrectionFilters. It 
+  //   uses class rosic::DampingFilter and it specifies the gains also at the shelver's crossover
+  //   frequencies. The idea is that the linear gain at the crossover freq is not defined to be 
+  //   just the geometric mean between the actual shelver gain and unity but instead some gain that
+  //   let's the decay time at that frequency be the geometric mean between the mid decay time
+  //   and the low (or high) frequency decay time.
+  //
+  // - Maybe we should use rosic::DampingFilter here for the coefficient calculations, too. But I 
+  //   think before that, we should refactor the code in such a way that the damping filter itself
+  //   handles the computations of the desired gains at the crossover frequencies - which we 
+  //   currently do in FeedbackDelayNetwork16::updateDampingAndCorrectionFilters(). I'm not sure, 
+  //   if it's really worth the trouble to do it like this, though. It will just slightly(?) change
+  //   the response/feeling of the lowFreq/lowScale, highFreq/highScale parameters. It may be a 
+  //   more natural response, though. I think, it may help to decouple the respective freq and 
+  //   scale parameters. ...but it's quite complicated to implement... But maybe it doesn't have to
+  //   be that complicated. Maybe we could use a general 3-point filter-design routine that lets
+  //   the user specify 3 omegas and the 3 corresponding gains. Or maybe we could use the general
+  //   5-point biquad design method that takes 5 omegas and 5 magnitudes. The omegas would be
+  //   DC, loFreq, sqrt(loFreq*hiFreq), hiFreq, fs/2. But what if loFreq==hiFreq? I guess, we would
+  //   get a singular system of equations.
+  //
+  // - Can be optimized: design the low shelf directly into a,b, the high shelf into some tmp 
+  //   arrays, then bake them into a,b. The allpass can then use the same temp arrays as the 
+  //   hi shelf and then also bake them into a,b
+
 }
 // Rename to rsMakeFeedbackFilter...maybe
+// Move up near rsMake1stOrderLowShelf
 
 
 
-// Under construction....
+// Maybe make that a member of rsDampedCombSettings:
 template<class T>
 void rsSetupDecayTimes_LinViaDly(
   rsDampedCombSettings<T>& combSettings, 
   T delay, T decay, T loOmega, T loScale, T hiOmega, T hiScale, 
   bool preDelay)
 {
-  //// Compute desired feedback gains for low, mid and high frequencies:
-  //T a60 = T(0.001);   // = rsDbToAmp(-60.0). Target amplitude to reach after decayTimeInSamples
-  //T kL  = rsDecayTimeToFeedbackGain(decayTimeInSamples * lowTimeScale , T(delay), a60);
-  //T kM  = rsDecayTimeToFeedbackGain(decayTimeInSamples                , T(delay), a60);
-  //T kH  = rsDecayTimeToFeedbackGain(decayTimeInSamples * highTimeScale, T(delay), a60);
-  //// These formulas could also be expressed as e.g.:
-  ////
-  ////   kM = rsPow(10.0, TPar(-3 * delay) / decayTimeInSamples);
-  ////
-  //// which is how they are often seen in the FDN literature. 
-
-  //// Compute desired gains for the low and high shelver:
-  //T gL = kL / kM;
-  //T gH = kH / kM;
-
-  //// Compute coeffs for low- and high shelver:
-  //T aL[2], bL[2]; aL[0] = 1; rsMake1stOrderLowShelf( lowOmega,  gL, &bL[0], &bL[1], &aL[1]);
-  //T aH[2], bH[2]; aH[0] = 1; rsMake1stOrderHighShelf(highOmega, gH, &bH[0], &bH[1], &aH[1]);
-
-  //// Combine low- and high shelver into biquad:
-  //T a[3], b[3];
-  //rsArrayTools::convolve(aL, 2, aH, 2, a);
-  //rsArrayTools::convolve(bL, 2, bH, 2, b);
-
-
   // Compute feedback gain and filter coeffs:
   T a[3], b[3];
   T kM = rsMakeDampBiShelf(delay, decay, loOmega, loScale, hiOmega, hiScale, b, a);
@@ -1486,9 +1495,17 @@ void rsSetupDecayTimes_LinViaDly(
   // Set up the rsDampedCombSettings objects:
   using IM = rsDampedCombSettings<T>::InterpolationMethod;
   combSettings.setup(delay, IM::linear, kM, 2, b, a, preDelay);
+
+  // ToDo:
+  //
+  // - Pass combSettings by pointer
+  //
+  // - Maybe the delay should be adjusted to take into account the effect of the damping filter 
+  //   (which itself may also introduce a frequency dependent delay). I think, what we want is to
+  //   have the correct fractional delay at DC or maybe at the resonance frequency, so we can tune 
+  //   it exactly.
 }
-// Maybe make that a member of rsDampedCombSettings
-// Factor out a function rsMakeDampingBiShelf(delay, decay, loOmega, loScale, hiOmega, hiScale, b, a)
+
 
 
 // Just for comparison/proof-of-concept:
@@ -1496,35 +1513,9 @@ template<class T>
 void rsSetupDecayTimes_LinViaFb(rsDampedCombSettings<T>& combSettings, 
   T delay, T decay, T loOmega, T loScale, T hiOmega, T hiScale, bool predelay)
 {
-  //// Compute desired feedback gains for low, mid and high frequencies:
-  //T a60 = T(0.001);  // = rsDbToAmp(-60.0). Target amplitude to reach after decayTimeInSamples
-  //T kL  = rsDecayTimeToFeedbackGain(decayTimeInSamples * lowTimeScale , T(delay), a60);
-  //T kM  = rsDecayTimeToFeedbackGain(decayTimeInSamples                , T(delay), a60);
-  //T kH  = rsDecayTimeToFeedbackGain(decayTimeInSamples * highTimeScale, T(delay), a60);
-  //// These formulas could also be expressed as e.g.:
-  ////
-  ////   kM = rsPow(10.0, TPar(-3 * delay) / decayTimeInSamples);
-  ////
-  //// which is how they are often seen in the FDN literature. 
-
-  //// Compute desired gains for the low and high shelver:
-  //T gL = kL / kM;
-  //T gH = kH / kM;
-
-  //// Compute coeffs for low- and high shelver:
-  //T aL[2], bL[2]; aL[0] = 1; rsMake1stOrderLowShelf( lowOmega,  gL, &bL[0], &bL[1], &aL[1]);
-  //T aH[2], bH[2]; aH[0] = 1; rsMake1stOrderHighShelf(highOmega, gH, &bH[0], &bH[1], &aH[1]);
-
-  //// Combine low- and high shelver into biquad:
-  //T a[4], b[4];
-  //rsArrayTools::convolve(aL, 2, aH, 2, a);
-  //rsArrayTools::convolve(bL, 2, bH, 2, b);
-
-
   // Compute feedback gain and filter coeffs:
   T a[4], b[4];
   T kM = rsMakeDampBiShelf(delay, decay, loOmega, loScale, hiOmega, hiScale, b, a);
-
 
   // Possibly also bake an interpolation filter into the feedback filter to achieve fractional 
   // delay times:
@@ -2330,45 +2321,9 @@ void rsSetupDecayTimes_LinViaFb(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay
   }
 
 
-
-  // ToDo:
-  //
-  // - Maybe optionally turn the low- and/or high-shelver into a maximum phase version. Maybe 
-  //   optionally let the user also add an allpass filter for additional dispersion in the feedback
-  //   path.
-  //
-  // - Compare to implementation of FeedbackDelayNetwork16::updateDampingAndCorrectionFilters. It 
-  //   uses class rosic::DampingFilter and it specifies the gains also at the shelver's crossover
-  //   frequencies. The idea is that the linear gain at the crossover freq is not defined to be 
-  //   just the geometric mean between the actual shelver gain and unity but instead some gain that
-  //   let's the decay time at that frequency be the geometric mean between the mid decay time
-  //   and the low (or high) frequency decay time.
-  //
-  // - Maybe we should use rosic::DampingFilter here for the coefficient calculations, too. But I 
-  //   think before that, we should refactor the code in such a way that the damping filter itself
-  //   handles the computations of the desired gains at the crossover frequencies - which we 
-  //   currently do in FeedbackDelayNetwork16::updateDampingAndCorrectionFilters(). I'm not sure, 
-  //   if it's really worth the trouble to do it like this, though. It will just slightly(?) change
-  //   the response/feeling of the lowFreq/lowScale, highFreq/highScale parameters. It may be a 
-  //   more natural response, though. I think, it may help to decouple the respective freq and 
-  //   scale parameters. ...but it's quite complicated to implement... But maybe it doesn't have to
-  //   be that complicated. Maybe we could use a general 3-point filter-design routine that lets
-  //   the user specify 3 omegas and the 3 corresponding gains. Or maybe we could use the general
-  //   5-point biquad design method that takes 5 omegas and 5 magnitudes. The omegas would be
-  //   DC, loFreq, sqrt(loFreq*hiFreq), hiFreq, fs/2. But what if loFreq==hiFreq? I guess, we would
-  //   get a singular system of equations.
-  //
-  // - Pass flt by pointer
-  //
-  // - Maybe implement a filter that realizes a fractional delay by introducing another 1st order 
-  //   allpass - like in allpass interpolation. Maybe the allpass should be adjusted to take into
-  //   account the effect of the damping filter (which itself may also introduce a frequency 
-  //   dependent delay). I think, what we want is to have the correct fractional delay at DC or
-  //   maybe at the resonance frequency, so we can tune it exactly.
-  //
-  // - Can be optimized: design the low shelf directly into a,b, the high shelf into some tmp 
-  //   arrays, then bake them into a,b. The allpass can then use the same temp arrays as the 
-  //   hi shelf and then also bake them into a,b
+  // ToDo: Use rsMakeDampBiShelf ..well...actually, we wnat to get rid of it anyway and instead
+  // use a rsDampedCombSettings member in the rsDampedCombAllpass class. We can the use the setup
+  // function for that. This function here will then be obsolete.
 }
 // Rename to rsSetupDecayTimes_LinViaFb where LinViaFb stands for "linear interpolation via the 
 // feedback filter"
