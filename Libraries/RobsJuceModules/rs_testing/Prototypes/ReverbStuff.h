@@ -2389,12 +2389,12 @@ public:
 
     maxNumCombs = maxNumCombs;
     maxDelay    = newMaxDelayInSamples;
-    protoAllpass.setMaxDelayInSamples(maxDelay);
+    //protoAllpass.setMaxDelayInSamples(maxDelay);
     settings.resize(maxNumCombs);
 
 
     int maxBankDelay = maxDelay * maxNumCombs + 4;
-    // VERIFY this formula! theoretically and practically (by making a unit test using the maxmimum
+    // VERIFY this formula! Theoretically and practically (by making a unit test using the maxmimum
     // number of combs each at the maximum possible delay) This is just a first rough guess and 
     // might be wrong!
 
@@ -2523,7 +2523,7 @@ protected:
 
 
   // A damped comb allpass object used prototype to compute the filter coeffs:
-  rsDampedCombAllpass<TSig, TPar> protoAllpass; 
+  //rsDampedCombAllpass<TSig, TPar> protoAllpass; 
   // This is not ideal! It contains itself two delaylines which are not needed here and therefore
   // just waste memory. ToDo: Refactor such that the coefficient calculation can be done without
   // having to use such an object. Maybe the coeff calculation can be done by a static member 
@@ -2620,28 +2620,28 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
     // when using odd harmonics only (by way of the feedback sign), the fundamental frequency 
     // actually goes an octave lower.
 
-    // Old:
-    rsSetupDecayTimes_LinViaFb(
-      protoAllpass, delay, decaySamples, 
-      lowOmega,  lowDecayScale, highOmega, highDecayScale, false);
-    // This needs an additional parameter to determine the sign of the feedback, i.e. switch 
-    // between all and only odd harmonics
+    //// Old:
+    //rsSetupDecayTimes_LinViaFb(
+    //  protoAllpass, delay, decaySamples, 
+    //  lowOmega,  lowDecayScale, highOmega, highDecayScale, false);
+    //// This needs an additional parameter to determine the sign of the feedback, i.e. switch 
+    //// between all and only odd harmonics
 
-    protoAllpass.getCombTransferFunction(&Ui);
+    //protoAllpass.getCombTransferFunction(&Ui);
 
 
     // New:
     rsSetupDecayTimes_LinViaFb(protoComb, delay, decaySamples, 
       lowOmega, lowDecayScale, highOmega, highDecayScale, false);
-    rsSparseDigitalTransferFunction<TPar> Ui2;   // For develop/debug
-    protoComb.getCombTransferFunction(&Ui2);
+    //rsSparseDigitalTransferFunction<TPar> Ui2;   // For develop/debug
+    protoComb.getCombTransferFunction(&Ui);
     // Check, if this matches Ui. Later, we want to use this call to assign Ui itself.
-    bool ok = Ui2.isCloseTo(Ui, 0.0);
+    //bool ok = Ui2.isCloseTo(Ui, 0.0);
 
 
 
 
-    // Accumulate the i-th comb's tranfer function Ui into our total transfer function U:
+    // Accumulate the i-th comb's transfer function Ui into our total transfer function U:
     RatFunc::weightedSumDestructive(&U, TPar(1), &Ui, TPar(s.gain), &U, TPar(0));
   }
 
