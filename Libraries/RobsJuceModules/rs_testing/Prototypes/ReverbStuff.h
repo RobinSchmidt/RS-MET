@@ -1414,14 +1414,14 @@ protected:
 
 
 template<class T>
-T rsMakeDampBiShelf(T delay, T decay, T lowOmega, T lowTimeScale, T highOmega, T highTimeScale,
+T rsMakeDampBiShelf(T delay, T decay, T loOmega, T loScale, T hiOmega, T hiScale,
   T* b, T* a)
 {
   // Compute desired feedback gains for low, mid and high frequencies:
-  T a60 = T(0.001);   // = rsDbToAmp(-60.0). Target amplitude to reach after decayTimeInSamples
-  T kL  = rsDecayTimeToFeedbackGain(decay * lowTimeScale , T(delay), a60);
-  T kM  = rsDecayTimeToFeedbackGain(decay                , T(delay), a60);
-  T kH  = rsDecayTimeToFeedbackGain(decay * highTimeScale, T(delay), a60);
+  T a60 = T(0.001);   // = rsDbToAmp(-60.0). Target amplitude to reach after decay (in samples)
+  T kL  = rsDecayTimeToFeedbackGain(decay * loScale, delay, a60);
+  T kM  = rsDecayTimeToFeedbackGain(decay          , delay, a60);
+  T kH  = rsDecayTimeToFeedbackGain(decay * hiScale, delay, a60);
   // These formulas could also be expressed as e.g.:
   //
   //   kM = rsPow(10.0, TPar(-3 * delay) / decayTimeInSamples);
@@ -1433,8 +1433,8 @@ T rsMakeDampBiShelf(T delay, T decay, T lowOmega, T lowTimeScale, T highOmega, T
   T gH = kH / kM;
 
   // Compute coeffs for low- and high shelver:
-  T aL[2], bL[2]; aL[0] = 1; rsMake1stOrderLowShelf( lowOmega,  gL, &bL[0], &bL[1], &aL[1]);
-  T aH[2], bH[2]; aH[0] = 1; rsMake1stOrderHighShelf(highOmega, gH, &bH[0], &bH[1], &aH[1]);
+  T aL[2], bL[2]; aL[0] = 1; rsMake1stOrderLowShelf( loOmega, gL, &bL[0], &bL[1], &aL[1]);
+  T aH[2], bH[2]; aH[0] = 1; rsMake1stOrderHighShelf(hiOmega, gH, &bH[0], &bH[1], &aH[1]);
 
   // Combine low- and high shelver into biquad:
   rsArrayTools::convolve(aL, 2, aH, 2, a);
@@ -1451,7 +1451,7 @@ T rsMakeDampBiShelf(T delay, T decay, T lowOmega, T lowTimeScale, T highOmega, T
 template<class T>
 void rsSetupDecayTimes_LinViaDly(
   rsDampedCombSettings<T>& combSettings, 
-  T delay, T decayTimeInSamples, T lowOmega, T lowTimeScale, T highOmega, T highTimeScale, 
+  T delay, T decay, T loOmega, T loScale, T hiOmega, T hiScale, 
   bool preDelay)
 {
   //// Compute desired feedback gains for low, mid and high frequencies:
@@ -1481,9 +1481,7 @@ void rsSetupDecayTimes_LinViaDly(
 
   // Compute feedback gain and filter coeffs:
   T a[3], b[3];
-  T kM = rsMakeDampBiShelf(delay, decayTimeInSamples, 
-                           lowOmega, lowTimeScale, highOmega, highTimeScale,
-                           b, a);
+  T kM = rsMakeDampBiShelf(delay, decay, loOmega, loScale, hiOmega, hiScale, b, a);
 
   // Set up the rsDampedCombSettings objects:
   using IM = rsDampedCombSettings<T>::InterpolationMethod;
@@ -1495,33 +1493,38 @@ void rsSetupDecayTimes_LinViaDly(
 
 // Just for comparison/proof-of-concept:
 template<class T>
-void rsSetupDecayTimes_LinViaFb(rsDampedCombSettings<T>& combSettings, T delay, 
-  T decayTimeInSamples, T lowOmega, T lowTimeScale, T highOmega, T highTimeScale, 
-  bool predelay)
+void rsSetupDecayTimes_LinViaFb(rsDampedCombSettings<T>& combSettings, 
+  T delay, T decay, T loOmega, T loScale, T hiOmega, T hiScale, bool predelay)
 {
-  // Compute desired feedback gains for low, mid and high frequencies:
-  T a60 = T(0.001);  // = rsDbToAmp(-60.0). Target amplitude to reach after decayTimeInSamples
-  T kL  = rsDecayTimeToFeedbackGain(decayTimeInSamples * lowTimeScale , T(delay), a60);
-  T kM  = rsDecayTimeToFeedbackGain(decayTimeInSamples                , T(delay), a60);
-  T kH  = rsDecayTimeToFeedbackGain(decayTimeInSamples * highTimeScale, T(delay), a60);
-  // These formulas could also be expressed as e.g.:
-  //
-  //   kM = rsPow(10.0, TPar(-3 * delay) / decayTimeInSamples);
-  //
-  // which is how they are often seen in the FDN literature. 
+  //// Compute desired feedback gains for low, mid and high frequencies:
+  //T a60 = T(0.001);  // = rsDbToAmp(-60.0). Target amplitude to reach after decayTimeInSamples
+  //T kL  = rsDecayTimeToFeedbackGain(decayTimeInSamples * lowTimeScale , T(delay), a60);
+  //T kM  = rsDecayTimeToFeedbackGain(decayTimeInSamples                , T(delay), a60);
+  //T kH  = rsDecayTimeToFeedbackGain(decayTimeInSamples * highTimeScale, T(delay), a60);
+  //// These formulas could also be expressed as e.g.:
+  ////
+  ////   kM = rsPow(10.0, TPar(-3 * delay) / decayTimeInSamples);
+  ////
+  //// which is how they are often seen in the FDN literature. 
 
-  // Compute desired gains for the low and high shelver:
-  T gL = kL / kM;
-  T gH = kH / kM;
+  //// Compute desired gains for the low and high shelver:
+  //T gL = kL / kM;
+  //T gH = kH / kM;
 
-  // Compute coeffs for low- and high shelver:
-  T aL[2], bL[2]; aL[0] = 1; rsMake1stOrderLowShelf( lowOmega,  gL, &bL[0], &bL[1], &aL[1]);
-  T aH[2], bH[2]; aH[0] = 1; rsMake1stOrderHighShelf(highOmega, gH, &bH[0], &bH[1], &aH[1]);
+  //// Compute coeffs for low- and high shelver:
+  //T aL[2], bL[2]; aL[0] = 1; rsMake1stOrderLowShelf( lowOmega,  gL, &bL[0], &bL[1], &aL[1]);
+  //T aH[2], bH[2]; aH[0] = 1; rsMake1stOrderHighShelf(highOmega, gH, &bH[0], &bH[1], &aH[1]);
 
-  // Combine low- and high shelver into biquad:
+  //// Combine low- and high shelver into biquad:
+  //T a[4], b[4];
+  //rsArrayTools::convolve(aL, 2, aH, 2, a);
+  //rsArrayTools::convolve(bL, 2, bH, 2, b);
+
+
+  // Compute feedback gain and filter coeffs:
   T a[4], b[4];
-  rsArrayTools::convolve(aL, 2, aH, 2, a);
-  rsArrayTools::convolve(bL, 2, bH, 2, b);
+  T kM = rsMakeDampBiShelf(delay, decay, loOmega, loScale, hiOmega, hiScale, b, a);
+
 
   // Possibly also bake an interpolation filter into the feedback filter to achieve fractional 
   // delay times:
