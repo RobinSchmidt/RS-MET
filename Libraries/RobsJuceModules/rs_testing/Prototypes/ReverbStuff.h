@@ -1181,28 +1181,27 @@ single comb allpass - mainly because keeping the coupling would require to rewri
 functionality in the single comb case to support fractional delays. But that's a complication, I 
 don't want to introduce to this class. The fractional delay feature shall be reserved for the
 multicomb. We mainly want to factor out all the getTransferFunction stuff that creates the transfer
-function objects. ...TBC...  */
+function objects. 
+
+Maybe rename the class into rsDampedCombSettings and have only the comb-related stuff here
+
+
+...TBC...  */
 
 template<class T>
-class rsDampedCombAllpassSettings
+class rsDampedCombSettings
 {
 
 public:
 
 
 
-  /** Standard constructor. Initializes the settings and resets the state to initial conditions. */
-  rsDampedCombAllpassSettings()
-  {
-    // This should allocate memory on construction to avoid allocations later:
-    A.setNumTerms(2, 2);
-    // Maybe factor this out into a protected function setMaxInterpolatorOrder. The purpose of
-    // such a function would be mainly for documentation
-
-
-    //initSettings();  // Not yet there
-  }
-  // Maybe factor this out into an init() method
+  ///** Standard constructor. Initializes the settings and resets the state to initial conditions. */
+  //rsDampedCombSettings()
+  //{
+  //  init();
+  //}
+  //// Maybe factor this out into an init() method
 
 
   
@@ -1212,27 +1211,58 @@ public:
     linear,
     allpass1
   };
+  // Maybe use unsigned char as underlying type for the enum
  
 
+  void init()
+  {
+    delay    = 0;
+    //M        = 0;
+    k        = 0;
+    dmpOrd   = 0;
+    preDelay = false;
 
-  void setup(int delayInSamples, T feedback, int dampOrder,
-    const T* dampCoeffsB, const T* dampCoeffsA, bool predelayMode)
+    using AT = rsArrayTools;
+    AT::clear(b, maxDmpOrd+1);
+    AT::clear(a, maxDmpOrd+1);
+
+    interpolation = InterpolationMethod::nearest;
+
+    A.setNumTerms(2, 2);      // (2,2) reserves enough memory to avoid allocations later
+    A.clear();                // ...but at the moment, it's just empty
+
+
+    //A.setNumTerms(1, 1);      // ...but at the moment, we just need (1,1) terms
+    //A.num.setTerm(0, 0, 0);
+    //A.den.setTerm(0, 1, 0);
+    // Maybe factor this out into a protected function setMaxInterpolatorOrder. The purpose of
+    // such a function would be mainly for documentation. Or mabe have a function 
+    // reserveDelayTransFuncMemory
+  }
+  // Rename to init
+
+
+
+
+  void setup(T delayInSamples, T feedback, 
+             int dampOrder, const T* dampCoeffsB, const T* dampCoeffsA, 
+             bool preDelayMode)
   {
     if(dampOrder > maxDmpOrd) 
     {
       rsError("Such high damping order is not supported.");
-      initSettings();
+      init();
       return;
     }
 
 
     delay    = delayInSamples - 1;    // -1 corrects for unit delay in feedback path
-    M        = delay;                 // Maybe get rid
+    //M        = delay;                 // Maybe get rid
     k        = feedback;
-    preDelay = predelayMode;
+    preDelay = preDelayMode;
     dmpOrd   = dampOrder;
 
-    rsAssert(dampCoeffsA[0] == TPar(1));  
+    rsAssert(dampCoeffsA[0] == T(1));  
     // May be relaxed later by dividing through all coeffs by a[0]
 
 
@@ -1240,17 +1270,32 @@ public:
     rsArrayTools::copy(dampCoeffsB, b, dmpOrd+1);
   }
   // Should have an interpolationMethod parameter
+  // Maybe rename to setupFromAlgoParams and have a similar setupFromUserParams function that uses
+  // higher level parameters such as decay times at various frequencies, i.e. the currently free
+  // function rsSetupDecayTimes_LinViaDly ...Maybe setupViaDecayTimes...the low level function 
+  // could be called setupViaCoeffs
 
 
 
 
-
+  /*
   void getCorrectorTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
   {
     getCombTransferFunction(tf);
     tf->invert();
     tf->reflectZeros();
   }
+  // Maybe turn into an getInverseTransferFunction and leave out the reflectZeros() part
+  */
+
+  /*
+  void getInverseTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
+  {
+    getCombTransferFunction(tf);
+    tf->invert();
+  }
+  */
+
 
   void getCombTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
   {
@@ -1270,6 +1315,7 @@ public:
     //   and document that fact. Our member A also needs to have enough capacity to represent the
     //   delay filter including interpolation.
   }
+  // Rename to getTransferFunction
 
 
   void getDamperTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
@@ -1339,17 +1385,23 @@ protected:
 
   static const int maxDmpOrd = 8;      // Maximum damping order
 
-  // Coefficients:
+  // Feedback coefficients:
   T k = 0;                             // Feedback gain
   T b[maxDmpOrd+1];                    // Damping filter feedforward coeffs
   T a[maxDmpOrd+1];                    // Damping filter feedback coeffs
 
-  // Settings:
-  int  M        = 0;                   // Delayline length - maybe get rid
+  // Other settings:
   T    delay    = 0;                   // Delay in samples (may be non integer)
+  //int  M        = 0;                   // Delayline length - maybe get rid
   int  dmpOrd   = 0;                   // Feedback damping filter order
+
+  // Switch between different interpolation modes:
   InterpolationMethod interpolation = InterpolationMethod::nearest;
-  bool preDelay = false;               // Switch between with/without predelay mode of operation
+
+  // Switch between with/without predelay mode of operation:
+  bool preDelay = false;
+    // Maybe rename to something like "mode" or "structure", "configuration", "topology". Maybe 
+    // there could be even more modes?
 
 
 
@@ -1357,12 +1409,125 @@ protected:
   // Temporary object for delay transfer function A(z):
   mutable rsSparseDigitalTransferFunction<T> A;
     // This member is needed to support a non-allocating implementation of 
-    // getDelayTransferFunction() ...maybe call it D(z) for delay
+    // getCombTransferFunction() ...maybe call it D(z) for delay
+    // ...Maybe the implementation of getCombTransferFunction() should take the delay transfer
+    // function as parameter (by const ref). Then we can get rid of that member...hmm...but that
+    // complicates the API
+    //
+    // Try to get away without hep memory here. Store the coeffs directly in arrays like
+    // bI[2], aI[2] where I stands for interpolator ...maybe then rename b,a to bD,aD (D for 
+    // damper). Maybe instead of declaring them as bI[2], use bI[maxIntOrd+1]. We will then need a
+    // way to mutliply a sparse transfer function by one represented by a dense array of coeffs
 
-  // Maybe have a delay member of type TPar - or maybe double or TDly and then maybe get rid of M.
-  // Have an interpolationMethod member, too
+
+    // Maybe have a delay member of type TPar - or maybe double or TDly and then maybe get rid of
+    // M. Have an interpolationMethod member, too ....done
 
 };
+
+
+// Under construction....
+template<class T>
+void rsSetupDecayTimes_LinViaDly(rsDampedCombSettings<T>& combSettings, T delay, 
+  T decayTimeInSamples, T lowOmega, T lowTimeScale, T highOmega, T highTimeScale, 
+  bool preDelay)
+{
+  // Compute desired feedback gains for low, mid and high frequencies:
+  T a60 = T(0.001);   // = rsDbToAmp(-60.0). Target amplitude to reach after decayTimeInSamples
+  T kL  = rsDecayTimeToFeedbackGain(decayTimeInSamples * lowTimeScale , T(delay), a60);
+  T kM  = rsDecayTimeToFeedbackGain(decayTimeInSamples                , T(delay), a60);
+  T kH  = rsDecayTimeToFeedbackGain(decayTimeInSamples * highTimeScale, T(delay), a60);
+  // These formulas could also be expressed as e.g.:
+  //
+  //   kM = rsPow(10.0, TPar(-3 * delay) / decayTimeInSamples);
+  //
+  // which is how they are often seen in the FDN literature. 
+
+  // Compute desired gains for the low and high shelver:
+  T gL = kL / kM;
+  T gH = kH / kM;
+
+  // Compute coeffs for low- and high shelver:
+  T aL[2], bL[2]; aL[0] = 1; rsMake1stOrderLowShelf( lowOmega,  gL, &bL[0], &bL[1], &aL[1]);
+  T aH[2], bH[2]; aH[0] = 1; rsMake1stOrderHighShelf(highOmega, gH, &bH[0], &bH[1], &aH[1]);
+
+  // Combine low- and high shelver into biquad:
+  T a[3], b[3];
+  rsArrayTools::convolve(aL, 2, aH, 2, a);
+  rsArrayTools::convolve(bL, 2, bH, 2, b);
+
+  // Set up the rsDampedCombSettings objects:
+  combSettings.setup(delay, kM, 2, b, a, preDelay);
+}
+// Maybe make that a member of rsDampedCombSettings
+
+
+// Just for comparison/proof-of-concept:
+template<class T>
+void rsSetupDecayTimes_LinViaFb(rsDampedCombSettings<T>& combSettings, T delay, 
+  T decayTimeInSamples, T lowOmega, T lowTimeScale, T highOmega, T highTimeScale, 
+  bool predelay)
+{
+  // Compute desired feedback gains for low, mid and high frequencies:
+  T a60 = T(0.001);  // = rsDbToAmp(-60.0). Target amplitude to reach after decayTimeInSamples
+  T kL  = rsDecayTimeToFeedbackGain(decayTimeInSamples * lowTimeScale , T(delay), a60);
+  T kM  = rsDecayTimeToFeedbackGain(decayTimeInSamples                , T(delay), a60);
+  T kH  = rsDecayTimeToFeedbackGain(decayTimeInSamples * highTimeScale, T(delay), a60);
+  // These formulas could also be expressed as e.g.:
+  //
+  //   kM = rsPow(10.0, TPar(-3 * delay) / decayTimeInSamples);
+  //
+  // which is how they are often seen in the FDN literature. 
+
+  // Compute desired gains for the low and high shelver:
+  T gL = kL / kM;
+  T gH = kH / kM;
+
+  // Compute coeffs for low- and high shelver:
+  T aL[2], bL[2]; aL[0] = 1; rsMake1stOrderLowShelf( lowOmega,  gL, &bL[0], &bL[1], &aL[1]);
+  T aH[2], bH[2]; aH[0] = 1; rsMake1stOrderHighShelf(highOmega, gH, &bH[0], &bH[1], &aH[1]);
+
+  // Combine low- and high shelver into biquad:
+  T a[4], b[4];
+  rsArrayTools::convolve(aL, 2, aH, 2, a);
+  rsArrayTools::convolve(bL, 2, bH, 2, b);
+
+  // Possibly also bake an interpolation filter into the feedback filter to achieve fractional 
+  // delay times:
+  int delayInt  = (int) rsFloor(delay);
+  T   delayFrac = delay - (T) delayInt;
+  if(delayFrac == T(0))
+  {
+    // In the integer delay case, we only need the 2nd order feedback filter that we already have:
+    combSettings.setup(delayInt, kM, 2, b, a, predelay);
+  }
+  else
+  {
+    // In the fractional delay case, we create a linear interpolation filter and bake it into the 
+    // existing 2nd order feedback filter, thereby turning it into a 3rd order filter:
+
+    T d = delayFrac;
+
+    // Design linear interpolation filter:
+    T aI[2], bI[2];
+    bI[0] = 1 - d;
+    bI[1] = d;
+    aI[0] = 1;
+    aI[1] = 0;
+
+    // Bake the interpolation filter into the b,a, arrays:
+    rsArrayTools::convolve(a, 3, aI, 2, a);
+    rsArrayTools::convolve(b, 3, bI, 2, b);
+    combSettings.setup(delayInt, kM, 3, b, a, predelay);
+  }
+}
+// ToDo: create tests, creating a linearly interpolating damped comb in 2 ways: (1) baking the
+// interpolation into the delay, (2) baking the interpolation into the feedback damper. Compare
+// the resulting transfer functions.
+
+
+
+
 
 
 
@@ -2087,7 +2252,6 @@ void rsSetupDecayTimes_LinViaFb(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay
   //
   // which is how they are often seen in the FDN literature. 
 
-
   // Compute desired gains for the low and high shelver:
   TPar gL = kL / kM;
   TPar gH = kH / kM;
@@ -2364,6 +2528,15 @@ protected:
   // just waste memory. ToDo: Refactor such that the coefficient calculation can be done without
   // having to use such an object. Maybe the coeff calculation can be done by a static member 
   // function? We'll see...
+  // Nah - we should use class rsDampedCombAllpassSettings
+
+
+
+  rsDampedCombSettings<TPar> protoComb;
+  // This should eventually replace the protoAllpass above
+
+
+
 
 
   /** Struct for the settings that we have per comb */
@@ -2386,7 +2559,7 @@ protected:
   };
 
   // Per comb settings:
-  std::vector<CombSettings> settings;
+  std::vector<CombSettings> settings;   // Rename to perCombSettings
 
   // Global settings:
   TPar sampleRate     = TPar(44100);
@@ -2447,15 +2620,28 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
     // when using odd harmonics only (by way of the feedback sign), the fundamental frequency 
     // actually goes an octave lower.
 
+    // Old:
     rsSetupDecayTimes_LinViaFb(
       protoAllpass, delay, decaySamples, 
       lowOmega,  lowDecayScale, highOmega, highDecayScale, false);
     // This needs an additional parameter to determine the sign of the feedback, i.e. switch 
     // between all and only odd harmonics
 
+    protoAllpass.getCombTransferFunction(&Ui);
+
+
+    // New:
+    rsSetupDecayTimes_LinViaFb(protoComb, delay, decaySamples, 
+      lowOmega, lowDecayScale, highOmega, highDecayScale, false);
+    rsSparseDigitalTransferFunction<TPar> Ui2;   // For develop/debug
+    protoComb.getCombTransferFunction(&Ui2);
+    // Check, if this matches Ui. Later, we want to use this call to assign Ui itself.
+    bool ok = Ui2.isCloseTo(Ui, 0.0);
+
+
+
 
     // Accumulate the i-th comb's tranfer function Ui into our total transfer function U:
-    protoAllpass.getCombTransferFunction(&Ui);
     RatFunc::weightedSumDestructive(&U, TPar(1), &Ui, TPar(s.gain), &U, TPar(0));
   }
 
