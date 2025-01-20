@@ -1190,14 +1190,29 @@ class rsDampedCombAllpassSettings
 public:
 
 
-  /*
+
+  /** Standard constructor. Initializes the settings and resets the state to initial conditions. */
+  rsDampedCombAllpassSettings()
+  {
+    // This should allocate memory on construction to avoid allocations later:
+    A.setNumTerms(2, 2);
+    // Maybe factor this out into a protected function setMaxInterpolatorOrder. The purpose of
+    // such a function would be mainly for documentation
+
+
+    //initSettings();  // Not yet there
+  }
+  // Maybe factor this out into an init() method
+
+
+  
   enum class InterpolationMethod
   {
     nearest,
     linear,
     allpass1
   };
-  */
+ 
 
 
   void setup(int delayInSamples, T feedback, int dampOrder,
@@ -1224,6 +1239,7 @@ public:
     rsArrayTools::copy(dampCoeffsA, a, dmpOrd+1);
     rsArrayTools::copy(dampCoeffsB, b, dmpOrd+1);
   }
+  // Should have an interpolationMethod parameter
 
 
 
@@ -1258,13 +1274,62 @@ public:
 
   void getDamperTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
   {
-    tf->setupFromDenseCoeffs(b, dmpOrd+1, a, dmpOrd+1, TPar(0));
+    tf->setupFromDenseCoeffs(b, dmpOrd+1, a, dmpOrd+1, T(0));
   }
 
 
   void getDelayTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
   {
-    //mainDelay.getTransferFunction(tf);
+    T delayInt  = rsFloor(delay);
+    T delayFrac = delay - delayInt;
+
+    rsSparsePolynomial<T>& num = tf->getNumerator();
+    rsSparsePolynomial<T>& den = tf->getDenominator();
+
+    using IM = InterpolationMethod;
+    switch(interpolation)
+    {
+
+    case IM::nearest:
+    {
+      tf->setNumTerms(1, 1);
+      num.setTerm(0, 1, (int)rsRound(delay));
+      den.setTerm(0, 1, 0);
+    }
+    break;
+
+    case IM::linear:
+    {
+      tf->setNumTerms(2, 1);
+      num.setTerm(0, 1-delayFrac, (int)delayInt    );
+      num.setTerm(1,   delayFrac, (int)delayInt + 1);
+      den.setTerm(0, 1, 0);
+    }
+    break;
+
+    case IM::allpass1:
+    {
+
+      // ToDo: assign tf to 1st allpass interpolation coeffs
+
+      //tf->setNumTerms(2, 2);
+
+    }
+    break;
+
+    default:
+    {
+      rsError("Unknown interpolation method.");
+
+      // Use nearest neighbor method in that case:
+      tf->setNumTerms(1, 1);
+      num.setTerm(0, 1, (int)rsRound(delay));
+      den.setTerm(0, 1, 0);
+    }
+
+
+    }
+
   }
 
 
@@ -1283,7 +1348,7 @@ protected:
   int  M        = 0;                   // Delayline length - maybe get rid
   T    delay    = 0;                   // Delay in samples (may be non integer)
   int  dmpOrd   = 0;                   // Feedback damping filter order
-  //InterpolationMethod interpolation = InterpolationMethod::nearest;
+  InterpolationMethod interpolation = InterpolationMethod::nearest;
   bool preDelay = false;               // Switch between with/without predelay mode of operation
 
 
