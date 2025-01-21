@@ -1408,6 +1408,22 @@ public:
   // rsDampedCombAllpass to determine the sizes of the state arrays for the damping filter. 
 
 
+  T getFeedbackGain() const { return k; }
+
+  int getDampingOrder() const { return dmpOrd; }
+
+  const T* getDampCoeffsB() const { return b; }
+
+  const T* getDampCoeffsA() const { return a; }
+
+
+  T getDelay() const { return delay; }
+
+  bool isInPreDelayMode() const { return preDelay; }
+
+
+
+
 
 protected:
 
@@ -1610,11 +1626,11 @@ public:
   /** Standard constructor. Initializes the settings and resets the state to initial conditions. */
   rsDampedCombAllpass()
   {
-    // We may want to use delayline interpolation filters of order 1 (e.g. linear or 1st order 
-    // allpass) later which need two terms in numerator and denominator:
-    A.setNumTerms(2, 2);
-    // Maybe factor this out into a protected function setMaxInterpolatorOrder. The purporse of
-    // such a function would be mainly for documentation
+    //// We may want to use delayline interpolation filters of order 1 (e.g. linear or 1st order 
+    //// allpass) later which need two terms in numerator and denominator:
+    //A.setNumTerms(2, 2);
+    //// Maybe factor this out into a protected function setMaxInterpolatorOrder. The purporse of
+    //// such a function would be mainly for documentation
 
 
     initSettings();
@@ -1769,6 +1785,13 @@ protected:
   /** Applies the feedback damping filter to the signal x and updates the filter's state. */
   TSig applyDamper(TSig x)
   {
+    // New:
+    int dmpOrd = s.getDampingOrder();
+    const TPar* b = s.getDampCoeffsB();
+    const TPar* a = s.getDampCoeffsA();
+    TPar k = s.getFeedbackGain();
+
+
     // Compute outputs:
     TSig y = b[0]*x;
     for(int i = 1; i <= dmpOrd; i++)
@@ -1784,6 +1807,12 @@ protected:
   this filter is need only the "without predelay" mode of operation. */
   TSig applyInverseDamper(TSig x)
   {
+    // New:
+    int dmpOrd = s.getDampingOrder();
+    const TPar* b = s.getDampCoeffsB();
+    const TPar* a = s.getDampCoeffsA();
+    TPar k = s.getFeedbackGain();
+
     // Compute output:
     TSig y = x;
     for(int i = 1; i <= dmpOrd; i++)
@@ -1800,6 +1829,13 @@ protected:
   filter. */
   TSig applyCorrectorPoles(TSig x)
   {
+    // New:
+    int dmpOrd = s.getDampingOrder();
+    //const TPar* b = s.getDampCoeffsB();
+    const TPar* a = s.getDampCoeffsA();
+    TPar k = s.getFeedbackGain();
+
+
     // Compute output:
     TSig y = x;
     for(int i = 1; i <= dmpOrd; i++)
@@ -1809,6 +1845,10 @@ protected:
     rsArrayTools::shiftPushDiscard(yc, dmpOrd, y);
     return y;
   }
+  // Maybe move these apply...() functions into rsDampedCombSettings. They should take raw 
+  // pointers to the state. The function applyCorrectorPoles can be renamed to applyDamperPoles 
+  // because class rsDampedCombSettings has no concept of what the "corrector" is. this name makes
+  // only sense in the context here.
 
 
   //static const int maxDmpOrd = 8;      // Maximum damping order
@@ -1840,23 +1880,25 @@ protected:
   TSig xi[maxDmpOrd], yi[maxDmpOrd];      // State for the inverse damping filter
   TSig yc[maxDmpOrd];                     // State for the poles of the correction filter
 
+  
   // Coefficients:
-  TPar k = 0;                             // Feedback gain
-  TPar b[maxDmpOrd+1];                    // Damping filter feedforward coeffs
-  TPar a[maxDmpOrd+1];                    // Damping filter feedback coeffs
+  //TPar k = 0;                             // Feedback gain
+  //TPar b[maxDmpOrd+1];                    // Damping filter feedforward coeffs
+  //TPar a[maxDmpOrd+1];                    // Damping filter feedback coeffs
 
   // Settings:
-  int  M        = 0;                      // Delayline length
-  int  dmpOrd   = 0;                      // Feedback damping filter order
-  bool preDelay = false;                  // Switch between with/without predelay mode of operation
+  int  M        = 0;                      // Delayline length  ....get rid...maybe
+  //int  dmpOrd   = 0;                      // Feedback damping filter order
+  //bool preDelay = false;                  // Switch between with/without predelay mode of operation
 
   // Temporary object for delay transfer function A(z):
-  mutable rsSparseDigitalTransferFunction<TPar> A;
+  //mutable rsSparseDigitalTransferFunction<TPar> A;
     // This member is needed to support a non-allocating implementation of 
     // getDelayTransferFunction() ...maybe call it D(z) for delay
+  
 
 
-  //rsDampedCombSettings<TPar> s;
+  rsDampedCombSettings<TPar> s;
   // This should replace the stuff beginning from "Coefficients"
 
 
@@ -1900,19 +1942,27 @@ void rsDampedCombAllpass<TSig, TPar>::setup(int delay, TPar feedback, int dampOr
   }
 
   M        = delay - 1;             // -1 corrects for unit delay in feedback path
-  k        = feedback;
-  preDelay = predelayMode;
-  dmpOrd   = dampOrder;
 
-  rsAssert(dampCoeffsA[0] == TPar(1));  // May be relaxed later by dividing through all coeffs by a[0]
-  rsArrayTools::copy(dampCoeffsA, a, dmpOrd+1);
-  rsArrayTools::copy(dampCoeffsB, b, dmpOrd+1);
+  //k        = feedback;
+  //preDelay = predelayMode;
+
+  int dmpOrd   = dampOrder;    // Get rid!
+
+  //rsAssert(dampCoeffsA[0] == TPar(1));  // May be relaxed later by dividing through all coeffs by a[0]
+  //rsArrayTools::copy(dampCoeffsA, a, dmpOrd+1);
+  //rsArrayTools::copy(dampCoeffsB, b, dmpOrd+1);
+
+  s.setup(delay, rsDampedCombSettings<TPar>::InterpolationMethod::nearest, feedback, dampOrder,
+    dampCoeffsB, dampCoeffsA, predelayMode);
+
+
 
   mainDelay.setDelayInSamples(M);
 
   corrDelay.setDelayInSamples(M+dmpOrd+1);
   // I think, this may need more delay memory when we have an interpolating delayline. I think, we
   // may have to add the order of the interpolator.
+  // ToDo: replace dmpOrd with s.getDampingOrder()
 
   // ToDo:
   //
@@ -1935,14 +1985,17 @@ void rsDampedCombAllpass<TSig, TPar>::initSettings()
   mainDelay.setDelayInSamples(0);
   corrDelay.setDelayInSamples(0);
 
-  M        = 0;
-  k        = 0;
-  dmpOrd   = 0;
-  preDelay = false;
+  s.init();
 
-  using AT = rsArrayTools;
-  AT::clear(b, maxDmpOrd+1);
-  AT::clear(a, maxDmpOrd+1);
+  M        = 0;
+
+  //k        = 0;
+  //dmpOrd   = 0;
+  //preDelay = false;
+
+  //using AT = rsArrayTools;
+  //AT::clear(b, maxDmpOrd+1);
+  //AT::clear(a, maxDmpOrd+1);
 }
 
 template<class TSig, class TPar>
@@ -1965,10 +2018,22 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getCombTransferFunctionAt(
 
   Complex z1 = one/z;                            // z^-1
   Complex F  = getDamperTransferFunctionAt(z);   // F(z)
-  if(preDelay)
+
+
+  // Old:
+  //if(preDelay)
+  //  return zM  / (one + k * z1 * F * zM);        // U(z) = z^-M / (1 + k * z^-1 * F(z) * z^-M)
+  //else
+  //  return one / (one + k * z1 * F * zM);        // U(z) =   1  / (1 + k * z^-1 * F(z) * z^-M)
+
+
+  // New:
+  TPar k = s.getFeedbackGain();
+  if(s.isInPreDelayMode())
     return zM  / (one + k * z1 * F * zM);        // U(z) = z^-M / (1 + k * z^-1 * F(z) * z^-M)
   else
     return one / (one + k * z1 * F * zM);        // U(z) =   1  / (1 + k * z^-1 * F(z) * z^-M)
+
 
   // Notes:
   //
@@ -1982,12 +2047,31 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getCombTransferFunctionAt(
   //   mainDelay.getTransferFunctionAt(z) which has to be implemented. We can then replace the 
   //   integer delayline with a fractional one that implements this function also and computes the
   //   correct transfer function for the selected interpolation method (linear, allpass, etc.).
+  //
+  //
+  // ToDo:
+  //
+  // - Maybe move this function into rsDampedCombSettings. But in the "without-predelay" mode, the
+  //   transfer function represented by this class should probably feature an F in the numerator...
+  //   unless we assume already there, that the F filter will be compensated for - which we do 
+  //   here. It's a bit messy. Maybe the 2nd branch needs two sub-branches, switched by a boolean
+  //   parameter "isCompensated" or something...which is a bit ugly. Or maybe instead of a boolean 
+  //   to indicate predelay and another for indicate the feedabck compensation in case of 
+  //   no-predelay, have a an enum parameter for the mode. Options: withPreDelay, noPreDelay, 
+  //   noPreDelayCompensated ...or damperInFeedback, delayInFeedback, 
+  //   delayInFeedbackDampCompensated...or: feedbackDamped, forwardDamped, forwardDampedCompensated
 }
 
 template<class TSig, class TPar>
 rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getDamperTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
+  // New:
+  int dmpOrd = s.getDampingOrder();
+  const TPar* b = s.getDampCoeffsB();
+  const TPar* a = s.getDampCoeffsA();
+
+
   using Complex = rsComplex<TPar>;
   Complex num = 0, den = 0;
   for(int i = 0; i <= dmpOrd; i++)
@@ -2003,12 +2087,21 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getDamperTransferFunctionAt(
   // - This should be optimized (don't call rsPow - compute the powers on the fly by multiplying by
   //   z) and factored into a library function to compute the transfer function of direct form 
   //   filters. Maybe it should go into rsFilterAnalyzer.
+  //
+  // - Move this into rsDampedCombSettings
 }
 
 template<class TSig, class TPar>
 rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getCorrectorTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
+  // New:
+  int dmpOrd = s.getDampingOrder();
+  const TPar* b = s.getDampCoeffsB();
+  const TPar* a = s.getDampCoeffsA();
+  TPar k = s.getFeedbackGain();
+
+
   using Complex = rsComplex<TPar>;
   Complex num = 0, den = 0;
   for(int i = 0; i <= dmpOrd; i++)
@@ -2041,11 +2134,21 @@ rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
   TF one; one.num.appendTerm(TPar(1), 0);
   TF z1;  z1.num.appendTerm( TPar(1), 1);
   TF F = getDamperTransferFunction();            // Feedback filter F(z)
+  TF A;
   getDelayTransferFunction(&A);                  // Delay filter A(z)
-  if(preDelay)
+
+  // New:
+  TPar k = s.getFeedbackGain();
+  if(s.isInPreDelayMode())
     return A   / (one + k * z1 * F * A);         // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
   else 
     return one / (one + k * z1 * F * A);         // U(z) =   1  / (1 + k * z^-1 * F(z) * A(z))
+
+  // Old:
+  //if(preDelay)
+  //  return A   / (one + k * z1 * F * A);         // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
+  //else 
+  //  return one / (one + k * z1 * F * A);         // U(z) =   1  / (1 + k * z^-1 * F(z) * A(z))
 }
 
 template<class TSig, class TPar>
@@ -2066,23 +2169,34 @@ rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
                                       ::getDamperTransferFunction() const
 {
   rsSparseDigitalTransferFunction<TPar> H;
-  H.setupFromDenseCoeffs(b, dmpOrd+1, a, dmpOrd+1, TPar(0));
+
+  H.setupFromDenseCoeffs(s.getDampCoeffsB(), s.getDampingOrder()+1,
+                         s.getDampCoeffsA(), s.getDampingOrder()+1, TPar(0));  // New
+
+  //H.setupFromDenseCoeffs(b, dmpOrd+1, a, dmpOrd+1, TPar(0));  // Old
+
   return H;
+
+  // Factor out into s.getDamperTransferFunction();
 }
 
 template<class TSig, class TPar>
 void rsDampedCombAllpass<TSig, TPar>::getCombTransferFunction(
   rsSparseDigitalTransferFunction<TPar>* tf) const
 {
-  using Mon = rsMonomial<TPar>;
-  getDelayTransferFunction(&A);        // A = A(z) is transfer function of the delay
-  getDamperTransferFunction(tf);       // tf = F, F(z) is transfer function in feedback path
-  tf->multiplyBy(Mon(k, 1));           // tf = F * k * z^-1
-  tf->multiplyBy(A, TPar(0));          // tf = F * k * z^-1 * A
-  tf->addConstant(TPar(1), TPar(0));   // tf = 1 + F * k * z^-1 * A
-  tf->invert();                        // tf = 1 / (1 + F * k * z^-1 * A)
-  if(preDelay)
-    tf->multiplyBy(A, TPar(0));        // tf = A / (1 + F * k * z^-1 * A)
+  // New:
+  s.getCombTransferFunction(tf);
+
+  //// Old:
+  //using Mon = rsMonomial<TPar>;
+  //getDelayTransferFunction(&A);        // A = A(z) is transfer function of the delay
+  //getDamperTransferFunction(tf);       // tf = F, F(z) is transfer function in feedback path
+  //tf->multiplyBy(Mon(k, 1));           // tf = F * k * z^-1
+  //tf->multiplyBy(A, TPar(0));          // tf = F * k * z^-1 * A
+  //tf->addConstant(TPar(1), TPar(0));   // tf = 1 + F * k * z^-1 * A
+  //tf->invert();                        // tf = 1 / (1 + F * k * z^-1 * A)
+  //if(preDelay)
+  //  tf->multiplyBy(A, TPar(0));        // tf = A / (1 + F * k * z^-1 * A)
 
   // ToDo:
   //
@@ -2132,7 +2246,11 @@ void rsDampedCombAllpass<TSig, TPar>::reset()
 template<class TSig, class TPar>
 TSig rsDampedCombAllpass<TSig, TPar>::getSampleComb(TSig in)
 {
-  if(preDelay) 
+
+  TPar k = s.getFeedbackGain();
+
+  //if(preDelay)            // Old
+  if(s.isInPreDelayMode())  // New
   {
     combOut = applyDelay(in - k * applyDamper(combOut));  // Predelay of M samples
     return combOut; 
@@ -2157,6 +2275,12 @@ TSig rsDampedCombAllpass<TSig, TPar>::getSampleComb(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedCombAllpass<TSig, TPar>::applyCorrector(TSig in)
 {
+  // New:
+  int dmpOrd = s.getDampingOrder();
+  const TPar* b = s.getDampCoeffsB();
+  const TPar* a = s.getDampCoeffsA();
+  TPar k = s.getFeedbackGain();
+
   // Apply the poles:
   TSig t = applyCorrectorPoles(in);
 
