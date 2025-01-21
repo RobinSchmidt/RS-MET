@@ -1455,8 +1455,28 @@ public:
     rsArrayTools::shiftPushDiscard(y, dmpOrd, out);
     return out;
   }
+
+  /** Applies only the poles of the damping filter. */
+  template<class TSig>
+  TSig applyDamperPoles(TSig in, TSig* y)
+  {
+    // Compute output:
+    TSig out = in;
+    for(int i = 1; i <= dmpOrd; i++)
+      out -= a[i] * y[i-1];
+
+    // Update state and return result:
+    rsArrayTools::shiftPushDiscard(y, dmpOrd, out);
+    return out;
+  }
+  // ToDo: explain where this is needed
+
+
+
   // Maybe factor these out into free functions rsApply(Inverse)DirectFormFilter(in, b, x, a, y)
   // 
+
+
 
 
 
@@ -1872,21 +1892,24 @@ protected:
   filter. */
   TSig applyCorrectorPoles(TSig in)
   {
-    // New:
-    int dmpOrd = s.getDampingOrder();
-    //const TPar* b = s.getDampCoeffsB();
-    const TPar* a = s.getDampCoeffsA();
-    TPar k = s.getFeedbackGain();
+    return s.applyDamperPoles(in, yc);
 
 
-    // Compute output:
-    TSig out = in;
-    for(int i = 1; i <= dmpOrd; i++)
-      out -= a[i] * yc[i-1];
-    
-    // Update state and return result:
-    rsArrayTools::shiftPushDiscard(yc, dmpOrd, out);
-    return out;
+    //// New:
+    //int dmpOrd = s.getDampingOrder();
+    ////const TPar* b = s.getDampCoeffsB();
+    //const TPar* a = s.getDampCoeffsA();
+    //TPar k = s.getFeedbackGain();
+
+
+    //// Compute output:
+    //TSig out = in;
+    //for(int i = 1; i <= dmpOrd; i++)
+    //  out -= a[i] * yc[i-1];
+    //
+    //// Update state and return result:
+    //rsArrayTools::shiftPushDiscard(yc, dmpOrd, out);
+    //return out;
   }
   // Maybe move these apply...() functions into rsDampedCombSettings. They should take raw 
   // pointers to the state. The function applyCorrectorPoles can be renamed to applyDamperPoles 
