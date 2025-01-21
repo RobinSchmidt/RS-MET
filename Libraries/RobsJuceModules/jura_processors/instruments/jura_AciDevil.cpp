@@ -573,7 +573,7 @@ Ideas:
  "Undo (3)" "Redo (5)" indicating that currently there are 3 possible undo steps available and
   5 possible redo steps.
 
-- The equencer should have an "Export" button that let's the user write a .mid file with the 
+- The sequencer should have an "Export" button that let's the user write a .mid file with the 
   current pattern. See:
   https://docs.juce.com/master/classMidiFile.html
   https://docs.juce.com/master/classMidiMessageSequence.html

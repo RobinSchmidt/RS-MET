@@ -164,3 +164,16 @@ bool AcidPattern::isEmpty() const
   }
   return true;
 }
+
+
+/**
+
+Ideas:
+
+- Implement a "riffle shuffle" of the different sorts of events (notes, accents, etc). Basically,
+  this consists of spliiting the pattern in two halves and interleaving those to a new pattern.
+
+- Maybe have note lengthening and shortening events. They could work similar to the octave up/down
+  events. Lengenthing twice should apply the same lengthening factor twice, etc.
+
+*/
