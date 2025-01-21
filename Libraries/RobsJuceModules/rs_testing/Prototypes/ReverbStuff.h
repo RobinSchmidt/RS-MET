@@ -1423,6 +1423,23 @@ public:
 
 
 
+  /** Applies the feedback damping filter to the signal "in" and updates the given filter's state 
+  x = x[n-1], x[n-2], ... y = y[n-1], y[n-2], ... . ...TBC... */
+  template<class TSig>
+  TSig applyDamper(TSig in, TSig* x, TSig* y)
+  {
+    // Compute outputs:
+    TSig out = b[0]*in;
+    for(int i = 1; i <= dmpOrd; i++)
+      out += b[i] * x[i-1] - a[i] * y[i-1];
+
+    // Update state and return result:
+    rsArrayTools::shiftPushDiscard(x, dmpOrd, in);
+    rsArrayTools::shiftPushDiscard(y, dmpOrd, out);
+    return out;
+  }
+
+
 
 
 protected:
@@ -1785,22 +1802,25 @@ protected:
   /** Applies the feedback damping filter to the signal x and updates the filter's state. */
   TSig applyDamper(TSig in)
   {
-    // New:
-    int dmpOrd = s.getDampingOrder();
-    const TPar* b = s.getDampCoeffsB();
-    const TPar* a = s.getDampCoeffsA();
-    TPar k = s.getFeedbackGain();
+    return s.applyDamper(in, xd, yd);
 
 
-    // Compute outputs:
-    TSig out = b[0]*in;
-    for(int i = 1; i <= dmpOrd; i++)
-      out += b[i]*xd[i-1] - a[i] * yd[i-1];
+    //// New:
+    //int dmpOrd = s.getDampingOrder();
+    //const TPar* b = s.getDampCoeffsB();
+    //const TPar* a = s.getDampCoeffsA();
+    //TPar k = s.getFeedbackGain();
 
-    // Update state and return result:
-    rsArrayTools::shiftPushDiscard(xd, dmpOrd, in);
-    rsArrayTools::shiftPushDiscard(yd, dmpOrd, out);
-    return out;
+
+    //// Compute outputs:
+    //TSig out = b[0]*in;
+    //for(int i = 1; i <= dmpOrd; i++)
+    //  out += b[i]*xd[i-1] - a[i] * yd[i-1];
+
+    //// Update state and return result:
+    //rsArrayTools::shiftPushDiscard(xd, dmpOrd, in);
+    //rsArrayTools::shiftPushDiscard(yd, dmpOrd, out);
+    //return out;
   }
 
   /** Applies the inverse feedback damping filter to the signal x and updates the filter's state.
