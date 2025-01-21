@@ -1777,13 +1777,13 @@ public:
 protected:
 
   /** Applies the main delay to the input x and updates the state of the main delayline. */
-  TSig applyDelay(TSig x)
+  TSig applyDelay(TSig in)
   {
-    return mainDelay.getSample(x);
+    return mainDelay.getSample(in);
   }
 
   /** Applies the feedback damping filter to the signal x and updates the filter's state. */
-  TSig applyDamper(TSig x)
+  TSig applyDamper(TSig in)
   {
     // New:
     int dmpOrd = s.getDampingOrder();
@@ -1793,19 +1793,19 @@ protected:
 
 
     // Compute outputs:
-    TSig y = b[0]*x;
+    TSig out = b[0]*in;
     for(int i = 1; i <= dmpOrd; i++)
-      y += b[i]*xd[i-1] - a[i] * yd[i-1];
+      out += b[i]*xd[i-1] - a[i] * yd[i-1];
 
     // Update state and return result:
-    rsArrayTools::shiftPushDiscard(xd, dmpOrd, x);
-    rsArrayTools::shiftPushDiscard(yd, dmpOrd, y);
-    return y;
+    rsArrayTools::shiftPushDiscard(xd, dmpOrd, in);
+    rsArrayTools::shiftPushDiscard(yd, dmpOrd, out);
+    return out;
   }
 
   /** Applies the inverse feedback damping filter to the signal x and updates the filter's state.
   this filter is need only the "without predelay" mode of operation. */
-  TSig applyInverseDamper(TSig x)
+  TSig applyInverseDamper(TSig in)
   {
     // New:
     int dmpOrd = s.getDampingOrder();
@@ -1814,20 +1814,20 @@ protected:
     TPar k = s.getFeedbackGain();
 
     // Compute output:
-    TSig y = x;
+    TSig out = in;
     for(int i = 1; i <= dmpOrd; i++)
-      y += a[i] * xi[i-1] - b[i] * yi[i-1];
-    y /= b[0];                                        // ToDo: maybe precompute 1/b[0]
+      out += a[i] * xi[i-1] - b[i] * yi[i-1];
+    out /= b[0];                                        // ToDo: maybe precompute 1/b[0]
 
     // Update state and return result:
-    rsArrayTools::shiftPushDiscard(xi, dmpOrd, x);
-    rsArrayTools::shiftPushDiscard(yi, dmpOrd, y);
-    return y;
+    rsArrayTools::shiftPushDiscard(xi, dmpOrd, in);
+    rsArrayTools::shiftPushDiscard(yi, dmpOrd, out);
+    return out;
   }
 
   /** Applies the poles of the correction filter which are the same as the poles of the damping 
   filter. */
-  TSig applyCorrectorPoles(TSig x)
+  TSig applyCorrectorPoles(TSig in)
   {
     // New:
     int dmpOrd = s.getDampingOrder();
@@ -1837,13 +1837,13 @@ protected:
 
 
     // Compute output:
-    TSig y = x;
+    TSig out = in;
     for(int i = 1; i <= dmpOrd; i++)
-      y -= a[i] * yc[i-1];
+      out -= a[i] * yc[i-1];
     
     // Update state and return result:
-    rsArrayTools::shiftPushDiscard(yc, dmpOrd, y);
-    return y;
+    rsArrayTools::shiftPushDiscard(yc, dmpOrd, out);
+    return out;
   }
   // Maybe move these apply...() functions into rsDampedCombSettings. They should take raw 
   // pointers to the state. The function applyCorrectorPoles can be renamed to applyDamperPoles 
