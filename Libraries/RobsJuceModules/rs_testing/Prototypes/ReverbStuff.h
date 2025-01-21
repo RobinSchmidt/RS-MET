@@ -1976,16 +1976,6 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getCombTransferFunctionAt(
 
   Complex z1 = one/z;                            // z^-1
   Complex F  = getDamperTransferFunctionAt(z);   // F(z)
-
-
-  // Old:
-  //if(preDelay)
-  //  return zM  / (one + k * z1 * F * zM);        // U(z) = z^-M / (1 + k * z^-1 * F(z) * z^-M)
-  //else
-  //  return one / (one + k * z1 * F * zM);        // U(z) =   1  / (1 + k * z^-1 * F(z) * z^-M)
-
-
-  // New:
   TPar k = s.getFeedbackGain();
   if(s.isInPreDelayMode())
     return zM  / (one + k * z1 * F * zM);        // U(z) = z^-M / (1 + k * z^-1 * F(z) * z^-M)
@@ -2092,8 +2082,7 @@ rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
   TF one; one.num.appendTerm(TPar(1), 0);
   TF z1;  z1.num.appendTerm( TPar(1), 1);
   TF F = getDamperTransferFunction();            // Feedback filter F(z)
-  TF A;
-  getDelayTransferFunction(&A);                  // Delay filter A(z)
+  TF A; getDelayTransferFunction(&A);            // Delay filter A(z)
   TPar k = s.getFeedbackGain();
   if(s.isInPreDelayMode())
     return A   / (one + k * z1 * F * A);         // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
@@ -2296,33 +2285,40 @@ void rsSetupFractional_LinViaFb(rsDampedCombAllpass<TSig, TPar>& flt,
 // times for low and high frequencies. The scale factors are given as raw factors for the RT60 and
 // crossover frequencies are given as omega.
 template<class TSig, class TPar>
-void rsSetupDecayTimes_LinViaFb(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay, 
-  TPar decayTimeInSamples, TPar lowOmega, TPar lowTimeScale, TPar highOmega, TPar highTimeScale, 
+void rsSetupDecayTimes_LinViaFb(rsDampedCombAllpass<TSig, TPar>& flt, 
+  TPar delay, TPar decay, TPar loOmega, TPar loScale, TPar hiOmega, TPar hiScale, 
   bool predelay)
 {
-  // Compute desired feedback gains for low, mid and high frequencies:
-  TPar a60 = TPar(0.001); // = rsDbToAmp(-60.0). Target amplitude to reach after decayTimeInSamples
-  TPar kL  = rsDecayTimeToFeedbackGain(decayTimeInSamples * lowTimeScale , TPar(delay), a60);
-  TPar kM  = rsDecayTimeToFeedbackGain(decayTimeInSamples                , TPar(delay), a60);
-  TPar kH  = rsDecayTimeToFeedbackGain(decayTimeInSamples * highTimeScale, TPar(delay), a60);
-  // These formulas could also be expressed as e.g.:
-  //
-  //   kM = rsPow(10.0, TPar(-3 * delay) / decayTimeInSamples);
-  //
-  // which is how they are often seen in the FDN literature. 
+  // Old:
+  //// Compute desired feedback gains for low, mid and high frequencies:
+  //TPar a60 = TPar(0.001); // = rsDbToAmp(-60.0). Target amplitude to reach after decayTimeInSamples
+  //TPar kL  = rsDecayTimeToFeedbackGain(decayTimeInSamples * lowTimeScale , TPar(delay), a60);
+  //TPar kM  = rsDecayTimeToFeedbackGain(decayTimeInSamples                , TPar(delay), a60);
+  //TPar kH  = rsDecayTimeToFeedbackGain(decayTimeInSamples * highTimeScale, TPar(delay), a60);
+  //// These formulas could also be expressed as e.g.:
+  ////
+  ////   kM = rsPow(10.0, TPar(-3 * delay) / decayTimeInSamples);
+  ////
+  //// which is how they are often seen in the FDN literature. 
 
-  // Compute desired gains for the low and high shelver:
-  TPar gL = kL / kM;
-  TPar gH = kH / kM;
+  //// Compute desired gains for the low and high shelver:
+  //TPar gL = kL / kM;
+  //TPar gH = kH / kM;
 
-  // Compute coeffs for low- and high shelver:
-  TPar aL[2], bL[2]; aL[0] = 1; rsMake1stOrderLowShelf( lowOmega,  gL, &bL[0], &bL[1], &aL[1]);
-  TPar aH[2], bH[2]; aH[0] = 1; rsMake1stOrderHighShelf(highOmega, gH, &bH[0], &bH[1], &aH[1]);
+  //// Compute coeffs for low- and high shelver:
+  //TPar aL[2], bL[2]; aL[0] = 1; rsMake1stOrderLowShelf( lowOmega,  gL, &bL[0], &bL[1], &aL[1]);
+  //TPar aH[2], bH[2]; aH[0] = 1; rsMake1stOrderHighShelf(highOmega, gH, &bH[0], &bH[1], &aH[1]);
 
-  // Combine low- and high shelver into biquad:
+  //// Combine low- and high shelver into biquad:
+  //TPar a[4], b[4];
+  //rsArrayTools::convolve(aL, 2, aH, 2, a);
+  //rsArrayTools::convolve(bL, 2, bH, 2, b);
+
+
+
+  // Compute feedback gain and filter coeffs:
   TPar a[4], b[4];
-  rsArrayTools::convolve(aL, 2, aH, 2, a);
-  rsArrayTools::convolve(bL, 2, bH, 2, b);
+  TPar kM = rsMakeDampBiShelf(delay, decay, loOmega, loScale, hiOmega, hiScale, b, a);
 
   // Possibly also bake an interpolation filter into the feedback filter to achieve fractional 
   // delay times:
@@ -2354,12 +2350,10 @@ void rsSetupDecayTimes_LinViaFb(rsDampedCombAllpass<TSig, TPar>& flt, TPar delay
   }
 
 
-  // ToDo: Use rsMakeDampBiShelf ..well...actually, we wnat to get rid of it anyway and instead
-  // use a rsDampedCombSettings member in the rsDampedCombAllpass class. We can the use the setup
-  // function for that. This function here will then be obsolete.
+  // ToDo: Use  rsSetupDecayTimes_LinViaFb(s, ...)  and then maybe call a flt.updateDelays()
+  // function if necessary. This function here copies a lot of code from the other rsSetup...
+  // function. We want to get rid of that duplication.
 }
-// Rename to rsSetupDecayTimes_LinViaFb where LinViaFb stands for "linear interpolation via the 
-// feedback filter"
 
 
 // Notes:
