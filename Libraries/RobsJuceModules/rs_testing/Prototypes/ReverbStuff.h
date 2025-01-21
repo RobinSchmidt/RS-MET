@@ -1439,6 +1439,26 @@ public:
     return out;
   }
 
+  /** Applies the inverse feedback damping filter to the signal x and updates the filter's state.
+  this filter is need only the "without predelay" mode of operation. */
+  template<class TSig>
+  TSig applyInverseDamper(TSig in, TSig* x, TSig* y)
+  {
+    // Compute output:
+    TSig out = in;
+    for(int i = 1; i <= dmpOrd; i++)
+      out += a[i] * x[i-1] - b[i] * y[i-1];
+    out /= b[0];                                        // ToDo: maybe precompute 1/b[0]
+
+    // Update state and return result:
+    rsArrayTools::shiftPushDiscard(x, dmpOrd, in);
+    rsArrayTools::shiftPushDiscard(y, dmpOrd, out);
+    return out;
+  }
+  // Maybe factor these out into free functions rsApply(Inverse)DirectFormFilter(in, b, x, a, y)
+  // 
+
+
 
 
 
@@ -1827,22 +1847,25 @@ protected:
   this filter is need only the "without predelay" mode of operation. */
   TSig applyInverseDamper(TSig in)
   {
-    // New:
-    int dmpOrd = s.getDampingOrder();
-    const TPar* b = s.getDampCoeffsB();
-    const TPar* a = s.getDampCoeffsA();
-    TPar k = s.getFeedbackGain();
+    return s.applyInverseDamper(in, xi, yi);
 
-    // Compute output:
-    TSig out = in;
-    for(int i = 1; i <= dmpOrd; i++)
-      out += a[i] * xi[i-1] - b[i] * yi[i-1];
-    out /= b[0];                                        // ToDo: maybe precompute 1/b[0]
 
-    // Update state and return result:
-    rsArrayTools::shiftPushDiscard(xi, dmpOrd, in);
-    rsArrayTools::shiftPushDiscard(yi, dmpOrd, out);
-    return out;
+    //// New:
+    //int dmpOrd = s.getDampingOrder();
+    //const TPar* b = s.getDampCoeffsB();
+    //const TPar* a = s.getDampCoeffsA();
+    //TPar k = s.getFeedbackGain();
+
+    //// Compute output:
+    //TSig out = in;
+    //for(int i = 1; i <= dmpOrd; i++)
+    //  out += a[i] * xi[i-1] - b[i] * yi[i-1];
+    //out /= b[0];                                        // ToDo: maybe precompute 1/b[0]
+
+    //// Update state and return result:
+    //rsArrayTools::shiftPushDiscard(xi, dmpOrd, in);
+    //rsArrayTools::shiftPushDiscard(yi, dmpOrd, out);
+    //return out;
   }
 
   /** Applies the poles of the correction filter which are the same as the poles of the damping 
