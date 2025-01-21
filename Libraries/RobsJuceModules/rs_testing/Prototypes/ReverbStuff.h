@@ -1834,87 +1834,20 @@ public:
 protected:
 
   /** Applies the main delay to the input x and updates the state of the main delayline. */
-  TSig applyDelay(TSig in)
-  {
-    return mainDelay.getSample(in);
-  }
+  TSig applyDelay(TSig in) { return mainDelay.getSample(in); }
 
   /** Applies the feedback damping filter to the signal x and updates the filter's state. */
-  TSig applyDamper(TSig in)
-  {
-    return s.applyDamper(in, xd, yd);
-
-
-    //// New:
-    //int dmpOrd = s.getDampingOrder();
-    //const TPar* b = s.getDampCoeffsB();
-    //const TPar* a = s.getDampCoeffsA();
-    //TPar k = s.getFeedbackGain();
-
-
-    //// Compute outputs:
-    //TSig out = b[0]*in;
-    //for(int i = 1; i <= dmpOrd; i++)
-    //  out += b[i]*xd[i-1] - a[i] * yd[i-1];
-
-    //// Update state and return result:
-    //rsArrayTools::shiftPushDiscard(xd, dmpOrd, in);
-    //rsArrayTools::shiftPushDiscard(yd, dmpOrd, out);
-    //return out;
-  }
+  TSig applyDamper(TSig in) { return s.applyDamper(in, xd, yd); }
 
   /** Applies the inverse feedback damping filter to the signal x and updates the filter's state.
   this filter is need only the "without predelay" mode of operation. */
-  TSig applyInverseDamper(TSig in)
-  {
-    return s.applyInverseDamper(in, xi, yi);
-
-
-    //// New:
-    //int dmpOrd = s.getDampingOrder();
-    //const TPar* b = s.getDampCoeffsB();
-    //const TPar* a = s.getDampCoeffsA();
-    //TPar k = s.getFeedbackGain();
-
-    //// Compute output:
-    //TSig out = in;
-    //for(int i = 1; i <= dmpOrd; i++)
-    //  out += a[i] * xi[i-1] - b[i] * yi[i-1];
-    //out /= b[0];                                        // ToDo: maybe precompute 1/b[0]
-
-    //// Update state and return result:
-    //rsArrayTools::shiftPushDiscard(xi, dmpOrd, in);
-    //rsArrayTools::shiftPushDiscard(yi, dmpOrd, out);
-    //return out;
-  }
+  TSig applyInverseDamper(TSig in) { return s.applyInverseDamper(in, xi, yi); }
 
   /** Applies the poles of the correction filter which are the same as the poles of the damping 
   filter. */
-  TSig applyCorrectorPoles(TSig in)
-  {
-    return s.applyDamperPoles(in, yc);
+  TSig applyCorrectorPoles(TSig in) { return s.applyDamperPoles(in, yc); }
 
 
-    //// New:
-    //int dmpOrd = s.getDampingOrder();
-    ////const TPar* b = s.getDampCoeffsB();
-    //const TPar* a = s.getDampCoeffsA();
-    //TPar k = s.getFeedbackGain();
-
-
-    //// Compute output:
-    //TSig out = in;
-    //for(int i = 1; i <= dmpOrd; i++)
-    //  out -= a[i] * yc[i-1];
-    //
-    //// Update state and return result:
-    //rsArrayTools::shiftPushDiscard(yc, dmpOrd, out);
-    //return out;
-  }
-  // Maybe move these apply...() functions into rsDampedCombSettings. They should take raw 
-  // pointers to the state. The function applyCorrectorPoles can be renamed to applyDamperPoles 
-  // because class rsDampedCombSettings has no concept of what the "corrector" is. this name makes
-  // only sense in the context here.
 
 
   //static const int maxDmpOrd = 8;      // Maximum damping order
@@ -1937,7 +1870,6 @@ protected:
   // what it takes then we have to need to do it....
 
 
-
   rsDelay<TSig>               corrDelay;  // Delayline for the correction filter
 
   // State:
@@ -1946,28 +1878,9 @@ protected:
   TSig xi[maxDmpOrd], yi[maxDmpOrd];      // State for the inverse damping filter
   TSig yc[maxDmpOrd];                     // State for the poles of the correction filter
 
-  
-  // Coefficients:
-  //TPar k = 0;                             // Feedback gain
-  //TPar b[maxDmpOrd+1];                    // Damping filter feedforward coeffs
-  //TPar a[maxDmpOrd+1];                    // Damping filter feedback coeffs
-
   // Settings:
-  int  M        = 0;                      // Delayline length  ....get rid...maybe
-  //int  dmpOrd   = 0;                      // Feedback damping filter order
-  //bool preDelay = false;                  // Switch between with/without predelay mode of operation
-
-  // Temporary object for delay transfer function A(z):
-  //mutable rsSparseDigitalTransferFunction<TPar> A;
-    // This member is needed to support a non-allocating implementation of 
-    // getDelayTransferFunction() ...maybe call it D(z) for delay
-  
-
-
-  rsDampedCombSettings<TPar> s;
-  // This should replace the stuff beginning from "Coefficients"
-
-
+  rsDampedCombSettings<TPar> s;           // Rename this!
+  int M = 0;                              // Delayline length  ....get rid...maybe
 
 
   // Notes:
@@ -2007,25 +1920,15 @@ void rsDampedCombAllpass<TSig, TPar>::setup(int delay, TPar feedback, int dampOr
     return;
   }
 
-  M        = delay - 1;             // -1 corrects for unit delay in feedback path
+  M = delay - 1;             // -1 corrects for unit delay in feedback path
+  //int dmpOrd = dampOrder;    // Get rid!
 
-  //k        = feedback;
-  //preDelay = predelayMode;
-
-  int dmpOrd   = dampOrder;    // Get rid!
-
-  //rsAssert(dampCoeffsA[0] == TPar(1));  // May be relaxed later by dividing through all coeffs by a[0]
-  //rsArrayTools::copy(dampCoeffsA, a, dmpOrd+1);
-  //rsArrayTools::copy(dampCoeffsB, b, dmpOrd+1);
 
   s.setup(delay, rsDampedCombSettings<TPar>::InterpolationMethod::nearest, feedback, dampOrder,
     dampCoeffsB, dampCoeffsA, predelayMode);
 
-
-
   mainDelay.setDelayInSamples(M);
-
-  corrDelay.setDelayInSamples(M+dmpOrd+1);
+  corrDelay.setDelayInSamples(M+dampOrder+1);
   // I think, this may need more delay memory when we have an interpolating delayline. I think, we
   // may have to add the order of the interpolator.
   // ToDo: replace dmpOrd with s.getDampingOrder()
@@ -2050,18 +1953,8 @@ void rsDampedCombAllpass<TSig, TPar>::initSettings()
 {
   mainDelay.setDelayInSamples(0);
   corrDelay.setDelayInSamples(0);
-
   s.init();
-
-  M        = 0;
-
-  //k        = 0;
-  //dmpOrd   = 0;
-  //preDelay = false;
-
-  //using AT = rsArrayTools;
-  //AT::clear(b, maxDmpOrd+1);
-  //AT::clear(a, maxDmpOrd+1);
+  M = 0;
 }
 
 template<class TSig, class TPar>
