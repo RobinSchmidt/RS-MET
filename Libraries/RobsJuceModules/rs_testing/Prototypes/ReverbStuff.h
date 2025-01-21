@@ -1402,10 +1402,12 @@ public:
 
 
 
-  static const int maxDmpOrd = 8;      // Maximum damping order
-  // Try to move to protected and provide accessor like getMaxDampingOrder(). The problem might be 
-  // that we need to access this number as compile-time constant in classes like 
-  // rsDampedCombAllpass to determine the sizes of the state arrays for the damping filter. 
+  static constexpr int getMaxDampingOrder() { return maxDmpOrd; }
+
+
+
+
+
 
 
   T getFeedbackGain() const { return k; }
@@ -1426,7 +1428,7 @@ public:
   /** Applies the feedback damping filter to the signal "in" and updates the given filter's state 
   x = x[n-1], x[n-2], ... y = y[n-1], y[n-2], ... . ...TBC... */
   template<class TSig>
-  TSig applyDamper(TSig in, TSig* x, TSig* y)
+  inline TSig applyDamper(TSig in, TSig* x, TSig* y)
   {
     // Compute outputs:
     TSig out = b[0]*in;
@@ -1442,7 +1444,7 @@ public:
   /** Applies the inverse feedback damping filter to the signal x and updates the filter's state.
   this filter is need only the "without predelay" mode of operation. */
   template<class TSig>
-  TSig applyInverseDamper(TSig in, TSig* x, TSig* y)
+  inline TSig applyInverseDamper(TSig in, TSig* x, TSig* y)
   {
     // Compute output:
     TSig out = in;
@@ -1458,7 +1460,7 @@ public:
 
   /** Applies only the poles of the damping filter. */
   template<class TSig>
-  TSig applyDamperPoles(TSig in, TSig* y)
+  inline TSig applyDamperPoles(TSig in, TSig* y)
   {
     // Compute output:
     TSig out = in;
@@ -1474,8 +1476,7 @@ public:
 
 
   // Maybe factor these out into free functions rsApply(Inverse)DirectFormFilter(in, b, x, a, y)
-  // 
-
+ 
 
 
 
@@ -1484,6 +1485,12 @@ public:
 
 protected:
 
+
+  static const int maxDmpOrd = 8;      // Maximum damping order
+  // Try to move to protected and provide accessor like getMaxDampingOrder(). The problem might be 
+  // that we need to access this number as compile-time constant in classes like 
+  // rsDampedCombAllpass to determine the sizes of the state arrays for the damping filter. 
+  // ...OK...it seems to work
 
 
   // Feedback coefficients:
@@ -1844,7 +1851,8 @@ protected:
 
 
   //static const int maxDmpOrd = 8;      // Maximum damping order
-  static const int maxDmpOrd = rsDampedCombSettings<TPar>::maxDmpOrd; // Maximum damping order
+  //static const int maxDmpOrd = rsDampedCombSettings<TPar>::maxDmpOrd; // Maximum damping order
+  static const int maxDmpOrd = rsDampedCombSettings<TPar>::getMaxDampingOrder(); // Maximum damping order
 
 
   // Embedded DSP objects:
@@ -1968,19 +1976,16 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getCombTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
   using Complex = rsComplex<TPar>;
-  Complex one(TPar(1));                          // 1 + 0i
-
-  //Complex zM = rsPow(z, Complex(-M));            // z^-M
-  Complex zM = mainDelay.getTransferFunctionAt(z);   // A(z)
-  // or maybe use A = getDelayTransferFunctionAt(z)
-
-  Complex z1 = one/z;                            // z^-1
-  Complex F  = getDamperTransferFunctionAt(z);   // F(z)
+  Complex one(TPar(1));                             // 1 + 0i
+  //Complex zM = rsPow(z, Complex(-M));               // z^-M
+  Complex A  = mainDelay.getTransferFunctionAt(z);  // A(z)
+  Complex z1 = one/z;                               // z^-1
+  Complex F  = getDamperTransferFunctionAt(z);      // F(z)
   TPar k = s.getFeedbackGain();
   if(s.isInPreDelayMode())
-    return zM  / (one + k * z1 * F * zM);        // U(z) = z^-M / (1 + k * z^-1 * F(z) * z^-M)
+    return A   / (one + k * z1 * F * A);           // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
   else
-    return one / (one + k * z1 * F * zM);        // U(z) =   1  / (1 + k * z^-1 * F(z) * z^-M)
+    return one / (one + k * z1 * F * A);           // U(z) =   1  / (1 + k * z^-1 * F(z) * A(z))
 
 
   // Notes:
