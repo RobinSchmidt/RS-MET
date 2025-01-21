@@ -1683,13 +1683,6 @@ public:
   /** Standard constructor. Initializes the settings and resets the state to initial conditions. */
   rsDampedCombAllpass()
   {
-    //// We may want to use delayline interpolation filters of order 1 (e.g. linear or 1st order 
-    //// allpass) later which need two terms in numerator and denominator:
-    //A.setNumTerms(2, 2);
-    //// Maybe factor this out into a protected function setMaxInterpolatorOrder. The purporse of
-    //// such a function would be mainly for documentation
-
-
     initSettings();
     reset();
   }
@@ -1897,6 +1890,12 @@ protected:
   // - Maybe be more flexible with the order of the damping filter by letting numerator and 
   //   denominator have different orders. Maybe replace dmpOrd by two variables bOrd, aOrd or 
   //   something like that.
+  //
+  //
+  // ToDo:
+  //
+  // - Maybe factor out a class rsDampedComb that has everything except the stuff related to the 
+  //   correction filter
 };
 
 template<class TSig, class TPar>
@@ -2095,19 +2094,11 @@ rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
   TF F = getDamperTransferFunction();            // Feedback filter F(z)
   TF A;
   getDelayTransferFunction(&A);                  // Delay filter A(z)
-
-  // New:
   TPar k = s.getFeedbackGain();
   if(s.isInPreDelayMode())
     return A   / (one + k * z1 * F * A);         // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
   else 
     return one / (one + k * z1 * F * A);         // U(z) =   1  / (1 + k * z^-1 * F(z) * A(z))
-
-  // Old:
-  //if(preDelay)
-  //  return A   / (one + k * z1 * F * A);         // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
-  //else 
-  //  return one / (one + k * z1 * F * A);         // U(z) =   1  / (1 + k * z^-1 * F(z) * A(z))
 }
 
 template<class TSig, class TPar>
@@ -2128,12 +2119,8 @@ rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
                                       ::getDamperTransferFunction() const
 {
   rsSparseDigitalTransferFunction<TPar> H;
-
   H.setupFromDenseCoeffs(s.getDampCoeffsB(), s.getDampingOrder()+1,
-                         s.getDampCoeffsA(), s.getDampingOrder()+1, TPar(0));  // New
-
-  //H.setupFromDenseCoeffs(b, dmpOrd+1, a, dmpOrd+1, TPar(0));  // Old
-
+                         s.getDampCoeffsA(), s.getDampingOrder()+1, TPar(0));
   return H;
 
   // Factor out into s.getDamperTransferFunction();
@@ -2143,25 +2130,7 @@ template<class TSig, class TPar>
 void rsDampedCombAllpass<TSig, TPar>::getCombTransferFunction(
   rsSparseDigitalTransferFunction<TPar>* tf) const
 {
-  // New:
   s.getCombTransferFunction(tf);
-
-  //// Old:
-  //using Mon = rsMonomial<TPar>;
-  //getDelayTransferFunction(&A);        // A = A(z) is transfer function of the delay
-  //getDamperTransferFunction(tf);       // tf = F, F(z) is transfer function in feedback path
-  //tf->multiplyBy(Mon(k, 1));           // tf = F * k * z^-1
-  //tf->multiplyBy(A, TPar(0));          // tf = F * k * z^-1 * A
-  //tf->addConstant(TPar(1), TPar(0));   // tf = 1 + F * k * z^-1 * A
-  //tf->invert();                        // tf = 1 / (1 + F * k * z^-1 * A)
-  //if(preDelay)
-  //  tf->multiplyBy(A, TPar(0));        // tf = A / (1 + F * k * z^-1 * A)
-
-  // ToDo:
-  //
-  // - Verify that all operations above are non-allocating (assuming that tf has enough capacity)
-  //   and document that fact. Our member A also needs to have enough capacity to represent the
-  //   delay filter including interpolation.
 }
 
 template<class TSig, class TPar>
@@ -2234,11 +2203,11 @@ TSig rsDampedCombAllpass<TSig, TPar>::getSampleComb(TSig in)
 template<class TSig, class TPar>
 TSig rsDampedCombAllpass<TSig, TPar>::applyCorrector(TSig in)
 {
-  // New:
-  int dmpOrd = s.getDampingOrder();
+  // Retrieve feedback gain and damping coeffs:
+  TPar k        = s.getFeedbackGain();
+  int  dmpOrd   = s.getDampingOrder();
   const TPar* b = s.getDampCoeffsB();
   const TPar* a = s.getDampCoeffsA();
-  TPar k = s.getFeedbackGain();
 
   // Apply the poles:
   TSig t = applyCorrectorPoles(in);
