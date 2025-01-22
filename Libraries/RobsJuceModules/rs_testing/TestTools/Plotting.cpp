@@ -202,6 +202,25 @@ void plotComplexVectorReIm(std::vector<std::complex<double>> v)
   plt.plot();
 }
 
+void plotComplexVectorReIm(std::vector<rsComplex<double>> v)
+{
+  GNUPlotter plt;
+  int N = (int) v.size();
+  double *y = new double[N];
+  for(int n = 0; n < N; n++) 
+    y[n] = rsReal(v[n]);
+  plt.addDataArrays(N, y);
+  for(int n = 0; n < N; n++) 
+    y[n] = rsImag(v[n]);
+  plt.addDataArrays(N, y);
+  delete[] y;
+  plt.plot();
+
+  // This almost duplicates the version for std::complex. Maybe templatize it in a way to work with
+  // both types
+}
+
+
 
 // use shorter variable names here...
 void plotSpectrogram(int numFrames, int numBins, double **s, double fs, int H, 

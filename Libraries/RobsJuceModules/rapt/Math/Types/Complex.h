@@ -196,6 +196,12 @@ T rsReal(const rsComplex<T>& z)
   return z.re;
 }
 
+template <class T>
+T rsImag(const rsComplex<T>& z)
+{
+  return z.im;
+}
+
 template<class T>
 rsComplex<T> rsConj(rsComplex<T> z)
 {

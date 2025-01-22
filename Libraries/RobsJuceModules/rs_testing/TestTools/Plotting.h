@@ -206,6 +206,8 @@ void plotDataLogX(int N, double *x, double *y1, double *y2 = NULL, double *y3 = 
 void plotVector(std::vector<double> v);  // replace by RAPT::rsPlotVector
 
 void plotComplexVectorReIm(std::vector<std::complex<double>> v);
+void plotComplexVectorReIm(std::vector<rsComplex<double>> v);
+// ToDo: take argument by const reference
 
 
 /** Plots the matrix entries as surface above a coordinate system given by x,y 

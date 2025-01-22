@@ -1472,6 +1472,8 @@ void dampedCombAllpassComplex()
   // here). Maybe it can be solved by having a 3rd template parameter TFdbk for the feedback? Using
   // k = TSig as we did before may solve the issue with the delay but probably not the one with
   // getTransferFunctionAt.
+  // ...OK...this has been "fixed" by reverting to using rsDelay again...but I think, this is not 
+  // yet the final solution. I think, getTransferFunctionAt won't work.
 
 
   // We instantiate rsDampedCombAllpass with a complex datatype for the signals. The feedback gain
@@ -1515,8 +1517,8 @@ void dampedCombAllpassComplex()
   VecR hr(N), hi(N);
   for(int n = 0; n < N; n++)
   {
-    hr[n] = real(h[n]);
-    hi[n] = imag(h[n]);
+    hr[n] = rsReal(h[n]);
+    hi[n] = rsImag(h[n]);
   }
 
   // Plot spectra:
@@ -1524,6 +1526,10 @@ void dampedCombAllpassComplex()
   SpecPlot plt;
   plt.setFftSize(N);
   plt.plotSpectra(N, &hr[0], &hi[0]);
+
+  // Test transfer function computation:
+  Complex z(0.6, 0.8);
+  //Complex H = ap.getCombTransferFunctionAt(z);
 
 
 
