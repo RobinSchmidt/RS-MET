@@ -1765,11 +1765,7 @@ public:
   // \name Inquiry
 
   /** Returns the maximum order for the feedback damping filters that is supported. */
-  //static int getMaxDampingOrder() { return maxDmpOrd; }
   static constexpr int getMaxDampingOrder() { return maxDmpOrd; }
-    // ToDo: Try to make constexpr. But that seems to incompatible with static. Why?
-    // ...oh...now it works...maybe I had the syntax wrong in some way
-
 
   /** Evaluates the filter's z-domain transfer function H(z) value at the given value of z. */
   rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const;
@@ -1859,13 +1855,6 @@ protected:
   TSig applyCorrectorPoles(TSig in) { return s.applyDamperPoles(in, yc); }
 
 
-
-
-  //static const int maxDmpOrd = 8;      // Maximum damping order
-  //static const int maxDmpOrd = rsDampedCombSettings<TPar>::maxDmpOrd; // Maximum damping order
-  static const int maxDmpOrd = rsDampedCombSettings<TPar>::getMaxDampingOrder(); // Maximum damping order
-
-
   // Embedded DSP objects:
 
   //rsDelay<TSig> mainDelay;           // Main delayline for the comb filter    old
@@ -1883,6 +1872,11 @@ protected:
 
 
   rsDelay<TSig>               corrDelay;  // Delayline for the correction filter
+
+
+
+  // Maximum order of feedback damping filter:
+  static const int maxDmpOrd = rsDampedCombSettings<TPar>::getMaxDampingOrder(); 
 
   // State:
   TSig combOut = TSig(0);                 // State for the unit delay feedback loop
