@@ -309,7 +309,8 @@ public:
   void multiplyBy(const rsSparsePolynomial<T>& factor, T tol)
   { multiply(*this, factor, this, tol); }
   // I think, this may also decanonicalize! We may get multiple terms with same exponent. But we
-  // may actually repair this inside the function
+  // may actually repair this inside the function. But no! It calls canonicalize at the end, so 
+  // even
 
   /** Multiplies this polynomial by a desne polynomial represented by the given array of 
   coefficients. Works in place and re-allocates only when the capacity is too low. */
@@ -395,13 +396,18 @@ public:
 
   /** Returns the minimum power that occurs in this polynomial. */
   int getMinPower() const;
+  // Rename to _getMinPower() to indicate that it works also for non-canonical representations. 
+  // Implement a getMinPower() for canonical representations that juts returns 0 or the power of
+  // the 0-th terms
 
   /** Returns the maximum power that occurs in this polynomial. In mathematical jargon, the 
   highest power in a polynomial is also known as the degree or order of the polynomial. */
   int getMaxPower() const;
+  // Rename to _getMaxPower(), ee above
 
   /** Returns the index of the maximum power. */
   int getMaxPowerIndex() const;
+  // Rename to _getMaxPowerIndex
 
   /** Alias for getMaxPower() for compatibility with API of rsPolynomial. Returns the degree of
   the polynomial. This is mathematical term for the term with the highest power/exponent that has 
@@ -410,10 +416,12 @@ public:
   // This is basically an alias name for getMaxPower(). I'm not sure, if it's a good idea to have 
   // two functions that do the exact same thing. Maybe get rid of it. But on the other hand, it's 
   // nice to have to be consistent with the API of class rsPolynomial. 
+  // Rename to _getDegree()
 
   /** Returns the leading coefficient, i.e. the coefficient that multiplies the highest power of
   the input variable x. */
   T getLeadingCoeff() const;
+  // Rename to _getLeadingCoeff
 
   /** Returns the term (i.e. the monomial) at the given index. */
   rsMonomial<T> getTerm(int index) const { rsAssert(isValidIndex(index)); return terms[index]; }
@@ -421,6 +429,7 @@ public:
   /** Returns the leading term in this polynomial, i.e. the monomial  cn x^n  that has the highest
   exponent n. */
   rsMonomial<T> getLeadingTerm() const;
+  // Rename to _getLeadingTerm
 
   /** Returns the coefficient of the term with given index. */
   T getCoeff(int index) const {  rsAssert(isValidIndex(index)); return terms[index].getCoeff(); }

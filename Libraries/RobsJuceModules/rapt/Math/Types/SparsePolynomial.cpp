@@ -100,7 +100,8 @@ void rsSparsePolynomial<T>::canonicalize(T tol)
   _setNumTerms(w+1);                // Possibly shorten the terms array
   // This algorithm works only when the terms are sorted by exponent so it doesn't really make 
   // sense to factor it out into a function in its own right. Doing so could invite calling it on 
-  // unsorted term arrays in which case we would have a bug.
+  // unsorted term arrays in which case we would have a bug. Or maybe if we split it out, we should
+  // assert that the terms are sorted.
 
   // Remove terms with coefficient zero:
   rsRemoveIf(terms, [&tol](const Mon& term){ return rsAbs(term.getCoeff()) <= tol; });
@@ -120,8 +121,13 @@ void rsSparsePolynomial<T>::canonicalize(T tol)
   //   not sure, if we should care about the algo being a stable sort or not. But if it's not 
   //   stable, the roundoff behavior may be different and - what is more important - unpredictable.
   //   With a stable sort, the rounding that occurs in the consolidation of coeffs for terms with 
-  //   equal powers, would be the same every time. That might be thing that we might want to have. 
-  //   Or maybe it doesn't matter. We'll see.....
+  //   equal powers, would be the same every time. That might be a thing that we might want to 
+  //   have. Or maybe it doesn't matter. We'll see.....
+  //
+  // - Maybe we should split the canonicalize function into sortTermsByPower(), 
+  //   combineTermsWithSamePower(), removeTermsWithZeroCoeff(). The combineTermsWithSamePower 
+  //   should assert that the terms array is sorted. Maybe we should have a function 
+  //   areTermsSorted or arePowersAscending/arePowersStrictlyAscending
 }
 
 template<class T>
@@ -331,7 +337,10 @@ void rsSparsePolynomial<T>::multiply(
     for(int j = Nq-1; j >= 0; j--)
       r->_setTerm(i*Nq+j, p.getCoeff(i) * q.getCoeff(j), p.getPower(i) + q.getPower(j));
 
+  // We may have to re-canonicalize to combine terms with equal exponent:
   r->canonicalize(tol);
+  // Maybe a full canonicalization is not needed. Maybe the first step (the sorting) is superfluous
+  // if we can assume that p and q are canonical (or even just sorted)?
 }
 
 template<class T>
@@ -364,6 +373,8 @@ void rsSparsePolynomial<T>::divide(
   rsAssert(rsAreAddressesDistinct(den,   *rem ));
   rsAssert(rsAreAddressesDistinct(*quot, *rem ));
   rsAssert(!den.isZero(tol));
+  rsAssert(num.isCanonical());
+  rsAssert(den.isCanonical());
   // What about num == den (address-wise)? I think, we should also check that this is not the case.
   // But in such a case, we can just assign quot to 1 and rem to 0 and return early. Right? Also, 
   // maybe num == rem could be ok - except for the verification of the loop invariant.
@@ -417,14 +428,14 @@ void rsSparsePolynomial<T>::divide(
   // - Figure out and document, if it can be used in place in certain cases. If this is not the 
   //   case, explicitly document that too and maybe explain why it's not possible. In the loop, we
   //   do not seem to read from num, so maybe it's ok if num aliases to quot or rem? Maybe 
-  //   num == rem is ok because rem gest initialized to num anyway. But then we will violate the 
+  //   num == rem is ok because rem gets initialized to num anyway. But then we will violate the 
   //   loop invariant when we allow this kind of aliasing. But that may be ok - we verify it only 
   //   for sanity checking purposes anyway. It also looks like we only ever access 
   //   den.getLeadingTerm() and never change den. That means, we could extract the leading term 
   //   (and the degree) once outside the loop and should the be free to do whatever we want with 
   //   den (or its alias) inside the loop without affecting the result. Maybe it means that rem is 
   //   allowed to alias to num and den is allowed to alias to quot after we make that change? Check
-  //   this! Aaah...noo...wrong! We do read from den in rem->addScaled(dem, ...). OK - so den must
+  //   this! Aaah...noo...wrong! We do read from den in rem->addScaled(den, ...). OK - so den must
   //   be distinct. It could still make sense to drag den.getDegree() and den.getLeadingTerm out of
   //   the loop as the operations are O(N) in non-canonical representations.
 }
@@ -437,6 +448,8 @@ void rsSparsePolynomial<T>::greatestCommonDivisorInPlace(
   rsSparsePolynomial<T>* tmp2,
   T tol, bool monic)
 {
+  rsAssert(a->isCanonical());
+  rsAssert(b->isCanonical());
   while(!b->isZero(tol))
   {
     tmp1->copyDataFrom(*b);
@@ -446,7 +459,9 @@ void rsSparsePolynomial<T>::greatestCommonDivisorInPlace(
   if(monic)
     a->makeMonic();
 
-  // Algorithm implementation has been adapted from rsRationalFunction<T>::polyGCD. 
+  // Algorithm implementation has been adapted from rsRationalFunction<T>::polyGCD. I'm not sure, 
+  // if we strictly require a,b to be canonical, but let's err to the conservative side. If we use
+  // the non-canonical b->isZero() function, we need at least b to be canonical, I think.
 }
 
 
