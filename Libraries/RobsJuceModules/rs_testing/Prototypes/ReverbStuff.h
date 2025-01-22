@@ -1799,6 +1799,14 @@ public:
   rsComplex<TPar> getCorrectorTransferFunctionAt(const rsComplex<TPar>& z) const;
 
 
+  rsComplex<TPar> getDelayTransferFunctionAt(const rsComplex<TPar>& z) const
+  {
+    return mainDelay.getTransferFunctionAt(z);
+  }
+
+
+
+
 
 
 
@@ -1808,10 +1816,28 @@ public:
   // capacity pre-allocated. Doing so is the responsibility of the caller. They are much less 
   // convenient to use but it's sometimes necessary when one needs to compute these transfer 
   // function in a realtime thread.
-  void getCorrectorTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const;
-  void getCombTransferFunction(     rsSparseDigitalTransferFunction<TPar>* tf) const;
-  void getDamperTransferFunction(   rsSparseDigitalTransferFunction<TPar>* tf) const;
-  void getDelayTransferFunction(    rsSparseDigitalTransferFunction<TPar>* tf) const;
+  void getCorrectorTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const
+  {
+    getCombTransferFunction(tf);
+    tf->invert();
+    tf->reflectZeros();
+  }
+
+  void getCombTransferFunction(     rsSparseDigitalTransferFunction<TPar>* tf) const
+  {
+    s.getCombTransferFunction(tf);
+  }
+
+  void getDamperTransferFunction(   rsSparseDigitalTransferFunction<TPar>* tf) const
+  {
+    tf->setupFromDenseCoeffs(b, dmpOrd+1, a, dmpOrd+1, TPar(0));
+  }
+  // This may not be needed
+
+  void getDelayTransferFunction(    rsSparseDigitalTransferFunction<TPar>* tf) const
+  {
+    mainDelay.getTransferFunction(tf);
+  }
 
 
 
@@ -1949,21 +1975,9 @@ void rsDampedCombAllpass<TSig, TPar>::setup(int delay, TPar feedback, int dampOr
   }
 
   M = delay - 1;             // -1 corrects for unit delay in feedback path
-
   s.setup(delay, rsDampedCombSettings<TPar>::InterpolationMethod::nearest, feedback, dampOrder,
     dampCoeffsB, dampCoeffsA, predelayMode);
-
-  // New:
   updateDelays();
-
-
-  // Old:
-  //mainDelay.setDelayInSamples(M);
-  //corrDelay.setDelayInSamples(M+dampOrder+1);
-
-
-
-
 
   // ToDo:
   //
@@ -2002,7 +2016,8 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getCombTransferFunctionAt(
 {
   using Complex = rsComplex<TPar>;
   Complex one(TPar(1));                             // 1 + 0i
-  Complex A  = mainDelay.getTransferFunctionAt(z);  // A(z)
+  //Complex A  = mainDelay.getTransferFunctionAt(z);  // A(z)
+  Complex A  = getDelayTransferFunctionAt(z);       // A(z)
   Complex z1 = one/z;                               // z^-1
   Complex F  = getDamperTransferFunctionAt(z);      // F(z)
   TPar k = s.getFeedbackGain();
@@ -2122,35 +2137,35 @@ rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar>
   // Factor out into s.getDamperTransferFunction();
 }
 
-template<class TSig, class TPar>
-void rsDampedCombAllpass<TSig, TPar>::getCombTransferFunction(
-  rsSparseDigitalTransferFunction<TPar>* tf) const
-{
-  s.getCombTransferFunction(tf);
-}
+//template<class TSig, class TPar>
+//void rsDampedCombAllpass<TSig, TPar>::getCombTransferFunction(
+//  rsSparseDigitalTransferFunction<TPar>* tf) const
+//{
+//  s.getCombTransferFunction(tf);
+//}
 
-template<class TSig, class TPar>
-void rsDampedCombAllpass<TSig, TPar>::getCorrectorTransferFunction(
-  rsSparseDigitalTransferFunction<TPar>* tf) const
-{
-  getCombTransferFunction(tf);
-  tf->invert();
-  tf->reflectZeros();
-}
+//template<class TSig, class TPar>
+//void rsDampedCombAllpass<TSig, TPar>::getCorrectorTransferFunction(
+//  rsSparseDigitalTransferFunction<TPar>* tf) const
+//{
+//  getCombTransferFunction(tf);
+//  tf->invert();
+//  tf->reflectZeros();
+//}
 
-template<class TSig, class TPar>
-void rsDampedCombAllpass<TSig, TPar>::getDamperTransferFunction(
-  rsSparseDigitalTransferFunction<TPar>* tf) const
-{
-  tf->setupFromDenseCoeffs(b, dmpOrd+1, a, dmpOrd+1, TPar(0));
-}
-
-template<class TSig, class TPar>
-void rsDampedCombAllpass<TSig, TPar>::getDelayTransferFunction(
-  rsSparseDigitalTransferFunction<TPar>* tf) const
-{
-  mainDelay.getTransferFunction(tf);
-}
+//template<class TSig, class TPar>
+//void rsDampedCombAllpass<TSig, TPar>::getDamperTransferFunction(
+//  rsSparseDigitalTransferFunction<TPar>* tf) const
+//{
+//  tf->setupFromDenseCoeffs(b, dmpOrd+1, a, dmpOrd+1, TPar(0));
+//}
+//
+//template<class TSig, class TPar>
+//void rsDampedCombAllpass<TSig, TPar>::getDelayTransferFunction(
+//  rsSparseDigitalTransferFunction<TPar>* tf) const
+//{
+//  mainDelay.getTransferFunction(tf);
+//}
 
 template<class TSig, class TPar>
 void rsDampedCombAllpass<TSig, TPar>::reset()
