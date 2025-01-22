@@ -1465,18 +1465,18 @@ void rsSetupHighDampComplex(rsDampedCombAllpass<TSig, TPar>& flt,
 
 void dampedCombAllpassComplex()
 {
-  // We instantiate rsDampedCombAllpass with a complex datatype for the signals. The feedback gain
-  // is also complex. Using a complex feedback gain further increases the space of the things that 
-  // we can do with this filter. 
-
-
-  // The code has been commented out because it deosn't compile anymore since we switched to using
+  // The code has been commented out because it doesn't compile anymore since we switched to using
   // rsDelayRounding instead of rsDelay. The problem is that instantiating rsDampedCombAllpass with
   // TPar = complex to get complex feedback interferes with using TPar for the non-integer delay 
   // parameter (and probably also with getTransferFunctionAt() which we did not yet try to use 
   // here). Maybe it can be solved by having a 3rd template parameter TFdbk for the feedback? Using
   // k = TSig as we did before may solve the issue with the delay but probably not the one with
   // getTransferFunctionAt.
+
+
+  // We instantiate rsDampedCombAllpass with a complex datatype for the signals. The feedback gain
+  // is also complex. Using a complex feedback gain further increases the space of the things that 
+  // we can do with this filter. 
 
   /*
   // Define types to be used:
@@ -1541,6 +1541,18 @@ void dampedCombAllpassComplex()
   //
   //
   // ToDo:
+  //
+  // - Try to make it compile again. Maybe we need to introduce a 3rd template parameter for the
+  //   delay in class rsDampedCombAllpass and assign that to Real. But that alone won't solve all
+  //   problems. Maybe the getTransferFunctionAt() functions need to get their own template 
+  //   parameter for the argument z and return type. This would have the additional advantage that
+  //   we wouldn't need to commit to use RAPT::rsComplex or std::complex in the declaration of 
+  //   getTransferFunctionAt(). This choice could be later made by the client code.
+  //
+  // - Check if, when using complex feedback and filter coeffs, we need to additionally conjugate
+  //   the coeffs after reversing them to get an allpass. Look up the paper by Sebastain Schlecht:
+  //   https://www.mdpi.com/2076-3417/10/1/187 ...hmm...it doesn't say anything about that. Maybe 
+  //   make some derivations for simple low order filters (1st order, biquad).
   //
   // - Make sure that everything works with rsComplex and std::complex for Complex. We need to
   //   implement real/imag for rsComplex or rsReal/rsImag for both. I think, the latter way is the

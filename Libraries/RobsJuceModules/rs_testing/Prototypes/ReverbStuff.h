@@ -1327,6 +1327,27 @@ public:
   // could be called setupViaCoeffs
 
 
+  rsComplex<T> getDamperTransferFunctionAt(const rsComplex<T>& z) const
+  {
+    using Complex = rsComplex<T>;
+    Complex num = 0, den = 0;
+    for(int i = 0; i <= dmpOrd; i++)
+    {
+      Complex zi = rsPow(z, Complex(-i));          // z^-i
+      num += b[i] * zi;
+      den += a[i] * zi;
+    }
+    return num / den;
+
+    // ToDo:
+    //
+    // - This should be optimized (don't call rsPow - compute the powers on the fly by multiplying by
+    //   z) and factored into a library function to compute the transfer function of direct form 
+    //   filters. Maybe it should go into rsFilterAnalyzer.
+  }
+
+
+
   void getCombTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
   {
     using Mon = rsMonomial<T>;
@@ -1908,7 +1929,8 @@ protected:
   // ToDo:
   //
   // - Maybe factor out a class rsDampedComb that has everything except the stuff related to the 
-  //   correction filter
+  //   correction filter. It should have the mainDelay and the "State" and "Settings" stuff. The 
+  //   only extra data member in rsCombAllpass would be the corrDelay.
 };
 
 template<class TSig, class TPar>
@@ -1982,15 +2004,14 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getCombTransferFunctionAt(
 {
   using Complex = rsComplex<TPar>;
   Complex one(TPar(1));                             // 1 + 0i
-  //Complex zM = rsPow(z, Complex(-M));               // z^-M
   Complex A  = mainDelay.getTransferFunctionAt(z);  // A(z)
   Complex z1 = one/z;                               // z^-1
   Complex F  = getDamperTransferFunctionAt(z);      // F(z)
   TPar k = s.getFeedbackGain();
   if(s.isInPreDelayMode())
-    return A   / (one + k * z1 * F * A);           // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
+    return A   / (one + k * z1 * F * A);            // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
   else
-    return one / (one + k * z1 * F * A);           // U(z) =   1  / (1 + k * z^-1 * F(z) * A(z))
+    return one / (one + k * z1 * F * A);            // U(z) =   1  / (1 + k * z^-1 * F(z) * A(z))
 
 
   // Notes:
@@ -2024,29 +2045,33 @@ template<class TSig, class TPar>
 rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getDamperTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
-  // New:
-  int dmpOrd = s.getDampingOrder();
-  const TPar* b = s.getDampCoeffsB();
-  const TPar* a = s.getDampCoeffsA();
+  return s.getDamperTransferFunctionAt(z);
 
 
-  using Complex = rsComplex<TPar>;
-  Complex num = 0, den = 0;
-  for(int i = 0; i <= dmpOrd; i++)
-  {
-    Complex zi = rsPow(z, Complex(-i));          // z^-i
-    num += b[i] * zi;
-    den += a[i] * zi;
-  }
-  return num / den;
 
-  // ToDo:
-  //
-  // - This should be optimized (don't call rsPow - compute the powers on the fly by multiplying by
-  //   z) and factored into a library function to compute the transfer function of direct form 
-  //   filters. Maybe it should go into rsFilterAnalyzer.
-  //
-  // - Move this into rsDampedCombSettings
+  //// New:
+  //int dmpOrd = s.getDampingOrder();
+  //const TPar* b = s.getDampCoeffsB();
+  //const TPar* a = s.getDampCoeffsA();
+
+
+  //using Complex = rsComplex<TPar>;
+  //Complex num = 0, den = 0;
+  //for(int i = 0; i <= dmpOrd; i++)
+  //{
+  //  Complex zi = rsPow(z, Complex(-i));          // z^-i
+  //  num += b[i] * zi;
+  //  den += a[i] * zi;
+  //}
+  //return num / den;
+
+  //// ToDo:
+  ////
+  //// - This should be optimized (don't call rsPow - compute the powers on the fly by multiplying by
+  ////   z) and factored into a library function to compute the transfer function of direct form 
+  ////   filters. Maybe it should go into rsFilterAnalyzer.
+  ////
+  //// - Move this into rsDampedCombSettings
 }
 
 template<class TSig, class TPar>
@@ -2173,11 +2198,8 @@ void rsDampedCombAllpass<TSig, TPar>::reset()
 template<class TSig, class TPar>
 TSig rsDampedCombAllpass<TSig, TPar>::getSampleComb(TSig in)
 {
-
   TPar k = s.getFeedbackGain();
-
-  //if(preDelay)            // Old
-  if(s.isInPreDelayMode())  // New
+  if(s.isInPreDelayMode())
   {
     combOut = applyDelay(in - k * applyDamper(combOut));  // Predelay of M samples
     return combOut; 
@@ -2299,33 +2321,6 @@ void rsSetupDecayTimes_LinViaFb(rsDampedCombAllpass<TSig, TPar>& flt,
   TPar delay, TPar decay, TPar loOmega, TPar loScale, TPar hiOmega, TPar hiScale, 
   bool predelay)
 {
-  // Old:
-  //// Compute desired feedback gains for low, mid and high frequencies:
-  //TPar a60 = TPar(0.001); // = rsDbToAmp(-60.0). Target amplitude to reach after decayTimeInSamples
-  //TPar kL  = rsDecayTimeToFeedbackGain(decayTimeInSamples * lowTimeScale , TPar(delay), a60);
-  //TPar kM  = rsDecayTimeToFeedbackGain(decayTimeInSamples                , TPar(delay), a60);
-  //TPar kH  = rsDecayTimeToFeedbackGain(decayTimeInSamples * highTimeScale, TPar(delay), a60);
-  //// These formulas could also be expressed as e.g.:
-  ////
-  ////   kM = rsPow(10.0, TPar(-3 * delay) / decayTimeInSamples);
-  ////
-  //// which is how they are often seen in the FDN literature. 
-
-  //// Compute desired gains for the low and high shelver:
-  //TPar gL = kL / kM;
-  //TPar gH = kH / kM;
-
-  //// Compute coeffs for low- and high shelver:
-  //TPar aL[2], bL[2]; aL[0] = 1; rsMake1stOrderLowShelf( lowOmega,  gL, &bL[0], &bL[1], &aL[1]);
-  //TPar aH[2], bH[2]; aH[0] = 1; rsMake1stOrderHighShelf(highOmega, gH, &bH[0], &bH[1], &aH[1]);
-
-  //// Combine low- and high shelver into biquad:
-  //TPar a[4], b[4];
-  //rsArrayTools::convolve(aL, 2, aH, 2, a);
-  //rsArrayTools::convolve(bL, 2, bH, 2, b);
-
-
-
   // Compute feedback gain and filter coeffs:
   TPar a[4], b[4];
   TPar kM = rsMakeDampBiShelf(delay, decay, loOmega, loScale, hiOmega, hiScale, b, a);
