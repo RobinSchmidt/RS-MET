@@ -1308,7 +1308,7 @@ public:
     }
 
 
-    delay         = delayInSamples - 1;      // -1 corrects for unit delay in feedback path
+    delay         = delayInSamples - T(1);    // -1 corrects for unit delay in feedback path
     interpolation = interpolationMethod;
     k             = feedback;
     preDelay      = preDelayMode;
@@ -1734,6 +1734,8 @@ public:
   /** Sets the maximum desired roundtrip delay around the comb. This total roundtrip delay includes
   the z^-1 unit delay, so the delayline length is actually shorter by one. */
   void setMaxIntDelayInSamples(int newMaxDelay);
+  // Get rid of function below and rename thsi back to steMaxDelayInSamples
+
 
 
 

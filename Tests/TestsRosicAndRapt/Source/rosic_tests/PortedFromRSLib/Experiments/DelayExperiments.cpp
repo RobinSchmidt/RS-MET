@@ -1478,7 +1478,7 @@ void dampedCombAllpassComplex()
   // is also complex. Using a complex feedback gain further increases the space of the things that 
   // we can do with this filter. 
 
-  /*
+
   // Define types to be used:
   using Real    = double;
   //using Complex = rsComplex<Real>;
@@ -1502,8 +1502,8 @@ void dampedCombAllpassComplex()
   Complex fb = fbGain * rsExp(j*fbPhase);
   Real    w  = 2*PI*dampFreq/sampleRate;
   int     N  = numSamples;
-  ap.setMaxDelayInSamples(delay);
 
+  ap.setMaxIntDelayInSamples(delay);
   //ap.setupHighDamp(delay, fb, w, dampGain, false);
   rsSetupHighDampComplex(ap, delay, fb, w, dampGain, false);
 
@@ -1524,7 +1524,7 @@ void dampedCombAllpassComplex()
   SpecPlot plt;
   plt.setFftSize(N);
   plt.plotSpectra(N, &hr[0], &hi[0]);
-  */
+
 
 
   // Observations:
@@ -1532,7 +1532,8 @@ void dampedCombAllpassComplex()
   // - Using complex numbers imprints and undulation onto the impulse reponses.
   //
   // - The spectra of real and imaginary part by themselves are not allpass like. They are more
-  //   of a strange comb like structure. One has zeros between the peaks, the other doesn't. 
+  //   of a strange comb like structure. With fbPhase = pi/4, one has zeros between the peaks, the
+  //   other doesn't. 
   //
   // - Feedback phases of 0 and pi give purely real outputs. With 0, it's unipolar, with pi its
   //   bipolar. That's how it has to be - we expect to get back to behavior of positive and
@@ -1893,9 +1894,10 @@ void dampedAllpassBiComb_1p()
 
 void dampedCombAllpasses()
 {
+  dampedCombAllpassComplex();
   //dampedCombAllpass5();
   //dampedCombAllpassFractional1();
-  dampedCombAllpassFractional2();
+  //dampedCombAllpassFractional2();
   //dampedMultiCombAllpass();
   //dampedMultiCombAllpass2();
 
