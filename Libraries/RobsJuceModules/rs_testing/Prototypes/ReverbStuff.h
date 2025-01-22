@@ -1269,6 +1269,14 @@ public:
     allpass1
   };
   // Maybe use unsigned char as underlying type for the enum
+
+
+  //enum class Mode
+  //{
+  //  feedbackDamper,           // F(z) is in feedback path, A(z) in feedformward path
+  //  forwardDamper,            // F(z) is in feedforward path, A(z) in feedback path
+  //  forwardDamperCompensated  // Like forwardDamper but with 1/F(z) compensator in series
+  //};
  
 
   void init()
@@ -1475,7 +1483,12 @@ public:
 
 
 
-  // Maybe factor these out into free functions rsApply(Inverse)DirectFormFilter(in, b, x, a, y)
+  // Maybe factor these out into free functions 
+  // rsApplyDirectForm(Inverse)Filter(in, b, x, a, y, order), 
+  // rsApplyDirectFormAllpole(in, a, y, order), 
+  // Or maybe make them static members of rsDirectFormFilter. Maybe they should be named
+  // applyDF1, applyInverseDF1, applyPolesDF1 - the idea being that there could also be 
+  // implementations for other (direct) forms.
  
 
 
@@ -1487,11 +1500,6 @@ protected:
 
 
   static const int maxDmpOrd = 8;      // Maximum damping order
-  // Try to move to protected and provide accessor like getMaxDampingOrder(). The problem might be 
-  // that we need to access this number as compile-time constant in classes like 
-  // rsDampedCombAllpass to determine the sizes of the state arrays for the damping filter. 
-  // ...OK...it seems to work
-
 
   // Feedback coefficients:
   T k = 0;                             // Feedback gain
@@ -1499,8 +1507,8 @@ protected:
   T a[maxDmpOrd+1];                    // Damping filter feedback coeffs
 
   // Other settings:
-  T    delay    = 0;                   // Delay in samples (may be non integer)
-  int  dmpOrd   = 0;                   // Feedback damping filter order
+  T   delay  = 0;                      // Delay in samples (may be non integer)
+  int dmpOrd = 0;                      // Feedback damping filter order
 
   // Switch between different interpolation modes:
   InterpolationMethod interpolation = InterpolationMethod::nearest;
@@ -1526,6 +1534,7 @@ protected:
     // damper). Maybe instead of declaring them as bI[2], use bI[maxIntOrd+1]. We will then need a
     // way to mutliply a sparse transfer function by one represented by a dense array of coeffs.
     // For this, we need a function rsSparsePolynomial::multiplyByDense(const T* coeffs, int order)
+    // ...ok - there is now rsSparsePolynomial<T>::multiplyByDenseCoeffs - but it needs tests
 
 
     // Maybe have a delay member of type TPar - or maybe double or TDly and then maybe get rid of

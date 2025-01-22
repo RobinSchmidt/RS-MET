@@ -333,6 +333,26 @@ void rsSparsePolynomial<T>::multiply(
   r->canonicalize(tol);
 }
 
+
+template<class T>
+void rsSparsePolynomial<T>::multiplyByDenseCoeffs(const T* coeffs, int numTerms, T tol)
+{
+  rsWarning("rsSparsePolynomial::multiplyByDenseCoeffs not yet tested");
+
+  int Np = getNumTerms();
+  int Nq = numTerms;
+  int Nr = Np * Nq;
+  this->setNumTerms(Nr);
+
+  for(int i = Np-1; i >= 0; i--)
+    for(int j = Nq-1; j >= 0; j--)
+      this->setTerm(i*Nq+j, getCoeff(i) * coeffs[j], getPower(i) + j);
+
+  this->canonicalize(tol);
+}
+// Needs tests!
+
+
 template<class T>
 void rsSparsePolynomial<T>::divide(
   const rsSparsePolynomial<T>& num,

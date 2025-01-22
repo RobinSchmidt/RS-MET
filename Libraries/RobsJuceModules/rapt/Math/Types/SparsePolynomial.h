@@ -290,6 +290,10 @@ public:
   // Needs test
 
 
+  void multiplyByDenseCoeffs(const T* coeffs, int numTerms, T tol);
+  // Needs tests!
+
+
 
   void divideBy(const rsMonomial<T>& divisor)
   {
