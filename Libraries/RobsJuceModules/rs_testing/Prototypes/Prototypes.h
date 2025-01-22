@@ -61,7 +61,7 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 template<class T>
 rsSparsePolynomial<T> rsPowNaive(const rsSparsePolynomial<T>& p, int n)
 {
-  rsWarning("rsPow(rsSparsePolynomial&) is preliminary");
+  //rsWarning("rsPow(rsSparsePolynomial&) is preliminary");
 
   rsSparsePolynomial<T> r;
   r._appendTerm(T(1), 0);

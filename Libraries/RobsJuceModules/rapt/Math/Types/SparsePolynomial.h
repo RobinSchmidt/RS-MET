@@ -111,7 +111,20 @@ protected:
 //=================================================================================================
 
 /** A class for representing sparse polynomials, i.e. polynomials that have many zero coefficients.
-We represent such sparse polynomials basically as a std::vector of monomials. 
+We represent such sparse polynomials basically as a std::vector of monomials which we call terms in
+this context. We say that a sparse polynomial is in canonical representation if the powers of the 
+terms are strictly increasing as function of array index (implying that no power appears more than 
+once) and there are no terms with a coefficient of zero (up to some tolerance - i.e. the absolute 
+values of all coeffs should be greater than the tolerance). If the array of terms is empty, we 
+treat that as the canonical representaion of the zero polynomial. 
+
+For many purposes, it is convenient to assume a canonical representation and many setters will 
+maintain such a representation - but not all of them. Sometimes, one needs to - at least 
+temporarily - violate such a canonical representation for performance reasons. Therefore, the API 
+has two levels. A higher level that assumes and maintains canonical representations and a lower 
+level that makes no such assumption and gives no such maintenance guarantee. The lower level member
+functions are prefixed with an underscore _ to indicate at the call site that now some low-level 
+stuff is going on and special care should be taken. ...TBC...
 
 
 ToDo:
@@ -125,7 +138,7 @@ ToDo:
 
 - Maybe prefix the low-level functions that may destroy a canonical representation by an 
   underscore. This signals at the call site that now the low-level API is being used and special 
-  care is required, if maintaining a canonical representation is desired.
+  care is required, if maintaining a canonical representation is desired. ...done...
 
 - Or: maybe add suffixes _c and _n to functions that work with canonical and non-canonical 
   representations. For setters, _c should mean that the function assumes the polynomial in 
@@ -265,13 +278,12 @@ public:
 
   /** Makes the polynomial monic by dividing all coeffs by the leading coeff. A monic polynomial is
   a polynomial in which the leading coefficient is unity (aka one).*/
-  void makeMonic() { scale(T(1) / getLeadingCoeff()); }
+  void makeMonic() { scale(T(1) / _getLeadingCoeff()); }
+  // Maybe use canonical getLeadingCoeff or rename to _makeMonic
 
   /** Shifts the coefficient with the given index by the given amount, i.e. adds the given amount 
-  to the coeff */
+  to the coeff. It may decanonicalize the representation by leading to a zero coeff. */
   void _shiftCoeff(int index, T amount) { _setCoeff(index, amount + getCoeff(index)); }
-  // Maybe decanonicalize! The new coeff might be zero so the term should be removed in a canonical
-  // representation.
 
 
   //void shiftCoeffs(T amount)
@@ -282,10 +294,10 @@ public:
   //// Needs test. Or maybe get rid? This seems to be useless, i.e. mathematically not meaningful.
 
 
-  /** Shifts the power at the given index by the given amount. */
+  /** Shifts the power at the given index by the given amount. It may decanonicalize the 
+  representation by introducing two terms with equal power. */
   void _shiftPower(int index, int amount) { _setPower(index, amount + getPower(index)); }
-  // Maybe decanonicalize! It could happen that the term with given index has now a power that is
-  // the same as that of some other term.
+
 
   /** Shifts all powers by the given amount. If the amount is p, this corresponds to multiplying 
   the polynomial by a monomial factor with unit coefficient, i.e. by x^p. */
@@ -374,7 +386,7 @@ public:
   /** Returns true, iff this polynomial is zero, i.e. all absolute values of the coefficients are 
   below the given tolerance. So, this is a zero-test that works also on non-canonical 
   representations. */
-  bool isZero(T tol) const
+  bool _isZero(T tol) const
   {
     for(int i = 0; i < getNumTerms(); i++)
       if( rsAbs(getCoeff(i)) > tol )
@@ -395,24 +407,24 @@ public:
   int getNumTerms() const { return (int) terms.size(); }
 
   /** Returns the minimum power that occurs in this polynomial. */
-  int getMinPower() const;
+  int _getMinPower() const;
   // Rename to _getMinPower() to indicate that it works also for non-canonical representations. 
   // Implement a getMinPower() for canonical representations that juts returns 0 or the power of
   // the 0-th terms
 
   /** Returns the maximum power that occurs in this polynomial. In mathematical jargon, the 
   highest power in a polynomial is also known as the degree or order of the polynomial. */
-  int getMaxPower() const;
+  int _getMaxPower() const;
   // Rename to _getMaxPower(), ee above
 
-  /** Returns the index of the maximum power. */
-  int getMaxPowerIndex() const;
+  /** Returns the index of the maximum power or -1 in the case of an empty array of terms. */
+  int _getMaxPowerIndex() const;
   // Rename to _getMaxPowerIndex
 
   /** Alias for getMaxPower() for compatibility with API of rsPolynomial. Returns the degree of
   the polynomial. This is mathematical term for the term with the highest power/exponent that has 
   a nonzero coefficient. */
-  int getDegree() const { return getMaxPower(); }
+  int _getDegree() const { return _getMaxPower(); }
   // This is basically an alias name for getMaxPower(). I'm not sure, if it's a good idea to have 
   // two functions that do the exact same thing. Maybe get rid of it. But on the other hand, it's 
   // nice to have to be consistent with the API of class rsPolynomial. 
@@ -420,7 +432,7 @@ public:
 
   /** Returns the leading coefficient, i.e. the coefficient that multiplies the highest power of
   the input variable x. */
-  T getLeadingCoeff() const;
+  T _getLeadingCoeff() const;
   // Rename to _getLeadingCoeff
 
   /** Returns the term (i.e. the monomial) at the given index. */
@@ -428,7 +440,7 @@ public:
 
   /** Returns the leading term in this polynomial, i.e. the monomial  cn x^n  that has the highest
   exponent n. */
-  rsMonomial<T> getLeadingTerm() const;
+  rsMonomial<T> _getLeadingTerm() const;
   // Rename to _getLeadingTerm
 
   /** Returns the coefficient of the term with given index. */
@@ -574,7 +586,7 @@ public:
 
 
 
-  // ToDo: compose (see free function rsComposeNaive() in .cpp file), lowestCommonMultiple
+  // ToDo: compose (see free function rsComposeNaive() in Prototypes.h file), lowestCommonMultiple
 
 
 protected:

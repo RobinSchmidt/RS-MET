@@ -148,7 +148,7 @@ bool rsSparsePolynomial<T>::isCloseTo(const rsSparsePolynomial<T>& q, T tol) con
 }
 
 template<class T>
-int rsSparsePolynomial<T>::getMinPower() const
+int rsSparsePolynomial<T>::_getMinPower() const
 {
   if(isEmpty())
     return 0;
@@ -159,7 +159,7 @@ int rsSparsePolynomial<T>::getMinPower() const
 }
 
 template<class T>
-int rsSparsePolynomial<T>::getMaxPower() const
+int rsSparsePolynomial<T>::_getMaxPower() const
 {
   if(isEmpty())
     return 0;
@@ -181,9 +181,9 @@ int rsSparsePolynomial<T>::getMaxPower() const
 }
 
 template<class T>
-int rsSparsePolynomial<T>::getMaxPowerIndex() const
+int rsSparsePolynomial<T>::_getMaxPowerIndex() const
 {
-  rsAssert(isCanonical());
+  //rsAssert(isCanonical());
   // The output of this function is not well defined when there are multiple terms with the highest
   // power, so this function should really only be used on canonical representations. But wait:
   // In a canonical representation, the index of the maximum power is already known so we don't 
@@ -191,6 +191,14 @@ int rsSparsePolynomial<T>::getMaxPowerIndex() const
   // like: rsAssert(arePowersUnique()) - but such a check would be expensive (O(N^2)) on an 
   // unsorted terms array. It would even need temporary memory. On the other hand, it's only 
   // compiled into debug versions anyway.
+  //
+  // I think, we should remove this assertion. We can make the function well defined even in case 
+  // of mutliple terms with same exponent. It should just return the index of the first or last of 
+  // these terms then. I think, it currently returns the first. If we would use 
+  // "if(getPower(i) >= maxPower)" rather than "if(getPower(i) > maxPower)", it would return the 
+  // last, I think. In an underscore-prefixed method, it is not appropriate to assume a canonical
+  // representation - that's what the underscore means!
+
 
   if(isEmpty())
     return -1;
@@ -210,15 +218,15 @@ int rsSparsePolynomial<T>::getMaxPowerIndex() const
 }
 
 template<class T>
-T rsSparsePolynomial<T>::getLeadingCoeff() const 
+T rsSparsePolynomial<T>::_getLeadingCoeff() const 
 { 
-  return getLeadingTerm().getCoeff();
+  return _getLeadingTerm().getCoeff();
 }
 
 template<class T>
-rsMonomial<T> rsSparsePolynomial<T>::getLeadingTerm() const 
+rsMonomial<T> rsSparsePolynomial<T>::_getLeadingTerm() const 
 { 
-  int i = getMaxPowerIndex();
+  int i = _getMaxPowerIndex();
   if(i != -1)
     return getTerm(i);
   else
@@ -372,7 +380,7 @@ void rsSparsePolynomial<T>::divide(
   rsAssert(rsAreAddressesDistinct(den,   *quot));
   rsAssert(rsAreAddressesDistinct(den,   *rem ));
   rsAssert(rsAreAddressesDistinct(*quot, *rem ));
-  rsAssert(!den.isZero(tol));
+  rsAssert(!den._isZero(tol));   // ToDo: use canonical isZero ..or maybe not
   rsAssert(num.isCanonical());
   rsAssert(den.isCanonical());
   // What about num == den (address-wise)? I think, we should also check that this is not the case.
@@ -384,9 +392,9 @@ void rsSparsePolynomial<T>::divide(
   rem->copyDataFrom(num);    // r = n, Invariant holds: n = d*q + r = d*0 + r = r
 
   // Main loop:
-  while(!rem->isZero(tol) && rem->getDegree() >= den.getDegree())
+  while(!rem->_isZero(tol) && rem->_getDegree() >= den._getDegree())  // ToDo: use canonical isZero()/getDegree()...or should we not?
   {
-    rsMonomial<T> t = rem->getLeadingTerm() / den.getLeadingTerm();    // t = lead(r) / lead(d)
+    rsMonomial<T> t = rem->_getLeadingTerm() / den._getLeadingTerm();    // t = lead(r) / lead(d)   ToDo: use canonical getLeadingTerm()
     quot->addTerm(t, tol);                                             // q = q + t
     rem->addScaled(den, -t, tol);                                      // r = r - t * d
 
@@ -450,7 +458,7 @@ void rsSparsePolynomial<T>::greatestCommonDivisorInPlace(
 {
   rsAssert(a->isCanonical());
   rsAssert(b->isCanonical());
-  while(!b->isZero(tol))
+  while(!b->_isZero(tol))        // ToDo: use canonical isZero
   {
     tmp1->copyDataFrom(*b);
     rsSparsePolynomial<T>::divide(*a, *tmp1, tmp2, b, tol);
