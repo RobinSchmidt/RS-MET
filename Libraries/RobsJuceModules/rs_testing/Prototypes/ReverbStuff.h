@@ -1734,30 +1734,11 @@ public:
   /** Sets the maximum desired roundtrip delay around the comb. This total roundtrip delay includes
   the z^-1 unit delay, so the delayline length is actually shorter by one. */
   void setMaxIntDelayInSamples(int newMaxDelay);
-  // Get rid of function below and rename thsi back to steMaxDelayInSamples
-
-
 
 
   void setMaxDelayInSamples(TPar newMaxDelay)
-  {
-    setMaxIntDelayInSamples((int)rsCeil(newMaxDelay));
-
-
-    //setMaxIntDelayInSamples((int)rsCeil(rsReal(newMaxDelay)));
-
-    // Using rsReal() here is needed for enabling instantiating this class also for TPar being a 
-    // complex type. This enables complex valued feedback etc. The delay should still be a real 
-    // type though, so we just extract the real part.
-    //
-    // But I think, this still doesn't work. The code for the experiment with a complex feedback 
-    // is currently commented out. I think, we need to introduce a 3rd template parameter. Maybe
-    // TFdbk (for the feedback) or TDly (for the delay). But I'm not sure, if the transfer function
-    // computation will work because it may try to deal with nested complex numbers when TPar is
-    // itself complex. Maybe these function need to be templates themselves, introducing their own
-    // template parameter TComplex?)
-  }
-
+  { setMaxIntDelayInSamples((int)rsCeil(newMaxDelay)); }
+ 
 
 
 
@@ -1803,8 +1784,6 @@ public:
 
   rsComplex<TPar> getDelayTransferFunctionAt(const rsComplex<TPar>& z) const
   {
-    //return mainDelay.getTransferFunctionAt(z);
-
     return rsPow(z, rsComplex<TPar>(-M));  // H(z) = z^-M
   }
 
@@ -1840,8 +1819,6 @@ public:
 
   void getDelayTransferFunction(    rsSparseDigitalTransferFunction<TPar>* tf) const
   {
-    //mainDelay.getTransferFunction(tf);
-
     tf->num.setNumTerms(1); tf->num.setTerm(0, TPar(1), M);
     tf->den.setNumTerms(1); tf->den.setTerm(0, TPar(1), 0);
   }
@@ -1896,30 +1873,14 @@ protected:
   filter. */
   TSig applyCorrectorPoles(TSig in) { return s.applyDamperPoles(in, yc); }
 
-
+  /** Updates the lengths of the delaylines according to the settings. */
   void updateDelays();
 
 
 
   // Embedded DSP objects:
-
-  rsDelay<TSig> mainDelay;           // Main delayline for the comb filter    old
-  // Maybe revert to this
-
-  //rsDelayRounding<TSig, TPar> mainDelay;  // Main delayline for the comb filter    new
-  // With this new code, our dampedCombAllpassComplex() experiment doesn't compile anymore. 
-  // Something in it causes rsRoundToInt to get called with a complex argument. Maybe we are trying
-  // to set up a complex delay somewhere by having a delay parameter declared as TSig rather than 
-  // TPar in some setup function?
-  //
-  // Hmm - I think, we may need to introduce a 3rd template parameter. We may need:
-  // TSig, TCoef, TDly  ...do we really need this? It makes the API more unwieldy. But if that's 
-  // what it takes then we have to need to do it....
-
-
-  rsDelay<TSig>               corrDelay;  // Delayline for the correction filter
-
-
+  rsDelay<TSig> mainDelay;                // Main delayline for the comb filter
+  rsDelay<TSig> corrDelay;                // Delayline for the correction filter
 
   // Maximum order of feedback damping filter:
   static const int maxDmpOrd = rsDampedCombSettings<TPar>::getMaxDampingOrder(); 
@@ -1931,8 +1892,8 @@ protected:
   TSig yc[maxDmpOrd];                     // State for the poles of the correction filter
 
   // Settings:
-  rsDampedCombSettings<TPar> s;           // Rename this!
-  int M = 0;                              // Delayline length  ....get rid...maybe
+  rsDampedCombSettings<TPar> s;           // Rename this! ...maybe to settings
+  int M = 0;                              // Delayline length (redundant but convenient)
 
 
   // Notes:
@@ -1950,12 +1911,19 @@ protected:
   //   denominator have different orders. Maybe replace dmpOrd by two variables bOrd, aOrd or 
   //   something like that.
   //
+  // - The delayline length member M is redundant (it's equal to mainDelay.getDelayInSamples()) but
+  //   we keep it here for convenience (it's used in some formulas and filtering algorithms)
+  //
   //
   // ToDo:
   //
   // - Maybe factor out a class rsDampedComb that has everything except the stuff related to the 
   //   correction filter. It should have the mainDelay and the "State" and "Settings" stuff. The 
-  //   only extra data member in rsCombAllpass would be the corrDelay.
+  //   only extra data member in rsCombAllpass would be the corrDelay. Maybe the stuff under State
+  //   could also be moved into a class rsDampedCombState. Maybe that should also contain the
+  //   mainDelay delayline (the content of this is also part of the overall state). We do not 
+  //   really have much use for such a state class, but it would be cleaner to have it from a 
+  //   design perspective
 };
 
 template<class TSig, class TPar>
@@ -2023,7 +1991,6 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getCombTransferFunctionAt(
 {
   using Complex = rsComplex<TPar>;
   Complex one(TPar(1));                             // 1 + 0i
-  //Complex A  = mainDelay.getTransferFunctionAt(z);  // A(z)
   Complex A  = getDelayTransferFunctionAt(z);       // A(z)
   Complex z1 = one/z;                               // z^-1
   Complex F  = getDamperTransferFunctionAt(z);      // F(z)
@@ -2032,7 +1999,6 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getCombTransferFunctionAt(
     return A   / (one + k * z1 * F * A);            // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
   else
     return one / (one + k * z1 * F * A);            // U(z) =   1  / (1 + k * z^-1 * F(z) * A(z))
-
 
   // Notes:
   //

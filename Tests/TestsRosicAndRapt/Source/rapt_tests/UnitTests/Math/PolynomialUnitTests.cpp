@@ -2855,6 +2855,12 @@ bool testSparsePolynomial()
   ok &= s.isCloseTo(r, 0.0);
 
 
+  // Test multiplyByDenseCoeffs:
+  p.setupFromDenseCoeffs(coeffs1, 0.0);
+  r = p * q;
+  s = q;
+  s.multiplyByDenseCoeffs(&coeffs1[0], (int) coeffs1.size(), 0.0);
+  ok &= s.isCloseTo(r, 0.0);
 
 
   // Test arithmetic operators +,-,*:

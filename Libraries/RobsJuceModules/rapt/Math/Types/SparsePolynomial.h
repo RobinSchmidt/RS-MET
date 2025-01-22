@@ -277,21 +277,16 @@ public:
 
 
   void multiplyBy(const rsMonomial<T>& factor)
-  {
-    scaleCoeffs(factor.getCoeff());
-    shiftPowers(factor.getPower());
-  }
-  // Needs tests.
+  { scaleCoeffs(factor.getCoeff()); shiftPowers(factor.getPower()); }
 
   void multiplyBy(const rsSparsePolynomial<T>& factor, T tol)
-  {
-    multiply(*this, factor, this, tol);
-  }
-  // Needs test
+  { multiply(*this, factor, this, tol); }
 
 
+  /** Multiplies this polynomial by a desne polynomial represented by the given array of 
+  coefficients. Works in place and re-allocates only when the capacity is too low. */
   void multiplyByDenseCoeffs(const T* coeffs, int numTerms, T tol);
-  // Needs tests!
+
 
 
 
