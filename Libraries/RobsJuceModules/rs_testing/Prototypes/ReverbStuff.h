@@ -1765,8 +1765,10 @@ public:
   // \name Inquiry
 
   /** Returns the maximum order for the feedback damping filters that is supported. */
-  static int getMaxDampingOrder() { return maxDmpOrd; }
+  //static int getMaxDampingOrder() { return maxDmpOrd; }
+  static constexpr int getMaxDampingOrder() { return maxDmpOrd; }
     // ToDo: Try to make constexpr. But that seems to incompatible with static. Why?
+    // ...oh...now it works...maybe I had the syntax wrong in some way
 
 
   /** Evaluates the filter's z-domain transfer function H(z) value at the given value of z. */
