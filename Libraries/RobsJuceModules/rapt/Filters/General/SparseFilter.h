@@ -91,11 +91,12 @@ public:
   {
     int deg = num.getDegree();
     for(int i = 0; i < num.getNumTerms(); i++)
-      num.setPower(i, deg - num.getPower(i));
-    num.reverse();                               // Order array by ascending powers again
+      num._setPower(i, deg - num.getPower(i));
+    num._reverse();                               // Order array by ascending powers again
 
     // How about a reflectPoles() function? But that would turn stable filters into unstable ones,
-    // so it's usefulness is questionable. For the time being, we can do without.
+    // so it's usefulness is questionable. For the time being, we can do without. And maybe we
+    // should also apply complex conjugation in case of complex coeffs?
   }
 
 
@@ -274,9 +275,9 @@ public:
   void setNumDenominatorTerms(int newNumTerms) { H.den._setNumTerms(newNumTerms); }
   // This may allocate!
 
-  void setNumeratorTerm(int index, TPar coeff, int delay) { H.num.setTerm(index, coeff, delay); }
+  void setNumeratorTerm(int index, TPar coeff, int delay) { H.num._setTerm(index, coeff, delay); }
 
-  void setDenominatorTerm(int index, TPar coeff, int delay) { H.den.setTerm(index, coeff, delay); }
+  void setDenominatorTerm(int index, TPar coeff, int delay) { H.den._setTerm(index, coeff, delay); }
   // Actually, we really should call updateDelayLineLength() after setting a term because it 
   // potentially requires a change of the length. But: updateDelayLineLength() is expensive and 
   // setting terms is an operation that might be called in a loop or sequence in which case only

@@ -2709,11 +2709,11 @@ bool testSparsePolynomial()
   // increasing powers. The powers all apear only once, though:
   p.clear();
   p._setNumTerms(5);
-  p.setTerm(0, +2.0, 3);
-  p.setTerm(1, -3.0, 1);
-  p.setTerm(2, +5.0, 4);
-  p.setTerm(3, -7.0, 2);
-  p.setTerm(4, +4.0, 0);
+  p._setTerm(0, +2.0, 3);
+  p._setTerm(1, -3.0, 1);
+  p._setTerm(2, +5.0, 4);
+  p._setTerm(3, -7.0, 2);
+  p._setTerm(4, +4.0, 0);
   ok &= p.isCanonical() == false;
   y1 = p.evaluateAt(x);
   p.canonicalize(tol);
@@ -2726,14 +2726,14 @@ bool testSparsePolynomial()
   // canonicalization should consolidate these into single terms:
   p.clear();
   p._setNumTerms(8);
-  p.setTerm(0, +2.0, 3);
-  p.setTerm(1, -3.0, 1);
-  p.setTerm(2, +5.0, 2);
-  p.setTerm(3, -7.0, 2);
-  p.setTerm(4, +2.0, 1);
-  p.setTerm(5, +3.0, 2);
-  p.setTerm(6, -4.0, 4);
-  p.setTerm(7, +6.0, 4);
+  p._setTerm(0, +2.0, 3);
+  p._setTerm(1, -3.0, 1);
+  p._setTerm(2, +5.0, 2);
+  p._setTerm(3, -7.0, 2);
+  p._setTerm(4, +2.0, 1);
+  p._setTerm(5, +3.0, 2);
+  p._setTerm(6, -4.0, 4);
+  p._setTerm(7, +6.0, 4);
   ok &= p.isCanonical() == false;
   y1 = p.evaluateAt(x);
   p.canonicalize(tol);
@@ -2748,14 +2748,14 @@ bool testSparsePolynomial()
   // up to zero. Such coefficients should be removed:
   p.clear();
   p._setNumTerms(8);
-  p.setTerm(0, +2.0, 3);
-  p.setTerm(1, -3.0, 1);
-  p.setTerm(2, +5.0, 2);
-  p.setTerm(3, -7.0, 2);
-  p.setTerm(4, +2.0, 1);
-  p.setTerm(5, +2.0, 2);
-  p.setTerm(6, -4.0, 4);
-  p.setTerm(7, +4.0, 4);
+  p._setTerm(0, +2.0, 3);
+  p._setTerm(1, -3.0, 1);
+  p._setTerm(2, +5.0, 2);
+  p._setTerm(3, -7.0, 2);
+  p._setTerm(4, +2.0, 1);
+  p._setTerm(5, +2.0, 2);
+  p._setTerm(6, -4.0, 4);
+  p._setTerm(7, +4.0, 4);
   ok &= p.isCanonical() == false;
   y1 = p.evaluateAt(x);
   p.canonicalize(tol);
@@ -2768,11 +2768,11 @@ bool testSparsePolynomial()
   // Test addTerm:
   p.clear();
   p._setNumTerms(5);
-  p.setTerm(0, +2.0, 0);               // 2x^0
-  p.setTerm(1, -3.0, 1);               // 2x^0 - 3x^1
-  p.setTerm(2, +5.0, 3);               // 2x^0 - 3x^1 + 5x^3
-  p.setTerm(3, -7.0, 5);               // 2x^0 - 3x^1 + 5x^3 - 7x^5
-  p.setTerm(4, +2.0, 8);               // 2x^0 - 3x^1 + 5x^3 - 7x^5 + 2x^8
+  p._setTerm(0, +2.0, 0);              // 2x^0
+  p._setTerm(1, -3.0, 1);              // 2x^0 - 3x^1
+  p._setTerm(2, +5.0, 3);              // 2x^0 - 3x^1 + 5x^3
+  p._setTerm(3, -7.0, 5);              // 2x^0 - 3x^1 + 5x^3 - 7x^5
+  p._setTerm(4, +2.0, 8);              // 2x^0 - 3x^1 + 5x^3 - 7x^5 + 2x^8
   ok &= p.getNumTerms() == 5;
   p.addTerm(2.0, 3, tol);              // 2x^0 - 3x^1 + 7x^3 - 7x^5 + 2x^8
   ok &= p.getNumTerms() == 5;
@@ -2799,13 +2799,13 @@ bool testSparsePolynomial()
   // Test add and addScaled:
   p.clear();
   p._setNumTerms(3);
-  p.setTerm(0, +2.0, 0);
-  p.setTerm(1, -3.0, 1);
-  p.setTerm(2, +5.0, 2);
+  p._setTerm(0, +2.0, 0);
+  p._setTerm(1, -3.0, 1);
+  p._setTerm(2, +5.0, 2);
   q.clear();
   q._setNumTerms(2);
-  q.setTerm(0, -3.0, 2);
-  q.setTerm(1, +2.0, 3);
+  q._setTerm(0, -3.0, 2);
+  q._setTerm(1, +2.0, 3);
   r = p;
   Mon m(2.0, 3);
   r.addScaled(q, m, tol);              // r = p + m*q
@@ -2920,13 +2920,13 @@ bool testSparsePolynomial()
   // Test composition:
   p.clear();
   p._setNumTerms(3);
-  p.setTerm(0, +2.0, 0);
-  p.setTerm(1, -3.0, 1);
-  p.setTerm(2, +5.0, 2);
+  p._setTerm(0, +2.0, 0);
+  p._setTerm(1, -3.0, 1);
+  p._setTerm(2, +5.0, 2);
   q.clear();
   q._setNumTerms(2);
-  q.setTerm(0, +4.0, 2);
-  q.setTerm(1, -6.0, 3);
+  q._setTerm(0, +4.0, 2);
+  q._setTerm(1, -6.0, 3);
 
   r = rsComposeNaive(p, q, tol);
   y1 = q(p(x));

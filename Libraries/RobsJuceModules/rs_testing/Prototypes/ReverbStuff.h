@@ -1390,17 +1390,17 @@ public:
     case IM::nearest:
     {
       tf->setNumTerms(1, 1);
-      num.setTerm(0, 1, (int)rsRound(delay));
-      den.setTerm(0, 1, 0);
+      num._setTerm(0, 1, (int)rsRound(delay));
+      den._setTerm(0, 1, 0);
     }
     break;
 
     case IM::linear:
     {
       tf->setNumTerms(2, 1);
-      num.setTerm(0, 1-delayFrac, (int)delayInt    );
-      num.setTerm(1,   delayFrac, (int)delayInt + 1);
-      den.setTerm(0, 1, 0);
+      num._setTerm(0, 1-delayFrac, (int)delayInt    );
+      num._setTerm(1,   delayFrac, (int)delayInt + 1);
+      den._setTerm(0, 1, 0);
     }
     break;
 
@@ -1420,8 +1420,8 @@ public:
 
       // Use nearest neighbor method in that case:
       tf->setNumTerms(1, 1);
-      num.setTerm(0, 1, (int)rsRound(delay));
-      den.setTerm(0, 1, 0);
+      num._setTerm(0, 1, (int)rsRound(delay));
+      den._setTerm(0, 1, 0);
     }
 
 
@@ -1819,8 +1819,8 @@ public:
 
   void getDelayTransferFunction(    rsSparseDigitalTransferFunction<TPar>* tf) const
   {
-    tf->num._setNumTerms(1); tf->num.setTerm(0, TPar(1), M);
-    tf->den._setNumTerms(1); tf->den.setTerm(0, TPar(1), 0);
+    tf->num._setNumTerms(1); tf->num._setTerm(0, TPar(1), M);
+    tf->den._setNumTerms(1); tf->den._setTerm(0, TPar(1), 0);
   }
 
 

@@ -223,33 +223,42 @@ public:
   /** Directly sets the coefficient and power of the term with given index with no regard for 
   maintaining a canonical representation. This is intended to be used in a sequence of calls with a 
   subsequent manual call to canonicalize when performance matters. */
-  void setTerm(int index, T coeff, int power) 
+  void _setTerm(int index, T coeff, int power) 
   { rsAssert(isValidIndex(index));  terms[index].setup(coeff, power); }
   // May decanonicalize in various ways.
 
   /** Directly sets the power of the term with given index with no regard for maintaining a 
   canonical representation. This is intended to be used in a sequence of calls with a subsequent 
   manual call to canonicalize when performance matters. */
-  void setPower(int index, int newPower)
+  void _setPower(int index, int newPower)
   { rsAssert(isValidIndex(index)); terms[index].setPower(newPower); }
   // May decanonicalize by destroying the "all powers appear only once" property.
 
   /** Directly sets the coefficient of the term with given index with no regard for maintaining a 
   canonical representation. This is intended to be used in a sequence of calls with a subsequent 
   manual call to canonicalize when performance matters. */
-  void setCoeff(int index, T newCoeff)
+  void _setCoeff(int index, T newCoeff)
   { rsAssert(isValidIndex(index)); terms[index].setCoeff(newCoeff); }
 
   /** Scales the coefficient with the given index by the given scaler. */
-  void scaleCoeff(int index, T scaler) { setCoeff(index, scaler * getCoeff(index)); }
+  void _scaleCoeff(int index, T scaler) { _setCoeff(index, scaler * getCoeff(index)); }
   // May decanonicalize if the scaler is zero.
 
   /** Scales all coefficients by the given scaler. */
-  void scaleCoeffs(T scaler)
+  void _scaleCoeffs(T scaler)
   {
     for(int i = 0; i < getNumTerms(); i++)
-      scaleCoeff(i, scaler);
+      _scaleCoeff(i, scaler);
   }
+  // Decanonicalizes when scaler == 0
+
+  void scaleCoeffs(T scaler)
+  {
+    rsAssert(scaler != T(0));
+    _scaleCoeffs(scaler);
+  }
+
+
 
   /** Alias for scaleCoeffs() for compatibility with API of rsPolynomial. */
   void scale(T scaler) { scaleCoeffs(scaler); }
@@ -260,7 +269,7 @@ public:
 
   /** Shifts the coefficient with the given index by the given amount, i.e. adds the given amount 
   to the coeff */
-  void shiftCoeff(int index, T amount) { setCoeff(index, amount + getCoeff(index)); }
+  void _shiftCoeff(int index, T amount) { _setCoeff(index, amount + getCoeff(index)); }
   // Maybe decanonicalize! The new coeff might be zero so the term should be removed in a canonical
   // representation.
 
@@ -274,7 +283,7 @@ public:
 
 
   /** Shifts the power at the given index by the given amount. */
-  void shiftPower(int index, int amount) { setPower(index, amount + getPower(index)); }
+  void _shiftPower(int index, int amount) { _setPower(index, amount + getPower(index)); }
   // Maybe decanonicalize! It could happen that the term with given index has now a power that is
   // the same as that of some other term.
 
@@ -283,8 +292,11 @@ public:
   void shiftPowers(int amount)
   {
     for(int i = 0; i < getNumTerms(); i++)
-      shiftPower(i, amount);
+      _shiftPower(i, amount);
   }
+  // Shifting all powers by the same amount should be unproblematic with regard to 
+  // decanonicalization
+
 
   /** Multiplies this polynomial by the given monomial factor. This results in all coeffs being 
   multiplied by the coeff of the monomial and all powers being increased by the pwer of the 
@@ -296,10 +308,13 @@ public:
   re-allocates only when the capacity is too low (VERIFY!). */
   void multiplyBy(const rsSparsePolynomial<T>& factor, T tol)
   { multiply(*this, factor, this, tol); }
+  // I think, this may also decanonicalize! We may get multiple terms with same exponent. But we
+  // may actually repair this inside the function
 
   /** Multiplies this polynomial by a desne polynomial represented by the given array of 
   coefficients. Works in place and re-allocates only when the capacity is too low. */
   void multiplyByDenseCoeffs(const T* coeffs, int numTerms, T tol);
+  // I think, this may also decanonicalize! See comment above. It's the same here
 
 
 
@@ -329,7 +344,7 @@ public:
   /** Reverses the array of terms. It may appear to be a weird thing to do on polynomials but this 
   operation is needed when transforming minimum phase filters into maximum phase ones (or vice 
   versa) and when producing allpass filters from allpole filters. */
-  void reverse() { rsReverse(terms); }
+  void _reverse() { rsReverse(terms); }
 
   /** Turns the representation of the polynomial into a canonical one. A canonical representation 
   has the following properties: (1) The powers are strictly increasing as function of index. 
@@ -342,8 +357,11 @@ public:
   {
     _setNumTerms(other.getNumTerms());
     for(int i = 0; i < getNumTerms(); i++)
-      setTerm(i, other.getCoeff(i), other.getPower(i));
+      _setTerm(i, other.getCoeff(i), other.getPower(i));
   }
+  // Maybe this should have an _ at the start. It will decanonicalize this polynomial, iff the 
+  // other polynomial is in non-canonical representation. Hmmm...this is a gray area. if the client
+  // code uses only other non-underscored function, this here may get away without underscore, too.
 
 
   //-----------------------------------------------------------------------------------------------
@@ -362,6 +380,8 @@ public:
         return false;
     return true;
   }
+  // Maybe rename this to _isZero and implement a variant isZero that works only on canonical
+  // representations.
 
   /** Returns true, iff the rhs polynomial equals this polynomial up to the given tolerance. */
   bool isCloseTo(const rsSparsePolynomial<T>& rhs, T tol) const;

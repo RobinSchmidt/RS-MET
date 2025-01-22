@@ -27,7 +27,7 @@ void rsSparsePolynomial<T>::addTerm(T coeff, int power, T tol)
   {
     if(getPower(i) == power)
     {
-      shiftCoeff(i, coeff);
+      _shiftCoeff(i, coeff);
       if(rsAbs(getCoeff(i)) <= tol)
         rsRemove(terms, (size_t) i);
       return;
@@ -63,7 +63,8 @@ void rsSparsePolynomial<T>::addScaled(
   //   movement because each call potentially moves data. Maybe try to implement a different 
   //   algorithm that just appends the (scaled) content of q to our terms array and then calls 
   //   canonicalize(). Benchmark both variants and then choose the faster (but keep the slower 
-  //   around for reference and unit tests).
+  //   around for reference and unit tests). Maybe implement an _addScaled or _appendScaled()
+  //   function that client code can call (perhaps in combination with canonicalize())
 }
 
 template<class T>
@@ -87,11 +88,11 @@ void rsSparsePolynomial<T>::canonicalize(T tol)
   while(r < numTerms) 
   {
     if(getPower(r) == p)
-      shiftCoeff(w, getCoeff(r));
+      _shiftCoeff(w, getCoeff(r));
     else 
     {
       w++;
-      setTerm(w, getCoeff(r), getPower(r));
+      _setTerm(w, getCoeff(r), getPower(r));
       p = getPower(r);
     }
     r++;
@@ -268,9 +269,9 @@ void rsSparsePolynomial<T>::add(
 
   r->_setNumTerms(Nr);
   for(int i = 0; i < Np; i++)
-    r->setTerm(i, p.getCoeff(i), p.getPower(i));
+    r->_setTerm(i, p.getCoeff(i), p.getPower(i));
   for(int i = 0; i < Nq; i++)
-    r->setTerm(Np + i, q.getCoeff(i), q.getPower(i));
+    r->_setTerm(Np + i, q.getCoeff(i), q.getPower(i));
 
   r->canonicalize(tol);
 }
@@ -287,9 +288,9 @@ void rsSparsePolynomial<T>::subtract(
 
   r->_setNumTerms(Nr);
   for(int i = 0; i < Np; i++)
-    r->setTerm(i, p.getCoeff(i), p.getPower(i));
+    r->_setTerm(i, p.getCoeff(i), p.getPower(i));
   for(int i = 0; i < Nq; i++)
-    r->setTerm(Np + i, -q.getCoeff(i), q.getPower(i));
+    r->_setTerm(Np + i, -q.getCoeff(i), q.getPower(i));
 
   r->canonicalize(tol);
 }
@@ -306,9 +307,9 @@ void rsSparsePolynomial<T>::weightedSum(
 
   r->_setNumTerms(Nr);
   for(int i = 0; i < Np; i++)
-    r->setTerm(i, wp * p.getCoeff(i), p.getPower(i));
+    r->_setTerm(i, wp * p.getCoeff(i), p.getPower(i));
   for(int i = 0; i < Nq; i++)
-    r->setTerm(Np + i, wq * q.getCoeff(i), q.getPower(i));
+    r->_setTerm(Np + i, wq * q.getCoeff(i), q.getPower(i));
 
   r->canonicalize(tol);
 }
@@ -328,7 +329,7 @@ void rsSparsePolynomial<T>::multiply(
   // point to the location of p and/or q:
   for(int i = Np-1; i >= 0; i--)
     for(int j = Nq-1; j >= 0; j--)
-      r->setTerm(i*Nq+j, p.getCoeff(i) * q.getCoeff(j), p.getPower(i) + q.getPower(j));
+      r->_setTerm(i*Nq+j, p.getCoeff(i) * q.getCoeff(j), p.getPower(i) + q.getPower(j));
 
   r->canonicalize(tol);
 }
@@ -343,7 +344,7 @@ void rsSparsePolynomial<T>::multiplyByDenseCoeffs(const T* coeffs, int numTerms,
 
   for(int i = Np-1; i >= 0; i--)
     for(int j = Nq-1; j >= 0; j--)
-      this->setTerm(i*Nq+j, getCoeff(i) * coeffs[j], getPower(i) + j);
+      this->_setTerm(i*Nq+j, getCoeff(i) * coeffs[j], getPower(i) + j);
 
   this->canonicalize(tol);
 }
@@ -480,5 +481,19 @@ Notes:
 - It might be tempting to write a constructor and/or setup function that takes a dense 
   polynomial, i.e. an object of type rsPolynomial<T>. But I think, that's not a good idea 
   because it would introduce unnecessary coupling.
+
+- When using the potentially decanonicalizing setup methods (prefixed by an underscore), there are
+  3 options:
+
+    (1) You know exactly what you are doing and that this is in fact ok, i.e. doesn't actually
+        decanonicalize.
+
+    (2) You re-canonicalize after you have finished with your operations by calling e.g.
+        canonicalize().
+
+    (3) You don't really care if the representation is canonical or not. For many purposes, a
+        non-canonical representation should work just fine, although being suboptimal.
+
+
 
 */
