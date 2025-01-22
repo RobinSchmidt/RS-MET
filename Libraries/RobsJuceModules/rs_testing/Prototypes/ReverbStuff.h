@@ -1800,18 +1800,6 @@ public:
 
 
 
-  rsSparseDigitalTransferFunction<TPar> getTransferFunction() const;
-  // Allocates!
-
-  rsSparseDigitalTransferFunction<TPar> getCombTransferFunction() const;
-  // Allocates! 
-
-  rsSparseDigitalTransferFunction<TPar> getCorrectorTransferFunction() const;
-  // Allocates!
-
-  rsSparseDigitalTransferFunction<TPar> getDamperTransferFunction() const;
-  // Allocates!
-
 
 
 
@@ -1820,20 +1808,20 @@ public:
   // capacity pre-allocated. Doing so is the responsibility of the caller. They are much less 
   // convenient to use but it's sometimes necessary when one needs to compute these transfer 
   // function in a realtime thread.
-
-
-
   void getCorrectorTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const;
+  void getCombTransferFunction(     rsSparseDigitalTransferFunction<TPar>* tf) const;
+  void getDamperTransferFunction(   rsSparseDigitalTransferFunction<TPar>* tf) const;
+  void getDelayTransferFunction(    rsSparseDigitalTransferFunction<TPar>* tf) const;
 
 
-  void getCombTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const;
 
-
-  void getDamperTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const;
-
-
-  void getDelayTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const;
-
+  // Maybe get rid of them - they are merely more convenient versions of the ones above (but they 
+  // allocate)...but: the overall getTransferFunction function is missing. I think, to implement 
+  // that in a non-allocating way, we would need a temporary transfer function variable:
+  rsSparseDigitalTransferFunction<TPar> getTransferFunction() const;
+  rsSparseDigitalTransferFunction<TPar> getCombTransferFunction() const;
+  rsSparseDigitalTransferFunction<TPar> getCorrectorTransferFunction() const;
+  rsSparseDigitalTransferFunction<TPar> getDamperTransferFunction() const;
 
 
 
@@ -1874,6 +1862,10 @@ protected:
   /** Applies the poles of the correction filter which are the same as the poles of the damping 
   filter. */
   TSig applyCorrectorPoles(TSig in) { return s.applyDamperPoles(in, yc); }
+
+
+  void updateDelays();
+
 
 
   // Embedded DSP objects:
@@ -1938,9 +1930,11 @@ void rsDampedCombAllpass<TSig, TPar>::setMaxIntDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
   mainDelay.setMaxDelayInSamples(maxM);
-
   corrDelay.setMaxDelayInSamples(maxM+maxDmpOrd+1);
-  // I think, we may have to add the maximum order of the interpolator filter used in the delayline
+
+  // I think, we may have to add the maximum order of the interpolator filter used in the 
+  // delayline. Maybe we should use something like 
+  //   corrDelay.setMaxDelayInSamples(maxM + s.getMaxDampPlusIntOrder() + 1);
 }
 
 template<class TSig, class TPar>
@@ -1955,17 +1949,21 @@ void rsDampedCombAllpass<TSig, TPar>::setup(int delay, TPar feedback, int dampOr
   }
 
   M = delay - 1;             // -1 corrects for unit delay in feedback path
-  //int dmpOrd = dampOrder;    // Get rid!
-
 
   s.setup(delay, rsDampedCombSettings<TPar>::InterpolationMethod::nearest, feedback, dampOrder,
     dampCoeffsB, dampCoeffsA, predelayMode);
 
-  mainDelay.setDelayInSamples(M);
-  corrDelay.setDelayInSamples(M+dampOrder+1);
-  // I think, this may need more delay memory when we have an interpolating delayline. I think, we
-  // may have to add the order of the interpolator.
-  // ToDo: replace dmpOrd with s.getDampingOrder()
+  // New:
+  updateDelays();
+
+
+  // Old:
+  //mainDelay.setDelayInSamples(M);
+  //corrDelay.setDelayInSamples(M+dampOrder+1);
+
+
+
+
 
   // ToDo:
   //
@@ -2046,32 +2044,6 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar>::getDamperTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
   return s.getDamperTransferFunctionAt(z);
-
-
-
-  //// New:
-  //int dmpOrd = s.getDampingOrder();
-  //const TPar* b = s.getDampCoeffsB();
-  //const TPar* a = s.getDampCoeffsA();
-
-
-  //using Complex = rsComplex<TPar>;
-  //Complex num = 0, den = 0;
-  //for(int i = 0; i <= dmpOrd; i++)
-  //{
-  //  Complex zi = rsPow(z, Complex(-i));          // z^-i
-  //  num += b[i] * zi;
-  //  den += a[i] * zi;
-  //}
-  //return num / den;
-
-  //// ToDo:
-  ////
-  //// - This should be optimized (don't call rsPow - compute the powers on the fly by multiplying by
-  ////   z) and factored into a library function to compute the transfer function of direct form 
-  ////   filters. Maybe it should go into rsFilterAnalyzer.
-  ////
-  //// - Move this into rsDampedCombSettings
 }
 
 template<class TSig, class TPar>
@@ -2254,6 +2226,19 @@ TSig rsDampedCombAllpass<TSig, TPar>::applyCorrector(TSig in)
   // are used here which is actually a good thing from an economic point of view. But maybe in the 
   // naive prototype, we should do it with the additional filters.
 }
+
+template<class TSig, class TPar>
+void rsDampedCombAllpass<TSig, TPar>::updateDelays()
+{
+  mainDelay.setDelayInSamples(M);
+  corrDelay.setDelayInSamples(M + s.getDampingOrder() + 1); 
+
+  // I think, this may need more delay memory when we have an interpolating delayline. I think, we
+  // may have to add the order of the interpolator. Maybe we should use a function like
+  // s.getDampPlusIntOrder() which returns the sum of the orders of damper and interpolator. Or we
+  // just stick to a non-interpolating delaylije here.
+}
+
 
 
 // A free function to set up the object with a more convenient parametrization:

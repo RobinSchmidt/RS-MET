@@ -1552,7 +1552,9 @@ void dampedCombAllpassComplex()
   // - Check if, when using complex feedback and filter coeffs, we need to additionally conjugate
   //   the coeffs after reversing them to get an allpass. Look up the paper by Sebastain Schlecht:
   //   https://www.mdpi.com/2076-3417/10/1/187 ...hmm...it doesn't say anything about that. Maybe 
-  //   make some derivations for simple low order filters (1st order, biquad).
+  //   make some derivations for simple low order filters (1st order, biquad). A reflection of a 
+  //   root r in the unit circle is given by ref(r) = 1 / conj(r). Use that formula for a biquad
+  //   defined in terms of poles and zeros.
   //
   // - Make sure that everything works with rsComplex and std::complex for Complex. We need to
   //   implement real/imag for rsComplex or rsReal/rsImag for both. I think, the latter way is the
