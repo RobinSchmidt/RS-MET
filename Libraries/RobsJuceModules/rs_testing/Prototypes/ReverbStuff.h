@@ -1901,10 +1901,10 @@ protected:
 
   // Embedded DSP objects:
 
-  //rsDelay<TSig> mainDelay;           // Main delayline for the comb filter    old
+  rsDelay<TSig> mainDelay;           // Main delayline for the comb filter    old
   // Maybe revert to this
 
-  rsDelayRounding<TSig, TPar> mainDelay;  // Main delayline for the comb filter    new
+  //rsDelayRounding<TSig, TPar> mainDelay;  // Main delayline for the comb filter    new
   // With this new code, our dampedCombAllpassComplex() experiment doesn't compile anymore. 
   // Something in it causes rsRoundToInt to get called with a complex argument. Maybe we are trying
   // to set up a complex delay somewhere by having a delay parameter declared as TSig rather than 
