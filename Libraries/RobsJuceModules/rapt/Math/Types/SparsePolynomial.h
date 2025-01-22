@@ -132,7 +132,8 @@ ToDo:
   canonical representation as precondition *and* ensures that this still holds when the function 
   returns, i.e. as postcondition. For getters, only the precondition is relevant because they don't
   change the object. Functions with suffix _n do not assume such a precondition and even in the 
-  case that the condition is met, they do not assure to maintain it.
+  case that the condition is met, they do not assure to maintain it. ...hmm...or maybe only mark
+  the decanonicalizing methods somehow
 
 */
 
@@ -183,6 +184,7 @@ public:
   /** Appends a term with given coeff and power to the end of our terms array. Beware that this 
   may decanonicalize the representation. */
   void appendTerm(T coeff, int power) { terms.emplace_back(rsMonomial<T>(coeff, power)); } 
+  // May decanonicalize
   
   /** Adds the term c * x^p with coeff c and power p to the polynomial. If a term with the same 
   power already exists, this will just shift its coefficient. If the cofficient happens to be zero 
@@ -223,12 +225,14 @@ public:
   subsequent manual call to canonicalize when performance matters. */
   void setTerm(int index, T coeff, int power) 
   { rsAssert(isValidIndex(index));  terms[index].setup(coeff, power); }
+  // May decanonicalize in various ways.
 
   /** Directly sets the power of the term with given index with no regard for maintaining a 
   canonical representation. This is intended to be used in a sequence of calls with a subsequent 
   manual call to canonicalize when performance matters. */
   void setPower(int index, int newPower)
   { rsAssert(isValidIndex(index)); terms[index].setPower(newPower); }
+  // May decanonicalize by destroying the "all powers appear only once" property.
 
   /** Directly sets the coefficient of the term with given index with no regard for maintaining a 
   canonical representation. This is intended to be used in a sequence of calls with a subsequent 
@@ -238,6 +242,7 @@ public:
 
   /** Scales the coefficient with the given index by the given scaler. */
   void scaleCoeff(int index, T scaler) { setCoeff(index, scaler * getCoeff(index)); }
+  // May decanonicalize if the scaler is zero.
 
   /** Scales all coefficients by the given scaler. */
   void scaleCoeffs(T scaler)
@@ -256,32 +261,41 @@ public:
   /** Shifts the coefficient with the given index by the given amount, i.e. adds the given amount 
   to the coeff */
   void shiftCoeff(int index, T amount) { setCoeff(index, amount + getCoeff(index)); }
-
-  void shiftCoeffs(T amount)
-  {
-    for(int i = 0; i < getNumTerms(); i++)
-      shiftCoeff(i, amount);
-  }
+  // Maybe decanonicalize! The new coeff might be zero so the term should be removed in a canonical
+  // representation.
 
 
+  //void shiftCoeffs(T amount)
+  //{
+  //  for(int i = 0; i < getNumTerms(); i++)
+  //    shiftCoeff(i, amount);
+  //}
+  //// Needs test. Or maybe get rid? This seems to be useless, i.e. mathematically not meaningful.
+
+
+  /** Shifts the power at the given index by the given amount. */
   void shiftPower(int index, int amount) { setPower(index, amount + getPower(index)); }
+  // Maybe decanonicalize! It could happen that the term with given index has now a power that is
+  // the same as that of some other term.
 
+  /** Shifts all powers by the given amount. If the amount is p, this corresponds to multiplying 
+  the polynomial by a monomial factor with unit coefficient, i.e. by x^p. */
   void shiftPowers(int amount)
   {
     for(int i = 0; i < getNumTerms(); i++)
       shiftPower(i, amount);
   }
 
-
-
-
-
+  /** Multiplies this polynomial by the given monomial factor. This results in all coeffs being 
+  multiplied by the coeff of the monomial and all powers being increased by the pwer of the 
+  monomial. */
   void multiplyBy(const rsMonomial<T>& factor)
   { scaleCoeffs(factor.getCoeff()); shiftPowers(factor.getPower()); }
 
+  /** Multiplies this polynomial by the given other polynomial factor. Works in place and 
+  re-allocates only when the capacity is too low (VERIFY!). */
   void multiplyBy(const rsSparsePolynomial<T>& factor, T tol)
   { multiply(*this, factor, this, tol); }
-
 
   /** Multiplies this polynomial by a desne polynomial represented by the given array of 
   coefficients. Works in place and re-allocates only when the capacity is too low. */
@@ -296,7 +310,8 @@ public:
     shiftPowers(     - divisor.getPower());
   }
   // Needs tests. 
-  // Maybe assert that this->getPower() >= divisor.getPower() to avoid producing negative powers.
+  // Maybe assert that this->getMinPower() >= divisor.getPower() to avoid producing negative 
+  // powers.
 
 
 
@@ -305,14 +320,9 @@ public:
 
   void addScaled(const rsSparsePolynomial<T>& summand, const rsMonomial<T>& scaler, T tol);
   // ToDo: implement add(summand, tol), i.e. the same thing but without the scaler.
-  // ...and maybe one with eth scaler being a simple coeff
+  // ...and maybe one with the scaler being a simple coeff
 
 
-  //void multiplyBy(const rsSparsePolynomial<T>& factor);
-  // Tf this is p and factor is q and M = deg(p), N = deg(q), this function should resize the
-  // terms array (to M+N+1, I think) and then fill the new array by forming all products of terms.
-  // It should start reading and writing at the *end* (the loop should iterate down to zero) so it
-  // can be used in place. Similar to rsArrayTools::convolve.
 
 
 
