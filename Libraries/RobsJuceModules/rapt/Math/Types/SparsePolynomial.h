@@ -183,7 +183,7 @@ public:
 
   /** Appends a term with given coeff and power to the end of our terms array. Beware that this 
   may decanonicalize the representation. */
-  void appendTerm(T coeff, int power) { terms.emplace_back(rsMonomial<T>(coeff, power)); } 
+  void _appendTerm(T coeff, int power) { terms.emplace_back(rsMonomial<T>(coeff, power)); } 
   // May decanonicalize
   
   /** Adds the term c * x^p with coeff c and power p to the polynomial. If a term with the same 
@@ -216,7 +216,7 @@ public:
   garbage. This function should only be used if you intend to set up the new terms via e.g. 
   setTerm() after calling setNumTerms(). So, it's a function that needs a lot of care to be used
   properly. */
-  void setNumTerms(int newNumTerms) { terms.resize(newNumTerms); }
+  void _setNumTerms(int newNumTerms) { terms.resize(newNumTerms); }
   // This may put the terms array into a non-canonical (or even invalid) state! Maybe it shouldn't
   // be used. We'll see....
 
@@ -340,7 +340,7 @@ public:
 
   void copyDataFrom(const rsSparsePolynomial<T>& other)
   {
-    setNumTerms(other.getNumTerms());
+    _setNumTerms(other.getNumTerms());
     for(int i = 0; i < getNumTerms(); i++)
       setTerm(i, other.getCoeff(i), other.getPower(i));
   }

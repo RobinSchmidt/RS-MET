@@ -96,7 +96,7 @@ void rsSparsePolynomial<T>::canonicalize(T tol)
     }
     r++;
   }
-  setNumTerms(w+1);                 // Possibly shorten the terms array
+  _setNumTerms(w+1);                // Possibly shorten the terms array
   // This algorithm works only when the terms are sorted by exponent so it doesn't really make 
   // sense to factor it out into a function in its own right. Doing so could invite calling it on 
   // unsorted term arrays in which case we would have a bug.
@@ -266,7 +266,7 @@ void rsSparsePolynomial<T>::add(
   int Nq = q.getNumTerms();      // Number of terms in right operand q
   int Nr = Np + Nq;              // Number of terms in result r (before canonicalization)
 
-  r->setNumTerms(Nr);
+  r->_setNumTerms(Nr);
   for(int i = 0; i < Np; i++)
     r->setTerm(i, p.getCoeff(i), p.getPower(i));
   for(int i = 0; i < Nq; i++)
@@ -285,7 +285,7 @@ void rsSparsePolynomial<T>::subtract(
   int Nq = q.getNumTerms();
   int Nr = Np + Nq;
 
-  r->setNumTerms(Nr);
+  r->_setNumTerms(Nr);
   for(int i = 0; i < Np; i++)
     r->setTerm(i, p.getCoeff(i), p.getPower(i));
   for(int i = 0; i < Nq; i++)
@@ -304,7 +304,7 @@ void rsSparsePolynomial<T>::weightedSum(
   int Nq = q.getNumTerms();
   int Nr = Np + Nq;
 
-  r->setNumTerms(Nr);
+  r->_setNumTerms(Nr);
   for(int i = 0; i < Np; i++)
     r->setTerm(i, wp * p.getCoeff(i), p.getPower(i));
   for(int i = 0; i < Nq; i++)
@@ -322,7 +322,7 @@ void rsSparsePolynomial<T>::multiply(
   int Np = p.getNumTerms();
   int Nq = q.getNumTerms();
   int Nr = Np * Nq;
-  r->setNumTerms(Nr);
+  r->_setNumTerms(Nr);
 
   // Running through the loops backwards allows us to use it in place, i.e. the polynomial r can
   // point to the location of p and/or q:
@@ -339,7 +339,7 @@ void rsSparsePolynomial<T>::multiplyByDenseCoeffs(const T* coeffs, int numTerms,
   int Np = getNumTerms();
   int Nq = numTerms;
   int Nr = Np * Nq;
-  this->setNumTerms(Nr);
+  this->_setNumTerms(Nr);
 
   for(int i = Np-1; i >= 0; i--)
     for(int j = Nq-1; j >= 0; j--)

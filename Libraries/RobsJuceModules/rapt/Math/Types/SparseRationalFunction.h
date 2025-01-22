@@ -63,7 +63,7 @@ public:
 
   rsSparseRationalFunction() 
   {
-    den.appendTerm(T(1), 0);
+    den._appendTerm(T(1), 0);
   }
 
 
@@ -81,13 +81,13 @@ public:
   {
     num.clear();
     den.clear();
-    den.appendTerm(T(1), 0);
+    den._appendTerm(T(1), 0);
   }
 
   void setNumTerms(int newNumNumeratorTerms, int newNumDenominatorTerms)
   {
-    num.setNumTerms(newNumNumeratorTerms);
-    den.setNumTerms(newNumDenominatorTerms);
+    num._setNumTerms(newNumNumeratorTerms);
+    den._setNumTerms(newNumDenominatorTerms);
   }
 
   void setupFromDenseCoeffs(

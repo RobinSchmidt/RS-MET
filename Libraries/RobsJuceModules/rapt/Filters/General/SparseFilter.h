@@ -268,10 +268,10 @@ public:
   // The parameter should really be of type rsSparseDigitalTransferFunction
 
 
-  void setNumNumeratorTerms(int newNumTerms) { H.num.setNumTerms(newNumTerms); }
+  void setNumNumeratorTerms(int newNumTerms) { H.num._setNumTerms(newNumTerms); }
   // This may allocate!
 
-  void setNumDenominatorTerms(int newNumTerms) { H.den.setNumTerms(newNumTerms); }
+  void setNumDenominatorTerms(int newNumTerms) { H.den._setNumTerms(newNumTerms); }
   // This may allocate!
 
   void setNumeratorTerm(int index, TPar coeff, int delay) { H.num.setTerm(index, coeff, delay); }

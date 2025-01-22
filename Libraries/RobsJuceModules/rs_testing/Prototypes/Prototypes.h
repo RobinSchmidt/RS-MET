@@ -64,7 +64,7 @@ rsSparsePolynomial<T> rsPowNaive(const rsSparsePolynomial<T>& p, int n)
   rsWarning("rsPow(rsSparsePolynomial&) is preliminary");
 
   rsSparsePolynomial<T> r;
-  r.appendTerm(T(1), 0);
+  r._appendTerm(T(1), 0);
   for(int i = 1; i <= n; i++)
     r = r * p;
   return r;

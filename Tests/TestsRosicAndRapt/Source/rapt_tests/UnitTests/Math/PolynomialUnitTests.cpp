@@ -2708,7 +2708,7 @@ bool testSparsePolynomial()
   // Create a non-canonical representation of a sparse polynomial. The terms are not ordered by 
   // increasing powers. The powers all apear only once, though:
   p.clear();
-  p.setNumTerms(5);
+  p._setNumTerms(5);
   p.setTerm(0, +2.0, 3);
   p.setTerm(1, -3.0, 1);
   p.setTerm(2, +5.0, 4);
@@ -2725,7 +2725,7 @@ bool testSparsePolynomial()
   // Now make it a bit harder by also having multiple terms with the same power. The 
   // canonicalization should consolidate these into single terms:
   p.clear();
-  p.setNumTerms(8);
+  p._setNumTerms(8);
   p.setTerm(0, +2.0, 3);
   p.setTerm(1, -3.0, 1);
   p.setTerm(2, +5.0, 2);
@@ -2747,7 +2747,7 @@ bool testSparsePolynomial()
   // Now make it even more intersting by letting the coefficients for x^2 and x^4 conspire to add
   // up to zero. Such coefficients should be removed:
   p.clear();
-  p.setNumTerms(8);
+  p._setNumTerms(8);
   p.setTerm(0, +2.0, 3);
   p.setTerm(1, -3.0, 1);
   p.setTerm(2, +5.0, 2);
@@ -2767,7 +2767,7 @@ bool testSparsePolynomial()
 
   // Test addTerm:
   p.clear();
-  p.setNumTerms(5);
+  p._setNumTerms(5);
   p.setTerm(0, +2.0, 0);               // 2x^0
   p.setTerm(1, -3.0, 1);               // 2x^0 - 3x^1
   p.setTerm(2, +5.0, 3);               // 2x^0 - 3x^1 + 5x^3
@@ -2798,12 +2798,12 @@ bool testSparsePolynomial()
 
   // Test add and addScaled:
   p.clear();
-  p.setNumTerms(3);
+  p._setNumTerms(3);
   p.setTerm(0, +2.0, 0);
   p.setTerm(1, -3.0, 1);
   p.setTerm(2, +5.0, 2);
   q.clear();
-  q.setNumTerms(2);
+  q._setNumTerms(2);
   q.setTerm(0, -3.0, 2);
   q.setTerm(1, +2.0, 3);
   r = p;
@@ -2919,12 +2919,12 @@ bool testSparsePolynomial()
 
   // Test composition:
   p.clear();
-  p.setNumTerms(3);
+  p._setNumTerms(3);
   p.setTerm(0, +2.0, 0);
   p.setTerm(1, -3.0, 1);
   p.setTerm(2, +5.0, 2);
   q.clear();
-  q.setNumTerms(2);
+  q._setNumTerms(2);
   q.setTerm(0, +4.0, 2);
   q.setTerm(1, -6.0, 3);
 
