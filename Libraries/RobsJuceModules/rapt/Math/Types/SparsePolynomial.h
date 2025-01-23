@@ -397,10 +397,14 @@ public:
         return false;
     return true;
   }
-  // Maybe rename this to _isZero and implement a variant isZero that works only on canonical
-  // representations.
+  // Maybe implement a variant isZero() that works only on canonical representations. It could 
+  // just call isEmpty()
 
-  /** Returns true, iff the rhs polynomial equals this polynomial up to the given tolerance. */
+  /** Returns true, iff the rhs polynomial equals this polynomial up to the given tolerance. This 
+  is not a mathematical comparison but rather a raw data comparison which is stricter. For example,
+  the order of the terms does matter in the comparison we do here. For example 2*x^3 + 3*x^5 would 
+  be considered distinct from 3*x^5 + 2*x^3 by this function even though they are mathematically 
+  the same polynomial. */
   bool isCloseTo(const rsSparsePolynomial<T>& rhs, T tol) const;
 
   /** Return true, iff the given index is valid, i.e. the object has a term with given index. */
@@ -412,18 +416,17 @@ public:
 
   /** Returns the minimum power that occurs in this polynomial. */
   int _getMinPower() const;
-  // Rename to _getMinPower() to indicate that it works also for non-canonical representations. 
   // Implement a getMinPower() for canonical representations that juts returns 0 or the power of
   // the 0-th terms
 
   /** Returns the maximum power that occurs in this polynomial. In mathematical jargon, the 
   highest power in a polynomial is also known as the degree or order of the polynomial. */
   int _getMaxPower() const;
-  // Rename to _getMaxPower(), ee above
+  // dito
 
   /** Returns the index of the maximum power or -1 in the case of an empty array of terms. */
   int _getMaxPowerIndex() const;
-  // Rename to _getMaxPowerIndex
+  // dito
 
   /** Alias for getMaxPower() for compatibility with API of rsPolynomial. Returns the degree of
   the polynomial. This is mathematical term for the term with the highest power/exponent that has 
@@ -590,7 +593,8 @@ public:
 
 
 
-  // ToDo: compose (see free function rsComposeNaive() in Prototypes.h file), lowestCommonMultiple
+  // ToDo: Implement compose (see free function rsComposeNaive() in Prototypes.h file), 
+  // lowestCommonMultiple
 
 
 protected:
