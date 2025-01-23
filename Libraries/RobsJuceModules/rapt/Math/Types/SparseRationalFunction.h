@@ -143,7 +143,25 @@ public:
     // Consider 14/15 * 3/4 = 42/60 = 7/10. Although both factors are in lowest terms, their 
     // product is not. The same thing could happen with rational functions.
   }
+
+
+  void multiplyByDenseCoeffs(const T* numeratorCoeffs,   int numNumeratorTerms,
+                             const T* denominatorCoeffs, int numDenominatorTerms, T tol)
+  {
+    num.multiplyByDenseCoeffs(numeratorCoeffs,   numNumeratorTerms,   tol);
+    den.multiplyByDenseCoeffs(denominatorCoeffs, numDenominatorTerms, tol);
+  }
+  // Needs test
+
+
+  // Maybe also make a divideByDenseCoeffs function by just calling multiplyByDenseCoeffs with
+  // swapped arguments...or maybe not - client code can do that itself - no need to increase the
+  // API surface area
+
+
   
+
+
 
 
 
@@ -151,6 +169,11 @@ public:
   {
     num.addScaledPolynomial(den, constant, tol);
   }
+  // ToDo: Document why this formula is right:
+  //
+  // N(x) / D(x) + k = N(x) / D(x) + k * D(x) / D(x) = (N(x) + k*D(x)) / D(x)
+  //
+  // Document, if this works in place (I think so)
 
 
   //void canonicalize();

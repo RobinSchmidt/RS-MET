@@ -1261,28 +1261,33 @@ class rsDampedCombSettings
 
 public:
 
-  
-  enum class InterpolationMethod
+   
+  enum class InterpolationMode  // Maybe rename to InterpolationMode
   {
-    nearest,
-    linear,
-    allpass1
+    nearest,               // Nearest neighbor interpolation
+    linear,                // Linear interpolation
+    allpass1               // First order (warped) allpass interpolation
   };
-  // Maybe use unsigned char as underlying type for the enum
+  // Maybe use unsigned char as underlying type for the enum. Maybe offer more interpolation modes
+  // like cubic Hermite, cubic Lagrange, 2nd and 3rd order Thiran allpass, etc.
 
 
-  //enum class Mode
+  //enum class DampingMode  
   //{
-  //  feedbackDamper,           // F(z) is in feedback path, A(z) in feedformward path
-  //  forwardDamper,            // F(z) is in feedforward path, A(z) in feedback path
-  //  forwardDamperCompensated  // Like forwardDamper but with 1/F(z) compensator in series
+  //  feedbackDamp,        // F(z) is in feedback path, A(z) in feedformward path
+  //  forwardDamp,         // F(z) is in feedforward path, A(z) in feedback path
+  //  forwardDampComp      // Like forwardDamp but with 1/F(z) compensator in series
   //};
+  // Maybe make a mode where both delay and damper are in the feedback path. I think, it should 
+  // realize the same transfer function as the forwardDampComp mode but without the need for an
+  // inverse damper, so it would be more efficient. Verify this hypothesis theoretically and 
+  // numerically. Maybe call that mode feedbackDampDelay
  
 
   void init()
   {
     delay         = 0;
-    interpolation = InterpolationMethod::nearest;
+    interpolation = InterpolationMode::nearest;
     k             = 0;
     dmpOrd        = 0;
     preDelay      = false;
@@ -1296,7 +1301,7 @@ public:
   }
 
 
-  void setup(T delayInSamples, InterpolationMethod interpolationMethod,
+  void setup(T delayInSamples, InterpolationMode interpolationMode,
     T feedback, int dampOrder, const T* dampCoeffsB, const T* dampCoeffsA, 
     bool preDelayMode)
   {
@@ -1309,7 +1314,7 @@ public:
 
 
     delay         = delayInSamples - T(1);    // -1 corrects for unit delay in feedback path
-    interpolation = interpolationMethod;
+    interpolation = interpolationMode;
     k             = feedback;
     preDelay      = preDelayMode;
     dmpOrd        = dampOrder;
@@ -1383,7 +1388,7 @@ public:
     rsSparsePolynomial<T>& num = tf->getNumerator();
     rsSparsePolynomial<T>& den = tf->getDenominator();
 
-    using IM = InterpolationMethod;
+    using IM = InterpolationMode;
     switch(interpolation)
     {
 
@@ -1532,7 +1537,7 @@ protected:
   int dmpOrd = 0;                      // Feedback damping filter order
 
   // Switch between different interpolation modes:
-  InterpolationMethod interpolation = InterpolationMethod::nearest;
+  InterpolationMode interpolation = InterpolationMode::nearest;
 
   // Switch between with/without predelay mode of operation:
   bool preDelay = false;
@@ -1577,7 +1582,7 @@ void rsSetupDecayTimes_LinViaDly(
   T kM = rsMakeDampBiShelf(delay, decay, loOmega, loScale, hiOmega, hiScale, b, a);
 
   // Set up the rsDampedCombSettings objects:
-  using IM = rsDampedCombSettings<T>::InterpolationMethod;
+  using IM = rsDampedCombSettings<T>::InterpolationMode;
   combSettings.setup(delay, IM::linear, kM, 2, b, a, preDelay);
 
   // ToDo:
@@ -1603,7 +1608,7 @@ void rsSetupDecayTimes_LinViaFb(rsDampedCombSettings<T>& combSettings,
 
   // Possibly also bake an interpolation filter into the feedback filter to achieve fractional 
   // delay times:
-  using IM = rsDampedCombSettings<T>::InterpolationMethod;
+  using IM = rsDampedCombSettings<T>::InterpolationMode;
   int delayInt  = (int) rsFloor(delay);
   T   delayFrac = delay - (T) delayInt;
   if(delayFrac == T(0))
@@ -1950,7 +1955,7 @@ void rsDampedCombAllpass<TSig, TPar>::setup(int delay, TPar feedback, int dampOr
   }
 
   M = delay - 1;             // -1 corrects for unit delay in feedback path
-  s.setup(delay, rsDampedCombSettings<TPar>::InterpolationMethod::nearest, feedback, dampOrder,
+  s.setup(delay, rsDampedCombSettings<TPar>::InterpolationMode::nearest, feedback, dampOrder,
     dampCoeffsB, dampCoeffsA, predelayMode);
   updateDelays();
 

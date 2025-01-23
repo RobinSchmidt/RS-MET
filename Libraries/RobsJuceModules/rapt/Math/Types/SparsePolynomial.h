@@ -148,6 +148,11 @@ ToDo:
   case that the condition is met, they do not assure to maintain it. ...hmm...or maybe only mark
   the decanonicalizing methods somehow
 
+- Sort the high-level and low-level access functions, i.e. let them have their own category like
+  Setup (high level, maintaining canonical representation), Setup (low level, may destroy canonical
+  representation), Inquiry (assuming canonical representation), Inquiry (not assuming canonical
+  representation)
+
 */
 
 template<class T>
@@ -221,17 +226,16 @@ public:
       addTerm(scaler * p.getCoeff(i), p.getPower(i), tol);
   }
   // Maybe it would be better to just append a scaled version and then canonicalize? This may 
-  // result in less data movement - but it may blow up the required memory temporarily. 
+  // result in less data movement - but it may blow up the required memory temporarily. So - no - 
+  // let's not do that in general. It may even lead to allocations when we really don't want them.
 
   /** Sets the number of terms. If the new number is less than the current number, it will just 
   cut off terms from the end. If the new number is greater than the current number, it will just
   extend our vector of terms and the added terms at the end are uninitialized, i.e. may contain 
   garbage. This function should only be used if you intend to set up the new terms via e.g. 
-  setTerm() after calling setNumTerms(). So, it's a function that needs a lot of care to be used
+  _setTerm() after calling _setNumTerms(). So, it's a function that needs a lot of care to be used
   properly. */
   void _setNumTerms(int newNumTerms) { terms.resize(newNumTerms); }
-  // This may put the terms array into a non-canonical (or even invalid) state! Maybe it shouldn't
-  // be used. We'll see....
 
   /** Directly sets the coefficient and power of the term with given index with no regard for 
   maintaining a canonical representation. This is intended to be used in a sequence of calls with a 
