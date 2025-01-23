@@ -1293,8 +1293,8 @@ public:
     preDelay      = false;
 
     using AT = rsArrayTools;
-    AT::clear(b, maxDmpOrd+1);
-    AT::clear(a, maxDmpOrd+1);
+    AT::clear(bD, maxDmpOrd+1);
+    AT::clear(aD, maxDmpOrd+1);
 
     A.setNumTerms(2, 2);      // (2,2) reserves enough memory to avoid allocations later
     A.clear();                // ...but at the moment, it's just empty
@@ -1323,8 +1323,8 @@ public:
     // May be relaxed later by dividing through all coeffs by a[0]
 
 
-    rsArrayTools::copy(dampCoeffsA, a, dmpOrd+1);
-    rsArrayTools::copy(dampCoeffsB, b, dmpOrd+1);
+    rsArrayTools::copy(dampCoeffsA, aD, dmpOrd+1);
+    rsArrayTools::copy(dampCoeffsB, bD, dmpOrd+1);
   }
   // Maybe rename to setupFromAlgoParams and have a similar setupFromUserParams function that uses
   // higher level parameters such as decay times at various frequencies, i.e. the currently free
@@ -1339,8 +1339,8 @@ public:
     for(int i = 0; i <= dmpOrd; i++)
     {
       Complex zi = rsPow(z, Complex(-i));          // z^-i
-      num += b[i] * zi;
-      den += a[i] * zi;
+      num += bD[i] * zi;
+      den += aD[i] * zi;
     }
     return num / den;
 
@@ -1350,6 +1350,8 @@ public:
     //   z) and factored into a library function to compute the transfer function of direct form 
     //   filters. Maybe it should go into rsFilterAnalyzer.
   }
+  // Maybe don't fix the argument and return type to rsComplex<T>. Instead use a template parameter
+  // TArg
 
 
 
@@ -1376,7 +1378,7 @@ public:
 
   void getDamperTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
   {
-    tf->setupFromDenseCoeffs(b, dmpOrd+1, a, dmpOrd+1, T(0));
+    tf->setupFromDenseCoeffs(bD, dmpOrd+1, aD, dmpOrd+1, T(0));
   }
 
 
@@ -1448,9 +1450,9 @@ public:
 
   int getDampingOrder() const { return dmpOrd; }
 
-  const T* getDampCoeffsB() const { return b; }
+  const T* getDampCoeffsB() const { return bD; }
 
-  const T* getDampCoeffsA() const { return a; }
+  const T* getDampCoeffsA() const { return aD; }
 
 
   T getDelay() const { return delay; }
@@ -1465,9 +1467,9 @@ public:
   inline TSig applyDamper(TSig in, TSig* x, TSig* y)
   {
     // Compute outputs:
-    TSig out = b[0]*in;
+    TSig out = bD[0]*in;
     for(int i = 1; i <= dmpOrd; i++)
-      out += b[i] * x[i-1] - a[i] * y[i-1];
+      out += bD[i] * x[i-1] - aD[i] * y[i-1];
 
     // Update state and return result:
     rsArrayTools::shiftPushDiscard(x, dmpOrd, in);
@@ -1483,8 +1485,8 @@ public:
     // Compute output:
     TSig out = in;
     for(int i = 1; i <= dmpOrd; i++)
-      out += a[i] * x[i-1] - b[i] * y[i-1];
-    out /= b[0];                                        // ToDo: maybe precompute 1/b[0]
+      out += aD[i] * x[i-1] - bD[i] * y[i-1];
+    out /= bD[0];                                        // ToDo: maybe precompute 1/b[0]
 
     // Update state and return result:
     rsArrayTools::shiftPushDiscard(x, dmpOrd, in);
@@ -1499,7 +1501,7 @@ public:
     // Compute output:
     TSig out = in;
     for(int i = 1; i <= dmpOrd; i++)
-      out -= a[i] * y[i-1];
+      out -= aD[i] * y[i-1];
 
     // Update state and return result:
     rsArrayTools::shiftPushDiscard(y, dmpOrd, out);
@@ -1529,8 +1531,8 @@ protected:
 
   // Feedback coefficients:
   T k = 0;                             // Feedback gain
-  T b[maxDmpOrd+1];                    // Damping filter feedforward coeffs
-  T a[maxDmpOrd+1];                    // Damping filter feedback coeffs
+  T bD[maxDmpOrd+1];                   // Damping filter feedforward coeffs
+  T aD[maxDmpOrd+1];                   // Damping filter feedback coeffs
 
   // Other settings:
   T   delay  = 0;                      // Delay in samples (may be non integer)
