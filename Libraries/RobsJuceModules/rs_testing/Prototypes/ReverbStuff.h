@@ -1526,17 +1526,55 @@ public:
 
 protected:
 
+  void updateInterpolatorCoeffs()
+  {
+    //T delayInt  = rsFloor(delay);
+    //T delayFrac = delay - delayInt;
+
+    T f = delay - rsFloor(delay); // Fractional part of delay
+
+
+
+    using IM = InterpolationMode;
+    switch(interpolation)
+    {
+
+    case IM::nearest:
+    {
+      intNumOrd = 0; bI[0] = 1;
+      intDenOrd = 0; aI[0] = 1;
+    }
+    break;
+
+    case IM::linear:
+    {
+      intNumOrd = 1; bI[0] = 1-f; bI[1] = f;
+      intDenOrd = 0; aI[0] = 1;
+    }
+    break;
+
+    // todo: allpass, default
+
+
+    }
+  }
+
+
+
 
   static const int maxDmpOrd = 8;      // Maximum damping order
 
-  // Feedback coefficients:
+  // Coefficients:
   T k = 0;                             // Feedback gain
   T bD[maxDmpOrd+1];                   // Damping filter feedforward coeffs
   T aD[maxDmpOrd+1];                   // Damping filter feedback coeffs
 
   // Other settings:
   T   delay  = 0;                      // Delay in samples (may be non integer)
-  int dmpOrd = 0;                      // Feedback damping filter order
+  int dmpOrd = 0;                      // Feedback damping filter order ToDo: have dmpNumOrd,dmpDenOrd
+
+
+
 
   // Switch between different interpolation modes:
   InterpolationMode interpolation = InterpolationMode::nearest;
@@ -1567,6 +1605,18 @@ protected:
 
     // Maybe have a delay member of type TPar - or maybe double or TDly and then maybe get rid of
     // M. Have an interpolationMethod member, too ....done
+
+
+  // Under construction - should replace member "A":
+
+  static const int maxIntOrd = 1;      // Maximum interpolation order
+
+  int intNumOrd = 0;                   // Interpolator numerator order
+  int intDenOrd = 0;                   // Interpolator denominator order
+
+  T bI[maxIntOrd+1];                   // Interpolation filter feedforward coeffs
+  T aI[maxIntOrd+1];                   // Interpolation filter feedback coeffs
+
 
 };
 

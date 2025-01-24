@@ -287,7 +287,14 @@ RS_INLINE TUInt rsPowInt(TUInt base, TUInt exponent)
 // https://www.youtube.com/watch?v=wGSSUSeaLgA   at around 40:00
 //
 // If the exponent is negative, we should invert/reciprocate the base first and then use the abs
-// of the epxonent.
+// of the exponent.
+//
+//
+// Maybe these are also relevant:
+//
+// https://www.youtube.com/watch?v=7n1CVURp0DY  Associative Iteration - Shaping Ancient Mathematical Knowledge Into Powerful Bit-fiddling Techniques
+// https://www.youtube.com/watch?v=LXm6ygZ3h7A  I am not sorry for switching to C
+
 
 
 template <class T>
