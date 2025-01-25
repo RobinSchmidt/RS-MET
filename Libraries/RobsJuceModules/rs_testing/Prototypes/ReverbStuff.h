@@ -1325,6 +1325,9 @@ public:
 
     rsArrayTools::copy(dampCoeffsA, aD, dmpOrd+1);
     rsArrayTools::copy(dampCoeffsB, bD, dmpOrd+1);
+
+    // New:
+    updateInterpolatorCoeffs();    // Assigns the coeffs in the bI, aI arrays
   }
   // Maybe rename to setupFromAlgoParams and have a similar setupFromUserParams function that uses
   // higher level parameters such as decay times at various frequencies, i.e. the currently free
@@ -1384,6 +1387,20 @@ public:
 
   void getDelayTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
   {
+    //// New - still triggers an error:
+    //tf->setupFromDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1, T(0));
+    //tf->addPreDelay((int)delay);  // VERIFY!
+
+    ////tf->shiftPowers((int)delay);  // VERIFY!
+    //// No! We need to shift all the powers except for the a0*z^0 term in the denominator. Or no! 
+    //// That may also be wrong. Maybe th denominator should stay as is and we need to shift only the
+    //// numerator terms? 
+
+    //return;
+
+
+
+    // Old:
     T delayInt  = rsFloor(delay);
     T delayFrac = delay - delayInt;
 
@@ -1530,6 +1547,12 @@ protected:
   interpolation mode and the fractional part of the delay. */
   void updateInterpolatorCoeffs()
   {
+    // The code belwo doesn't compile when T is a complex type. We want to support complex feedback
+    // gains and complex damping filter coeffs. But even in such a case, the delay should still be 
+    // real valued. I think, that means, we need two template parameters. Maybe let's call them
+    // TCoef, TDly (for coefficients and delay)
+
+    /*
     T f = delay - rsFloor(delay); // Fractional part of delay
 
     using IM = InterpolationMode;
@@ -1539,25 +1562,25 @@ protected:
     case IM::nearest:
     {
       // y[n] = x[n]:
-      intNumOrd = 0; bI[0] = 1;
-      intDenOrd = 0; aI[0] = 1;
+      intNumOrd = 0; bI[0] = T(1);
+      intDenOrd = 0; aI[0] = T(1);
     }
     break;
 
     case IM::linear:
     {
       // y[n] = (1-f)*x[n] + f*x[n-1]:
-      intNumOrd = 1; bI[0] = 1-f; bI[1] = f;
-      intDenOrd = 0; aI[0] = 1;
+      intNumOrd = 1; bI[0] = T(1)-f; bI[1] = f;
+      intDenOrd = 0; aI[0] = T(1);
     }
     break;
 
     case IM::allpass1:
     {
       // y[n] = c*x[n] + x[n-1] - c*y[n-1]  with  c = (1-f) / (1+f):
-      T c = (1-f) / (1+f);
-      intNumOrd = 1; bI[0] = c; bI[1] = 1;
-      intDenOrd = 1; aI[0] = 1; aI[1] = c;
+      T c = (T(1)-f) / (T(1)+f);
+      intNumOrd = 1; bI[0] = c;    bI[1] = T(1);
+      intDenOrd = 1; aI[0] = T(1); aI[1] = c;
     }
     break;
 
@@ -1566,13 +1589,14 @@ protected:
       rsError("Unknown interpolation method.");
 
       // Use nearest neighbor method in that case:
-      intNumOrd = 0; bI[0] = 1;
-      intDenOrd = 0; aI[0] = 1;
+      intNumOrd = 0; bI[0] = T(1);
+      intDenOrd = 0; aI[0] = T(1);
       // Or maybe we should just output a zero signal by setting bI[0] to zero? aI[0] should 
       // remain 1, though.
     }
 
     }
+    */
 
   }
 
