@@ -1526,14 +1526,11 @@ public:
 
 protected:
 
+  /** Updates the arrays of the coefficients for the interpolator filter according to the desired 
+  interpolation mode and the fractional part of the delay. */
   void updateInterpolatorCoeffs()
   {
-    //T delayInt  = rsFloor(delay);
-    //T delayFrac = delay - delayInt;
-
     T f = delay - rsFloor(delay); // Fractional part of delay
-
-
 
     using IM = InterpolationMode;
     switch(interpolation)
@@ -1541,6 +1538,7 @@ protected:
 
     case IM::nearest:
     {
+      // y[n] = x[n]:
       intNumOrd = 0; bI[0] = 1;
       intDenOrd = 0; aI[0] = 1;
     }
@@ -1548,16 +1546,37 @@ protected:
 
     case IM::linear:
     {
+      // y[n] = (1-f)*x[n] + f*x[n-1]:
       intNumOrd = 1; bI[0] = 1-f; bI[1] = f;
       intDenOrd = 0; aI[0] = 1;
     }
     break;
 
-    // todo: allpass, default
+    case IM::allpass1:
+    {
+      // y[n] = c*x[n] + x[n-1] - c*y[n-1]  with  c = (1-f) / (1+f):
+      T c = (1-f) / (1+f);
+      intNumOrd = 1; bI[0] = c; bI[1] = 1;
+      intDenOrd = 1; aI[0] = 1; aI[1] = c;
+    }
+    break;
 
+    default:
+    {
+      rsError("Unknown interpolation method.");
+
+      // Use nearest neighbor method in that case:
+      intNumOrd = 0; bI[0] = 1;
+      intDenOrd = 0; aI[0] = 1;
+      // Or maybe we should just output a zero signal by setting bI[0] to zero? aI[0] should 
+      // remain 1, though.
+    }
 
     }
+
   }
+
+
 
 
 
