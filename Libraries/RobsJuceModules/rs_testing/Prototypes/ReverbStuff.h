@@ -1256,6 +1256,7 @@ multicomb. We mainly want to factor out all the getTransferFunction stuff that c
 function objects. ...TBC...  */
 
 template<class T>
+//template<class TCoef, class TDly>
 class rsDampedCombSettings
 {
 
@@ -1269,7 +1270,11 @@ public:
     allpass1               // First order (warped) allpass interpolation
   };
   // Maybe use unsigned char as underlying type for the enum. Maybe offer more interpolation modes
-  // like cubic Hermite, cubic Lagrange, 2nd and 3rd order Thiran allpass, etc.
+  // like cubic Hermite, cubic Lagrange, 2nd and 3rd order Thiran allpass, etc. See:
+  // https://ccrma.stanford.edu/~jos/pasp/Thiran_Allpass_Interpolators.html
+  // http://users.spa.aalto.fi/vpv/publications/vesan_vaitos/ch3_pt3_allpass.pdf
+  // ...is part of: http://users.spa.aalto.fi/vpv/publications/vesan_vaitos/
+  //
 
 
   //enum class DampingMode  
