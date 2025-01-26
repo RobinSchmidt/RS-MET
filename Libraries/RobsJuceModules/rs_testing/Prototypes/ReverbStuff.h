@@ -1253,10 +1253,17 @@ single comb allpass - mainly because keeping the coupling would require to rewri
 functionality in the single comb case to support fractional delays. But that's a complication, I 
 don't want to introduce to this class. The fractional delay feature shall be reserved for the
 multicomb. We mainly want to factor out all the getTransferFunction stuff that creates the transfer
-function objects. ...TBC...  */
+function objects. ...TBC...  
 
-template<class T>
-//template<class TCoef, class TDly>
+ToDo: explain intention behind the template parameters TCoef and TDly. TCoef is the type for the
+feedback gain and feedback filter coeffs and TDly for the delay. For the former, it can make sense
+to have a simd typr or maybe even a complex type. For the latter, we can only have scalar real 
+number types.
+
+*/
+
+//template<class T>
+template<class TCoef, class TDly>
 class rsDampedCombSettings
 {
 
@@ -1267,7 +1274,7 @@ public:
   {
     nearest,               // Nearest neighbor interpolation
     linear,                // Linear interpolation
-    allpass1               // First order (warped) allpass interpolation
+    allpass1               // First order (warped) allpass interpolation (maybe rename to thiran1)
   };
   // Maybe use unsigned char as underlying type for the enum. Maybe offer more interpolation modes
   // like cubic Hermite, cubic Lagrange, 2nd and 3rd order Thiran allpass, etc. See:
@@ -1275,6 +1282,11 @@ public:
   // http://users.spa.aalto.fi/vpv/publications/vesan_vaitos/ch3_pt3_allpass.pdf
   // ...is part of: http://users.spa.aalto.fi/vpv/publications/vesan_vaitos/
   //
+  // Maybe add Lagrange and Hermite interpolators. Maybe they can be turned into allpass
+  // interpolators by just using the reversed FIR coefficient array for the recursive part? Will 
+  // that give meaningful interpolators (i.e. stable, desired group delay and/or pahse delay 
+  // characteristics, etc.)?
+  
 
 
   //enum class DampingMode  
@@ -1291,9 +1303,9 @@ public:
 
   void init()
   {
-    delay         = 0;
+    delay         = TDly(0);
     interpolation = InterpolationMode::nearest;
-    k             = 0;
+    k             = TCoef(0);
     dmpOrd        = 0;
     preDelay      = false;
 
@@ -1306,8 +1318,8 @@ public:
   }
 
 
-  void setup(T delayInSamples, InterpolationMode interpolationMode,
-    T feedback, int dampOrder, const T* dampCoeffsB, const T* dampCoeffsA, 
+  void setup(TDly delayInSamples, InterpolationMode interpolationMode,
+    TCoef feedback, int dampOrder, const TCoef* dampCoeffsB, const TCoef* dampCoeffsA, 
     bool preDelayMode)
   {
     if(dampOrder > maxDmpOrd) 
@@ -1318,13 +1330,13 @@ public:
     }
 
 
-    delay         = delayInSamples - T(1);    // -1 corrects for unit delay in feedback path
+    delay         = delayInSamples - TDly(1);    // -1 corrects for unit delay in feedback path
     interpolation = interpolationMode;
     k             = feedback;
     preDelay      = preDelayMode;
     dmpOrd        = dampOrder;
 
-    rsAssert(dampCoeffsA[0] == T(1));  
+    rsAssert(dampCoeffsA[0] == TCoef(1));  
     // May be relaxed later by dividing through all coeffs by a[0]
 
 
@@ -1340,9 +1352,9 @@ public:
   // could be called setupViaCoeffs
 
 
-  rsComplex<T> getDamperTransferFunctionAt(const rsComplex<T>& z) const
+  rsComplex<TCoef> getDamperTransferFunctionAt(const rsComplex<TCoef>& z) const
   {
-    using Complex = rsComplex<T>;
+    using Complex = rsComplex<TCoef>;
     Complex num = 0, den = 0;
     for(int i = 0; i <= dmpOrd; i++)
     {
@@ -1358,22 +1370,22 @@ public:
     //   z) and factored into a library function to compute the transfer function of direct form 
     //   filters. Maybe it should go into rsFilterAnalyzer.
   }
-  // Maybe don't fix the argument and return type to rsComplex<T>. Instead use a template parameter
-  // TArg
+  // Maybe don't fix the argument and return type to rsComplex<TCoef>. Instead use a template 
+  // parameter TArg. Then we don't have to commit to decide bewteen TCoef and TDly here.
 
 
 
-  void getCombTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
+  void getCombTransferFunction(rsSparseDigitalTransferFunction<TCoef>* tf) const
   {
-    using Mon = rsMonomial<T>;
-    getDelayTransferFunction(&A);   // A = A(z) is transfer function of the delay
-    getDamperTransferFunction(tf);  // tf = F, F(z) is transfer function in feedback path
-    tf->multiplyBy(Mon(k, 1));      // tf = F * k * z^-1
-    tf->multiplyBy(A, T(0));        // tf = F * k * z^-1 * A
-    tf->addConstant(T(1), T(0));    // tf = 1 + F * k * z^-1 * A
-    tf->invert();                   // tf = 1 / (1 + F * k * z^-1 * A)
+    using Mon = rsMonomial<TCoef>;
+    getDelayTransferFunction(&A);         // A = A(z) is transfer function of the delay
+    getDamperTransferFunction(tf);        // tf = F, F(z) is transfer function in feedback path
+    tf->multiplyBy(Mon(k, 1));            // tf = F * k * z^-1
+    tf->multiplyBy(A, TCoef(0));          // tf = F * k * z^-1 * A
+    tf->addConstant(TCoef(1), TCoef(0));  // tf = 1 + F * k * z^-1 * A
+    tf->invert();                         // tf = 1 / (1 + F * k * z^-1 * A)
     if(preDelay)
-      tf->multiplyBy(A, T(0));      // tf = A / (1 + F * k * z^-1 * A)
+      tf->multiplyBy(A, TCoef(0));        // tf = A / (1 + F * k * z^-1 * A)
 
     // ToDo:
     //
@@ -1384,13 +1396,13 @@ public:
   // Rename to getTransferFunction
 
 
-  void getDamperTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
+  void getDamperTransferFunction(rsSparseDigitalTransferFunction<TCoef>* tf) const
   {
-    tf->setupFromDenseCoeffs(bD, dmpOrd+1, aD, dmpOrd+1, T(0));
+    tf->setupFromDenseCoeffs(bD, dmpOrd+1, aD, dmpOrd+1, TCoef(0));
   }
 
 
-  void getDelayTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
+  void getDelayTransferFunction(rsSparseDigitalTransferFunction<TCoef>* tf) const
   {
     //// New - still triggers an error:
     //tf->setupFromDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1, T(0));
@@ -1406,11 +1418,11 @@ public:
 
 
     // Old:
-    T delayInt  = rsFloor(delay);
-    T delayFrac = delay - delayInt;
+    TDly delayInt  = rsFloor(delay);
+    TDly delayFrac = delay - delayInt;
 
-    rsSparsePolynomial<T>& num = tf->getNumerator();
-    rsSparsePolynomial<T>& den = tf->getDenominator();
+    rsSparsePolynomial<TCoef>& num = tf->getNumerator();
+    rsSparsePolynomial<TCoef>& den = tf->getDenominator();
 
     using IM = InterpolationMode;
     switch(interpolation)
@@ -1468,16 +1480,15 @@ public:
 
 
 
-  T getFeedbackGain() const { return k; }
+  TCoef getFeedbackGain() const { return k; }
 
   int getDampingOrder() const { return dmpOrd; }
 
-  const T* getDampCoeffsB() const { return bD; }
+  const TCoef* getDampCoeffsB() const { return bD; }
 
-  const T* getDampCoeffsA() const { return aD; }
+  const TCoef* getDampCoeffsA() const { return aD; }
 
-
-  T getDelay() const { return delay; }
+  TDly getDelay() const { return delay; }
 
   bool isInPreDelayMode() const { return preDelay; }
 
@@ -1613,13 +1624,13 @@ protected:
   static const int maxDmpOrd = 8;      // Maximum damping order
 
   // Coefficients:
-  T k = 0;                             // Feedback gain
-  T bD[maxDmpOrd+1];                   // Damping filter feedforward coeffs
-  T aD[maxDmpOrd+1];                   // Damping filter feedback coeffs
+  TCoef k = 0;                         // Feedback gain
+  TCoef bD[maxDmpOrd+1];               // Damping filter feedforward coeffs
+  TCoef aD[maxDmpOrd+1];               // Damping filter feedback coeffs
 
   // Other settings:
-  T   delay  = 0;                      // Delay in samples (may be non integer)
-  int dmpOrd = 0;                      // Feedback damping filter order ToDo: have dmpNumOrd,dmpDenOrd
+  TDly delay  = 0;                     // Delay in samples (may be non integer)
+  int  dmpOrd = 0;                     // Feedback damping filter order ToDo: have dmpNumOrd,dmpDenOrd
 
 
 
@@ -1636,7 +1647,7 @@ protected:
 
 
   // Temporary object for delay transfer function A(z):
-  mutable rsSparseDigitalTransferFunction<T> A;
+  mutable rsSparseDigitalTransferFunction<TCoef> A;
     // This member is needed to support a non-allocating implementation of 
     // getCombTransferFunction() ...maybe call it D(z) for delay
     // ...Maybe the implementation of getCombTransferFunction() should take the delay transfer
@@ -1662,8 +1673,8 @@ protected:
   int intNumOrd = 0;                   // Interpolator numerator order
   int intDenOrd = 0;                   // Interpolator denominator order
 
-  T bI[maxIntOrd+1];                   // Interpolation filter feedforward coeffs
-  T aI[maxIntOrd+1];                   // Interpolation filter feedback coeffs
+  TDly bI[maxIntOrd+1];                // Interpolation filter feedforward coeffs
+  TDly aI[maxIntOrd+1];                // Interpolation filter feedback coeffs
 
 
 };
@@ -1671,18 +1682,18 @@ protected:
 
 
 // Maybe make that a member of rsDampedCombSettings:
-template<class T>
+template<class TCoef, class TDly>
 void rsSetupDecayTimes_LinViaDly(
-  rsDampedCombSettings<T>& combSettings, 
-  T delay, T decay, T loOmega, T loScale, T hiOmega, T hiScale, 
+  rsDampedCombSettings<TCoef, TDly>& combSettings, 
+  TDly delay, TCoef decay, TCoef loOmega, TCoef loScale, TCoef hiOmega, TCoef hiScale, 
   bool preDelay)
 {
   // Compute feedback gain and filter coeffs:
-  T a[3], b[3];
-  T kM = rsMakeDampBiShelf(delay, decay, loOmega, loScale, hiOmega, hiScale, b, a);
+  TCoef a[3], b[3];
+  TCoef kM = rsMakeDampBiShelf(delay, decay, loOmega, loScale, hiOmega, hiScale, b, a);
 
   // Set up the rsDampedCombSettings objects:
-  using IM = rsDampedCombSettings<T>::InterpolationMode;
+  using IM = rsDampedCombSettings<TCoef, TDly>::InterpolationMode;
   combSettings.setup(delay, IM::linear, kM, 2, b, a, preDelay);
 
   // ToDo:
@@ -1698,20 +1709,22 @@ void rsSetupDecayTimes_LinViaDly(
 
 
 // Just for comparison/proof-of-concept:
-template<class T>
-void rsSetupDecayTimes_LinViaFb(rsDampedCombSettings<T>& combSettings, 
-  T delay, T decay, T loOmega, T loScale, T hiOmega, T hiScale, bool predelay)
+template<class TCoef, class TDly>
+void rsSetupDecayTimes_LinViaFb(rsDampedCombSettings<TCoef, TDly>& combSettings, 
+  TDly delay, TCoef decay, TCoef loOmega, TCoef loScale, TCoef hiOmega, TCoef hiScale, 
+  bool predelay)
 {
   // Compute feedback gain and filter coeffs:
-  T a[4], b[4];
-  T kM = rsMakeDampBiShelf(delay, decay, loOmega, loScale, hiOmega, hiScale, b, a);
+  TCoef a[4], b[4];
+  TCoef kM = rsMakeDampBiShelf(delay, decay, loOmega, loScale, hiOmega, hiScale, b, a);
 
   // Possibly also bake an interpolation filter into the feedback filter to achieve fractional 
   // delay times:
-  using IM = rsDampedCombSettings<T>::InterpolationMode;
-  int delayInt  = (int) rsFloor(delay);
-  T   delayFrac = delay - (T) delayInt;
-  if(delayFrac == T(0))
+  using IM = rsDampedCombSettings<TCoef, TDly>::InterpolationMode;
+  TDly delayInt  = rsFloor(delay);
+  TDly delayFrac = delay - delayInt;
+
+  if(delayFrac == TDly(0))
   {
     // In the integer delay case, we only need the 2nd order feedback filter that we already have:
     combSettings.setup(delayInt, IM::nearest, kM, 2, b, a, predelay);
@@ -1721,13 +1734,13 @@ void rsSetupDecayTimes_LinViaFb(rsDampedCombSettings<T>& combSettings,
     // In the fractional delay case, we create a linear interpolation filter and bake it into the 
     // existing 2nd order feedback filter, thereby turning it into a 3rd order filter:
 
-    T d = delayFrac;
+    TCoef d = TCoef(delayFrac);
 
     // Design linear interpolation filter:
-    T aI[2], bI[2];
-    bI[0] = 1 - d;
+    TCoef aI[2], bI[2];
+    bI[0] = TCoef(1) - d;
     bI[1] = d;
-    aI[0] = 1;
+    aI[0] = TCoef(1);
     aI[1] = 0;
 
     // Bake the interpolation filter into the b,a, arrays:
@@ -1988,7 +2001,8 @@ protected:
   rsDelay<TSig> corrDelay;                // Delayline for the correction filter
 
   // Maximum order of feedback damping filter:
-  static const int maxDmpOrd = rsDampedCombSettings<TPar>::getMaxDampingOrder(); 
+  static const int maxDmpOrd = rsDampedCombSettings<TPar, double>::getMaxDampingOrder(); 
+  // Maybe replace double with TDly - a 3rd template parameter for this class
 
   // State:
   TSig combOut = TSig(0);                 // State for the unit delay feedback loop
@@ -1997,8 +2011,9 @@ protected:
   TSig yc[maxDmpOrd];                     // State for the poles of the correction filter
 
   // Settings:
-  rsDampedCombSettings<TPar> s;           // Rename this! ...maybe to settings
+  rsDampedCombSettings<TPar, double> s;   // Rename this! ...maybe to settings
   int M = 0;                              // Delayline length (redundant but convenient)
+  // Maybe replace double with TDly - a 3rd template parameter for this class
 
 
   // Notes:
@@ -2055,8 +2070,10 @@ void rsDampedCombAllpass<TSig, TPar>::setup(int delay, TPar feedback, int dampOr
   }
 
   M = delay - 1;             // -1 corrects for unit delay in feedback path
-  s.setup(delay, rsDampedCombSettings<TPar>::InterpolationMode::nearest, feedback, dampOrder,
-    dampCoeffsB, dampCoeffsA, predelayMode);
+  s.setup(delay, rsDampedCombSettings<TPar, double>::InterpolationMode::nearest, 
+    feedback, dampOrder, dampCoeffsB, dampCoeffsA, predelayMode);
+  // replace double with TPar
+
   updateDelays();
 
   // ToDo:
@@ -2640,7 +2657,9 @@ protected:
 
 
   // This object will be used compute the filter coeffs of the prototype combs:
-  rsDampedCombSettings<TPar> protoComb;
+  //rsDampedCombSettings<TPar> protoComb;
+  rsDampedCombSettings<TPar, double> protoComb;
+  // Replace double with TDly
 
   // Transfer function objects used for temporaries in internal computations in updateFilters():
   rsSparseDigitalTransferFunction<TPar> U, Ui;

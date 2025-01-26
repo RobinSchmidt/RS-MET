@@ -1139,7 +1139,7 @@ void dampedCombAllpassFractional2()
   using Real         = double;
   using Vec          = std::vector<Real>;
   using Allpass      = rsDampedCombAllpass<Real, Real>;
-  using CombSettings = rsDampedCombSettings<Real>;
+  using CombSettings = rsDampedCombSettings<Real, Real>;
   using TransFunc    = rsSparseDigitalTransferFunction<Real>;
 
 
