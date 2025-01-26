@@ -594,7 +594,7 @@ void dampedCombAllpass2()
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Allpass = rsDampedCombAllpass<Real, Real>;
+  using Allpass = rsDampedCombAllpass<Real, Real, Real>;
 
   // User parameters:
   int  delay      =   100;     // Main delay roundtrip length in samples. Is M-1 in the algo
@@ -673,7 +673,7 @@ void dampedCombAllpass3()
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Allpass = rsDampedCombAllpass<Real, Real>;
+  using Allpass = rsDampedCombAllpass<Real, Real, Real>;
 
   // User parameters:
   int  delay1     =    53;     // 1st main delay roundtrip length in samples. Is M-1 in the algo
@@ -799,7 +799,7 @@ void dampedCombAllpass4()
   using Real    = double;
   using Vec     = std::vector<Real>;
   using Complex = rsComplex<Real>;
-  using Allpass = rsDampedCombAllpass<Real, Real>;
+  using Allpass = rsDampedCombAllpass<Real, Real, Real>;
 
   // User parameters:
   int  N        = 8192;
@@ -841,7 +841,7 @@ void dampedCombAllpass5()
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Allpass = rsDampedCombAllpass<Real, Real>;
+  using Allpass = rsDampedCombAllpass<Real, Real, Real>;
 
   // User parameters:
   Real sampleRate = 48000;     // Sampling rate.
@@ -1091,7 +1091,7 @@ void dampedCombAllpassFractional1()
   // Define types to be used:
   using Real      = double;
   using Vec       = std::vector<Real>;
-  using Allpass   = rsDampedCombAllpass<Real, Real>;
+  using Allpass   = rsDampedCombAllpass<Real, Real, Real>;
 
   int  numSamples = 5000;     // Number of samples to render.
   Real delay      =  100.3;   // Delay in samples - not necessarily integer, though 
@@ -1138,7 +1138,7 @@ void dampedCombAllpassFractional2()
   // Define types to be used:
   using Real         = double;
   using Vec          = std::vector<Real>;
-  using Allpass      = rsDampedCombAllpass<Real, Real>;
+  using Allpass      = rsDampedCombAllpass<Real, Real, Real>;
   using CombSettings = rsDampedCombSettings<Real, Real>;
   using TransFunc    = rsSparseDigitalTransferFunction<Real>;
 
@@ -1221,7 +1221,7 @@ void dampedMultiCombAllpass()
   using Real      = double;
   using Complex   = rsComplex<Real>;
   using Vec       = std::vector<Real>;
-  using Allpass   = rsDampedCombAllpass<Real, Real>;
+  using Allpass   = rsDampedCombAllpass<Real, Real, Real>;
   using TransFunc = rsSparseDigitalTransferFunction<Real>;
   using SparseFlt = rsSparseFilter<Real, Real>;
 
@@ -1447,8 +1447,8 @@ void dampedMultiCombAllpass2()
 
 // This is needed for the case when we want ot have a complex TPar. It's a bit dirty to use 
 // the explicit type double. Maybe it should be a third template parameter TReal or something.
-template<class TSig, class TPar>
-void rsSetupHighDampComplex(rsDampedCombAllpass<TSig, TPar>& flt,
+template<class TSig, class TPar, class TDly>
+void rsSetupHighDampComplex(rsDampedCombAllpass<TSig, TPar, TDly>& flt,
   int delay, TPar feedback, double dampOmega, double dampGain, bool predelay)
 {
   double a[2], b[2]; a[0] = 1;
@@ -1462,6 +1462,11 @@ void rsSetupHighDampComplex(rsDampedCombAllpass<TSig, TPar>& flt,
   flt.setup(delay, feedback, 1, B, A, predelay);
 }
 // Clean this up to make it nice!
+// I think dampOmega, dampGain should be TDly...but then the name TDly is not a good fit anymore.
+// Maybe TTime - it applies to time variables and frequencies (reciprocal of time, kind of) and 
+// also to the gain...which is an absolute amplitude/magnitude value. These are all values that
+// can only take on non-negative real values.
+
 
 void dampedCombAllpassComplex()
 {
@@ -1487,7 +1492,7 @@ void dampedCombAllpassComplex()
   using Complex = std::complex<Real>;
   using VecR    = std::vector<Real>;
   using VecC    = std::vector<Complex>;
-  using Allpass = rsDampedCombAllpass<Complex, Complex>;
+  using Allpass = rsDampedCombAllpass<Complex, Complex, Real>;
 
   // User parameters:
   int  delay      =   100;
@@ -1576,7 +1581,7 @@ void dampedCombAllpassNonLin()
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Allpass = rsDampedCombAllpassNonLin<Real, Real>;
+  using Allpass = rsDampedCombAllpassNonLin<Real, Real, Real>;
 
   // User parameters:
   int  delay      =   100;     // Main delay roundtrip length in samples. Is M-1 in the algo
@@ -1622,7 +1627,7 @@ void dampedAllpassDelayContent()
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Allpass = rsDampedCombAllpass<Real, Real>;
+  using Allpass = rsDampedCombAllpass<Real, Real, Real>;
 
   // User parameters:
   int  delay      =    10;

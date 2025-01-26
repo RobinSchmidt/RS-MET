@@ -2322,7 +2322,7 @@ bool dampedCombAllpassUnitTest1()
   using Real      = double;
   using Vec       = std::vector<Real>;
   using CombNaive = rsDampedCombAllpassNaive<Real, Real>;
-  using Comb      = rsDampedCombAllpass<Real, Real>;
+  using Comb      = rsDampedCombAllpass<Real, Real, Real>;
   using Comb_1p   = rsDampedCombAllpass_1p<Real, Real>;
 
   // Test parameters:
@@ -2429,7 +2429,7 @@ bool dampedCombAllpassUnitTest2()
 
   using Real = double;
   using Vec  = std::vector<Real>;
-  using Comb = rsDampedCombAllpass<Real, Real>;
+  using Comb = rsDampedCombAllpass<Real, Real, Real>;
   using AT   = rsArrayTools;
 
   // Test parameters:
@@ -2517,7 +2517,7 @@ bool dampedCombAllpassUnitTest3(bool withPreDelay)
   using Real    = double;
   using Vec     = std::vector<Real>;
   using Complex = rsComplex<Real>;
-  using Allpass = rsDampedCombAllpass<Real, Real>;
+  using Allpass = rsDampedCombAllpass<Real, Real, Real>;
 
   int  N        = 8192;
   int  delay    = 50;
@@ -2663,7 +2663,7 @@ bool dampedMultiCombAllpassUnitTest()
   using Real             = double;
   using Complex          = rsComplex<Real>;
   using Vec              = std::vector<Real>;
-  using CombAllpass      = rsDampedCombAllpass<Real, Real>;
+  using CombAllpass      = rsDampedCombAllpass<Real, Real, Real>;
   using MultiCombAllpass = rsDampedMultiCombAllpass<Real, Real>;
   using TransFunc        = rsSparseDigitalTransferFunction<Real>;
   using SparseFlt        = rsSparseFilter<Real, Real>;
