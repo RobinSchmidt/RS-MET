@@ -1258,7 +1258,12 @@ function objects. ...TBC...
 ToDo: explain intention behind the template parameters TCoef and TDly. TCoef is the type for the
 feedback gain and feedback filter coeffs and TDly for the delay. For the former, it can make sense
 to have a simd typr or maybe even a complex type. For the latter, we can only have scalar real 
-number types.
+number types. It would actually be desirable to have simd vector types for TDly, too - but that's
+difficult to implement. The amount of delay in a delayline is not so easily simdified. ..but maybe 
+it can: With interpolationa and damping, we typically do more delayline readouts per sample than we
+do writes. If the read-pointers ("tapIn") are all in-sync but the write pointers ("tapOut") have 
+different offsets, we could have a meaningful implementation. Try to make one with rsFloat64x4 for 
+the signal and some rsInt32x4 type (to be written) for the index)
 
 */
 
@@ -1371,7 +1376,8 @@ public:
     //   filters. Maybe it should go into rsFilterAnalyzer.
   }
   // Maybe don't fix the argument and return type to rsComplex<TCoef>. Instead use a template 
-  // parameter TArg. Then we don't have to commit to decide bewteen TCoef and TDly here.
+  // parameter TArg. Then we don't have to commit to decide between TCoef and TDly here and we 
+  // would also allow client code to use std::complex
 
 
 
