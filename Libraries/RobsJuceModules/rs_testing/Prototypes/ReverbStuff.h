@@ -1296,10 +1296,8 @@ public:
   //
   // Maybe add Lagrange and Hermite interpolators. Maybe they can be turned into allpass
   // interpolators by just using the reversed FIR coefficient array for the recursive part? Will 
-  // that give meaningful interpolators (i.e. stable, desired group delay and/or pahse delay 
-  // characteristics, etc.)?
-  //
-  // Add rounding interpolation
+  // that give meaningful interpolators (i.e. stable and with desirable group delay and/or phase 
+  // delay characteristics, etc.)?
   
 
 
@@ -1343,22 +1341,20 @@ public:
       return;
     }
 
-
-    delay         = delayInSamples - TDly(1);    // -1 corrects for unit delay in feedback path
+    delay         = delayInSamples - TDly(1);      // -1 corrects for unit delay in feedback path
     interpolation = interpolationMode;
     k             = feedback;
     preDelay      = preDelayMode;
     dmpOrd        = dampOrder;
 
-    rsAssert(dampCoeffsA[0] == TCoef(1));  
-    // May be relaxed later by dividing through all coeffs by a[0]
-
-
+    rsAssert(dampCoeffsA[0] == TCoef(1));
     rsArrayTools::copy(dampCoeffsA, aD, dmpOrd+1);
     rsArrayTools::copy(dampCoeffsB, bD, dmpOrd+1);
+    //normalizeFilterCoeffs(bD, dmpOrd+1, aD, dmpOrd+1);
+      // Maybe call such a function later to relax the dampCoeffsA[0] == 1 assertion. It should 
+      // divide all coeffs by aD[0] to normalize the transfer function. 
 
-    // New:
-    updateInterpolatorCoeffs();    // Assigns the coeffs in the bI, aI arrays
+    updateInterpolatorCoeffs();                    // Assigns the coeffs in the bI, aI arrays
   }
   // Maybe rename to setupFromAlgoParams and have a similar setupFromUserParams function that uses
   // higher level parameters such as decay times at various frequencies, i.e. the currently free
@@ -1370,7 +1366,7 @@ public:
   template<class TArg>
   TArg getDamperTransferFunctionAt(const TArg& z) const
   {
-    TArg num = TArg(0), den = TArg(0);       // Maybe use TArg num(0), den(0); Avoid assignment
+    TArg num(0), den(0);
     for(int i = 0; i <= dmpOrd; i++)
     {
       TArg zi = rsPow(z, TArg(-i));          // z^-i
@@ -1381,9 +1377,10 @@ public:
 
     // ToDo:
     //
-    // - This should be optimized (don't call rsPow - compute the powers on the fly by multiplying by
-    //   z) and factored into a library function to compute the transfer function of direct form 
-    //   filters. Maybe it should go into rsFilterAnalyzer.
+    // - This should be optimized (don't call rsPow - compute the powers on the fly by multiplying 
+    //   an accumulator by z1 = 1/z, initialized as 1). Maybe it can be factored out into a library
+    //   function to compute the transfer function of direct form filters. Maybe it should go into 
+    //   rsFilterAnalyzer.
   }
   // We use a template parameter TArg so we don't have to commit to decide between TCoef and TDly 
   // here and we would also allow client code to use std::complex or rsComplex
@@ -1594,9 +1591,9 @@ protected:
 
     case IM::nearest:
     {
-      // y[n] = x[n]  or  x[n+1]:
-      if(f <= TDly(0.5)) { intNumOrd = 0; bI[0] = TDly(1);                  }
-      else               { intNumOrd = 1; bI[0] = TDly(0); bI[1] = TDly(1); }
+      // y[n] = x[n] or x[n-1], depending on f:
+      if(f <= TDly(0.5)) { intNumOrd = 0; bI[0] = TDly(1);                  }  // y[n] = x[n]
+      else               { intNumOrd = 1; bI[0] = TDly(0); bI[1] = TDly(1); }  // y[n] = x[n-1]
       intDenOrd = 0; aI[0] = TDly(1);
     }
     break;
