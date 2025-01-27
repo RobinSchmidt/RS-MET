@@ -1316,17 +1316,16 @@ public:
   void init()
   {
     delay         = TDly(0);
-    interpolation = InterpolationMode::nearest;
+    interpolation = InterpolationMode::sampleHold;
     k             = TCoef(0);
     dmpOrd        = 0;
     preDelay      = false;
 
     using AT = rsArrayTools;
-    AT::clear(bD, maxDmpOrd+1);
-    AT::clear(aD, maxDmpOrd+1);
-
-    A.setNumTerms(2, 2);      // (2,2) reserves enough memory to avoid allocations later
-    A.clear();                // ...but at the moment, it's just empty
+    AT::clear(bD, maxDmpOrd+1); bD[0] = TCoef(1);
+    AT::clear(aD, maxDmpOrd+1); aD[0] = TCoef(1);
+    AT::clear(bI, maxIntOrd+1); bI[0] = TDly(1);
+    AT::clear(aI, maxIntOrd+1); aI[0] = TDly(1);
   }
 
 
@@ -1386,31 +1385,23 @@ public:
   // here and we would also allow client code to use std::complex or rsComplex
 
 
-  /** Multiplies the given transfer function by the transfer function of our delayline. */
+  /** Multiplies the given transfer function by the transfer function of our delayline. This 
+  consists of a factor z^-M for the integer delay of M samples and a factor resulting from the 
+  interpolator, for example b0 + b1*z^-1 with b0 = 1-f, b1 = f for the linear interpolator with f 
+  being the fractional part of the delay, i.e. delay = M+f. */
   void mulByDelayTransFunc(rsSparseDigitalTransferFunction<TCoef>* tf) const
   {
-    tf->multiplyByDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1, TCoef(0));
-    tf->addPreDelay((int)delay);  // VERIFY!
+    tf->multiplyByDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1, TCoef(0)); // Interpolator factor
+    tf->addPreDelay((int)delay);                                           // Integer delay factor
+
+    // VERIFY if this is correct! Check and document also, if the order of the calls matters. I 
+    // think, it shouldn't. Test it with all the available interpolators.
   }
   // Maybe make protected - it's only for internal use.
 
 
   void getCombTransferFunction(rsSparseDigitalTransferFunction<TCoef>* tf) const
   {
-    // Old:
-    /*
-    using Mon = rsMonomial<TCoef>;
-    getDelayTransferFunction(&A);         // A = A(z) is transfer function of the delay
-    getDamperTransferFunction(tf);        // tf = F, F(z) is transfer function in feedback path
-    tf->multiplyBy(Mon(k, 1));            // tf = F * k * z^-1
-    tf->multiplyBy(A, TCoef(0));          // tf = F * k * z^-1 * A
-    tf->addConstant(TCoef(1), TCoef(0));  // tf = 1 + F * k * z^-1 * A
-    tf->invert();                         // tf = 1 / (1 + F * k * z^-1 * A)
-    if(preDelay)
-      tf->multiplyBy(A, TCoef(0));        // tf = A / (1 + F * k * z^-1 * A)
-    */
-
-    // New - needs tests:
     using Mon = rsMonomial<TCoef>;
     getDamperTransferFunction(tf);        // tf = F, F(z) is transfer function in feedback path
     tf->multiplyBy(Mon(k, 1));            // tf = F * k * z^-1
@@ -1437,67 +1428,8 @@ public:
 
   void getDelayTransferFunction(rsSparseDigitalTransferFunction<TCoef>* tf) const
   {
-    // New:
     tf->setupFromDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1, TCoef(0));
     tf->addPreDelay((int)delay);  // VERIFY!
-
-    ////tf->shiftPowers((int)delay);  // VERIFY!
-    //// No! We need to shift all the powers except for the a0*z^0 term in the denominator. Or no! 
-    //// That may also be wrong. Maybe th denominator should stay as is and we need to shift only the
-    //// numerator terms? 
-
-
-
-    //// Old:
-    //TDly delayInt  = rsFloor(delay);
-    //TDly delayFrac = delay - delayInt;
-
-    //rsSparsePolynomial<TCoef>& num = tf->getNumerator();
-    //rsSparsePolynomial<TCoef>& den = tf->getDenominator();
-
-    //using IM = InterpolationMode;
-    //switch(interpolation)
-    //{
-
-    //case IM::nearest:
-    //{
-    //  tf->setNumTerms(1, 1);
-    //  num._setTerm(0, 1, (int)rsRound(delay));
-    //  den._setTerm(0, 1, 0);
-    //}
-    //break;
-
-    //case IM::linear:
-    //{
-    //  tf->setNumTerms(2, 1);
-    //  num._setTerm(0, 1-delayFrac, (int)delayInt    );
-    //  num._setTerm(1,   delayFrac, (int)delayInt + 1);
-    //  den._setTerm(0, 1, 0);
-    //}
-    //break;
-
-    //case IM::allpass1:
-    //{
-
-    //  // ToDo: assign tf to 1st allpass interpolation coeffs
-
-    //  //tf->setNumTerms(2, 2);
-
-    //}
-    //break;
-
-    //default:
-    //{
-    //  rsError("Unknown interpolation method.");
-
-    //  // Use nearest neighbor method in that case:
-    //  tf->setNumTerms(1, 1);
-    //  num._setTerm(0, 1, (int)rsRound(delay));
-    //  den._setTerm(0, 1, 0);
-    //}
-
-    //}
-
   }
   // Needs more tests with all the different interpolation modes
 
@@ -1675,8 +1607,6 @@ protected:
   int  dmpOrd = 0;                     // Feedback damping filter order ToDo: have dmpNumOrd,dmpDenOrd
 
 
-
-
   // Switch between different interpolation modes:
   InterpolationMode interpolation = InterpolationMode::nearest;
 
@@ -1684,28 +1614,6 @@ protected:
   bool preDelay = false;
     // Maybe rename to something like "mode" or "structure", "configuration", "topology". Maybe 
     // there could be even more modes?
-
-
-
-
-  // Temporary object for delay transfer function A(z):
-  mutable rsSparseDigitalTransferFunction<TCoef> A;   // Get rid!
-    // This member is needed to support a non-allocating implementation of 
-    // getCombTransferFunction() ...maybe call it D(z) for delay
-    // ...Maybe the implementation of getCombTransferFunction() should take the delay transfer
-    // function as parameter (by const ref). Then we can get rid of that member...hmm...but that
-    // complicates the API
-    //
-    // Try to get away without heap memory here. Store the coeffs directly in arrays like
-    // bI[2], aI[2] where I stands for interpolator ...maybe then rename b,a to bD,aD (D for 
-    // damper). Maybe instead of declaring them as bI[2], use bI[maxIntOrd+1]. We will then need a
-    // way to mutliply a sparse transfer function by one represented by a dense array of coeffs.
-    // For this, we need a function rsSparsePolynomial::multiplyByDense(const T* coeffs, int order)
-    // ...ok - there is now rsSparsePolynomial<T>::multiplyByDenseCoeffs - but it needs tests
-
-
-    // Maybe have a delay member of type TPar - or maybe double or TDly and then maybe get rid of
-    // M. Have an interpolationMethod member, too ....done
 
 
   // Under construction - should replace member "A":
