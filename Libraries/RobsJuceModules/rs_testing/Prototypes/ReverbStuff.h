@@ -229,17 +229,21 @@ Notes
 - Maybe it could make sense to design allpass interpolators according to a desired impulse 
   response. For a 1st roder allpass, we would make the ansatz:
 
-     y[n] = c*x[n] + x[n-1] - c*y[n-1]
+     y[n] = c*x[n] + x[n-1] - c*y[n-1]   with   x[0,1,2,3,...] = 1,0,0,0,... and zero for n < 0
      h[0] = c
      h[1] = 1 - c*h[0] = 1 - c^2
      h[2] = c * h[1] = c*(1 - c^2)
      ...
+     h[n] = c^(n-1) * (1 - c^2)
 
   As we have only one coeff, we could prescribe only the first sample of the impulse response. 
   Maybe we should set it to 1-f where f is the desired fractional delay in the interval [0,1). The
   rest would then follow. I don't know if that makes sense. For a 2nd order allpass, we could 
   prescribe two sample h[0], h[1]. Maybe we should set them to (1-f), f. Maybe try it and see what 
-  happens.
+  happens. Maybe in the first order case, we could also require: h[0] + h[1] = 1. We want the first
+  two samples to sum to the amplitude of the unit impulse. Or maybe the first two samples should 
+  have that same eneryg as a unit impulse, i.e. (h[0])^2 + (h[1])^2 = 1? ...some experiments and
+  creativity is needed!
 
 */
 
