@@ -1573,15 +1573,9 @@ protected:
   interpolation mode and the fractional part of the delay. */
   void updateInterpolatorCoeffs()
   {
-    // The code belwo doesn't compile when T is a complex type. We want to support complex feedback
-    // gains and complex damping filter coeffs. But even in such a case, the delay should still be 
-    // real valued. I think, that means, we need two template parameters. Maybe let's call them
-    // TCoef, TDly (for coefficients and delay)
-
-    
-    TDly f = delay - rsFloor(delay); // Fractional part of delay
-
     using IM = InterpolationMode;
+    TDly f = delay - rsFloor(delay);        // Fractional part of delay
+
     switch(interpolation)
     {
 
