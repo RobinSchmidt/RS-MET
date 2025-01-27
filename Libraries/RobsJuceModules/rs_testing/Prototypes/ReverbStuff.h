@@ -1257,13 +1257,14 @@ function objects. ...TBC...
 
 ToDo: explain intention behind the template parameters TCoef and TDly. TCoef is the type for the
 feedback gain and feedback filter coeffs and TDly for the delay. For the former, it can make sense
-to have a simd typr or maybe even a complex type. For the latter, we can only have scalar real 
+to have a simd type or maybe even a complex type. For the latter, we can only have scalar real 
 number types. It would actually be desirable to have simd vector types for TDly, too - but that's
 difficult to implement. The amount of delay in a delayline is not so easily simdified. ..but maybe 
-it can: With interpolationa and damping, we typically do more delayline readouts per sample than we
+it can: With interpolation and damping, we typically do more delayline readouts per sample than we
 do writes. If the read-pointers ("tapIn") are all in-sync but the write pointers ("tapOut") have 
 different offsets, we could have a meaningful implementation. Try to make one with rsFloat64x4 for 
-the signal and some rsInt32x4 type (to be written) for the index)
+the signal and some rsInt32x4 type (to be written) for the index. If that works, try to templatize
+it.
 
 */
 
@@ -1414,7 +1415,7 @@ public:
   void getDelayTransferFunction(rsSparseDigitalTransferFunction<TCoef>* tf) const
   {
     //// New - still triggers an error:
-    //tf->setupFromDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1, T(0));
+    //tf->setupFromDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1, TCoef(0));
     //tf->addPreDelay((int)delay);  // VERIFY!
 
     ////tf->shiftPowers((int)delay);  // VERIFY!
@@ -1577,8 +1578,8 @@ protected:
     // real valued. I think, that means, we need two template parameters. Maybe let's call them
     // TCoef, TDly (for coefficients and delay)
 
-    /*
-    T f = delay - rsFloor(delay); // Fractional part of delay
+    
+    TDly f = delay - rsFloor(delay); // Fractional part of delay
 
     using IM = InterpolationMode;
     switch(interpolation)
@@ -1587,25 +1588,25 @@ protected:
     case IM::nearest:
     {
       // y[n] = x[n]:
-      intNumOrd = 0; bI[0] = T(1);
-      intDenOrd = 0; aI[0] = T(1);
+      intNumOrd = 0; bI[0] = TDly(1);
+      intDenOrd = 0; aI[0] = TDly(1);
     }
     break;
 
     case IM::linear:
     {
       // y[n] = (1-f)*x[n] + f*x[n-1]:
-      intNumOrd = 1; bI[0] = T(1)-f; bI[1] = f;
-      intDenOrd = 0; aI[0] = T(1);
+      intNumOrd = 1; bI[0] = TDly(1)-f; bI[1] = f;
+      intDenOrd = 0; aI[0] = TDly(1);
     }
     break;
 
     case IM::allpass1:
     {
       // y[n] = c*x[n] + x[n-1] - c*y[n-1]  with  c = (1-f) / (1+f):
-      T c = (T(1)-f) / (T(1)+f);
-      intNumOrd = 1; bI[0] = c;    bI[1] = T(1);
-      intDenOrd = 1; aI[0] = T(1); aI[1] = c;
+      TDly c = (TDly(1)-f) / (TDly(1)+f);
+      intNumOrd = 1; bI[0] = c;       bI[1] = TDly(1);
+      intDenOrd = 1; aI[0] = TDly(1); aI[1] = c;
     }
     break;
 
@@ -1614,14 +1615,14 @@ protected:
       rsError("Unknown interpolation method.");
 
       // Use nearest neighbor method in that case:
-      intNumOrd = 0; bI[0] = T(1);
-      intDenOrd = 0; aI[0] = T(1);
+      intNumOrd = 0; bI[0] = TDly(1);
+      intDenOrd = 0; aI[0] = TDly(1);
       // Or maybe we should just output a zero signal by setting bI[0] to zero? aI[0] should 
       // remain 1, though.
     }
 
     }
-    */
+    
 
   }
 
