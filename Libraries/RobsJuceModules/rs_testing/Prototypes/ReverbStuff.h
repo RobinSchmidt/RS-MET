@@ -1357,13 +1357,14 @@ public:
   // could be called setupViaCoeffs
 
 
-  rsComplex<TCoef> getDamperTransferFunctionAt(const rsComplex<TCoef>& z) const
+
+  template<class TArg>
+  TArg getDamperTransferFunctionAt(const TArg& z) const
   {
-    using Complex = rsComplex<TCoef>;
-    Complex num = 0, den = 0;
+    TArg num = TArg(0), den = TArg(0);       // Maybe use TArg num(0), den(0); Avoid assignment
     for(int i = 0; i <= dmpOrd; i++)
     {
-      Complex zi = rsPow(z, Complex(-i));          // z^-i
+      TArg zi = rsPow(z, TArg(-i));          // z^-i
       num += bD[i] * zi;
       den += aD[i] * zi;
     }
@@ -1375,9 +1376,11 @@ public:
     //   z) and factored into a library function to compute the transfer function of direct form 
     //   filters. Maybe it should go into rsFilterAnalyzer.
   }
-  // Maybe don't fix the argument and return type to rsComplex<TCoef>. Instead use a template 
-  // parameter TArg. Then we don't have to commit to decide between TCoef and TDly here and we 
-  // would also allow client code to use std::complex
+  // We use a template parameter TArg so we don't have to commit to decide between TCoef and TDly 
+  // here and we would also allow client code to use std::complex or rsComplex
+
+
+
 
 
 
@@ -2019,8 +2022,6 @@ protected:
   // Settings:
   rsDampedCombSettings<TPar, TDly> s;     // Rename this! ...maybe to settings
   int M = 0;                              // Delayline length (redundant but convenient)
-  // Maybe replace double with TDly - a 3rd template parameter for this class
-
 
   // Notes:
   //
@@ -2076,14 +2077,8 @@ void rsDampedCombAllpass<TSig, TPar, TDly>::setup(int delay, TPar feedback, int 
   }
 
   M = delay - 1;             // -1 corrects for unit delay in feedback path
-
   s.setup(delay, rsDampedCombSettings<TPar, TDly>::InterpolationMode::nearest, 
     feedback, dampOrder, dampCoeffsB, dampCoeffsA, predelayMode);
-
-  //s.setup(delay, rsDampedCombSettings<TPar, double>::InterpolationMode::nearest, 
-  //  feedback, dampOrder, dampCoeffsB, dampCoeffsA, predelayMode);
-  //// replace double with TDly
-
   updateDelays();
 
   // ToDo:
@@ -2122,15 +2117,15 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar, TDly>::getCombTransferFunctionAt
   const rsComplex<TPar>& z) const
 {
   using Complex = rsComplex<TPar>;
-  Complex one(TPar(1));                             // 1 + 0i
-  Complex A  = getDelayTransferFunctionAt(z);       // A(z)
-  Complex z1 = one/z;                               // z^-1
-  Complex F  = getDamperTransferFunctionAt(z);      // F(z)
+  Complex one(TPar(1));                         // 1 + 0i
+  Complex A  = getDelayTransferFunctionAt(z);   // A(z)
+  Complex z1 = one/z;                           // z^-1
+  Complex F  = getDamperTransferFunctionAt(z);  // F(z)
   TPar k = s.getFeedbackGain();
   if(s.isInPreDelayMode())
-    return A   / (one + k * z1 * F * A);            // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
+    return A   / (one + k * z1 * F * A);        // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
   else
-    return one / (one + k * z1 * F * A);            // U(z) =   1  / (1 + k * z^-1 * F(z) * A(z))
+    return one / (one + k * z1 * F * A);        // U(z) =   1  / (1 + k * z^-1 * F(z) * A(z))
 
   // Notes:
   //
@@ -2170,12 +2165,10 @@ template<class TSig, class TPar, class TDly>
 rsComplex<TPar> rsDampedCombAllpass<TSig, TPar, TDly>::getCorrectorTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
-  // New:
   int dmpOrd = s.getDampingOrder();
   const TPar* b = s.getDampCoeffsB();
   const TPar* a = s.getDampCoeffsA();
   TPar k = s.getFeedbackGain();
-
 
   using Complex = rsComplex<TPar>;
   Complex num = 0, den = 0;
@@ -2209,13 +2202,13 @@ rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar, TDly>
 
   TF one; one.num._appendTerm(TPar(1), 0);
   TF z1;  z1.num._appendTerm( TPar(1), 1);
-  TF F = getDamperTransferFunction();            // Feedback filter F(z)
-  TF A; getDelayTransferFunction(&A);            // Delay filter A(z)
+  TF F = getDamperTransferFunction();       // Feedback filter F(z)
+  TF A; getDelayTransferFunction(&A);       // Delay filter A(z)
   TPar k = s.getFeedbackGain();
   if(s.isInPreDelayMode())
-    return A   / (one + k * z1 * F * A);         // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
+    return A   / (one + k * z1 * F * A);    // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
   else 
-    return one / (one + k * z1 * F * A);         // U(z) =   1  / (1 + k * z^-1 * F(z) * A(z))
+    return one / (one + k * z1 * F * A);    // U(z) =   1  / (1 + k * z^-1 * F(z) * A(z))
 }
 
 template<class TSig, class TPar, class TDly>

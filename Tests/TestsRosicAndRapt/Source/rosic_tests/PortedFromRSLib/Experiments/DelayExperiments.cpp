@@ -1488,8 +1488,8 @@ void dampedCombAllpassComplex()
 
   // Define types to be used:
   using Real    = double;
-  //using Complex = rsComplex<Real>;
-  using Complex = std::complex<Real>;
+  using Complex = rsComplex<Real>;
+  //using Complex = std::complex<Real>;
   using VecR    = std::vector<Real>;
   using VecC    = std::vector<Complex>;
   using Allpass = rsDampedCombAllpass<Complex, Complex, Real>;
@@ -1535,7 +1535,9 @@ void dampedCombAllpassComplex()
   // Test transfer function computation:
   Complex z(0.6, 0.8);
   //Complex H = ap.getCombTransferFunctionAt(z);
-
+  // Doesn't compile because argument and return value are of type rsComplex<TPar> and TPar is
+  // complex, so we'd get a nested complex type.
+  int dummy = 0;
 
 
   // Observations:
