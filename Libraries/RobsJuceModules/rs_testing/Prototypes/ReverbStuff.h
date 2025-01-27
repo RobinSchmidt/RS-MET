@@ -1591,20 +1591,29 @@ protected:
   // 1,0,0,0,...
 
 
-
-
-
-
-  static const int maxDmpOrd = 8;      // Maximum damping order
+  static const int maxDmpOrd = 8;  // Maximum damping order
+  static const int maxIntOrd = 1;  // Maximum interpolation order - ToDo: allow higher orders!
 
   // Coefficients:
-  TCoef k = 0;                         // Feedback gain
-  TCoef bD[maxDmpOrd+1];               // Damping filter feedforward coeffs
-  TCoef aD[maxDmpOrd+1];               // Damping filter feedback coeffs
+  TCoef k = 0;                     // Feedback gain
+  TCoef bD[maxDmpOrd+1];           // Damping filter feedforward coeffs
+  TCoef aD[maxDmpOrd+1];           // Damping filter feedback coeffs
+  TDly  bI[maxIntOrd+1];           // Interpolation filter feedforward coeffs
+  TDly  aI[maxIntOrd+1];           // Interpolation filter feedback coeffs
+  // ToDo: Explain why it makes sense to let aI, bI be of type TDly rather than TCoef. ...I'm 
+  // actually not quite sure if that is really the right thing to do. Maybe they should be type
+  // TCoef. Figure this out - imagine (or better: implement and test) situations where TCoef is a 
+  // complex type or a simd type. I actually think, in the simd case, it would make more sense to
+  // let the coeffs of the interpolator be of the vector rather than scalar type which amounts to
+  // making the interpolator coeffs of type TCoef. Hmm...but maybe then the TDly should also be of
+  // the vector type anyway...not sure...
+
 
   // Other settings:
-  TDly delay  = 0;                     // Delay in samples (may be non integer)
-  int  dmpOrd = 0;                     // Feedback damping filter order ToDo: have dmpNumOrd,dmpDenOrd
+  TDly delay  = 0;                 // Delay in samples (may be non integer)
+  int  dmpOrd = 0;                 // Feedback damping filter order ToDo: have dmpNumOrd,dmpDenOrd
+  int  intNumOrd = 0;              // Interpolator numerator order
+  int  intDenOrd = 0;              // Interpolator denominator order
 
 
   // Switch between different interpolation modes:
@@ -1614,17 +1623,6 @@ protected:
   bool preDelay = false;
     // Maybe rename to something like "mode" or "structure", "configuration", "topology". Maybe 
     // there could be even more modes?
-
-
-  // Under construction - should replace member "A":
-
-  static const int maxIntOrd = 1;      // Maximum interpolation order
-
-  int intNumOrd = 0;                   // Interpolator numerator order
-  int intDenOrd = 0;                   // Interpolator denominator order
-
-  TDly bI[maxIntOrd+1];                // Interpolation filter feedforward coeffs
-  TDly aI[maxIntOrd+1];                // Interpolation filter feedback coeffs
 
 
 };
