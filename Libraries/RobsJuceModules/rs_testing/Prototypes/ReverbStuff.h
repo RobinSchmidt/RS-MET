@@ -1386,12 +1386,19 @@ public:
   // here and we would also allow client code to use std::complex or rsComplex
 
 
-
-
+  /** Multiplies the given transfer function by the transfer function of our delayline. */
+  void mulByDelayTransFunc(rsSparseDigitalTransferFunction<TCoef>* tf) const
+  {
+    tf->multiplyByDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1, TCoef(0));
+    tf->addPreDelay((int)delay);  // VERIFY!
+  }
+  // Maybe make protected - it's only for internal use.
 
 
   void getCombTransferFunction(rsSparseDigitalTransferFunction<TCoef>* tf) const
   {
+    // Old:
+    /*
     using Mon = rsMonomial<TCoef>;
     getDelayTransferFunction(&A);         // A = A(z) is transfer function of the delay
     getDamperTransferFunction(tf);        // tf = F, F(z) is transfer function in feedback path
@@ -1401,6 +1408,17 @@ public:
     tf->invert();                         // tf = 1 / (1 + F * k * z^-1 * A)
     if(preDelay)
       tf->multiplyBy(A, TCoef(0));        // tf = A / (1 + F * k * z^-1 * A)
+    */
+
+    // New - needs tests:
+    using Mon = rsMonomial<TCoef>;
+    getDamperTransferFunction(tf);        // tf = F, F(z) is transfer function in feedback path
+    tf->multiplyBy(Mon(k, 1));            // tf = F * k * z^-1
+    mulByDelayTransFunc(tf);              // tf = F * k * z^-1 * A
+    tf->addConstant(TCoef(1), TCoef(0));  // tf = 1 + F * k * z^-1 * A
+    tf->invert();                         // tf = 1 / (1 + F * k * z^-1 * A)
+    if(preDelay)
+      mulByDelayTransFunc(tf);            // tf = A / (1 + F * k * z^-1 * A)
 
     // ToDo:
     //
@@ -1671,14 +1689,14 @@ protected:
 
 
   // Temporary object for delay transfer function A(z):
-  mutable rsSparseDigitalTransferFunction<TCoef> A;
+  mutable rsSparseDigitalTransferFunction<TCoef> A;   // Get rid!
     // This member is needed to support a non-allocating implementation of 
     // getCombTransferFunction() ...maybe call it D(z) for delay
     // ...Maybe the implementation of getCombTransferFunction() should take the delay transfer
     // function as parameter (by const ref). Then we can get rid of that member...hmm...but that
     // complicates the API
     //
-    // Try to get away without hep memory here. Store the coeffs directly in arrays like
+    // Try to get away without heap memory here. Store the coeffs directly in arrays like
     // bI[2], aI[2] where I stands for interpolator ...maybe then rename b,a to bD,aD (D for 
     // damper). Maybe instead of declaring them as bI[2], use bI[maxIntOrd+1]. We will then need a
     // way to mutliply a sparse transfer function by one represented by a dense array of coeffs.
