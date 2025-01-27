@@ -1250,6 +1250,7 @@ void engineersFilterFreqResps()
 
   EF flt;
   flt.setApproximationMethod(PTD::BUTTERWORTH);
+  //flt.setApproximationMethod(PTD::PAPOULIS);
   flt.setSampleRate(fs);
   flt.setFrequency(fc);
   flt.setMode(IIRD::LOWPASS);
