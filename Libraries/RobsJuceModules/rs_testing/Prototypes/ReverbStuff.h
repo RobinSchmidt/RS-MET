@@ -194,6 +194,55 @@ protected:
 // Needs tests
 
 
+/*
+
+Notes
+
+- In general, interpolation is a process that takes in datapoints at discrete points, i.e. pairs
+  (x,y) in 1D, and creating a continuous function from these points. It can be sued for various 
+  tasks, among them implementing fractional delays and upsampling.
+
+- In the case of fractional delay, interpolation schemes may also be interpreted as filters. The 
+  interpolated value at some position n+d will be a linear combination of samples around index n.
+  The coefficients of that linear combination depend on the desired fracctional delay d in [0,1)
+  and are basically FIR filter coeffs. In this case, we may not care so much about the smoothness
+  of the underlying continuous interpolant because we just use one particluar fractional offset 
+  anyway (unless the fractional delay is time-varying). In this case, we may be mostly interested
+  in the frequency response of our fractional delay filter. Ideally, we want the magnitude response
+  to be unity ar all frequencies and the group delay should be equal to our desired fractional 
+  delay at all frequencies (Q: why the group delay and not the phase delay?). Lagrange 
+  interpolators provide a maximally flat group delay response at DC (see PASP book by Julius 
+  Smith), so they might be suitable even though they are not as smooth as e.g. Hermite 
+  interpolators of the same order. Thiran allpass interpolators can be seen as an IIR extension to
+  the Lagrange interpolators which are FIR (see PASP as well).
+
+- For upsampling, interpolation schemes may be interpreted as so called polyphase filters. For 
+  example, to upsample by a factor of 5, we would need 5 different fractional delay filters, namely
+  those that implement the delays of: 0.0, 0.2, 0.4, 0.6, 0.8. We would interleave their outputs in
+  a round-robin fashion to obtain the upsampled signal. For upsampling, we may care about the 
+  smoothness of the underlying continuous interpolant at the datapoints (i.e. where we switch to a
+  new segment of the interpolant). This may be especially true if we want to create a nice smooth 
+  plot. So, for upsampling for plots, something like Hermite interpolation may be appropriate. 
+  Maybe also splines, but they are not suitable for realtime use because each segment depends on
+  the whole dataset.
+
+- Maybe it could make sense to design allpass interpolators according to a desired impulse 
+  response. For a 1st roder allpass, we would make the ansatz:
+
+     y[n] = c*x[n] + x[n-1] - c*y[n-1]
+     h[0] = c
+     h[1] = 1 - c*h[0] = 1 - c^2
+     h[2] = c * h[1] = c*(1 - c^2)
+     ...
+
+  As we have only one coeff, we could prescribe only the first sample of the impulse response. 
+  Maybe we should set it to 1-f where f is the desired fractional delay in the interval [0,1). The
+  rest would then follow. I don't know if that makes sense. For a 2nd order allpass, we could 
+  prescribe two sample h[0], h[1]. Maybe we should set them to (1-f), f. Maybe try it and see what 
+  happens.
+
+*/
+
 
 
 
