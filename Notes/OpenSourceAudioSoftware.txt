@@ -250,7 +250,7 @@ Frameworks
 JUCE
 https://juce.com/
 https://github.com/juce-framework/JUCE
--Framework for building audio software and plugins
+-Framework for building audio software and plugins. Very comprehensive and widely used
 
 IPlug2
 https://iplug2.github.io/
@@ -621,6 +621,19 @@ https://osci-render.com/
 
 
 https://github.com/bitwig/dawproject
+
+
+https://ldesoras.fr/prod.html#src
+
+https://github.com/unevens/hiir
+
+
+https://github.com/floooh/sokol
+-Simple STB-style cross-platform libraries for C and C++, written in C.
+
+
+https://github.com/VitalAudio/visage
+-GPU-accelerated, cross-platform C++ library for native UI and 2D graphics. 
 
 
 ----------------------------------------------------------------------------------------------------

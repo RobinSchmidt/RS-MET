@@ -1334,11 +1334,11 @@ class rsDampedCombSettings
 public:
 
    
-  enum class InterpolationMode  // Maybe rename to InterpolationMode
+  enum class InterpolationMode
   {
-    sampleHold,     // Sample and hold, i.e. truncate/floor read position to int
-    nearest,        // Nearest neighbor interpolation, i.e. round read position to int
-    linear,         // Linear interpolation
+    sampleHold,     // Sample and hold, truncate/floor read position to int
+    nearest,        // Nearest neighbor interpolation, round read position to nearest int
+    linear,         // Linear interpolation, connect samples with straight lines
     allpass1        // First order (warped) allpass interpolation (maybe rename to thiran1)
   };
   // Maybe use unsigned char as underlying type for the enum. Maybe offer more interpolation modes
@@ -1350,13 +1350,14 @@ public:
   // Maybe add Lagrange and Hermite interpolators. Maybe they can be turned into allpass
   // interpolators by just using the reversed FIR coefficient array for the recursive part? Will 
   // that give meaningful interpolators (i.e. stable and with desirable group delay and/or phase 
-  // delay characteristics, etc.)?
+  // delay characteristics, etc.)? Maybe implement general functions to compute coeff arrays of
+  // N-th order Lagrange, Hermite, Thiran, etc. interpolators
   
 
 
   //enum class DampingMode  
   //{
-  //  feedbackDamp,        // F(z) is in feedback path, A(z) in feedformward path
+  //  feedbackDamp,        // F(z) is in feedback path, A(z) in feedforward path
   //  forwardDamp,         // F(z) is in feedforward path, A(z) in feedback path
   //  forwardDampComp      // Like forwardDamp but with 1/F(z) compensator in series
   //};
@@ -1364,6 +1365,7 @@ public:
   // realize the same transfer function as the forwardDampComp mode but without the need for an
   // inverse damper, so it would be more efficient. Verify this hypothesis theoretically and 
   // numerically. Maybe call that mode feedbackDampDelay
+  // Maybe rename to structure, topology, configuration, ...
  
 
   void init()
