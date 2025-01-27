@@ -1259,16 +1259,21 @@ ToDo: explain intention behind the template parameters TCoef and TDly. TCoef is 
 feedback gain and feedback filter coeffs and TDly for the delay. For the former, it can make sense
 to have a simd type or maybe even a complex type. For the latter, we can only have scalar real 
 number types. It would actually be desirable to have simd vector types for TDly, too - but that's
-difficult to implement. The amount of delay in a delayline is not so easily simdified. ..but maybe 
-it can: With interpolation and damping, we typically do more delayline readouts per sample than we
-do writes. If the read-pointers ("tapIn") are all in-sync but the write pointers ("tapOut") have 
-different offsets, we could have a meaningful implementation. Try to make one with rsFloat64x4 for 
-the signal and some rsInt32x4 type (to be written) for the index. If that works, try to templatize
-it.
+difficult to implement. The amount of delay in a delayline is not so easily simdified. 
 
-*/
+But maybe it can done: With interpolation and damping, we typically do more delayline readouts per 
+sample than we do writes. If the read-pointers ("tapIn") are all in-sync but the write pointers 
+("tapOut") have different offsets, we could make a meaningful implementation. Try to make one with
+rsFloat32x4 for the signal and some rsInt32x4 type (to be written) for the index. The write code 
+would extract and use the scalar integer delays stored in the rsInt32x4 vector, i.e. just look like
+regular delayline code repeated 4 times. As the write operation is rare, it doesn't matter too much
+that the delayline writing can't take advantage of vectorization. The reading code would assume 
+that all 4 ints in the vector have the same value and just read out the 4-float vector at that 
+index. We could (and probably should) actually even use a scalar int for the read index. If that 
+works out, try to templatize it. We may need one template parameter for the signal (e.g. 
+rsFloat32x4) and one for the vector index (e.g. rsInt32x4). Maybe we need one for the scalar 
+index, too - but maybe we can get away without it.  */
 
-//template<class T>
 template<class TCoef, class TDly>
 class rsDampedCombSettings
 {
@@ -1278,9 +1283,10 @@ public:
    
   enum class InterpolationMode  // Maybe rename to InterpolationMode
   {
-    nearest,               // Nearest neighbor interpolation
-    linear,                // Linear interpolation
-    allpass1               // First order (warped) allpass interpolation (maybe rename to thiran1)
+    sampleHold,     // Sample and hold, i.e. truncate/floor read position to int
+    nearest,        // Nearest neighbor interpolation, i.e. round read position to int
+    linear,         // Linear interpolation
+    allpass1        // First order (warped) allpass interpolation (maybe rename to thiran1)
   };
   // Maybe use unsigned char as underlying type for the enum. Maybe offer more interpolation modes
   // like cubic Hermite, cubic Lagrange, 2nd and 3rd order Thiran allpass, etc. See:
@@ -1292,6 +1298,8 @@ public:
   // interpolators by just using the reversed FIR coefficient array for the recursive part? Will 
   // that give meaningful interpolators (i.e. stable, desired group delay and/or pahse delay 
   // characteristics, etc.)?
+  //
+  // Add rounding interpolation
   
 
 
@@ -1414,69 +1422,66 @@ public:
 
   void getDelayTransferFunction(rsSparseDigitalTransferFunction<TCoef>* tf) const
   {
-    //// New - still triggers an error:
-    //tf->setupFromDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1, TCoef(0));
-    //tf->addPreDelay((int)delay);  // VERIFY!
+    // New:
+    tf->setupFromDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1, TCoef(0));
+    tf->addPreDelay((int)delay);  // VERIFY!
 
     ////tf->shiftPowers((int)delay);  // VERIFY!
     //// No! We need to shift all the powers except for the a0*z^0 term in the denominator. Or no! 
     //// That may also be wrong. Maybe th denominator should stay as is and we need to shift only the
     //// numerator terms? 
 
-    //return;
 
 
+    //// Old:
+    //TDly delayInt  = rsFloor(delay);
+    //TDly delayFrac = delay - delayInt;
 
-    // Old:
-    TDly delayInt  = rsFloor(delay);
-    TDly delayFrac = delay - delayInt;
+    //rsSparsePolynomial<TCoef>& num = tf->getNumerator();
+    //rsSparsePolynomial<TCoef>& den = tf->getDenominator();
 
-    rsSparsePolynomial<TCoef>& num = tf->getNumerator();
-    rsSparsePolynomial<TCoef>& den = tf->getDenominator();
+    //using IM = InterpolationMode;
+    //switch(interpolation)
+    //{
 
-    using IM = InterpolationMode;
-    switch(interpolation)
-    {
+    //case IM::nearest:
+    //{
+    //  tf->setNumTerms(1, 1);
+    //  num._setTerm(0, 1, (int)rsRound(delay));
+    //  den._setTerm(0, 1, 0);
+    //}
+    //break;
 
-    case IM::nearest:
-    {
-      tf->setNumTerms(1, 1);
-      num._setTerm(0, 1, (int)rsRound(delay));
-      den._setTerm(0, 1, 0);
-    }
-    break;
+    //case IM::linear:
+    //{
+    //  tf->setNumTerms(2, 1);
+    //  num._setTerm(0, 1-delayFrac, (int)delayInt    );
+    //  num._setTerm(1,   delayFrac, (int)delayInt + 1);
+    //  den._setTerm(0, 1, 0);
+    //}
+    //break;
 
-    case IM::linear:
-    {
-      tf->setNumTerms(2, 1);
-      num._setTerm(0, 1-delayFrac, (int)delayInt    );
-      num._setTerm(1,   delayFrac, (int)delayInt + 1);
-      den._setTerm(0, 1, 0);
-    }
-    break;
+    //case IM::allpass1:
+    //{
 
-    case IM::allpass1:
-    {
+    //  // ToDo: assign tf to 1st allpass interpolation coeffs
 
-      // ToDo: assign tf to 1st allpass interpolation coeffs
+    //  //tf->setNumTerms(2, 2);
 
-      //tf->setNumTerms(2, 2);
+    //}
+    //break;
 
-    }
-    break;
+    //default:
+    //{
+    //  rsError("Unknown interpolation method.");
 
-    default:
-    {
-      rsError("Unknown interpolation method.");
+    //  // Use nearest neighbor method in that case:
+    //  tf->setNumTerms(1, 1);
+    //  num._setTerm(0, 1, (int)rsRound(delay));
+    //  den._setTerm(0, 1, 0);
+    //}
 
-      // Use nearest neighbor method in that case:
-      tf->setNumTerms(1, 1);
-      num._setTerm(0, 1, (int)rsRound(delay));
-      den._setTerm(0, 1, 0);
-    }
-
-
-    }
+    //}
 
   }
 
@@ -1579,13 +1584,23 @@ protected:
     switch(interpolation)
     {
 
-    case IM::nearest:
+    case IM::sampleHold:
     {
       // y[n] = x[n]:
       intNumOrd = 0; bI[0] = TDly(1);
       intDenOrd = 0; aI[0] = TDly(1);
     }
     break;
+
+    case IM::nearest:
+    {
+      // y[n] = x[n]  or  x[n+1]:
+      if(f <= TDly(0.5)) { intNumOrd = 0; bI[0] = TDly(1);                  }
+      else               { intNumOrd = 1; bI[0] = TDly(0); bI[1] = TDly(1); }
+      intDenOrd = 0; aI[0] = TDly(1);
+    }
+    break;
+    // Needs tests
 
     case IM::linear:
     {
@@ -1619,6 +1634,13 @@ protected:
     
 
   }
+  // Maybe this should be factored out into a free function rsInterpolatorCoeffs or into a static
+  // member function like calcCoeffs() of class rsInterpolator. It should take the fractional delay
+  // f, the desired mode and a pointer to the coefficient arrays that will be filled by the 
+  // function. We want to call it here like calcCoeffs(f, interpolation, bI, aI). Maybe there 
+  // should be a function for FIR interpolators that should not take an a-array. It could be 
+  // invoked by the more general function that takes both arrays and fill the a-array with 
+  // 1,0,0,0,...
 
 
 
