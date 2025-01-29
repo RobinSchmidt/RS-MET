@@ -1511,9 +1511,25 @@ public:
   // Needs more tests with all the different interpolation modes
 
 
-
+  /** Returns the maximum possible order of the damping filter F(z). */
   static constexpr int getMaxDampingOrder() { return maxDmpOrd; }
 
+  /** An interpolation scheme that implements a fractional delay can be viewed as a filter. This
+  function returns the maximum possible order of this interpolator filter. */
+  static constexpr int getMaxInterpolationOrder() { return maxIntOrd; }
+
+  static constexpr int getMaxIntPlusDampOrder() { return maxIntOrd + maxDmpOrd; }
+  // This is the maximum order increase caused by interpolation and damping taken together. That
+  // means, when the maximum nominal delay in samples is M, then the maximum total order of the
+  // damped comb filter is M + getMaxIntPlusDampOrder() + 1. The +1 comes from the additional 
+  // unit delay in the feedback loop.  ToDo: Verify this and add to documentation!
+
+
+  /** Returns the maximum possible total order of the full damped comb filter for a given maximum
+  delayline length. This order includes delay, interpolation, damping and the implicit unit delay 
+  in the feedback loop. */
+  int getMaxTotalOrder(int maxDelay) { return maxDelay + getMaxIntPlusDampOrder() + 1; }
+  // Verify!
 
 
 
@@ -1819,16 +1835,25 @@ class rsDampedCombFilter
 {
 
 
-
-
 public:
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Lifetime
 
   rsDampedCombFilter() { reset(); }
 
 
 
+
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
+
   /** Resets the state. */
   void reset();
+
 
 
 protected:
@@ -1968,19 +1993,13 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-
-
-
   /** Sets the maximum desired roundtrip delay around the comb. This total roundtrip delay includes
   the z^-1 unit delay, so the delayline length is actually shorter by one. */
   void setMaxIntDelayInSamples(int newMaxDelay);
 
-
   void setMaxDelayInSamples(TDly newMaxDelay)
   { setMaxIntDelayInSamples((int)rsCeil(newMaxDelay)); }
  
-
-
 
 
   /** Sets up the filter with the given total roundtrip delay, the scalar feedback gain and the
