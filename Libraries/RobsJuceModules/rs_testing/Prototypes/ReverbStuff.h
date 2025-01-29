@@ -1329,7 +1329,7 @@ rsFloat32x4) and one for the vector index (e.g. rsInt32x4). Maybe we need one fo
 index, too - but maybe we can get away without it.  */
 
 template<class TCoef, class TDly>
-class rsDampedCombSettings
+class rsDampedCombSettings                // Maybe rename to rsDampedCombParams
 {
 
 public:
@@ -1514,9 +1514,12 @@ public:
   /** Returns the maximum possible order of the damping filter F(z). */
   static constexpr int getMaxDampingOrder() { return maxDmpOrd; }
 
-  /** An interpolation scheme that implements a fractional delay can be viewed as a filter. This
-  function returns the maximum possible order of this interpolator filter. */
+  /** An interpolation scheme that implements a fractional delay can be viewed as a filter. For 
+  example, cubic Lagrange interpolation can be viewed as a 3rd order FIR filter and Thiran 
+  interpolation uses IIR allpass filters. This function returns the maximum possible order of this 
+  interpolator filter. */
   static constexpr int getMaxInterpolationOrder() { return maxIntOrd; }
+
 
   static constexpr int getMaxIntPlusDampOrder() { return maxIntOrd + maxDmpOrd; }
   // This is the maximum order increase caused by interpolation and damping taken together. That
@@ -1536,6 +1539,9 @@ public:
 
 
 
+  TDly getDelay() const { return delay; }
+
+
   TCoef getFeedbackGain() const { return k; }
 
   int getDampingOrder() const { return dmpOrd; }
@@ -1544,9 +1550,19 @@ public:
 
   const TCoef* getDampCoeffsA() const { return aD; }
 
-  TDly getDelay() const { return delay; }
-
   bool isInPreDelayMode() const { return preDelay; }
+
+  int getIntDelay() const { return (int) delay; }
+
+  //int getInterpolationOrder() const { return rsMax(intNumOrd, intDenOrd); }
+
+  //int getTotalOrder() const
+  //{  return getIntDelay() + getDampingOrder() + getInterpolationOrder() + 1; }
+
+  // Verify!
+
+  // Maybe we can have more specific functions that return the total numerator and denominator 
+  // order separately. I think, this will also depend on the mode/topology. 
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1845,6 +1861,22 @@ public:
 
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+
+
+
+
+  /** Initializes all settings to default values. */
+  void initSettings();
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+
+
 
 
 
@@ -1871,7 +1903,7 @@ protected:
   TSig xi[maxDmpOrd], yi[maxDmpOrd];      // State for the inverse damping filter
 
   // Settings:
-  rsDampedCombSettings<TPar, TDly> s;     // Rename this! ...maybe to settings
+  rsDampedCombSettings<TPar, TDly> s;     // Rename this! ...maybe to settings, params
   int M = 0;                              // Delayline length (redundant but convenient)
 
 
@@ -1888,6 +1920,16 @@ protected:
 
 
 template<class TSig, class TPar, class TDly>
+void rsDampedCombFilter<TSig, TPar, TDly>::initSettings() 
+{ 
+  s.init();
+  M = s.getIntDelay();               // Should be zero after s.init()
+  mainDelay.setDelayInSamples(M);
+}
+
+
+
+template<class TSig, class TPar, class TDly>
 void rsDampedCombFilter<TSig, TPar, TDly>::reset()
 {
   mainDelay.reset();
@@ -1899,9 +1941,6 @@ void rsDampedCombFilter<TSig, TPar, TDly>::reset()
   AT::clear(xi, maxDmpOrd);
   AT::clear(yi, maxDmpOrd);
 }
-
-
-
 
 
 
