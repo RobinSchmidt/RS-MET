@@ -295,6 +295,20 @@ void twoPoleAllpassDelay()
   //   frequency. Maybe  omega*delay = 2*pi*f/fs  or  omega/delay = 2*pi*f/fs?
 }
 
+void dampedCombFilter()
+{
+  using Real = double;
+  using Comb = rsDampedCombFilter<Real, Real, Real>;
+
+
+
+  // Create and set up the comb filter object:
+  Comb comb;
+
+
+  int dummy = 0;
+}
+
 void dampedCombAllpass1()
 {
   // This experiment is basically my initial step by step derivation of what later became the class
@@ -1914,14 +1928,12 @@ void dampedAllpassBiComb_1p()
 
 void dampedCombAllpasses()
 {
-  dampedCombAllpassComplex();
-  //dampedCombAllpass5();
-  //dampedCombAllpassFractional1();
-  //dampedCombAllpassFractional2();
-  //dampedMultiCombAllpass();
-  //dampedMultiCombAllpass2();
+  dampedCombFilter();
 
 
+
+
+  dampedCombFilter();
   dampedCombAllpass1();
   dampedCombAllpass2();
   dampedCombAllpass3();
@@ -1930,6 +1942,7 @@ void dampedCombAllpasses()
   dampedCombAllpassFractional1();
   dampedCombAllpassFractional2();
   dampedMultiCombAllpass();
+  dampedMultiCombAllpass2();
   dampedCombAllpassComplex();
   dampedCombAllpassNonLin();
   dampedAllpassDelayContent();
