@@ -1336,6 +1336,16 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
+  // \name Lifetime
+
+  rsDampedCombSettings()
+  {
+    init();
+  }
+
+
+
+  //-----------------------------------------------------------------------------------------------
   // \name Setup
 
    
@@ -1813,7 +1823,12 @@ class rsDampedCombFilter
 
 public:
 
+  rsDampedCombFilter() { reset(); }
 
+
+
+  /** Resets the state. */
+  void reset();
 
 
 protected:
@@ -1829,7 +1844,6 @@ protected:
   TSig combOut = TSig(0);                 // State for the unit delay feedback loop
   TSig xd[maxDmpOrd], yd[maxDmpOrd];      // State for the damping filter
   TSig xi[maxDmpOrd], yi[maxDmpOrd];      // State for the inverse damping filter
-  // 
 
   // Settings:
   rsDampedCombSettings<TPar, TDly> s;     // Rename this! ...maybe to settings
@@ -1847,6 +1861,19 @@ protected:
   //   away without it.
 };
 
+
+template<class TSig, class TPar, class TDly>
+void rsDampedCombFilter<TSig, TPar, TDly>::reset()
+{
+  mainDelay.reset();
+  combOut = TSig(0);
+
+  using AT = rsArrayTools;
+  AT::clear(xd, maxDmpOrd);
+  AT::clear(yd, maxDmpOrd);
+  AT::clear(xi, maxDmpOrd);
+  AT::clear(yi, maxDmpOrd);
+}
 
 
 
