@@ -1446,13 +1446,14 @@ public:
   being the fractional part of the delay, i.e. delay = M+f. */
   void mulByDelayTransFunc(rsSparseDigitalTransferFunction<TCoef>* tf) const
   {
-    tf->multiplyByDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1, TCoef(0)); // Interpolator factor
-    tf->addPreDelay((int)delay);                                           // Integer delay factor
+    tf->multiplyByDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1, TCoef(0));  // Interpolator factor
+    tf->addPreDelay((int)delay);                                            // Integer delay factor
 
     // VERIFY if this is correct! Check and document also, if the order of the calls matters. I 
     // think, it shouldn't. Test it with all the available interpolators.
   }
-  // Maybe make protected - it's only for internal use.
+  // Maybe make protected - it's currently used only internally. But maybe it could be useful for 
+  // extenal use, too?
 
 
   void getCombTransferFunction(rsSparseDigitalTransferFunction<TCoef>* tf) const
@@ -1469,8 +1470,7 @@ public:
     // ToDo:
     //
     // - Verify that all operations above are non-allocating (assuming that tf has enough capacity)
-    //   and document that fact. Our member A also needs to have enough capacity to represent the
-    //   delay filter including interpolation.
+    //   and document that fact.
   }
   // Rename to getTransferFunction
 
