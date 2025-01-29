@@ -1895,17 +1895,25 @@ ToDo:
 - We may also want bivariate rational functions to implement and investigate some interesting 
   math
 
+- Maybe implement factorization of real polynomials into real linear and quadratic factors. 
+  Currently, factorizations can only be done in terms of complex linear factors. In polynomials 
+  with real coeffs, complex roots always come in conjugate pairs and these pairs can be combined
+  into quadratic factors. But it's also possible to directly obtain the quadratic factors. I think
+  there's an algo for that in Numerical Recipies in C, if I remember correctly. 
 
 
 
  Other methods for root finding (here, we use the Laguerre method:)
  https://en.wikipedia.org/wiki/Durand%E2%80%93Kerner_method
- https://en.wikipedia.org/wiki/Jenkins%E2%80%93Traub_algorithm (very popular, i think)
+ https://en.wikipedia.org/wiki/Jenkins%E2%80%93Traub_algorithm (very popular, I think)
 
  Resources:
  -https://cp-algorithms.com/algebra/polynomial.html
   https://github.com/cp-algorithms/cp-algorithms-aux/blob/master/src/polynomial.cpp
   -> has also algorithms for polynomial exp and log (1st n coeffs)
+  ...hmm - it's gone. Is this the new file?:
+  https://github.com/cp-algorithms/cp-algorithms-aux/blob/main/cp-algo/math/poly.hpp
+
 
 
 */

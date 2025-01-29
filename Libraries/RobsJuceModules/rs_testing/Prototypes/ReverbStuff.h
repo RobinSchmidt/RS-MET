@@ -1298,7 +1298,8 @@ void rsSetupHighDamp(rsDampedCombAllpassNaive<TSig, TPar>& flt,
 
 //=================================================================================================
 
-/** Under construction
+/** Under construction - This shopuld eventually go into a pair of files DampedCombFilter.h/cpp in
+RAPT/Filters/Musical
 
 This is supposed to factor out some functionality from class rsDampedCombAllpass to facilitate 
 re-using it in e.g. rsDampedMultiCombAllpass. We want to decouple the multicomb allpass from the
@@ -1333,6 +1334,10 @@ class rsDampedCombSettings
 
 public:
 
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
    
   enum class InterpolationMode
   {
@@ -1366,6 +1371,10 @@ public:
   // inverse damper, so it would be more efficient. Verify this hypothesis theoretically and 
   // numerically. Maybe call that mode feedbackDampDelay
   // Maybe rename to structure, topology, configuration, ...
+  //
+  // Currently, we only have a boolean preDelay flag. When true, it corresponds to the feedbackDamp
+  // case and when false to the forwardDampComp case. That's what we assume in 
+  // getCombTransferFunction() 
  
 
   void init()
@@ -1416,6 +1425,9 @@ public:
   // could be called setupViaCoeffs
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
 
   template<class TArg>
   TArg getDamperTransferFunctionAt(const TArg& z) const
@@ -1453,7 +1465,7 @@ public:
     // think, it shouldn't. Test it with all the available interpolators.
   }
   // Maybe make protected - it's currently used only internally. But maybe it could be useful for 
-  // extenal use, too?
+  // extenal use, too? Implement also mulByDampTransFunc
 
 
   void getCombTransferFunction(rsSparseDigitalTransferFunction<TCoef>* tf) const
@@ -1510,6 +1522,11 @@ public:
 
   bool isInPreDelayMode() const { return preDelay; }
 
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing. These functions facilitate to implement the actual DSP but leave some 
+  // related responsibilities (such as managing the filter states) to the client code. This is a 
+  // bit odd and may be refactored later.
 
 
   /** Applies the feedback damping filter to the signal "in" and updates the given filter's state 
@@ -1711,7 +1728,12 @@ void rsSetupDecayTimes_LinViaDly(
 
 
 
-// Just for comparison/proof-of-concept:
+// Just for comparison/proof-of-concept. We bake the interpolation method not into the delayline 
+// but into the feedback damping filter. That can be done only for FIR interpolators, though. In 
+// this function, we hardcode the linear interpolation into it. But even in that case, it's 
+// questionable if it should be done this way. But we implement it here to verify that it can be 
+// done. Well - maybe an IIR interpolator could also be baked into the damping filter when the
+// damping filters sits *before* the delay in the topology?
 template<class TCoef, class TDly>
 void rsSetupDecayTimes_LinViaFb(rsDampedCombSettings<TCoef, TDly>& combSettings, 
   TDly delay, TCoef decay, TCoef loOmega, TCoef loScale, TCoef hiOmega, TCoef hiScale, 
@@ -1746,15 +1768,85 @@ void rsSetupDecayTimes_LinViaFb(rsDampedCombSettings<TCoef, TDly>& combSettings,
     aI[0] = TCoef(1);
     aI[1] = 0;
 
-    // Bake the interpolation filter into the b,a, arrays:
+    // Bake the interpolation filter into the b,a feedback damping filter arrays:
     rsArrayTools::convolve(a, 3, aI, 2, a);
     rsArrayTools::convolve(b, 3, bI, 2, b);
-    combSettings.setup(delayInt, IM::nearest, kM, 3, b, a, predelay);
+
+    // Set up the delay settings using only the integer part for the delay and trivial sample and 
+    // hold interpolation:
+    combSettings.setup(delayInt, IM::sampleHold, kM, 3, b, a, predelay);
+    //combSettings.setup(delayInt, IM::nearest, kM, 3, b, a, predelay);  // WRONG?!
   }
 }
 // ToDo: create tests, creating a linearly interpolating damped comb in 2 ways: (1) baking the
 // interpolation into the delay, (2) baking the interpolation into the feedback damper. Compare
 // the resulting transfer functions.
+
+
+
+//=================================================================================================
+
+/** Under Construction. We want to implement a filter based on the following block diagram:
+
+
+  X(z) ---> + ---> A(z) ----------> Y(z)
+            ^                |
+            |                |
+           -k               z^-1
+            |                |
+            ------ F(z) <-----
+
+We want to factor out the pure comb filter from rsDampedCombAllpass because I think, it makes sense
+to have such a comb filter in it own right. It can be used for Karplus-Strong like plucked string 
+synthesis. rsDampedCombAllpass can then either be a subclass of rsDampedCombFilter or have an
+object of that class as member. */
+
+
+
+
+template<class TSig, class TPar, class TDly>
+class rsDampedCombFilter
+{
+
+
+
+
+public:
+
+
+
+
+protected:
+
+
+  // Maximum order of feedback damping filter:
+  static const int maxDmpOrd = rsDampedCombSettings<TPar, TDly>::getMaxDampingOrder(); 
+
+  // Embedded DSP objects:
+  rsDelay<TSig> mainDelay;                // Main delayline for the comb filter
+
+  // State:
+  TSig combOut = TSig(0);                 // State for the unit delay feedback loop
+  TSig xd[maxDmpOrd], yd[maxDmpOrd];      // State for the damping filter
+  TSig xi[maxDmpOrd], yi[maxDmpOrd];      // State for the inverse damping filter
+  // 
+
+  // Settings:
+  rsDampedCombSettings<TPar, TDly> s;     // Rename this! ...maybe to settings
+  int M = 0;                              // Delayline length (redundant but convenient)
+
+
+  // Notes:
+  //
+  // - Maybe the inverse damping filter will become obsoltet at some point. We have it because we 
+  //   need it in rsDampedCombAllpass. Maybe we should have it only there - but even there, we may 
+  //   not need it anymore at some point. I think, if both filters (damper and delay) sit in the 
+  //   feedback path, we may obtain a pre-delay free impulse response that is allpass in nature. We
+  //   introduced it in the first place to compensate for the non-allpassness of the transfer
+  //   function when the feedforward path isn't allpass. By restructuring the filter, we may get
+  //   away without it.
+};
+
 
 
 
@@ -1828,7 +1920,7 @@ or with shelving or peak/bell filters with negative dB gains.
 */
 
 template<class TSig, class TPar, class TDly>
-class rsDampedCombAllpass
+class rsDampedCombAllpass // ToDo: derive from rsDampedCombFilter ..or use it as member
 {
 
 
@@ -2560,7 +2652,7 @@ public:
   rsSparseDigitalTransferFunction<TPar> getCombTransferFunction() const
   {
     return combBank.getTransferFunction();
-    //return U;  should also work
+    //return U;  // Should also work, I think.
   }
   // allocates - creates copy of the transfer function object.
   // Maybe return a const ref?
@@ -2595,12 +2687,14 @@ protected:
 
   void setDirty(bool shouldBeDirty = true)
   {
-    dirty = shouldBeDirty;   
-    // Maybe use dirty.store(shouldBeDirty). I think, it makes no difference but it may add 
-    // documentation value. We would document that this is intended to be an atomic operation.
+    dirty = shouldBeDirty;
+    // Maybe use dirty.store(shouldBeDirty). I think, it makes no difference with regard to the
+    // generated assembly code but it may add documentation value. We would document that this is 
+    // intended to be an atomic operation.
   }
 
   void updateFilters(); // Allocates! Not yet realtime ready. ...might be fixed....verify!
+                        // Maybe rename to updateCoeffs or calcCoeffs
 
 
   // Embedded DSP objects:
@@ -2663,7 +2757,9 @@ protected:
   rsDampedCombSettings<TPar, double> protoComb;
   // Replace double with TDly
 
-  // Transfer function objects used for temporaries in internal computations in updateFilters():
+  // Transfer function objects used for temporaries in internal computations in our updateFilters()
+  // function. They are members rather than locals there to avoid heap allocations in this 
+  // function.
   rsSparseDigitalTransferFunction<TPar> U, Ui;
 };
 
@@ -2672,7 +2768,12 @@ template<class TSig, class TPar>
 void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
 {
   // This is still under construction. It still has allocations and it needs to treat the case 
-  // numCombs == 0
+  // numCombs == 0. ...the allocations might be gone now - but verify this! To treat numCombs == 0,
+  // I think, we just need to assign U(z) = 1/1. Maybe we could generally add a direct path with a 
+  // given gain to the comb-bank. Then instead of doing U.clear() before the accumulation loop, we
+  // could just init it as U.initToConst(directGain). If directGain happens to be 0, we would get
+  // back to the currently implemented case. Then we wouldn't need a special treatment and would
+  // have an even more flexible filter.
 
   using RatFunc   = rsSparseRationalFunction<TPar>;
   //using TransFunc = rsSparseDigitalTransferFunction<TPar>;
@@ -2709,8 +2810,7 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
     RatFunc::weightedSumDestructive(&U, TPar(1), &Ui, TPar(s.gain), &U, TPar(0));
   }
 
-
-  // New:
+  // Set up comb bank and corrector:
   combBank.setup(U);
   if(maxPhaseCombBank)
     combBank.reflectZeros();
@@ -2718,6 +2818,7 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
   corrector.invert();
   corrector.reflectZeros();
 
+  // After updating the filters, we are in clean state:
   setDirty(false);
 }
 

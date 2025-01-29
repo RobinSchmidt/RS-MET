@@ -305,7 +305,7 @@ void dampedCombAllpass1()
   // given feedback filter F(z) that sits in a feedback loop with unit delay around that allpass. I 
   // design a compensation filter that can be applied in series to this setup such that the overall
   // transfer function is allpass in nature. Without the compensation filter, this setup has the 
-  // uncompensated transfer funcion:
+  // uncompensated transfer function:
   //
   //                   A(z)
   //  U(z) = ----------------------------
@@ -832,11 +832,11 @@ void dampedCombAllpass4()
 
 void dampedCombAllpass5()
 {
-  // Under construction.
-  //
   // We want to set up an rsDampedCombAllpass that achieves a desired overall decay time (in the 
   // RT60 sense) and also allows that decay time to be scaled at low and high frequencies via 
-  // shelving filters. ...TBC...
+  // shelving filters. To test it, we split the impulse response into 3 bands (low, mid, high) and
+  // plot the amplitude decay of the 3 bands with a logarithmic amplitude axis
+  
 
   // Define types to be used:
   using Real    = double;
@@ -945,7 +945,8 @@ void dampedCombAllpass5()
 
   // ToDo:
   // 
-  // - Try a processing chain of:  abs -> ma -> amp2db  instead.
+  // - Try a processing chain of:  abs -> ma -> amp2db  instead of the current 
+  //   abs -> amp2db -> envFollow -> ma  setup. Maybe that's better.
 
 
 
@@ -1007,11 +1008,11 @@ void dampedCombAllpass5()
   // Observations:
   //
   //
-  // - With highScale == lowScale == 1, I would expec it to behave exatly like without any 
+  // - With highScale == lowScale == 1, I would expect it to behave exactly like without any 
   //   feedback filter. But this is not the case! Apparently, the shelvers become nontrivial
   //   allpass filters in this case! This is not good - I think. ...or maybe it can be good from
   //   the perspective of diffusion - which might be a goal in some contexts. But we really should
-  //   reconsider the shelver design and maybe try others!
+  //   reconsider the shelver design and maybe try others! 
   //
   // - With longer decay times, the initial spike grows larger with respect to the decaying tail.
   //
@@ -1077,6 +1078,12 @@ void dampedCombAllpass5()
   //   should stay the same but the decay time of the individual allpasses should scale with the 
   //   delay somehow. Figure out, how chaining such filters affects the overall decay time. Will 
   //   the decay times add up?
+  //
+  // - Plot the decay time as function of frequency. Do this by taking the magnitude response of 
+  //   the damping filter and using the formula that converts from decay-time to amplitude in 
+  //   reverse. I expect that this may look less than desirable. If so, try tweaking the design of
+  //   feedback bi-shelver. There is some example code for hwo this can be done in the 16-delayline
+  //   FDN.
 }
 
 

@@ -492,11 +492,11 @@ ToDo:
   then canonicalize(). Or maybe just scan through the terms to find a term with the same power
   and if one is found, consolidate the two terms into one.
 
-- Implement a class rsSparseRationalFunction. Model it after rsRationalFunction.
-
-- Use class rsSparseRationalFunction in rsSparseFilter (maybe as a member H). We can then 
-  implement getTransferFunctionAt() as H.evaluateTyped(z)...or maybe just H(z). That would be 
-  neat.
+- Implement root finding/factorization. Maybe we first need evaluation of derivatives. Maybe we can
+  add an optimized function for evaluating the polynomial itself along with its 1st and 2nd 
+  derivative. I think, the Laguerre root finding algorithm needs these. Look up the implementation
+  in rsPolynomial where we implement it for the case of dense polynomials. Maybe try to adapt the
+  implementation for the sparse case.
 
  
 Notes:
