@@ -1865,11 +1865,23 @@ public:
   // \name Setup
 
 
-
-
-
   /** Initializes all settings to default values. */
   void initSettings();
+
+  /** Sets the maximum desired roundtrip delay around the comb. This total roundtrip delay includes
+  the z^-1 unit delay, so the delayline length is actually shorter by one. */
+  void setMaxIntDelayInSamples(int newMaxDelay);
+
+
+  void setMaxDelayInSamples(TDly newMaxDelay)
+  { setMaxIntDelayInSamples((int)rsCeil(newMaxDelay)); }
+
+
+  //void setup(TDly delay, TPar feedback, 
+  //  int dampOrder, const TPar* dampCoeffsB, const TPar* dampCoeffsA, bool predelayMode);
+
+
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1925,6 +1937,14 @@ void rsDampedCombFilter<TSig, TPar, TDly>::initSettings()
   s.init();
   M = s.getIntDelay();               // Should be zero after s.init()
   mainDelay.setDelayInSamples(M);
+}
+
+template<class TSig, class TPar, class TDly>
+void rsDampedCombFilter<TSig, TPar, TDly>::setMaxIntDelayInSamples(int newMaxDelay)
+{
+  int maxM = newMaxDelay - 1;
+  mainDelay.setMaxDelayInSamples(maxM);
+  // Verify this!
 }
 
 
