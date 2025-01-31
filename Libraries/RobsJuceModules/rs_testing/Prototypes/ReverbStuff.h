@@ -1902,6 +1902,10 @@ public:
 
 protected:
 
+  void updateDelay();
+
+  using Settings = rsDampedCombSettings<TPar, TDly>;
+
 
   // Maximum order of feedback damping filter:
   static const int maxDmpOrd = rsDampedCombSettings<TPar, TDly>::getMaxDampingOrder(); 
@@ -1915,7 +1919,7 @@ protected:
   TSig xi[maxDmpOrd], yi[maxDmpOrd];      // State for the inverse damping filter
 
   // Settings:
-  rsDampedCombSettings<TPar, TDly> s;     // Rename this! ...maybe to settings, params
+  Settings s;                             // Rename this! ...maybe to settings, params
   int M = 0;                              // Delayline length (redundant but convenient)
 
 
@@ -1935,8 +1939,7 @@ template<class TSig, class TPar, class TDly>
 void rsDampedCombFilter<TSig, TPar, TDly>::initSettings() 
 { 
   s.init();
-  M = s.getIntDelay();               // Should be zero after s.init()
-  mainDelay.setDelayInSamples(M);
+  updateDelay();
 }
 
 template<class TSig, class TPar, class TDly>
@@ -1952,29 +1955,12 @@ template<class TSig, class TPar, class TDly>
 void rsDampedCombFilter<TSig, TPar, TDly>::setup(TDly delay, TPar feedback, int dampOrder,
   const TPar* dampCoeffsB, const TPar* dampCoeffsA, bool predelayMode)
 {
-  if(dampOrder > maxDmpOrd) 
-  {
-    rsError("Such high damping order is not supported.");
-    initSettings();
-    return;
-  }
-  // Move that assertion into s.setup(). Ah! It's already there, so it's redundant here. Get rid!
-
-  s.setup(delay, rsDampedCombSettings<TPar, TDly>::InterpolationMode::nearest, 
+  s.setup(delay, Settings::InterpolationMode::nearest, 
     feedback, dampOrder, dampCoeffsB, dampCoeffsA, predelayMode);
   // ToDo: Let the user pick the interpolation mode via another parameter.
 
-
-  //updateDelays();
-  // Old - from copy-and-paste from rsDampedCombAllpass. I think, here, we should have a function
-  // like updateDelay() which should also do something like  M = s.getIntDelay();  ..or maybe we
-  // should get rid of the member variable M anyway. ...not sure - figure out where it's actually 
-  // used and if those things can be done in ways that don't need it. ..I mean, the surely can 
-  // because any use of M can be repplaced by s.getIntDelay() - so figure out if caching that value
-  // is worth it for performance or convenience reasons - if not, get rid.
+  updateDelay();
 }
-
-
 
 template<class TSig, class TPar, class TDly>
 void rsDampedCombFilter<TSig, TPar, TDly>::reset()
@@ -1988,6 +1974,15 @@ void rsDampedCombFilter<TSig, TPar, TDly>::reset()
   AT::clear(xi, maxDmpOrd);
   AT::clear(yi, maxDmpOrd);
 }
+
+
+template<class TSig, class TPar, class TDly>
+void rsDampedCombFilter<TSig, TPar, TDly>::updateDelay()
+{
+  M = s.getIntDelay();
+  mainDelay.setDelayInSamples(M);
+}
+
 
 
 
@@ -2287,13 +2282,6 @@ template<class TSig, class TPar, class TDly>
 void rsDampedCombAllpass<TSig, TPar, TDly>::setup(int delay, TPar feedback, int dampOrder,
   const TPar* dampCoeffsB, const TPar* dampCoeffsA, bool predelayMode)
 {
-  if(dampOrder > maxDmpOrd) 
-  {
-    rsError("Such high damping order is not supported.");
-    initSettings();
-    return;
-  }
-
   M = delay - 1;             // -1 corrects for unit delay in feedback path
   s.setup(delay, rsDampedCombSettings<TPar, TDly>::InterpolationMode::nearest, 
     feedback, dampOrder, dampCoeffsB, dampCoeffsA, predelayMode);
