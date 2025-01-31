@@ -1920,7 +1920,7 @@ protected:
 
   // Settings:
   Settings s;                             // Rename this! ...maybe to settings, params
-  int M = 0;                              // Delayline length (redundant but convenient)
+  int M = 0;                              // Delayline length (redundant but convenient...maybe)
 
 
   // Notes:
