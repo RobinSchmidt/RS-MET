@@ -1877,8 +1877,8 @@ public:
   { setMaxIntDelayInSamples((int)rsCeil(newMaxDelay)); }
 
 
-  //void setup(TDly delay, TPar feedback, 
-  //  int dampOrder, const TPar* dampCoeffsB, const TPar* dampCoeffsA, bool predelayMode);
+  void setup(TDly delay, TPar feedback, 
+    int dampOrder, const TPar* dampCoeffsB, const TPar* dampCoeffsA, bool predelayMode);
 
 
 
@@ -1945,6 +1945,33 @@ void rsDampedCombFilter<TSig, TPar, TDly>::setMaxIntDelayInSamples(int newMaxDel
   int maxM = newMaxDelay - 1;
   mainDelay.setMaxDelayInSamples(maxM);
   // Verify this!
+}
+
+
+template<class TSig, class TPar, class TDly>
+void rsDampedCombFilter<TSig, TPar, TDly>::setup(TDly delay, TPar feedback, int dampOrder,
+  const TPar* dampCoeffsB, const TPar* dampCoeffsA, bool predelayMode)
+{
+  if(dampOrder > maxDmpOrd) 
+  {
+    rsError("Such high damping order is not supported.");
+    initSettings();
+    return;
+  }
+  // Move that assertion into s.setup(). Ah! It's already there, so it's redundant here. Get rid!
+
+  s.setup(delay, rsDampedCombSettings<TPar, TDly>::InterpolationMode::nearest, 
+    feedback, dampOrder, dampCoeffsB, dampCoeffsA, predelayMode);
+  // ToDo: Let the user pick the interpolation mode via another parameter.
+
+
+  //updateDelays();
+  // Old - from copy-and-paste from rsDampedCombAllpass. I think, here, we should have a function
+  // like updateDelay() which should also do something like  M = s.getIntDelay();  ..or maybe we
+  // should get rid of the member variable M anyway. ...not sure - figure out where it's actually 
+  // used and if those things can be done in ways that don't need it. ..I mean, the surely can 
+  // because any use of M can be repplaced by s.getIntDelay() - so figure out if caching that value
+  // is worth it for performance or convenience reasons - if not, get rid.
 }
 
 
