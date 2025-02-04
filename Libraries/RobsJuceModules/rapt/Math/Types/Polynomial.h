@@ -447,7 +447,7 @@ public:
 
   T definiteIntegral(const T& lowerLimit, const T& upperLimit) const
   { return integralAt(upperLimit) - integralAt(lowerLimit); }
-  // maybe rename to integral
+  // maybe rename to integral or maybe area or areaBalance - but nah
 
   // -maybe rename evaluate to valueAt (or make an alias) and derivative to slopeAt
   // -also implement a valueAndSlopeAt function
