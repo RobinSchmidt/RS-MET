@@ -682,13 +682,16 @@ bool testPolynomialRootFinder()
 {
   bool testResult = true;
 
+
+
+
   // we use the polynomial p(x) = x^4 - 7x^3 + 21*x^2 - 23*x - 52 with roots at 2+3i, 2-3i, -1, 4 
   // as test function:
   double a1[5] = {-52, -23, 21, -7, 1};
   std::complex<double> r1[4];
   rsPolynomial<double>::roots(a1, 4, r1);
 
-  // now we 
+  // Now we create polynomials from random roots and then try to recover the roots from the coeffs:
   static const int maxN     = 20;
   static const int numTests = 1000;
   double range = 10.0;                // range for the real and imaginary parts of the roots

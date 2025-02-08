@@ -1164,7 +1164,9 @@ public:
   template<class R>
   static void maxSlopeMonotonic(R *a, int N);
   // rename to coeffsMaxSlopeMonotonic
-  // allocates heap memory
+  // Allocates heap memory. 
+  // ToDo: Try to re-implement this without allocations. Maybe such code already exists. Check if
+  // it's used in EngineersFilter - if so, replace with non-allocating version.
 
   // \todo for Halpern filters:
   //void jacobiPolynomial(T *a, int degree); // the U-polynomials
