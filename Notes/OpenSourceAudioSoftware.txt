@@ -328,7 +328,7 @@ https://github.com/ffAudio/foleys_gui_magic
 -This module allows to create GUIs without any coding.
 
 ----------------------------------------------------------------------------------------------------
-DSP-Libraries
+DSP Libraries
 
 Cloudseed:
 https://github.com/ValdemarOrn/CloudSeed
@@ -442,6 +442,15 @@ Midiverb Emulator:
 https://github.com/thement/midiverb_emulator
 -Emulation of the Alesis midiverb hardware effect unit.
 -See also: https://github.com/shabtronic/Midiverb-Analysis
+
+----------------------------------------------------------------------------------------------------
+FFT Libraries:
+
+PFFFT - Pretty Fast FFT:
+https://bitbucket.org/jpommier/pffft/src/master/
+-FFT for single precision float using SIMD (SSE1, Altivec, NEON).
+
+ToDo: list Ouura FFT, DustFFT, Kiss FFT, Bernsee FFT, FFTW,
 
 ----------------------------------------------------------------------------------------------------
 Research and Education Code

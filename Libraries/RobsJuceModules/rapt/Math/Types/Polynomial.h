@@ -794,7 +794,13 @@ public:
   template<class R>
   static std::complex<R> convergeToRootViaLaguerre(const std::complex<R> *a, int degree,
     std::complex<R> initialGuess = std::complex<R>(0.0, 0.0));
-  // allocates heap memory
+  // allocates heap memory...really - does it? I don't see an allocation there.
+
+  // Maybe the root finding business should go into a class rsPolynomialRootFinder. This would also
+  // help solve the porblem of roots being complex even in case of real coeffs. We could give the
+  // class two template parameters: TCoef, TRoot. This class could then also implement other 
+  // methods such as Jenkins-Traub, etc.
+
 
     /** Computes the root of the linear equation: \f[ a x + b = 0 \f] which is simply given by
   \f[ x_0 = -\frac{b}{a} \f] */

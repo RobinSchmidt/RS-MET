@@ -588,6 +588,7 @@ void rsPolynomial<T>::roots(const std::complex<R>* a, int degree, std::complex<R
   // non-deflated polynomial:
   std::complex<R>* ad = new std::complex<R>[degree+1];
   rsArrayTools::copy(a, ad, degree+1);
+  // This really needs to be a pre-allocated workspace
 
   // loop over the roots:
   for(int j = degree; j >= 1; j--)
@@ -643,6 +644,8 @@ std::complex<R> rsPolynomial<T>::convergeToRootViaLaguerre(
   static R fractions[numFractions+1] =
     { R(0.0),  R(0.5),  R(0.25), R(0.75), R(0.13), R(0.38), R(0.62), R(0.88), R(1.0) };
   // Do they intend the numbers to be multiples of 0.125 but rounded to two decimal digits?
+  // Like 0.0, 0.5, 0.25, 0.75, 0.125, 0.375, 0.625, 0.875, 1.0? But why would they round so 
+  // crudely?
 
 
   std::complex<R> r = initialGuess; // the current estimate for the root
@@ -657,7 +660,7 @@ std::complex<R> rsPolynomial<T>::convergeToRootViaLaguerre(
     // can we get rid of this? if so, we might also replace the above loop by
     // evaluatePolynomialAndDerivativesAt
 
-  // Laguerre's formulas:
+    // Laguerre's formulas:
     std::complex<R> G  = P[1]/P[0];       // Eq. 9.5.6
     std::complex<R> H  = G*G - P[2]/P[0]; // Eq. 9.5.7
     std::complex<R> sq = sqrt(R(degree-1)*(R(degree)*H-G*G)); // square-root Eq. 9.5.11
