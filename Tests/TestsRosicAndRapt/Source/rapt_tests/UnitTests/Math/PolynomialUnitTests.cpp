@@ -777,7 +777,9 @@ bool testPolynomialRootFinder()
   //// YEP - triggers the assert here as well!
   //// 
   //// See rsPlotPolyRootTrajectory(), rsComputeRootTrajectory() in Experiments.cpp in the research 
-  //// repo. Flushing the tiny coeffs to zero there fixed it. 
+  //// repo. Flushing the tiny coeffs to zero there fixed it. I tried rounding them to just one
+  //// significant digit, e.g. a[1] to -5.e-16 + i*2.e-16 and so on (just to make the code here 
+  //// less ugly). That also fixes the problem. That is strange!
 
 
 
