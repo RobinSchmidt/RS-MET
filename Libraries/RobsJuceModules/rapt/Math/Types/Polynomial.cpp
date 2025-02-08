@@ -198,19 +198,19 @@ template<class R>
 R rsPolynomial<T>::evaluateWithTwoDerivativesAndError(
   const std::complex<R>* a, int degree, std::complex<R> z, std::complex<R>* P)
 {
-  R zeroR               = rsZeroValue(real(a[0]));
-  std::complex<R> zeroC = rsZeroValue(a[0]);
-  P[0] = a[degree];    // P(z)
-  P[1] = zeroC;        // P'(z)
-  P[2] = zeroC;        // P''(z)
-  R err = rsAbs(P[0]); // estimated roundoff error in evaluation of the polynomial
-  R zA  = rsAbs(z);    // absolute value of z
+  R zeroR = rsZeroValue(real(a[0]));          // Real zero
+  std::complex<R> zeroC = rsZeroValue(a[0]);  // Complex zero
+  P[0] = a[degree];                           // P(z)
+  P[1] = zeroC;                               // P'(z)
+  P[2] = zeroC;                               // P''(z)
+  R err = rsAbs(P[0]);                        // Estimated roundoff error in evaluation
+  R zA  = rsAbs(z);                           // Absolute value of z
   for(int j = degree-1; j >= 0; j--) {
     P[2] = z * P[2] + P[1];
     P[1] = z * P[1] + P[0];
     P[0] = z * P[0] + a[j];
     err  = abs(P[0]) + zA*err; }
-  P[2] *= rsIntValue(2, zeroR);  // P[2] *= 2
+  P[2] *= rsIntValue(2, zeroR);               // P[2] *= 2
   return err;
 }
 
@@ -654,11 +654,14 @@ std::complex<R> rsPolynomial<T>::convergeToRootViaLaguerre(
     std::complex<R> P[3];    // holds P, P', P''
     R  err = eps * evaluateWithTwoDerivativesAndError(a, degree, r, P);
 
+    // Check the "simplified stopping criterion due to Adams", referred to on page 373 (in 
+    // Numerical recipies in C (2nd Ed.), I guess? Document this!):
     if(abs(P[0]) <= err)
       return r;
-    // "simplified stopping criterion due to Adams", referred to on page 373 (?)
-    // can we get rid of this? if so, we might also replace the above loop by
-    // evaluatePolynomialAndDerivativesAt
+    // Can we get rid of this? If so, we might also replace the above call by
+    // evaluatePolynomialAndDerivativesAt. But no! It seems to be important to do this test. We 
+    // return here often in the unit tests.
+
 
     // Laguerre's formulas:
     std::complex<R> G  = P[1]/P[0];       // Eq. 9.5.6
@@ -667,7 +670,7 @@ std::complex<R> rsPolynomial<T>::convergeToRootViaLaguerre(
     std::complex<R> Gp = G + sq;  // denominator in 9.5.11 with positive sign for square-root
     std::complex<R> Gm = G - sq;  // denominator in 9.5.11 with negative sign for square-root
 
-    // choose Gp or Gm according to which has larger magnitude (page 372, bottom), re-use Gp for
+    // Choose Gp or Gm according to which has larger magnitude (page 372, bottom), re-use Gp for
     // the result:
     R GpA = abs(Gp);
     R GmA = abs(Gm);
@@ -677,22 +680,26 @@ std::complex<R> rsPolynomial<T>::convergeToRootViaLaguerre(
       GpA = GmA;
     }
 
-    // compute difference between old and new estimate for the root r (the 'a' variable in
+    // Compute difference between old and new estimate for the root r (the 'a' variable in
     // Eq. 9.5.8)
     std::complex<R> dr;
     if(GpA > 0.0)
       dr = std::complex<R>(R(degree), 0.0) / Gp;  // Eq. 9.5.11
     else
       dr = exp(log(R(1)+abs(r))) * std::complex<R>(cos((R)i), sin((R)i));
-    // \todo use sinCos() or std::polar
+    // ToDo: use sinCos() or std::polar, maybe the call to log(1+abs(r)) should be replaced with
+    // log1p(abs(r)), see: https://en.cppreference.com/w/cpp/numeric/math
 
-    // compute new estimate for the root:
+    // Compute new estimate for the root:
     std::complex<R> rNew = r - dr;
+
+
+    // Check convergence criterion:
     if(r == rNew)
       return r;  // Converged  
       // Maybe exact equality comparison is too strict here. Maybe we should compare abs(dr) to
       // abs(r) and if their ratio is below the machine epsilon, we consider it converged. But that
-      // may be the same thing as doing the excat comparison after subtraction. Maybe we should 
+      // may be the same thing as doing the exact comparison after subtraction. Maybe we should 
       // already consider it converged when abs(dr)/abs(r) is a bit above the epsilon. It seems 
       // that in our current unit tests, we never really return from here anyway. We always hit 
       // the "simplified stopping criterion due to Adams" return statement above. So, so far, this
