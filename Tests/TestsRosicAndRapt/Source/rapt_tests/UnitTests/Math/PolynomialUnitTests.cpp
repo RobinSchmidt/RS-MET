@@ -710,14 +710,14 @@ bool testPolynomialRootFinder()
   Complex rTrue[maxN];                // True roots
   Complex rFound[maxN];               // Roots that were found
   rsRandomUniform(-range, range, 0);  // Set seed for random number generator.
-  int i, j, k;
-  for(i = 1; i <= numTests; i++) 
+  //int i, j, k;
+  for(int i = 1; i <= numTests; i++) 
   {
     // Polynomial degree for this test:
     int N = (int) rsRandomUniform(1.0, maxN);
 
     // Generate a bunch of random roots:
-    for(k = 0; k < N; k++) {
+    for(int k = 0; k < N; k++) {
       rTrue[k].real(rsRandomUniform(-range, range));
       rTrue[k].imag(rsRandomUniform(-range, range)); }
 
@@ -728,10 +728,10 @@ bool testPolynomialRootFinder()
     PolyR::roots(a, N, rFound);
 
     // Try to find a matching root in the found roots for each of the true roots:
-    for(j = 0; j < N; j++) 
+    for(int j = 0; j < N; j++) 
     {
       bool matchFound = false;
-      for(k = 0; k < N; k++) 
+      for(int k = 0; k < N; k++) 
       {
         if( abs(rFound[j]-rTrue[k]) < tol ) 
         {
@@ -759,16 +759,26 @@ bool testPolynomialRootFinder()
 
 
 
-  // Test  -2.5393 + x^8  which is a case which seemed to cause a problem in an experiment in the
-  // research repo:
   AT::fillWithZeros(a, maxN+1);
-  a[0] = -2.5393066406250000; a[8] = 1;
-  PolyR::roots(a, 8, rFound);
-  // Hmm - here its seems to work fine...the case is not exactly the same, though. See
-  // rsPlotPolyRootTrajectory(), rsComputeRootTrajectory() in Experiments.cpp in the research repo.
-  // The actual polynomial there had tiny nonzero coeffs and flushing them to zero there fixed it. 
-  // We really should reproduce this behavior here. Maybe copy the actual coeffs (before flushing 
-  // to zero) from there over here.
+  Complex i(0, 1);
+
+
+  //// Test with a case which caused a problem in an experiment in the research repo:
+  //a[0] = -2.5393066406250000     + i*1.7347234759768071e-15;
+  //a[1] = -5.0653925498522767e-16 + i*2.0816681711721685e-16;
+  //a[2] =  2.1857515797307769e-16 + i*3.8857805861880479e-16;
+  //a[3] =  7.6327832942979512e-17 - i*5.5511151231257827e-16;
+  //a[4] = -1.6653345369377348e-16 + i*5.9674487573602164e-16;
+  //a[5] =  8.6736173798840355e-16 - i*3.4694469519536142e-16;
+  //a[6] =                         - i*2.9143354396410359e-16;
+  //a[7] =  5.4817261840867104e-16 + i*1.8041124150158794e-16;
+  //a[8] =  1;
+  //PolyR::roots(a, 8, rFound);
+  //// YEP - triggers the assert here as well!
+  //// 
+  //// See rsPlotPolyRootTrajectory(), rsComputeRootTrajectory() in Experiments.cpp in the research 
+  //// repo. Flushing the tiny coeffs to zero there fixed it. 
+
 
 
 
