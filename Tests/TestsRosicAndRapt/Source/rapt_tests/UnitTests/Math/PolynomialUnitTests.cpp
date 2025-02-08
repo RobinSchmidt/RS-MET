@@ -689,14 +689,17 @@ bool testPolynomialRootFinder()
   using Real    = double;
   using Complex = std::complex<Real>;
   using PolyR   = rsPolynomial<Real>;
+  using AT      = rsArrayTools;
 
 
   // We use the polynomial p(x) = x^4 - 7x^3 + 21*x^2 - 23*x - 52 with roots at 2+3i, 2-3i, -1, 4 
   // as test function:
-  Real a1[5] = {-52, -23, 21, -7, 1};
-  Complex r1[4];
-  PolyR::roots(a1, 4, r1);
+  //Real a1[5] = {-52, -23, 21, -7, 1};
+  //Complex r1[4];
+  //PolyR::roots(a1, 4, r1);
   // ToDo: Check the roots! But they may be in any order, so that's not so straightforward.
+
+
 
   // Now we create polynomials from random roots and then try to recover the roots from the coeffs:
   static const int maxN     = 20;
@@ -746,16 +749,33 @@ bool testPolynomialRootFinder()
 
   }
 
-  // we need a rather high tolerance - the precision of the root finding algorithm seems to be not 
-  // very good - can it be improved? Setting tol to 1.e-9 triggers the assert - and it
-  // maybe by performing one or two steps of newton iteration...but
-  // actually, the algo already does this "polishing" thing
+  // We need a rather high tolerance - the precision of the root finding algorithm seems to be not 
+  // very good - can it be improved? Setting tol to 1.e-9 triggers the assert. Maybe by performing 
+  // one or two steps of Newton iteration can improve it? But actually, the algo already does this
+  // "root polishing" thing, so I don't think, we can get any more precision out of it. Maybe we 
+  // should use a relative tolerance - relative ot the maximum absolute coefficient value. The 
+  // coeffs may become rather large. Especially for the polynomials with high degree.
+
+
+
+
+  // Test  -2.5393 + x^8  which is a case which seemed to cause a problem in an experiment in the
+  // research repo:
+  AT::fillWithZeros(a, maxN+1);
+  a[0] = -2.5393066406250000; a[8] = 1;
+  PolyR::roots(a, 8, rFound);
+  // Hmm - here its seems to work fine...the case is not exactly the same, though. See
+  // rsPlotPolyRootTrajectory(), rsComputeRootTrajectory() in Experiments.cpp in the research repo.
+  // The actual polynomial there had tiny nonzero coeffs and flushing them to zero there fixed it. 
+  // We really should reproduce this behavior here. Maybe copy the actual coeffs (before flushing 
+  // to zero) from there over here.
+
 
 
   // try with p(x) = 27 + 9*x - 3*x^2 - 1*x^3 = -(x+3)^2 * (x-3). this has simple root at +3 and a 
   // double root at -3
-  a[0] = 27, a[1] = 9, a[2] = -3, a[3] = -1;
-  PolyR::roots(a, 3, rFound);
+  //a[0] = 27, a[1] = 9, a[2] = -3, a[3] = -1;
+  //PolyR::roots(a, 3, rFound);
   // the double-root at -3 is found as: -3.0000000215539959, -2.9999999784460041 - this seems like
   // a very bad precision - can it be improved by more/better polishing? what happens, if we try
   // Netwon iteration? it will probably not work, because this is a double-root:
