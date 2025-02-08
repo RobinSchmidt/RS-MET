@@ -689,17 +689,31 @@ std::complex<R> rsPolynomial<T>::convergeToRootViaLaguerre(
     // compute new estimate for the root:
     std::complex<R> rNew = r - dr;
     if(r == rNew)
-      return r;  // converged
+      return r;  // Converged  
+      // Maybe exact equality comparison is too strict here. Maybe we should compare abs(dr) to
+      // abs(r) and if their ratio is below the machine epsilon, we consider it converged. But that
+      // may be the same thing as doing the excat comparison after subtraction. Maybe we should 
+      // already consider it converged when abs(dr)/abs(r) is a bit above the epsilon. It seems 
+      // that in our current unit tests, we never really return from here anyway. We always hit 
+      // the "simplified stopping criterion due to Adams" return statement above. So, so far, this
+      // code here doesn't even have test coverage. 
 
-    // update our r-variable to the new estimate:
+
+    // Update our r-variable to the new estimate:
     if(i % itsBeforeFracStep != 0)
       r = rNew;
     else
-      r = r - fractions[i/itsBeforeFracStep]*dr; // fractional step to break limit cycle
+      r = r - fractions[i/itsBeforeFracStep]*dr; // Fractional step to break limit cycle
   }
 
+
   rsError("Too many iterations taken, algorithm did not converge.");
-  return 0.0;
+  //return r;      // New
+  return 0.0;  // Old
+  // Maybe we should return r anyway? Sometimes we seem to reach this point but maybe we have 
+  // actually converged to a meaningful value and it just took too long because our convergence
+  // criteria were too strict? Maybe we should add a sanity check: evaluate the polynomial at the 
+  // root and check that it's close to zero.
 }
 
 template<class T>

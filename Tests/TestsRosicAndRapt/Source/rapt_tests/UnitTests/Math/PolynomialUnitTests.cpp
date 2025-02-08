@@ -757,13 +757,13 @@ bool testPolynomialRootFinder()
   // coeffs may become rather large. Especially for the polynomials with high degree.
 
 
-
+  // After the tests with random polynomials, we now do some tests with specific polynomials:
 
   AT::fillWithZeros(a, maxN+1);
   Complex i(0, 1);
 
 
-  //// Test with a case which caused a problem in an experiment in the research repo:
+  ////// A case which triggered an assert in an experiment in the research repo:
   //a[0] = -2.5393066406250000     + i*1.7347234759768071e-15;
   //a[1] = -5.0653925498522767e-16 + i*2.0816681711721685e-16;
   //a[2] =  2.1857515797307769e-16 + i*3.8857805861880479e-16;
@@ -774,12 +774,14 @@ bool testPolynomialRootFinder()
   //a[7] =  5.4817261840867104e-16 + i*1.8041124150158794e-16;
   //a[8] =  1;
   //PolyR::roots(a, 8, rFound);
-  //// YEP - triggers the assert here as well!
-  //// 
-  //// See rsPlotPolyRootTrajectory(), rsComputeRootTrajectory() in Experiments.cpp in the research 
-  //// repo. Flushing the tiny coeffs to zero there fixed it. I tried rounding them to just one
-  //// significant digit, e.g. a[1] to -5.e-16 + i*2.e-16 and so on (just to make the code here 
-  //// less ugly). That also fixes the problem. That is strange!
+  ////// YEP - triggers the assert here as well!
+  ////// 
+  ////// See rsPlotPolyRootTrajectory(), rsComputeRootTrajectory() in Experiments.cpp in the research 
+  ////// repo. Flushing the tiny coeffs to zero there fixed it. I tried rounding them to just one
+  ////// significant digit, e.g. a[1] to -5.e-16 + i*2.e-16 and so on (just to make the code here 
+  ////// less ugly). That also fixes the problem. That is very strange! I think, it might be a 
+  ////// problem with using an exact float comparison as convergence criterion in 
+  ////// rsPolynomial<T>::convergeToRootViaLaguerre(). See comment there.
 
 
 
