@@ -705,6 +705,10 @@ std::complex<R> rsPolynomial<T>::convergeToRootViaLaguerre(
       // the "simplified stopping criterion due to Adams" return statement above. So, so far, this
       // code here doesn't even have test coverage. 
 
+    //// New - experimental:
+    //if(abs(dr) <= 2*eps*abs(rNew))  // Factor 2 was chosen ad hoc
+    //  return rNew;
+
 
     // Update our r-variable to the new estimate:
     if(i % itsBeforeFracStep != 0)
@@ -714,13 +718,19 @@ std::complex<R> rsPolynomial<T>::convergeToRootViaLaguerre(
   }
 
 
+  // Old:
   rsError("Too many iterations taken, algorithm did not converge.");
-  //return r;      // New
-  return 0.0;  // Old
+  return 0.0;
+
+  //// New:
+  //rsWarning("Too many iterations taken, algorithm did not converge.");
+  //return r;
+
   // Maybe we should return r anyway? Sometimes we seem to reach this point but maybe we have 
   // actually converged to a meaningful value and it just took too long because our convergence
   // criteria were too strict? Maybe we should add a sanity check: evaluate the polynomial at the 
-  // root and check that it's close to zero.
+  // root and check that it's close to zero. I tend to think that when we end up here, the value of
+  // r may be meaningless garbage. ...more tests needed!
 }
 
 template<class T>
