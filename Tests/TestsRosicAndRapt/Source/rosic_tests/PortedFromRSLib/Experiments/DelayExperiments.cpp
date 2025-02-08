@@ -297,6 +297,8 @@ void twoPoleAllpassDelay()
 
 void dampedCombFilter()
 {
+  // Under construction....
+
   using Real = double;
   using Comb = rsDampedCombFilter<Real, Real, Real>;
 

@@ -678,53 +678,72 @@ bool testPolynomialInterpolation()
 // todo: test the different algorithms (Vandermonde-matrix, Lagrange, Newton) to see, if they give 
 // the same results
 
+//template<class T>
+//bool rs
+
+
 bool testPolynomialRootFinder()
 {
   bool testResult = true;
 
+  using Real    = double;
+  using Complex = std::complex<Real>;
+  using PolyR   = rsPolynomial<Real>;
 
 
-
-  // we use the polynomial p(x) = x^4 - 7x^3 + 21*x^2 - 23*x - 52 with roots at 2+3i, 2-3i, -1, 4 
+  // We use the polynomial p(x) = x^4 - 7x^3 + 21*x^2 - 23*x - 52 with roots at 2+3i, 2-3i, -1, 4 
   // as test function:
-  double a1[5] = {-52, -23, 21, -7, 1};
-  std::complex<double> r1[4];
-  rsPolynomial<double>::roots(a1, 4, r1);
+  Real a1[5] = {-52, -23, 21, -7, 1};
+  Complex r1[4];
+  PolyR::roots(a1, 4, r1);
+  // ToDo: Check the roots! But they may be in any order, so that's not so straightforward.
 
   // Now we create polynomials from random roots and then try to recover the roots from the coeffs:
   static const int maxN     = 20;
   static const int numTests = 1000;
-  double range = 10.0;                // range for the real and imaginary parts of the roots
-  double tol   = 5.e-8;               // tolerance
-  std::complex<double> a[maxN+1];     // polynomial coefficients
-  std::complex<double> rTrue[maxN];   // true roots
-  std::complex<double> rFound[maxN];  // roots that were found
-  rsRandomUniform(-range, range, 0);  // set seed
+  Real    range = 10.0;               // Range for the real and imaginary parts of the roots
+  Real    tol   = 5.e-8;              // Tolerance
+  Complex a[maxN+1];                  // Polynomial coefficients
+  Complex rTrue[maxN];                // True roots
+  Complex rFound[maxN];               // Roots that were found
+  rsRandomUniform(-range, range, 0);  // Set seed for random number generator.
   int i, j, k;
-  for(i = 1; i <= numTests; i++) {
-    // polynomial degree for this test:
+  for(i = 1; i <= numTests; i++) 
+  {
+    // Polynomial degree for this test:
     int N = (int) rsRandomUniform(1.0, maxN);
 
-    // generate a bunch of random roots:
+    // Generate a bunch of random roots:
     for(k = 0; k < N; k++) {
       rTrue[k].real(rsRandomUniform(-range, range));
       rTrue[k].imag(rsRandomUniform(-range, range)); }
 
-    // obtain polynomial coeffs:
-    rsPolynomial<double>::rootsToCoeffs(rTrue, a, N);
+    // Obtain polynomial coeffs from roots:
+    PolyR::rootsToCoeffs(rTrue, a, N);
 
-    // find the roots:
-    rsPolynomial<double>::roots(a, N, rFound);
+    // Find the roots from the coeffs:
+    PolyR::roots(a, N, rFound);
 
-    // try to find a matching root in the found roots for each of the true roots:
-    for(j = 0; j < N; j++) {
+    // Try to find a matching root in the found roots for each of the true roots:
+    for(j = 0; j < N; j++) 
+    {
       bool matchFound = false;
-      for(k = 0; k < N; k++) {
-        if( abs(rFound[j]-rTrue[k]) < tol ) {
-          matchFound = true; break; }}
+      for(k = 0; k < N; k++) 
+      {
+        if( abs(rFound[j]-rTrue[k]) < tol ) 
+        {
+          matchFound = true; 
+          break; 
+        }
+      }
       rsAssert(matchFound);
       testResult &= matchFound; 
     }
+    // ToDo: factor out a function that checks any entry in one array for a matching entry in
+    // another array. We already have rsIsPermutation() which seems to be the right thing. Maybe
+    // use that. But maybe we need to tweak the API to be able to use it here.
+
+
   }
 
   // we need a rather high tolerance - the precision of the root finding algorithm seems to be not 
@@ -736,7 +755,7 @@ bool testPolynomialRootFinder()
   // try with p(x) = 27 + 9*x - 3*x^2 - 1*x^3 = -(x+3)^2 * (x-3). this has simple root at +3 and a 
   // double root at -3
   a[0] = 27, a[1] = 9, a[2] = -3, a[3] = -1;
-  rsPolynomial<double>::roots(a, 3, rFound);
+  PolyR::roots(a, 3, rFound);
   // the double-root at -3 is found as: -3.0000000215539959, -2.9999999784460041 - this seems like
   // a very bad precision - can it be improved by more/better polishing? what happens, if we try
   // Netwon iteration? it will probably not work, because this is a double-root:

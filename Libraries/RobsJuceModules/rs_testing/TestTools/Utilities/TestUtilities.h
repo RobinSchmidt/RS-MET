@@ -416,6 +416,12 @@ bool rsIsPermutation(const std::vector<T>& x, const std::vector<T>& y, T tol)
       return false;
     done[j] = true;  }
   return true;
+
+  // ToDo: Document the algorithm. I think, we iterate through all entries of x and try to find a 
+  // matching entry in y. But we count only those elements of y that were not yet "used up" by a
+  // previous iteration. That lets the algorithm do the right thing also in case on arrays in 
+  // which the same entry may occurr more than once - I think. Check, if we have unit tests for 
+  // this function, too. If not, write some.
 }
 
 
