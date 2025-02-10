@@ -4,7 +4,7 @@
 /** This is a slewrate limiter with user adjustable attack and release time constants.... */
 
 template<class TSig, class TPar>
-class rsSlewRateLimiterLinear
+class rsSlewRateLimiterLinear      // Maybe rename to rsSlopeLimiter
 {
 
 public:
