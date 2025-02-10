@@ -983,78 +983,17 @@ bool testPolynomialBaseChange()
   return testResult;
 }
 
-void rsPowersToChebychev(double *a, double *b, int N)
-{
-  rsArrayTools::fillWithZeros(b, N+1);
-  double tmp, tmp2;         // temporary values
-  int k, i;                 // loop indices
-  int s = 0;                // recursion stage
-  b[0] = a[N];
-  b[1] = a[N-1];
-  for(k = N-2; k >= 0; k--)
-  {
-    s++;
-    tmp  = b[0];
-    b[0] = a[k] + 0.5*b[1];
-    tmp2 = b[1];
-    b[1] = tmp  + 0.5*b[2];
-    tmp  = tmp2;
-    for(i = 2; i <= s-1; i++)
-    {
-      tmp2 = b[i];
-      b[i] = 0.5*(tmp + b[i+1]);
-      tmp  = tmp2;
-    }
-    tmp2   = b[i];     // i == max(s, 2) here - this is what we use in the backwards algo
-    b[i]   = 0.5*tmp;
-    b[i+1] = 0.5*tmp2;
-  }
-}
-
-void rsChebychevToPowers(double *b, double *a, int N)
-{
-  double tmp, tmp2;
-  double *bb = new double[N+1]; // use a tmp-buffer, because it will be modified
-  rsArrayTools::copy(b, bb, N+1);
-  int k, i;
-
-  // this is basically rsPowersToChebychev run backwards:
-  int s = N-1;
-  for(k = 0; k <= N-2; k++)
-  {
-    i    = rsMax(s, 2);
-    tmp2 = 2*bb[i+1];
-    tmp  = 2*bb[i];
-    for(i = s-1; i >= 2; i--)
-    {
-      tmp2 = tmp;
-      tmp  = 2*bb[i] - bb[i+1];
-      bb[i] = tmp2;
-    }
-    tmp2 = tmp;
-    tmp  = bb[1] - 0.5*bb[2];
-    bb[1] = tmp2;
-    a[k] = bb[0] - 0.5*bb[1];
-    bb[0] = tmp;
-    s--;
-  }
-  a[N-1] = bb[1];
-  //a[N]   = bb[0];                  // wrong - why?
-  a[N]   = bb[N] * rsPowInt(2, N-1); // works
-
-  delete[] bb;
-}
-
-
 bool testPowersChebychevExpansionConversion()
 {
+  // Under construction...this does not yet seem to work
+
   bool testResult = true;
 
   // We may express any polynomial P(x) as linear combination of powers of x:
   //
   //   P(x) = a0 x^0 + a1 x^1 + a2 x^2 + ... + aN x^N
   //
-  // but we may also express it as linear cobination of Chebychev polynomials:
+  // but we may also express it as linear combination of Chebychev polynomials:
   //
   //   P(x) = b0 T0(x) + b1 T1(x) + b2 T2(x) + ... + bN TN(x)
   //

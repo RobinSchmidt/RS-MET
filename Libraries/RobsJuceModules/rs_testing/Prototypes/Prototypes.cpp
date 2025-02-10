@@ -44,17 +44,87 @@ double rsEvaluateChebychevPolynomial(double x, int n)
   }
   return t0;
 }
-// move to rsPolynomial - done - ...use it everywhere and delete this here
+// Move to rsPolynomial - done - ...use it everywhere and maybe delete this here
+// I think it's in rsPolynomial::chebychevRecursive()
 
 double rsEvaluateChebychevExpansion(double x, double *a, int N)
 {
   double y = 0.0;
   for(int i = 0; i <= N; i++)
     y += a[i] * rsEvaluateChebychevPolynomial(x, i);
-  // optimize this - resuse evaluation results from previous iterations, maybe lookup Clenshaw
-  // algorithm for a generalization
+  // Optimize this. Reuse evaluation results from previous iterations, maybe lookup Clenshaw
+  // algorithm for a generalization.
   return y;
 }
+
+void rsPowersToChebychev(double *a, double *b, int N)
+{
+  rsArrayTools::fillWithZeros(b, N+1);
+  double tmp, tmp2;         // temporary values
+  int k, i;                 // loop indices
+  int s = 0;                // recursion stage
+  b[0] = a[N];
+  b[1] = a[N-1];
+  for(k = N-2; k >= 0; k--)
+  {
+    s++;
+    tmp  = b[0];
+    b[0] = a[k] + 0.5*b[1];
+    tmp2 = b[1];
+    b[1] = tmp  + 0.5*b[2];
+    tmp  = tmp2;
+    for(i = 2; i <= s-1; i++)
+    {
+      tmp2 = b[i];
+      b[i] = 0.5*(tmp + b[i+1]);
+      tmp  = tmp2;
+    }
+    tmp2   = b[i];     // i == max(s, 2) here - this is what we use in the backwards algo
+    b[i]   = 0.5*tmp;
+    b[i+1] = 0.5*tmp2;
+  }
+}
+
+void rsChebychevToPowers(double *b, double *a, int N)
+{
+  double tmp, tmp2;
+  double *bb = new double[N+1]; // use a tmp-buffer, because it will be modified
+  rsArrayTools::copy(b, bb, N+1);
+  int k, i;
+
+  // This is basically rsPowersToChebychev run backwards:
+  int s = N-1;
+  for(k = 0; k <= N-2; k++)
+  {
+    i    = rsMax(s, 2);
+    tmp2 = 2*bb[i+1];
+    tmp  = 2*bb[i];
+    for(i = s-1; i >= 2; i--)
+    {
+      tmp2 = tmp;
+      tmp  = 2*bb[i] - bb[i+1];
+      bb[i] = tmp2;
+    }
+    tmp2 = tmp;
+    tmp  = bb[1] - 0.5*bb[2];
+    bb[1] = tmp2;
+    a[k] = bb[0] - 0.5*bb[1];
+    bb[0] = tmp;
+    s--;
+  }
+  a[N-1] = bb[1];
+  //a[N]   = bb[0];                  // wrong - why?
+  a[N]   = bb[N] * rsPowInt(2, N-1); // works
+
+  delete[] bb;
+
+  // ToDo: Try to do this without a temporary array. Document the algorithm.
+}
+
+
+
+
+
 
 
 

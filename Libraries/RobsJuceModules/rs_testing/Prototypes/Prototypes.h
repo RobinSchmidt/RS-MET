@@ -57,11 +57,13 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 
 
 
-double rsEvaluateChebychevPolynomial(double x, int n);
+double rsEvaluateChebychevPolynomial(double x, int N);
+double rsEvaluateChebychevExpansion( double x, double *a, int N);
 
-double rsEvaluateChebychevExpansion(double x, double *a, int N);
-
-
+// These may still be wrong:
+void rsPowersToChebychev(double *a, double *b, int N);
+void rsChebychevToPowers(double *b, double *a, int N);
+// ToDo: rename N to degree or length - whatever it is. length == degree+1
 
 
 
