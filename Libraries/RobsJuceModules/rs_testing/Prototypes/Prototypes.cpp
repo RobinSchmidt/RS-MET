@@ -30,6 +30,34 @@
 
 using namespace RAPT;
 
+
+double rsEvaluateChebychevPolynomial(double x, int n)
+{
+  double t0 = 1.0;
+  double t1 = x;
+  double tn = 1.0;
+  for(int i = 0; i < n; i++)
+  {
+    tn = 2*x*t1 - t0;
+    t0 = t1;
+    t1 = tn;
+  }
+  return t0;
+}
+// move to rsPolynomial - done - ...use it everywhere and delete this here
+
+double rsEvaluateChebychevExpansion(double x, double *a, int N)
+{
+  double y = 0.0;
+  for(int i = 0; i <= N; i++)
+    y += a[i] * rsEvaluateChebychevPolynomial(x, i);
+  // optimize this - resuse evaluation results from previous iterations, maybe lookup Clenshaw
+  // algorithm for a generalization
+  return y;
+}
+
+
+
 double goldenRatioMethodMax(double(*p_pFunction)(double), double a, double b)
 {
   double k   = (sqrt(5.) - 1.) / 2.;

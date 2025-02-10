@@ -57,6 +57,14 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 
 
 
+double rsEvaluateChebychevPolynomial(double x, int n);
+
+double rsEvaluateChebychevExpansion(double x, double *a, int N);
+
+
+
+
+
 
 template<class T>
 rsSparsePolynomial<T> rsPowNaive(const rsSparsePolynomial<T>& p, int n)

@@ -1045,39 +1045,20 @@ void rsChebychevToPowers(double *b, double *a, int N)
   delete[] bb;
 }
 
-double rsEvaluateChebychevPolynomial(double x, int n)
-{
-  double t0 = 1.0;
-  double t1 = x;
-  double tn = 1.0;
-  for(int i = 0; i < n; i++)
-  {
-    tn = 2*x*t1 - t0;
-    t0 = t1;
-    t1 = tn;
-  }
-  return t0;
-}
-// move to rsPolynomial - done - use it everywhere and delete this here
-
-double rsEvaluateChebychevExpansion(double x, double *a, int N)
-{
-  double y = 0.0;
-  for(int i = 0; i <= N; i++)
-    y += a[i] * rsEvaluateChebychevPolynomial(x, i);
-     // optimize this - resuse evaluation results from previous iterations, maybe lookup cleshaw
-     // algorithm for a generalization
-  return y;
-}
 
 bool testPowersChebychevExpansionConversion()
 {
   bool testResult = true;
 
-  // we my express any polynomial P(x) as linear combination of powers of x:
-  // P(x) = a0 x^0 + a1 x^1 + a2 x^2 + ... + aN x^N
+  // We may express any polynomial P(x) as linear combination of powers of x:
+  //
+  //   P(x) = a0 x^0 + a1 x^1 + a2 x^2 + ... + aN x^N
+  //
   // but we may also express it as linear cobination of Chebychev polynomials:
-  // P(x) = b0 T0(x) + b1 T1(x) + b2 T2(x) + ... + bN TN(x)
+  //
+  //   P(x) = b0 T0(x) + b1 T1(x) + b2 T2(x) + ... + bN TN(x)
+  //
+  // Here, we test the functions that convert between the two representations
 
   static const int N = 5;
   //double a[N+1] = {4, 1, -8, -8, 16, 16}; // polynomial coeffs, gives the Chebychev expansion
@@ -1130,7 +1111,7 @@ bool testPowersChebychevExpansionConversion()
   //int dummy = 0;
 
   /*
-  // reverse to algorithm: loops run backwards, order of instrcutions reversed, increments become
+  // reverse the algorithm: loops run backwards, order of instructions reversed, increments become
   // decremets, left-hand sides and right-hand sides of assignments exchange roles, when the
   // right-hand side contains a combination (i.e. sum) we have to look at the equation, find which
   // values are already known at this point and solve for the unknown which becomes the new
