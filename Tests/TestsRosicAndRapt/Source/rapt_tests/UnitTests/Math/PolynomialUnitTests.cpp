@@ -1058,9 +1058,6 @@ bool testPowersChebychevExpansionConversion() // Find shorter name! maybe tesPol
       // Test the Clenshaw evaluation algo:
       yb = rsClenshaw(x, &b[0], d);
       ok &= rsIsCloseTo(ya, yb, tol);
-
-
-
     }
   }
 

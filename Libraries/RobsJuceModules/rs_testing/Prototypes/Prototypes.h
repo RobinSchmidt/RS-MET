@@ -93,7 +93,7 @@ T rsEvaluateChebychevExpansion(T x, T *a, int N)
   // https://www.sciencedirect.com/science/article/abs/pii/S0096300311006242
 }
 
-
+// Evaluates an expansion in terms of Chebychev polynomials using the Clenshaw algorithm:
 template<class T>
 T rsClenshaw(T x, T* a, int N)   // N is the degree
 {
@@ -114,10 +114,6 @@ T rsClenshaw(T x, T* a, int N)   // N is the degree
   //
   // https://insertinterestingnamehere.github.io/posts/basic-examples/
 }
-
-
-
-
 
 
 // These may still be wrong:
