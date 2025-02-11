@@ -64,7 +64,7 @@ double rsEvaluateChebychevExpansion( double x, double *a, int N);
 void rsPowersToChebychev(double *a, double *b, int N);
 void rsChebychevToPowers(double *b, double *a, int N);
 // ToDo: rename N to degree or length - whatever it is. length == degree+1
-
+// ...but these functions are kinda obsolete now anyway.
 
 
 template<class T>

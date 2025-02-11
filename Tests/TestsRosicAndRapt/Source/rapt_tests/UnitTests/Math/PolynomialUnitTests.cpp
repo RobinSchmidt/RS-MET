@@ -1017,15 +1017,22 @@ bool testPowersChebychevExpansionConversion()
   using Real = float;
   using Vec  = std::vector<Real>;
 
-  Vec a({9, 6, -10, -20, 24, 32});
+  //Vec a({9, 6, -10, -20, 24, 32});
 
-  //int deg = (int) a.size() - 1;
+  Vec a;
 
-  //rsPolyToCheby(&a[0], deg); // Maybe make a conveience function that just takes the vector a
+  //     9*x^0   +  6*x^1   - 10*x^2   - 20*x^3   + 24*x^4   + 32*x^5
+  // == 13*T0(x) + 11*T1(x) +  7*T2(x) +  5*T3(x) +  3*T4(x) +  2*T5(x)
+  a = Vec({9, 6, -10, -20, 24, 32});
+  rsPolyToCheby(a); ok &= a == Vec({13,11,7,5,3,2});
+  rsChebyToPoly(a); ok &= a == Vec({9,6,-10,-20,24,32});
 
+  //     4*x^0   + 1*x^1   - 8*x^2   -  8*x^3   + 16*x^4   + 16*x^5
+  // ==  6*T0(x) + 5*T1(x) + 4*T2(x) +  3*T3(x) +  2*T4(x) +  1*T5(x)
+  a = Vec({4, 1, -8, -8, 16, 16});
+  rsPolyToCheby(a); ok &= a == Vec({6,5,4,3,2,1});
+  rsChebyToPoly(a); ok &= a == Vec({4,1,-8,-8,16,16});
 
-  rsPolyToCheby(a);  ok &= a == Vec({13,11,7,5,3,2});
-  rsChebyToPoly(a);  ok &= a == Vec({9,6,-10,-20,24,32});
 
 
   int dummy = 0;
