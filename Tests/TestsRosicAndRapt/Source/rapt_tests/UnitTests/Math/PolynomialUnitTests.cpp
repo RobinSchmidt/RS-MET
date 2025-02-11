@@ -1002,40 +1002,42 @@ bool testPowersChebychevExpansionConversion() // Find shorter name! maybe tesPol
   using Vec  = std::vector<Real>;
   using Poly = rsPolynomial<Real>;
 
-  Vec a;
-
-  //     9*x^0   +  6*x^1   - 10*x^2   - 20*x^3   + 24*x^4   + 32*x^5
-  // == 13*T0(x) + 11*T1(x) +  7*T2(x) +  5*T3(x) +  3*T4(x) +  2*T5(x)
-  a = Vec({9, 6, -10, -20, 24, 32});
-  a = rsPolyToCheby(a); ok &= a == Vec({13,11,7,5,3,2});
-  a = rsChebyToPoly(a); ok &= a == Vec({9,6,-10,-20,24,32});
-
-  //     4*x^0   + 1*x^1   - 8*x^2   -  8*x^3   + 16*x^4   + 16*x^5
-  // ==  6*T0(x) + 5*T1(x) + 4*T2(x) +  3*T3(x) +  2*T4(x) +  1*T5(x)
-  a = Vec({4, 1, -8, -8, 16, 16});
-  a = rsPolyToCheby(a); ok &= a == Vec({6,5,4,3,2,1});
-  a = rsChebyToPoly(a); ok &= a == Vec({4,1,-8,-8,16,16});
-
-
-
-
-  // Helper function:
-  auto randomCoeffs = [](int degree, int seed)
+  // Some tests with manually created polynomial coefficient arrays with known Chebychev 
+  // representations:
   {
-    return rsRandomVector(degree+1, Real(-5), Real(+5), seed);
+    Vec a;
+
+    //     9*x^0   +  6*x^1   - 10*x^2   - 20*x^3   + 24*x^4   + 32*x^5
+    // == 13*T0(x) + 11*T1(x) +  7*T2(x) +  5*T3(x) +  3*T4(x) +  2*T5(x)
+    a = Vec({ 9, 6, -10, -20, 24, 32 });
+    a = rsPolyToCheby(a); ok &= a == Vec({ 13,11,7,5,3,2 });
+    a = rsChebyToPoly(a); ok &= a == Vec({ 9,6,-10,-20,24,32 });
+
+    //     4*x^0   + 1*x^1   - 8*x^2   -  8*x^3   + 16*x^4   + 16*x^5
+    // ==  6*T0(x) + 5*T1(x) + 4*T2(x) +  3*T3(x) +  2*T4(x) +  1*T5(x)
+    a = Vec({ 4, 1, -8, -8, 16, 16 });
+    a = rsPolyToCheby(a); ok &= a == Vec({ 6,5,4,3,2,1 });
+    a = rsChebyToPoly(a); ok &= a == Vec({ 4,1,-8,-8,16,16 });
+  }
+
+
+  // Helper function to create random polynomial coeffs:
+  auto randomCoeffs = [](int degree, int seed)
+  { 
+    return rsRandomVector(degree+1, Real(-5), Real(+5), seed); 
   };
 
-  // Create a bunch of random polynomials and convert then to the Chebychev basis and back and
+  // Create a bunch of random polynomials and convert them to the Chebychev basis and back and
   // evaulate them in both bases and compare results:
-  int minDegree =  0;
-  int maxDegree = 10;
-  int numTests  =  5;
-  Real tol = 1.e-6;
+  int minDegree =  0;    // Minimum degree to test
+  int maxDegree = 10;    // Maximum degree to test
+  int numTests  =  5;    // Number of test cases per degree
+  Real tol = 1.e-6;      // Error tolerance
   for(int d = minDegree; d <= maxDegree; d++) 
   {
     for(int i = 0; i < numTests; i++)
     {
-      // Create vector of random coeffs:
+      // Create vector of random polynomial coeffs:
       Vec a = randomCoeffs(d, i);
 
       // Convert to Chebychev basis:
@@ -1047,28 +1049,21 @@ bool testPowersChebychevExpansionConversion() // Find shorter name! maybe tesPol
       // Check, if monomial -> cheby -> monomial roundtrip worked:
       ok &= rsIsCloseTo(c, a, tol);
 
-      // Evaluate polynomial in monomial and (naively) in Chebychev basis at some given x:
+      // Evaluate polynomial in monomial basis at some given x:
       Real x = 0.3254;
       Real ya = Poly::evaluate(x, &a[0], d);
-      Real yb = rsEvaluateChebychevExpansion(x, &b[0], d);
 
-      // Check if both evaluations gave the same result:
+      // Evaluate it in Chebychev basis naively and check result:
+      Real yb = rsEvalChebyExpansionNaive(x, &b[0], d);
       ok &= rsIsCloseTo(ya, yb, tol);
 
-      // Test the Clenshaw evaluation algo:
-      yb = rsClenshaw(x, &b[0], d);
+      // Evaluate it in Chebychev basis efficiently via Clenshaw algo and check result:
+      yb = rsEvalChebyExpansion(x, &b[0], d);
       ok &= rsIsCloseTo(ya, yb, tol);
     }
   }
 
-
-
   return ok;
-
-  // ToDo:
-  //
-  // - Test some different degrees. This should also include 0 and 1 and maybe invalid negative 
-  //   degrees
 }
 
 

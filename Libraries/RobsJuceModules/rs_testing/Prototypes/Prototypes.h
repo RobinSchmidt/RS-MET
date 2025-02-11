@@ -74,7 +74,7 @@ T rsEvaluateChebychevPolynomial(T x, int n)
 // I think it's in rsPolynomial::chebychevRecursive()
 
 template<class T>
-T rsEvaluateChebychevExpansion(T x, T *a, int N)
+T rsEvalChebyExpansionNaive(T x, T *a, int N)
 {
   T y = 0.0;
   for(int i = 0; i <= N; i++)
@@ -92,10 +92,11 @@ T rsEvaluateChebychevExpansion(T x, T *a, int N)
   // https://math.stackexchange.com/questions/784093/numerical-evaluation-of-polynomials-in-chebyshev-basis
   // https://www.sciencedirect.com/science/article/abs/pii/S0096300311006242
 }
+// Rename to rsEvalChebyExpansionNaive
 
-// Evaluates an expansion in terms of Chebychev polynomials using the Clenshaw algorithm:
+/** Evaluates an expansion in terms of Chebychev polynomials using the Clenshaw algorithm. */
 template<class T>
-T rsClenshaw(T x, T* a, int N)   // N is the degree
+T rsEvalChebyExpansion(T x, T* a, int N)   // N is the degree
 {
   rsAssert(N >= 0, "Invalid degree in rsClenshaw");
   if(N == 0)
@@ -115,6 +116,7 @@ T rsClenshaw(T x, T* a, int N)   // N is the degree
   //
   // https://insertinterestingnamehere.github.io/posts/basic-examples/
 }
+// Rename to rsEvalChebyExpansion
 
 
 // These may still be wrong:
@@ -130,6 +132,7 @@ void rsChebychevToPowers(double *b, double *a, int N);
 // Maybe rename that to newtonToMonomial and call the Chebychev conversion functions 
 // monomialToCheby, chebyToMonomial - or monomToCheby/chebyToMonom
 
+/** Converts polynomial coeffs from monomial basis to Chebychev basis. */
 template<class T>
 void rsPolyToCheby(T* coeffs, int degree)
 {
@@ -148,12 +151,13 @@ void rsPolyToCheby(T* coeffs, int degree)
   }
 }
 
+/** Converts polynomial coeffs from Chebychev basis to monomial basis. */
 template<class T>
 void rsChebyToPoly(T* coeffs, int degree)
 {
   if(degree <= 1)
     return;
-  T s = 1;
+  T s = T(1);
   for(int i = 0; i <= degree-2; i++)
   {
     for(int j = degree-2; j >= i; j--)
