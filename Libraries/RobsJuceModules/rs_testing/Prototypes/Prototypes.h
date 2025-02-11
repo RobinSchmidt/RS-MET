@@ -95,22 +95,20 @@ T rsEvaluateChebychevExpansion(T x, T *a, int N)
 
 
 template<class T>
-T rsClenshaw(T x, T* a, int N)
+T rsClenshaw(T x, T* a, int N)   // N is the degree
 {
+  rsAssert(N >= 0);
+  if(N == 0)
+    return a[0];
 
   T c0 = a[N-1], c1 = a[N];
-
   for(int i = 2; i <= N; i++)
   {
     T tmp = c0;
     c0 = a[N-i] - c1;
     c1 = tmp + T(2)*c1*x;
   }
-
   return c0 + c1 * x;
-
-  // ToDo: rename t to x, get rid of e or rename to L, Make it work von N = 0,1
-
 
   // Adapted from:
   //

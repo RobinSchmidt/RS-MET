@@ -1027,7 +1027,7 @@ bool testPowersChebychevExpansionConversion() // Find shorter name! maybe tesPol
 
   // Create a bunch of random polynomials and convert then to the Chebychev basis and back and
   // evaulate them in both bases and compare results:
-  int minDegree =  1;
+  int minDegree =  0;
   int maxDegree = 10;
   int numTests  =  5;
   Real tol = 1.e-6;
