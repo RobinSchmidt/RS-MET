@@ -83,6 +83,27 @@ void rsPowersToChebychev(double *a, double *b, int N)
     b[i]   = 0.5*tmp;
     b[i+1] = 0.5*tmp2;
   }
+
+
+  // See:
+  //
+  // https://mathematica.stackexchange.com/questions/59089/convert-polynomial-to-chebyshev
+  // https://mathematica.stackexchange.com/questions/13645/small-issue-with-chebyshev-derivative-approximation/13681#13681
+  // https://math.stackexchange.com/questions/4138249/converting-chebyshev-expansion-into-a-regular-polynomial
+  // https://dl.acm.org/doi/10.1145/355611.362548
+  // https://math.stackexchange.com/questions/1326311/inverse-chebyshev-recurrence
+  //
+  // https://www.netlib.org/math/docpdf/ch11-03.pdf  
+  // Documentation of routines SCONCM, SCONMC
+  // https://netlib.org/math/mathc90/sconcm.c
+  // https://netlib.org/math/mathc90/sconmc.c
+  // 
+  //
+  // https://www.geeksforgeeks.org/python-numpy-convert-a-polynomial-to-a-chebyshev-series/
+  // https://numpy.org/doc/stable/reference/generated/numpy.polynomial.chebyshev.poly2cheb.html
+  // https://numpy.org/doc/stable/reference/generated/numpy.polynomial.chebyshev.cheb2poly.html#numpy.polynomial.chebyshev.cheb2poly
+  // https://github.com/numpy/numpy/blob/v2.2.0/numpy/polynomial/chebyshev.py#L347-L394
+
 }
 
 void rsChebychevToPowers(double *b, double *a, int N)
@@ -119,6 +140,8 @@ void rsChebychevToPowers(double *b, double *a, int N)
   delete[] bb;
 
   // ToDo: Try to do this without a temporary array. Document the algorithm.
+  // 
+  // https://github.com/numpy/numpy/blob/v2.2.0/numpy/polynomial/chebyshev.py#L397-L455
 }
 
 

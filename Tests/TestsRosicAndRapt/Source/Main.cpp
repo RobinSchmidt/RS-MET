@@ -335,7 +335,8 @@ int main(int argc, char* argv[])
   //shiftPolynomial();
   ////void stretchPolynomial();             // commented in header
   //monotonicPolynomials();
-  //mixedPolynomialRoots();
+  mixedPolynomialRoots();
+
   //parametricBell();
   //partialFractionExpansion();
   //partialFractionExpansion2();
