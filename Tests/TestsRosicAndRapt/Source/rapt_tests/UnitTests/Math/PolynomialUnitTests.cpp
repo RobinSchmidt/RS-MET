@@ -1019,7 +1019,7 @@ bool testPowersChebychevExpansionConversion()
 
   Vec a({9, 6, -10, -20, 24, 32});
 
-  int deg = (int) a.size() + 1;
+  int deg = (int) a.size() - 1;
 
   rsPolyToCheby(&a[0], deg); // Maybe make a conveience function that just takes the vector a
 
