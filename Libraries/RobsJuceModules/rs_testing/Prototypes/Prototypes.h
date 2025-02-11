@@ -97,11 +97,12 @@ T rsEvaluateChebychevExpansion(T x, T *a, int N)
 template<class T>
 T rsClenshaw(T x, T* a, int N)   // N is the degree
 {
-  rsAssert(N >= 0);
+  rsAssert(N >= 0, "Invalid degree in rsClenshaw");
   if(N == 0)
     return a[0];
 
-  T c0 = a[N-1], c1 = a[N];
+  T c0 = a[N-1];
+  T c1 = a[N];
   for(int i = 2; i <= N; i++)
   {
     T tmp = c0;
@@ -183,6 +184,24 @@ std::vector<T> rsChebyToPoly(const std::vector<T>& coeffs)
   rsChebyToPoly(&r[0], (int) r.size() - 1);
   return r;
 }
+
+// Idea:
+//
+// Does it make any sense to convert the polynomials in digital filter transfer functions into
+// Chebychev form and then implement the filter in that form? How would that even work? Maybe
+// for a 5th order FIR that would normally look like (with x0 = input):
+//
+//   y = b0*x0 + b1*x1 + b2*x2 + b3*x3 + b4*x4 + b5*x5;
+//   x5 = x4; x4 = x3; x3 = x2; x2 = x1; x1 = x0;
+//
+// would translate to something like (with T0 = input):
+//
+//   y = b0*T0 + b1*T1 + b2*T2 + b3*T3 + b4*T4 + b5*T5;
+//   T5 = 2*d(T4) - T3; T4 = 2*d(T3) - T2; T3 = 2*d(T2) - T1; T2 = 2*d(T1) - T0; T1 = T0;
+//
+// where d(..) would be a unit delay corresponding to a multiplication by z^-1? Maybe try it!
+// Try it also for an IIR filter. Will this be numerically better behaved than a normal direct 
+// form implementation?
 
 
 
