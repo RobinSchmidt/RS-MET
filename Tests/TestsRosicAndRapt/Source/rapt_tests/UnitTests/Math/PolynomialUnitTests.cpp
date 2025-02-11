@@ -999,83 +999,37 @@ bool testPowersChebychevExpansionConversion()
   //
   // Here, we test the functions that convert between the two representations
 
-  static const int N = 5;
+  //static const int N = 5;
   //double a[N+1] = {4, 1, -8, -8, 16, 16}; // polynomial coeffs, gives the Chebychev expansion
   //                                         // 6*T0 + 5*T1 + 4*T2 + 3*T3 + 2*T4 + 1*T5
-  double a[N+1] = {9, 6, -10, -20, 24, 32}; // polynomial coeffs, gives the Chebychev expansion
+  //double a[N+1] = {9, 6, -10, -20, 24, 32}; // polynomial coeffs, gives the Chebychev expansion
                                             // 13*T0 + 11*T1 + 7*T2 + 5*T3 + 3*T4 + 2*T5
-  double b[N+1]; // Chebychev expansion coeffs
-  //double c[N+1]; // for reconstructed a-coeffs
+  //double b[N+1]; // Chebychev expansion coeffs
+  ////double c[N+1]; // for reconstructed a-coeffs
 
-  int k;
-  int i;
-  int s;      // recursion stage
+  //int k;
+  //int i;
+  //int s;      // recursion stage
 
-  rsPowersToChebychev(a, b, N);  // nope - this function is still wrong
-
-  // for test, we implement the algorithm in a way that stores all the intermediate arrays
-  // in a 2D array:
-
-  double B[N][N+1];
-  memset(B, 0, N*(N+1)*sizeof(double));
-  s = 0;      // recursion stage
-  B[s][0] = a[N];
-  B[s][1] = a[N-1]; // intitialization
-  for(k = N-2; k >= 0; k--)
-  {
-    s++;
-    B[s][0] = a[k]      + 0.5*B[s-1][1];
-    B[s][1] = B[s-1][0] + 0.5*B[s-1][2];
-    for(i = 2; i <= s+1; i++)
-    {
-      if( i < s )
-        B[s][i] = 0.5*(B[s-1][i-1] + B[s-1][i+1]);
-      else
-        B[s][i] = 0.5*B[s-1][i-1];
-    }
+  //rsPowersToChebychev(a, b, N);  // nope - this function is still wrong
 
 
-    /*
-    for(i = 2; i < s; i++)
-      B[s][i] = 0.5*(B[s-1][i-1] + B[s-1][i+1]);
-    B[s][i] = 0.5*B[s-1][i-1];  // i == s here
-    i++;
-    B[s][i] = 0.5*B[s-1][i-1];  // i == s+1 here
-    */
-  }
-  rsArrayTools::copy(B[N-1], b, N+1);
-  // looks plausible and seems to work in this case
+  using Real = float;
+  using Vec  = std::vector<Real>;
+
+  Vec a({9, 6, -10, -20, 24, 32});
+
+  int deg = (int) a.size() + 1;
+
+  rsPolyToCheby(&a[0], deg); // Maybe make a conveience function that just takes the vector a
+
+  int dummy = 0;
+
+  //rsChebyToPoly(a, N);
 
 
-  //int dummy = 0;
 
-  /*
-  // reverse the algorithm: loops run backwards, order of instructions reversed, increments become
-  // decremets, left-hand sides and right-hand sides of assignments exchange roles, when the
-  // right-hand side contains a combination (i.e. sum) we have to look at the equation, find which
-  // values are already known at this point and solve for the unknown which becomes the new
-  // left-hand side:
-  double C[N][N+1]; // we use C to reconstruct the B matrix
-  memset(C, 0, N*(N+1)*sizeof(double));
-  rsCopyBuffer(b, C[N-1], N+1); // the last stage is given, we must recostruct previous stages
-  s = N-1;
-  for(k = 0; k <= N-2; k++)
-  {
-    C[s-1][s] = 2*C[s][s+1];
-    for(i = s; i >= 2; i--)
-      C[s-1][i-1] = 2*C[s][i] - C[s-1][i+1];
-    C[s-1][0] = C[s][1] - 0.5*C[s-1][2];
-    c[k] = C[s][0] - 0.5*C[s-1][1];
-    s--;
-  }
-  c[N-1] = C[s][1];
-  c[N]   = C[s][0];
-  */
 
-  // \todo: get rid of the 2D-array to store all the intermediate stages - we may re-use a 1D array
-  // at each stage when using 1 (or maybe 2) temporary variable
-  // todo: move this commented stuff to the "Experiments" project - we may want to have it
-  // available for later reference
 
   /*
   rsPowersToChebychev(a, b, N);  // nope - this function is still wrong

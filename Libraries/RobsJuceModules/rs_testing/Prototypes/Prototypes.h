@@ -67,6 +67,25 @@ void rsChebychevToPowers(double *b, double *a, int N);
 
 
 
+template<class T>
+void rsPolyToCheby(T* coeffs, int degree)
+{
+
+}
+
+template<class T>
+void rsChebyToPoly(T* coeffs, int degree)
+{
+
+}
+
+
+
+
+
+
+
+
 
 template<class T>
 rsSparsePolynomial<T> rsPowNaive(const rsSparsePolynomial<T>& p, int n)

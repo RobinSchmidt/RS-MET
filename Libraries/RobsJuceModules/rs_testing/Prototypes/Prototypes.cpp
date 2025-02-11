@@ -103,7 +103,8 @@ void rsPowersToChebychev(double *a, double *b, int N)
   // https://numpy.org/doc/stable/reference/generated/numpy.polynomial.chebyshev.poly2cheb.html
   // https://numpy.org/doc/stable/reference/generated/numpy.polynomial.chebyshev.cheb2poly.html#numpy.polynomial.chebyshev.cheb2poly
   // https://github.com/numpy/numpy/blob/v2.2.0/numpy/polynomial/chebyshev.py#L347-L394
-
+  //
+  // There is also some stuff about this in the private repo
 }
 
 void rsChebychevToPowers(double *b, double *a, int N)
