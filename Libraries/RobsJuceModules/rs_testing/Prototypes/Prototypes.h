@@ -55,50 +55,22 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 //static size_t allBitsButFirst= allBits ^ firstBitOnly;
 */
 
-
-template<class T>
-T rsEvaluateChebychevPolynomial(T x, int n)
-{
-  T t0 = 1.0;
-  T t1 = x;
-  T tn = 1.0;
-  for(int i = 0; i < n; i++)
-  {
-    tn = 2*x*t1 - t0;
-    t0 = t1;
-    t1 = tn;
-  }
-  return t0;
-}
-// Move to rsPolynomial - done - ...use it everywhere and maybe delete this here
-// I think it's in rsPolynomial::chebychevRecursive()
-
+/** Evaluates an expansion in terms of Chebychev polynomials using an inefficient naive 
+algorithm. */
 template<class T>
 T rsEvalChebyExpansionNaive(T x, T *a, int N)
 {
   T y = 0.0;
   for(int i = 0; i <= N; i++)
-    y += a[i] * rsEvaluateChebychevPolynomial(x, i);
-  // Optimize this. Reuse evaluation results from previous iterations, maybe lookup Clenshaw
-  // algorithm for a generalization.
+    y += a[i] * rsPolynomial<T>::chebychevRecursive(x, i);
   return y;
-
-  // See:
-  //
-  // https://en.wikipedia.org/wiki/Clenshaw_algorithm
-  // https://en.wikipedia.org/wiki/Clenshaw_algorithm#Special_case_for_Chebyshev_series
-  // https://de.wikipedia.org/wiki/Clenshaw-Algorithmus
-  //
-  // https://math.stackexchange.com/questions/784093/numerical-evaluation-of-polynomials-in-chebyshev-basis
-  // https://www.sciencedirect.com/science/article/abs/pii/S0096300311006242
 }
-// Rename to rsEvalChebyExpansionNaive
 
 /** Evaluates an expansion in terms of Chebychev polynomials using the Clenshaw algorithm. */
 template<class T>
 T rsEvalChebyExpansion(T x, T* a, int N)   // N is the degree
 {
-  rsAssert(N >= 0, "Invalid degree in rsClenshaw");
+  rsAssert(N >= 0, "Invalid degree in rsEvalChebyExpansion");
   if(N == 0)
     return a[0];
 
@@ -113,10 +85,14 @@ T rsEvalChebyExpansion(T x, T* a, int N)   // N is the degree
   return c0 + c1 * x;
 
   // Adapted from:
-  //
   // https://insertinterestingnamehere.github.io/posts/basic-examples/
+  //
+  // See also:
+  // https://en.wikipedia.org/wiki/Clenshaw_algorithm#Special_case_for_Chebyshev_series
+  // https://de.wikipedia.org/wiki/Clenshaw-Algorithmus
+  // https://math.stackexchange.com/questions/784093/numerical-evaluation-of-polynomials-in-chebyshev-basis
+  // https://www.sciencedirect.com/science/article/abs/pii/S0096300311006242
 }
-// Rename to rsEvalChebyExpansion
 
 
 // These may still be wrong:
@@ -134,41 +110,45 @@ void rsChebychevToPowers(double *b, double *a, int N);
 
 /** Converts polynomial coeffs from monomial basis to Chebychev basis. */
 template<class T>
-void rsPolyToCheby(T* coeffs, int degree)
+void rsPolyToCheby(T* a, int N)
 {
-  if(degree <= 1)
+  if(N <= 1)
     return;   
-  T s = pow(T(0.5), degree-1);    // ToDo: use rsPow or rsPowInt
-  coeffs[degree]   *= s;
-  coeffs[degree-1] *= s;
-  for(int i = degree-2; i >= 0; i--)
+  T s = pow(T(0.5), N-1);         // ToDo: use rsPow or rsPowInt
+  a[N]   *= s;
+  a[N-1] *= s;
+  for(int i = N-2; i >= 0; i--)
   {
     s *= T(2);
-    coeffs[i]   *= s;
-    coeffs[i+1] *= T(2);
-    for(int j = i; j <= degree-2; j++)
-      coeffs[j] += coeffs[j+2];
+    a[i]   *= s;
+    a[i+1] *= T(2);
+    for(int j = i; j <= N-2; j++)
+      a[j] += a[j+2];
   }
 }
 
 /** Converts polynomial coeffs from Chebychev basis to monomial basis. */
 template<class T>
-void rsChebyToPoly(T* coeffs, int degree)
+void rsChebyToPoly(T* a, int N)
 {
-  if(degree <= 1)
+  if(N <= 1)
     return;
   T s = T(1);
-  for(int i = 0; i <= degree-2; i++)
+  for(int i = 0; i <= N-2; i++)
   {
-    for(int j = degree-2; j >= i; j--)
-      coeffs[j] -= coeffs[j+2];
-    coeffs[i+1] *= T(0.5);
-    coeffs[i]   *= s;
+    for(int j = N-2; j >= i; j--)
+      a[j] -= a[j+2];
+    a[i+1] *= T(0.5);
+    a[i]   *= s;
     s *= T(2);
   }
-  coeffs[degree]   *= s;
-  coeffs[degree-1] *= s;
+  a[N]   *= s;
+  a[N-1] *= s;
 }
+
+// Maybe move all this stuff related to Chebychev polynomials into a class rsChebychevExpansion
+// Maybe implement also:
+// https://en.wikipedia.org/wiki/Chebyshev_polynomials#Differentiation_and_integration
 
 
 // Convenience functions:
