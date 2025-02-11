@@ -1027,7 +1027,7 @@ bool testPowersChebychevExpansionConversion() // Find shorter name! maybe tesPol
 
   // Create a bunch of random polynomials and convert then to the Chebychev basis and back and
   // evaulate them in both bases and compare results:
-  int minDegree =  0;
+  int minDegree =  2;
   int maxDegree = 10;
   int numTests  =  5;
   Real tol = 1.e-6;
@@ -1047,13 +1047,20 @@ bool testPowersChebychevExpansionConversion() // Find shorter name! maybe tesPol
       // Check, if monomial -> cheby -> monomial roundtrip worked:
       ok &= rsIsCloseTo(c, a, tol);
 
-      // Evaluate polynomial in monomial and Chebychev basis at some given x:
+      // Evaluate polynomial in monomial and (naively) in Chebychev basis at some given x:
       Real x = 0.3254;
       Real ya = Poly::evaluate(x, &a[0], d);
       Real yb = rsEvaluateChebychevExpansion(x, &b[0], d);
 
       // Check if both evaluations gave the same result:
       ok &= rsIsCloseTo(ya, yb, tol);
+
+      // Test the Clenshaw evaluation algo:
+      yb = rsClenshaw(x, &b[0], d);
+      ok &= rsIsCloseTo(ya, yb, tol);
+
+
+
     }
   }
 

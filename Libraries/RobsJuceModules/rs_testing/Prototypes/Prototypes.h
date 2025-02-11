@@ -82,7 +82,43 @@ T rsEvaluateChebychevExpansion(T x, T *a, int N)
   // Optimize this. Reuse evaluation results from previous iterations, maybe lookup Clenshaw
   // algorithm for a generalization.
   return y;
+
+  // See:
+  //
+  // https://en.wikipedia.org/wiki/Clenshaw_algorithm
+  // https://en.wikipedia.org/wiki/Clenshaw_algorithm#Special_case_for_Chebyshev_series
+  // https://de.wikipedia.org/wiki/Clenshaw-Algorithmus
+  //
+  // https://math.stackexchange.com/questions/784093/numerical-evaluation-of-polynomials-in-chebyshev-basis
+  // https://www.sciencedirect.com/science/article/abs/pii/S0096300311006242
 }
+
+
+template<class T>
+T rsClenshaw(T t, T* a, int N)
+{
+  int e = N+1;
+  T c0 = a[e-2], c1 = a[e-1], temp;
+
+  for(int i = 3; i < e+1; i++)
+  {
+    temp = c0;
+    c0 = a[e-i] - c1;
+    c1 = temp + c1 * (2 * t);
+  }
+  return c0 + c1 * t;
+
+  // ToDo: rename t to x, get rid of e or rename to L, Make it work von N = 0,1
+
+
+  // Adapted from:
+  //
+  // https://insertinterestingnamehere.github.io/posts/basic-examples/
+}
+
+
+
+
 
 
 // These may still be wrong:
