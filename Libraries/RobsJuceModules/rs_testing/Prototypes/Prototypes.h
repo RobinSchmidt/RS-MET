@@ -106,7 +106,7 @@ void rsChebychevToPowers(double *b, double *a, int N);
 template<class T>
 void rsPolyToCheby(T* coeffs, int degree)
 {
-  if(degree <= 0)                 // We could use <= 1, I think
+  if(degree <= 1)
     return;   
   T s = pow(T(0.5), degree-1);    // ToDo: use rsPow or rsPowInt
   coeffs[degree]   *= s;
@@ -124,7 +124,7 @@ void rsPolyToCheby(T* coeffs, int degree)
 template<class T>
 void rsChebyToPoly(T* coeffs, int degree)
 {
-  if(degree <= 0)
+  if(degree <= 1)
     return;
   T s = 1;
   for(int i = 0; i <= degree-2; i++)
@@ -141,20 +141,22 @@ void rsChebyToPoly(T* coeffs, int degree)
 
 
 // Convenience functions:
+
 template<class T>
-void rsPolyToCheby(std::vector<T>& coeffs)
+std::vector<T> rsPolyToCheby(const std::vector<T>& coeffs)
 {
-  rsPolyToCheby(&coeffs[0], (int) coeffs.size() - 1);
+  std::vector<T> r = coeffs;
+  rsPolyToCheby(&r[0], (int) r.size() - 1);
+  return r;
 }
 
 template<class T>
-void rsChebyToPoly(std::vector<T>& coeffs)
+std::vector<T> rsChebyToPoly(const std::vector<T>& coeffs)
 {
-  rsChebyToPoly(&coeffs[0], (int) coeffs.size() - 1);
+  std::vector<T> r = coeffs;
+  rsChebyToPoly(&r[0], (int) r.size() - 1);
+  return r;
 }
-// ToDo: maybe take argument by const ref and return result as return value
-
-
 
 
 

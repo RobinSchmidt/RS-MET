@@ -1007,14 +1007,14 @@ bool testPowersChebychevExpansionConversion() // Find shorter name! maybe tesPol
   //     9*x^0   +  6*x^1   - 10*x^2   - 20*x^3   + 24*x^4   + 32*x^5
   // == 13*T0(x) + 11*T1(x) +  7*T2(x) +  5*T3(x) +  3*T4(x) +  2*T5(x)
   a = Vec({9, 6, -10, -20, 24, 32});
-  rsPolyToCheby(a); ok &= a == Vec({13,11,7,5,3,2});
-  rsChebyToPoly(a); ok &= a == Vec({9,6,-10,-20,24,32});
+  a = rsPolyToCheby(a); ok &= a == Vec({13,11,7,5,3,2});
+  a = rsChebyToPoly(a); ok &= a == Vec({9,6,-10,-20,24,32});
 
   //     4*x^0   + 1*x^1   - 8*x^2   -  8*x^3   + 16*x^4   + 16*x^5
   // ==  6*T0(x) + 5*T1(x) + 4*T2(x) +  3*T3(x) +  2*T4(x) +  1*T5(x)
   a = Vec({4, 1, -8, -8, 16, 16});
-  rsPolyToCheby(a); ok &= a == Vec({6,5,4,3,2,1});
-  rsChebyToPoly(a); ok &= a == Vec({4,1,-8,-8,16,16});
+  a = rsPolyToCheby(a); ok &= a == Vec({6,5,4,3,2,1});
+  a = rsChebyToPoly(a); ok &= a == Vec({4,1,-8,-8,16,16});
 
 
 
@@ -1039,10 +1039,10 @@ bool testPowersChebychevExpansionConversion() // Find shorter name! maybe tesPol
       Vec a = randomCoeffs(d, i);
 
       // Convert to Chebychev basis:
-      Vec b = a; rsPolyToCheby(b);
+      Vec b = rsPolyToCheby(a);
 
       // Convert back to monomial basis:
-      Vec c = b; rsChebyToPoly(c);
+      Vec c = rsChebyToPoly(b);
 
       // Check, if monomial -> cheby -> monomial roundtrip worked:
       ok &= rsIsCloseTo(c, a, tol);
