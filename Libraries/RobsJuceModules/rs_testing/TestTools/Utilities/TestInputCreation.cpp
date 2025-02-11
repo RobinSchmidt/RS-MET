@@ -469,7 +469,7 @@ std::vector<double> createModalBellGloriosa(double sampleRate, int length)
 
   // For the phases, we just use zero. Later, we want the algorithm to measure these, too:
   Vec phs(M);
-  phs = rsRandomVector(M, 0, 0, 0);  // use rsZeroVector
+  phs = rsRandomVector<double>(M, 0, 0, 0);  // use rsZeroVector
 
   // Generate the sound and return it:
   int N = length;

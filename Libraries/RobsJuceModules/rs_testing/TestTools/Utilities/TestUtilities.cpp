@@ -45,13 +45,6 @@ std::vector<double> rsExponentialRangeVector(int N, double min, double max)
   return v;
 }
 
-std::vector<double> rsRandomVector(int N, double min, double max, int seed)
-{
-  std::vector<double> v(N);
-  RAPT::rsArrayTools::fillWithRandomValues(&v[0], N, min, max, seed);
-  return v;
-}
-
 std::vector<double> rsRandomIntVector(int N, int min, int max, int seed)
 {
   std::vector<double> v(N);

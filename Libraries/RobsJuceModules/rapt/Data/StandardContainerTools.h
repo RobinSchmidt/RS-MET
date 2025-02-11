@@ -280,6 +280,13 @@ inline void rsPrepend(std::vector<T>& v, const T& newElement)
   v.insert(v.begin(), newElement);
 }
 
+template<class T>
+std::vector<T> rsRandomVector(int N, T min, T max, int seed = 0)
+{
+  std::vector<T> v(N);
+  rsArrayTools::fillWithRandomValues(&v[0], N, min, max, seed);
+  return v;
+}
 
 template<class T>
 std::vector<T> rsRangeExponential(T min, T max, int N)

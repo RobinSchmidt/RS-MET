@@ -450,6 +450,11 @@ PFFFT - Pretty Fast FFT:
 https://bitbucket.org/jpommier/pffft/src/master/
 -FFT for single precision float using SIMD (SSE1, Altivec, NEON).
 
+VkFFT:
+https://github.com/DTolm/VkFFT
+-GPU-accelerated multidimensional Fast Fourier Transform library for Vulkan, CUDA, HIP, OpenCL, 
+ Level Zero, Metal
+
 ToDo: list Ouura FFT, DustFFT, Kiss FFT, Bernsee FFT, FFTW,
 
 ----------------------------------------------------------------------------------------------------

@@ -56,9 +56,39 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 */
 
 
+//
+//double rsEvaluateChebychevPolynomial(double x, int N);
+//double rsEvaluateChebychevExpansion( double x, double *a, int N);
 
-double rsEvaluateChebychevPolynomial(double x, int N);
-double rsEvaluateChebychevExpansion( double x, double *a, int N);
+
+template<class T>
+T rsEvaluateChebychevPolynomial(T x, int n)
+{
+  T t0 = 1.0;
+  T t1 = x;
+  T tn = 1.0;
+  for(int i = 0; i < n; i++)
+  {
+    tn = 2*x*t1 - t0;
+    t0 = t1;
+    t1 = tn;
+  }
+  return t0;
+}
+// Move to rsPolynomial - done - ...use it everywhere and maybe delete this here
+// I think it's in rsPolynomial::chebychevRecursive()
+
+template<class T>
+T rsEvaluateChebychevExpansion(T x, T *a, int N)
+{
+  T y = 0.0;
+  for(int i = 0; i <= N; i++)
+    y += a[i] * rsEvaluateChebychevPolynomial(x, i);
+  // Optimize this. Reuse evaluation results from previous iterations, maybe lookup Clenshaw
+  // algorithm for a generalization.
+  return y;
+}
+
 
 // These may still be wrong:
 void rsPowersToChebychev(double *a, double *b, int N);
@@ -66,6 +96,12 @@ void rsChebychevToPowers(double *b, double *a, int N);
 // ToDo: rename N to degree or length - whatever it is. length == degree+1
 // ...but these functions are kinda obsolete now anyway.
 
+
+
+// Move these into rsPolynomial in the section named "Conversions (Low Level)". Mabye as 
+// baseChangeMonomToCheby / ChebyToMonom. There is already a function newtonToMonomialCoeffs. 
+// Maybe rename that to newtonToMonomial and call the Chebychev conversion functions 
+// monomialToCheby, chebyToMonomial - or monomToCheby/chebyToMonom
 
 template<class T>
 void rsPolyToCheby(T* coeffs, int degree)
@@ -86,13 +122,6 @@ void rsPolyToCheby(T* coeffs, int degree)
 }
 
 template<class T>
-void rsPolyToCheby(std::vector<T>& coeffs)
-{
-  rsPolyToCheby(&coeffs[0], (int) coeffs.size() - 1);
-}
-
-
-template<class T>
 void rsChebyToPoly(T* coeffs, int degree)
 {
   if(degree <= 0)
@@ -110,13 +139,20 @@ void rsChebyToPoly(T* coeffs, int degree)
   coeffs[degree-1] *= s;
 }
 
+
+// Convenience functions:
+template<class T>
+void rsPolyToCheby(std::vector<T>& coeffs)
+{
+  rsPolyToCheby(&coeffs[0], (int) coeffs.size() - 1);
+}
+
 template<class T>
 void rsChebyToPoly(std::vector<T>& coeffs)
 {
   rsChebyToPoly(&coeffs[0], (int) coeffs.size() - 1);
 }
-
-
+// ToDo: maybe take argument by const ref and return result as return value
 
 
 

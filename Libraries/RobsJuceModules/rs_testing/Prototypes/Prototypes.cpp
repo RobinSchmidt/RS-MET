@@ -31,32 +31,6 @@
 using namespace RAPT;
 
 
-double rsEvaluateChebychevPolynomial(double x, int n)
-{
-  double t0 = 1.0;
-  double t1 = x;
-  double tn = 1.0;
-  for(int i = 0; i < n; i++)
-  {
-    tn = 2*x*t1 - t0;
-    t0 = t1;
-    t1 = tn;
-  }
-  return t0;
-}
-// Move to rsPolynomial - done - ...use it everywhere and maybe delete this here
-// I think it's in rsPolynomial::chebychevRecursive()
-
-double rsEvaluateChebychevExpansion(double x, double *a, int N)
-{
-  double y = 0.0;
-  for(int i = 0; i <= N; i++)
-    y += a[i] * rsEvaluateChebychevPolynomial(x, i);
-  // Optimize this. Reuse evaluation results from previous iterations, maybe lookup Clenshaw
-  // algorithm for a generalization.
-  return y;
-}
-
 void rsPowersToChebychev(double *a, double *b, int N)
 {
   rsArrayTools::fillWithZeros(b, N+1);

@@ -983,12 +983,8 @@ bool testPolynomialBaseChange()
   return testResult;
 }
 
-bool testPowersChebychevExpansionConversion()
+bool testPowersChebychevExpansionConversion() // Find shorter name! maybe tesPolyChebyConvert
 {
-  // Under construction...this does not yet seem to work
-
-  bool ok = true;
-
   // We may express any polynomial P(x) as linear combination of powers of x:
   //
   //   P(x) = a0 x^0 + a1 x^1 + a2 x^2 + ... + aN x^N
@@ -999,25 +995,12 @@ bool testPowersChebychevExpansionConversion()
   //
   // Here, we test the functions that convert between the two representations
 
-  //static const int N = 5;
-  //double a[N+1] = {4, 1, -8, -8, 16, 16}; // polynomial coeffs, gives the Chebychev expansion
-  //                                         // 6*T0 + 5*T1 + 4*T2 + 3*T3 + 2*T4 + 1*T5
-  //double a[N+1] = {9, 6, -10, -20, 24, 32}; // polynomial coeffs, gives the Chebychev expansion
-                                            // 13*T0 + 11*T1 + 7*T2 + 5*T3 + 3*T4 + 2*T5
-  //double b[N+1]; // Chebychev expansion coeffs
-  ////double c[N+1]; // for reconstructed a-coeffs
 
-  //int k;
-  //int i;
-  //int s;      // recursion stage
-
-  //rsPowersToChebychev(a, b, N);  // nope - this function is still wrong
-
+  bool ok = true;
 
   using Real = float;
   using Vec  = std::vector<Real>;
-
-  //Vec a({9, 6, -10, -20, 24, 32});
+  using Poly = rsPolynomial<Real>;
 
   Vec a;
 
@@ -1035,41 +1018,56 @@ bool testPowersChebychevExpansionConversion()
 
 
 
-  int dummy = 0;
 
-  //rsChebyToPoly(a, N);
-
-
-
-
-
-  /*
-  rsPowersToChebychev(a, b, N);  // nope - this function is still wrong
-  rsChebychevToPowers(b, c, N);
-
-  double yp = evaluatePolynomialAt(2.0, a, N);
-  double yc = rsEvaluateChebychevExpansion(2.0, b, N);
-
-  // todo: write some more exhaustive numerical unit tests - create polynomials with random
-  // coeffients, write a function to evaluate chebychev-polynomials and compare outputs of
-  // power- and chebychev-expansion
-
-  rsFillWithRandomValues(a, N+1, -9.0, 9.0, 0);
-  rsPowersToChebychev(a, b, N);
-  yp = evaluatePolynomialAt(2.0, a, N);
-  yc = rsEvaluateChebychevExpansion(2.0, b, N);
-    // !!!! error !!!!
-  for(int i = -9; i <= 9; i++)
+  // Helper function:
+  auto randomCoeffs = [](int degree, int seed)
   {
-    double x  = i;
-    double yp = evaluatePolynomialAt(x, a, N);
-    double yc = rsEvaluateChebychevExpansion(x, b, N);
-    testResult &= rsIsCloseTo(yp, yc, 1.e-12);
+    return rsRandomVector(degree+1, Real(-5), Real(+5), seed);
+  };
+
+  int minDegree =  2;     // ToDo: use 0
+  int maxDegree = 10;
+  int numTests  =  5;
+  Real tol = 1.e-6;
+  for(int d = minDegree; d <= maxDegree; d++) 
+  {
+    for(int i = 0; i < numTests; i++)
+    {
+      // Create vector of random coeffs:
+      Vec a = randomCoeffs(d, i);
+
+      // Convert to Chebychev basis:
+      Vec b = a; rsPolyToCheby(b);
+
+      // Convert back to monomial basis:
+      Vec c = b; rsChebyToPoly(c);
+
+      // Check, if monomial -> cheby -> monomial roundtrip worked:
+      ok &= rsIsCloseTo(c, a, tol);
+
+      // Evaluate polynomial in monomial and Chebychev basis at some given x:
+      Real x = 0.3254;
+      Real ya = Poly::evaluate(x, &a[0], d);
+      Real yb = rsEvaluateChebychevExpansion(x, &b[0], d);
+
+      // Check if both evaluations gave the same result:
+      ok &= rsIsCloseTo(ya, yb, tol);
+
+
+
+
+      int dummy = 0;
+    }
   }
 
-  */
+
 
   return ok;
+
+  // ToDo:
+  //
+  // - Test some different degrees. This should also include 0 and 1 and maybe invalid negative 
+  //   degrees
 }
 
 

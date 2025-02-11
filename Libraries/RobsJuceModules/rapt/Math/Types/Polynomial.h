@@ -952,6 +952,7 @@ public:
   additional buffer of length N - if desired, the caller can create this additional buffer itself 
   and copy the x-values into it and then use this function). */
   static void newtonToMonomialCoeffs(T* x, T* a, int N);
+  // ToDo: Maybe change API - the workspace array x should be the last argument
 
 
   // drag the ..shiftArgument function in this group

@@ -167,7 +167,7 @@ bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, in
   int M = fftSize;
 
   // compute the complex spectrogram of a sequence of random numbers:
-  std::vector<double> x = rsRandomVector(N, -1, +1);
+  std::vector<double> x = rsRandomVector<double>(N, -1, +1);
   RAPT::rsSpectrogramProcessor<double> sp;  // spectrogram processor
   sp.setAnalysisWindowType(windowType);
   sp.setSynthesisWindowType(windowType);

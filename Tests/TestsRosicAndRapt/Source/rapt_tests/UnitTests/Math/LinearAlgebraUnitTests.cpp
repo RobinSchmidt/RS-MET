@@ -785,7 +785,7 @@ bool testPowerIterationDense()
   Real tol = 1.e-13;
   Real val;
   Vec vec(N), wrk(N);
-  vec = rsRandomVector(N, 0, 1);
+  vec = rsRandomVector<double>(N, 0, 1);
   its = ILA::largestEigenValueAndVector(A, &val, &vec[0], tol, &wrk[0]);
   // yep, works: val == 3 and vec == (3,6,3)/sqrt(54) 
   // todo: add automatic check, test with negative largest eigenvalue - it will probably fail 
