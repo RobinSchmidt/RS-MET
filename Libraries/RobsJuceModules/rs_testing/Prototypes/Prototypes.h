@@ -97,16 +97,18 @@ T rsEvaluateChebychevExpansion(T x, T *a, int N)
 template<class T>
 T rsClenshaw(T t, T* a, int N)
 {
-  //int e = N+1;
 
-  T c0 = a[N+1-2], c1 = a[N+1-1], temp;
+  T c0 = a[N-1], c1 = a[N], temp;
 
-  for(int i = 3; i < N+1+1; i++)
+
+  for(int i = 2; i <= N; i++)
   {
     temp = c0;
-    c0 = a[N+1-i] - c1;
+    c0 = a[N-i] - c1;
     c1 = temp + c1 * (2 * t);
   }
+
+
   return c0 + c1 * t;
 
   // ToDo: rename t to x, get rid of e or rename to L, Make it work von N = 0,1
