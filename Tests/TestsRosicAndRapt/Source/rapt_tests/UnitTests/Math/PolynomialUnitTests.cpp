@@ -1025,7 +1025,9 @@ bool testPowersChebychevExpansionConversion() // Find shorter name! maybe tesPol
     return rsRandomVector(degree+1, Real(-5), Real(+5), seed);
   };
 
-  int minDegree =  2;     // ToDo: use 0
+  // Create a bunch of random polynomials and convert then to the Chebychev basis and back and
+  // evaulate them in both bases and compare results:
+  int minDegree =  0;
   int maxDegree = 10;
   int numTests  =  5;
   Real tol = 1.e-6;
@@ -1052,11 +1054,6 @@ bool testPowersChebychevExpansionConversion() // Find shorter name! maybe tesPol
 
       // Check if both evaluations gave the same result:
       ok &= rsIsCloseTo(ya, yb, tol);
-
-
-
-
-      int dummy = 0;
     }
   }
 
