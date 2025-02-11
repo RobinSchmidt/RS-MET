@@ -70,13 +70,11 @@ void rsChebychevToPowers(double *b, double *a, int N);
 template<class T>
 void rsPolyToCheby(T* coeffs, int degree)
 {
-  if(degree <= 0) return;         // We could use <= 1, I think
-
-  T s = pow(T(0.5), degree-1);    // ToDo: use rsPow
-
+  if(degree <= 0)                 // We could use <= 1, I think
+    return;   
+  T s = pow(T(0.5), degree-1);    // ToDo: use rsPow or rsPowInt
   coeffs[degree]   *= s;
   coeffs[degree-1] *= s;
-
   for(int i = degree-2; i >= 0; i--)
   {
     s *= T(2);
@@ -88,12 +86,35 @@ void rsPolyToCheby(T* coeffs, int degree)
 }
 
 template<class T>
-void rsChebyToPoly(T* coeffs, int degree)
+void rsPolyToCheby(std::vector<T>& coeffs)
 {
-
+  rsPolyToCheby(&coeffs[0], (int) coeffs.size() - 1);
 }
 
 
+template<class T>
+void rsChebyToPoly(T* coeffs, int degree)
+{
+  if(degree <= 0)
+    return;
+  T s = 1;
+  for(int i = 0; i <= degree-2; i++)
+  {
+    for(int j = degree-2; j >= i; j--)
+      coeffs[j] -= coeffs[j+2];
+    coeffs[i+1] *= T(0.5);
+    coeffs[i]   *= s;
+    s *= T(2);
+  }
+  coeffs[degree]   *= s;
+  coeffs[degree-1] *= s;
+}
+
+template<class T>
+void rsChebyToPoly(std::vector<T>& coeffs)
+{
+  rsChebyToPoly(&coeffs[0], (int) coeffs.size() - 1);
+}
 
 
 

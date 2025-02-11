@@ -987,7 +987,7 @@ bool testPowersChebychevExpansionConversion()
 {
   // Under construction...this does not yet seem to work
 
-  bool testResult = true;
+  bool ok = true;
 
   // We may express any polynomial P(x) as linear combination of powers of x:
   //
@@ -1019,9 +1019,14 @@ bool testPowersChebychevExpansionConversion()
 
   Vec a({9, 6, -10, -20, 24, 32});
 
-  int deg = (int) a.size() - 1;
+  //int deg = (int) a.size() - 1;
 
-  rsPolyToCheby(&a[0], deg); // Maybe make a conveience function that just takes the vector a
+  //rsPolyToCheby(&a[0], deg); // Maybe make a conveience function that just takes the vector a
+
+
+  rsPolyToCheby(a);  ok &= a == Vec({13,11,7,5,3,2});
+  rsChebyToPoly(a);  ok &= a == Vec({9,6,-10,-20,24,32});
+
 
   int dummy = 0;
 
@@ -1057,7 +1062,7 @@ bool testPowersChebychevExpansionConversion()
 
   */
 
-  return testResult;
+  return ok;
 }
 
 
