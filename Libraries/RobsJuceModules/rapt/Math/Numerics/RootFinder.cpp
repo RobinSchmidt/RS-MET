@@ -320,6 +320,10 @@ Resources for higher order variants of Newton iteration:
   https://en.wikipedia.org/wiki/Householder%27s_method
   https://archive.org/details/numericaltreatme0000hous
 
+  This paper
+  https://www.hvks.com/Numerical/Downloads/HVE%20Fast%20Polynomial%20Root%20Finder%20-%20Part%20two.pdf
+  says that Newton's method can be modified to use  xNew = x - m * f(x)/f'(x)  when the root
+  has a multiplicity of m.
 
 
 */

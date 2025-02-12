@@ -60,6 +60,8 @@ algorithm. */
 template<class T>
 T rsEvalChebyExpansionNaive(T x, T *a, int N)
 {
+  rsAssert(N >= 0, "Invalid degree in rsEvalChebyExpansionNaive");
+
   T y = 0.0;
   for(int i = 0; i <= N; i++)
     y += a[i] * rsPolynomial<T>::chebychevRecursive(x, i);
@@ -71,6 +73,7 @@ template<class T>
 T rsEvalChebyExpansion(T x, T* a, int N)   // N is the degree
 {
   rsAssert(N >= 0, "Invalid degree in rsEvalChebyExpansion");
+
   if(N == 0)
     return a[0];
 
@@ -93,6 +96,8 @@ T rsEvalChebyExpansion(T x, T* a, int N)   // N is the degree
   // https://math.stackexchange.com/questions/784093/numerical-evaluation-of-polynomials-in-chebyshev-basis
   // https://www.sciencedirect.com/science/article/abs/pii/S0096300311006242
 }
+// ToDo: implement de Casteljau's algorithm that is used to evaluate polynomials given in the 
+// Bernstein basis
 
 
 // These may still be wrong:
@@ -112,8 +117,11 @@ void rsChebychevToPowers(double *b, double *a, int N);
 template<class T>
 void rsPolyToCheby(T* a, int N)
 {
+  rsAssert(N >= 0, "Invalid degree in rsPolyToCheby");
+
   if(N <= 1)
-    return;   
+    return;
+
   T s = pow(T(0.5), N-1);         // ToDo: use rsPow or rsPowInt
   a[N]   *= s;
   a[N-1] *= s;
@@ -131,8 +139,11 @@ void rsPolyToCheby(T* a, int N)
 template<class T>
 void rsChebyToPoly(T* a, int N)
 {
+  rsAssert(N >= 0, "Invalid degree in rsChebyToPoly");
+
   if(N <= 1)
     return;
+
   T s = T(1);
   for(int i = 0; i <= N-2; i++)
   {

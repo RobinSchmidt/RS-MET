@@ -1942,13 +1942,35 @@ ToDo:
  https://en.wikipedia.org/wiki/Jenkins%E2%80%93Traub_algorithm (very popular, I think)
 
  Resources:
- -https://cp-algorithms.com/algebra/polynomial.html
-  https://github.com/cp-algorithms/cp-algorithms-aux/blob/master/src/polynomial.cpp
-  -> has also algorithms for polynomial exp and log (1st n coeffs)
-  ...hmm - it's gone. Is this the new file?:
-  https://github.com/cp-algorithms/cp-algorithms-aux/blob/main/cp-algo/math/poly.hpp
 
+ - https://cp-algorithms.com/algebra/polynomial.html
+   https://github.com/cp-algorithms/cp-algorithms-aux/blob/master/src/polynomial.cpp
+   -> has also algorithms for polynomial exp and log (1st n coeffs)
+   ...hmm - it's gone. Is this the new file?:
+   https://github.com/cp-algorithms/cp-algorithms-aux/blob/main/cp-algo/math/poly.hpp
 
+ - Root finders:
+   https://github.com/ZhepeiWang/Root-Finder/blob/master/root_finder/include/root_finder/root_finder.hpp
+   https://github.com/sweeneychris/RpolyPlusPlus
+
+   https://www.hvks.com/Numerical/winsolve.html
+   https://www.hvks.com/Numerical/websolver.php
+   https://www.hvks.com/Numerical/papers.html
+
+   Jenkins-Traub in Python:
+   https://github.com/jervisfm/JenkinsTraub/blob/master/poly.py
+   https://github.com/osveliz/numerical-veliz/blob/master/src/rootfinding/JenkinsTraub.py
+   https://www.youtube.com/watch?v=3_yxAnhLiAk
+
+   https://stackoverflow.com/questions/27964015/algorithm-for-closed-form-polynomial-root-finding
+   https://stackoverflow.com/questions/62201513/roots-of-complex-polynomial-equations-of-higher-order-in-c
+   https://stackoverflow.com/questions/76871645/implementing-jenkins-traub-algorithm-with-inverse-power-iteration
+   https://www.reddit.com/r/programming/comments/6b312/polynomial_rootfinding_with_the_jenkinstraub/
+   https://en.wikipedia.org/wiki/Durand%E2%80%93Kerner_method
+
+   https://en.wikipedia.org/wiki/Wilkinson%27s_polynomial
+
+   https://en.wikipedia.org/wiki/Jenkins%E2%80%93Traub_algorithm#Software_and_testing
 
 */
 
