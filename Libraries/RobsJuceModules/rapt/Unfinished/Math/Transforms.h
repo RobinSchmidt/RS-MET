@@ -51,14 +51,14 @@ public:
   template<class T>
   static void fourierRadix2DIF(T *x, int N, T WN);
 
-  /** Invokes fourierRadix2DIF with WN = e^(-2*i*pi/N). This result in the regular FFT for complex
-  number types. */
+  /** Invokes fourierRadix2DIF with WN = e^(-2*i*pi/N). This results in the regular FFT for complex
+  number types T. */
   template<class T>
   static void fourierRadix2DIF(std::complex<T> *x, int N)
   { fourierRadix2DIF(x, N, exp(std::complex<T>(T(0), T(-2.0*PI/N)))); }
   // Maybe it can be optimized by not calling the complex exp function but instead producing the
   // basic twiddle factor WN by a call to some implementation of sin-and-cosine like 
-  // rsSinCos? -> Try it!
+  // rsSinCos? -> Try it! ...or maybe use std::polar
 
   /** Inverse transform of fourierRadix2DIF() for complex types. Invokes fourierRadix2DIF with 
   WN = e^(+2*i*pi/N) and then scales the output by 1/N. */
@@ -66,7 +66,7 @@ public:
   static void fourierInvRadix2DIF(std::complex<T> *x, int N)
   { fourierInvUnscaledRadix2DIF(x, N); rsArrayTools::scale(x, N, T(1)/T(N)); }
 
-  /** Invokes fourierRadix2DIF with WN = e^(+2*i*pi/N). This result in the inverse FFT for complex
+  /** Invokes fourierRadix2DIF with WN = e^(+2*i*pi/N). This results in the inverse FFT for complex
   number types, except for the scaling by 1/N. It may be occasionally useful to bypass the scaling,
   for example, because you have already done the scaling after a forward FFT (which is actually 
   a very typical thing do in FFT analysis, because there we want the actual amplitudes of the 
@@ -131,8 +131,9 @@ public:
 
 };
 
+
 //=================================================================================================
-// The old, soon to be deprecated functions:
+// The old, deprecated (or soon to be deprecated) functions:
 
 // \todo wrap into class rsTransforms and name the particular transforms only fourier, kronecker,
 // hadamard, walshHadamerd, etc. - the DFT can be named fourierNaive or fourierSlow, the arbitrary
@@ -166,15 +167,17 @@ void rsDFT(std::complex<T> *buffer, int N);
 /** A general purpose FFT-routine for complex inputs. */
 template<class T>
 void rsFFT(std::complex<T> *buffer, int N);
+// ToDo: Maybe interpret the type T as already being the complex type of some underlying real type 
+// R, e.g. T == std::complex<R> or T == rsComplex<R>. Then we can use this routine with std:complex
+// as well as with rsComplex and even other complex types.
 
 /** Computes FFT-magnitudes and (optionally) also phases of a given real signal of length N. The
 resulting magnitude and phase arrays are both of length N/2 due to the symmetry of the Fourier
 transform of a real signal. */
 template<class T>
 void rsMagnitudeAndPhase(T *signal, int N, T *magnitudes, T *phases = NULL);
-// this is a convenience function mainly for prototyping that allocates heap memory
-// rename to fourierMagPhs or fourierPolar - maybe move to prototypes
-
+// This is a convenience function mainly for prototyping that allocates heap memory.
+// Maybe rename to fourierMagPhs or fourierPolar. Maybe move to Prototypes.h/cpp.
 
 template<class T> // replacement: rsLinearTransforms::fourierInvRadix2DIF
 RS_DEPRECATED(void rsIFFT(std::complex<T> *buffer, int N));
@@ -194,6 +197,10 @@ template<class T> RS_DEPRECATED_WITH_BODY(
 /** An FFT-routine for arbitrary input sizes that uses the Bluestein algorithm. */
 //template<class T>
 //void rsBluesteinFFT(rsComplex<T> *buffer, int N);
+
+// Maybe move deprecated functions into their own namespace. Maybe call it "Old" and make it a
+// subnamespace of RAPT. Functions that are wrapped into classes should be in the classes with the
+// sme name but in the (sub)namespace
 
 
 #endif

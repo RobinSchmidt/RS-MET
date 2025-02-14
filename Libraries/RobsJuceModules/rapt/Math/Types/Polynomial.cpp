@@ -777,6 +777,13 @@ std::vector<std::complex<R>> rsPolynomial<T>::rootsQuadratic(const R& a, const R
   }
 
   return roots;
+
+  // See:
+  //
+  // https://www.reddit.com/r/programming/comments/6b312/polynomial_rootfinding_with_the_jenkinstraub/
+  //
+  // for some notes on numerical accuracy of different formulas. Verify, if we do it right. Nah - I
+  // don't think so.
 }
 
 template<class T>

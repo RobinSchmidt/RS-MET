@@ -777,6 +777,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Roots (Low Level) */
 
+  // Maybe the root finding business should go into a class rsPolynomialRootFinder. This would also
+  // help solve the problem of roots being complex even in case of real coeffs. We could give the
+  // class two template parameters: TCoef, TRoot. This class could then also implement other 
+  // methods such as Jenkins-Traub, etc.
+
   /** Finds all complex roots of a polynomial by Laguerre's method and returns them in "roots". */
   template<class R>
   static void roots(const std::complex<R>* a, int degree, std::complex<R>* roots);
@@ -796,13 +801,8 @@ public:
     std::complex<R> initialGuess = std::complex<R>(0.0, 0.0));
   // allocates heap memory...really - does it? I don't see an allocation there.
 
-  // Maybe the root finding business should go into a class rsPolynomialRootFinder. This would also
-  // help solve the porblem of roots being complex even in case of real coeffs. We could give the
-  // class two template parameters: TCoef, TRoot. This class could then also implement other 
-  // methods such as Jenkins-Traub, etc.
 
-
-    /** Computes the root of the linear equation: \f[ a x + b = 0 \f] which is simply given by
+  /** Computes the root of the linear equation: \f[ a x + b = 0 \f] which is simply given by
   \f[ x_0 = -\frac{b}{a} \f] */
   static T rootLinear(const T& a, const T& b);
   // rename inputs to a0,a1 (change their order)
@@ -813,7 +813,9 @@ public:
   rootsLinear() function, and return a one-element array.  */
   template<class R>
   static std::vector<std::complex<R>> rootsQuadratic(const R& a, const R& b, const R& c);
-  // rename inputs to a0,a1,a2 (change their order) ..or maybe deprecate this function
+  // rename inputs to a0,a1,a2 (change their order) ..or maybe deprecate this function. It's silly
+  // to return a (heap-allocated!) std::vector. We should either return a std::pair or use output
+  // parameters.
 
     /** Computes the two roots of the quadratic equation: \f[ a_0 + a_1 x + a_2 x^2 = 0 \f] and
   stores them in r1, r2. When the equation has two distinct real roots, they will be returned in

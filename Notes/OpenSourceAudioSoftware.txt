@@ -604,9 +604,12 @@ Keith Bloemer
 https://github.com/guitarml
 -develops guitar distortion/amp simulations based on machine learning
 
-SignalSmith:
+Geraint Luff (aka Signalsmith):
 https://signalsmith-audio.co.uk/
 https://github.com/Signalsmith-Audio
+https://github.com/geraintluff
+https://gist.github.com/geraintluff/288080d44aaa7487de811887c8c6c499
+
 
 
 ----------------------------------------------------------------------------------------------------
