@@ -652,6 +652,10 @@ https://github.com/floooh/sokol
 https://github.com/VitalAudio/visage
 -GPU-accelerated, cross-platform C++ library for native UI and 2D graphics. 
 
+ArtV audio stuff:
+https://codeberg.org/RafaGago/artv-audio
+https://codeberg.org/RafaGago/artv-audio/src/branch/master/src/artv-common/dsp
+
 
 ----------------------------------------------------------------------------------------------------
 Resources
