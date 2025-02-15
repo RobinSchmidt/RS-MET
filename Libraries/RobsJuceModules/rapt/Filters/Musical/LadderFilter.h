@@ -29,6 +29,14 @@ public:
   // for convenience:
   typedef const TSig& CRSig;  // const reference to a signal value
   typedef const TPar& CRPar;  // const reference to a parameter value
+  // ToDo: Document why we need this. It's used for function parameters in the setters. But why do
+  // we not pass them by value? There has been a compiler error at some point - I think, it was 
+  // when compiling for x86 (i.e. 32 bit) where the compiler complained when we were passing by 
+  // value. It may have been with simd types for TSig or TPar? I'm not sure anymore. Maybe for 
+  // bigger types (like simd vectors or other kinds of multichannel types), it's advisable to pass
+  // by reference anyway. But then we should really do it consistently throught the whole library.
+  // Although, it doesn't really affect client code - it will look the same regardless.
+
 
 
 

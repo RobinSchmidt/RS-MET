@@ -46,6 +46,12 @@ ToDo:
 - Add getTransferFunctionAt functions. Do this also for the prototypes. Their implementations of it
   may look very different.
 
+- Maybe take the rsAllpassDisperser filter and time-reverse its impulse response. See here:
+  https://www.kvraudio.com/forum/viewtopic.php?t=618346  for how to approximate a time-reversed 
+  filter using a truncated IIR. Instead of a sweepdown we would get a sweepup which should sound 
+  "bubbly", I guess.
+
+
 
 Interesting Resources:
 
