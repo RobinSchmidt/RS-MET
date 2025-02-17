@@ -435,18 +435,20 @@ public:
   the top-left Nx value is actually ignored by GNUPlot - it would be needed only for a binary 
   matrix format. */
   template <class T>
-  void addDataMatrix(int Nx, int Ny, T *x, T *y, T **z);
+  void addDataMatrix(int Nx, int Ny, const T *x, const T *y, T **z);
   // todo: pass z first and make x,y optional - or make another function 
   // addDataMatrix(int Nx, int Ny, T **z);
-  // make arry parameters const
+  // Make z also const - but it's not so easy - see:
+  // https://stackoverflow.com/questions/31616116/converting-a-double-to-a-const-double/31616290#31616290
+  // https://stackoverflow.com/questions/7891306/gcc-error-invalid-conversion-from-double-to-const-double
 
 
   template <class T>
-  void addDataMatrixFlat(int Nx, int Ny, T *x, T *y, T* z);
+  void addDataMatrixFlat(int Nx, int Ny, const T *x, const T *y, const T* z);
   // not yet finished
 
   template <class T>
-  void addDataMatrixFlat(int Nx, int Ny, T *z);
+  void addDataMatrixFlat(int Nx, int Ny, const T *z);
 
   // todo addDataMatrix(int Nx, int Ny, T *x, T *y, T *z); that accepts a matrix in flat storage
   // format - maybe have a bool for columnMajor storage (false by default)
@@ -473,9 +475,11 @@ public:
 
   template <class T>
   void addDataBivariateFunction(int Nx, int Ny, T *x, T *y, const std::function<T(T, T)>& f);
+  // Make x,y const
 
   template <class T>
   void addDataBivariateFunction(int Nx, int Ny, T *x, T *y, T (*f)(T,T));
+  // make x,y const
 
   /** Given a bivariate function f = f(x,y), ranges for x and y and numbers of samples along x 
   and y, this function generates the data matrix of the heights produced by f and adds the data as 
