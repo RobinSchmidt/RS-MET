@@ -655,7 +655,15 @@ https://github.com/VitalAudio/visage
 ArtV audio stuff:
 https://codeberg.org/RafaGago/artv-audio
 https://codeberg.org/RafaGago/artv-audio/src/branch/master/src/artv-common/dsp
+https://www.kvraudio.com/product/mixmaxtrix-by-artv
+https://www.kvraudio.com/product/turbo-paco-by-artv
+  ...implements algos from: https://gearspace.com/board/geekzone/380233-reverb-subculture.html
 
+Elk Audio OS
+https://www.elk.audio/
+https://elk-audio.github.io/elk-docs/html/intro/how_elk_works.html
+https://github.com/elk-audio
+-A variant of Linux to be used as OS for Audio Hardware
 
 ----------------------------------------------------------------------------------------------------
 Resources
