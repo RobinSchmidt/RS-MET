@@ -210,6 +210,25 @@ void plotComplexVectorReIm(std::vector<rsComplex<double>> v);
 // ToDo: take argument by const reference
 
 
+
+
+template<class T>
+void rsPlotComplexPoints(const std::vector<std::complex<T>>& points)
+{
+  GNUPlotter plt;
+  plt.addDataComplex(points);
+  plt.setToDarkMode();
+  plt.setPixelSize(600, 600);
+  plt.addCommand("set size square");
+  //plt.addGraph("i 0 u 1:2 w points pt 7 ps 0.6 notitle");
+  plt.addGraph("i 0 u 1:2 w points pt 7 ps 0.4 notitle");
+  plt.plot();
+  // It looks a bit ugly - as if the point locations are rounded to the nearest pixel or something.
+  // Factor out into a rsPlotComplexPoints function
+}
+
+
+
 /** Plots the matrix entries as surface above a coordinate system given by x,y 
 todo: check/assert that the dimensions of the matrix z fit together with the lengths of x,y 
 // try to make inputs const */
@@ -297,6 +316,40 @@ void plotMatrixRows(const RAPT::rsMatrix<T>& A, T* x)
 }
 
 template<class T>
+void plotMatrixWithMarkers(const rsMatrix<T>& A, const std::vector<int>& markers)
+{
+  GNUPlotter plt;
+
+  //rsMatrix<T> B = A;  // Try to get rid. See comment in plotMatrix() for how to
+  //plt.addDataMatrixFlat(B.getNumRows(), B.getNumColumns(), B.getRowPointer(0));
+  plt.addDataMatrixFlat(A.getNumRows(), A.getNumColumns(), A.getRowPointerConst(0));
+  plt.addGraph("i 0 nonuniform matrix w image notitle");
+
+  // Set style options:
+  plt.setToDarkMode();
+  plt.setPixelSize(600, 600);
+  //plt.setColorPalette(GNUPlotter::ColorPalette::CJ_BuYlRd11, false);
+  plt.setColorPalette(GNUPlotter::ColorPalette::ML_Parula, false);
+  if(A.isSquare())
+    plt.addCommand("set size square");
+
+  // Draw the markers:
+  std::string str;
+  for(size_t i = 0; i < markers.size(); i++)
+  {
+    str  = "set object " + std::to_string(i+1) + " circle front at ";
+    str += std::to_string(i) + "," + std::to_string(markers[i]);
+    str += " size 0.15 fillcolor rgb \"black\" fs solid";
+    plt.addCommand(str);
+  }
+
+  plt.plot();
+}
+
+
+
+
+template<class T>
 void plotPolynomial(const T* a, int degree, T min, T max, int numPoints = 200)
 {
   std::vector<T> x(numPoints), y(numPoints);
@@ -321,6 +374,10 @@ void plot(const rsPiecewisePolynomial<T>& p, int numSamples = 501)
 {
   plot(p, p.getDomainMinimum(), p.getDomainMaximum(), numSamples);
 }
+
+
+
+
 
 template<class T>
 void plotBivariateFunction(const std::function<T(T, T)>& f,
