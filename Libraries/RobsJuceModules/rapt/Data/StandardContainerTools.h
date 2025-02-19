@@ -233,6 +233,24 @@ inline bool rsEquals(const std::vector<T>& x, const std::vector<T>& y, T tol = T
   return true;
 }
 
+template<class T>
+void rsFlatten(const std::vector<std::vector<T>>& v, std::vector<T>& f)
+{
+  size_t totalSize = 0;
+  for(size_t i = 0; i < v.size(); i++)
+    totalSize += v[i].size();
+
+  f.clear();
+  f.reserve(totalSize);
+  for(size_t i = 0; i < v.size(); i++)
+    for(size_t j = 0; j < v[i].size(); j++)
+      f.push_back(v[i][j]);
+
+  // ToDo: pass f by pointer, maybe optionally swap inner and outer loop such that interleaving in
+  // the result is the other way around. But wait: that assumes that all the sizes of the v[i] are 
+  // equal. In our case here, this is the case but we want the function to be applicable to more 
+  // general situations where this is not the case. 
+}
 
 template<class T>
 inline void rsInsert(std::vector<T>& v, const T& newElement, size_t index)
@@ -860,7 +878,7 @@ inline bool operator==(const std::vector<T>& x, const std::vector<T>& y)
 
 
 //=================================================================================================
-// functions for std::map
+// Functions for std::map
 
 /** Checks, if a map contains a given key. */
 template<class Key, class Value>
@@ -871,6 +889,47 @@ inline bool rsContains(const std::map<Key, Value>& map, const Key& key)
     return false;
   return true;
 }
+
+
+//=================================================================================================
+// Functions for std::complex
+
+template<class T>
+inline std::complex<T> operator+(int x, const std::complex<T>& y)
+{
+  return T(x) + y;
+}
+
+template<class T>
+inline std::complex<T> operator-(int x, const std::complex<T>& y)
+{
+  return T(x) - y;
+}
+
+template<class T>
+inline std::complex<T> operator*(int x, const std::complex<T>& y)
+{
+  return T(x) * y;
+}
+
+template<class T>
+void rsFlushToZeroReIm(std::complex<T>& z, T tol)
+{
+  if(abs(real(z)) <= tol) 
+    z.real(0);
+
+  if(abs(imag(z)) <= tol) 
+    z.imag(0);
+}
+
+template<class T>
+void rsFlushToZeroReIm(std::complex<T>* z, int N, T tol)
+{
+  for(int n = 0; n < N; n++)
+    rsFlushToZeroReIm(z[n], tol);
+}
+
+
 
 
 
