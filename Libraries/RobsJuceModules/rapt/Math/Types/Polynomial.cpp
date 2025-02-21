@@ -1979,5 +1979,9 @@ ToDo:
 
    https://en.wikipedia.org/wiki/Jenkins%E2%80%93Traub_algorithm#Software_and_testing
 
+   Bernoulli's method:
+   https://www.youtube.com/watch?v=zB_pQJWnhTc  Bernoulli's Method with QD
+   https://github.com/osveliz/numerical-veliz/blob/master/src/rootfinding/Bernoulli.jl
+
 */
 

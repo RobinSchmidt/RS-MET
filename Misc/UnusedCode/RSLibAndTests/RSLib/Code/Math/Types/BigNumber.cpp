@@ -431,3 +431,15 @@ bool rsBigNumber::changeBaseForFraction(rsUint32 *oldDigits, rsUint32 oldNumDigi
   delete[] tmpDigits;
   return roundOverflow;
 }
+
+//=================================================================================================
+/*
+
+
+Resources:
+
+-  How Computers perform Division
+   https://www.youtube.com/watch?v=WyBsPfhlC2M
+
+
+*/
