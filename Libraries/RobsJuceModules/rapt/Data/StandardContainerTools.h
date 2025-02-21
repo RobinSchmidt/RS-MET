@@ -278,6 +278,24 @@ typename std::vector<T>::iterator rsInsertSorted(std::vector<T>& v, T const& x)
 }
 // https://stackoverflow.com/questions/15843525/how-do-you-insert-the-value-in-a-sorted-vector
 
+template<class T, class Comparator>
+T rsMin(const std::vector<T>& v, Comparator less)
+{
+  rsAssert(!v.empty(), "Vector should not be empty in rsMin");
+
+  if(v.empty())
+    return T();
+
+  T min = v[0];
+  for(size_t i = 1; i < v.size(); i++)
+  {
+    if(less(v[i], min))
+      min = v[i];
+    //min = std::min(min, v[i], less);
+  }
+  return min;
+}
+
 template<class T>
 inline void rsNegate(std::vector<T>& v)
 {
