@@ -45,17 +45,32 @@ bool rsPixelClassifier<TPix>::isAtCorner(int i, int j)
 /*
 
 ToDo:
--Maybe cache w,h, for convenience so we don't have to write img.getWidth() etc. all the time 
- And/or use r,b fro right,bottom to also get rid of the -1 all the time
--Maybe move functions into.h file. The functions taking templatized predicates must go into the 
- .h file anyway so we may just as well drop everything into it. Or: use std::function for the 
- predicates and move all code into the cpp file.
--Use int for the classes. It's easily conceivable to need more than 256 classes.
+
+- Maybe cache w,h, for convenience so we don't have to write img.getWidth() etc. all the time 
+  And/or use r,b fro right,bottom to also get rid of the -1 all the time
+
+- Maybe move functions into.h file. The functions taking templatized predicates must go into the 
+  .h file anyway so we may just as well drop everything into it. Or: use std::function for the 
+  predicates and move all code into the cpp file.
+
+- Use int for the classes. It's easily conceivable to need more than 256 classes.
+
+- Maybe use std::function rather than a template parameter P for the predicate and then drag the
+  implementations of classifyWhenHasNeighborWith(..) etc into the .cpp file. The implication is 
+  that the compiler does not need a new instantiation of all these functions for each new 
+  predicate, so it should reduce the binary code size. The downside is that checking the predicate
+  will then involve invoking the call operator () of std::function which may introduce an overhead.
+  Maybe we should keep both variants and make benchmarks with both.
+
 
 Ideas for pixel classes based on neighborhood features:
--flat: pixel is equal to all its neighbors
--peak: pixel is higher that all its neighbors (opposite: dent)
--ridge: there are 3 pixels of equal height which are higher than the other 6? (opposite: valley)
--edge: use edge detector
+
+- flat: pixel is equal to all its neighbors
+
+- peak: pixel is higher that all its neighbors (opposite: dent)
+
+- ridge: there are 3 pixels of equal height which are higher than the other 6? (opposite: valley)
+
+- edge: use edge detector
 
 */

@@ -8,13 +8,13 @@ serves to store the pixel classes, so it must have the same shape as the actual 
 analyzed. Once constructed, the user can call various classification functions which assign the 
 elements classes image/matrix/2D-array. We use char for the class labels because I think that 256 
 different pixel classes should be more than enough in practice...but that can be upgraded to 
-something like int, if needed. 
+something like int later, if needed. 
 
 Classifying pixels according to various criteria can be important as a subroutine in certain
 image processing tasks where pixels belonging to different classes need to be processed in 
 different ways.
 
-...tbc...  */
+...TBC...  */
 
 template<class TPix>
 class rsPixelClassifier
@@ -51,7 +51,7 @@ public:
   template<class P> 
   void classifyWhenHasNeighborWith(char c, P pred, bool withEdges, bool withCorners);
   // API: maybe swap parameters, use "If" instead of "When" (shorter), maybe use assign instead of
-  // classify (also shorter), mayb have boolean options includeEdges, includeCorners
+  // classify (also shorter), maybe have boolean options includeEdges, includeCorners (done?)
 
   /** Classifies a pixel as belonging to class c when it has no neighbor that satisfies the given 
   predicate. Note that this is a different condition than having a neighbor that satisfies the
@@ -115,6 +115,9 @@ bool rsPixelClassifier<TPix>::hasNeighborWith_I(int i, int j, P pred)
 
   // Predicate holds for all neighbor pixels in 3x3 neighborhood:
   return false;
+    // ...what? That comment makes no sense. It should probably say "..holds for no pixels..". 
+    // Verify that and then fix the comment! Maybe we initially had an implementation with 
+    // inverted logic and forgot to update the comment? Maybe check that in the git history.
 }
 
 template<class TPix>

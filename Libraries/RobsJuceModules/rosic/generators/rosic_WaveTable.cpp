@@ -328,7 +328,19 @@ double WaveTable::warpPhaseIndex(double unwarpedIndex)
 
 
 
+//=================================================================================================
+/*
 
+Ideas:
+
+- For more ideas to modify the wavetable, see:
+  https://www.youtube.com/watch?v=7IhV_CXoQt8  at 2:20. These are the wavetable effects of the
+  Argon8 synth. See also page 31 of the user manual:
+  https://www.modalelectronics.com/wp-content/uploads/2025/01/argon8_MANUAL_v3.pdf
+
+
+
+*/
 
 
 

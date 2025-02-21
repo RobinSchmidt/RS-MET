@@ -72,6 +72,9 @@ T rsEvalChebyExpansionNaive(T x, T *a, int N)
 template<class T>
 T rsEvalChebyExpansion(T x, T* a, int N)   // N is the degree
 {
+  // This code has now been integrated into class rsChebychevExpansion in the research repo, so
+  // this prototype implementattion my be deleted at some point
+
   rsAssert(N >= 0, "Invalid degree in rsEvalChebyExpansion");
 
   if(N == 0)
@@ -98,6 +101,8 @@ T rsEvalChebyExpansion(T x, T* a, int N)   // N is the degree
 }
 // ToDo: implement de Casteljau's algorithm that is used to evaluate polynomials given in the 
 // Bernstein basis
+
+//static T evaluate(const T& x, const T *a, int degree);
 
 
 // These may still be wrong:

@@ -7,8 +7,28 @@ You should definitely NOT use using namespace in headers for precisely the reaso
 The header should include just the headers that it needs to compile. An easy way to enforce this is to always include each source file's own header as the first thing, before any other headers. Then the source file will fail to compile if the header isn't self-contained.
 
 
+Do not use static local variables in functions that could be called concurrently. See:
+https://github.com/midilab/jc303/issues/23
 
 
+
+Back to Basics: Object-Oriented Programming in C++ - Andreas Fertig - CppCon 2024
+https://www.youtube.com/watch?v=SuubuqI4gVA   at 57:15 is a slide with a summary
+
+- Init member variables in the constructor initializer list, not in the constructor's body. In the 
+  latter case, the members would be initialized twice. First default initialized and then again in
+  the constructor.
+
+-  Use structs when there are no invariants or constraints between the members and the client code 
+   may just get and set them.
+
+- Avoid default arguments for parameters in virtual member functions or if you use them, make sure 
+  they have the same values in all derived classes. Otherwise, member functions called on baseclass 
+  pointers that actually point to objects of derived classes will have the wrong default argument, 
+  namely the one from the baseclass.
+
+- Be sure to declare baseclass destructors virtual, if the class has any virtual methods. Otherwise 
+  the destructors of the derived class may not get called.
 
 
 
