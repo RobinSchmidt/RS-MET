@@ -143,7 +143,7 @@ T rsRootFinder<T>::newton(const std::function<void(T, T*, T*)>& func, T x, T y)
     f  -= y;
     dx  = stepNewton(f, f1);
     x  += dx;
-    if(rsAbs(dx) < rsAbs(x*tol))
+    if(rsAbs(dx) < rsAbs(x*tol))  // Maybe it should be <= to allow tol = 0
       break;
   }
   return x;
@@ -152,6 +152,13 @@ T rsRootFinder<T>::newton(const std::function<void(T, T*, T*)>& func, T x, T y)
   //
   // - Let the user (optionally) pass tolerance and maxNumIterations. Maybe report iterations taken
   //   in (optional) output parameter
+  //
+  // - Maybe make it robust against division by zero. The stepNewton() function computes -f/f1. 
+  //   Maybe we should check the value for being inf or nan. But maybe we should do that in another
+  //   function newtonRobust - but just checking against inf and nan wouldn't make it toally robust
+  //   either. It may still diverge. For a truly robust method, we should have an algorithm that
+  //   combines Newton steps with bisection steps where the latter are used when a Newton step 
+  //   would "go wrong". Detecting that is another can of worms.
 }
 // Needs tests
 

@@ -146,10 +146,12 @@ https://www.youtube.com/watch?v=j29rVHCpRUY  Minimax Approximation and the Excha
 -Maybe exchanging multiple reference points for actual max-error points per step at once could lead
  to faster overall convergence? Experiment a bit with that.
 
+- Implement Newton's method:
+  https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization
 
-This:
-https://www.youtube.com/watch?v=cLtN6jAG_3Q  A Review of Top 16 Optimizers for Training Neural Networks
-explains a lot of variations of the gradient descent method.
+
+- This video: https://www.youtube.com/watch?v=cLtN6jAG_3Q "A Review of Top 16 Optimizers for 
+  Training Neural Networks" explains a lot of variations of the gradient descent method.
 
 
 

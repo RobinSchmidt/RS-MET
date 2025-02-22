@@ -24,7 +24,7 @@ References:
 */
 
 template<class T>
-class rsRootFinder
+class rsRootFinder   // Maybe rename to rsRootFinder1D
 {
 
 public:
@@ -142,6 +142,9 @@ public:
   its derivative at the same time rather than starting completely from scratch for evaluating the 
   derivative. The API should enable such an optimization. */
   static T newton(const std::function<void(T, T*, T*)>& func, T xGuess, T y = 0);
+    // ToDo: give it additional parameters for tolerance, maxNumIterations, rootMultiplicity. The 
+    // latter should be used to scale the steps. Maybe call it stepSize and write into the 
+    // documentation that the optimal stepsize is given by the root's multiplicity.
 
 
   /** Computes the delta for one update step in the Halley iteration method.  The 
