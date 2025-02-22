@@ -131,16 +131,16 @@ public:
   This function computes the dx and can be used within the Newton iteration like  
   x += newtonStep(f, fp)  after you have computed function value f and derivative fp at the 
   current estimate for x. In practice, you'll probably want to assign the dx to a variable, though
-  - so you can check the convergence  criterion. 
+  - so you can check the convergence criterion before (or after) doing the update step. 
   See:  https://en.wikipedia.org/wiki/Newton%27s_method  */
   static T stepNewton(const T& f, const T& fp) { return -f/fp; }
 
   /** Implements root finding via Newton iteration. The function func should take the x value as 
-  1st parameter and produce the value and derivative in 2nd and 3rd parameter respectively. These
-  are output parameters and passed by pointer. The reason to use a single function to compute value
-  and derivative is that it often happens that it's more efficient to evaluate a function and its
-  derivative at the same time rather than starting completely from scratch for evaluating the 
-  derivative. */
+  1st parameter and produce the value and derivative in the 2nd and 3rd parameters respectively. 
+  These are output parameters and passed by pointer. The reason to use a single function to compute 
+  value and derivative is that it often happens that it's more efficient to evaluate a function and 
+  its derivative at the same time rather than starting completely from scratch for evaluating the 
+  derivative. The API should enable such an optimization. */
   static T newton(const std::function<void(T, T*, T*)>& func, T xGuess, T y = 0);
 
 
@@ -174,7 +174,10 @@ public:
   The Newton and Halley methods are the 1st and 2nd order Householder methods respectively. They 
   have their own names but belong conceptually to the Householder family. In theory, the higher the
   order, the faster the convergence. In practice - well...dunno - I guess, there are confounding 
-  factors like rounding errors. ...TBC...figure out! */
+  factors like rounding errors. Also, the theoretical rate of convergence kicks in only in the 
+  final steps when we are close to the solution but the total cost of a root finding algorithm may
+  be dominated by the inital phase before the final rate of convergence kicks in. 
+  ...TBC...figure out! */
   static T stepHouseholder3(const T& f, const T& f1, const T& f2, const T& f3) 
   { return (3*f*f*f2 - 6*f*f1*f1) / (6*f1*f1*f1 - 6*f*f1*f2 + f*f*f3); }
   // NEEDS VERIFICATION. In the unit tests that we have so far, the practical convergence is not 
