@@ -53,6 +53,22 @@ Element:
 https://github.com/kushview/element
 -A modular AU/LV2/VST/VST3 audio plugin host. Works standalone or as plugin. 
 
+Milky Tracker:
+https://milkytracker.org/
+https://github.com/milkytracker/MilkyTracker
+-Tracker
+
+OpenMPT
+https://openmpt.org/
+https://github.com/OpenMPT/openmpt
+https://source.openmpt.org/browse/openmpt?
+-Open Mod Plug Tracker
+
+SoundTracker
+http://www.soundtracker.org/
+-Tracker for Linux
+
+
 Giada:
 https://www.giadamusic.com/
 https://github.com/monocasual/giada
@@ -731,6 +747,10 @@ https://sourceforge.net/projects/timidity/
 WildMIDI:
 https://github.com/Mindwerks/wildmidi
 -MIDI-to-WAV renderer
+
+Gnaural:
+https://sourceforge.net/projects/gnaural/
+-Binaural beat generator for brainwave entrainment
 
 ----------------------------------------------------------------------------------------------------
 Resources
