@@ -1,5 +1,7 @@
 This my personal curated list of links to interesting open source audio software projects (and maybe 
-some non-audio stuff, too):
+some non-audio stuff, too).
+
+ToDo: turn this into an .md file with clickable links and TOC
 
 ----------------------------------------------------------------------------------------------------
 Hosts
@@ -16,6 +18,36 @@ https://github.com/LMMS/lmms
 Qtractor:
 https://qtractor.org/qtractor-index.html#Intro
 -A DAW based on Qt for Linux.
+
+Traverso-DAW:
+https://github.com/ErwanLegrand/Traverso-DAW
+https://traversodaw.com/
+-DAW
+
+Stargate DAW:
+https://github.com/stargatedaw/stargate
+https://gitlab.com/stargatedaw
+https://codeberg.org/stargatedaw
+-DAW. Main repo is on github. The ones on gitlab and codeberg are mirrors.
+
+Audacity:
+https://www.audacityteam.org/
+https://github.com/audacity/audacity
+-Sample editor
+-Forks:
+ https://github.com/tenacityteam/tenacity , https://codeberg.org/tenacityteam/tenacity
+ https://github.com/Audacium/audacium  (archived, is now merged with tenacity)
+ https://github.com/Binaergewitter/audiocity
+
+Mixxx:
+https://github.com/mixxxdj/mixxx
+-DJ software
+
+Integra Live:
+https://integra.io/portfolio-items/integralive/
+https://github.com/BirminghamConservatoire/IntegraLive
+-modular environment for interactive audio processing and music performance
+
 
 Element:
 https://github.com/kushview/element
@@ -36,8 +68,8 @@ Instrument Plugins
 Surge:
 https://surge-synthesizer.github.io/
 https://github.com/surge-synthesizer/surge
--A hybrid synthesizer (mostly VA but with some more exotic oscillator types). Very popular with 
- active community.
+-A hybrid synthesizer (mostly VA but with some more exotic oscillator types like wavetable and
+ Karplus-Strong like stuff). Very popular with an active community.
 -https://surge-synth-team.org/ is a portal website with links to other projects of the Surge Synth
  Team
 
@@ -59,12 +91,22 @@ BespokeSynth:
 https://github.com/BespokeSynth/BespokeSynth
 -A Reaktor-style modular synthesizer
 
+PlugData:
+https://plugdata.org/
+https://github.com/plugdata-team/plugdata
+-Plugin for the "Pure Data" graphic audio programming languange
+
 ZynAddSubFX / Zyn-Fusion:
 https://zynaddsubfx.sourceforge.io/
 https://zynaddsubfx.sourceforge.io/zyn-fusion.html
 https://github.com/zynaddsubfx
 -Hybrid additive/subtractive/pad-synth synthesizer
 -Zyn-Fusion has an interesting business model: It's open source but you can buy a built version.
+
+Yoshimi:
+https://yoshimi.sourceforge.io/
+https://sourceforge.net/p/yoshimi/code/ci/master/tree/
+-Software synth, originally forked from ZynAddSubFX 
 
 Cardinal:
 https://github.com/DISTRHO/Cardinal
@@ -94,6 +136,10 @@ Sfizz:
 https://github.com/sfztools/sfizz
 https://github.com/sfztools/sfizz-ui
 -SFZ player
+
+FluidSynth:
+https://github.com/FluidSynth/fluidsynth
+-Soundfont 2 player
 
 Helm:
 https://github.com/mtytel/helm
@@ -134,6 +180,10 @@ Aeolus:
 https://github.com/Archie3d/aeolus_plugin
 -Pipe organ synthesizer
 
+Hydrogen:
+https://github.com/hydrogen-music/hydrogen
+-Drum machine (sequencer and sampler/synth)
+
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
 
@@ -151,7 +201,7 @@ https://www.airwindows.com/
 https://github.com/airwindows
 https://github.com/airwindows/airwindows
 -A collection of plugins - GUI-less but does interesting/exotic stuff DSP-wise (including Kalman 
- filtering) so it might be inspirational
+ filtering) so it might be inspirational for DSP algorithm development
 -All these plugins consolidated into one:
  https://github.com/baconpaul/airwin2rack/blob/main/doc/manualdaw.md
  https://github.com/baconpaul/airwin2rack
@@ -235,7 +285,6 @@ https://github.com/je3928/JEPluginsAudioDSP
 IEM Plug-in Suite:
 https://plugins.iem.at/#tab-GranularEncoder
 https://git.iem.at/audioplugins/IEMPluginSuite
-
 
 SPARTA
 https://leomccormack.github.io/sparta-site/docs/sourcecode/overview/
@@ -332,14 +381,15 @@ DSP Libraries
 
 Cloudseed:
 https://github.com/ValdemarOrn/CloudSeed
--The DSP algo on which Aether is based.
+-The DSP algo on which the Aether reverb plugin is based.
 
 Brickworks:
 https://www.orastron.com/brickworks
 https://www.kvraudio.com/forum/viewtopic.php?t=589519
 https://github.com/sdangelo/brickworks 
 -Audio DSP library available for licensing under GPL or commercially
--It looks like only the headers are public so that actually doesn't count as open source. :-(
+-It looks like only the headers are public so that actually doesn't count as open source. :-(  I 
+ think, it initially was.
 
 Synthesis Toolkit (STK):
 https://ccrma.stanford.edu/software/stk/
@@ -575,6 +625,11 @@ Vestige:
 https://github.com/LMMS/lmms/blob/master/plugins/Vestige/Vestige.h
 -Vestige.h - replacement for VST2
 
+Libsndfile:
+https://libsndfile.github.io/libsndfile/
+https://github.com/libsndfile/libsndfile
+-C library for reading and writing audio files in various formats
+
 ----------------------------------------------------------------------------------------------------
 Audio AI projects and related stuff
 
@@ -665,8 +720,23 @@ https://elk-audio.github.io/elk-docs/html/intro/how_elk_works.html
 https://github.com/elk-audio
 -A variant of Linux to be used as OS for Audio Hardware
 
+WaveSurfer
+https://sourceforge.net/projects/wavesurfer/
+-visualization, manipulation, speech/sound analysis, sound annotation/transcription
+
+Timidity++
+https://sourceforge.net/projects/timidity/
+-MIDI-to-WAV renderer
+
+WildMIDI:
+https://github.com/Mindwerks/wildmidi
+-MIDI-to-WAV renderer
+
 ----------------------------------------------------------------------------------------------------
 Resources
+
+https://en.wikipedia.org/wiki/Comparison_of_free_software_for_audio
+-List of free and open source audio software
 
 https://github.com/sudara/awesome-juce
 -List of open source JUCE libraries, plugins and utilities.

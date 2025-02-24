@@ -333,4 +333,13 @@ Resources for higher order variants of Newton iteration:
   has a multiplicity of m.
 
 
+Maybe we should have an API that allows the functions to return some more information like the
+number of iterations taken and the achieved accuracy. Maybe we should make a struct that has the 
+actual result and these other two things and the root finders should return such a struct. Maybe 
+call it rsNumericResult with fields value, accuracy, cost, validity. Cost can be the number of 
+iterations taken or some more general measure of amount of computation. Validity can indicate if 
+the result is deemed valid, i.e. if the algorithm converged. It may also be interpreted as a 
+reliability and could take on continuous values (maybe in 0..1). Maybe we should also pass in 
+certain algorithm parameters such as the tolerance and maxNumIterations via struct.
+
 */
