@@ -247,7 +247,7 @@ public:
   /** Approximates the matrix-vector product H * v of the Hessian matrix H of f evaluated at 
   position x and an arbitrary given vector v and writes the result into Hv. This is the same as 
   v^T * H due to the symmetry of the Hessian matrix. The approximation is based on two gradient 
-  evaluations at position vectors x + k*v and x - k*v for some scalar approximation stepsize k. The 
+  estimations at position vectors x + k*v and x - k*v for some scalar approximation stepsize k. The
   array h is - as usual - the vector of stepsizes to numerically approximate the gradient itself. 
   The workspace must be of length 2*N. The two gradient evaluations each take 2*N evaluations of f, 
   so the function evaluates f 4*N times. As a side-note, when v is the i-th coordinate vector, i.e. 
@@ -263,12 +263,18 @@ public:
   {
     T *gp =  workspace;
     T *gm = &workspace[N];
+
+    // Estimate gradient at x + k*v:
     for(int n = 0; n < N; n++)  
       Hv[n] = x[n] + k*v[n];               // Hv temporarily used for x + k*v
     gradient(f, &Hv[0], N, &gp[0], h);     // gp: gradient at x + k*v
+
+    // Estimate gradient at x - k*v:
     for(int n = 0; n < N; n++)  
       Hv[n] = x[n] - k*v[n];               // Hv temporarily used for x - k*v
     gradient(f, &Hv[0], N, &gm[0], h);     // gm: gradient at x - k*v
+
+    // Estimate H*v from the two estimated gradients:
     for(int n = 0; n < N; n++)
       Hv[n] = (gp[n] - gm[n]) / (2*k);     // Hv ~= (grad(x+k*v) - grad(x-k*v)) / (2*k)
   }

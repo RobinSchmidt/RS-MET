@@ -536,6 +536,10 @@ public:
   /** Returns a pointer to the data for read and write access as a flat array. */
   T* getDataPointer() { return dataPointer; }
 
+  /** Returns a pointer to the element at the index pair (i,j). */
+  T* getDataPointer(int i, int j) { return &dataPointer[flatIndex(i, j)]; }
+  // Needs tests!
+
   /** Returns a pointer to the stored data. When using this, be sure that you know exactly what
   you are doing.... */
   //T* getData() { return dataPointer; }

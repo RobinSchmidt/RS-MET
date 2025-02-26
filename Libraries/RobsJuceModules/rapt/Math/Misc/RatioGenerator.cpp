@@ -107,13 +107,18 @@ void rsRatioGenerator<T>::fillRatioTable(T* r, int N)
 }
 
 
+//=================================================================================================
 /*
+
 Ideas:
-what about ratios whose continued fraction expansion (CFE) starts with a single n and then has only
-1s thereafter - they should be also "very irrational" in the sense of needing a long CFE - i think, 
+
+What about ratios whose continued fraction expansion (CFE) starts with a single n and then has only
+1s thereafter - they should be also "very irrational" in the sense of needing a long CFE - I think, 
 more so than the other metallic ratios since what matters for the convergence of the CFE are those 
 coeffs that come late in the sequence
+
 http://www.peacefromharmony.org/docs/7-27_Stakhov_Math_of_Harmony_EN.pdf
+
 here's a generalization witha 2nd parameter
 "Further Generalization of Golden Mean in Relation to Euler's 'Divine' Equation":
 https://arxiv.org/ftp/math/papers/0611/0611095.pdf
@@ -126,7 +131,7 @@ all at once - maybe some things simplify)
 
 
 
-// this has been used in an early version of rsBlepOscArray:
+// This has been used in an early version of rsBlepOscArray - move this code/comment to an experiment:
 
     // linear progression of increments - this produces really bad beating:
     T minRatio = T(1) - T(0.5) * detune;
@@ -165,18 +170,34 @@ all at once - maybe some things simplify)
     rsArrayTools::cumulativeSum(&incs[0], &incs[0], numOscs);
     // can give okayish results
 
-todo: other options: linear progression of frequencies (increment reciprocals), geometric
-spacing...hmm - can we somehow "invert" the generalized mean formula to obtain a generalized
-spreading function - we can do it for arithmetic mean, harmonic mean and geometric mean - but
-what should be in between?
+ToDo:
 
-see rosic::SuperOscillator::setFreq for other spacing strategies - factor out the code from 
-there to make it usable here too
+- Implement other options: linear progression of frequencies (increment reciprocals), geometric
+  spacing...hmm - can we somehow "invert" the generalized mean formula to obtain a generalized
+  spreading function - we can do it for arithmetic mean, harmonic mean and geometric mean - but
+  what should be in between?
 
-todo: maybe compute the mean ratio and use it to center the mean frequency/increment - but 
-what mean should we use? probably the arithmetic, but the geometric or harmonic seems 
-plausible as well - maybe make it a user option (use a generalized mean and let the user set 
-the exponent). actually i think, the harmonic mean of the increments (corresponding to the
-arithmetic mean of the frequencies) makes more sense - experimentation needed....
+- See rosic::SuperOscillator::setFreq for other spacing strategies - factor out the code from 
+  there to make it usable here too
+
+- Maybe compute the mean ratio and use it to center the mean frequency/increment - but what mean 
+  should we use? probably the arithmetic, but the geometric or harmonic seems plausible as well. 
+  Maybe make it a user option (use a generalized mean and let the user set the exponent). Actually
+  I think, the harmonic mean of the increments (corresponding to the arithmetic mean of the 
+  frequencies) makes more sense. Experimentation needed.
+
+- When trying out different spacing strategies, we should examine the continued fraction expansions
+  of all the ratios that occur. If we have 3 numbers a1, a2, a3, we should examine the CFEs of 
+  a1/a2, a1/a3, a2/a3. A good set of 3 numbers should have CFEs with small coefficients for all of 
+  these. Maybe it's enough to examine ratios of successive numbers instead of all. But anyway, with
+  these examinations, we could define a metric for how "good" a set of n numbers is and then search
+  the space of possible sets of numbers for one that optimizes this metric.
+
+
+
+https://en.wikipedia.org/wiki/Metallic_mean
+https://rosettacode.org/wiki/Metallic_ratios
+https://arxiv.org/abs/1901.02619  Generalized metallic means
+https://www.researchgate.net/publication/351173999_Three_Interesting_Properties_of_Metallic_Ratios
     
 */

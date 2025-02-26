@@ -24,6 +24,10 @@ https://github.com/ErwanLegrand/Traverso-DAW
 https://traversodaw.com/
 -DAW
 
+OpenDAW
+https://opendaw.org/
+-Web-based DAW. No source code available yet but coming (soon?). 
+
 Stargate DAW:
 https://github.com/stargatedaw/stargate
 https://gitlab.com/stargatedaw
@@ -46,8 +50,7 @@ https://github.com/mixxxdj/mixxx
 Integra Live:
 https://integra.io/portfolio-items/integralive/
 https://github.com/BirminghamConservatoire/IntegraLive
--modular environment for interactive audio processing and music performance
-
+-Modular environment for interactive audio processing and music performance
 
 Element:
 https://github.com/kushview/element
@@ -67,7 +70,6 @@ https://source.openmpt.org/browse/openmpt?
 SoundTracker
 http://www.soundtracker.org/
 -Tracker for Linux
-
 
 Giada:
 https://www.giadamusic.com/
@@ -118,6 +120,7 @@ https://zynaddsubfx.sourceforge.io/zyn-fusion.html
 https://github.com/zynaddsubfx
 -Hybrid additive/subtractive/pad-synth synthesizer
 -Zyn-Fusion has an interesting business model: It's open source but you can buy a built version.
+ (I think, Ardour does this, too)
 
 Yoshimi:
 https://yoshimi.sourceforge.io/
@@ -131,18 +134,18 @@ https://github.com/DISTRHO/Cardinal
 Soonth Blocks:
 https://www.soonth.com/
 https://github.com/dan-german/blocks
--Semi modular synth - conceptually similar to Zebra? 
+-Semi modular synth. Conceptually similar to U-He Zebra? 
 
 Geonkick:
 https://geonkick.org/
 https://github.com/Geonkick-Synthesizer/geonkick
--A drum synthesizer with focus on bassdrums
+-Drum synthesizer with focus on bassdrums.
 
 Wavetable:
 https://github.com/FigBug/Wavetable
 -A 2 oscillator wavetable synth with flexible modulation options.
 
-Plugins:
+FigBug Plugins:
 https://github.com/FigBug/SocaLabs
 -Audio Plugins by FigBug - includes the "Wavetable" synth above. Other plugins are an organ, a 
  piano, Voc (vocal synth), mverb (Dattorro figure-8 reverb), emulations of chiptune synths: 
@@ -184,9 +187,10 @@ https://www.youtube.com/watch?v=xtvo_RxdEsY
 -Wave-Terrain Sythesizer
 
 HISE:
+https://hise.dev/
 https://github.com/christophhart/HISE/
 -Mostly a sampler but has also synthesizer features. Well, actually it's more like a framework to 
- build ones own (sample-based) instruments.
+ build one's own (sample-based) instruments. Dual licensed (GPL + commercial)
 
 JC-303
 https://github.com/midilab/jc303
@@ -216,8 +220,8 @@ Airwindows Plugins:
 https://www.airwindows.com/
 https://github.com/airwindows
 https://github.com/airwindows/airwindows
--A collection of plugins - GUI-less but does interesting/exotic stuff DSP-wise (including Kalman 
- filtering) so it might be inspirational for DSP algorithm development
+-A collection of GUI-less plugins. They do interesting/exotic stuff DSP-wise (including Kalman 
+ filtering) so it might be inspirational for DSP algorithm development.
 -All these plugins consolidated into one:
  https://github.com/baconpaul/airwin2rack/blob/main/doc/manualdaw.md
  https://github.com/baconpaul/airwin2rack
@@ -366,6 +370,10 @@ ikiGUI:
 https://github.com/logos-maker/ikiGUI
 -"The smallest cross platform GUI library for applications and audio plugins availible. "
 
+SFML (Simple and Fast Multimedia Library)
+https://github.com/SFML/SFML
+-GUI framework
+
 https://github.com/robbert-vdh/nih-plug/
 -API-agnostic audio plugin framework written in Rust, as well as a small collection of plugins.
 
@@ -469,8 +477,7 @@ https://github.com/je3928/JEPluginsAudioDSP
 Dr. Baloney's Audio Converter
 https://github.com/drbaloney/audio-converter/tree/main
 -Resampling library for conversion between common sample rates. 
--Has push- and pull API.
--Written in C.
+-Has push- and pull API written in C.
 
 ofxATK
 https://github.com/aaronaanderson/ofxATK
@@ -521,7 +528,7 @@ https://github.com/DTolm/VkFFT
 -GPU-accelerated multidimensional Fast Fourier Transform library for Vulkan, CUDA, HIP, OpenCL, 
  Level Zero, Metal
 
-ToDo: list Ouura FFT, DustFFT, Kiss FFT, Bernsee FFT, FFTW,
+ToDo: list Ouura FFT, DustFFT, Kiss FFT, Bernsee FFT, FFTW, ...
 
 ----------------------------------------------------------------------------------------------------
 Research and Education Code
@@ -796,5 +803,13 @@ https://www.youtube.com/watch?v=yDI1dkImLok
 - Small programming language where every variable is an associative array (KeyVa probably stands 
   for key-value pair?). It's main usefulness might be in the demonstration of how to write a minimal
   interpreter.
+
+ExprEval:
+https://expreval.sourceforge.net/
+https://expreval.sourceforge.net/expreval.html
+https://sourceforge.net/projects/expreval/
+https://github.com/traviscross/expreval
+- Expression evaluator library. Used in RS-MET FuncShaper.
+
 
 https://www.joehagenmusic.com/post/a-comprehensive-guide-to-high-quality-free-plugins-that-you-ll-actually-use

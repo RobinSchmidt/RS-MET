@@ -498,6 +498,10 @@ ToDo:
   in rsPolynomial where we implement it for the case of dense polynomials. Maybe try to adapt the
   implementation for the sparse case.
 
+- Implement a function that evaluates p(x) and a given number M of its derivatives. The API should
+  be like  evalWithDerivatives(T x, int M, T* f)  where f is an array of M (or maybe M+1) values
+  for p(x), p'(x), p''(x), ... up to the M-th derivative. 
+
  
 Notes:
 
