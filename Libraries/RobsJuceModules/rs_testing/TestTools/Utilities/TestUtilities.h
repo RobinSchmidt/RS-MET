@@ -67,16 +67,50 @@ T square(T x)
   return x*x;
 }
 
+
 template<class T>
-void rsFillWithComplexRandomValues(std::complex<T>* x, size_t N, T min, T max,
-  unsigned long seed = 0)
+inline void rsSetComplex(std::complex<T>* z, const T& newReal, const T& newImag)
+{
+  z->real(newReal);
+  z->imag(newImag);
+
+  // ToDo: Move to rapt/Basics/BasicFunctions.h
+}
+
+template<class T>
+inline void rsSetComplex(rsComplex<T>* z, const T& newReal, const T& newImag)
+{
+  z->re = newReal;
+  z->im = newImag;
+
+  // ToDo: Move to rapt/Math/Types/Complex.h
+}
+
+template<class TReal, class TComplex>
+void rsFillWithComplexRandomValues(
+  TComplex* x, size_t N, TReal min, TReal max, unsigned long seed = 0)
 {
   RAPT::rsNoiseGenerator<double> prng;
   prng.setRange(min, max);
   prng.setSeed(seed);
   for(size_t n = 0; n < N; n++)
-    x[n] = std::complex<T>(prng.getSample(), prng.getSample());
+    rsSetComplex(&x[n], prng.getSample(), prng.getSample());
 }
+
+// Old:
+//template<class T>
+//void rsFillWithComplexRandomValues(std::complex<T>* x, size_t N, T min, T max,
+//  unsigned long seed = 0)
+//{
+//  RAPT::rsNoiseGenerator<double> prng;
+//  prng.setRange(min, max);
+//  prng.setSeed(seed);
+//  for(size_t n = 0; n < N; n++)
+//  {
+//    rsSetComplex(&x[n], prng.getSample(), prng.getSample());
+//    //x[n] = std::complex<T>(prng.getSample(), prng.getSample());
+//  }
+//}
 // ToDo: Make it work also for rsComplex. Maybe we should implement a function 
 // rsSetComplex(TComplex* z, const TReal& newRealPart, const TReal& newImaginaryPart) and then call
 // it in the loop as rsSetComplex(&x[n], prng.getSample(), prng.getSample()); We could then have
