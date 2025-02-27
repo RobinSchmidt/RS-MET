@@ -50,6 +50,7 @@ public:
   factors and, as said, that it works as is also for NTT. */
   template<class T>
   static void fourierRadix2DIF(T *x, int N, T WN);
+  // Maybe rename WN to twiddleBase.
 
   /** Invokes fourierRadix2DIF with WN = e^(-2*i*pi/N). This results in the regular FFT for complex
   number types T. */
