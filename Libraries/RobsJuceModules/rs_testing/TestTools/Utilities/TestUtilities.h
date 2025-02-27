@@ -90,11 +90,15 @@ template<class TReal, class TComplex>
 void rsFillWithComplexRandomValues(
   TComplex* x, size_t N, TReal min, TReal max, unsigned long seed = 0)
 {
-  RAPT::rsNoiseGenerator<double> prng;
+  RAPT::rsNoiseGenerator<TReal> prng;
   prng.setRange(min, max);
   prng.setSeed(seed);
   for(size_t n = 0; n < N; n++)
-    rsSetComplex(&x[n], prng.getSample(), prng.getSample());
+  {
+    TReal re = prng.getSample();
+    TReal im = prng.getSample();
+    rsSetComplex(&x[n], re, im);
+  }
 }
 
 // Old:
