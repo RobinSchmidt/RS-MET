@@ -457,6 +457,7 @@ inline void rsSetAllValues(std::vector<T>& v, T value)
   for(size_t i = 0; i < v.size(); i++)
     v[i] = value;
 }
+// Does the same as rsFill(), I think. Get rid of one of them.
 
 template<class T>
 inline void rsSetZero(std::vector<T>& v)

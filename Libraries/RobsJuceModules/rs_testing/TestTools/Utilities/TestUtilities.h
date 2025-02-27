@@ -58,9 +58,9 @@ void rsZero(std::vector<T>& a)
 { 
   RAPT::rsFill(a, T(0));
 }
-// maybe move to RAPT
+// Maybe move to RAPT. There actually already is such a function: rsSetZero(). So maybe get rid of
+// this one.
 
-//
 template<class T>
 T square(T x)
 {
@@ -77,6 +77,13 @@ void rsFillWithComplexRandomValues(std::complex<T>* x, size_t N, T min, T max,
   for(size_t n = 0; n < N; n++)
     x[n] = std::complex<T>(prng.getSample(), prng.getSample());
 }
+// ToDo: Make it work also for rsComplex. Maybe we should implement a function 
+// rsSetComplex(TComplex* z, const TReal& newRealPart, const TReal& newImaginaryPart) and then call
+// it in the loop as rsSetComplex(&x[n], prng.getSample(), prng.getSample()); We could then have
+// explicit specializations for std::complex and rsComplex that do the appropriate thing. Of 
+// course, we could also just implement another version of this function for rsComplex. But that 
+// would meany code duplication which should be avoided.
+
 
 template<class T> // convenience function for std::vector
 void rsFillWithComplexRandomValues(std::vector<std::complex<T>>& x, T min, T max,
