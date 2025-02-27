@@ -342,20 +342,24 @@ T rsReal(const T& z)  // This is for when z is already a real number type such a
 }
 
 
+// Maybe this should go into a file BitTwiddling.h where we collect various low level 
+// bit-twiddling functions:
 inline unsigned long rsBitReverse(unsigned long number, unsigned long numBits)
 {
   unsigned long result = 0;
   for(unsigned long n=0; n<numBits; n++)
   {
-    // leftshift the previous result by one and accept the new LSB of the current number on the
+    // Leftshift the previous result by one and accept the new LSB of the current number on the
     // right:
     result   = (result << 1) + (number & 1);
 
-    // rightshift the number to make the second bit from the right to the new LSB:
+    // Rightshift the number to make the second bit from the right to the new LSB:
     number >>= 1;
   }
   return result;
 }
+// Needs documentation. This function is used in rsOrderBitReversed() which in turn is used in FFT 
+// routines.
 
 
 
