@@ -342,6 +342,23 @@ T rsReal(const T& z)  // This is for when z is already a real number type such a
 }
 
 
+inline unsigned long rsBitReverse(unsigned long number, unsigned long numBits)
+{
+  unsigned long result = 0;
+  for(unsigned long n=0; n<numBits; n++)
+  {
+    // leftshift the previous result by one and accept the new LSB of the current number on the
+    // right:
+    result   = (result << 1) + (number & 1);
+
+    // rightshift the number to make the second bit from the right to the new LSB:
+    number >>= 1;
+  }
+  return result;
+}
+
+
+
 
 
 

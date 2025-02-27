@@ -5,21 +5,12 @@ inline int rsFloorInt(double x)
 {
   return int(x);
 }
+// Duplicates template is BasicFunctions.h. But there, it calls floor() which is more expensive. 
+// But using floor will give different results for negative numbers. Hmm...but anyway...I think, we
+// should get rid of this function here. If we really need an explicit instantation for double,
+// its should go to some other file.
 
-inline unsigned long rsBitReverse(unsigned long number, unsigned long numBits)
-{
-  unsigned long result = 0;
-  for(unsigned long n=0; n<numBits; n++)
-  {
-    // leftshift the previous result by one and accept the new LSB of the current number on the
-    // right:
-    result   = (result << 1) + (number & 1);
 
-    // rightshift the number to make the second bit from the right to the new LSB:
-    number >>= 1;
-  }
-  return result;
-}
 
 //-------------------------------------------------------------------------------------------------
 
