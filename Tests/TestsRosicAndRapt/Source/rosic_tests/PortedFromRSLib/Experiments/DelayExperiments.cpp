@@ -1930,9 +1930,7 @@ void dampedAllpassBiComb_1p()
 
 void dampedCombAllpasses()
 {
-  dampedCombFilter();
-
-
+  //dampedCombFilter();
 
 
   dampedCombFilter();
@@ -1952,11 +1950,29 @@ void dampedCombAllpasses()
   dampedAllpassBiComb_1p();
 
 
-  // ToDo: 
+  // ToDo:
+  //
+  // - Find more descriptive names for the functions
   //
   // - Plot the phase-delay and group-delay as function of frequency for the damped allpass comb 
   //   and damped Schroeder allpass. We can do this by evaluating the complex frequency response 
   //   using the getTransferFunctionAt() functions.
+  //
+  // - Maybe also plot the group-delay response of the underlying comb filter. According to Barry
+  //   Blesser's patent for the notchpass filter, it should feature peaks at frequencies related to
+  //   the delayline length. That's the reason these frequencies recirculate longer. The notchpass
+  //   design counteracts this by applying notches (or dips) as these frequencies in the feedback 
+  //   path such the lower gain at these frequencies compensates for the longer delay thereby 
+  //   equalizing the decay time for all frequencies.
+  //
+  // - Try to plot the decay time as function of frequency. One way to approach this is to use the
+  //   information about the group delay of the comb together with the (frequency dependent) 
+  //   feedback gain. But for this task, we may also try the "ringing response" functions. We could
+  //   also look at the poles. Their distances from the unit circle determines the ringing time. 
+  //   But it may be not so easy to compute all the poles because the filter are of very high order 
+  //   such that normal polynomial root finding algorithms may not work (not sure, though - try 
+  //   it!). But for that, we first need to implement root finding algorithms for 
+  //   rsSparsePolynomial.
   //
   // - Instantiate rsDampedCombAllpass with rsFloat64x2 for TSig and use a feedback of [+k, -k], 
   //   i.e. different signs for the feedback for left and right channel. Thta should give 

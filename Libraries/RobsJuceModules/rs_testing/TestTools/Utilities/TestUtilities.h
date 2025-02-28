@@ -67,6 +67,17 @@ T square(T x)
   return x*x;
 }
 
+template<class T>
+void rsFillWithRandomValues(T* x, size_t N, T min, T max, unsigned long seed = 0)
+{
+  RAPT::rsNoiseGenerator<T> prng;
+  prng.setRange(min, max);
+  prng.setSeed(seed);
+  for(size_t n = 0; n < N; n++)
+    x[n] = prng.getSample();
+}
+
+
 /** Fills the array z of complex values with random values. Can be used with std::complex and 
 RAPT::rsComplex and any other complex number type for which a function rsSetComplex() is suitably
 defined (see implementation for how such a function needs to look like). */

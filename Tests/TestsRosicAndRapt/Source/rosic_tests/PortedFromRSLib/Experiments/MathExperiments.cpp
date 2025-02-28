@@ -2781,6 +2781,9 @@ void mixedPolynomialRoots()
   // Perhaps in the case for designing low-shelving prototypes from given lowpass prototypes, the
   // overall algo can be simplified (at least for allpole filters) by taking as zeros just scaled
   // versions of the original poles - that seems to be what comes out
+  //
+  // See also the research repo. There is more code about this. Among other things, an algorithm
+  // that tracks the roots when we crossfade between two polynomials.
 }
 
 void parametricBell()
