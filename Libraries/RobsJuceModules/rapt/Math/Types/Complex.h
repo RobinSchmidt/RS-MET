@@ -332,6 +332,13 @@ rsComplex<T> rsEpsilon(rsComplex<T> x)
   return rsComplex<T>(std::numeric_limits<T>::epsilon(), T(0));
 }
 
+template<class T>
+inline void rsSetComplex(rsComplex<T>* z, const T& newReal, const T& newImag)
+{
+  z->re = newReal;
+  z->im = newImag;
+}
+
 
 
 

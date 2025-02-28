@@ -67,28 +67,12 @@ T square(T x)
   return x*x;
 }
 
-
-template<class T>
-inline void rsSetComplex(std::complex<T>* z, const T& newReal, const T& newImag)
-{
-  z->real(newReal);
-  z->imag(newImag);
-
-  // ToDo: Move to rapt/Basics/BasicFunctions.h
-}
-
-template<class T>
-inline void rsSetComplex(rsComplex<T>* z, const T& newReal, const T& newImag)
-{
-  z->re = newReal;
-  z->im = newImag;
-
-  // ToDo: Move to rapt/Math/Types/Complex.h
-}
-
+/** Fills the array z of complex values with random values. Can be used with std::complex and 
+RAPT::rsComplex and any other complex number type for which a function rsSetComplex() is suitably
+defined (see implementation for how such a function needs to look like). */
 template<class TReal, class TComplex>
 void rsFillWithComplexRandomValues(
-  TComplex* x, size_t N, TReal min, TReal max, unsigned long seed = 0)
+  TComplex* z, size_t N, TReal min, TReal max, unsigned long seed = 0)
 {
   RAPT::rsNoiseGenerator<TReal> prng;
   prng.setRange(min, max);
@@ -97,31 +81,12 @@ void rsFillWithComplexRandomValues(
   {
     TReal re = prng.getSample();
     TReal im = prng.getSample();
-    rsSetComplex(&x[n], re, im);
+    rsSetComplex(&z[n], re, im);
   }
 }
 
-// Old:
-//template<class T>
-//void rsFillWithComplexRandomValues(std::complex<T>* x, size_t N, T min, T max,
-//  unsigned long seed = 0)
-//{
-//  RAPT::rsNoiseGenerator<double> prng;
-//  prng.setRange(min, max);
-//  prng.setSeed(seed);
-//  for(size_t n = 0; n < N; n++)
-//  {
-//    rsSetComplex(&x[n], prng.getSample(), prng.getSample());
-//    //x[n] = std::complex<T>(prng.getSample(), prng.getSample());
-//  }
-//}
-// ToDo: Make it work also for rsComplex. Maybe we should implement a function 
-// rsSetComplex(TComplex* z, const TReal& newRealPart, const TReal& newImaginaryPart) and then call
-// it in the loop as rsSetComplex(&x[n], prng.getSample(), prng.getSample()); We could then have
-// explicit specializations for std::complex and rsComplex that do the appropriate thing. Of 
-// course, we could also just implement another version of this function for rsComplex. But that 
-// would meany code duplication which should be avoided.
-
+// ToDo: Adapt the functions below so they can also work with rsComplex. Don't hardcode usage of 
+// std::complex into them. Use a template parameter TComplex instead.
 
 template<class T> // convenience function for std::vector
 void rsFillWithComplexRandomValues(std::vector<std::complex<T>>& x, T min, T max,

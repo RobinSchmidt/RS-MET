@@ -323,6 +323,13 @@ inline bool rsIsOdd(T x) { return x % 2 != 0; }
 
 
 template <class T>
+T rsReal(const T& z)  // This is for when z is already a real number type such as float
+{
+  return z;
+}
+
+
+template <class T>
 T rsReal(const std::complex<T>& z)
 {
   return std::real(z);
@@ -334,12 +341,16 @@ T rsImag(const std::complex<T>& z)
   return std::imag(z);
 }
 
-
-template <class T>
-T rsReal(const T& z)  // This is for when z is already a real number type such as float
+template<class T>
+inline void rsSetComplex(std::complex<T>* z, const T& newReal, const T& newImag)
 {
-  return z;
+  z->real(newReal);
+  z->imag(newImag);
 }
+
+
+
+
 
 
 // Maybe this should go into a file BitTwiddling.h where we collect various low level 
