@@ -99,10 +99,16 @@ void plotFrequencyResponse(std::vector<double>& f, std::vector<double>& dB,
   p.addCommand("set xlabel \"Frequency in Hz\"");
   p.addCommand("set ylabel \"Magnitude in dB\"");
   p.addCommand("set y2label \"Phase in Degrees\"");
+
   //p.addCommand("set xtics 2");    // factor 2 between (major) frequency axis tics
   //p.addCommand("unset mxtics");   // no minor tics for frequency axis
+
   p.addCommand("set ytics 10");   // 10 dB steps for magnitude axis
+
   p.addCommand("set y2tics 45");  // 45° steps for phase axis
+  // Ugly for very high order filters such as damped comb allpass filters. Nice for normal filters,
+  // though
+
 
   // add magnitude and phase graphs:
   p.addGraph("i 0 u 1:2 w lines lw 1.5 axes x1y1 notitle");

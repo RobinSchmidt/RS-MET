@@ -696,23 +696,32 @@ void dampedCombAllpassResponses()
   using Allpass = rsDampedCombAllpass<Real, Real, Real>;
 
   // User parameters:
-  int  delay      =   128;     // Main delay roundtrip length in samples. Is M-1 in the algo
+  int  delay      =    20;     // Main delay roundtrip length in samples. Is M-1 in the algo
   int  numSamples =  8192;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
   Real dampFreq   =  1000;     // Frequency (in Hz) of the shelf filter for feedback damping
   Real dampGain   =     1.0;   // Linear high freq damping gain
-  Real feedback   =     0.85;  // Feedback gain factor
+  Real feedback   =    -0.95;  // Feedback gain factor
 
   // Create and set up the damped comb allpass filter:
   Allpass flt;
   flt.setMaxDelayInSamples(delay);
-  Real omega = 2*PI*dampFreq/sampleRate;
-  rsSetupHighDamp(flt, delay, feedback, omega, dampGain, false);
+  Real dampOmega = 2*PI*dampFreq/sampleRate;
+  rsSetupHighDamp(flt, delay, feedback, dampOmega, dampGain, false);
 
   // Obtain its impulse response:
   int N = numSamples;
   Vec h = impulseResponse(flt, N, 1.0);
   rsPlotVectors(h);
+
+
+  plotFrequencyResponse(flt, N, 20.0, 22050.0, sampleRate, false);
+  //plotFrequencyResponse(flt, N, 20.0, 20000.0, sampleRate, true);
+  // The phase axis labeling looks ugly - especially when the delay is large. We need to do 
+  // something about the ticks. we want them less dense.
+
+
+  plotMagAndRingResponse(flt, N, 20.0, 22050.0, sampleRate, false, false);
 
 
   // ...TBC...
@@ -723,9 +732,14 @@ void dampedCombAllpassResponses()
   // and group delay. Obtain response from underlying comb and corrector, ...
 
 
-
-
-
+  // Observations:
+  //
+  // - The ringing response seems to make indeed some sense for these types of filters.
+  //
+  // - For delay = 20, feedback = -0.95, dampGain = 1, we see a ringing resonance at the Nyquist 
+  //   freq. For feedback = +0.95, there is no such thing.
+  //
+  //
   // ToDo:
   //
   // - Compute the frequency domain response in two ways: from the impulse response via FFT and 

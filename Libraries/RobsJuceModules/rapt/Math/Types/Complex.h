@@ -35,6 +35,8 @@ public:
   template<class T2>
   rsComplex(T2 re_, T2 im_) : re(T(re_)), im(T(im_)) {}
 
+  /** Conversion constructor. Allows implicit conversion from std::complex to rsComplex. */
+  rsComplex(std::complex<T> z) { re = std::real(z); im = std::imag(z); }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
@@ -81,6 +83,12 @@ public:
   rsComplex& operator-=(const T &r) { re -= r; return *this; }
   rsComplex& operator*=(const T &r) { re *= r; im *= r; return *this; }
   rsComplex& operator/=(const T &r) { T s = T(1)/r; re *= s; im *= s; return *this; }
+
+
+  operator std::complex<T>() { return std::complex<T>(re, im); }
+  // Allows implicit conversion to std::complex
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Access */

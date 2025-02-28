@@ -128,7 +128,7 @@ inline void plotFrequencyResponseReIm(TFlt& filter, int N, TSig fMin, TSig fMax,
 experimental. See this thread: https://www.kvraudio.com/forum/viewtopic.php?f=33&t=569114 */
 template<class TSig, class TFlt>
 inline void plotMagAndRingResponse(
-  TFlt& filter, int N, TSig fMin, TSig fMax, TSig fs, bool logFreq)
+  TFlt& filter, int N, TSig fMin, TSig fMax, TSig fs, bool logFreq, bool ringingQ = true)
 {
   // This is the same as in function above - maybe factor out:
   std::vector<TSig> w = getOmegas(N, fMin, fMax, fs, logFreq);
@@ -152,9 +152,12 @@ inline void plotMagAndRingResponse(
     mag[k]   = sqrt( re[k]* re[k] +  im[k]* im[k]);
     dmag[k]  = sqrt(dre[k]*dre[k] + dim[k]*dim[k]);
 
-    dmag[k] *= w[k];
-    // This makes plots symmetric. I think, when we do that, we get a relative ringing time, i.e.
-    // expressed in number-of-cycles instead of in seconds
+    if(ringingQ)
+      dmag[k] *= w[k];
+    // This makes plots of some filters (like elliptic bandpass) symmetric. I think, when we do 
+    // that, we get a relative ringing time, i.e. expressed in number-of-cycles instead of in 
+    // seconds. 
+    // ToDo: Make this optional. It doesn't seem suitable for comb and comb-allpass filters
 
     //dmag[k] *= dmag[k];  
     // test - undo sqrt...hmm...nope
@@ -182,6 +185,10 @@ inline void plotMagAndRingResponse(
   // ToDo:
   // -Try if it makes a difference, if we do the multiplication by w[k] before computing the 
   //  magnitude or even before computing the derivative
+  // -Verify if the name of ringingQ is appropriate. The idea is to normalize the ringing time by
+  //  the frequency - or someting. I'm not quite sure about the rationale of multiplying the 
+  //  magnitude of the complex derivative by the frequency. I just observed that for some filters,
+  //  doing so makes the plots look nicely symmetric.
 }
 
 
