@@ -297,7 +297,8 @@ void twoPoleAllpassDelay()
 
 void dampedCombFilter()
 {
-  // Under construction....
+  // Under construction. rsDampedCombFilter should factor out the comb filter from the class 
+  // rsDampedCombAllpass
 
   using Real = double;
   using Comb = rsDampedCombFilter<Real, Real, Real>;
@@ -311,10 +312,10 @@ void dampedCombFilter()
   int dummy = 0;
 }
 
-void dampedCombAllpass1()
+void dampedCombAllpassIdea()
 {
   // This experiment is basically my initial step by step derivation of what later became the class
-  // rsDampedCombAllpassNaive. It's based on the idea that I explain in the dcoument:
+  // rsDampedCombAllpassNaive. It's based on the idea that I explain in the document:
   // Notes/DSP/DampedCombAllpass.txt
   //
   // I implement an idea for starting with an arbitrary given allpass filter A(z) and arbitrary 
@@ -600,7 +601,7 @@ void dampedCombAllpass1()
   //   the other value.
 }
 
-void dampedCombAllpass2()
+void dampedCombAllpassClass()
 {
   // Now, we use the class rsDampedCombAllpass which encapsulates the algorithm derived above into a 
   // class. We use that class here to test some different options for the sign of the feedback gain
@@ -682,7 +683,7 @@ void dampedCombAllpass2()
   //   artificially introduce an additional sample of delay in "pre-delay" mode.
 }
 
-void dampedCombAllpass3()
+void dampedCombAllpassChainOf4()
 {
   // Now, we create a chain of 4 such allpass comb filters and produce its impulse response.
 
@@ -806,7 +807,7 @@ void dampedCombAllpass3()
   //   and negative and positive k.
 }
 
-void dampedCombAllpass4()
+void dampedCombAllpassFeedbackBiquad()
 {
   // Here, we try to use higher order feedback damping filters. Specifically, we use a biquad that
   // realized a wide-band dip (i.e. downward bell) frequency response.
@@ -846,14 +847,13 @@ void dampedCombAllpass4()
   //   its poles.
 }
 
-void dampedCombAllpass5()
+void dampedCombAllpassFreqDependentRT60()
 {
   // We want to set up an rsDampedCombAllpass that achieves a desired overall decay time (in the 
   // RT60 sense) and also allows that decay time to be scaled at low and high frequencies via 
   // shelving filters. To test it, we split the impulse response into 3 bands (low, mid, high) and
   // plot the amplitude decay of the 3 bands with a logarithmic amplitude axis
   
-
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
@@ -1232,7 +1232,7 @@ void dampedCombAllpassFractional2()
 }
 
 
-void dampedMultiCombAllpass()
+void dampedMultiCombAllpassIdea()
 {
   // We extract the transfer functions from 3 rsDampedCombAllpass objects with different delays as
   // rsSparseRationalFunction and then use a weighted sum of them as our "multi comb" transfer 
@@ -1266,9 +1266,6 @@ void dampedMultiCombAllpass()
   Real lowScale   =     1.5;   // Decay time scaler for low frequencies.
   Real highFreq   =  4000.0;   // Crossover freq between mid and high frequencies in Hz.
   Real highScale  =     0.2;   // Decay time scaler for high frequencies.
-
-
-
 
   decayTime = 0.2;               // Test
   //lowScale = highScale = 1.0;  // Test
@@ -1421,7 +1418,7 @@ void dampedMultiCombAllpass()
 }
 
 
-void dampedMultiCombAllpass2()
+void dampedMultiCombAllpassClass()
 {
   using Real     = double;
   using Vec      = std::vector<Real>;
@@ -1930,24 +1927,28 @@ void dampedAllpassBiComb_1p()
 
 void dampedCombAllpasses()
 {
+  // Various experiments with ideas for turning comb filters into allpasses.
+
+  // Currently active experiment:
   //dampedCombFilter();
+  dampedMultiCombAllpassIdea();
 
-
-  dampedCombFilter();
-  dampedCombAllpass1();
-  dampedCombAllpass2();
-  dampedCombAllpass3();
-  dampedCombAllpass4();
-  dampedCombAllpass5();
-  dampedCombAllpassFractional1();
-  dampedCombAllpassFractional2();
-  dampedMultiCombAllpass();
-  dampedMultiCombAllpass2();
-  dampedCombAllpassComplex();
-  dampedCombAllpassNonLin();
-  dampedAllpassDelayContent();
-  dampedSchroederAllpass();
-  dampedAllpassBiComb_1p();
+  // All experiments:
+  dampedCombFilter();                   // Stub: we want to factors out the comb
+  dampedCombAllpassIdea();              // Initial explorations of the idea.
+  dampedCombAllpassClass();             // ..the idea has been wrapped into a class.
+  dampedCombAllpassChainOf4();          // A chain of 4 damped allpass combs.
+  dampedCombAllpassFeedbackBiquad();    // With biquad in feedback path
+  dampedCombAllpassFreqDependentRT60(); // Frequency dependent RT60 decay time.
+  dampedCombAllpassFractional1();       // Fractional delay by lerp in feedback path.
+  dampedCombAllpassFractional2();       // Fractional delay by interpolating the delay line.
+  dampedMultiCombAllpassIdea();         // Idea for allpass from multiple parallel combs. 
+  dampedMultiCombAllpassClass();        // ..the idea has been wrapped into a class
+  dampedCombAllpassComplex();           // Experiment with complex feedback factor.
+  dampedCombAllpassNonLin();            // Stub: we want to experiment with nonlinearities.
+  dampedAllpassDelayContent();          // Investigate contents of the delaylines.
+  dampedSchroederAllpass();             // Schroder-like allpass from damped comb (verify!)
+  dampedAllpassBiComb_1p();             // Multicomb with 2 combs and 1-pole damper.
 
 
   // ToDo:
