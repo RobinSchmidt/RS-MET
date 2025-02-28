@@ -683,6 +683,59 @@ void dampedCombAllpassClass()
   //   artificially introduce an additional sample of delay in "pre-delay" mode.
 }
 
+void dampedCombAllpassResponses()
+{
+  // Under construction.
+
+  // We plot the responses magnitude, phase, phase delay, group delay, ringing, etc. for a damped
+  // comb allpass filter and its underlying comb and corrector.
+
+  // Define types to be used:
+  using Real    = double;
+  using Vec     = std::vector<Real>;
+  using Allpass = rsDampedCombAllpass<Real, Real, Real>;
+
+  // User parameters:
+  int  delay      =   128;     // Main delay roundtrip length in samples. Is M-1 in the algo
+  int  numSamples =  8192;     // Number of samples to generate
+  Real sampleRate = 44100;     // Sample rate for writing the wavefiles
+  Real dampFreq   =  1000;     // Frequency (in Hz) of the shelf filter for feedback damping
+  Real dampGain   =     1.0;   // Linear high freq damping gain
+  Real feedback   =     0.85;  // Feedback gain factor
+
+  // Create and set up the damped comb allpass filter:
+  Allpass flt;
+  flt.setMaxDelayInSamples(delay);
+  Real omega = 2*PI*dampFreq/sampleRate;
+  rsSetupHighDamp(flt, delay, feedback, omega, dampGain, false);
+
+  // Obtain its impulse response:
+  int N = numSamples;
+  Vec h = impulseResponse(flt, N, 1.0);
+  rsPlotVectors(h);
+
+
+  // ...TBC...
+
+  // ToDo:
+  //
+  // Obtain magnitude and phase response from impulse response, from those compute phase delay
+  // and group delay. Obtain response from underlying comb and corrector, ...
+
+
+
+
+
+  // ToDo:
+  //
+  // - Compute the frequency domain response in two ways: from the impulse response via FFT and 
+  //   directly via flt.getTransferFunctionAt and compare the results. This is actually something
+  //   that should go into a unit test and I think the unit tests already do that (verify!). If so,
+  //   then it's enough to do it in one way. Using getTransferFunctionAt should be more accurate,
+  //   especially with high feedback because then the truncation of the impulse response matters 
+  //   more. We'll see...
+}
+
 void dampedCombAllpassChainOf4()
 {
   // Now, we create a chain of 4 such allpass comb filters and produce its impulse response.
@@ -1931,12 +1984,13 @@ void dampedCombAllpasses()
 
   // Currently active experiment:
   //dampedCombFilter();
-  dampedMultiCombAllpassIdea();
+  dampedCombAllpassResponses();
 
   // All experiments:
   dampedCombFilter();                   // Stub: we want to factors out the comb
   dampedCombAllpassIdea();              // Initial explorations of the idea.
   dampedCombAllpassClass();             // ..the idea has been wrapped into a class.
+  dampedCombAllpassResponses();         // Plot responses for phase, group delay, etc.
   dampedCombAllpassChainOf4();          // A chain of 4 damped allpass combs.
   dampedCombAllpassFeedbackBiquad();    // With biquad in feedback path
   dampedCombAllpassFreqDependentRT60(); // Frequency dependent RT60 decay time.

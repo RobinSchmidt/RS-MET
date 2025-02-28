@@ -2077,6 +2077,7 @@ public:
   /** Sets the maximum desired roundtrip delay around the comb. This total roundtrip delay includes
   the z^-1 unit delay, so the delayline length is actually shorter by one. */
   void setMaxIntDelayInSamples(int newMaxDelay);
+  // Maybe move to protected area. It's confusing to have both available to client code.
 
   void setMaxDelayInSamples(TDly newMaxDelay)
   { setMaxIntDelayInSamples((int)rsCeil(newMaxDelay)); }
