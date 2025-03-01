@@ -45,19 +45,42 @@ inline void plotImpulseResponse(TFlt &filter, int length, TSig scale, bool dB = 
   plt.plot();
 }
 
-template<class TSig, class TFlt>
-inline std::vector<std::complex<TSig>> getFrequencyResponse(
-  TFlt &filter, const std::vector<TSig>& w)
+
+template<class TArg>
+inline std::vector<std::complex<TArg>> getFrequencyResponse(
+  std::function<std::complex<TArg>(std::complex<TArg>)>& transferFunc, 
+  const std::vector<TArg>& w)
 {
   size_t N = w.size();
-  std::complex<TSig> j(0,1);        // imaginary unit
-  std::vector<std::complex<TSig>> H(N);  // H(e^jw)
+  std::complex<TArg> j(0,1);             // Imaginary unit
+  std::vector<std::complex<TArg>> H(N);  // H(e^jw)
   for(size_t k = 0; k < N; k++)
-    H[k] = filter.getTransferFunctionAt(exp(j*w[k]));
+    H[k] = transferFunc(exp(j*w[k]));
   return H;
 }
+
+template<class TArg, class TFlt>
+inline std::vector<std::complex<TArg>> getFrequencyResponse(
+  TFlt &filter, const std::vector<TArg>& w)
+{
+  std::function<std::complex<TArg>(std::complex<TArg>)> 
+    transferFunc = [&](std::complex<TArg> z) 
+  { 
+    return filter.getTransferFunctionAt(z); 
+  };
+  return getFrequencyResponse(transferFunc, w);
+
+  //// ToDo (done): refactor to call the function above
+  //size_t N = w.size();
+  //std::complex<TArg> j(0,1);        // imaginary unit
+  //std::vector<std::complex<TArg>> H(N);  // H(e^jw)
+  //for(size_t k = 0; k < N; k++)
+  //  H[k] = filter.getTransferFunctionAt(exp(j*w[k]));
+  //return H;
+}
 // maybe move to RAPT...but maybe use plain arrays instead of vectors there, keep convenience
-// function here
+// function here, rename TSig to TArg - it's typically the TPar type of the filter...or maybe
+// TOmega or just TReal or just T
 
 /** Plots the given magnitude response in dB and phase response in degrees against the frequency
 axis f. */
