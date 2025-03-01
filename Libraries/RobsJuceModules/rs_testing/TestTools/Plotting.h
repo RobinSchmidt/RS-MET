@@ -63,6 +63,10 @@ inline std::vector<std::complex<T>> getFrequencyResponse(
 }
 // Maybe rename to getDigitalFrequencyResponse. ...but maybe not. We are on a computer - we are
 // on a compute here, so filters being digital is a given.
+//
+// Maybe rename to getFreqRespFromTransFunc because the overload resolution with the function
+// below is based solely on the constness of the 1st parameter. That is asking for trouble. We 
+// want to distinguish the function by name.
 
 /** Takes an arbitrary filter object that implements a getTransferFunctAt() member function and 
 produces the filter's frequency response at the given vector of normalized radian frequencies 
@@ -93,38 +97,50 @@ std::vector<T> getOmegas(int N, T fMin, T fMax, T fs, bool logFreq)
   return w;
 }
 
-/** Plots the frequency response of the given filter. The class must have a function
-getTransferFunctionAt... */
-template<class TSig, class TFlt>
-inline void plotFrequencyResponse(TFlt &filter, int N, TSig fMin, TSig fMax, TSig fs, bool logFreq)
-{
-  // create w array (normalized radian frequencies):
-  //std::vector<TSig> w(N);
-  //if(logFreq) RAPT::rsArrayTools::fillWithRangeExponential(&w[0], N, fMin, fMax);
-  //else        RAPT::rsArrayTools::fillWithRangeLinear(&w[0], N, fMin, fMax);
-  //RAPT::rsArrayTools::scale(&w[0], N, 2*PI/fs);
 
+/** Plots the frequency response of the given "transferFunc". This must be a function object just 
+like in getFrequencyResponse(const TFunc& transferFunc, const std::vector<T>& w). */
+template<class TSig, class TFunc>
+inline void plotFrequencyResponse(
+  const TFunc &transferFunc, int N, TSig fMin, TSig fMax, TSig fs, bool logFreq)
+{
+  // Create w array (normalized radian frequencies):
   std::vector<TSig> w = getOmegas(N, fMin, fMax, fs, logFreq);
 
-  // compute magnitude and phase response:
-  std::vector<std::complex<TSig>> H = getFrequencyResponse(filter, w);
+  // Compute magnitude and phase response:
+  std::vector<std::complex<TSig>> H = getFrequencyResponse(transferFunc, w);
   std::vector<TSig> dB(N), phs(N);
   for(int k = 0; k < N; k++) {
     dB[k]  = RAPT::rsAmpToDb(abs(H[k]));
     phs[k] = arg(H[k]); //-2*PI; // arg is in -pi..+pi, we want -2*pi..0 - check, if this is correct
   }
 
-  // unwrap phase, convert to degrees:
+  // Unwrap phase, convert to degrees:
   RAPT::rsArrayTools::unwrap(&phs[0], N, 2*PI);
   for(int k = 0; k < N; k++)
     phs[k] *= 180.0/PI;
 
   // maybe move the two steps above into rapt, too
 
-  // convert w back to Hz and plot:
+  // Convert w back to Hz and plot:
   RAPT::rsArrayTools::scale(&w[0], N, fs/(2*PI));
   plotFrequencyResponse(w, dB, phs, logFreq);
 }
+// Maybe rename to plotFreqRespFromTransFunc
+
+/** Plots the frequency response of the given filter. The class TFlt must have a function
+getTransferFunctionAt()... TBC... */
+template<class T, class TFlt>
+inline void plotFrequencyResponse(TFlt& filter, int N, T fMin, T fMax, T fs, bool logFreq)
+{
+  plotFrequencyResponse(
+    [&](std::complex<T> z) { return filter.getTransferFunctionAt(z); }, 
+    N, fMin, fMax, fs, logFreq);
+}
+
+
+
+
 
 void plotFrequencyResponseReIm(std::vector<double>& f, std::vector<double>& re,
   std::vector<double>& im, bool logFreq = true);
