@@ -45,36 +45,35 @@ inline void plotImpulseResponse(TFlt &filter, int length, TSig scale, bool dB = 
   plt.plot();
 }
 
-/** Takes a std::function (that is supposed to compute the transfer function of a digital filter 
-for a given complex number z) and a vector of normalized radian frequencies w (where 
-omega = 2*pi*frequency/sampleRate) and returns the corresponding vector H(e^(j*w)). */
-template<class T>
+/** Takes a function object "transferFunc" and a vector of normalized radian frequencies w (aka 
+"omega") and returns the corresponding vector of frequency response values H(e^(j*w)). The 
+"transferFunc" function object is supposed to compute the transfer function of a digital filter 
+for a given complex number z = e^(j*w) where w = omega = 2*pi*frequency/sampleRate and j is the 
+imaginary unit. */
+template<class T, class TFunc>
 inline std::vector<std::complex<T>> getFrequencyResponse(
-  std::function<std::complex<T>(std::complex<T>)>& transferFunc, 
-  const std::vector<T>& omega)
+  const TFunc& transferFunc, const std::vector<T>& w)
 {
-  size_t N = omega.size();
+  size_t N = w.size();
   std::complex<T> j(0,1);                  // Imaginary unit
   std::vector<std::complex<T>> H(N);       // H(e^jw)
   for(size_t k = 0; k < N; k++)
-    H[k] = transferFunc(exp(j*omega[k]));
+    H[k] = transferFunc(exp(j*w[k]));
   return H;
 }
+// Maybe rename to getDigitalFrequencyResponse. ...but maybe not. We are on a computer - we are
+// on a compute here, so filters being digital is a given.
 
 /** Takes an arbitrary filter object that implements a getTransferFunctAt() member function and 
 produces the filter's frequency response at the given vector of normalized radian frequencies 
-omega = 2*pi*frequency/sampleRate. The getTransferFunctAt() function must take a complex number z
+w = 2*pi*frequency/sampleRate. The getTransferFunctAt() function must take a complex number z
 and produce the transfer function H(z) at the given value z. */
 template<class T, class TFlt>
 inline std::vector<std::complex<T>> getFrequencyResponse(
-  TFlt &filter, const std::vector<T>& omega)
+  TFlt &filter, const std::vector<T>& w)
 {
-  std::function<std::complex<T>(std::complex<T>)> 
-    transferFunc = [&](std::complex<T> z) 
-  { 
-    return filter.getTransferFunctionAt(z); 
-  };
-  return getFrequencyResponse(transferFunc, omega);
+  return getFrequencyResponse(
+    [&](std::complex<T> z) { return filter.getTransferFunctionAt(z); }, w);
 }
 // Maybe move to RAPT...but maybe use plain arrays instead of vectors there, keep convenience
 // function here
