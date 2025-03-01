@@ -684,25 +684,38 @@ void dampedCombAllpassClass()
 }
 
 /** Plots various responses of the given comb-allpass filter. */
-template<class TFlt, class TSig>
-void rsPlotDampedCombAllpassResponses(TFlt& filter, TSig sampleRate)
+template<class TFlt, class T>
+void rsPlotDampedCombAllpassResponses(TFlt& filter, T sampleRate)
 {
-  TSig fs          = sampleRate;
-
+  T    fs          = sampleRate;
+   
   int  N           = 2000;
   bool logFreqAxis = false;     // Linear freq. axis makes more sense in this case.
-  TSig fMin        = 0;
-  TSig fMax        = 0.5*fs;
+  T    fMin        = 0;
+  T    fMax        = 0.5*fs;
 
   // Magnitude and phase response:
-  plotFrequencyResponse(filter, N, fMin, fMax, fs, logFreqAxis);
+  //plotFrequencyResponse(filter, N, fMin, fMax, fs, logFreqAxis);
   // The phase axis labeling looks ugly - especially when the delay is large. We need to do 
   // something about the ticks. We want them less dense. ..OK - for the time being, I temporarily
   // changed the code there for a less dense tick spacing (180° isntead of 45°). That looks
   // reasonable with a delay of 20.
 
+  // Create function objects for the various transfer functions:
+  auto tfComb = [&](std::complex<T> z) { return filter.getCombTransferFunctionAt(z);      };
+  auto tfCorr = [&](std::complex<T> z) { return filter.getCorrectorTransferFunctionAt(z); };
+  auto tfFull = [&](std::complex<T> z) { return filter.getTransferFunctionAt(z);          };
+
+  // Plot magnitude and phase response:
+  plotFreqRespFromTransFunc(tfComb, N, fMin, fMax, fs, logFreqAxis);
+  plotFreqRespFromTransFunc(tfCorr, N, fMin, fMax, fs, logFreqAxis);
+  plotFreqRespFromTransFunc(tfFull, N, fMin, fMax, fs, logFreqAxis);
+
+
+
   // Magnitude and ringing response:
   plotMagAndRingResponse(filter, N, fMin, fMax, fs, logFreqAxis, false);
+  // ToDo: refactor tha function and call it also with the function objects
 
 
   // ...TBC...
