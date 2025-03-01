@@ -690,7 +690,7 @@ void rsPlotDampedCombAllpassResponses(TFlt& filter, TSig sampleRate)
   TSig fs          = sampleRate;
 
   int  N           = 2000;
-  bool logFreqAxis = false;
+  bool logFreqAxis = false;     // Linear freq. axis makes more sense in this case.
   TSig fMin        = 0;
   TSig fMax        = 0.5*fs;
 
@@ -703,6 +703,10 @@ void rsPlotDampedCombAllpassResponses(TFlt& filter, TSig sampleRate)
 
   // Magnitude and ringing response:
   plotMagAndRingResponse(filter, N, fMin, fMax, fs, logFreqAxis, false);
+
+
+  // ...TBC...
+
 
   // ToDo:
   //
@@ -738,11 +742,6 @@ void dampedCombAllpassResponses()
   Real dampGain   =     0.5;   // Linear high freq damping gain
   Real feedback   =    -0.90;  // Feedback gain factor
 
-  // Plotting options:
-  //Real fMin = 0.0;
-  //Real fMax = 0.5*sampleRate;
-  //bool logFreqAxis = false;    // Linear freq. axis makes more sense in this case.
-
   // Create and set up the damped comb allpass filter:
   Allpass flt;
   flt.setMaxDelayInSamples(delay);
@@ -752,32 +751,10 @@ void dampedCombAllpassResponses()
   // Plot the relevant responses:
   rsPlotDampedCombAllpassResponses(flt, sampleRate);
 
-
-  /*
-  // Obtain its impulse response:
-  int N = numSamples;
-  Vec h = impulseResponse(flt, N, 1.0);
-  //rsPlotVectors(h);
-
-
-  // Magnitude and phase response:
-  plotFrequencyResponse(flt, N, fMin, fMax, sampleRate, logFreqAxis);
-  // The phase axis labeling looks ugly - especially when the delay is large. We need to do 
-  // something about the ticks. We want them less dense. ..OK - for the time being, I temporarily
-  // changed the code there for a less dense tick spacing (180° isntead of 45°). That looks
-  // reasonable with a delay of 20.
-
-  // Magnitude and ringing response:
-  plotMagAndRingResponse(flt, N, fMin, fMax, sampleRate, logFreqAxis, false);
-  */
-
-
-  // ...TBC...
-
-  // ToDo:
-  //
-  // Obtain magnitude and phase response from impulse response, from those compute phase delay
-  // and group delay. Obtain response from underlying comb and corrector, ...
+  //// Obtain its impulse response:
+  //int N = numSamples;
+  //Vec h = impulseResponse(flt, N, 1.0);
+  ////rsPlotVectors(h);
 
 
   // Observations:
@@ -800,15 +777,7 @@ void dampedCombAllpassResponses()
   //
   // ToDo:
   //
-  // - Compute the frequency domain response in two ways: from the impulse response via FFT and 
-  //   directly via flt.getTransferFunctionAt and compare the results. This is actually something
-  //   that should go into a unit test and I think the unit tests already do that (verify!). If so,
-  //   then it's enough to do it in one way. Using getTransferFunctionAt should be more accurate,
-  //   especially with high feedback because then the truncation of the impulse response matters 
-  //   more. We'll see...
-  //
-  // - Maybe make a convenience function plotDampedCombRingResponses(flt, N, ...). It should 
-  //   compute and plot the ringing responses of the comb, corrector and full allpass.
+  // - 
 }
 
 void dampedCombAllpassChainOf4()
