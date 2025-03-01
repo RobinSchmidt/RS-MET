@@ -45,42 +45,39 @@ inline void plotImpulseResponse(TFlt &filter, int length, TSig scale, bool dB = 
   plt.plot();
 }
 
-
-template<class TArg>
-inline std::vector<std::complex<TArg>> getFrequencyResponse(
-  std::function<std::complex<TArg>(std::complex<TArg>)>& transferFunc, 
-  const std::vector<TArg>& w)
+/** Takes a std::function (that is supposed to compute the transfer function of a digital filter 
+for a given complex number z) and a vector of normalized radian frequencies w (where 
+omega = 2*pi*frequency/sampleRate) and returns the corresponding vector H(e^(j*w)). */
+template<class T>
+inline std::vector<std::complex<T>> getFrequencyResponse(
+  std::function<std::complex<T>(std::complex<T>)>& transferFunc, 
+  const std::vector<T>& omega)
 {
-  size_t N = w.size();
-  std::complex<TArg> j(0,1);             // Imaginary unit
-  std::vector<std::complex<TArg>> H(N);  // H(e^jw)
+  size_t N = omega.size();
+  std::complex<T> j(0,1);                  // Imaginary unit
+  std::vector<std::complex<T>> H(N);       // H(e^jw)
   for(size_t k = 0; k < N; k++)
-    H[k] = transferFunc(exp(j*w[k]));
+    H[k] = transferFunc(exp(j*omega[k]));
   return H;
 }
 
-template<class TArg, class TFlt>
-inline std::vector<std::complex<TArg>> getFrequencyResponse(
-  TFlt &filter, const std::vector<TArg>& w)
+/** Takes an arbitrary filter object that implements a getTransferFunctAt() member function and 
+produces the filter's frequency response at the given vector of normalized radian frequencies 
+omega = 2*pi*frequency/sampleRate. The getTransferFunctAt() function must take a complex number z
+and produce the transfer function H(z) at the given value z. */
+template<class T, class TFlt>
+inline std::vector<std::complex<T>> getFrequencyResponse(
+  TFlt &filter, const std::vector<T>& omega)
 {
-  std::function<std::complex<TArg>(std::complex<TArg>)> 
-    transferFunc = [&](std::complex<TArg> z) 
+  std::function<std::complex<T>(std::complex<T>)> 
+    transferFunc = [&](std::complex<T> z) 
   { 
     return filter.getTransferFunctionAt(z); 
   };
-  return getFrequencyResponse(transferFunc, w);
-
-  //// ToDo (done): refactor to call the function above
-  //size_t N = w.size();
-  //std::complex<TArg> j(0,1);        // imaginary unit
-  //std::vector<std::complex<TArg>> H(N);  // H(e^jw)
-  //for(size_t k = 0; k < N; k++)
-  //  H[k] = filter.getTransferFunctionAt(exp(j*w[k]));
-  //return H;
+  return getFrequencyResponse(transferFunc, omega);
 }
-// maybe move to RAPT...but maybe use plain arrays instead of vectors there, keep convenience
-// function here, rename TSig to TArg - it's typically the TPar type of the filter...or maybe
-// TOmega or just TReal or just T
+// Maybe move to RAPT...but maybe use plain arrays instead of vectors there, keep convenience
+// function here
 
 /** Plots the given magnitude response in dB and phase response in degrees against the frequency
 axis f. */
