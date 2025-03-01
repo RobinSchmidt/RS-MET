@@ -683,6 +683,41 @@ void dampedCombAllpassClass()
   //   artificially introduce an additional sample of delay in "pre-delay" mode.
 }
 
+/** Plots various responses of the given comb-allpass filter. */
+template<class TFlt, class TSig>
+void rsPlotDampedCombAllpassResponses(TFlt& filter, TSig sampleRate)
+{
+  TSig fs          = sampleRate;
+
+  int  N           = 2000;
+  bool logFreqAxis = false;
+  TSig fMin        = 0;
+  TSig fMax        = 0.5*fs;
+
+  // Magnitude and phase response:
+  plotFrequencyResponse(filter, N, fMin, fMax, fs, logFreqAxis);
+  // The phase axis labeling looks ugly - especially when the delay is large. We need to do 
+  // something about the ticks. We want them less dense. ..OK - for the time being, I temporarily
+  // changed the code there for a less dense tick spacing (180° isntead of 45°). That looks
+  // reasonable with a delay of 20.
+
+  // Magnitude and ringing response:
+  plotMagAndRingResponse(filter, N, fMin, fMax, fs, logFreqAxis, false);
+
+  // ToDo:
+  //
+  // - Plot the responses of the underlying comb, the corrector and the full filter i.e. the 
+  //   series of comb and corrector. To do that, maybe refactor the plotting code such that it
+  //   accepts a std::function for producing the transfer function. Then we can call it with
+  //   the std::function assigned to returning the result filter.getTransferFunctionAt, 
+  //   filter.getCombTransferFunctionAt, filter.getCorrectortransferFunctionAt. ...but mabye we
+  //   want to see all of them in one single plot...hmmm...and we don't really need to see the 
+  //   magnitude - at least not in the case of the full allpass - because it's just constant 1 
+  //   anyway. But for comb and corrector, it actually makes sense to see it.
+  //
+  // - Plot also group delay and phase delay response.
+}
+
 void dampedCombAllpassResponses()
 {
   // Under construction.
@@ -704,10 +739,9 @@ void dampedCombAllpassResponses()
   Real feedback   =    -0.90;  // Feedback gain factor
 
   // Plotting options:
-  Real fMin = 0.0;
-  Real fMax = 0.5*sampleRate;
-  bool logFreqAxis = false;    // Linear freq. axis makes more sense in this case.
-
+  //Real fMin = 0.0;
+  //Real fMax = 0.5*sampleRate;
+  //bool logFreqAxis = false;    // Linear freq. axis makes more sense in this case.
 
   // Create and set up the damped comb allpass filter:
   Allpass flt;
@@ -715,6 +749,11 @@ void dampedCombAllpassResponses()
   Real dampOmega = 2*PI*dampFreq/sampleRate;
   rsSetupHighDamp(flt, delay, feedback, dampOmega, dampGain, false);
 
+  // Plot the relevant responses:
+  rsPlotDampedCombAllpassResponses(flt, sampleRate);
+
+
+  /*
   // Obtain its impulse response:
   int N = numSamples;
   Vec h = impulseResponse(flt, N, 1.0);
@@ -730,6 +769,7 @@ void dampedCombAllpassResponses()
 
   // Magnitude and ringing response:
   plotMagAndRingResponse(flt, N, fMin, fMax, sampleRate, logFreqAxis, false);
+  */
 
 
   // ...TBC...
