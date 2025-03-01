@@ -51,7 +51,7 @@ inline void plotImpulseResponse(TFlt &filter, int length, TSig scale, bool dB = 
 for a given complex number z = e^(j*w) where w = omega = 2*pi*frequency/sampleRate and j is the 
 imaginary unit. */
 template<class T, class TFunc>
-inline std::vector<std::complex<T>> getFrequencyResponse(
+inline std::vector<std::complex<T>> getFreqRespFromTransFunc(
   const TFunc& transferFunc, const std::vector<T>& w)
 {
   size_t N = w.size();
@@ -66,7 +66,7 @@ inline std::vector<std::complex<T>> getFrequencyResponse(
 //
 // Maybe rename to getFreqRespFromTransFunc because the overload resolution with the function
 // below is based solely on the constness of the 1st parameter. That is asking for trouble. We 
-// want to distinguish the function by name.
+// want to distinguish the function by name.  ...done!
 
 /** Takes an arbitrary filter object that implements a getTransferFunctAt() member function and 
 produces the filter's frequency response at the given vector of normalized radian frequencies 
@@ -76,7 +76,7 @@ template<class T, class TFlt>
 inline std::vector<std::complex<T>> getFrequencyResponse(
   TFlt &filter, const std::vector<T>& w)
 {
-  return getFrequencyResponse(
+  return getFreqRespFromTransFunc(
     [&](std::complex<T> z) { return filter.getTransferFunctionAt(z); }, w);
 }
 // Maybe move to RAPT...but maybe use plain arrays instead of vectors there, keep convenience
@@ -101,14 +101,14 @@ std::vector<T> getOmegas(int N, T fMin, T fMax, T fs, bool logFreq)
 /** Plots the frequency response of the given "transferFunc". This must be a function object just 
 like in getFrequencyResponse(const TFunc& transferFunc, const std::vector<T>& w). */
 template<class TSig, class TFunc>
-inline void plotFrequencyResponse(
+inline void plotFreqRespFromTransFunc(
   const TFunc &transferFunc, int N, TSig fMin, TSig fMax, TSig fs, bool logFreq)
 {
   // Create w array (normalized radian frequencies):
   std::vector<TSig> w = getOmegas(N, fMin, fMax, fs, logFreq);
 
   // Compute magnitude and phase response:
-  std::vector<std::complex<TSig>> H = getFrequencyResponse(transferFunc, w);
+  std::vector<std::complex<TSig>> H = getFreqRespFromTransFunc(transferFunc, w);
   std::vector<TSig> dB(N), phs(N);
   for(int k = 0; k < N; k++) {
     dB[k]  = RAPT::rsAmpToDb(abs(H[k]));
@@ -133,7 +133,7 @@ getTransferFunctionAt()... TBC... */
 template<class T, class TFlt>
 inline void plotFrequencyResponse(TFlt& filter, int N, T fMin, T fMax, T fs, bool logFreq)
 {
-  plotFrequencyResponse(
+  plotFreqRespFromTransFunc(
     [&](std::complex<T> z) { return filter.getTransferFunctionAt(z); }, 
     N, fMin, fMax, fs, logFreq);
 }
