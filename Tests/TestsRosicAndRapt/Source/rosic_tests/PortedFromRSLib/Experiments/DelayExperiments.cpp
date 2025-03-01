@@ -697,11 +697,17 @@ void dampedCombAllpassResponses()
 
   // User parameters:
   int  delay      =    20;     // Main delay roundtrip length in samples. Is M-1 in the algo
-  int  numSamples =  8192;     // Number of samples to generate
+  int  numSamples =  4410;     // Number of samples to generate
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
-  Real dampFreq   =  1000;     // Frequency (in Hz) of the shelf filter for feedback damping
-  Real dampGain   =     1.0;   // Linear high freq damping gain
-  Real feedback   =    -0.95;  // Feedback gain factor
+  Real dampFreq   = 10000;     // Frequency (in Hz) of the shelf filter for feedback damping
+  Real dampGain   =     0.5;   // Linear high freq damping gain
+  Real feedback   =    -0.90;  // Feedback gain factor
+
+  // Plotting options:
+  Real fMin = 0.0;
+  Real fMax = 0.5*sampleRate;
+  bool logFreqAxis = false;    // Linear freq. axis makes more sense in this case.
+
 
   // Create and set up the damped comb allpass filter:
   Allpass flt;
@@ -712,16 +718,18 @@ void dampedCombAllpassResponses()
   // Obtain its impulse response:
   int N = numSamples;
   Vec h = impulseResponse(flt, N, 1.0);
-  rsPlotVectors(h);
+  //rsPlotVectors(h);
 
 
-  plotFrequencyResponse(flt, N, 20.0, 22050.0, sampleRate, false);
-  //plotFrequencyResponse(flt, N, 20.0, 20000.0, sampleRate, true);
+  // Magnitude and phase response:
+  plotFrequencyResponse(flt, N, fMin, fMax, sampleRate, logFreqAxis);
   // The phase axis labeling looks ugly - especially when the delay is large. We need to do 
-  // something about the ticks. we want them less dense.
+  // something about the ticks. We want them less dense. ..OK - for the time being, I temporarily
+  // changed the code there for a less dense tick spacing (180° isntead of 45°). That looks
+  // reasonable with a delay of 20.
 
-
-  plotMagAndRingResponse(flt, N, 20.0, 22050.0, sampleRate, false, false);
+  // Magnitude and ringing response:
+  plotMagAndRingResponse(flt, N, fMin, fMax, sampleRate, logFreqAxis, false);
 
 
   // ...TBC...
@@ -734,10 +742,20 @@ void dampedCombAllpassResponses()
 
   // Observations:
   //
-  // - The ringing response seems to make indeed some sense for these types of filters.
+  // - The phase response features steep slopes at a harmonic series whose fundamental is 
+  //   determined by the delay. The phase response looks like a staircase.
+  //
+  // - The stairsteps get steeper when the (absolute value of the) feedback is higher.
+  //
+  // - The ringing shows clear spikes at the ringing frequencies, i.e. at the stair steps of the 
+  //   phase response. When dampGain = 1, the spikes are all of the same width and height.
   //
   // - For delay = 20, feedback = -0.95, dampGain = 1, we see a ringing resonance at the Nyquist 
-  //   freq. For feedback = +0.95, there is no such thing.
+  //   freq and also at DC. For feedback = +0.95, there is no such thing.
+  //
+  // - With delay = 20, dampFreq = 10000, dampGain = 0.5, feedback = -0.9, we see that the peaks 
+  //   in the ringing response get wider and smaller with frequency. At lower frequencies, the 
+  //   spikes are narrower and taller.
   //
   //
   // ToDo:
@@ -748,6 +766,9 @@ void dampedCombAllpassResponses()
   //   then it's enough to do it in one way. Using getTransferFunctionAt should be more accurate,
   //   especially with high feedback because then the truncation of the impulse response matters 
   //   more. We'll see...
+  //
+  // - Maybe make a convenience function plotDampedCombRingResponses(flt, N, ...). It should 
+  //   compute and plot the ringing responses of the comb, corrector and full allpass.
 }
 
 void dampedCombAllpassChainOf4()
@@ -2046,4 +2067,11 @@ void dampedCombAllpasses()
   // - Instantiate rsDampedCombAllpass with rsFloat64x2 for TSig and use a feedback of [+k, -k], 
   //   i.e. different signs for the feedback for left and right channel. Thta should give 
   //   complementary combs for left and right channel.
+  //
+  // - Instantiate the damped comb filter for rsFloat64x2. Interpret that data type as stereo 
+  //   signal. Use a feedback gain that has a positive sign for one channel and a negative sign for
+  //   the other. That should give one channel a harmonic series of e.g. 100,200,300,400,500,... 
+  //   and the other 50,150,250,350,450,... That may make for a nice stereoization effect. Verify
+  //   the mono compatibility! Let the user dial in the strength of the effect via the feedback
+  //   gain. 
 }

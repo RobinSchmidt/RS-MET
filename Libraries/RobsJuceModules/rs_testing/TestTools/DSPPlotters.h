@@ -21,7 +21,7 @@ the list. Once you are finished adding filters this way, you can get the various
 respective plot... functions. */
 
 template <class T>
-class FilterPlotter : public GNUPlotter
+class FilterPlotter : public GNUPlotter  // rename to rsFilterPlotter_ZPK_BA
 {
 
 public:
@@ -337,8 +337,9 @@ protected:
 
   RAPT::rsFourierTransformerBluestein<T> transformer;
 
-
 };
+
+
 
 //=================================================================================================
 

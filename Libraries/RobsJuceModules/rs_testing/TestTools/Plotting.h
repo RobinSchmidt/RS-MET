@@ -157,9 +157,8 @@ inline void plotMagAndRingResponse(
     // This makes plots of some filters (like elliptic bandpass) symmetric. I think, when we do 
     // that, we get a relative ringing time, i.e. expressed in number-of-cycles instead of in 
     // seconds. 
-    // ToDo: Make this optional. It doesn't seem suitable for comb and comb-allpass filters
 
-    //dmag[k] *= dmag[k];  
+    //dmag[k] *= dmag[k];
     // test - undo sqrt...hmm...nope
 
     //dmag[k] /= mag[k];
@@ -174,21 +173,34 @@ inline void plotMagAndRingResponse(
   plotFrequencyResponseReIm(w, mag, dmag, logFreq);
 
   // Observations: 
-  // -Multiplying dmag[k] by w[k] makes the response symmetrical for ellitpic bandpasses, but maybe
-  //  the asymmetry is actually a legit feature because from the impulse response, it seems like 
-  //  the lower bandedge does indeed ring longer. Maybe the multiplication by w[k] gives the number 
-  //  of cycles of ringing, not the absolute time?
-  // -I think, the plotting code normalizes the data internally. The plots both hit 1.0 but i think
-  //  the data does not necessarily. ...hmm - nope - sometimes, it does not hi 1.0. That seems to 
-  //  be a coincidence that happens in some cases.
-
+  //
+  // - Multiplying dmag[k] by w[k] makes the response symmetrical for ellitpic bandpasses, but 
+  //   maybe the asymmetry is actually a legit feature because from the impulse response, it seems
+  //   like the lower bandedge does indeed ring longer. Maybe the multiplication by w[k] gives the
+  //   number of cycles of ringing, not the absolute time?
+  //
+  // - I think, the plotting code normalizes the data internally. The plots both hit 1.0 but I 
+  //   think the data does not necessarily. ...hmm - nope - sometimes, it does not hi 1.0. That 
+  //   seems to be a coincidence that happens in some cases.
+  //
+  //
   // ToDo:
-  // -Try if it makes a difference, if we do the multiplication by w[k] before computing the 
-  //  magnitude or even before computing the derivative
-  // -Verify if the name of ringingQ is appropriate. The idea is to normalize the ringing time by
-  //  the frequency - or someting. I'm not quite sure about the rationale of multiplying the 
-  //  magnitude of the complex derivative by the frequency. I just observed that for some filters,
-  //  doing so makes the plots look nicely symmetric.
+  //
+  // - Try if it makes a difference, if we do the multiplication by w[k] before computing the 
+  //   magnitude or even before computing the derivative
+  //
+  // - Verify if the name of ringingQ is appropriate. The idea is to normalize the ringing time by
+  //   the frequency - or someting. I'm not quite sure about the rationale of multiplying the 
+  //   magnitude of the complex derivative by the frequency. I just observed that for some filters,
+  //   doing so makes the plots look nicely symmetric. I think, without the multiplication, the 
+  //   plot shows the absolute ringing time. For higher frequencies, the same absolute ringing time
+  //   implies a higher Q. The Q is proportional to the frequency. So, yeah - the name seems 
+  //   appropriate.
+  //
+  // - Factor out a getRingingResponse function. We could actually implement the numerical 
+  //   differentiation differently (more accurately) by using the numeric differentiation functions
+  //   that evaluate the function at x+h, x-h. We don't nee to use the data based estimator. We can
+  //   use the function based estimator.
 }
 
 

@@ -85,7 +85,8 @@ void plotFrequencyResponse(std::vector<double>& f, std::vector<double>& dB,
   p.addDataArrays(N, &f[0], &dB[0]);
   p.addDataArrays(N, &f[0], &degrees[0]);
   //p.setPixelSize(1200, 400);
-  p.setPixelSize(900, 300);
+  //p.setPixelSize(900, 300);
+  p.setPixelSize(1000, 500);
   //p.setTitle("Filter Frequency Response");
   //p.setGraphColors("A00000", "909000", "008000", "0000A0", "800080",
   //  "A00000", "909000", "008000", "0000A0", "800080" );
@@ -105,9 +106,18 @@ void plotFrequencyResponse(std::vector<double>& f, std::vector<double>& dB,
 
   p.addCommand("set ytics 10");   // 10 dB steps for magnitude axis
 
-  p.addCommand("set y2tics 45");  // 45° steps for phase axis
+
+
+  // ToDo: check the range of the phase values and adjust the ticks accordingly. It should be
+  // one of 45, 90, 180, 360, 720, etc. We should get around 20 ticks. Maybe aim at something 
+  // between 15 and 30.
+
+  //p.addCommand("set y2tics 45");  // 45° steps for phase axis
   // Ugly for very high order filters such as damped comb allpass filters. Nice for normal filters,
   // though
+
+  p.addCommand("set y2tics 180");  // 180° steps for phase axis
+
 
 
   // add magnitude and phase graphs:
@@ -124,7 +134,8 @@ void plotFrequencyResponseReIm(std::vector<double>& f, std::vector<double>& re,
   p.addDataArrays(N, &f[0], &re[0]);
   p.addDataArrays(N, &f[0], &im[0]);
   //p.setPixelSize(1200, 400);
-  p.setPixelSize(900, 300);
+  //p.setPixelSize(900, 300);
+  p.setPixelSize(1000, 500);
 
   if(logFreq)
     p.addCommand("set logscale x");
