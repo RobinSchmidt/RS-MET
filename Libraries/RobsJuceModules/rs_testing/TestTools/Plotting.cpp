@@ -128,8 +128,9 @@ void plotFrequencyResponse(std::vector<double>& f, std::vector<double>& dB,
   p.plot();
 }
 
-void plotFrequencyResponseReIm(std::vector<double>& f, std::vector<double>& re,
-  std::vector<double>& im, bool logFreq)
+template<class T>
+void plotFrequencyResponseReIm(
+  std::vector<T>& f, std::vector<T>& re, std::vector<T>& im, bool logFreq)
 {
   int N = (int) f.size();
   GNUPlotter p;
@@ -154,6 +155,9 @@ void plotFrequencyResponseReIm(std::vector<double>& f, std::vector<double>& re,
   p.addGraph("i 1 u 1:2 w lines lw 1.5 axes x1y2 notitle");
   p.plot();
 }
+template void plotFrequencyResponseReIm(
+  std::vector<double>& f, std::vector<double>& re, std::vector<double>& im, bool logFreq);
+
 
 
 

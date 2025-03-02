@@ -138,14 +138,12 @@ inline void plotFrequencyResponse(TFlt& filter, int N, T fMin, T fMax, T fs, boo
     N, fMin, fMax, fs, logFreq);
 }
 
-
-
-
 /** Takes a vector of frequencies for the x-axis and vectors of real and imaginary part of a 
 frequency response and plots them. */
-void plotFrequencyResponseReIm(std::vector<double>& f, std::vector<double>& re,
-  std::vector<double>& im, bool logFreq = true);
-
+template<class T>
+void plotFrequencyResponseReIm(
+  std::vector<T>& f, std::vector<T>& re, std::vector<T>& im, bool logFreq = true);
+// Rename to plotTwoFrequencyResponses
 
 
 template<class TSig, class TFlt>
