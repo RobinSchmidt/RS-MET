@@ -726,9 +726,13 @@ struct rsFrequencyResponsePlotSettings
 
 /** Plots various responses of the given comb-allpass filter. */
 template<class TFlt, class T>
-void rsPlotDampedCombAllpassResponses(TFlt& filter, T sampleRate)
+void rsPlotDampedCombAllpassResponses(
+  TFlt& filter, rsFrequencyResponsePlotSettings& plotSetup, T dummy)
 {
-  T    fs      = sampleRate;
+  // The dummy is need for the compiler to infer the type T. Maybe later we can replace it by some
+  // actaully useful parameter of type T.
+
+  T    fs      = plotSetup.sampRat;
   int  N       = 2000;
   bool logFreq = false;     // Linear freq. axis makes more sense in this case.
   T    fMin    = 0;
@@ -785,13 +789,15 @@ void dampedCombAllpassResponses()
   // comb allpass filter and its underlying comb and corrector.
 
   // Define types to be used:
-  using Real    = double;
-  using Vec     = std::vector<Real>;
-  using Allpass = rsDampedCombAllpass<Real, Real, Real>;
+  using Real      = double;
+  using Vec       = std::vector<Real>;
+  using Allpass   = rsDampedCombAllpass<Real, Real, Real>;
+  using PlotSetup = rsFrequencyResponsePlotSettings;
+  using PlotType  = PlotSetup::Type;
 
   // User parameters:
   int  delay      =    20;     // Main delay roundtrip length in samples. Is M-1 in the algo
-  int  numSamples =  4410;     // Number of samples to generate
+  int  numSamples =  4410;     // Number of samples to generate  ...rename to numBins
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
   Real dampFreq   = 10000;     // Frequency (in Hz) of the shelf filter for feedback damping
   Real dampGain   =     0.5;   // Linear high freq damping gain
@@ -803,8 +809,21 @@ void dampedCombAllpassResponses()
   Real dampOmega = 2*PI*dampFreq/sampleRate;
   rsSetupHighDamp(flt, delay, feedback, dampOmega, dampGain, false);
 
+  // Set up the plot settings:
+  PlotSetup plotSetup;
+  plotSetup.logFreq = false;
+  plotSetup.minFreq = 0.0;
+  plotSetup.maxFreq = 0.5*sampleRate;
+  plotSetup.sampRat = sampleRate;
+  plotSetup.numBins = numSamples;
+  plotSetup.type    = PlotType::decibelsAndPhase;
+
+
   // Plot the relevant responses:
-  rsPlotDampedCombAllpassResponses(flt, sampleRate);
+  Real dummy = 0;
+  rsPlotDampedCombAllpassResponses(flt, plotSetup, dummy);
+  //rsPlotDampedCombAllpassResponses(flt, sampleRate);
+
 
   //// Obtain its impulse response:
   //int N = numSamples;
