@@ -138,12 +138,13 @@ inline void plotFrequencyResponse(TFlt& filter, int N, T fMin, T fMax, T fs, boo
     N, fMin, fMax, fs, logFreq);
 }
 
-/** Takes a vector of frequencies for the x-axis and vectors of real and imaginary part of a 
-frequency response and plots them. */
+/** Takes a vector f of frequencies for the x-axis and 2 vectors r1, r2 of frequency responses for
+the y-values and plots them in a single plot. The two frequency responses r1, r2 can be responses 
+of two filters or different aspects of the response of a single filter, such as real and imaginary
+part, magnitude and phase, etc. */
 template<class T>
-void plotFrequencyResponseReIm(
-  std::vector<T>& f, std::vector<T>& re, std::vector<T>& im, bool logFreq = true);
-// Rename to plotTwoFrequencyResponses
+void plotTwoFrequencyResponses(
+  std::vector<T>& f, std::vector<T>& r1, std::vector<T>& r2, bool logFreq = true);
 
 
 template<class TSig, class TFlt>
@@ -157,7 +158,7 @@ inline void plotFrequencyResponseReIm(TFlt& filter, int N, TSig fMin, TSig fMax,
     re[k] = H[k].real();
     im[k] = H[k].imag(); }
 
-  plotFrequencyResponseReIm(w, re, im, logFreq);
+  plotTwoFrequencyResponses(w, re, im, logFreq);
 }
 
 /** Magnitude- and ringing response. The concept of "ringing response" is still VERY sketchy and 
@@ -206,7 +207,7 @@ inline void plotMagAndRingResponse(
   }
 
   // plot:
-  plotFrequencyResponseReIm(w, mag, dmag, logFreq);
+  plotTwoFrequencyResponses(w, mag, dmag, logFreq);
   // The two vectors are not really the real and imaginary part of anything but the plotting style
   // of the ..ReIm function is suitable for this anyway, so we "abuse" it here. Maybe rename the 
   // function to plotTwoFrequencyResponses to make clear that it's more generally applicable.

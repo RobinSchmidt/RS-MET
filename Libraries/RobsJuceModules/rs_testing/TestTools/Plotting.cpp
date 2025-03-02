@@ -129,7 +129,7 @@ void plotFrequencyResponse(std::vector<double>& f, std::vector<double>& dB,
 }
 
 template<class T>
-void plotFrequencyResponseReIm(
+void plotTwoFrequencyResponses(
   std::vector<T>& f, std::vector<T>& re, std::vector<T>& im, bool logFreq)
 {
   int N = (int) f.size();
@@ -155,7 +155,7 @@ void plotFrequencyResponseReIm(
   p.addGraph("i 1 u 1:2 w lines lw 1.5 axes x1y2 notitle");
   p.plot();
 }
-template void plotFrequencyResponseReIm(
+template void plotTwoFrequencyResponses(
   std::vector<double>& f, std::vector<double>& re, std::vector<double>& im, bool logFreq);
 
 
