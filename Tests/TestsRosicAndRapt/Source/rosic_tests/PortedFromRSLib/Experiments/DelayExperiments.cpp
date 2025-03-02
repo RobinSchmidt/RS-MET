@@ -727,16 +727,13 @@ void rsPlotDampedCombAllpassResponses(TFlt& filter, T sampleRate)
 
   // ToDo:
   //
-  // - Plot the responses of the underlying comb, the corrector and the full filter i.e. the 
-  //   series of comb and corrector. To do that, maybe refactor the plotting code such that it
-  //   accepts a std::function for producing the transfer function. Then we can call it with
-  //   the std::function assigned to returning the result filter.getTransferFunctionAt, 
-  //   filter.getCombTransferFunctionAt, filter.getCorrectortransferFunctionAt. ...but mabye we
-  //   want to see all of them in one single plot...hmmm...and we don't really need to see the 
-  //   magnitude - at least not in the case of the full allpass - because it's just constant 1 
-  //   anyway. But for comb and corrector, it actually makes sense to see it.
+  // - Plot also group delay and phase delay response. Maybe let the caller switch between the kind
+  //   of response plot. Maybe make an enum rsFilterPlotType and let this function take a parameter
+  //   of this enum to switch between different types of plots.
   //
-  // - Plot also group delay and phase delay response.
+  // - Maybe let the caller also set up the logFreq setting, min/max freqs, etc. Maybe it's worth
+  //   to define a struct rsFilterPlotSettings that contains all these such that the caller doesn't
+  //   have to write them all out in every call.
 }
 
 void dampedCombAllpassResponses()
@@ -803,7 +800,7 @@ void dampedCombAllpassResponses()
   // - Try to put an allpass in series that attempts to counteract the ringing somehow. It should 
   //   smooth out the stairsteps. But maybe if such a compensation allpass is perfect (i.e. 
   //   smoothes out the straisteps perfectly), we just end up with an allpass with linear phase 
-  //  response, i.e. a pure delay? That would be boring!
+  //   response, i.e. a pure delay? That would be boring!
   //
   // - Instead of the delayline, try to use a different kind of filter. Maybe a Schroeder allpass
   //   or a feedforward comb. Maybe with the latter, we would venture into "notchpass" territory?
