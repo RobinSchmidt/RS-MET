@@ -711,10 +711,14 @@ void rsPlotDampedCombAllpassResponses(TFlt& filter, T sampleRate)
   plotFreqRespFromTransFunc(tfCorr, N, fMin, fMax, fs, logFreq);
   plotFreqRespFromTransFunc(tfFull, N, fMin, fMax, fs, logFreq);
 
-
-
   // Magnitude and ringing response:
-  plotMagAndRingResponse(filter, N, fMin, fMax, fs, logFreq, false);
+  plotMagAndRingRespFromTransFunc(tfComb, N, fMin, fMax, fs, logFreq, false);
+  plotMagAndRingRespFromTransFunc(tfCorr, N, fMin, fMax, fs, logFreq, false);
+  plotMagAndRingRespFromTransFunc(tfFull, N, fMin, fMax, fs, logFreq, false);
+
+
+  // Old:
+  //plotMagAndRingResponse(filter, N, fMin, fMax, fs, logFreq, false);
   // ToDo: refactor that function and call it also with the function objects
 
 
