@@ -141,9 +141,12 @@ inline void plotFrequencyResponse(TFlt& filter, int N, T fMin, T fMax, T fs, boo
 
 
 
-
+/** Takes a vector of frequencies for the x-axis and vectors of real and imaginary part of a 
+frequency response and plots them. */
 void plotFrequencyResponseReIm(std::vector<double>& f, std::vector<double>& re,
   std::vector<double>& im, bool logFreq = true);
+
+
 
 template<class TSig, class TFlt>
 inline void plotFrequencyResponseReIm(TFlt& filter, int N, TSig fMin, TSig fMax, TSig fs, bool logFreq)
@@ -206,6 +209,10 @@ inline void plotMagAndRingResponse(
 
   // plot:
   plotFrequencyResponseReIm(w, mag, dmag, logFreq);
+  // The two vectors are not really the real and imaginary part of anything but the plotting style
+  // of the ..ReIm function is suitable for this anyway, so we "abuse" it here. Maybe rename the 
+  // function to plotTwoFrequencyResponses to make clear that it's more generally applicable.
+
 
   // Observations: 
   //

@@ -687,13 +687,13 @@ void dampedCombAllpassClass()
 template<class TFlt, class T>
 void rsPlotDampedCombAllpassResponses(TFlt& filter, T sampleRate)
 {
-  T    fs          = sampleRate;
-   
-  int  N           = 2000;
-  bool logFreqAxis = false;     // Linear freq. axis makes more sense in this case.
-  T    fMin        = 0;
-  T    fMax        = 0.5*fs;
+  T    fs      = sampleRate;
+  int  N       = 2000;
+  bool logFreq = false;     // Linear freq. axis makes more sense in this case.
+  T    fMin    = 0;
+  T    fMax    = 0.5*fs;
 
+  // Old:
   // Magnitude and phase response:
   //plotFrequencyResponse(filter, N, fMin, fMax, fs, logFreqAxis);
   // The phase axis labeling looks ugly - especially when the delay is large. We need to do 
@@ -707,15 +707,15 @@ void rsPlotDampedCombAllpassResponses(TFlt& filter, T sampleRate)
   auto tfFull = [&](std::complex<T> z) { return filter.getTransferFunctionAt(z);          };
 
   // Plot magnitude and phase response:
-  plotFreqRespFromTransFunc(tfComb, N, fMin, fMax, fs, logFreqAxis);
-  plotFreqRespFromTransFunc(tfCorr, N, fMin, fMax, fs, logFreqAxis);
-  plotFreqRespFromTransFunc(tfFull, N, fMin, fMax, fs, logFreqAxis);
+  plotFreqRespFromTransFunc(tfComb, N, fMin, fMax, fs, logFreq);
+  plotFreqRespFromTransFunc(tfCorr, N, fMin, fMax, fs, logFreq);
+  plotFreqRespFromTransFunc(tfFull, N, fMin, fMax, fs, logFreq);
 
 
 
   // Magnitude and ringing response:
-  plotMagAndRingResponse(filter, N, fMin, fMax, fs, logFreqAxis, false);
-  // ToDo: refactor tha function and call it also with the function objects
+  plotMagAndRingResponse(filter, N, fMin, fMax, fs, logFreq, false);
+  // ToDo: refactor that function and call it also with the function objects
 
 
   // ...TBC...
