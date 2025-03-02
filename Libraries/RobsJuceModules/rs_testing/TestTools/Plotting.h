@@ -161,15 +161,16 @@ inline void plotFrequencyResponseReIm(TFlt& filter, int N, TSig fMin, TSig fMax,
   plotTwoFrequencyResponses(w, re, im, logFreq);
 }
 
+
 /** Magnitude- and ringing response. The concept of "ringing response" is still VERY sketchy and 
 experimental. See this thread: https://www.kvraudio.com/forum/viewtopic.php?f=33&t=569114 */
-template<class TSig, class TFlt>
-inline void plotMagAndRingResponse(
-  TFlt& filter, int N, TSig fMin, TSig fMax, TSig fs, bool logFreq, bool ringingQ = true)
+template<class TSig, class TFunc>
+inline void plotMagAndRingRespFromTransFunc(const TFunc& transferFunc, int N, TSig fMin, TSig fMax, 
+  TSig fs, bool logFreq, bool ringingQ = true)
 {
   // This is the same as in function above - maybe factor out:
   std::vector<TSig> w = getOmegas(N, fMin, fMax, fs, logFreq);
-  std::vector<std::complex<TSig>> H = getFrequencyResponse(filter, w);
+  std::vector<std::complex<TSig>> H = getFreqRespFromTransFunc(transferFunc, w);
   RAPT::rsArrayTools::scale(&w[0], N, fs/(2*PI));
   std::vector<TSig> re(N), im(N);
   for(int k = 0; k < N; k++) {
@@ -243,6 +244,19 @@ inline void plotMagAndRingResponse(
   //   that evaluate the function at x+h, x-h. We don't nee to use the data based estimator. We can
   //   use the function based estimator.
 }
+
+template<class T, class TFlt>
+inline void plotMagAndRingResponse(TFlt& filter, int N, T fMin, T fMax, T fs, 
+  bool logFreq, bool ringingQ = true)
+{
+  plotMagAndRingRespFromTransFunc(
+    [&](std::complex<T> z) { return filter.getTransferFunctionAt(z); }, 
+    N, fMin, fMax, fs, logFreq, ringingQ);
+}
+
+
+
+
 
 
 // new, dragged over from RSLib tests (TestUtilities.h):
