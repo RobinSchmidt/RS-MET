@@ -732,11 +732,12 @@ void rsPlotDampedCombAllpassResponses(
   // The dummy is need for the compiler to infer the type T. Maybe later we can replace it by some
   // actaully useful parameter of type T.
 
+  // Retrieve the relevant plot settings:
   T    fs      = plotSetup.sampRat;
-  int  N       = 2000;
-  bool logFreq = false;     // Linear freq. axis makes more sense in this case.
-  T    fMin    = 0;
-  T    fMax    = 0.5*fs;
+  int  N       = plotSetup.numBins;
+  bool logFreq = plotSetup.logFreq; 
+  T    fMin    = plotSetup.minFreq;
+  T    fMax    = plotSetup.maxFreq;
 
   // Old:
   // Magnitude and phase response:
@@ -751,15 +752,31 @@ void rsPlotDampedCombAllpassResponses(
   auto tfCorr = [&](std::complex<T> z) { return filter.getCorrectorTransferFunctionAt(z); };
   auto tfFull = [&](std::complex<T> z) { return filter.getTransferFunctionAt(z);          };
 
-  // Plot magnitude and phase response:
-  plotFreqRespFromTransFunc(tfComb, N, fMin, fMax, fs, logFreq);
-  plotFreqRespFromTransFunc(tfCorr, N, fMin, fMax, fs, logFreq);
-  plotFreqRespFromTransFunc(tfFull, N, fMin, fMax, fs, logFreq);
+  // Create the desired type of plot for the comb, corrector and full filter:
+  using PT = rsFrequencyResponsePlotSettings::Type;  // Plot type
+  switch(plotSetup.type)
+  {
+  case PT::decibelsAndPhase: {
+    plotFreqRespFromTransFunc(tfComb, N, fMin, fMax, fs, logFreq);
+    plotFreqRespFromTransFunc(tfCorr, N, fMin, fMax, fs, logFreq);
+    plotFreqRespFromTransFunc(tfFull, N, fMin, fMax, fs, logFreq); }  break;
 
-  // Magnitude and ringing response:
-  plotMagAndRingRespFromTransFunc(tfComb, N, fMin, fMax, fs, logFreq, false);
-  plotMagAndRingRespFromTransFunc(tfCorr, N, fMin, fMax, fs, logFreq, false);
-  plotMagAndRingRespFromTransFunc(tfFull, N, fMin, fMax, fs, logFreq, false);
+  case PT::decibelsAndRing: {
+    plotMagAndRingRespFromTransFunc(tfComb, N, fMin, fMax, fs, logFreq, false);
+    plotMagAndRingRespFromTransFunc(tfCorr, N, fMin, fMax, fs, logFreq, false);
+    plotMagAndRingRespFromTransFunc(tfFull, N, fMin, fMax, fs, logFreq, false); }  break;
+  }
+
+
+  //// Plot magnitude and phase response:
+  //plotFreqRespFromTransFunc(tfComb, N, fMin, fMax, fs, logFreq);
+  //plotFreqRespFromTransFunc(tfCorr, N, fMin, fMax, fs, logFreq);
+  //plotFreqRespFromTransFunc(tfFull, N, fMin, fMax, fs, logFreq);
+
+  //// Magnitude and ringing response:
+  //plotMagAndRingRespFromTransFunc(tfComb, N, fMin, fMax, fs, logFreq, false);
+  //plotMagAndRingRespFromTransFunc(tfCorr, N, fMin, fMax, fs, logFreq, false);
+  //plotMagAndRingRespFromTransFunc(tfFull, N, fMin, fMax, fs, logFreq, false);
 
 
   // Old:
@@ -821,7 +838,20 @@ void dampedCombAllpassResponses()
 
   // Plot the relevant responses:
   Real dummy = 0;
+
+  plotSetup.type = PlotType::decibelsAndPhase; 
   rsPlotDampedCombAllpassResponses(flt, plotSetup, dummy);
+
+  plotSetup.type = PlotType::decibelsAndRing; 
+  rsPlotDampedCombAllpassResponses(flt, plotSetup, dummy);
+
+
+  // Maybe make a helper function that we can all like:
+  //plotResponse(flt, Type::decibelsAndPhase); etc.
+
+
+
+
   //rsPlotDampedCombAllpassResponses(flt, sampleRate);
 
 
