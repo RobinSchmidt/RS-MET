@@ -186,6 +186,9 @@ Ideas:
 
 - Currently, the arithmetic operations make sense only when the two operands have the same modulus
   -Generalize this to a sort of "multi-modular" or "mixed-modular" arithmetic
+  -Define for two moduli m1, m2: they are k-compatible if any value in modulus m1 or m2 can also be 
+   interpreted as an unreduced value in modulus k. That means that m1, m2 must be divisible by k. 
+   The highest compatibility number k for m1,m2 is kMax: gcd(m1, m2) ...verify
   -The modulus of the result should be the lowest common multiple of the moduli of the operands 
   -I think, it could make sense because in modular arithmetic, we can either take the remainder 
    after each operation or we can just calculate everything in the integers and take the remainder 
@@ -197,12 +200,17 @@ Ideas:
   -Maybe as equivalence relation between such mixed-modular integers, we should use: The larger 
    modulus is a multiple of the smaller modulus and both values are congruent with respect to the
    smaller modulus. The first check ensures that is even makes sense to compare the values. The 
-   second check on the values seems to make sense because 
+   second check on the values seems to make sense because. Or maybe just compare the values using 
+   the gcd of both moduli (i.e. the highest compatibility number) to compare the values. That means
+   (v1,m1) == (v2,m2)  iff  v1 % k == v2 % k  where  k = gcd(m1,m2). I use the tuple notation (v,m)
+   to denote the pair of value and modulus here. I think, it would imply that two numbers with 
+   mutually prime moduli are always equivalent? ..except is one of then is zero and the other is 
+   not?
   -What algebraic structure do we get with so defined multimodular integers? is it still a ring?
   -Maybe for defining the equality comparison between such multimodular integers, one should 
    compare the remainders modulo the gcd of both moduli? ..but would such a definition actually 
    satisfy the constraints for an equivalence relation? ...i think, it breaks transitivity...
-  -Maybe solving a system of equations in multimodular integers can be related to teh Chinese
+  -Maybe solving a system of equations in multimodular integers can be related to the Chinese
    remainder theorem?
 
 - Does the notion of a modular rational number make any sense? i.e. numerator and/or denominator 

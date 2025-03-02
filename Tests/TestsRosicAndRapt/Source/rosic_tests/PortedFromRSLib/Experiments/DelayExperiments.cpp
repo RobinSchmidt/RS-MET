@@ -790,7 +790,23 @@ void dampedCombAllpassResponses()
   //
   // ToDo:
   //
-  // - 
+  // - Try a series of an allpass with positive and negative feedback but otherwise the same 
+  //   settings. The ringing frequencies of both filters should interleave. But maybe that's just 
+  //   equivalent ot a single comb-allpass with lower (fundamental) ringing frequency? Because if 
+  //   we superimpose ringing at 100,200,300,... with 50,150,250,... we get a harmonic series with
+  //   a fundamental of 50.
+  //
+  // - Try to put an allpass in series that attempts to counteract the ringing somehow. It should 
+  //   smooth out the stairsteps. But maybe if such a compensation allpass is perfect (i.e. 
+  //   smoothes out the straisteps perfectly), we just end up with an allpass with linear phase 
+  //  response, i.e. a pure delay? That would be boring!
+  //
+  // - Instead of the delayline, try to use a different kind of filter. Maybe a Schroeder allpass
+  //   or a feedforward comb. Maybe with the latter, we would venture into "notchpass" territory?
+  //   I'm not sure -> figure that out.
+  //
+  // - In a musical context, tune the ringing frequencies to the key of the song.
+
 }
 
 void dampedCombAllpassChainOf4()
