@@ -109,8 +109,10 @@ void plotFrequencyResponse(std::vector<double>& f, std::vector<double>& dB,
 
 
   // ToDo: check the range of the phase values and adjust the ticks accordingly. It should be
-  // one of 45, 90, 180, 360, 720, etc. We should get around 20 ticks. Maybe aim at something 
-  // between 15 and 30.
+  // one of 45, 90, 180, 360, 720, etc. In general: 45 * 2^k for some suitable k. We should get
+  // around 20 ticks. Maybe aim at something between 15 and 30 ticks. Maybe if the range is small,
+  // we could also have tick spacings of 1,2,3,5,10,15,30. It's important that multiples of 180 
+  // have a tick. 90 is also importent but a bit less so.
 
   //p.addCommand("set y2tics 45");  // 45° steps for phase axis
   // Ugly for very high order filters such as damped comb allpass filters. Nice for normal filters,
