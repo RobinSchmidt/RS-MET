@@ -700,17 +700,28 @@ struct rsFrequencyResponsePlotSettings
     groupDelay,         // Group delay
     decibelsAndRing     // Decibels together with ringing response.
 
-    // ...TBC...maybe
+    // ...TBC...maybe. Maybe phase together with group delay, group delay with ringing, ...
+    // Whatever combinations seems to make sense.
   };
 
-
-  Type   type    = Type::decibels;  // Type of response plot
-  bool   logFreq = true;            // Logarithmic frequency axis
-  double minFreq = 20.0;            // Minimum frequency
+  // The settings:
+  double minFreq =    20.0;         // Minimum frequency
   double maxFreq = 20000.0;         // Maximum frequency
   double sampRat = 44100.0;         // Sample rate (if applicable)
   int    numBins =  1000;           // Number of bins (i.e. samples along freq axis)
+  Type   type    = Type::decibels;  // Type of response plot
+  bool   logFreq = true;            // Use logarithmic frequency axis (or not)
+
 };
+
+// ToDo:
+//
+// - Maybe make similar structs for time responses and s- or z-domain plots. Types of time 
+//   responses could be: impulse response, step response, responses to various waveforms like 
+//   sawtooth, square, etc. Maybe step-response minus the step iteself (not sure, if that's 
+//   useful, though). Types of z-plane or s-plane plots: poles and zeros, magnitude as 3D plot or 
+//   heat map (should be clipped to some adjustable maximum at the poles, I guess), color coded 
+//   phase plot, Polya potential, etc.
 
 
 /** Plots various responses of the given comb-allpass filter. */
