@@ -683,6 +683,36 @@ void dampedCombAllpassClass()
   //   artificially introduce an additional sample of delay in "pre-delay" mode.
 }
 
+/** A structure to hold settings of a frequency response plot. */
+struct rsFrequencyResponsePlotSettings
+{
+  // This shall eventually be moved somewhere else. Maybe into Plotting.h or DSPPlotters.h.
+
+  /** Enumeration of the possible types of plots. */
+  enum class Type
+  {
+    magnitude,          // Linear magnitude
+    decibels,           // Magnitude in decibels
+    phase,              // Phase in degrees
+    decibelsAndPhase,   // Decibels together with phase
+    realAndImag,        // Real and imaginary part
+    phaseDelay,         // Phase delay
+    groupDelay,         // Group delay
+    decibelsAndRing     // Decibels together with ringing response.
+
+    // ...TBC...maybe
+  };
+
+
+  Type   type    = Type::decibels;  // Type of response plot
+  bool   logFreq = true;            // Logarithmic frequency axis
+  double minFreq = 20.0;            // Minimum frequency
+  double maxFreq = 20000.0;         // Maximum frequency
+  double sampRat = 44100.0;         // Sample rate (if applicable)
+  int    numBins =  1000;           // Number of bins (i.e. samples along freq axis)
+};
+
+
 /** Plots various responses of the given comb-allpass filter. */
 template<class TFlt, class T>
 void rsPlotDampedCombAllpassResponses(TFlt& filter, T sampleRate)
