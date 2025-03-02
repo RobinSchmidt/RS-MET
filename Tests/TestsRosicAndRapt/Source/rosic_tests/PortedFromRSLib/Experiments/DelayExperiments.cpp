@@ -826,6 +826,29 @@ void dampedCombAllpassResponses()
   Real dampOmega = 2*PI*dampFreq/sampleRate;
   rsSetupHighDamp(flt, delay, feedback, dampOmega, dampGain, false);
 
+  // Helper function to create a plot:
+  auto plotResponse = [&](PlotType type)
+  {
+    // Set up the plot settings:
+    PlotSetup plotSetup;
+    plotSetup.logFreq = false;
+    plotSetup.minFreq = 0.0;
+    plotSetup.maxFreq = 0.5*sampleRate;
+    plotSetup.sampRat = sampleRate;
+    plotSetup.numBins = numSamples;
+    plotSetup.type    = type;
+
+    // Create the plot:
+    rsPlotDampedCombAllpassResponses(flt, plotSetup, Real(0));
+  };
+
+  // Create the different types of plots:
+  plotResponse(PlotType::decibelsAndPhase);
+  plotResponse(PlotType::decibelsAndRing);
+
+
+
+  /*
   // Set up the plot settings:
   PlotSetup plotSetup;
   plotSetup.logFreq = false;
@@ -844,21 +867,11 @@ void dampedCombAllpassResponses()
 
   plotSetup.type = PlotType::decibelsAndRing; 
   rsPlotDampedCombAllpassResponses(flt, plotSetup, dummy);
+  */
 
 
   // Maybe make a helper function that we can all like:
   //plotResponse(flt, Type::decibelsAndPhase); etc.
-
-
-
-
-  //rsPlotDampedCombAllpassResponses(flt, sampleRate);
-
-
-  //// Obtain its impulse response:
-  //int N = numSamples;
-  //Vec h = impulseResponse(flt, N, 1.0);
-  ////rsPlotVectors(h);
 
 
   // Observations:
