@@ -182,15 +182,27 @@ void rsSetupTwoPoleAllpassDelay(rsTwoPoleAllpassDelay<T, T>* filter, int delay, 
 
 void twoPoleAllpassDelayResponses()
 {
-  // Under construction
+  // Under construction.
+
+  // We plot various kinds of frequency responses for filters of the rsTwoPoleAllpassDelay type.
 
   using Real = double;
   using APF  = rsTwoPoleAllpassDelay<Real, Real>;
 
+  // User parameters:
+  int  numBins = 2000;
+  int  delay   = 20;
+  Real omega   = 0.3;
+  Real Q       = 2.5; 
 
+  // Create the filter:
+  APF flt;
+  rsSetupTwoPoleAllpassDelay(&flt, delay, omega, Q);
 
-
-  //plotFrequencyResponse(TFlt& filter, int N, T fMin, T fMax, T fs, bool logFreq)
+  // Plot its frequency response:
+  //plotFrequencyResponse(flt, numBins, 0.0, 24000.0, 48000.0, false);
+  // Doesn't compile yet because rsTwoPoleAllpassDelay has no getTransferFunctionAt() member 
+  // function -> add it and then uncomment the code!
 }
 
 void twoPoleAllpassDelayChains()
@@ -232,11 +244,6 @@ void twoPoleAllpassDelayChains()
       h[n] = applyFilters(0.0);
 
     return h;
-
-    // ToDo:
-    //
-    // - It's a bit silly to use the state variable filter for the purpose of designing biquad 
-    //   coeffs so maybe replace this code later with the direct RBJ biquad design formulas.
   };
   // Maybe this should become a library function someday. 
 
@@ -256,16 +263,27 @@ void twoPoleAllpassDelayChains()
     rosic::writeToMonoWaveFile(path, &h[0], N, 44100);
   };
 
+
   // Show plots for some chains of 2-pole allpass delays. The 1st list gives the delays, the 2nd
   // gives the omegas and the 3rd gives the Qs:
 
+  // With delay = 1, the rsTwoPoleAllpassDelay reduces to a normal biquad allpass:
   plot({ 1   }, 
        { 0.2 }, 
        { 2.5 }, 100);
 
+  // Now we replace the unit delay by a delay of M = 5 samples in the biquad allpass:
   plot({ 5   }, 
        { 0.2 }, 
        { 2.5 }, 500);
+
+
+  // Let's now try some series connections of two such filters:
+
+  // This gives a nice diffusor of length around 100-150:
+  plot({ 5,   9   }, 
+       { 0.5, 0.7 }, 
+       { 1.5, 1.5 }, 500);
 
   plot({ 5,   9   }, 
        { 0.2, 0.3 }, 
@@ -274,6 +292,9 @@ void twoPoleAllpassDelayChains()
   plot({ 5,   9   }, 
        { 0.2, 0.3 }, 
        { 1.0, 1.5 }, 500);
+
+
+  // Let's now try some series connections of three such filters:
 
   plot({ 5,   9,   14  }, 
        { 0.2, 0.3, 0.5 }, 
@@ -284,7 +305,9 @@ void twoPoleAllpassDelayChains()
        { 1.0, 1.0, 1.0 }, 1000);
 
 
-  // Render some wave files:
+
+  // Render some wave files for audition:
+
   write({ 7   }, 
         { 0.2 }, 
         { 25  }, 4096, "TwoPoleAllpass_7_0.2_25.wav");
@@ -310,6 +333,8 @@ void twoPoleAllpassDelayChains()
   //   spike to the second. I think, we wnat to keep that ratio constant as function of the delay,
   //   i.e. keep it independent from the delay.
   //
+  // - If the frequency is zero, the impulse response is just a unit impulse.
+  //
   //
   // Questions:
   //
@@ -321,6 +346,12 @@ void twoPoleAllpassDelayChains()
   // - Can we use the undulation frequencies to deliberately colorize the sound, i.e. give it some
   //   deliberate tonal character? That seems plausible. Maybe we could use slightly detuned
   //   omegas for left and right channel.
+  //
+  // - Maybe the undulation frequencies can be set up in such a way that the sine goes through a 
+  //   zero whenever the spikes meet? For example, int the chain with 2 filters with 5 and 9 
+  //   samples delay, the spikes would meet at n = 45 for the first time. But there is no spike in 
+  //   the impulse response. I gues it's because either the 1st or the 2nd filter goes through an 
+  //   undulation zero at that point? Figure that out!
   //
   //
   // ToDo:
@@ -339,7 +370,7 @@ void twoPoleAllpassDelayChains()
 
 void twoPoleAllpassDelays()
 {
-  twoPoleAllpassDelayResponses();
+  twoPoleAllpassDelayResponses();  // Under construction
   twoPoleAllpassDelayChains();
 }
 
