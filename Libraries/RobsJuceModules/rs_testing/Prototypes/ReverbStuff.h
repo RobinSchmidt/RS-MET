@@ -2741,6 +2741,19 @@ public:
     setDirty();
   }
 
+  void setMaxPhaseCombMode(bool shouldBeMaxPhase)
+  {
+    maxPhaseCombBank = shouldBeMaxPhase;
+  }
+
+  void setSerialCombsMode(bool shouldBeSerial)
+  {
+    serialCombs = shouldBeSerial;
+  }
+
+
+
+
   void setCombFreqScale(int index, TPar newScale)
   {
     rsAssert(isValidCombIndex(index));
@@ -2931,15 +2944,13 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
   // filter
 
 
-  // Accumulate the transfer function of the comb bank:
-
+  // Init transfer function U:
   if(serialCombs == false)
-    U.initToZero();
+    U.initToZero();            // Init to U(z) = 0 for additive accumulation
   else
-    U.initToOne();
+    U.initToOne();             // Init to U(z) = 1 for multiplicative accumulation
   
-  //U.clear();                                              // Init to U(z) = 0.
-
+  // Accumulate the transfer function of the comb bank or chain:
   for(int i = 0; i < numCombs; i++)
   {
     const CombSettings& s = settings[i];
@@ -2959,7 +2970,6 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
 
     // Accumulate the i-th comb's transfer function Ui into our total transfer function U:
     protoComb.getCombTransferFunction(&Ui);
-
     if(serialCombs == false)
       RatFunc::weightedSumDestructive(&U, TPar(1), &Ui, TPar(s.gain), &U, TPar(0));
     else

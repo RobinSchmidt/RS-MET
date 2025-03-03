@@ -1655,6 +1655,7 @@ void dampedMultiCombAllpassClass()
   Real lowScale   =     1.5;   // Decay time scaler for low frequencies.
   Real highFreq   =  4000.0;   // Crossover freq between mid and high frequencies in Hz.
   Real highScale  =     0.2;   // Decay time scaler for high frequencies.
+  bool serial     = false;
 
 
   // Create and set up the filter:
@@ -1668,9 +1669,11 @@ void dampedMultiCombAllpassClass()
   flt.setHighCrossoverFreq(highFreq);
   flt.setHighDecayScale(highScale);
   flt.setNumCombs(3);
+  flt.setSerialCombsMode(serial);
   flt.setCombFreqScale(1, 1.3352657623556);
   flt.setCombFreqScale(2, 1.7238234123465);
   // The numbers were just randomly created via the hsdjfgasdfhgskajdfhk method
+
 
   bool ok = true;
 
@@ -1694,6 +1697,18 @@ void dampedMultiCombAllpassClass()
   // Plot various frequency responses:
   plotResponse(PlotType::decibelsAndPhase);
   plotResponse(PlotType::decibelsAndRing);
+
+
+  // Observations:
+  //
+  // - At a first glance, the impulse responses of parallel and serial mode look very much the 
+  //   same.
+  //
+  //
+  // ToDo: 
+  //
+  // - Make plots that compare serial and parallel mode. Figure out if they are really the same.
+  //   If so, figure out why. Is this a bug or is this normal?
 }
 
 
