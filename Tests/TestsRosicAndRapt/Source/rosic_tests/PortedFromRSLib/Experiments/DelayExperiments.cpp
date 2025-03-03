@@ -1674,20 +1674,14 @@ void dampedMultiCombAllpassClass()
   flt.setCombFreqScale(2, 1.7238234123465);
   // The numbers were just randomly created via the hsdjfgasdfhgskajdfhk method
 
-  // Test parallel vs serial combs:
-  flt.setSerialCombsMode(false);   Vec hp = impulseResponse(flt, 500, 1.0);
-  flt.setSerialCombsMode(true);    Vec hs = impulseResponse(flt, 500, 1.0);
-  Vec diff = hp - hs;
-  flt.setSerialCombsMode(serial);  // Set it back to the user's setting
-  rsPlotVectors(hp, hs, diff);
-  // They are indeed the same! 
 
-
-
-
-
-
-
+  //// Test parallel vs serial combs:
+  //flt.setSerialCombsMode(false);   Vec hp = impulseResponse(flt, 500, 1.0);
+  //flt.setSerialCombsMode(true);    Vec hs = impulseResponse(flt, 500, 1.0);
+  //Vec diff = hp - hs;
+  //flt.setSerialCombsMode(serial);  // Set it back to the user's setting
+  //rsPlotVectors(hp, hs, diff);
+  //// They are indeed the same! 
 
 
   bool ok = true;
@@ -1697,13 +1691,6 @@ void dampedMultiCombAllpassClass()
   Vec h = impulseResponse(flt, N, 1.0);
   ok &= isAllpass(h, 0.02);
   rsPlotVector(h);
-
-
-
-
-  // Stuff below does not yet compile because apparently rsDampedMultiCombAllpass does not yet have
-  // the required getTransferFunctionAt() member functions. 
-  // ToDo: Implement them and the uncomment the code below and make it work.
 
   // Helper function to create a frequency response plot:
   auto plotResponse = [&](PlotType type)
@@ -1725,7 +1712,8 @@ void dampedMultiCombAllpassClass()
   // ToDo: 
   //
   // - Figure out why serial and parallel connection gives the same result. Is this a bug or is 
-  //   this normal? Check the math!
+  //   this normal? Check the math! Well, that the denominators (i.e. poles) are the same is
+  //   expected. But what about the numerators (i.e. zeros)?
 }
 
 
