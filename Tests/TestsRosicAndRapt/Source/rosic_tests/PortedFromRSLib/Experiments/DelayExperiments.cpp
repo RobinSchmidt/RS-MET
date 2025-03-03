@@ -724,13 +724,13 @@ struct rsFrequencyResponsePlotSettings
 //   phase plot, Polya potential, etc.
 
 
-/** Plots various responses of the given comb-allpass filter. */
-template<class TFlt, class T>
-void rsPlotDampedCombAllpassResponses(
-  TFlt& filter, const rsFrequencyResponsePlotSettings& plotSetup, T dummy)
+template<class T, class TFunc>
+void rsPlotThreeFilterResponses(
+  const TFunc& tfComb, const TFunc& tfCorr, const TFunc& tfFull, 
+  const rsFrequencyResponsePlotSettings& plotSetup, T dummy)
 {
   // The dummy is need for the compiler to infer the type T. Maybe later we can replace it by some
-  // actaully useful parameter of type T.
+  // actually useful parameter of type T.
 
   // Retrieve the relevant plot settings:
   T    fs      = plotSetup.sampRat;
@@ -738,11 +738,6 @@ void rsPlotDampedCombAllpassResponses(
   bool logFreq = plotSetup.logFreq; 
   T    fMin    = plotSetup.minFreq;
   T    fMax    = plotSetup.maxFreq;
-
-  // Create function objects for the various transfer functions:
-  auto tfComb = [&](std::complex<T> z) { return filter.getCombTransferFunctionAt(z);      };
-  auto tfCorr = [&](std::complex<T> z) { return filter.getCorrectorTransferFunctionAt(z); };
-  auto tfFull = [&](std::complex<T> z) { return filter.getTransferFunctionAt(z);          };
 
   // Create the desired type of plot for the comb, corrector and full filter:
   using PT = rsFrequencyResponsePlotSettings::Type;  // Plot type
@@ -758,7 +753,7 @@ void rsPlotDampedCombAllpassResponses(
     plotMagAndRingRespFromTransFunc(tfCorr, N, fMin, fMax, fs, logFreq, false);
     plotMagAndRingRespFromTransFunc(tfFull, N, fMin, fMax, fs, logFreq, false); }  break;
 
-  // ...TBC...
+    // ...TBC...
   }
 
 
@@ -779,6 +774,22 @@ void rsPlotDampedCombAllpassResponses(
   //   const rsFrequencyResponsePlotSettings& plotSetup, T dummy). Then we can use it also fo 
   //   ad-hoc structures made from allpasses, provided that we define the appropriate transfer 
   //   function computation function.
+}
+
+/** Plots various responses of the given comb-allpass filter. */
+template<class TFlt, class T>
+void rsPlotDampedCombAllpassResponses(
+  TFlt& filter, const rsFrequencyResponsePlotSettings& plotSetup, T dummy)
+{
+  // Create function objects for the various transfer functions:
+  using Complex = std::complex<T>;
+  using Func    = std::function<Complex(Complex)>;
+  Func tfComb = [&](Complex z) { return filter.getCombTransferFunctionAt(z);      };
+  Func tfCorr = [&](Complex z) { return filter.getCorrectorTransferFunctionAt(z); };
+  Func tfFull = [&](Complex z) { return filter.getTransferFunctionAt(z);          };
+
+  // Plot the 3 transfer functions, one after another:
+  rsPlotThreeFilterResponses(tfComb, tfCorr, tfFull, plotSetup, dummy);
 }
 
 void dampedCombAllpassResponses()
