@@ -1674,6 +1674,21 @@ void dampedMultiCombAllpassClass()
   flt.setCombFreqScale(2, 1.7238234123465);
   // The numbers were just randomly created via the hsdjfgasdfhgskajdfhk method
 
+  // Test parallel vs serial combs:
+  flt.setSerialCombsMode(false);   Vec hp = impulseResponse(flt, 500, 1.0);
+  flt.setSerialCombsMode(true);    Vec hs = impulseResponse(flt, 500, 1.0);
+  Vec diff = hp - hs;
+  flt.setSerialCombsMode(serial);  // Set it back to the user's setting
+  rsPlotVectors(hp, hs, diff);
+  // They are indeed the same! 
+
+
+
+
+
+
+
+
 
   bool ok = true;
 
@@ -1682,6 +1697,8 @@ void dampedMultiCombAllpassClass()
   Vec h = impulseResponse(flt, N, 1.0);
   ok &= isAllpass(h, 0.02);
   rsPlotVector(h);
+
+
 
 
   // Stuff below does not yet compile because apparently rsDampedMultiCombAllpass does not yet have
@@ -1701,14 +1718,14 @@ void dampedMultiCombAllpassClass()
 
   // Observations:
   //
-  // - At a first glance, the impulse responses of parallel and serial mode look very much the 
-  //   same.
+  // - The impulse responses of parallel and serial mode are the same! There doesn't even seem to
+  //   a difference in roundoff error. 
   //
   //
   // ToDo: 
   //
-  // - Make plots that compare serial and parallel mode. Figure out if they are really the same.
-  //   If so, figure out why. Is this a bug or is this normal?
+  // - Figure out why serial and parallel connection gives the same result. Is this a bug or is 
+  //   this normal? Check the math!
 }
 
 
