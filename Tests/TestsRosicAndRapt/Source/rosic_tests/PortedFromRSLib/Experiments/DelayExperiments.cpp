@@ -739,14 +739,6 @@ void rsPlotDampedCombAllpassResponses(
   T    fMin    = plotSetup.minFreq;
   T    fMax    = plotSetup.maxFreq;
 
-  // Old:
-  // Magnitude and phase response:
-  //plotFrequencyResponse(filter, N, fMin, fMax, fs, logFreqAxis);
-  // The phase axis labeling looks ugly - especially when the delay is large. We need to do 
-  // something about the ticks. We want them less dense. ..OK - for the time being, I temporarily
-  // changed the code there for a less dense tick spacing (180° isntead of 45°). That looks
-  // reasonable with a delay of 20.
-
   // Create function objects for the various transfer functions:
   auto tfComb = [&](std::complex<T> z) { return filter.getCombTransferFunctionAt(z);      };
   auto tfCorr = [&](std::complex<T> z) { return filter.getCorrectorTransferFunctionAt(z); };
@@ -765,26 +757,9 @@ void rsPlotDampedCombAllpassResponses(
     plotMagAndRingRespFromTransFunc(tfComb, N, fMin, fMax, fs, logFreq, false);
     plotMagAndRingRespFromTransFunc(tfCorr, N, fMin, fMax, fs, logFreq, false);
     plotMagAndRingRespFromTransFunc(tfFull, N, fMin, fMax, fs, logFreq, false); }  break;
-  }
-
-
-  //// Plot magnitude and phase response:
-  //plotFreqRespFromTransFunc(tfComb, N, fMin, fMax, fs, logFreq);
-  //plotFreqRespFromTransFunc(tfCorr, N, fMin, fMax, fs, logFreq);
-  //plotFreqRespFromTransFunc(tfFull, N, fMin, fMax, fs, logFreq);
-
-  //// Magnitude and ringing response:
-  //plotMagAndRingRespFromTransFunc(tfComb, N, fMin, fMax, fs, logFreq, false);
-  //plotMagAndRingRespFromTransFunc(tfCorr, N, fMin, fMax, fs, logFreq, false);
-  //plotMagAndRingRespFromTransFunc(tfFull, N, fMin, fMax, fs, logFreq, false);
-
-
-  // Old:
-  //plotMagAndRingResponse(filter, N, fMin, fMax, fs, logFreq, false);
-  // ToDo: refactor that function and call it also with the function objects
-
 
   // ...TBC...
+  }
 
 
   // ToDo:
@@ -796,12 +771,13 @@ void rsPlotDampedCombAllpassResponses(
   // - Maybe let the caller also set up the logFreq setting, min/max freqs, etc. Maybe it's worth
   //   to define a struct rsFilterPlotSettings that contains all these such that the caller doesn't
   //   have to write them all out in every call.
+  //
+  // - Look into how plotFrequencyResponse() determines the spacing of the ticks for the phase 
+  //   response this is not yet how it should be.
 }
 
 void dampedCombAllpassResponses()
 {
-  // Under construction.
-
   // We plot the responses magnitude, phase, phase delay, group delay, ringing, etc. for a damped
   // comb allpass filter and its underlying comb and corrector.
 
@@ -847,33 +823,6 @@ void dampedCombAllpassResponses()
   plotResponse(PlotType::decibelsAndRing);
 
 
-
-  /*
-  // Set up the plot settings:
-  PlotSetup plotSetup;
-  plotSetup.logFreq = false;
-  plotSetup.minFreq = 0.0;
-  plotSetup.maxFreq = 0.5*sampleRate;
-  plotSetup.sampRat = sampleRate;
-  plotSetup.numBins = numSamples;
-  plotSetup.type    = PlotType::decibelsAndPhase;
-
-
-  // Plot the relevant responses:
-  Real dummy = 0;
-
-  plotSetup.type = PlotType::decibelsAndPhase; 
-  rsPlotDampedCombAllpassResponses(flt, plotSetup, dummy);
-
-  plotSetup.type = PlotType::decibelsAndRing; 
-  rsPlotDampedCombAllpassResponses(flt, plotSetup, dummy);
-  */
-
-
-  // Maybe make a helper function that we can all like:
-  //plotResponse(flt, Type::decibelsAndPhase); etc.
-
-
   // Observations:
   //
   // - The phase response features steep slopes at a harmonic series whose fundamental is 
@@ -909,8 +858,9 @@ void dampedCombAllpassResponses()
   //   or a feedforward comb. Maybe with the latter, we would venture into "notchpass" territory?
   //   I'm not sure -> figure that out.
   //
-  // - In a musical context, tune the ringing frequencies to the key of the song.
-
+  // - In a musical context, tune the ringing frequencies to the key of the song. Maybe use a bunch
+  //   in series tuned to chords. Or maybe do that with the multicomb allpass. Or maybe tune them
+  //   to all 12 notes in the 12-tone system.
 }
 
 void dampedCombAllpassChainOf4()
