@@ -77,6 +77,17 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  void initToZero()
+  {
+    clear();
+  }
+
+  void initToOne()
+  {
+    initToZero();
+    num._appendTerm(T(1), 0);
+  }
+
   void clear()
   {
     num.clear();

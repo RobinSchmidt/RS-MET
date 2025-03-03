@@ -2887,6 +2887,10 @@ protected:
 
   // Switch beween min- and max-phase comb bank:
   bool maxPhaseCombBank = false;
+  // Maybe the name "bank" is not appropriate anymore. It can now also be a "chain". Banks are 
+  // parallel connections, chains serial ones.
+
+  bool serialCombs = false;
 
   // Flag to indicate that a call to updateFilters() is needed before doing any DSP:
   std::atomic<bool> dirty = true;
@@ -2928,7 +2932,14 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
 
 
   // Accumulate the transfer function of the comb bank:
-  U.clear();                                              // Init to U(z) = 0.
+
+  if(serialCombs == false)
+    U.initToZero();
+  else
+    U.initToOne();
+  
+  //U.clear();                                              // Init to U(z) = 0.
+
   for(int i = 0; i < numCombs; i++)
   {
     const CombSettings& s = settings[i];
@@ -2948,7 +2959,12 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
 
     // Accumulate the i-th comb's transfer function Ui into our total transfer function U:
     protoComb.getCombTransferFunction(&Ui);
-    RatFunc::weightedSumDestructive(&U, TPar(1), &Ui, TPar(s.gain), &U, TPar(0));
+
+    if(serialCombs == false)
+      RatFunc::weightedSumDestructive(&U, TPar(1), &Ui, TPar(s.gain), &U, TPar(0));
+    else
+      U.multiplyBy(Ui, TPar(0));  // Verify if this works in place!
+
   }
 
   // Set up comb bank and corrector:
