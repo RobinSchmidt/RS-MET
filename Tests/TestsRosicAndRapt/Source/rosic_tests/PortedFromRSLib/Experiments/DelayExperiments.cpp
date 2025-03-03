@@ -792,6 +792,27 @@ void rsPlotDampedCombAllpassResponses(
   rsPlotThreeFilterResponses(tfComb, tfCorr, tfFull, plotSetup, dummy);
 }
 
+// Convenience function that doesn't need a plotsetup parameter. 
+template<class TFlt, class T>
+void rsPlotDampedCombAllpassResponses(TFlt& filter, rsFrequencyResponsePlotSettings::Type type,
+  T sampleRate)
+{
+  using PlotSetup = rsFrequencyResponsePlotSettings;
+  using PlotType  = PlotSetup::Type;
+
+  // Set up the plot settings:
+  PlotSetup plotSetup;
+  plotSetup.logFreq = false;
+  plotSetup.minFreq = 0.0;
+  plotSetup.maxFreq = 0.5*sampleRate;
+  plotSetup.sampRat = sampleRate;
+  plotSetup.numBins = (int) (sampleRate/10);  // Not sure about that
+  plotSetup.type    = type;
+
+  // Create the plot:
+  rsPlotDampedCombAllpassResponses(filter, plotSetup, T(0));
+}
+
 void dampedCombAllpassResponses()
 {
   // We plot the responses magnitude, phase, phase delay, group delay, ringing, etc. for a damped
@@ -820,18 +841,8 @@ void dampedCombAllpassResponses()
 
   // Helper function to create a plot:
   auto plotResponse = [&](PlotType type)
-  {
-    // Set up the plot settings:
-    PlotSetup plotSetup;
-    plotSetup.logFreq = false;
-    plotSetup.minFreq = 0.0;
-    plotSetup.maxFreq = 0.5*sampleRate;
-    plotSetup.sampRat = sampleRate;
-    plotSetup.numBins = numSamples;
-    plotSetup.type    = type;
-
-    // Create the plot:
-    rsPlotDampedCombAllpassResponses(flt, plotSetup, Real(0));
+  { 
+    rsPlotDampedCombAllpassResponses(flt, type, sampleRate); 
   };
 
   // Create the different types of plots:
@@ -1666,16 +1677,14 @@ void dampedMultiCombAllpassClass()
 
   bool ok = true;
 
-  // Get the impulse response:
+  // Get an plot the impulse response:
   int N = numSamples;
   Vec h = impulseResponse(flt, N, 1.0);
   ok &= isAllpass(h, 0.02);
   rsPlotVector(h);
 
-
-
-
-
+  // Plot magnitude and phase response:
+  // ...TBC...
 }
 
 
@@ -2146,7 +2155,7 @@ void dampedCombAllpasses()
   // Currently active experiment:
   //dampedCombFilter();
   dampedCombAllpassResponses();
-  //dampedMultiCombAllpassClass();
+  dampedMultiCombAllpassClass();
 
 
   // All experiments:

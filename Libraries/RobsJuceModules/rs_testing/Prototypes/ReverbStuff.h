@@ -2941,6 +2941,12 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
 
   // After updating the filters, we are in clean state:
   setDirty(false);
+
+
+  // ToDo:
+  //
+  // - Have a member serial (defaulting to false). If true, do a serial connection accumulation 
+  //   loop. Init U(z) to 1 instead of 0 and accumulate multiplicatively instead of additively.
 }
 
 
