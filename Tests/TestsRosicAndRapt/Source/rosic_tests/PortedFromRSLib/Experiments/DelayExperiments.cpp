@@ -161,7 +161,7 @@ void delayLineAllpass()
 }
 
 
-void twoPoleAllpassDelay()
+void twoPoleAllpassDelayChains()
 {
   // We experiment with a chain of rsTwoPoleAllpassDelay filters to see what sort of impulse 
   // responses we can achieve with it.
@@ -233,8 +233,9 @@ void twoPoleAllpassDelay()
     rosic::writeToMonoWaveFile(path, &h[0], N, 44100);
   };
 
+  // Show plots for some chains of 2-pole allpass delays. The 1st list gives the delays, the 2nd
+  // gives the omegas and the 3rd gives the Qs:
 
-  // Show some plots:
   plot({ 1   }, 
        { 0.2 }, 
        { 2.5 }, 100);
@@ -246,10 +247,18 @@ void twoPoleAllpassDelay()
   plot({ 5,   9   }, 
        { 0.2, 0.3 }, 
        { 2.5, 2.5 }, 500);
+   
+  plot({ 5,   9   }, 
+       { 0.2, 0.3 }, 
+       { 1.0, 1.5 }, 500);
 
   plot({ 5,   9,   14  }, 
        { 0.2, 0.3, 0.5 }, 
        { 2.5, 9.5, 2.5 }, 1000);
+
+  plot({ 5,   9,   14  }, 
+       { 0.2, 0.3, 0.5 }, 
+       { 1.0, 1.0, 1.0 }, 1000);
 
 
   // Render some wave files:
@@ -267,14 +276,23 @@ void twoPoleAllpassDelay()
   // - For a single stage, the output looks like an initial spike followed by an undulating spike 
   //   train. The distance between the spikes is given by the chosen delay. The undulation 
   //   frequency is probably the filter's resonance frequency - maybe divided by the delay-length 
-  //   factor.
+  //   factor. -> Figure this out!
+  //
+  // - Higher Q values seem to emphasize the initial spike. The decaying part gets longer (i.e. 
+  //   decays more slowly) but its overall level relative to the initial spike gets smaller. For 
+  //   diffusion, the sweet spot seem to be somewhere in the range 0.5...1.5. Maybe longer delays
+  //   should use more or less Q? Make more tests with 2 filters in series to figure this out.
+  //   I think, that - counterintuitively - the filter with longer delays should use higher Q. 
+  //   Maybe test filters with different delays in isolation and look at the ratio of the initial
+  //   spike to the second. I think, we wnat to keep that ratio constant as function of the delay,
+  //   i.e. keep it independent from the delay.
   //
   //
   // Questions:
   //
-  // - I think, we do not really need the delay lengths to ba all prime numbers. It should be 
-  //   sufficient if they are mutually coprime. This is a less restrictive condition but the effecr
-  //   having the first coincidence of spikes at the lowes common multiple of the delay lengths 
+  // - I think, we do not really need the delay lengths to be all prime numbers. It should be 
+  //   sufficient if they are mutually coprime. This is a less restrictive condition but the effect
+  //   having the first coincidence of spikes at the lowest common multiple of the delay lengths 
   //   should still be satisfied.
   //
   // - Can we use the undulation frequencies to deliberately colorize the sound, i.e. give it some
@@ -284,16 +302,24 @@ void twoPoleAllpassDelay()
   //
   // ToDo:
   //
-  // - Try to achieve sign flipping of the output by fliiping the signs of the omegas. This doesn't
+  // - Try to achieve sign flipping of the output by flipping the signs of the omegas. This doesn't
   //   fall out of the math. Trying to just use negative omegas (or negative Qs) just leads to 
   //   unstable filters. It would just be a convention that we apply ourselves manually to allow 
   //   the user to conveniently select the sign of a particular filter output. It would work by 
-  //   using abs(w) for the filter design and sign(w) to scale the output.
+  //   using abs(w) for the filter design and sign(w) to scale the output. But maybe it's clearer
+  //   to just introduce another (boolean) parameter for this. Not sure...
   //
   // - Try to parametrize the filter not in terms of omega but in terms of physical frequency. We 
   //   really want to figure out the relationship between the omega parameter and the undulation 
   //   frequency. Maybe  omega*delay = 2*pi*f/fs  or  omega/delay = 2*pi*f/fs?
 }
+
+void twoPoleAllpassDelays()
+{
+  twoPoleAllpassDelayChains();
+
+}
+
 
 void dampedCombFilter()
 {
@@ -2241,4 +2267,12 @@ void dampedCombAllpasses()
   //   But  I think, the feedforward comb would have one sample less delay than the whole feedback
   //   loop. That may cause a misalignment of notch- vs resonance frequencies. Cand this be fixed 
   //   somehow?
+  //
+  // - Instead of one filter with high feedback, try to use multiple ones with less feedback. I 
+  //   guess, the ringing response will be less spikey when doing this which may be desirable.
+  //   maybe first try it with two filters and the same delay for both. That's not ideal but we 
+  //   may learn something from that. This situation may show more clearly how much we need to 
+  //   reduce the feedback when putting two filters in series in order to achieve the same RT60.
+  //   Maybe plot the decay envelopes like we do in dampedCombAllpassFreqDependentRT60(). Maybe 
+  //   factor out a function for creating such plots and then apply it to this new setting.
 }

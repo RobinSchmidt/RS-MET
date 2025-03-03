@@ -5,7 +5,7 @@ void algoVerb();
 void delayLineBasic();
 void delayLineLinear();
 void delayLineAllpass();
-void twoPoleAllpassDelay();
+void twoPoleAllpassDelays();
 void dampedCombAllpasses();
 
 #endif

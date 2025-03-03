@@ -160,7 +160,7 @@ int main(int argc, char* argv[])
   //gaussianIterator();
   //expPolyIterator();
 
-  //reciprocalIterator();  // rename to multiStepSolverIVP (initial value problem)
+  //reciprocalIterator();  // rename to multiStepSolverIVP (IVP: initial value problem)
   // It implements prototypes of Adams-Bashforth, Adams-Moulton, BDF methods and more using the 
   // ODE for 1/x as example problem (I think)
 
@@ -391,15 +391,15 @@ int main(int argc, char* argv[])
   //multiHalfCycleWobbles();
   //sineFromDecayingSines();
 
-  // Delay:
+  // Delay, allpass, reverb stuff:
   //delayLineBasic();
   //delayLineLinear();
   //delayLineAllpass();
-  //twoPoleAllpassDelay();
+  twoPoleAllpassDelays();
   dampedCombAllpasses();
+  //allpassFDN();                  // Under construction
 
   // Filter:
-  //allpassFDN();                  // Under construction
   //bandwidthScaling();
   //biquadResoGainToQ();           // investigate relation beween filter Q and resonance gain
   //butterworthEnergy();
