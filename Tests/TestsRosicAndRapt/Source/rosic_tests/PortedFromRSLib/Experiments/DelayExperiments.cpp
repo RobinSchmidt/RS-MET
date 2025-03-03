@@ -797,11 +797,8 @@ template<class TFlt, class T>
 void rsPlotDampedCombAllpassResponses(TFlt& filter, rsFrequencyResponsePlotSettings::Type type,
   T sampleRate)
 {
-  using PlotSetup = rsFrequencyResponsePlotSettings;
-  using PlotType  = PlotSetup::Type;
-
-  // Set up the plot settings:
-  PlotSetup plotSetup;
+  // Create and set up the plot settings object:
+  rsFrequencyResponsePlotSettings plotSetup;
   plotSetup.logFreq = false;
   plotSetup.minFreq = 0.0;
   plotSetup.maxFreq = 0.5*sampleRate;
@@ -819,11 +816,10 @@ void dampedCombAllpassResponses()
   // comb allpass filter and its underlying comb and corrector.
 
   // Define types to be used:
-  using Real      = double;
-  using Vec       = std::vector<Real>;
-  using Allpass   = rsDampedCombAllpass<Real, Real, Real>;
-  using PlotSetup = rsFrequencyResponsePlotSettings;
-  using PlotType  = PlotSetup::Type;
+  using Real     = double;
+  using Vec      = std::vector<Real>;
+  using Allpass  = rsDampedCombAllpass<Real, Real, Real>;
+  using PlotType = rsFrequencyResponsePlotSettings::Type;
 
   // User parameters:
   int  delay      =    20;     // Main delay roundtrip length in samples. Is M-1 in the algo
