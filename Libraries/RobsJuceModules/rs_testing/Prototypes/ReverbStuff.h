@@ -2765,6 +2765,26 @@ public:
   
 
 
+  rsComplex<TPar> getCombTransferFunctionAt(const rsComplex<TPar>& z) const
+  {
+    return combBank.getTransferFunctionAt(z);
+  }
+
+  rsComplex<TPar> getCorrectorTransferFunctionAt(const rsComplex<TPar>& z) const
+  {
+    return corrector.getTransferFunctionAt(z);
+  }
+
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const
+  {
+    return getCombTransferFunctionAt(z) * getCorrectorTransferFunctionAt(z);
+  }
+
+
+
+
+
+
   rsSparseDigitalTransferFunction<TPar> getTransferFunction() const
   {
     return getCombTransferFunction() * getCorrectorTransferFunction();

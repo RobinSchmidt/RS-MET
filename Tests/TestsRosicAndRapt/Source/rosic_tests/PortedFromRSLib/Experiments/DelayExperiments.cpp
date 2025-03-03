@@ -1644,6 +1644,7 @@ void dampedMultiCombAllpassClass()
   using Real     = double;
   using Vec      = std::vector<Real>;
   using Filter   = rsDampedMultiCombAllpass<Real, Real>;
+  using PlotType = rsFrequencyResponsePlotSettings::Type;
 
 
   int  numSamples =  8192;
@@ -1679,8 +1680,20 @@ void dampedMultiCombAllpassClass()
   ok &= isAllpass(h, 0.02);
   rsPlotVector(h);
 
-  // Plot magnitude and phase response:
-  // ...TBC...
+
+  // Stuff below does not yet compile because apparently rsDampedMultiCombAllpass does not yet have
+  // the required getTransferFunctionAt() member functions. 
+  // ToDo: Implement them and the uncomment the code below and make it work.
+
+  // Helper function to create a frequency response plot:
+  auto plotResponse = [&](PlotType type)
+  { 
+    rsPlotDampedCombAllpassResponses(flt, type, sampleRate); 
+  };
+
+  // Plot various frequency responses:
+  plotResponse(PlotType::decibelsAndPhase);
+  plotResponse(PlotType::decibelsAndRing);
 }
 
 
@@ -2150,7 +2163,7 @@ void dampedCombAllpasses()
 
   // Currently active experiment:
   //dampedCombFilter();
-  dampedCombAllpassResponses();
+  //dampedCombAllpassResponses();
   dampedMultiCombAllpassClass();
 
 
