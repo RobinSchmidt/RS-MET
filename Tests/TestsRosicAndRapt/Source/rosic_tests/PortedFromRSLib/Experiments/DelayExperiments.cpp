@@ -162,7 +162,7 @@ void delayLineAllpass()
 
 
 template<class T>
-void rsSetupTwoPoleAllpassDelay(rsTwoPoleAllpassDelay<T, T>& filter, int delay, T omega, T Q)
+void rsSetupTwoPoleAllpassDelay(rsTwoPoleAllpassDelay<T, T>* filter, int delay, T omega, T Q)
 {
   T b0, b1, b2, a1, a2;
 
@@ -170,16 +170,14 @@ void rsSetupTwoPoleAllpassDelay(rsTwoPoleAllpassDelay<T, T>& filter, int delay, 
   svf.setupAllpass(omega, Q);
   svf.convertToBiquad(&b0, &b1, &b2, &a1, &a2);
 
-  filter.setMaxDelayInSamples(delay);
-  filter.setDelayInSamples(   delay);
-  filter.setAllpassCoeffs(a1, a2);
+  filter->setMaxDelayInSamples(delay);
+  filter->setDelayInSamples(   delay);
+  filter->setAllpassCoeffs(a1, a2);
 
   // ToDo:
   //
   // - It's a bit silly to use the state variable filter for the purpose of designing biquad 
   //   coeffs so maybe replace this code later with the direct RBJ biquad design formulas.
-  //
-  // - Pass the filter by pointer
 }
 
 void twoPoleAllpassDelayResponses()
@@ -217,25 +215,7 @@ void twoPoleAllpassDelayChains()
     using APF = rsTwoPoleAllpassDelay<Real, Real>;
     std::vector<APF> filters(numStages);
     for(size_t i = 0; i < numStages; i++)
-      rsSetupTwoPoleAllpassDelay(filters[i], delays[i], omegas[i], Qs[i]);
-
-
-    /*
-    rsStateVariableFilter<Real, Real> svf;
-    Real b0, b1, b2, a1, a2;
-    for(size_t i = 0; i < numStages; i++)
-    {
-      svf.setupAllpass(omegas[i], Qs[i]);
-      svf.convertToBiquad(&b0, &b1, &b2, &a1, &a2);
-
-      filters[i].setMaxDelayInSamples(delays[i]);
-      filters[i].setDelayInSamples(   delays[i]);
-      filters[i].setAllpassCoeffs(a1, a2);
-    }
-    */
-
-    // ToDo: use  rsSetupTwoPoleAllpassDelay()
-
+      rsSetupTwoPoleAllpassDelay(&filters[i], delays[i], omegas[i], Qs[i]);
 
     // Create helper function to apply the filters:
     auto applyFilters = [&](Real x)
