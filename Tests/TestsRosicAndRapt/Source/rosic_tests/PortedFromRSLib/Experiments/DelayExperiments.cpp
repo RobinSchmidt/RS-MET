@@ -837,7 +837,7 @@ void dampedCombAllpassResponses()
   // Create the different types of plots:
   plotResponse(PlotType::decibelsAndPhase);
   plotResponse(PlotType::decibelsAndRing);
-  // ...TBC... ToDo: plot phase delay and group delay
+  // ...TBC... ToDo: plot phase delay and group delay. For that, plotResponse needs to be extended.
 
 
   // Observations:
