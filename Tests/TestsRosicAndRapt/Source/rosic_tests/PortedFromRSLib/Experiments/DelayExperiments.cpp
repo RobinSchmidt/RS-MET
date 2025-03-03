@@ -821,6 +821,7 @@ void dampedCombAllpassResponses()
   // Create the different types of plots:
   plotResponse(PlotType::decibelsAndPhase);
   plotResponse(PlotType::decibelsAndRing);
+  // ...TBC... ToDo: plot phase delay and group delay
 
 
   // Observations:
@@ -861,6 +862,26 @@ void dampedCombAllpassResponses()
   // - In a musical context, tune the ringing frequencies to the key of the song. Maybe use a bunch
   //   in series tuned to chords. Or maybe do that with the multicomb allpass. Or maybe tune them
   //   to all 12 notes in the 12-tone system.
+  //
+  // - Plot the phase-delay and group-delay as function of frequency for the damped allpass comb 
+  //   and damped Schroeder allpass. We can do this by evaluating the complex frequency response 
+  //   using the getTransferFunctionAt() functions.
+  //
+  // - Maybe also plot the group-delay response of the underlying comb filter. According to Barry
+  //   Blesser's patent for the notchpass filter, it should feature peaks at frequencies related to
+  //   the delayline length. That's the reason these frequencies recirculate longer. The notchpass
+  //   design counteracts this by applying notches (or dips) as these frequencies in the feedback 
+  //   path such the lower gain at these frequencies compensates for the longer delay thereby 
+  //   equalizing the decay time for all frequencies.
+  //
+  // - Try to plot the decay time as function of frequency. One way to approach this is to use the
+  //   information about the group delay of the comb together with the (frequency dependent) 
+  //   feedback gain. But for this task, we may also try the "ringing response" functions. We could
+  //   also look at the poles. Their distances from the unit circle determines the ringing time. 
+  //   But it may be not so easy to compute all the poles because the filter are of very high order 
+  //   such that normal polynomial root finding algorithms may not work (not sure, though - try 
+  //   it!). But for that, we first need to implement root finding algorithms for 
+  //   rsSparsePolynomial.
 }
 
 void dampedCombAllpassChainOf4()
@@ -2134,28 +2155,6 @@ void dampedCombAllpasses()
 
   // ToDo:
   //
-  // - Find more descriptive names for the functions
-  //
-  // - Plot the phase-delay and group-delay as function of frequency for the damped allpass comb 
-  //   and damped Schroeder allpass. We can do this by evaluating the complex frequency response 
-  //   using the getTransferFunctionAt() functions.
-  //
-  // - Maybe also plot the group-delay response of the underlying comb filter. According to Barry
-  //   Blesser's patent for the notchpass filter, it should feature peaks at frequencies related to
-  //   the delayline length. That's the reason these frequencies recirculate longer. The notchpass
-  //   design counteracts this by applying notches (or dips) as these frequencies in the feedback 
-  //   path such the lower gain at these frequencies compensates for the longer delay thereby 
-  //   equalizing the decay time for all frequencies.
-  //
-  // - Try to plot the decay time as function of frequency. One way to approach this is to use the
-  //   information about the group delay of the comb together with the (frequency dependent) 
-  //   feedback gain. But for this task, we may also try the "ringing response" functions. We could
-  //   also look at the poles. Their distances from the unit circle determines the ringing time. 
-  //   But it may be not so easy to compute all the poles because the filter are of very high order 
-  //   such that normal polynomial root finding algorithms may not work (not sure, though - try 
-  //   it!). But for that, we first need to implement root finding algorithms for 
-  //   rsSparsePolynomial.
-  //
   // - Instantiate rsDampedCombAllpass with rsFloat64x2 for TSig and use a feedback of [+k, -k], 
   //   i.e. different signs for the feedback for left and right channel. Thta should give 
   //   complementary combs for left and right channel.
@@ -2165,5 +2164,15 @@ void dampedCombAllpasses()
   //   the other. That should give one channel a harmonic series of e.g. 100,200,300,400,500,... 
   //   and the other 50,150,250,350,450,... That may make for a nice stereoization effect. Verify
   //   the mono compatibility! Let the user dial in the strength of the effect via the feedback
-  //   gain. 
+  //   gain.
+  //
+  // - In the multicomb allpass, have an option to not use a parallel connection of combs but a 
+  //   serial one. To get a serial comb chain, we just need to adapt the code that accumulates the
+  //   transfer functions (from init to zero and adding to init to one and multiplying).
+  //
+  // - Try to replace the delay with other allpass structures such as a Schroeder allpass, a
+  //   disperser, etc. Maybe we can even use a non-allpass if we adapt the algorithm to it? We 
+  //   would probably have to use the inverse filter of A(z) in the corrector, so A(z) would need 
+  //   to have a stable inverse. With an allpass, this was not an issue because our end goal is an
+  //   allpass anyway, so we didn't need to invert it
 }

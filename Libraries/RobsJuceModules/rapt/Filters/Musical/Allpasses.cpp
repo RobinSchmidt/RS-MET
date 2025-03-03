@@ -5,7 +5,16 @@
 
 ToDo:
 
-- Drag in the code from FlatZapper and turn it into a class rsAllpassDisperser
+- Drag in the code from FlatZapper and turn it into a class rsAllpassDisperser (done?)
+
+- Make a variant of the disperser that replaces the unit delay with a delayline.
+
+- Make the Q frequency dependent in the disperser. The user should be able to dial in a parameter
+  that determines if the Q should go up or down with frequency. Or maybe allow finer control for 
+  the Q at each frequency. It may be used to emphasize certain frequencies by letting them ring 
+  longer. This may be useful for drum synthesis.
+
+- Try putting multiple dispersers in a chain.
 
 - Maybe implement Thiran allpass interpolators.
 
@@ -28,7 +37,7 @@ ToDo:
   also reverse the recursive part. If its minimum phase, that would lead to an unstable filter, but
   with a maximum phase original filter, it should be fine. Maybe if the original filter is minimum
   phase, one could convert it to max phase before (by reversing the b-coeff array). Do some 
-  experiments with this using rsArrayTools::filter(). Or maybe the better ide in this case would
+  experiments with this using rsArrayTools::filter(). Or maybe the better idea in this case would
   be to to leave the original filter minimum phase before the conversion, then do the general
   invert-reverse procedure and then convert the original filter to max-phase. That should give the
   same result, right? -> Figure out!

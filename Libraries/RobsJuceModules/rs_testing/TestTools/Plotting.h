@@ -187,8 +187,8 @@ inline void plotMagAndRingRespFromTransFunc(const TFunc& transferFunc, int N, TS
   std::vector<TSig> mag(N), dmag(N);
   for(int k = 0; k < N; k++) 
   {
-    mag[k]   = sqrt( re[k]* re[k] +  im[k]* im[k]);
-    dmag[k]  = sqrt(dre[k]*dre[k] + dim[k]*dim[k]);
+    mag[k]  = sqrt( re[k]* re[k] +  im[k]* im[k]);
+    dmag[k] = sqrt(dre[k]*dre[k] + dim[k]*dim[k]);
 
     if(ringingQ)
       dmag[k] *= w[k];
@@ -207,12 +207,8 @@ inline void plotMagAndRingRespFromTransFunc(const TFunc& transferFunc, int N, TS
     // zero.
   }
 
-  // plot:
+  // Plot:
   plotTwoFrequencyResponses(w, mag, dmag, logFreq);
-  // The two vectors are not really the real and imaginary part of anything but the plotting style
-  // of the ..ReIm function is suitable for this anyway, so we "abuse" it here. Maybe rename the 
-  // function to plotTwoFrequencyResponses to make clear that it's more generally applicable.
-
 
   // Observations: 
   //
