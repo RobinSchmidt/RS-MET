@@ -727,7 +727,7 @@ struct rsFrequencyResponsePlotSettings
 /** Plots various responses of the given comb-allpass filter. */
 template<class TFlt, class T>
 void rsPlotDampedCombAllpassResponses(
-  TFlt& filter, rsFrequencyResponsePlotSettings& plotSetup, T dummy)
+  TFlt& filter, const rsFrequencyResponsePlotSettings& plotSetup, T dummy)
 {
   // The dummy is need for the compiler to infer the type T. Maybe later we can replace it by some
   // actaully useful parameter of type T.
@@ -774,6 +774,11 @@ void rsPlotDampedCombAllpassResponses(
   //
   // - Look into how plotFrequencyResponse() determines the spacing of the ticks for the phase 
   //   response this is not yet how it should be.
+  //
+  // - Maybe factor out a function rsPlotResponse(TFunc transFunc, 
+  //   const rsFrequencyResponsePlotSettings& plotSetup, T dummy). Then we can use it also fo 
+  //   ad-hoc structures made from allpasses, provided that we define the appropriate transfer 
+  //   function computation function.
 }
 
 void dampedCombAllpassResponses()
@@ -826,20 +831,21 @@ void dampedCombAllpassResponses()
 
   // Observations:
   //
-  // - The phase response features steep slopes at a harmonic series whose fundamental is 
-  //   determined by the delay. The phase response looks like a staircase.
+  // - The phase response of the full allpass filter features steep slopes at a harmonic series 
+  //   whose fundamental is determined by the delay. The phase response looks like a downward 
+  //   staircase. The general linear trend seems to come mostly from the corrector. The comb 
+  //   contributes a sawtooth shaped phase response. Added together, the result in the staircase.
   //
-  // - The stairsteps get steeper when the (absolute value of the) feedback is higher.
+  // - The stairsteps get steeper when the (absolute value of the) feedback is higher. When the 
+  //   dampGain is less than 1, the steps become smoother to the right (i.e. at higher 
+  //   frequencies).
   //
-  // - The ringing shows clear spikes at the ringing frequencies, i.e. at the stair steps of the 
-  //   phase response. When dampGain = 1, the spikes are all of the same width and height.
+  // - The ringing response shows clear spikes at the ringing frequencies, i.e. at the stair 
+  //   steps of the phase response. When dampGain = 1, the spikes are all of the same width and 
+  //   height. With dampGain < 1, they become wider and less tall to the right.
   //
   // - For delay = 20, feedback = -0.95, dampGain = 1, we see a ringing resonance at the Nyquist 
   //   freq and also at DC. For feedback = +0.95, there is no such thing.
-  //
-  // - With delay = 20, dampFreq = 10000, dampGain = 0.5, feedback = -0.9, we see that the peaks 
-  //   in the ringing response get wider and smaller with frequency. At lower frequencies, the 
-  //   spikes are narrower and taller.
   //
   //
   // ToDo:
@@ -854,10 +860,6 @@ void dampedCombAllpassResponses()
   //   smooth out the stairsteps. But maybe if such a compensation allpass is perfect (i.e. 
   //   smoothes out the straisteps perfectly), we just end up with an allpass with linear phase 
   //   response, i.e. a pure delay? That would be boring!
-  //
-  // - Instead of the delayline, try to use a different kind of filter. Maybe a Schroeder allpass
-  //   or a feedforward comb. Maybe with the latter, we would venture into "notchpass" territory?
-  //   I'm not sure -> figure that out.
   //
   // - In a musical context, tune the ringing frequencies to the key of the song. Maybe use a bunch
   //   in series tuned to chords. Or maybe do that with the multicomb allpass. Or maybe tune them
@@ -2133,6 +2135,8 @@ void dampedCombAllpasses()
   // Currently active experiment:
   //dampedCombFilter();
   dampedCombAllpassResponses();
+  //dampedMultiCombAllpassClass();
+
 
   // All experiments:
   dampedCombFilter();                   // Stub: we want to factors out the comb
@@ -2168,11 +2172,18 @@ void dampedCombAllpasses()
   //
   // - In the multicomb allpass, have an option to not use a parallel connection of combs but a 
   //   serial one. To get a serial comb chain, we just need to adapt the code that accumulates the
-  //   transfer functions (from init to zero and adding to init to one and multiplying).
+  //   transfer functions (from init to zero and adding to init to one and multiplying). Try a 
+  //   series connection of two combs with same settings but one with different signs for the 
+  //   feedback. 
   //
   // - Try to replace the delay with other allpass structures such as a Schroeder allpass, a
   //   disperser, etc. Maybe we can even use a non-allpass if we adapt the algorithm to it? We 
   //   would probably have to use the inverse filter of A(z) in the corrector, so A(z) would need 
   //   to have a stable inverse. With an allpass, this was not an issue because our end goal is an
-  //   allpass anyway, so we didn't need to invert it
+  //   allpass anyway, so we didn't need to invert it. Maybe with a feedforward comb, we would 
+  //   venture into "notchpass" territory? I'm not sure -> figure that out. I think, to turn the 
+  //   delay into a feedforward comb, all we need is to add a direct path (with adjustable gain).
+  //   But  I think, the feedforward comb would have one sample less delay than the whole feedback
+  //   loop. That may cause a misalignment of notch- vs resonance frequencies. Cand this be fixed 
+  //   somehow?
 }
