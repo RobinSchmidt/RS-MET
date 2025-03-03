@@ -192,7 +192,8 @@ void twoPoleAllpassDelayResponses()
   // User parameters:
   int  numBins = 2000;
   int  delay   = 20;
-  Real omega   = 0.3;
+  Real omega   = 0.5;
+  //Real omega   = 1.57;
   Real Q       = 2.5; 
 
   // Create the filter:
@@ -203,6 +204,20 @@ void twoPoleAllpassDelayResponses()
   plotFrequencyResponse(flt, numBins, 0.0, 24000.0, 48000.0, false);
   // Doesn't compile yet because rsTwoPoleAllpassDelay has no getTransferFunctionAt() member 
   // function -> add it and then uncomment the code!
+
+  // Observations:
+  //
+  // - There are stairsteps with a narrower mini-step in the middle of the verticalish part.
+  //
+  // - With lower Q, the steps get washed out more and more.
+  //
+  // - Omega seems to control the width of the mini-step. Actually, it was "mini" only because I 
+  //   tried first with a rather low omega of 0.3. With 1.3, the picture is quite different. Looks
+  //   like with omgega = pi/2, the width of the "mini-steps" is excatly the same as the width of 
+  //   the primary steps.
+  //
+  // - With numBins = 2000, delay = 20, omega = 0.3, Q = 9.5, we see some artifacts in the plot.
+  //   Maybe these are errors in the phase-unwrapping algorithm? Figure this out!
 }
 
 void twoPoleAllpassDelayChains()
