@@ -1713,7 +1713,13 @@ void dampedMultiCombAllpassClass()
   //
   // - Figure out why serial and parallel connection gives the same result. Is this a bug or is 
   //   this normal? Check the math! Well, that the denominators (i.e. poles) are the same is
-  //   expected. But what about the numerators (i.e. zeros)?
+  //   expected. But what about the numerators (i.e. zeros)? Let's try it with two combs. The 
+  //   parallel connection has the transfer function: 
+  //   Up(z) = U1(z) + U2()z   and  Us(z) = U1(z) * U2(z)
+  //   where  U1(z) = z^-M1 / (1 + k * z^-1 * z^-M1), U2(z) = z^-M2 / (1 + k * z^-1 * z^-M2)
+  //   Try to bring Up(z) into same the same form as Us(z)...
+  //
+  //
 }
 
 
