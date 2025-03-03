@@ -138,6 +138,26 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  /** Computes the transfer function H(z) of this filter at the given value of z. It's given by:
+
+          c2  +  c1 * z^(-M)  +       z^(-2M)
+  H(z) = -------------------------------------
+          1   +  c1 * z^(-M)  +  c2 * z^(-2M)    */
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const
+  {
+    using Complex = rsComplex<TPar>;
+    Complex z1 = rsPow(z, Complex(-M));   // z^(-M)
+    Complex z2 = z1*z1;                   // z^(-2M)
+    return (c2 + c1*z1 + z2) / (TPar(1) + c1*z1 + c2*z2);
+  }
+  // Needs tests! ToDo: Implement a unit test that checks the result of this computation against a 
+  // numerically computed result of the z-tansform of the impulse response. See the unit tests for 
+  // the comb-allpasses for example code tha does such a thing.
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
   inline TSig getSample(TSig x)

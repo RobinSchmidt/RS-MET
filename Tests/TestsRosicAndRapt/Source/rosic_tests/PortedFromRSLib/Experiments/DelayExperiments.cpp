@@ -200,7 +200,7 @@ void twoPoleAllpassDelayResponses()
   rsSetupTwoPoleAllpassDelay(&flt, delay, omega, Q);
 
   // Plot its frequency response:
-  //plotFrequencyResponse(flt, numBins, 0.0, 24000.0, 48000.0, false);
+  plotFrequencyResponse(flt, numBins, 0.0, 24000.0, 48000.0, false);
   // Doesn't compile yet because rsTwoPoleAllpassDelay has no getTransferFunctionAt() member 
   // function -> add it and then uncomment the code!
 }
