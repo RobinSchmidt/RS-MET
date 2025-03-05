@@ -249,6 +249,108 @@ Notes
 
 
 
+//=================================================================================================
+
+/** UNDER CONSTRUCTION...
+
+Implements a universal comb filter. Depending on the coefficients, this filter can be used as
+feedforward comb, feedback comb, Schroeder allpass comb, notchpass filter, etc. ...TBC... 
+
+
+References:
+
+  (1) DAFX (1st Ed., Udo Zoelzer), page 66.
+      https://www.dafx.de/DAFX_Book_Page/chapter3.html
+      https://www.dafx.de/DAFX_Book_Page_2nd_edition/chapter2.html
+
+*/
+
+template<class TSig, class TPar>
+class rsUniversalCombFilter
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  void setMaxDelayInSamples(int newMaxDelay) { delayLine.setMaxDelayInSamples(newMaxDelay); }
+
+  void setDelayInSamples(int newDelay) { delayLine.setDelayInSamples(newDelay); }
+
+  void setCoeffs(TPar newFeedforward, TPar newFeedback, TPar newBlend)
+  {
+    ff = newFeedforward;
+    fb = newFeedback;
+    bl = newBlend;
+  }
+
+  void setToAllpass(TPar newAllpassCoeff) 
+  { 
+    bl =  newCoeff;
+    fb = -bl;
+    ff =  TPar(1);
+  }
+
+  void setToFeedbackComb(TPar newFeedbackCoeff)
+  {
+    bl = TPar(1);
+    fb = newFeedbackCoeff;
+    ff = TPar(0);
+  }
+
+  void setToFeedforwardComb(TPar newFeedforwardCoeff, TPar newBlendCoeff = TPar(1))
+  {
+    bl = newBlendCoeff;
+    fb = TPar(0);
+    ff = newFeedforwardCoeff;
+  }
+
+  void setToPureDelay()
+  {
+    bl = TPar(0);
+    fb = TPar(0);
+    ff = TPar(1);
+  }
+
+  /*
+  void setToNotchpass(TPar newPoleCoeff, TPar newZeroCoeff)
+  {
+
+  }
+  */
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  inline TSig getSample(TSig x)
+  {
+    TSig vM = delayLine.readOutput();    // Read vM = v[n-M] from the delayline.
+    TSig v  = x + fb * vM;               // Compute v[n] = x[n] + fb * v[n-M].
+    delayLine.writeInputAndUpdate(v);    // Write v[n] into the delayline.
+    return bl * v + ff * vM;             // Return y[n] = bl * v[n] + ff * v[n-M].
+  }
+
+  void reset() { delayLine.reset(); }
+
+
+protected:
+
+  RAPT::rsDelay<TSig> delayLine;
+
+  TPar ff = TPar(0);   // feedforward coeff
+  TPar fb = TPar(0);   // feedback coeff
+  TPar bl = TPar(0);   // blend coeff
+
+};
+
+// See also:
+// https://github.com/isaiahdoyle/universalcombfilter
+// https://en.wikipedia.org/wiki/Comb_filter
+// https://ccrma.stanford.edu/~jos/pasp/Comb_Filters.html
+// https://www.uncini.com/dida/tsa/mod_tsa/Chap_05_special_filters.pdf
+
 
 //=================================================================================================
 
@@ -261,7 +363,8 @@ Hmm...maybe it's actually not such a great idea to provide such a convenience cl
 we may want to have similar convenience classes for other types of allpass filter chains which 
 would look very similar - i.e. a lot code duplication and boilerplate. I actually had this class
 already in the RAPT library but backed off again and moved it back into the prototypes for this 
-reason. 
+reason. On the other hand, chains of Schroeder allpasses are common building block in reverb 
+algorithms, so it might be convenient to have that. We'll see...
 
 See:
 

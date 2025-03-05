@@ -142,9 +142,6 @@ void delayLineAllpass()
     plotData(N, t, h);
   }
 
-
-
-
   // Observations:
   //
   // - The 1st impulse response is the same as for integer and linear delays. Then it gets weird.
@@ -159,6 +156,32 @@ void delayLineAllpass()
   //
   // - Plot frequency responses, too.
 }
+
+void universalComb()
+{
+  using Real = double;
+  using Comb = rsUniversalCombFilter<Real, Real>;
+
+  Comb comb;
+
+
+  int dummy = 0;
+}
+
+void delayLines()
+{
+  universalComb();
+
+
+  // Delaylines with different interpolation methods:
+  delayLineBasic();     // No interpolation
+  delayLineLinear();    // Linear interpolation
+  delayLineAllpass();   // Allpass interpolation
+
+  // Other delayline based stuff:
+  universalComb();
+}
+
 
 
 template<class T>

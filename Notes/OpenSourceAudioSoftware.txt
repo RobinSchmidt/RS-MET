@@ -761,6 +761,11 @@ Gnaural:
 https://sourceforge.net/projects/gnaural/
 -Binaural beat generator for brainwave entrainment
 
+
+https://github.com/isaiahdoyle/universalcombfilter
+https://github.com/isaiahdoyle/moorerreverb
+
+
 ----------------------------------------------------------------------------------------------------
 Resources
 

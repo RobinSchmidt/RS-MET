@@ -392,9 +392,7 @@ int main(int argc, char* argv[])
   //sineFromDecayingSines();
 
   // Delay, allpass, reverb stuff:
-  //delayLineBasic();
-  //delayLineLinear();
-  //delayLineAllpass();
+  delayLines();
   twoPoleAllpassDelays();
   dampedCombAllpasses();
   //allpassFDN();                  // Under construction
