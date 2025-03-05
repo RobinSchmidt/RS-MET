@@ -160,12 +160,32 @@ void delayLineAllpass()
 void universalComb()
 {
   using Real = double;
+  using Vec  = std::vector<Real>;
   using Comb = rsUniversalCombFilter<Real, Real>;
 
+  int  delay =  20;
+  int  N     = 512;   // Number of samples to produce
+  Real ff    = 1.0;
+  Real fb    = 0.8;
+  Real bl    = 0.5;
+
   Comb comb;
+  comb.setMaxDelayInSamples(delay);
+  comb.setDelayInSamples(delay);
+  comb.setCoeffs(ff, fb, bl);
+
+  Vec h = impulseResponse(comb, N, 1.0);
+  rsPlotVectors(h);
+
+
 
 
   int dummy = 0;
+
+  // ToDo:
+  //
+  // - Maybe make a helper function that takes delay, ff, fb, bl, N and creates a plot. Then call it 
+  //   with various settings.
 }
 
 void delayLines()
