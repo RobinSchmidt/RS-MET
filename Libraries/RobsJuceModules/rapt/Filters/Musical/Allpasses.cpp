@@ -60,6 +60,23 @@ ToDo:
   filter using a truncated IIR. Instead of a sweepdown we would get a sweepup which should sound 
   "bubbly", I guess.
 
+- The class rsAllpassDelay can be made more flexible by a minor modification: Instead of using the
+  same coefficient c for the feedback and feedforward path, we could allow for different coeffs for
+  these two signal paths. I think, what we would end up with is Barry Blesser's "notchpass" filter.
+  See figure 1 here: https://patents.google.com/patent/US20110093104A1/en where Blesser's gP and gZ
+  in the notchpass are the c in the Schroeder allpass (up to different sign conventions). Maybe 
+  replace the c member with two members bM, aM for multiplying z^-M in the numerator and 
+  denominator of the transfer function respectively (i.e. multiplying x[n-M], y[n-M] in a DF1 
+  implementation). The function setAllpassCoeff should just set both of them to thw same value. 
+  A function setNotchpassCoeffs would set both of them to different values. The class could be used
+  as Schroder allpass or as Blesser notchpass depending on the settings. Actually, it could also be
+  used as feedback or feedforward comb. One could make it even more flexible by introducing another 
+  coefficient to scale the vM in the computation of the output, i.e. replace "return c * v + vM;"
+  by "return c * v + d * vM;". This stucture is called "universal comb filter" in the DAFX book 
+  (1st Ed) on page 66. Maybe implement a class rsUniversalCombFilter. Let it have some special 
+  setup functions like setupAllpass, setupFeedforwardComb, setupFeedbackComb, setupDelay, 
+  setupNotchpass and also provide a fully general setup(bl, fb, ff) function for the 3 coeffs
+  named blend, feedback, feedforward in DAFX. 
 
 
 Interesting Resources:
