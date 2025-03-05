@@ -599,4 +599,13 @@ Ideas:
   used. Maybe experiment with that in the context of the sampler engine. The next milestone is to
   get some more serious DSP algos going anyway.
 
+- It would be nice if the filter could be morphable. I'd really like to be able to morph through: 
+  LP24 -> LP18 -> LP12 -> LP6 -> Flat -> HP6 -> HP12 -> HP18 -> HP24. Especially the range
+  LP18 -> LP12 -> LP6 is interesting. I tend to like the sound of LP12 most. LP 18 is too dull, LP6
+  too bright. 12 is the sweet spot - but it might be nice to adjust it more finely. Maybe something
+  like LP11, LP10 etc. may sound even better in some cases. How can we do this? Maybe crossfade 
+  between the coefficient sets? Experiment a bit with a LP6/LP12 crossfade. Or maybe we could try 
+  post filtering with an adjustable slope/tilt filter?
+
+
 */

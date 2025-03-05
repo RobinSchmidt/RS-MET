@@ -190,7 +190,7 @@ void twoPoleAllpassDelayResponses()
   using APF  = rsTwoPoleAllpassDelay<Real, Real>;
 
   // User parameters:
-  int  numBins = 2000;
+  int  numBins = 5000;
   int  delay   = 20;
   Real omega   = 0.5;
   //Real omega   = 1.57;
@@ -201,9 +201,10 @@ void twoPoleAllpassDelayResponses()
   rsSetupTwoPoleAllpassDelay(&flt, delay, omega, Q);
 
   // Plot its frequency response:
-  plotFrequencyResponse(flt, numBins, 0.0, 24000.0, 48000.0, false);
-  // Doesn't compile yet because rsTwoPoleAllpassDelay has no getTransferFunctionAt() member 
-  // function -> add it and then uncomment the code!
+  plotFrequencyResponse( flt, numBins, 0.0, 24000.0, 48000.0, false       );
+  plotMagAndRingResponse(flt, numBins, 0.0, 24000.0, 48000.0, false, false);
+
+
 
   // Observations:
   //
@@ -218,6 +219,11 @@ void twoPoleAllpassDelayResponses()
   //
   // - With numBins = 2000, delay = 20, omega = 0.3, Q = 9.5, we see some artifacts in the plot.
   //   Maybe these are errors in the phase-unwrapping algorithm? Figure this out!
+  //
+  // - The ringing response shows pairwise spikes. The distance between the two spikes is 
+  //   controlled by omega. If omega = pi/2, the distance between the two spikes of a pair is such
+  //   that all spikes become equidistant, i.e. there's no apparent pairing visible anymore. But 
+  //   what about the effect of Q? It seems to affect the spike frequencies!
 }
 
 void twoPoleAllpassDelayChains()

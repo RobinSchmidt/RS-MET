@@ -60,7 +60,8 @@ void rsLadderFilter<TSig, TPar>::setMode(int newMode)
   }
 
   // The values for s have been found by trial and error to make the peak gain roughly equal 
-  // between the various modes.
+  // between the various modes. ToDo: Explore and document this more thorughly! How does this peak
+  // gain change with resonance? 
 }
 
 // inquiry:
@@ -68,7 +69,7 @@ void rsLadderFilter<TSig, TPar>::setMode(int newMode)
 template<class TSig, class TPar>
 void rsLadderFilter<TSig, TPar>::getState(TSig *state)
 {
-  for(int i = 0; i < 5; i++) // later use: ArrayFunctions::copy(y, state, 5);
+  for(int i = 0; i < 5; i++) // later use: rsArrayTools::copy(y, state, 5);
     state[i] = y[i];
 }
 
@@ -77,11 +78,11 @@ rsComplex<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionAt(
   const rsComplex<TPar>& z, bool withGain)
 {
   using T = TPar;
-  TPar B0 = TPar(1) - B1; 
+  T B0 = T(1) - B1; 
   rsComplex<T> G1, G2, G3, G4; // transfer functions of n-th stage output, n = 1..4
   rsComplex<T> H;              // transfer function with resonance   
   rsComplex<T> one(1, 0);
-  G1 =  (1+a)*(B0 + B1/z) / (one + a/z);
+  G1 = (1+a)*(B0 + B1/z) / (one + a/z);
   G2 = G1*G1;
   G3 = G2*G1;
   G4 = G3*G1;

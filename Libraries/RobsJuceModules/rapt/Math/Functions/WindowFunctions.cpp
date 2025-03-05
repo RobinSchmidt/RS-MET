@@ -496,10 +496,11 @@ where k1 = 0 or 1, k2 = -1 or 0 or +1 - use this for all cosine-sum windows
 /*
 
 ToDo:
+
 -implement "exact" and "optimal" variants of Hamming (a0=25/46, a1=1-a0) and Blackman (see
  Wikipedia)
 
-// Ideas:
+Ideas:
 
 
 -try a bump-function (infinitely often diffable at the junction) and a piecewise window using
@@ -507,6 +508,11 @@ ToDo:
  ...might be useful as window for correlation analysis? -> try it!
  -maybe this can also be generated recursively as we do in windowed-sinc interpolation? it involves
   the exp-function which can be generated recursively
+
+- Try the binomial window w[n] = B(N,n) for n = 0,1,2,..,N:
+  https://ccrma.stanford.edu/~jos/pasp/Relation_Lagrange_Sinc_Interpolation.html
+  But it might be problematic due to overflow even for moderate N.
+
 
 // implement minimax optimized windows that have the minimum (maximum) sidelobe level
 // for a 2-term window, use Hamming as starting point, for 3-term start with blackman and
