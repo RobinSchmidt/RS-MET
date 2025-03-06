@@ -311,6 +311,8 @@ public:
     fb = newFeedback;
     bl = newBlend;
   }
+  // Maybe put the feedforward coeff last in the signature. It's often 1, so we may make it 
+  // optional. But somehow the order ff, fb, bl seems more natural. ...not sure...
 
   void setToAllpass(TPar newAllpassCoeff) 
   { 

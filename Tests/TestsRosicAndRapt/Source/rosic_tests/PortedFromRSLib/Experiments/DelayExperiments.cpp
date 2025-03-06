@@ -172,41 +172,51 @@ void universalComb()
   using Vec  = std::vector<Real>;
   using Comb = rsUniversalCombFilter<Real, Real>;
 
-  // Helper function:
-  auto plotImpResp = [](int delay, Real ff, Real fb, Real bl, int N)
+  // Helper functions:
+
+  auto setupComb = [](Comb& comb, int delay, Real ff, Real fb, Real bl)
   {
-    Comb comb;
     comb.setMaxDelayInSamples(delay);
     comb.setDelayInSamples(delay);
     comb.setCoeffs(ff, fb, bl);
-
-    Vec h = impulseResponse(comb, N, 1.0);
-    rsPlotVectors(h);
-
-    // Preliminary - ToDo: make an extra function plotFreqResp ...maybe
-    plotFrequencyResponse(comb, 2001, 0.0, 0.5, 1.0, false);
-    // Maybe we need a dbFloor there. The notches go deep down to -320 dB
   };
-  // Maybe put the ff coeff last in the signature. It's often 1, so we may make it optional. But 
-  // somehow the order ff, fb, bl seems more natural. ...not sure...
+
+  auto plotImpResp = [&](int delay, Real ff, Real fb, Real bl, int numSamples)
+  {
+    Comb comb;
+    setupComb(comb, delay, ff, fb, bl);
+    Vec h = impulseResponse(comb, numSamples, 1.0);
+    rsPlotVector(h);
+  };
+
+  auto plotFreqResp = [&](int delay, Real ff, Real fb, Real bl, int numBins)
+  {
+    Comb comb;
+    setupComb(comb, delay, ff, fb, bl);
+    plotFrequencyResponse(comb, numBins, 0.0, 0.5, 1.0, false);
+  };
+
+  auto plotImpAndFreqResp = [&](int delay, Real ff, Real fb, Real bl, int numSamples, int numBins)
+  {
+    plotImpResp( delay, ff, fb, bl, numSamples);
+    plotFreqResp(delay, ff, fb, bl, numBins);
+  };
 
 
   int M = 10;   // Delay
   //int N = 30;   // Number of samples for plot
 
-
-  //              FF    FB    BL
-
   // Feedback combs:
-  plotImpResp(M, +0.0, +0.9, +1.0, 202);   // 
-  plotImpResp(M, +1.0, +0.9,  0.0, 202);   // With predelay
+  //                     FF    FB    BL
+  plotImpAndFreqResp(M, +0.0, +0.9, +1.0, 202, 2001);   // 
+  plotImpAndFreqResp(M, +1.0, +0.9,  0.0, 202, 2001);   // With predelay
 
   // Feedforward combs:
-  //plotImpResp(M, +0.9, +0.0, +1.0, 30);
-  plotImpResp(M, +1.0, +0.0, +1.0, 30);    // M/2 notches at an odd harmonic series
-  plotImpResp(M, -1.0, +0.0, -1.0, 30);    // ..same but sign inverted
-  plotImpResp(M, -1.0, +0.0, +1.0, 30);    // M/2 notches at a full harmonic series
-  plotImpResp(M, +1.0, +0.0, -1.0, 30);    // ..same but sign inverted
+  //plotImpAndFreqResp(M, +0.9, +0.0, +1.0, 30);
+  plotImpAndFreqResp(M, +1.0, +0.0, +1.0, 30, 2001);    // M/2 notches at an odd harmonic series
+  plotImpAndFreqResp(M, -1.0, +0.0, -1.0, 30, 2001);    // ..same but sign inverted
+  plotImpAndFreqResp(M, -1.0, +0.0, +1.0, 30, 2001);    // M/2 notches at a full harmonic series
+  plotImpAndFreqResp(M, +1.0, +0.0, -1.0, 30, 2001);    // ..same but sign inverted
 
 
 
