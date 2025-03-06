@@ -318,33 +318,61 @@ void rsTaylorToPade(const std::vector<T>& t, std::vector<T>& p, std::vector<T>& 
     for(int j = 0; j <= rsMin(i, N); j++)
       p[i] += q[j] * t[i-j]; }
 
+  // Notes:
+  //
+  // - The algorithm is based on starting with an (M+N)th order Taylor polynomial T(x) with given
+  //   coeffs and making the ansatz P(x) = N(x) / D(x) for the Pade approximant and then setting
+  //   T(x) ~= N(x) / D(x). Then multiply both sides by D(x), multiply out the brackets and discard
+  //   any terms of order higher than M+N. This gives a linear system of equations for the coeffs
+  //   of N(x) and D(x)
+  //
+  //
   // ToDo:
-  // -Implement a production version using a workspace of size N^2 + N (for A and b)
-  //  -Maybe the size can be reduced to N^2 if we use q temporarily for the b-coeffs. This would
-  //   require that the "solve" call can work in place, i.e. x and b pointing to the same array.
-  // -Make a convenience function that takes rsPolynomial as input and returns rsRationalFunction
-  // -Implement an inverse function rsPadeToTaylor
-  // -Maybe implement in rsPolynomial some factory functions that produce Taylor polynomials of 
-  //  some important functions such as exp, sin, cos, log, sinh, cosh, tanh, atan, pow, etc.
-  //  Maybe call them taylorExp(int order, T x0 = T(0)), etc. These can then be subsequently used
-  //  to produce Pade approximants via this conversion function. Maybe We could have 
-  //  padeExp(int numOrder, int denOrder, int x0), padeSin(), padeCos(), etc. in rsRationalFunction
-  // -Maybe implement some framework to find least-squares rational approximations of arbitrary
-  //  functions using Pade approximants as initial guess
-  // -Use Pade approximations for filter design:
-  //  -Prescribe a desired transfer function, not necessarily rational, such as H(z) = exp(a*z)
-  //  -Find the Taylor series (centered at 0, aka McLaurin series)
-  //  -Convert Taylor series to Pade
-  //  -Examples: H(z) = exp(i*z) ...some sort of complex rotation of the frequency axis?
-  //  -Instead of prescribing a function and finding its Taylor series, we may also directly 
-  //   prescribe a polynomial (i.e. FIR) transfer function. Maybe that can be infinite, too? Maybe
-  //   a Hilbert filter would be H(z) = sum_k (-1)^k / k  for k != 0 and 0 for k = 0? Can we find 
-  //   an expression for the Taylor coeffs of that?
-  // -Maybe try Pade-like approximations but where the denominator is fixed to be something like
-  //  1 + a_N * x^N rather than being a full fledged polynomial
+  //
+  // - Implement a production version using a workspace of size N^2 + N (for A and b)
+  //   -Maybe the size can be reduced to N^2 if we use q temporarily for the b-coeffs. This would
+  //    require that the "solve" call can work in place, i.e. x and b pointing to the same array.
+  //
+  // - Make a convenience function that takes rsPolynomial as input and returns rsRationalFunction
+  //
+  // - Implement an inverse function rsPadeToTaylor
+  //
+  // - Maybe implement in rsPolynomial some factory functions that produce Taylor polynomials of 
+  //   some important functions such as exp, sin, cos, log, sinh, cosh, tanh, atan, pow, etc.
+  //   Maybe call them taylorExp(int order, T x0 = T(0)), etc. These can then be subsequently used
+  //   to produce Pade approximants via this conversion function. Maybe We could have 
+  //   padeExp(int numOrder, int denOrder, int x0), padeSin(), padeCos(), etc. in 
+  //   rsRationalFunction
+  //
+  // - Maybe implement some framework to find least-squares rational approximations of arbitrary
+  //   functions using Pade approximants as initial guess
+  //
+  // - Use Pade approximations for filter design:
+  //   -Prescribe a desired transfer function, not necessarily rational, such as H(z) = exp(a*z)
+  //   -Find the Taylor series (centered at 0, aka McLaurin series)
+  //   -Convert Taylor series to Pade
+  //   -Examples: H(z) = exp(i*z) ...some sort of complex rotation of the frequency axis?
+  //   -Instead of prescribing a function and finding its Taylor series, we may also directly 
+  //    prescribe a polynomial (i.e. FIR) transfer function. Maybe that can be infinite, too? Maybe
+  //    a Hilbert filter would be H(z) = sum_k (-1)^k / k  for k != 0 and 0 for k = 0? Can we find 
+  //    an expression for the Taylor coeffs of that?
+  //   -Maybe use it to approximate a Gaussian filter. The current implementation uses an allpole
+  //    approximation which leaves the numerator unused, so we may leave some possible accuracy
+  //    on the table for a given order. Find a Pade approximant for exp(-x^2)
+  //
+  // - Maybe try Pade-like approximations but where the denominator is fixed to be something like
+  //   1 + a_N * x^N rather than being a full fledged polynomial
+  //
+  // - Maybe try to reformulate the problem in terms of Chebychev polnomials
 
   // See:
   // https://www.youtube.com/watch?v=szMaPkJEMrw
+  // https://www.youtube.com/watch?v=Y3PukSgFWRc
+  // https://www.youtube.com/watch?v=3TK8Fi_I0h0
+  // -> Approximates e^-x. This function represents delay in the s-domain (H(s) = e^(-tau*s) is a 
+  //    delay by tau). Pade approximants of it with M=N have allpass characteristic when used as 
+  //    transfer function. Video is part of the playlist "Control Systems in Practice":
+  //    https://www.youtube.com/watch?v=ApMz1-MK9IQ&list=PLn8PRpmsu08pFBqgd_6Bi7msgkWFKL33b
 }
 template void rsTaylorToPade(const std::vector<double>& T, std::vector<double>& P, 
   std::vector<double>& Q);
