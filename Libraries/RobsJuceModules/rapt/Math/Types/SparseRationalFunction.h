@@ -342,7 +342,10 @@ void rsSparseRationalFunction<T>::weightedSumDestructive(
   // ToDo:
   //
   // - Document exactly, how it can be used with respect to which pointers must be distinct and 
-  //   which one may alias (and to what)
+  //   which one may alias (and to what). Document why it's called "destructive". It is because
+  //   it may destroy the input parameters in the process of computing the output. It's meant to
+  //   be used in place when memory usage should be optimized and the inputs become irrelevant
+  //   after the computation.
 }
 // Needs tests
 

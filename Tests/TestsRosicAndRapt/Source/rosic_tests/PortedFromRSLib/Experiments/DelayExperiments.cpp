@@ -213,7 +213,7 @@ void universalComb()
   plotImpAndFreqResp(M, +0.0, +0.9, +1.0, 202, 2001);
   // Feedback comb with positive feedback gain. Produces a full seris of harmonics.
   // Impulse:   Decaying upward spikes starting with unit amplitude at n = 0.
-  // Magnitude: Peaks at all multiples of 1/M with height +20 dB.
+  // Magnitude: Peaks at all multiples of 1/M with height +20 dB. Rounded valleys at -5.57 dB.
   // Phase:     Rounded upward saw. Start phase is middle of the (downward) edge.
 
   plotImpAndFreqResp(M, +1.0, +0.9,  0.0, 202, 2001);   
@@ -223,30 +223,47 @@ void universalComb()
   // Magnitude: Peaks at all multiples of 1/M with height is +20 dB.
   // Phase:     Slanted staircase with rounded steps. I think, it's the phase response from above
   //            with a linear downward trend added.
-
+ 
 
   // Feedforward combs:
   //                     FF    FB    BL
+  plotImpAndFreqResp(M, +1.0, +0.0, +1.0, 30, 2001);
+  // Feedforward comb with unit weights for input and for delayed signal.
+  // Impulse:   Two spikes at n = 0 and n = M both with height 1.0.
+  // Magnitude: Notches at odd multiples 0.5/M with infinite depth.
+  // Phase:     Downward saw from +90° to -90°. Start phase is middle of the ramp, i.e. 0°.
+
   plotImpAndFreqResp(M, +0.9, +0.0, +1.0, 30, 2001);
   // Feedforward comb with unit weight for input and weight 0.9 for delayed signal.
   // Impulse:   Two spikes at n = 0 and n = M with height 1.0 and 0.9.
-  // Magnitude: Troughs at odd multiples 0.5/M. with depth -20 dB.
+  // Magnitude: Troughs at odd multiples 0.5/M with depth -20 dB.
   // Phase:     Rounded downward saw. Start phase is middle of the ramp.
 
   plotImpAndFreqResp(M, +1.0, +0.0, +0.9, 30, 2001);
-  // Feedforward comb with weight 0.9 forinput and and unit weight for delayed signal. This swaps
+  // Feedforward comb with weight 0.9 for input and and unit weight for delayed signal. This swaps
   // the weights of the filter above. The result is a time reversed impulse response.
   // Impulse:   Two spikes at n = 0 and n = M with height 0.9 and 1.0.
   // Magnitude: Troughs at odd multiples 0.5/M. with depth -20 dB.
-  // Phase:     Slanted staircase with rounded steps.
+  // Phase:     Slanted staircase with rounded steps. It's a linear downward trend superimposed 
+  //            with a rounded upward saw, I think.
+
+  plotImpAndFreqResp(M, -0.9, +0.0, +1.0, 30, 2001);
+  // Feedforward comb with unit weight for input and weight -0.9 for delayed signal.
+  // Impulse:   Two spikes at n = 0 and n = M with height 1.0 and -0.9.
+  // Magnitude: Notches at all multiples 1/M with depth -20 dB. Rounded maxima at height +5.57 dB.
+  // Phase:     Rounded downward saw. Start phase is middle of the edge of the ramp, i.e. +0° but
+  //            quickly rising up to +90°.
+
+  // A couple of more feedforward cases without comments:
+  //plotImpAndFreqResp(M, +1.0, +0.0, -0.9, 30, 2001);
+  //plotImpAndFreqResp(M, +1.0, +0.0, +1.0, 30, 2001);
+  //plotImpAndFreqResp(M, -1.0, +0.0, -1.0, 30, 2001);
+  //plotImpAndFreqResp(M, -1.0, +0.0, +1.0, 30, 2001);
+  //plotImpAndFreqResp(M, +1.0, +0.0, -1.0, 30, 2001);
 
 
-  //plotImpAndFreqResp(M, +1.0, +0.0, +1.0, 30, 2001);    // M/2 notches at an odd harmonic series
-  //plotImpAndFreqResp(M, -1.0, +0.0, -1.0, 30, 2001);    // ..same but sign inverted
-  //plotImpAndFreqResp(M, -1.0, +0.0, +1.0, 30, 2001);    // M/2 notches at a full harmonic series
-  //plotImpAndFreqResp(M, +1.0, +0.0, -1.0, 30, 2001);    // ..same but sign inverted
-
-
+  // Schroeder allpasses:
+  // ...
 
   // Combs with freely assigned coeffs:
   plotImpAndFreqResp(10, +1.0, +0.8, +0.5, 202, 2001);
@@ -269,6 +286,8 @@ void universalComb()
   // - Maybe make a pole/zero plot. This requires to produce the transfer function as pair of 
   //   rsPolynomial and to find the roots of these polynomials. Maybe we can use class 
   //   FilterPlotter for this (after producing the filter specification in terms of B,A)
+  //
+  // - Plot ringin responses.
 }
 
 void delayLines()
