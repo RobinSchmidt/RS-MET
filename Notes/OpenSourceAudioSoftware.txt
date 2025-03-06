@@ -516,6 +516,14 @@ https://github.com/thement/midiverb_emulator
 -Emulation of the Alesis midiverb hardware effect unit.
 -See also: https://github.com/shabtronic/Midiverb-Analysis
 
+AuLib:
+https://github.com/aulib/aulib
+https://aulib.github.io/
+https://link.springer.com/chapter/10.1007/978-3-030-13712-0_17
+https://www.researchgate.net/publication/332041177_AuLib
+https://mural.maynoothuniversity.ie/id/eprint/11997/1/Lazzarini_Design_SMC17_2017.pdf
+-"AuLib is a simple lightweight C++ (ISO C++14) class library for audio DSP."
+
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:
 
