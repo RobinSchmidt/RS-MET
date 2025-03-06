@@ -79,8 +79,10 @@ public:
 
   /** Clears numerator and denominator. Note that this puts the object into an invalid state. It 
   would formally represent the indeterminate expression 0/0. So, this function should be used with
-  care (and perhaps only internally). */
-  void clear()
+  great care and perhaps only internally in low level code. That's why it's marked with an 
+  underscore. In higher level code, consider using initToZero() instead which sets the function to
+  the zero function f(x) = 0 which is quite probably what you actually want to achieve anyway. */
+  void _clear()
   {
     num.clear();
     den.clear();
@@ -93,7 +95,7 @@ public:
   denominator will have a single coefficient of 1 for the monomial x^0. */
   void initToZero()
   {
-    clear();                   // f(x) = 0/0. That's indeterminate!
+    _clear();                  // f(x) = 0/0. That's indeterminate!
     den._appendTerm(T(1), 0);  // f(x) = 0/1. That's much better.
   }
 
@@ -114,7 +116,7 @@ public:
   */
 
 
-  void setNumTerms(int newNumNumeratorTerms, int newNumDenominatorTerms)
+  void _setNumTerms(int newNumNumeratorTerms, int newNumDenominatorTerms)
   {
     num._setNumTerms(newNumNumeratorTerms);
     den._setNumTerms(newNumDenominatorTerms);
