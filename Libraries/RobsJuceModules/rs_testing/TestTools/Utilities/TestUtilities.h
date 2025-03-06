@@ -356,6 +356,9 @@ inline bool testTransferFunction(TFlt& filter, rsComplex<T> z, int N, T tol)
   rsComplex<T> err = H - Ht;
   T errAbs = rsAbs(err);
   return errAbs <= tol;
+
+  // ToDo: factor out a function to compute the transfer function numerically. We want to call it 
+  // like Ht = rsGetTransferFunctionAt(filter, z, N)
 }
 
 

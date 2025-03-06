@@ -1954,6 +1954,41 @@ bool delayLineUnitTest()
   return ok;
 }
 
+bool universalCombUnitTest()
+{
+  bool ok = true;
+
+  using Real    = double;
+  using Complex = rsComplex<Real>;
+  using VecR    = std::vector<Real>;
+  using Comb    = rsUniversalCombFilter<Real, Real>;
+
+  int  delay =    1;
+  int  N     = 1024;
+  Real ff    =    0.9;
+  Real fb    =    0.8;
+  Real bl    =    0.7;
+
+  Comb comb;
+  comb.setMaxDelayInSamples(delay);
+  comb.setDelayInSamples(delay);
+  comb.setCoeffs(ff, fb, bl);
+
+  //VecR h = impulseResponse(comb, N, 1.0);
+  //rsPlotVectors(h);
+
+  Complex z(0.6, 0.8);
+  ok &= testTransferFunction(comb, z, N, 1.e-13);
+  // FAILS!!!
+
+
+  //Complex Hc = comb.getTransferFunctionAt(z);
+
+
+  rsAssert(ok);
+  return ok;
+}
+
 bool allpassChainUnitTest()
 {
   // We compare impulse responses produced by a literal chain of rsAllpassDelayNaive with those of
@@ -2916,6 +2951,7 @@ bool allpassUnitTest()
   bool ok = true;
 
   ok &= delayLineUnitTest();
+  ok &= universalCombUnitTest();
   ok &= allpassChainUnitTest();
   ok &= nestedAllpassUnitTest();
   ok &= allpassDisperserUnitTest();

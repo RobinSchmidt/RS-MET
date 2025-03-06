@@ -280,7 +280,8 @@ void complexMovingAverage(const T* x, T* y, int n, int len)
     a += x[t] - old_x;
     z = (z + x[t]) * r - old_x;        // complex multiplication
     y[t] = (a - z.real()) / s;         
-  }
+  }
+
   // ToDo:
   // -Precompute 1/s instead of s and replace division by multiplication.
   // -Generalize to arbitrary windows from the generalized cosine family. Maybe other families are
@@ -368,6 +369,10 @@ void rsTaylorToPade(const std::vector<T>& t, std::vector<T>& p, std::vector<T>& 
   // See:
   // https://www.youtube.com/watch?v=szMaPkJEMrw
   // https://www.youtube.com/watch?v=Y3PukSgFWRc
+  // -> In the 1st example, he uses an algorithm that just uses the derivatives f(x), f'(x), f''(x)
+  //    on the LHS and the (iterated) quotient rule on the RHS. I'm not sure how practical it is in
+  //    general to iterate the quotient rule, though. But there's a formula for the n-th derivative
+  //    of a quotient. See: https://math.stackexchange.com/questions/5357/whats-the-generalisation-of-the-quotient-rule-for-higher-derivatives
   // https://www.youtube.com/watch?v=3TK8Fi_I0h0
   // -> Approximates e^-x. This function represents delay in the s-domain (H(s) = e^(-tau*s) is a 
   //    delay by tau). Pade approximants of it with M=N have allpass characteristic when used as 
