@@ -364,7 +364,8 @@ public:
     TArg zM = rsPow(z, TArg(-M));   // z^-M
 
     //TArg V  = TArg(1) + fb * zM;    // V(z)  ...maybe it should be 1 / (1 + fb * zM)
-    TArg V  = TArg(1) / (TArg(1) + fb * zM);    // V(z)
+    //TArg V  = TArg(1) / (TArg(1) + fb * zM);    // V(z)
+    TArg V  = TArg(1) / (TArg(1) - fb * zM);    // V(z)
 
     return bl * V + ff * V * zM;
 

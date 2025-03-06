@@ -1963,8 +1963,8 @@ bool universalCombUnitTest()
   using VecR    = std::vector<Real>;
   using Comb    = rsUniversalCombFilter<Real, Real>;
 
-  int  delay =    1;
-  int  N     = 1024;
+  int  delay =    3;
+  int  N     =  512;
   Real ff    =    0.9;
   Real fb    =    0.8;
   Real bl    =    0.7;
@@ -1977,12 +1977,10 @@ bool universalCombUnitTest()
   //VecR h = impulseResponse(comb, N, 1.0);
   //rsPlotVectors(h);
 
+  // Test transfer function computation:
   Complex z(0.6, 0.8);
   ok &= testTransferFunction(comb, z, N, 1.e-13);
-  // FAILS!!!
 
-
-  //Complex Hc = comb.getTransferFunctionAt(z);
 
 
   rsAssert(ok);
