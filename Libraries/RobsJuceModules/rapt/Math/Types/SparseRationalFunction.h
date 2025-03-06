@@ -92,7 +92,9 @@ public:
   {
     num.clear();
     den.clear();
-    den._appendTerm(T(1), 0);
+
+    den._appendTerm(T(1), 0); // 0 == 0/1 and not 0/0
+    // But we should do this in initToZero! Maybe make clear protected!
   }
 
   void setNumTerms(int newNumNumeratorTerms, int newNumDenominatorTerms)

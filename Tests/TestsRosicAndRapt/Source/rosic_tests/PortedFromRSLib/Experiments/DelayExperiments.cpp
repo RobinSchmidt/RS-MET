@@ -203,8 +203,9 @@ void universalComb()
   };
 
 
-  int M = 10;   // Delay
-  //int N = 30;   // Number of samples for plot
+  // Plot impulse and frequency responses of the universal comb filter for various settings:
+
+  int M = 10;   // Delay to be used in all plots below.
 
 
   // Feedback combs:
@@ -220,18 +221,24 @@ void universalComb()
   // linear phase over the phase response of the filter above.
   // Impulse:   Decaying upward spikes starting with unit amplitude at n = M.
   // Magnitude: Peaks at all multiples of 1/M with height is +20 dB.
-  // Phase:     Linear downward trend with overlaid rounded upward saw (as above). Looks like
-  //            slanted staircase with rounded steps.
-
+  // Phase:     Slanted staircase with rounded steps. I think, it's the phase response from above
+  //            with a linear downward trend added.
 
 
   // Feedforward combs:
+  //                     FF    FB    BL
   plotImpAndFreqResp(M, +0.9, +0.0, +1.0, 30, 2001);
   // Feedforward comb with unit weight for input and weight 0.9 for delayed signal.
   // Impulse:   Two spikes at n = 0 and n = M with height 1.0 and 0.9.
   // Magnitude: Troughs at odd multiples 0.5/M. with depth -20 dB.
   // Phase:     Rounded downward saw. Start phase is middle of the ramp.
 
+  plotImpAndFreqResp(M, +1.0, +0.0, +0.9, 30, 2001);
+  // Feedforward comb with weight 0.9 forinput and and unit weight for delayed signal. This swaps
+  // the weights of the filter above. The result is a time reversed impulse response.
+  // Impulse:   Two spikes at n = 0 and n = M with height 0.9 and 1.0.
+  // Magnitude: Troughs at odd multiples 0.5/M. with depth -20 dB.
+  // Phase:     Slanted staircase with rounded steps.
 
 
   //plotImpAndFreqResp(M, +1.0, +0.0, +1.0, 30, 2001);    // M/2 notches at an odd harmonic series
@@ -241,10 +248,12 @@ void universalComb()
 
 
 
-
-
   // Combs with freely assigned coeffs:
-  plotImpResp(10, +1.0, +0.8, +0.5, 202);
+  plotImpAndFreqResp(10, +1.0, +0.8, +0.5, 202, 2001);
+  plotImpAndFreqResp(10, +0.9, +0.8, +0.5, 202, 2001);
+  plotImpAndFreqResp(10, -0.9, +0.8, +0.5, 202, 2001);
+
+
 
 
 
@@ -253,11 +262,13 @@ void universalComb()
 
   // ToDo:
   //
-  // - Maybe make a helper function that takes delay, ff, fb, bl, N and creates a plot. Then call 
-  //   it with various settings.
+  // - Make a ToolChain module UniComb that has these 4 parameters and plots the magnitude and 
+  //   phase response such that we can conveniently experiment with the effect of different 
+  //   parameters
   //
-  // - Make a plotFreqResp function. We need to implement a getTransferFunctionAt function for 
-  //   that.
+  // - Maybe make a pole/zero plot. This requires to produce the transfer function as pair of 
+  //   rsPolynomial and to find the roots of these polynomials. Maybe we can use class 
+  //   FilterPlotter for this (after producing the filter specification in terms of B,A)
 }
 
 void delayLines()

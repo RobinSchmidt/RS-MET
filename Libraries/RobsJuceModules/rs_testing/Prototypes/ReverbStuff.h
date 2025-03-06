@@ -320,6 +320,7 @@ public:
     fb = -newCoeff;
     ff =  TPar(1);
   }
+  // Needs tests. The filter should be equivalent to rsAllpassDelay with this setting.
 
   void setToFeedbackComb(TPar newFeedbackCoeff)
   {
@@ -327,6 +328,8 @@ public:
     fb = newFeedbackCoeff;
     ff = TPar(0);
   }
+  // ToDo: Maybe allow the user to set a global gain. This should be assigned to the blend coeff.
+  // Make it an optional parameter defaulting to 1.
 
   void setToFeedforwardComb(TPar newFeedforwardCoeff, TPar newBlendCoeff = TPar(1))
   {
@@ -334,6 +337,8 @@ public:
     fb = TPar(0);
     ff = newFeedforwardCoeff;
   }
+  // ToDo: explain how the ff, bl coeffs relate to a total gain. I think, to achieve a different 
+  // overall total gain, we should scale ff and bl by that gain factor
 
   void setToPureDelay()
   {
@@ -341,6 +346,21 @@ public:
     fb = TPar(0);
     ff = TPar(1);
   }
+
+  void setToBypass()
+  {
+    bl = TPar(1);
+    fb = TPar(0);
+    ff = TPar(0);
+  }
+
+  void setToMuted()
+  {
+    bl = TPar(0);
+    fb = TPar(0);
+    ff = TPar(0);
+  }
+
 
   /*
   void setToNotchpass(TPar newPoleCoeff, TPar newZeroCoeff)
@@ -359,6 +379,9 @@ public:
     return delayLine.getDelayInSamples();
   }
 
+  /** Returns value of the transfer function H(z) of this filter at the given z. The transfer 
+  function is given by:  H(z) = (bl + ff * z^-M) / (1 - fb * z^-M)  where M is the delay and 
+  bl, ff, fb are the blend, feedforward and feedback coefficient respectively. */
   template<class TArg>
   TArg getTransferFunctionAt(const TArg& z) const
   {
@@ -368,7 +391,23 @@ public:
     return bl * V + ff * V * zM;
   }
 
-  // ToDo: maybe implement a function getRingOutTime
+
+  void getTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const
+  {
+    int   M  = getDelayInSamples();
+    tf->clear();
+    tf->num._appendTerm(bl,      0);
+    tf->num._appendTerm(ff,      M);
+    //tf->den._appendTerm(TPar(1), 0);  // Superfluous? Maybe even wrong?
+    tf->num._appendTerm(-fb,     M);
+
+    // Notes:
+    //
+    // - We use  tf->num._appendTerm(ff, M);  and not  tf->num._appendTerm(ff, -M);  because the 
+    //   class rsSparseDigitalTransferFunction already interprets the transfer function as a 
+    //   rational function in z^-1. That means, the minus is already baked into the class.
+  }
+  // Needs tests.
 
 
 
@@ -390,11 +429,30 @@ protected:
 
   RAPT::rsDelay<TSig> delayLine;
 
-  TPar ff = TPar(0);   // feedforward coeff
-  TPar fb = TPar(0);   // feedback coeff
-  TPar bl = TPar(0);   // blend coeff
+  TPar ff = TPar(0);   // Feedforward coeff
+  TPar fb = TPar(0);   // Feedback coeff
+  TPar bl = TPar(0);   // Blend coeff
 
 };
+
+/*
+rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar, TDly>
+::getCombTransferFunction() const
+{
+  using TF = rsSparseDigitalTransferFunction<TPar>;
+
+  TF one; one.num._appendTerm(TPar(1), 0);
+  TF z1;  z1.num._appendTerm( TPar(1), 1);
+  TF F = getDamperTransferFunction();       // Feedback filter F(z)
+  TF A; getDelayTransferFunction(&A);       // Delay filter A(z)
+  TPar k = s.getFeedbackGain();
+  if(s.isInPreDelayMode())
+    return A   / (one + k * z1 * F * A);    // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
+  else 
+    return one / (one + k * z1 * F * A);    // U(z) =   1  / (1 + k * z^-1 * F(z) * A(z))
+}
+*/
+
 
 // ToDo:
 //
@@ -406,6 +464,11 @@ protected:
 //   patent. To implement this, it may make sense to factor out a delayline class that doesn't own 
 //   the delay memory and instead just gets a pointer passed in and the memory is managed by the 
 //   class that uses the delayline.
+//
+// - Implement a function getTransferFunction that returns the transfer function as 
+//   rsSparseRationalFunction object.
+//
+// - Maybe implement a function getRingOutTime
 
 // See also:
 // https://github.com/isaiahdoyle/universalcombfilter
