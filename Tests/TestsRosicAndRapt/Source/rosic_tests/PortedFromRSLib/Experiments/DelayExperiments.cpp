@@ -206,10 +206,24 @@ void universalComb()
   int M = 10;   // Delay
   //int N = 30;   // Number of samples for plot
 
+
   // Feedback combs:
   //                     FF    FB    BL
-  plotImpAndFreqResp(M, +0.0, +0.9, +1.0, 202, 2001);   // 
-  plotImpAndFreqResp(M, +1.0, +0.9,  0.0, 202, 2001);   // With predelay
+  plotImpAndFreqResp(M, +0.0, +0.9, +1.0, 202, 2001);
+  // Feedback comb with positive feedback gain. Produces a full seris of harmonics.
+  // Impulse:   Decaying upward spikes starting with unit amplitude at n = 0.
+  // Magnitude: Peaks at all multiples of 1/M with height is +20 dB.
+  // Phase:     Rounded upward saw. Start phase is middle of the (downward) edge.
+
+  plotImpAndFreqResp(M, +1.0, +0.9,  0.0, 202, 2001);   
+  // Gives same result as above but with an added predelay of M samples. This superimposes a 
+  // linear phase over the phase response of the filter above.
+  // Impulse:   Decaying upward spikes starting with unit amplitude at n = M.
+  // Magnitude: Peaks at all multiples of 1/M with height is +20 dB.
+  // Phase:     Linear downward trend with overlaid rounded upward saw (as above). Looks like
+  //            slanted staircase with rounded steps.
+
+
 
   // Feedforward combs:
   //plotImpAndFreqResp(M, +0.9, +0.0, +1.0, 30);
