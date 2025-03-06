@@ -361,16 +361,9 @@ public:
   TArg getTransferFunctionAt(const TArg& z) const
   {
     int  M  = getDelayInSamples();
-    TArg zM = rsPow(z, TArg(-M));   // z^-M
-
-    //TArg V  = TArg(1) + fb * zM;    // V(z)  ...maybe it should be 1 / (1 + fb * zM)
-    //TArg V  = TArg(1) / (TArg(1) + fb * zM);    // V(z)
-    TArg V  = TArg(1) / (TArg(1) - fb * zM);    // V(z)
-
+    TArg zM = rsPow(z, TArg(-M));              // z^-M
+    TArg V  = TArg(1) / (TArg(1) - fb * zM);   // V(z), z-trafo of intermediate signal v[n].
     return bl * V + ff * V * zM;
-
-    // ToDo: Verify this by unit tests! Compare analytically computed transfer function to 
-    // numerical one obtained from the impulse response
   }
 
   // ToDo: maybe implement a function getRingOutTime
@@ -383,7 +376,7 @@ public:
   inline TSig getSample(TSig x)
   {
     TSig vM = delayLine.readOutput();    // Read vM = v[n-M] from the delayline.
-    TSig v  = x + fb * vM;               // Compute v[n] = x[n] + fb * v[n-M].
+    TSig v  = x + fb * vM;               // Intermediate signal: v[n] = x[n] + fb * v[n-M].
     delayLine.writeInputAndUpdate(v);    // Write v[n] into the delayline.
     return bl * v + ff * vM;             // Return y[n] = bl * v[n] + ff * v[n-M].
   }
