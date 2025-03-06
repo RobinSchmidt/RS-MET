@@ -7,6 +7,33 @@
 //  bottom
 
 
+/** Variant of the fast 2x2 Kronecker trafo that uses different coeffs for each stage of the 
+transform. The coeffs a,b,c,d are replaced by arrays. They must all be of length log2(N). */
+template<class T>
+void rsStagedKroneckerTrafo2x2(T* A, int N, T* a, T* b, T* c, T* d)
+{
+  // UNDER CONSTRUCTION. Not yet tested. 
+
+  rsAssert(rsIsPowerOfTwo(N), "N must be a power of 2");
+  int h = 1;
+  int L = 0;                 // Transform level
+  while(h < N) 
+  {
+    for(int i = 0; i < N; i += 2*h) 
+    {
+      for(int j = i; j < i+h; j++) 
+      {
+        T x = A[j];
+        T y = A[j+h];
+        A[j]   = a[L]*x + b[L]*y;
+        A[j+h] = c[L]*x + d[L]*y;
+      }
+    }
+    h *= 2;
+    L++;
+  }
+}
+
 
 
 
@@ -288,7 +315,7 @@ public:
   void setToAllpass(TPar newAllpassCoeff) 
   { 
     bl =  newCoeff;
-    fb = -bl;
+    fb = -newCoeff;
     ff =  TPar(1);
   }
 
@@ -335,7 +362,10 @@ public:
   {
     int  M  = getDelayInSamples();
     TArg zM = rsPow(z, TArg(-M));   // z^-M
-    TArg V  = TArg(1) + fb * zM;    // V(z)
+
+    //TArg V  = TArg(1) + fb * zM;    // V(z)  ...maybe it should be 1 / (1 + fb * zM)
+    TArg V  = TArg(1) / (TArg(1) + fb * zM);    // V(z)
+
     return bl * V + ff * V * zM;
 
     // ToDo: Verify this by unit tests! Compare analytically computed transfer function to 
@@ -369,6 +399,17 @@ protected:
   TPar bl = TPar(0);   // blend coeff
 
 };
+
+// ToDo:
+//
+// - Maybe make a class rsNotchpassDelay that combines a normal delayline with a notchpass filter.
+//   It may have a setTotalDelay(int) function that sets the delay of both and a function 
+//   setDelayRatio(double) that sets the ratio between the lengths. The default should be 0.8 
+//   meaning that 80% of the total delay is allocated to the normal delayline and 20% to the 
+//   notchpass. That makes the notchpass delay 25% of the normal delay as recommended in Blesser's
+//   patent. To implement this, it may make sense to factor out a delayline class that doesn't own 
+//   the delay memory and instead just gets a pointer passed in and the memory is managed by the 
+//   class that uses the delayline.
 
 // See also:
 // https://github.com/isaiahdoyle/universalcombfilter

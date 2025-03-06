@@ -65,6 +65,15 @@ void algoVerb()
   //
   // - Then add in a 3rd and tweak its delaytime also until it sounds least tonal
   //   and so on
+  //
+  // - When introducing modulation of the generalized Hadamard matrix parameters a,b,c,d, maybe use
+  //   different values of a,b,c,d for the different levels of the trafo and modulate them by 
+  //   different signals. The rationale is that we want to avoid situations where the matrix 
+  //   becomes temporarily very sparse. This may happen if the modulation of the angle phi causes
+  //   the matrix to become diagonal, for example. But when each stage/level of the trafo uses 
+  //   different coeffs, this is unlikely to happen. Maybe we can even ensure that it doesn't 
+  //   happen by relating the angle phi of various levels by fixed phase shifts. See
+  //   rsStagedKroneckerTrafo2x2()
 }
 
 void delayLineBasic()
@@ -175,27 +184,36 @@ void universalComb()
     rsPlotVectors(h);
 
     // Preliminary - ToDo: make an extra function plotFreqResp ...maybe
-    //plotFrequencyResponse(comb, N, 0.0, 0.5, 1.0, false);
+    plotFrequencyResponse(comb, 2001, 0.0, 0.5, 1.0, false);
+    // Maybe we need a dbFloor there. The notches go deep down to -320 dB
   };
   // Maybe put the ff coeff last in the signature. It's often 1, so we may make it optional. But 
   // somehow the order ff, fb, bl seems more natural. ...not sure...
 
 
-
-  //               FF    FB    BL
-  plotImpResp(10, +1.0, +0.0, +1.0, 30); // Feedforward comb
-  plotImpResp(10, -1.0, +0.0, +1.0, 30); // Feedforward comb
-  plotImpResp(10, +1.0, +0.0, -1.0, 30); // Feedforward comb
-  plotImpResp(10, -1.0, +0.0, -1.0, 30); // Feedforward comb
+  int M = 10;   // Delay
+  //int N = 30;   // Number of samples for plot
 
 
+  //              FF    FB    BL
+
+  // Feedback combs:
+  plotImpResp(M, +0.0, +0.9, +1.0, 202);   // 
+  plotImpResp(M, +1.0, +0.9,  0.0, 202);   // With predelay
+
+  // Feedforward combs:
+  //plotImpResp(M, +0.9, +0.0, +1.0, 30);
+  plotImpResp(M, +1.0, +0.0, +1.0, 30);    // M/2 notches at an odd harmonic series
+  plotImpResp(M, -1.0, +0.0, -1.0, 30);    // ..same but sign inverted
+  plotImpResp(M, -1.0, +0.0, +1.0, 30);    // M/2 notches at a full harmonic series
+  plotImpResp(M, +1.0, +0.0, -1.0, 30);    // ..same but sign inverted
 
 
 
 
 
-
-  plotImpResp(20, +1.0, +0.8, +0.5, 512);
+  // Combs with freely assigned coeffs:
+  plotImpResp(10, +1.0, +0.8, +0.5, 202);
 
 
 
