@@ -212,7 +212,7 @@ void universalComb()
   plotImpAndFreqResp(M, +0.0, +0.9, +1.0, 202, 2001);
   // Feedback comb with positive feedback gain. Produces a full seris of harmonics.
   // Impulse:   Decaying upward spikes starting with unit amplitude at n = 0.
-  // Magnitude: Peaks at all multiples of 1/M with height is +20 dB.
+  // Magnitude: Peaks at all multiples of 1/M with height +20 dB.
   // Phase:     Rounded upward saw. Start phase is middle of the (downward) edge.
 
   plotImpAndFreqResp(M, +1.0, +0.9,  0.0, 202, 2001);   
@@ -226,11 +226,18 @@ void universalComb()
 
 
   // Feedforward combs:
-  //plotImpAndFreqResp(M, +0.9, +0.0, +1.0, 30);
-  plotImpAndFreqResp(M, +1.0, +0.0, +1.0, 30, 2001);    // M/2 notches at an odd harmonic series
-  plotImpAndFreqResp(M, -1.0, +0.0, -1.0, 30, 2001);    // ..same but sign inverted
-  plotImpAndFreqResp(M, -1.0, +0.0, +1.0, 30, 2001);    // M/2 notches at a full harmonic series
-  plotImpAndFreqResp(M, +1.0, +0.0, -1.0, 30, 2001);    // ..same but sign inverted
+  plotImpAndFreqResp(M, +0.9, +0.0, +1.0, 30, 2001);
+  // Feedforward comb with unit weight for input and weight 0.9 for delayed signal.
+  // Impulse:   Two spikes at n = 0 and n = M with height 1.0 and 0.9.
+  // Magnitude: Troughs at odd multiples 0.5/M. with depth -20 dB.
+  // Phase:     Rounded downward saw. Start phase is middle of the ramp.
+
+
+
+  //plotImpAndFreqResp(M, +1.0, +0.0, +1.0, 30, 2001);    // M/2 notches at an odd harmonic series
+  //plotImpAndFreqResp(M, -1.0, +0.0, -1.0, 30, 2001);    // ..same but sign inverted
+  //plotImpAndFreqResp(M, -1.0, +0.0, +1.0, 30, 2001);    // M/2 notches at a full harmonic series
+  //plotImpAndFreqResp(M, +1.0, +0.0, -1.0, 30, 2001);    // ..same but sign inverted
 
 
 
