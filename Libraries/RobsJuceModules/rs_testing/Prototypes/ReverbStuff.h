@@ -321,6 +321,31 @@ public:
   */
 
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  int getDelayInSamples() const
+  {
+    return delayLine.getDelayInSamples();
+  }
+
+  template<class TArg>
+  TArg getTransferFunctionAt(const TArg& z) const
+  {
+    int  M  = getDelayInSamples();
+    TArg zM = rsPow(z, TArg(-M));   // z^-M
+    TArg V  = TArg(1) + fb * zM;    // V(z)
+    return bl * V + ff * V * zM;
+
+    // ToDo: Verify this by unit tests! Compare analytically computed transfer function to 
+    // numerical one obtained from the impulse response
+  }
+
+  // ToDo: maybe implement a function getRingOutTime
+
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 

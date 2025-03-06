@@ -163,19 +163,39 @@ void universalComb()
   using Vec  = std::vector<Real>;
   using Comb = rsUniversalCombFilter<Real, Real>;
 
-  int  delay =  20;
-  int  N     = 512;   // Number of samples to produce
-  Real ff    = 1.0;
-  Real fb    = 0.8;
-  Real bl    = 0.5;
+  // Helper function:
+  auto plotImpResp = [](int delay, Real ff, Real fb, Real bl, int N)
+  {
+    Comb comb;
+    comb.setMaxDelayInSamples(delay);
+    comb.setDelayInSamples(delay);
+    comb.setCoeffs(ff, fb, bl);
 
-  Comb comb;
-  comb.setMaxDelayInSamples(delay);
-  comb.setDelayInSamples(delay);
-  comb.setCoeffs(ff, fb, bl);
+    Vec h = impulseResponse(comb, N, 1.0);
+    rsPlotVectors(h);
 
-  Vec h = impulseResponse(comb, N, 1.0);
-  rsPlotVectors(h);
+    // Preliminary - ToDo: make an extra function plotFreqResp ...maybe
+    //plotFrequencyResponse(comb, N, 0.0, 0.5, 1.0, false);
+  };
+  // Maybe put the ff coeff last in the signature. It's often 1, so we may make it optional. But 
+  // somehow the order ff, fb, bl seems more natural. ...not sure...
+
+
+
+  //               FF    FB    BL
+  plotImpResp(10, +1.0, +0.0, +1.0, 30); // Feedforward comb
+  plotImpResp(10, -1.0, +0.0, +1.0, 30); // Feedforward comb
+  plotImpResp(10, +1.0, +0.0, -1.0, 30); // Feedforward comb
+  plotImpResp(10, -1.0, +0.0, -1.0, 30); // Feedforward comb
+
+
+
+
+
+
+
+
+  plotImpResp(20, +1.0, +0.8, +0.5, 512);
 
 
 
@@ -184,8 +204,11 @@ void universalComb()
 
   // ToDo:
   //
-  // - Maybe make a helper function that takes delay, ff, fb, bl, N and creates a plot. Then call it 
-  //   with various settings.
+  // - Maybe make a helper function that takes delay, ff, fb, bl, N and creates a plot. Then call 
+  //   it with various settings.
+  //
+  // - Make a plotFreqResp function. We need to implement a getTransferFunctionAt function for 
+  //   that.
 }
 
 void delayLines()
