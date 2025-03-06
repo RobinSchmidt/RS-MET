@@ -77,31 +77,50 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  void initToZero()
-  {
-    clear();
-  }
-
-  void initToOne()
-  {
-    initToZero();
-    num._appendTerm(T(1), 0);
-  }
-
+  /** Clears numerator and denominator. Note that this puts the object into an invalid state. It 
+  would formally represent the indeterminate expression 0/0. So, this function should be used with
+  care (and perhaps only internally). */
   void clear()
   {
     num.clear();
     den.clear();
-
-    den._appendTerm(T(1), 0); // 0 == 0/1 and not 0/0
-    // But we should do this in initToZero! Maybe make clear protected!
   }
+  // Maybe it should have an underscore? It puts the function itno an invalid state representing
+  // the function 0/0 (I think)
+
+  /** Initializes this rational function to the zero function: f(x) = 0. We represent this as
+  f(x) = 0*x^0 / 1*x^0. The array for the numerator will be empty and the array for the 
+  denominator will have a single coefficient of 1 for the monomial x^0. */
+  void initToZero()
+  {
+    clear();                   // f(x) = 0/0. That's indeterminate!
+    den._appendTerm(T(1), 0);  // f(x) = 0/1. That's much better.
+  }
+
+  /** Initializes this rational function that is constantly one: f(x) = 1. We represent this as
+  f(x) = 1*x^0 / 1*x^0. */
+  void initToOne()
+  {
+    initToZero();              // f(x) = 0/1
+    num._appendTerm(T(1), 0);  // f(x) = 1/1
+  }
+
+  /*
+  void initToIdentity()
+  {
+    initToZero();              // f(x) = 0/1
+    num._appendTerm(T(1), 1);  // f(x) = x/1
+  }
+  */
+
 
   void setNumTerms(int newNumNumeratorTerms, int newNumDenominatorTerms)
   {
     num._setNumTerms(newNumNumeratorTerms);
     den._setNumTerms(newNumDenominatorTerms);
   }
+  // Maybe it should have an underscore! It's a low level method. It may put the object into an
+  // undefined state
 
   void setupFromDenseCoeffs(
     const std::vector<T>& newNumeratorCoeffs,
