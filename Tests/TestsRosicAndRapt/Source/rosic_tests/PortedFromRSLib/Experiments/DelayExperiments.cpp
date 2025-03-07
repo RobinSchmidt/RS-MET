@@ -207,7 +207,7 @@ void universalComb()
 
   int M = 10;   // Delay to be used in all plots below.
 
-
+  /*
   // Feedback combs:
   //                     FF    FB    BL
   plotImpAndFreqResp(M, +0.0, +0.9, +1.0, 202, 2001);
@@ -260,9 +260,48 @@ void universalComb()
   //plotImpAndFreqResp(M, -1.0, +0.0, -1.0, 30, 2001);
   //plotImpAndFreqResp(M, -1.0, +0.0, +1.0, 30, 2001);
   //plotImpAndFreqResp(M, +1.0, +0.0, -1.0, 30, 2001);
+  */
+
 
 
   // Schroeder allpasses:
+  //                     FF    FB    BL
+  plotImpAndFreqResp(M, +1.0, -0.9, +0.9, 202, 2001);
+  // Allpass with negative feedback.
+  // Impulse:   Initial upward spike at n = 0 with height 0.9 followed by alternating spikes. The 
+  //            2nd spike goes upward, too. The 3rd goes downward, etc.
+  // Magnitude: Flat at 0 dB, i.e. allpass - as it should be.
+  // Phase:     Stairsteps at odd multiples 0.5/M. The plateaus between the steps are at integer
+  //            multiples of 360°.
+
+  plotImpAndFreqResp(M, +1.0, +0.9, -0.9, 202, 2001);
+  // Allpass with positive feedback.
+
+
+
+  // Blesser notchpasses:
+  plotImpAndFreqResp(M, +1.0, -0.8, +0.9, 202, 2001);
+  plotImpAndFreqResp(M, +1.0, +0.8, -0.9, 202, 2001);
+  // Looks qualitatively right but I'm not sure, if the depths of the magnitude notches has the 
+  // correct relationship with the group delay peaks (i.e. phase response cliffs). Also: the 
+  // magnitude goes above unity between the peaks. When such a notchpass is part of a feedback 
+  // loop, we may want to scale the input or output such that the magnitude always maxes out at 
+  // unity, i.e. at 0 dB. Figure out if input or output scaling behaves better under modulation.
+  // Maybe try also to implement the filter in different forms (like DF1/2, TDF1/2) and check their
+  // behavior under modulation.
+
+
+
+
+
+  //plotImpAndFreqResp(M, +0.9, -0.9, +1.0, 30, 2001); // is unit impulse
+  //plotImpAndFreqResp(M, -0.9, +0.9, +1.0, 30, 2001); // dito
+
+
+  plotImpAndFreqResp(M, +1.0, -0.9, +0.8, 202, 2001);
+  plotImpAndFreqResp(M, +1.0, +0.9, -0.8, 202, 2001);
+
+
   // ...
 
   // Combs with freely assigned coeffs:
