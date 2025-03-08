@@ -400,7 +400,7 @@ public:
   {
     int  M  = getDelayInSamples();
     TArg zM = rsPow(z, TArg(-M));              // z^-M
-    TArg V  = TArg(1) / (TArg(1) - fb * zM);   // V(z), z-trafo of intermediate signal v[n].
+    TArg V  = TArg(1) / (TArg(1) + fb * zM);   // V(z), z-trafo of intermediate signal v[n].
     return bl * V + ff * V * zM;
   }
 
@@ -412,7 +412,7 @@ public:
     tf->num._appendTerm(bl,      0);
     tf->num._appendTerm(ff,      M);
     //tf->den._appendTerm(TPar(1), 0);  // Superfluous? Maybe even wrong?
-    tf->num._appendTerm(-fb,     M);
+    tf->num._appendTerm(fb,      M);
 
     // Notes:
     //
@@ -430,7 +430,7 @@ public:
   inline TSig getSample(TSig x)
   {
     TSig vM = delayLine.readOutput();    // Read vM = v[n-M] from the delayline.
-    TSig v  = x + fb * vM;               // Intermediate signal: v[n] = x[n] + fb * v[n-M].
+    TSig v  = x - fb * vM;               // Intermediate signal: v[n] = x[n] + fb * v[n-M].
     delayLine.writeInputAndUpdate(v);    // Write v[n] into the delayline.
     return bl * v + ff * vM;             // Return y[n] = bl * v[n] + ff * v[n-M].
   }

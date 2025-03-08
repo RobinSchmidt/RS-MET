@@ -183,14 +183,14 @@ bool universalCombVsOnePole()
   using OnePole = rsOnePoleFilter<Real, Real>;
 
   // User parameters:
-  int  N  = 10;        // Number of samples to produce
-  Real b0 = 0.75;      // Coeff for direct input
-  Real b1 = 0.25;      // Coeff for delayed input
-  Real a1 = 0.5;       // Coeff for delayed output
+  int  N  =  10;        // Number of samples to produce
+  Real b0 =  0.75;      // Coeff for direct input
+  Real b1 =  0.25;      // Coeff for delayed input
+  Real a1 = -0.5;       // Coeff for delayed output
 
   // Set up one pole and obtain its impulse response:
   OnePole onePole;
-  onePole.setCoefficients(b0, b1, a1);
+  onePole.setCoefficients(b0, b1, -a1);
   Vec h1 = impulseResponse(onePole, N, 1.0);
 
   // Set up comb and obtain its impulse response:
@@ -201,9 +201,9 @@ bool universalCombVsOnePole()
   Vec h2 = impulseResponse(comb, N, 1.0);
 
   // Compute error and check that it's within numerical tolerance:
-  Vec err = h2-h1;
+  Vec err = h2 - h1;
   ok &= rsIsAllZeros(err, 0.0);
-  //rsPlotVectors(h1, h2, err);
+  rsPlotVectors(h1, h2, err);
 
   return ok;
 
@@ -265,13 +265,15 @@ void universalCombResponses()
   
   // Feedback combs:
   //                     FF    FB    BL
-  plotImpAndFreqResp(M, +0.0, +0.9, +1.0, 202, 2001);
-  // Feedback comb with positive feedback gain. Produces a full seris of harmonics.
+  plotImpAndFreqResp(M, +0.0, -0.9, +1.0, 202, 2001);
+  // Feedback comb with negative feedback coeff. Because the coeff is negated again in the 
+  // implementation (for consistency with the sign convention used in most of the DSP literature),
+  // this produces a full series of harmonics.
   // Impulse:   Decaying upward spikes starting with unit amplitude at n = 0.
   // Magnitude: Peaks at all multiples of 1/M with height +20 dB. Rounded valleys at -5.57 dB.
   // Phase:     Rounded upward saw. Start phase is middle of the (downward) edge.
 
-  plotImpAndFreqResp(M, +1.0, +0.9,  0.0, 202, 2001);   
+  plotImpAndFreqResp(M, +1.0, -0.9,  0.0, 202, 2001);   
   // Gives same result as above but with an added predelay of M samples. This superimposes a 
   // linear phase over the phase response of the filter above.
   // Impulse:   Decaying upward spikes starting with unit amplitude at n = M.
@@ -324,16 +326,16 @@ void universalCombResponses()
 
   // Schroeder allpasses:
   //                     FF    FB    BL
-  plotImpAndFreqResp(M, +1.0, -0.9, +0.9, 202, 2001);
-  // Allpass with negative feedback.
+  plotImpAndFreqResp(M, +1.0, +0.9, +0.9, 202, 2001);
+  // Allpass with positive (negated) feedback.
   // Impulse:   Initial upward spike at n = 0 with height 0.9 followed by alternating spikes. The 
   //            2nd spike goes upward, too. The 3rd goes downward, etc.
   // Magnitude: Flat at 0 dB, i.e. allpass - as it should be.
   // Phase:     Stairsteps at odd multiples 0.5/M. The plateaus between the steps are at integer
   //            multiples of 360°.
 
-  plotImpAndFreqResp(M, +1.0, +0.9, -0.9, 202, 2001);
-  // Allpass with positive feedback.
+  plotImpAndFreqResp(M, +1.0, -0.9, -0.9, 202, 2001);
+  // Allpass with negative (negated) feedback.
 
 
 

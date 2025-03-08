@@ -357,8 +357,11 @@ inline bool testTransferFunction(TFlt& filter, rsComplex<T> z, int N, T tol)
   T errAbs = rsAbs(err);
   return errAbs <= tol;
 
-  // ToDo: factor out a function to compute the transfer function numerically. We want to call it 
-  // like Ht = rsGetTransferFunctionAt(filter, z, N)
+  // ToDo: 
+  //
+  // - Factor out a function to compute the transfer function numerically. We want to call it 
+  //   like Ht = rsGetTransferFunctionAt(filter, z, N). It may be useful in contexts other than
+  //   testing the filter.getTransferFunctionAt() function
 }
 
 
