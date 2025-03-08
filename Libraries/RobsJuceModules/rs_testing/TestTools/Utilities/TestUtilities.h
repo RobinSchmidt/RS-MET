@@ -337,19 +337,19 @@ template<class T, class TFlt>
 inline rsComplex<T> rsEvaluateTransferFunctionNumerically(TFlt& filter, rsComplex<T> z, int N)
 {
   filter.reset();
-  rsComplex<T> z1 = T(1) / z;                         // z^-1
-  rsComplex<T> zn = T(1);                             // z^-n with n = 0
-  rsComplex<T> Ht = filter.getSample(T(1)) * zn;      // The "t" in Ht stands for "target"
+  rsComplex<T> z1 = T(1) / z;                         // z1 = z^-1
+  rsComplex<T> zn = T(1);                             // zn = z^-n, initialized with n = 0
+  rsComplex<T> H  = filter.getSample(T(1)) * zn;      // H: acccumulator for H(z)
   for(int n = 1; n < N; n++)
   {
     zn *= z1;                                         // z^-n
-    Ht += filter.getSample(T(0)) * zn;
+    H  += filter.getSample(T(0)) * zn;
   }
-
-  return Ht;
+  return H;
 }
 // Maybe take and return a T rather than rsComplex<T>. Then T itself already will be the complex 
-// type in instantiations. That makes it more flexible
+// type in instantiations. That makes it more flexible. Ah! Nope! That doesn't compile because
+// filter.getSample() usually doesn't take a complex argument.
 
 /** Helper function to test the result of filter.getTransferFunctionAt() against a naively computed
 transfer function value. This is meant for unit testing the getTransferFunctionAt() member function
@@ -357,24 +357,6 @@ that I typically give to many of my filter classes. */
 template<class T, class TFlt>
 inline bool testTransferFunction(TFlt& filter, rsComplex<T> z, int N, T tol)
 {
-  /*
-  // Compute transfer function H(z) at the given z the hard way, i.e. as the z-transform of the 
-  // impulse response. It's only an approximation though because we truncate the infinite sum at
-  // N-1. N should be large enough such that the impulse response has sufficiently decayed at the 
-  // end. We compute  Ht = sum_{n=0}^{N-1} h[n] * z^{-n}  where h[n] is the impulse response of the
-  // filter. In the actual z-trafo, the upper limit of the sum would be infinity.
-  filter.reset();
-  rsComplex<T> z1 = T(1) / z;                         // z^-1
-  rsComplex<T> zn = T(1);                             // z^-n with n = 0
-  rsComplex<T> Ht = filter.getSample(T(1)) * zn;      // The "t" in Ht stands for "target"
-  for(int n = 1; n < N; n++)
-  {
-    zn *= z1;                                         // z^-n
-    Ht += filter.getSample(T(0)) * zn;
-  }
-  */
-
-
   //  Compute transfer function H(z) at the given z numerically:
   rsComplex<T> Ht = rsEvaluateTransferFunctionNumerically(filter, z, N);
 
@@ -385,13 +367,8 @@ inline bool testTransferFunction(TFlt& filter, rsComplex<T> z, int N, T tol)
   rsComplex<T> err = H - Ht;
   T errAbs = rsAbs(err);
   return errAbs <= tol;
-
-  // ToDo: 
-  //
-  // - Factor out a function to compute the transfer function numerically. We want to call it 
-  //   like Ht = rsGetTransferFunctionAt(filter, z, N). It may be useful in contexts other than
-  //   testing the filter.getTransferFunctionAt() function
 }
+// Maybe rename to rsTestGetTransferFunctionAt
 
 
 template<class T>
