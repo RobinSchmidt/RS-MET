@@ -166,7 +166,62 @@ void delayLineAllpass()
   // - Plot frequency responses, too.
 }
 
-void universalComb()
+
+bool universalCombVsOnePole()
+{
+  // Compares outputs of a one pole filter and universal comb to show the correspondence between 
+  // the two types filters. The universal comb can be seen as a generalization to a general 1st 
+  // order filter where the unit delay has been replaced by an arbitrary delay of M samples.
+
+
+  bool ok = true;
+
+  // Types to be used:
+  using Real    = double;
+  using Vec     = std::vector<Real>;
+  using Comb    = rsUniversalCombFilter<Real, Real>;
+  using OnePole = rsOnePoleFilter<Real, Real>;
+
+  // User parameters:
+  int  N  = 10;        // Number of samples to produce
+  Real b0 = 0.75;      // Coeff for direct input
+  Real b1 = 0.25;      // Coeff for delayed input
+  Real a1 = 0.5;       // Coeff for delayed output
+
+  // Set up one pole and obtain its impulse response:
+  OnePole onePole;
+  onePole.setCoefficients(b0, b1, a1);
+  Vec h1 = impulseResponse(onePole, N, 1.0);
+
+  // Set up comb and obtain its impulse response:
+  Comb comb;
+  comb.setMaxDelayInSamples(10);
+  comb.setDelayInSamples(1);
+  comb.setCoeffs(b1, a1, b0);  // Change order to b0, b1, a1
+  Vec h2 = impulseResponse(comb, N, 1.0);
+
+  // Compute error and check that it's within numerical tolerance:
+  Vec err = h2-h1;
+  ok &= rsIsAllZeros(err, 0.0);
+  //rsPlotVectors(h1, h2, err);
+
+  return ok;
+
+
+  // ToDo: 
+  //
+  // - Maybe move into unit tests. 
+  //
+  // - Explain what the replacement of the unit delay by an M sample delay does to the pole-zero 
+  //   pattern and frequency response. I think, it just gets repeated M times. The effect on the 
+  //   impulse response is that we intersperse M-1 samples of value zero between each pair of 
+  //   samples in the 1-pole response.
+  //
+  // - There is actually no difference in numerical roundoff error so we use use 0.0 as our error 
+  //   tolerance here. Maybe try less nice coefficients and see if we still can use zero tolerance.
+}
+
+void universalCombResponses()
 {
   using Real = double;
   using Vec  = std::vector<Real>;
@@ -224,7 +279,7 @@ void universalComb()
   // Phase:     Slanted staircase with rounded steps. I think, it's the phase response from above
   //            with a linear downward trend added.
  
-  // ToDo: Make IIR combs with different gain normalizations (see DAFX pg. 70)
+
 
 
 
@@ -329,12 +384,16 @@ void universalComb()
   //   rsPolynomial and to find the roots of these polynomials. Maybe we can use class 
   //   FilterPlotter for this (after producing the filter specification in terms of B,A)
   //
-  // - Plot ringin responses.
+  // - Plot ringing responses.
+  //
+  // - Make IIR combs with different gain normalizations (see DAFX pg. 70). We can apply an overall
+  //   gain factor by just scaling the ff and bl coeff by that factor
 }
 
 void delayLines()
 {
-  universalComb();
+  universalCombVsOnePole();
+  //universalCombResponses();
 
 
   // Delaylines with different interpolation methods:
@@ -343,7 +402,8 @@ void delayLines()
   delayLineAllpass();   // Allpass interpolation
 
   // Other delayline based stuff:
-  universalComb();
+  universalCombVsOnePole();
+  universalCombResponses();
 }
 
 

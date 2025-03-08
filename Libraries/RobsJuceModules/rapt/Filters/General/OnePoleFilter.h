@@ -8,7 +8,12 @@ in contexts where it is undesirable for each benign first-order filter to mainta
 and other things itself. It also provides the bare coefficient computation formulas as static 
 member functions. Beware that the formulas as implemented here assume a positive sign convention 
 for feedback coeffs, i.e. they compute coeffs for the difference equation:
-y[n] = b0*x[n] + b1*x[n-1] + a1*y[n-1] */
+
+  y[n] = b0*x[n] + b1*x[n-1] + a1*y[n-1] 
+
+ToDo: switch to the other sign convention for a1 to be consistent with other parts of the library.
+
+*/
 
 template<class TSig, class TPar>
 class rsFirstOrderFilterBase
@@ -174,6 +179,7 @@ public:
     b1 = newB1;
     a1 = newA1;
   }
+  // Rename to setCoeffs
 
   /** Sets up the internal state variables for both channels. */
   inline void setInternalState(CRSig newX1, CRSig newY1)

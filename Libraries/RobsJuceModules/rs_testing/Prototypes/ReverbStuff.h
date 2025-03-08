@@ -323,6 +323,9 @@ public:
   }
   // Maybe put the feedforward coeff last in the signature. It's often 1, so we may make it 
   // optional. But somehow the order ff, fb, bl seems more natural. ...not sure...
+  // Or maybe use the order: blend, feeforward, feedback. I think, this corresponds to b0, b1, a1
+  // which is the order we use for filter coeffs elsewhere in the library, so it would  be nice to
+  // be consistent with that usage.
 
   void setToAllpass(TPar newAllpassCoeff) 
   { 
@@ -431,6 +434,19 @@ public:
     delayLine.writeInputAndUpdate(v);    // Write v[n] into the delayline.
     return bl * v + ff * vM;             // Return y[n] = bl * v[n] + ff * v[n-M].
   }
+  // I think, this corresponds to a 1st order filter in DF2:
+  //
+  //   v[n] = x[n] - a1*v[n-1]
+  //   y[n] = b0*v[n] + b1*v[n-1]
+  //
+  // which  in DF1 would be:
+  //
+  //   y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1]
+  //
+  // where the unit delay has been replaced by a delay of M samples. The correspondence between the
+  // coeffs is: b0 = bl, b1 = ff, a1 = -fb. Verify this theoretically and numerically! Set up a 
+  // rsUniversalCombFilter filter and a rsUniversalCombFilter with delay of 1 and compare the 
+  // outputs.
 
   void reset() { delayLine.reset(); }
 
