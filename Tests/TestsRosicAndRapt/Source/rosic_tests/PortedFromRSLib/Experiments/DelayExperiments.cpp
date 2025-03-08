@@ -207,7 +207,7 @@ void universalComb()
 
   int M = 10;   // Delay to be used in all plots below.
 
-  /*
+  
   // Feedback combs:
   //                     FF    FB    BL
   plotImpAndFreqResp(M, +0.0, +0.9, +1.0, 202, 2001);
@@ -224,6 +224,9 @@ void universalComb()
   // Phase:     Slanted staircase with rounded steps. I think, it's the phase response from above
   //            with a linear downward trend added.
  
+  // ToDo: Make IIR combs with different gain normalizations (see DAFX pg. 70)
+
+
 
   // Feedforward combs:
   //                     FF    FB    BL
@@ -260,7 +263,7 @@ void universalComb()
   //plotImpAndFreqResp(M, -1.0, +0.0, -1.0, 30, 2001);
   //plotImpAndFreqResp(M, -1.0, +0.0, +1.0, 30, 2001);
   //plotImpAndFreqResp(M, +1.0, +0.0, -1.0, 30, 2001);
-  */
+ 
 
 
 

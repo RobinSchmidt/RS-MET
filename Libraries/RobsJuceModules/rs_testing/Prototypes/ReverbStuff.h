@@ -283,6 +283,16 @@ Notes
 Implements a universal comb filter. Depending on the coefficients, this filter can be used as
 feedforward comb, feedback comb, Schroeder allpass comb, notchpass filter, etc. ...TBC... 
 
+               Feedfwd   Feedback   Blend     Delay    ModDepth     ModShape   
+FIR Comb:      g         0          1 or ?
+IIR Comb:      0         g=-1..1    1 or c
+Allpass:       1         g=-1..1    -g
+Delay:         1         0          0
+Notchpass:  
+Slapback:
+
+The c in the IIR comb can be 1-|g| or sqrt(1-g^2). The former choice ensures peak gain of 1 and 
+the latter normalizes the loudness for broadband signals. See (1) pg 70. 
 
 References:
 
