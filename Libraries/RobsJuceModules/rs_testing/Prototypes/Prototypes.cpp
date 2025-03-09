@@ -391,9 +391,13 @@ void solveLeastSquares(rsMatrix<T>& A, rsMatrix<T>& X, rsMatrix<T>& B)
   rsLinearAlgebraNew::solve(ATA, X, ATB);   // A^T * A * X = A^T * B  ->  solve for X
 
   // The algorithm is based on the formula:
+  //
   //   x = (A^T * A)^(-1) * A^T * b
+  //
   // which means that we need to solve the linear system:
+  //
   //   A^T * A * x = A^T * b
+  //
   // See: http://people.csail.mit.edu/bkph/articles/Pseudo_Inverse.pdf 
 }
 
@@ -407,17 +411,29 @@ void solveMinimumNorm(rsMatrix<T>& A, rsMatrix<T>& X, rsMatrix<T>& B)
   X = AT * Z;   // todo: avoid (re)assigning X, operate on allocated memory
 
   // The algorithm is based on the formula:
+  //
   //   x = A^T * (A * A^T)^(-1) * b
+  //
   // which means that we need to solve the linear system:
+  //
   //   A * A^T * z = b
+  //
   // for the intermediate vector z and then compute x from z via:
+  //
   //   x = A^T * z
+  //
   // See: http://people.csail.mit.edu/bkph/articles/Pseudo_Inverse.pdf 
 }
 
 template<class T>
 void solveOptimal(rsMatrix<T>& A, rsMatrix<T>& X, rsMatrix<T>& B)
 {
+  // Dispatcher function that solves the set of linear systems A*X = B either via the regular 
+  // solver (in the critically determined case, i.e. if M = N) or approximately in the least 
+  // squares sense (in the overdetermined case, i.e. if M > N) or in the minimum norm sense (in the
+  // underdetermined case, i.e. if M < N). M is the number of equations (i.e. number of rows of A)
+  // and n is the number of variables (i.e. number of columns of A).
+
   // Sanity checks:
   rsAssert(X.getNumColumns() == B.getNumColumns());
   rsAssert(A.getNumRows()    == B.getNumRows());
@@ -425,9 +441,9 @@ void solveOptimal(rsMatrix<T>& A, rsMatrix<T>& X, rsMatrix<T>& B)
 
   int M = A.getNumRows();
   int N = A.getNumColumns();
-  if(M == N) { rsLinearAlgebraNew::solve(A, X, B); return; }  // as many equations as unknowns
-  if(M >  N) { solveLeastSquares(A, X, B);         return; }  // more equations than unknowns
-  if(M <  N) { solveMinimumNorm( A, X, B);         return; }  // less equations than unknowns
+  if(M == N) { rsLinearAlgebraNew::solve(A, X, B); return; }  // As many equations as unknowns
+  if(M >  N) { solveLeastSquares(A, X, B);         return; }  // More equations than unknowns
+  if(M <  N) { solveMinimumNorm( A, X, B);         return; }  // Less equations than unknowns
   
   // ToDo: 
   // -In the critically determined case, use a "solveRobust" function that also works for singular 
@@ -436,7 +452,13 @@ void solveOptimal(rsMatrix<T>& A, rsMatrix<T>& X, rsMatrix<T>& B)
   // -In the under- and overdetermined cases, also use the robust algorithm as sub-algorithm to 
   //  solve the internal NxN system (or is it MxM?).
   // -Maybe generalize to using weighted least squares and minimum weighted norm. The caller should 
-  //  then pass a set of weights.
+  //  then pass a set of weights. The book "Digital Audio Processing Fundamentals" by Aurelio 
+  //  Uncini gives a formula for weighted least squares on page 154. It's:
+  //  h = (F^H * G * F)^-1 * F^H * G * d  where G is the diagonal matrix with the weights. For the
+  //  unweighted case, the solution reads:  h = (F^H * F)^-1 * F^H * d. Apparently, he uses F
+  //  for the matrix, d for the right hand side and h for the the solution. The ^H notation means
+  //  to take the Hermitian transpose. Maybe we should generalize to that too, so we can also 
+  //  handle the complex case.
   // -In the case of the underdetermined system resulting from computing mesh gradients and 
   //  Hessians with less than 5 neighbors, maybe minimize not the norm but instead the determinant
   //  of the Hessian ...would that make sense? What's the significance of that determinant anyway?

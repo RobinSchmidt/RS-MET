@@ -611,4 +611,17 @@ Ideas:
  -Do a singular value decomposition of A = U * D * V
  -Interpolate D via regular lerp and U,V via column-wise slerp
 
+
+
+Some potentially interesting stuff:
+
+ https://en.wikipedia.org/wiki/Runge%27s_phenomenon
+ https://github.com/pog87/FakeNodes
+ https://www.sciencedirect.com/science/article/pii/S0377042719303449
+
+ https://en.wikipedia.org/wiki/B-spline
+ https://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/
+ https://math.stackexchange.com/questions/702980/cubic-b-spline-interpolation
+
+
 */
