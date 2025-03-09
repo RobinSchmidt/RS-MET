@@ -1961,6 +1961,7 @@ bool universalCombUnitTest()
   using Real    = double;
   using Complex = rsComplex<Real>;
   using Comb    = rsUniversalCombFilter<Real, Real>;
+  using TF      = rsSparseDigitalTransferFunction<Real>;
 
   // Test parameters:
   int  delay =    3;
@@ -1978,6 +1979,7 @@ bool universalCombUnitTest()
   // Test transfer function computation:
   Complex z(0.6, 0.8);
   ok &= rsTestGetTransferFunctionAt(comb, z, N, 1.e-13);
+  ok &= rsTestGetTransferFunction(  comb, z, N, 1.e-13);
 
   return ok;
 }

@@ -98,6 +98,7 @@ public:
     _clear();                  // f(x) = 0/0. That's indeterminate!
     den._appendTerm(T(1), 0);  // f(x) = 0/1. That's much better.
   }
+  // Maybe rename to setToZero()
 
   /** Initializes this rational function that is constantly one: f(x) = 1. We represent this as
   f(x) = 1*x^0 / 1*x^0. */

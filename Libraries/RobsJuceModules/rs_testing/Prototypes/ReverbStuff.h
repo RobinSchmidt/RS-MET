@@ -408,11 +408,12 @@ public:
   void getTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const
   {
     int   M  = getDelayInSamples();
-    tf->clear();
+    //tf->clear();
+    tf->initToZero();
     tf->num._appendTerm(bl,      0);
     tf->num._appendTerm(ff,      M);
     //tf->den._appendTerm(TPar(1), 0);  // Superfluous? Maybe even wrong?
-    tf->num._appendTerm(fb,      M);
+    tf->den._appendTerm(fb,      M);
 
     // Notes:
     //

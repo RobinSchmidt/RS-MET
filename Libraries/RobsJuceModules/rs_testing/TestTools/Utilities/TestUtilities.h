@@ -368,7 +368,26 @@ inline bool rsTestGetTransferFunctionAt(TFlt& filter, rsComplex<T> z, int N, T t
   T errAbs = rsAbs(err);
   return errAbs <= tol;
 }
-// Maybe rename to rsTestGetTransferFunctionAt
+
+template<class T, class TFlt>
+inline bool rsTestGetTransferFunction(TFlt& filter, rsComplex<T> z, int N, T tol)
+{
+  //  Compute transfer function H(z) at the given z numerically:
+  rsComplex<T> Ht = rsEvaluateTransferFunctionNumerically(filter, z, N);
+
+  // Let the filter produce its transfer function object via getTransferFunction() and evaluate the
+  // returned function object at z:
+  rsSparseDigitalTransferFunction<T> H;
+  filter.getTransferFunction(&H);
+  rsComplex<T> Hz = H(z);
+
+  // Compute the error and check if its absolute value is within the tolerance:
+  rsComplex<T> err = Hz - Ht;
+  T errAbs = rsAbs(err);
+  return errAbs <= tol;
+}
+
+
 
 
 template<class T>
