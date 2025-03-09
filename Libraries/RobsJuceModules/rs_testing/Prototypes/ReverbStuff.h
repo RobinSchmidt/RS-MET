@@ -387,6 +387,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
+  /** Returns the amount of delay in samples. */
   int getDelayInSamples() const
   {
     return delayLine.getDelayInSamples();
@@ -404,25 +405,16 @@ public:
     return bl * V + ff * V * zM;
   }
 
-
+  /** Assigns the passed tf pointer to our transfer function. We don't use a return value for the
+  result to enable pre-allocation of the function object which is important in realtime contexts.*/
   void getTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const
   {
-    int   M  = getDelayInSamples();
-    //tf->clear();
+    int M = getDelayInSamples();
     tf->initToZero();
-    tf->num._appendTerm(bl,      0);
-    tf->num._appendTerm(ff,      M);
-    //tf->den._appendTerm(TPar(1), 0);  // Superfluous? Maybe even wrong?
-    tf->den._appendTerm(fb,      M);
-
-    // Notes:
-    //
-    // - We use  tf->num._appendTerm(ff, M);  and not  tf->num._appendTerm(ff, -M);  because the 
-    //   class rsSparseDigitalTransferFunction already interprets the transfer function as a 
-    //   rational function in z^-1. That means, the minus is already baked into the class.
+    tf->num._appendTerm(bl, 0);
+    tf->num._appendTerm(ff, M);  // Don't use -M because the minus is already baked into the class.
+    tf->den._appendTerm(fb, M);  // It interprets the function as a rational function in z^-1.
   }
-  // Needs tests.
-
 
 
   //-----------------------------------------------------------------------------------------------
