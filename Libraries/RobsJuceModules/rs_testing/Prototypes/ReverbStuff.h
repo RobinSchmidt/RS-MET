@@ -455,29 +455,12 @@ protected:
 
   RAPT::rsDelay<TSig> delayLine;
 
-  TPar ff = TPar(0);   // Feedforward coeff
-  TPar fb = TPar(0);   // Feedback coeff
-  TPar bl = TPar(0);   // Blend coeff
+  TPar ff = TPar(0);   // Feedforward coeff    maybe rename to b1
+  TPar fb = TPar(0);   // Feedback coeff       maybe rename to a1
+  TPar bl = TPar(0);   // Blend coeff          maybe rename to b0
 
 };
 
-/*
-rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar, TDly>
-::getCombTransferFunction() const
-{
-  using TF = rsSparseDigitalTransferFunction<TPar>;
-
-  TF one; one.num._appendTerm(TPar(1), 0);
-  TF z1;  z1.num._appendTerm( TPar(1), 1);
-  TF F = getDamperTransferFunction();       // Feedback filter F(z)
-  TF A; getDelayTransferFunction(&A);       // Delay filter A(z)
-  TPar k = s.getFeedbackGain();
-  if(s.isInPreDelayMode())
-    return A   / (one + k * z1 * F * A);    // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
-  else 
-    return one / (one + k * z1 * F * A);    // U(z) =   1  / (1 + k * z^-1 * F(z) * A(z))
-}
-*/
 
 
 // ToDo:

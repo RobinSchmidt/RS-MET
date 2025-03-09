@@ -390,6 +390,9 @@ void universalCombResponses()
   //
   // - Make IIR combs with different gain normalizations (see DAFX pg. 70). We can apply an overall
   //   gain factor by just scaling the ff and bl coeff by that factor
+  //
+  // - Compare phase and group delay responses of feedback comb with allpass that has the same 
+  //   feedback coeff.
 }
 
 void delayLines()
