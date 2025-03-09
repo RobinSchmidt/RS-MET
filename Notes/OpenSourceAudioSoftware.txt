@@ -524,6 +524,12 @@ https://www.researchgate.net/publication/332041177_AuLib
 https://mural.maynoothuniversity.ie/id/eprint/11997/1/Lazzarini_Design_SMC17_2017.pdf
 -"AuLib is a simple lightweight C++ (ISO C++14) class library for audio DSP."
 
+Point To Point LT:
+https://github.com/HackAudio/PointToPoint_LT
+-Circuit modeling library geared towards audio processing 
+ ..BUT: I don't really see any source code in the repo. There are some precompiled library files, 
+  though - so maybe it's not really open source?
+
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:
 
@@ -772,6 +778,17 @@ https://sourceforge.net/projects/gnaural/
 
 https://github.com/isaiahdoyle/universalcombfilter
 https://github.com/isaiahdoyle/moorerreverb
+
+
+Spice like stuff:
+https://github.com/SpiceSharp/SpiceSharp   C#
+https://github.com/ahkab/ahkab             Python
+https://github.com/knowm/jspice            Java
+https://github.com/s94285/SPICE            Uses Qt - so I guess it's C++
+https://ra3xdh.github.io/
+
+http://opencircuitdesign.com/xcircuit/
+https://github.com/RTimothyEdwards/xcircuit/
 
 
 ----------------------------------------------------------------------------------------------------
