@@ -355,7 +355,7 @@ inline rsComplex<T> rsEvaluateTransferFunctionNumerically(TFlt& filter, rsComple
 transfer function value. This is meant for unit testing the getTransferFunctionAt() member function
 that I typically give to many of my filter classes. */
 template<class T, class TFlt>
-inline bool testTransferFunction(TFlt& filter, rsComplex<T> z, int N, T tol)
+inline bool rsTestGetTransferFunctionAt(TFlt& filter, rsComplex<T> z, int N, T tol)
 {
   //  Compute transfer function H(z) at the given z numerically:
   rsComplex<T> Ht = rsEvaluateTransferFunctionNumerically(filter, z, N);

@@ -1977,7 +1977,7 @@ bool universalCombUnitTest()
 
   // Test transfer function computation:
   Complex z(0.6, 0.8);
-  ok &= testTransferFunction(comb, z, N, 1.e-13);
+  ok &= rsTestGetTransferFunctionAt(comb, z, N, 1.e-13);
 
   return ok;
 }
@@ -2496,14 +2496,14 @@ bool dampedCombAllpassUnitTest2()
     flt.setup(d, k, i, &b[0], &a[0], false);
     Vec h = impulseResponse(flt, N, 1.0);
     ok &= isAllpass(h, 1.e-7);
-    ok &= testTransferFunction(flt, z, N, 1.e-8);
+    ok &= rsTestGetTransferFunctionAt(flt, z, N, 1.e-8);
     //rsPlotVectors(h);
 
     // Now do the same test with predelay:
     flt.setup(d, k, i, &b[0], &a[0], true);
     h = impulseResponse(flt, N, 1.0);
     ok &= isAllpass(h, 1.e-7);
-    ok &= testTransferFunction(flt, z, N, 1.e-7);
+    ok &= rsTestGetTransferFunctionAt(flt, z, N, 1.e-7);
 
     // In-place convolve the current a,b arrays with the first order a1,b1 arrays:
     AT::convolve(&a[0], i+1, a1, 2, &a[0]);
@@ -2639,10 +2639,10 @@ bool dampedCombAllpassUnitTest3(bool withPreDelay)
   Hz = ap.getTransferFunctionAt(z);          ok &= rsIsCloseTo(Hz, Ht, 1.e-8);
 
 
-  // Now do a test using our testTransferFunction() helper function. This will only test the 
+  // Now do a test using our rsTestGetTransferFunctionAt() helper function. This will only test the 
   // overall getTransferFunctionAt() function not the separate partial functions 
   // getCombTransferFunctionAt(), getCorrectorTransferFunctionAt(). 
-  ok &= testTransferFunction(ap, z, N, 1.e-8);
+  ok &= rsTestGetTransferFunctionAt(ap, z, N, 1.e-8);
 
   // Test retrieving and evaluating the full transfer functions:
   rsSparseDigitalTransferFunction<Real> U, C, H;
@@ -2850,8 +2850,8 @@ bool dampedSchroederAllpassUnitTest()
     //}
 
     // The getTransferFunctionAt() member functions should return correct results:
-    ok &= testTransferFunction(ap,  z, N, 1.e-10);
-    ok &= testTransferFunction(apN, z, N, 1.e-10);
+    ok &= rsTestGetTransferFunctionAt(ap,  z, N, 1.e-10);
+    ok &= rsTestGetTransferFunctionAt(apN, z, N, 1.e-10);
 
     // Prepare b-array of filter coeffs for next iteration:
     rsArrayTools::convolve(&b[0], order+1, &b1[0], 2, &b[0]);
