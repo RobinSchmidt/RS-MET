@@ -34,6 +34,8 @@ https://gitlab.com/stargatedaw
 https://codeberg.org/stargatedaw
 -DAW. Main repo is on github. The ones on gitlab and codeberg are mirrors.
 
+
+
 Audacity:
 https://www.audacityteam.org/
 https://github.com/audacity/audacity
@@ -789,6 +791,15 @@ https://ra3xdh.github.io/
 
 http://opencircuitdesign.com/xcircuit/
 https://github.com/RTimothyEdwards/xcircuit/
+
+
+Bass Studio
+https://github.com/nidefawl/bassstudio
+-Bass Studio is a DAW which supports VST2, VST3 and CLAP plugins.
+-Oh - it's apparently not open source anymore. I think it once was. I have .7z archive named
+ bass-studio-master.7z in a temp folder. Apparently, I once downloaded the repo from GitHub. But 
+ it's not there anymore.
+
 
 
 ----------------------------------------------------------------------------------------------------
