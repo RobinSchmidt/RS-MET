@@ -315,6 +315,13 @@ Dragonfly reverb
 https://michaelwillis.github.io/dragonfly-reverb/
 https://github.com/michaelwillis/dragonfly-reverb
 
+AP Mastering Plugins:
+https://github.com/apmastering/APComp
+https://github.com/apmastering/Saturation
+https://github.com/apmastering/CompView
+-Plugins for mastering by Alain Paul
+
+
 ----------------------------------------------------------------------------------------------------
 Frameworks
 

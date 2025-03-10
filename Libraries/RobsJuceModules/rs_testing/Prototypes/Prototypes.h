@@ -2614,7 +2614,7 @@ protected:
 
 /** A class for generating the (integer) continued fraction expansion coefficients of a given
 (floating point) number. You pass the number to the constructor and after that, you can pull out
-successive cofficients via getNext(). */
+successive cofficients via getValue(). */
 
 template<class TInt, class TFloat>
 class rsContinuedFractionGenerator
@@ -2624,7 +2624,7 @@ public:
 
   rsContinuedFractionGenerator(TFloat number) : state(number) {}
 
-  TInt getNext()
+  TInt getValue()
   {
     TFloat flr = floor(state);
     state = TFloat(1) / (state - flr);

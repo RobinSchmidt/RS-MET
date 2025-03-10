@@ -1964,10 +1964,10 @@ bool universalCombUnitTest()
   using TF      = rsSparseDigitalTransferFunction<Real>;
 
   // Test parameters:
-  int  delay =    3;
-  int  N     =  512;
+  int  delay =    3;     // A short delay of just 3 samples allows to use ...
+  int  N     =  300;     // ... a small(ish) number of samples for the filter decay sufficiently.
+  Real fb    =    0.8;   // We could use even less samples by using less feedback - but nah.
   Real ff    =    0.9;
-  Real fb    =    0.8;
   Real bl    =    0.7;
 
   // Create and set up filter:
@@ -1976,12 +1976,22 @@ bool universalCombUnitTest()
   comb.setDelayInSamples(delay);
   comb.setCoeffs(ff, fb, bl);
 
-  // Test transfer function computation:
-  Complex z(0.6, 0.8);
+  // Test transfer function computations:
+  Complex z(0.7, 0.8);  // z = 0.7 + 0.8i is outside the unit circle
   ok &= rsTestGetTransferFunctionAt(comb, z, N, 1.e-13);
   ok &= rsTestGetTransferFunction(  comb, z, N, 1.e-13);
 
   return ok;
+
+  // Notes:
+  //
+  // - We use a z slightly outside the unit circle. This makes powers of z^-1 go down to zero. 
+  //   Using a z value directly on the unit circle like 0.6 + 0.8i may miss errors in taking the 
+  //   reciprocal - or maybe it will not miss them? The magnitude of the reciprocal is the same but
+  //   the phase isn't. It tried it with 0.6 + 0.8i with a deliberately erroneous implementation of
+  //   getTransferfunctionAt() that fails to do the reciprocation - and the test still failed 
+  //   successfully. But anyway - it seems a good idea to have some non unit magnitude, too. But it
+  //   must be outside the unit circle. If it's inside, the z-trafo diverges.
 }
 
 bool allpassChainUnitTest()

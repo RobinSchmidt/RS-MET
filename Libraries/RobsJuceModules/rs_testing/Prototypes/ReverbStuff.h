@@ -401,6 +401,7 @@ public:
   {
     int  M  = getDelayInSamples();
     TArg zM = rsPow(z, TArg(-M));              // z^-M
+    //TArg zM = rsPow(z, TArg(M));              // z^M - for test - it's actually wrong
     TArg V  = TArg(1) / (TArg(1) + fb * zM);   // V(z), z-trafo of intermediate signal v[n].
     return bl * V + ff * V * zM;
   }

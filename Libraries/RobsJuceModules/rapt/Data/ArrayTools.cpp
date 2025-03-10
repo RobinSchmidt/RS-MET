@@ -206,7 +206,7 @@ void rsArrayTools::convolve(const T *x, const int xLength, const T *h, const int
     y[n] = s;
   }
 }
-// ToDo: check, if this has unit tests that cover adge cases like xLength and/or hLength == 0.
+// ToDo: check, if this has unit tests that cover edge cases like xLength and/or hLength == 0.
 // I'm not sure, what the desired behavior should be. I think, maybe the y-array should just be
 // left completetly untouched. Document the hLength > 0 assertion. Would anything bad happen in
 // such a case?

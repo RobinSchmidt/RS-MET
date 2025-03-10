@@ -151,10 +151,10 @@ Ideas:
  the accents and slides as k-bit numbers where where the modulus is given by m = 2^k with k being 
  the number of steps in the sequence (typically 16). We can give the user next/prev buttons to skip 
  forward/backward through random patterns. Being able to skip back to the previous "random" pattern 
- would be a rather unique (and useful) feature. The prev button would be like an "undo" button for a 
- "randomize" function (realized by the "next" button) but we could do it without actually 
- implementing an expensive undo/redo infrastructure.
- ...see experiment noiseReverseMode() for some first tests - it seems to work!
+ would be a rather unique (and useful) feature. The prev button would be like an "undo" button for 
+ a "randomize" function (realized by the "next" button) but we could do it without actually 
+ implementing an expensive undo/redo infrastructure. See experiment noiseReverseMode() for some 
+ first tests - it seems to work!
 
 -Maybe allow to create correlated noise by doing only one state-update per sample and
  doing the sum over the past N states, like:
@@ -180,7 +180,8 @@ Ideas:
  thresh1/2 would determine the weights of the 3 modes, for example with thresh1 = 0.3,
  thresh2 = 0.7, we would have a 30% chance to get a sample of the low mode a 40% chance for the
  middle mode and again a 30% chance for the high mode - we could give the user parameters
- modeCenter, modeSpread, modeSkew...there is some prototype code for this in the experiments.
+ modeCenter, modeSpread, modeSkew...there is some prototype code for this in the experiments. See
+ noiseTriModal().
 
 -In the modal synthesizer, we could make these chances dependent on the output signal to
  establish a nonlinear, probabilistic feedback loop interaction between exciter and resonator.
@@ -188,7 +189,7 @@ Ideas:
  positive excitation impulse value (i.e. choose the generator with positive center) and vice
  versa. I think, this kinda simulates the probability for slip/slide events in a bowed string: If
  the string is under tension in one direction it has a higher chance to slip into the other 
- direction. Or Maybe we need a trimodal distribution with thresholds like 0.01, 0.09, and also 
+ direction. Or maybe we need a trimodal distribution with thresholds like 0.01, 0.09, and also 
  have amplitude weights for the 3 possible outputs, like 1.0, 0.01, 1.0. Then 99% of the time, we 
  would select the middle mode and only output a very quiet noise and the remaining 1 % we would 
  see positive or negative spikes.....experimentation needed
