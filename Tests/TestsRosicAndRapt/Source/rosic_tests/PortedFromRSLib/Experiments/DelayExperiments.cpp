@@ -402,6 +402,17 @@ void universalCombResponses()
   //
   // - Compare phase and group delay responses of feedback comb with allpass that has the same 
   //   feedback coeff.
+  //
+  // - Try to set it up in terms of the first 3 samples of the impulse response (when delay = 1)
+  //   From y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1]  with  x = 1,0,0,0,0,... we should get: 
+  //   h[0] = b0, 
+  //   h[1] = b0*0 + b1*1 - a1*b0 = b1 - a1*b0
+  //   h[2] = b0*0 + b1*0 - a1*(b1 - a1*b0) = -a1*b1 + a1*a1*b0 = a1*(a1*b0 - b1)
+  //   so b0 = h[0] immediately and b1,a1 can be computed from a quadratic system of equations, I 
+  //   think. Maybe that means, we have a choice? But maybe not when we impose a stability 
+  //   constraint? ...work it out! Maybe being able to ste the first 3 samples of the impulse 
+  //   response directly can help to fine tune the early reflections. ...but we may have to undo
+  //   the frequency response of the filter in the feedback path 
 }
 
 void combVsAllpassPhase()
