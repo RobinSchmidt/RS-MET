@@ -229,32 +229,32 @@ void universalCombResponses()
 
   // Helper functions (ToDo: change order of params to bl, ff, fb and update all call sites):
 
-  auto setupComb = [](Comb& comb, int delay, Real ff, Real fb, Real bl)
+  auto setupComb = [](Comb& comb, int delay, Real bl, Real ff, Real fb)
   {
     comb.setMaxDelayInSamples(delay);
     comb.setDelayInSamples(delay);
     comb.setCoeffs(bl, ff, fb);
   };
 
-  auto plotImpResp = [&](int delay, Real ff, Real fb, Real bl, int numSamples)
+  auto plotImpResp = [&](int delay, Real bl, Real ff, Real fb, int numSamples)
   {
     Comb comb;
-    setupComb(comb, delay, ff, fb, bl);
+    setupComb(comb, delay, bl, ff, fb);
     Vec h = impulseResponse(comb, numSamples, 1.0);
     rsPlotVector(h);
   };
 
-  auto plotFreqResp = [&](int delay, Real ff, Real fb, Real bl, int numBins)
+  auto plotFreqResp = [&](int delay, Real bl, Real ff, Real fb, int numBins)
   {
     Comb comb;
-    setupComb(comb, delay, ff, fb, bl);
+    setupComb(comb, delay, bl, ff, fb);
     plotFrequencyResponse(comb, numBins, 0.0, 0.5, 1.0, false);
   };
 
-  auto plotImpAndFreqResp = [&](int delay, Real ff, Real fb, Real bl, int numSamples, int numBins)
+  auto plotImpAndFreqResp = [&](int delay, Real bl, Real ff, Real fb, int numSamples, int numBins)
   {
-    plotImpResp( delay, ff, fb, bl, numSamples);
-    plotFreqResp(delay, ff, fb, bl, numBins);
+    plotImpResp( delay, bl, ff, fb, numSamples);
+    plotFreqResp(delay, bl, ff, fb, numBins);
   };
 
 
@@ -262,10 +262,13 @@ void universalCombResponses()
 
   int M = 10;   // Delay to be used in all plots below.
 
-  
+
+
+ 
+
   // Feedback combs:
-  //                     FF    FB    BL
-  plotImpAndFreqResp(M, +0.0, -0.9, +1.0, 202, 2001);
+  //                     BL    FF    FB 
+  plotImpAndFreqResp(M, +1.0, +0.0, -0.9, 202, 2001);
   // Feedback comb with negative feedback coeff. Because the coeff is negated again in the 
   // implementation (for consistency with the sign convention used in most of the DSP literature),
   // this produces a full series of harmonics.
@@ -273,7 +276,7 @@ void universalCombResponses()
   // Magnitude: Peaks at all multiples of 1/M with height +20 dB. Rounded valleys at -5.57 dB.
   // Phase:     Rounded upward saw. Start phase is middle of the (downward) edge.
 
-  plotImpAndFreqResp(M, +1.0, -0.9,  0.0, 202, 2001);   
+  plotImpAndFreqResp(M,  0.0, +1.0, -0.9, 202, 2001);   
   // Gives same result as above but with an added predelay of M samples. This superimposes a 
   // linear phase over the phase response of the filter above.
   // Impulse:   Decaying upward spikes starting with unit amplitude at n = M.
@@ -283,20 +286,20 @@ void universalCombResponses()
  
 
   // Feedforward combs:
-  //                     FF    FB    BL
-  plotImpAndFreqResp(M, +1.0, +0.0, +1.0, 30, 2001);
+  //                     BL    FF    FB  
+  plotImpAndFreqResp(M, +1.0, +1.0, +0.0, 30, 2001);
   // Feedforward comb with unit weights for input and for delayed signal.
   // Impulse:   Two spikes at n = 0 and n = M both with height 1.0.
   // Magnitude: Notches at odd multiples 0.5/M with infinite depth.
   // Phase:     Downward saw from +90° to -90°. Start phase is middle of the ramp, i.e. 0°.
 
-  plotImpAndFreqResp(M, +0.9, +0.0, +1.0, 30, 2001);
+  plotImpAndFreqResp(M, +1.0, +0.9, +0.0, 30, 2001);
   // Feedforward comb with unit weight for input and weight 0.9 for delayed signal.
   // Impulse:   Two spikes at n = 0 and n = M with height 1.0 and 0.9.
   // Magnitude: Troughs at odd multiples 0.5/M with depth -20 dB.
   // Phase:     Rounded downward saw. Start phase is middle of the ramp.
 
-  plotImpAndFreqResp(M, +1.0, +0.0, +0.9, 30, 2001);
+  plotImpAndFreqResp(M, +0.9, +1.0, +0.0, 30, 2001);
   // Feedforward comb with weight 0.9 for input and and unit weight for delayed signal. This swaps
   // the weights of the filter above. The result is a time reversed impulse response.
   // Impulse:   Two spikes at n = 0 and n = M with height 0.9 and 1.0.
@@ -304,7 +307,7 @@ void universalCombResponses()
   // Phase:     Slanted staircase with rounded steps. It's a linear downward trend superimposed 
   //            with a rounded upward saw, I think.
 
-  plotImpAndFreqResp(M, -0.9, +0.0, +1.0, 30, 2001);
+  plotImpAndFreqResp(M, +1.0, -0.9, +0.0, 30, 2001);
   // Feedforward comb with unit weight for input and weight -0.9 for delayed signal.
   // Impulse:   Two spikes at n = 0 and n = M with height 1.0 and -0.9.
   // Magnitude: Notches at all multiples 1/M with depth -20 dB. Rounded maxima at height +5.57 dB.
@@ -312,18 +315,18 @@ void universalCombResponses()
   //            quickly rising up to +90°.
 
   // A couple of more feedforward cases without comments:
-  //plotImpAndFreqResp(M, +1.0, +0.0, -0.9, 30, 2001);
-  //plotImpAndFreqResp(M, +1.0, +0.0, +1.0, 30, 2001);
-  //plotImpAndFreqResp(M, -1.0, +0.0, -1.0, 30, 2001);
-  //plotImpAndFreqResp(M, -1.0, +0.0, +1.0, 30, 2001);
-  //plotImpAndFreqResp(M, +1.0, +0.0, -1.0, 30, 2001);
+  //plotImpAndFreqResp(M, -0.9, +1.0, +0.0, 30, 2001);
+  //plotImpAndFreqResp(M, +1.0, +1.0, +0.0, 30, 2001);
+  //plotImpAndFreqResp(M, -1.0, -1.0, +0.0, 30, 2001);
+  //plotImpAndFreqResp(M, +1.0, -1.0, +0.0, 30, 2001);
+  //plotImpAndFreqResp(M, -1.0, +1.0, +0.0, 30, 2001);
  
 
 
 
   // Schroeder allpasses:
-  //                     FF    FB    BL
-  plotImpAndFreqResp(M, +1.0, +0.9, +0.9, 202, 2001);
+  //                     BL    FF    FB  
+  plotImpAndFreqResp(M, +0.9, +1.0, +0.9, 202, 2001);
   // Allpass with positive (negated) feedback.
   // Impulse:   Initial upward spike at n = 0 with height 0.9 followed by alternating spikes. The 
   //            2nd spike goes upward, too. The 3rd goes downward, etc.
@@ -331,14 +334,14 @@ void universalCombResponses()
   // Phase:     Stairsteps at odd multiples 0.5/M. The plateaus between the steps are at integer
   //            multiples of 360°.
 
-  plotImpAndFreqResp(M, +1.0, -0.9, -0.9, 202, 2001);
+  plotImpAndFreqResp(M, -0.9, +1.0, -0.9, 202, 2001);
   // Allpass with negative (negated) feedback.
 
 
 
   // Blesser notchpasses:
-  plotImpAndFreqResp(M, +1.0, -0.8, +0.9, 202, 2001);
-  plotImpAndFreqResp(M, +1.0, +0.8, -0.9, 202, 2001);
+  plotImpAndFreqResp(M, +0.9, +1.0, -0.8, 202, 2001);
+  plotImpAndFreqResp(M, -0.9, +1.0, +0.8, 202, 2001);
   // Looks qualitatively right but I'm not sure, if the depths of the magnitude notches has the 
   // correct relationship with the group delay peaks (i.e. phase response cliffs). Also: the 
   // magnitude goes above unity between the peaks. When such a notchpass is part of a feedback 
@@ -351,19 +354,28 @@ void universalCombResponses()
 
 
 
-  //plotImpAndFreqResp(M, +0.9, -0.9, +1.0, 30, 2001); // is unit impulse
-  //plotImpAndFreqResp(M, -0.9, +0.9, +1.0, 30, 2001); // dito
+  //plotImpAndFreqResp(M, +1.0, +0.9, -0.9, 30, 2001); // is unit impulse
+  //plotImpAndFreqResp(M, +1.0, -0.9, +0.9, 30, 2001); // dito
 
 
-  plotImpAndFreqResp(M, +1.0, -0.9, +0.8, 202, 2001);
-  plotImpAndFreqResp(M, +1.0, +0.9, -0.8, 202, 2001);
+  plotImpAndFreqResp(M, +0.8, +1.0, -0.9, 202, 2001);
+  plotImpAndFreqResp(M, -0.8, +1.0, +0.9, 202, 2001);
+
+
+  // Compare feedback comb with Schroeder allpass with same feedback:
+  plotImpAndFreqResp(M, +1.0, +0.0, +0.9, 202, 2001);  // Comb
+  plotImpAndFreqResp(M, +0.9, +1.0, +0.9, 202, 2001);  // Allpass
+  plotImpAndFreqResp(M, +1.0, +0.0, -0.9, 202, 2001);  // Comb - maybe try using -1 for blend
+  plotImpAndFreqResp(M, -0.9, +1.0, -0.9, 202, 2001);  // Allpass
+  // The combs have a sawtooth like phase response, the allpasses a staircase like one.
+  // ToDo: plot the group delay and ringing of both.
 
   // ...
 
   // Combs with freely assigned coeffs:
-  plotImpAndFreqResp(10, +1.0, +0.8, +0.5, 202, 2001);
-  plotImpAndFreqResp(10, +0.9, +0.8, +0.5, 202, 2001);
-  plotImpAndFreqResp(10, -0.9, +0.8, +0.5, 202, 2001);
+  plotImpAndFreqResp(10, +0.5, +1.0, +0.8, 202, 2001);
+  plotImpAndFreqResp(10, +0.5, +0.9, +0.8, 202, 2001);
+  plotImpAndFreqResp(10, +0.5, -0.9, +0.8, 202, 2001);
 
 
   int dummy = 0;
@@ -400,7 +412,7 @@ void combVsAllpassPhase()
 
 void delayLines()
 {
-  universalCombVsOnePole();
+  //universalCombVsOnePole();
   universalCombResponses();
   //combVsAllpassPhase();
 
