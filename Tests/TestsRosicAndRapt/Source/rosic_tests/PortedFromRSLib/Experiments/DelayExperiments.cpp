@@ -351,11 +351,16 @@ void universalCombResponses()
   // behavior under modulation.
 
 
+  // Perfect cancellation between feedforward and feedback path with FF = FB:
+  plotImpAndFreqResp(M, +1.0, +0.9, +0.9, 30, 2001); // is unit impulse
+  plotImpAndFreqResp(M, +1.0, -0.9, -0.9, 30, 2001); // dito
+  // Apparently, when FF = FB, we get a perfect cancellation between feedback and feedforward path?
 
 
+  plotImpAndFreqResp(M, +1.0, +0.9, -0.9, 202, 2001);
+  plotImpAndFreqResp(M, +1.0, -0.9, +0.9, 202, 2001);
+  // Phase responses are "square waves", mag responses are combish
 
-  //plotImpAndFreqResp(M, +1.0, +0.9, -0.9, 30, 2001); // is unit impulse
-  //plotImpAndFreqResp(M, +1.0, -0.9, +0.9, 30, 2001); // dito
 
 
   plotImpAndFreqResp(M, +0.8, +1.0, -0.9, 202, 2001);
