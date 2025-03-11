@@ -1964,17 +1964,17 @@ bool universalCombUnitTest()
   using TF      = rsSparseDigitalTransferFunction<Real>;
 
   // Test parameters:
-  int  delay =    3;     // A short delay of just 3 samples allows to use ...
-  int  N     =  300;     // ... a small(ish) number of samples for the filter decay sufficiently.
-  Real fb    =    0.8;   // We could use even less samples by using less feedback - but nah.
-  Real ff    =    0.9;
-  Real bl    =    0.7;
+  int  delay =   3;     // A short delay of just 3 samples allows to use ...
+  int  N     = 300;     // ... a small(ish) number of samples for the filter decay sufficiently.
+  Real fb    =   0.8;   // We could use even less samples by using less feedback - but nah.
+  Real ff    =   0.9;
+  Real bl    =   0.7;
 
   // Create and set up filter:
   Comb comb;
   comb.setMaxDelayInSamples(delay);
   comb.setDelayInSamples(delay);
-  comb.setCoeffs(ff, fb, bl);
+  comb.setCoeffs(bl, ff, fb);
 
   // Test transfer function computations:
   Complex z(0.7, 0.8);  // z = 0.7 + 0.8i is outside the unit circle

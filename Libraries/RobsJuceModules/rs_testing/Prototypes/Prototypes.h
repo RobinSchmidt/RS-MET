@@ -2624,7 +2624,7 @@ public:
 
   rsContinuedFractionGenerator(TFloat number) : state(number) {}
 
-  TInt getValue()
+  TInt getNext()
   {
     TFloat flr = floor(state);
     state = TFloat(1) / (state - flr);

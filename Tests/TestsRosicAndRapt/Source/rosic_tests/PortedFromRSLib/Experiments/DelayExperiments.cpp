@@ -197,7 +197,7 @@ bool universalCombVsOnePole()
   Comb comb;
   comb.setMaxDelayInSamples(10);
   comb.setDelayInSamples(1);
-  comb.setCoeffs(b1, a1, b0);  // Change order to b0, b1, a1
+  comb.setCoeffs(b0, b1, a1);
   Vec h2 = impulseResponse(comb, N, 1.0);
 
   // Compute error and check that it's within numerical tolerance:
@@ -227,13 +227,13 @@ void universalCombResponses()
   using Vec  = std::vector<Real>;
   using Comb = rsUniversalCombFilter<Real, Real>;
 
-  // Helper functions:
+  // Helper functions (ToDo: change order of params to bl, ff, fb and update all call sites):
 
   auto setupComb = [](Comb& comb, int delay, Real ff, Real fb, Real bl)
   {
     comb.setMaxDelayInSamples(delay);
     comb.setDelayInSamples(delay);
-    comb.setCoeffs(ff, fb, bl);
+    comb.setCoeffs(bl, ff, fb);
   };
 
   auto plotImpResp = [&](int delay, Real ff, Real fb, Real bl, int numSamples)
@@ -281,9 +281,6 @@ void universalCombResponses()
   // Phase:     Slanted staircase with rounded steps. I think, it's the phase response from above
   //            with a linear downward trend added.
  
-
-
-
 
   // Feedforward combs:
   //                     FF    FB    BL
@@ -361,17 +358,12 @@ void universalCombResponses()
   plotImpAndFreqResp(M, +1.0, -0.9, +0.8, 202, 2001);
   plotImpAndFreqResp(M, +1.0, +0.9, -0.8, 202, 2001);
 
-
   // ...
 
   // Combs with freely assigned coeffs:
   plotImpAndFreqResp(10, +1.0, +0.8, +0.5, 202, 2001);
   plotImpAndFreqResp(10, +0.9, +0.8, +0.5, 202, 2001);
   plotImpAndFreqResp(10, -0.9, +0.8, +0.5, 202, 2001);
-
-
-
-
 
 
   int dummy = 0;
@@ -395,10 +387,22 @@ void universalCombResponses()
   //   feedback coeff.
 }
 
+void combVsAllpassPhase()
+{
+  // Under construction
+
+  // We plot the phase response, group delay and ring response for a comb and Schroeder allpass
+  // with the same feedback coefficient
+
+
+
+}
+
 void delayLines()
 {
   universalCombVsOnePole();
-  //universalCombResponses();
+  universalCombResponses();
+  //combVsAllpassPhase();
 
 
   // Delaylines with different interpolation methods:
@@ -409,6 +413,7 @@ void delayLines()
   // Other delayline based stuff:
   universalCombVsOnePole();
   universalCombResponses();
+  combVsAllpassPhase();
 }
 
 

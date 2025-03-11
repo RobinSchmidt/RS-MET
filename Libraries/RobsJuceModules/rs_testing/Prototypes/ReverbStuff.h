@@ -315,31 +315,26 @@ public:
 
   void setDelayInSamples(int newDelay) { delayLine.setDelayInSamples(newDelay); }
 
-  void setCoeffs(TPar newFeedforward, TPar newFeedback, TPar newBlend)
+  void setCoeffs(TPar newBlend, TPar newFeedforward, TPar newFeedback)
   {
+    bl = newBlend;
     ff = newFeedforward;
     fb = newFeedback;
-    bl = newBlend;
   }
-  // Maybe put the feedforward coeff last in the signature. It's often 1, so we may make it 
-  // optional. But somehow the order ff, fb, bl seems more natural. ...not sure...
-  // Or maybe use the order: blend, feeforward, feedback. I think, this corresponds to b0, b1, a1
-  // which is the order we use for filter coeffs elsewhere in the library, so it would  be nice to
-  // be consistent with that usage.
 
   void setToAllpass(TPar newAllpassCoeff) 
   { 
     bl =  newCoeff;
-    fb = -newCoeff;
     ff =  TPar(1);
+    fb = -newCoeff;
   }
   // Needs tests. The filter should be equivalent to rsAllpassDelay with this setting.
 
   void setToFeedbackComb(TPar newFeedbackCoeff)
   {
     bl = TPar(1);
-    fb = newFeedbackCoeff;
     ff = TPar(0);
+    fb = newFeedbackCoeff;
   }
   // ToDo: Maybe allow the user to set a global gain. This should be assigned to the blend coeff.
   // Make it an optional parameter defaulting to 1.
@@ -347,8 +342,8 @@ public:
   void setToFeedforwardComb(TPar newFeedforwardCoeff, TPar newBlendCoeff = TPar(1))
   {
     bl = newBlendCoeff;
-    fb = TPar(0);
     ff = newFeedforwardCoeff;
+    fb = TPar(0);
   }
   // ToDo: explain how the ff, bl coeffs relate to a total gain. I think, to achieve a different 
   // overall total gain, we should scale ff and bl by that gain factor
@@ -356,22 +351,22 @@ public:
   void setToPureDelay()
   {
     bl = TPar(0);
-    fb = TPar(0);
     ff = TPar(1);
+    fb = TPar(0);
   }
 
   void setToBypass()
   {
     bl = TPar(1);
-    fb = TPar(0);
     ff = TPar(0);
+    fb = TPar(0);
   }
 
   void setToMuted()
   {
     bl = TPar(0);
-    fb = TPar(0);
     ff = TPar(0);
+    fb = TPar(0);
   }
 
 
@@ -401,7 +396,6 @@ public:
   {
     int  M  = getDelayInSamples();
     TArg zM = rsPow(z, TArg(-M));              // z^-M
-    //TArg zM = rsPow(z, TArg(M));              // z^M - for test - it's actually wrong
     TArg V  = TArg(1) / (TArg(1) + fb * zM);   // V(z), z-trafo of intermediate signal v[n].
     return bl * V + ff * V * zM;
   }
@@ -433,7 +427,7 @@ public:
   //   v[n] = x[n] - a1*v[n-1]
   //   y[n] = b0*v[n] + b1*v[n-1]
   //
-  // which  in DF1 would be:
+  // which in DF1 would be:
   //
   //   y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1]
   //
@@ -449,9 +443,9 @@ protected:
 
   RAPT::rsDelay<TSig> delayLine;
 
+  TPar bl = TPar(0);   // Blend coeff          maybe rename to b0
   TPar ff = TPar(0);   // Feedforward coeff    maybe rename to b1
   TPar fb = TPar(0);   // Feedback coeff       maybe rename to a1
-  TPar bl = TPar(0);   // Blend coeff          maybe rename to b0
 
 };
 
