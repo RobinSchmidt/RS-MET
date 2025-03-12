@@ -3898,14 +3898,14 @@ double rsSoftBitCrush(double x)
 {
   // Parameters:
   double k = 1.0;  // amount - rename. i think, it's the reciprocal of the quantization interval
-  double h = 3.0;  // hardness
+  double h = 1.0;  // hardness
 
 
   double a  = rsAbs(x);
   double s  = rsSign(x);
-  double kx = k*x;
-  double y  = rsFloor(kx);
-  double z  = kx - y;
+  double ka = k*a;
+  double y  = rsFloor(ka);
+  double z  = ka - y;
   double w  = rsLinToLin(z, 0.0, 1.0, -1.0, +1.0);
   //double v  = tanh(h*w) / h;
   double v  = tanh(h*w);
