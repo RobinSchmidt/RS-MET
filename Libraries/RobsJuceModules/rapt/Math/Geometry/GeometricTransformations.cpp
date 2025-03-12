@@ -181,15 +181,15 @@ void rsRotationXY<T>::updateCoeffs()
 template<class T>
 void rsRotationXYZ<T>::apply(T* x, T* y, T* z)
 {
-  // temporaries:
-  T X = *x; 
-  T Y = *y; 
+  // Temporaries:
+  T X = *x;
+  T Y = *y;
   T Z = *z;
 
-  // new vector is given by matrix-vector product:
-  *x = xx*X + xy*Y + xz*Z;    // |x|   |xx xy xz|   |X|
-  *y = yx*X + yy*Y + yz*Z;    // |y| = |yx yy yz| * |Y|
-  *z = zx*X + zy*Y + zz*Z;    // |z|   |zx zy zz|   |Z|
+  // New vector is given by matrix-vector product:
+  *x = xx*X + xy*Y + xz*Z;    // [x]   [xx xy xz]   [X]
+  *y = yx*X + yy*Y + yz*Z;    // [y] = [yx yy yz] * [Y]
+  *z = zx*X + zy*Y + zz*Z;    // [z]   [zx zy zz]   [Z]
 }
 
 template<class T>
@@ -226,11 +226,20 @@ void rsRotationXYZ<T>::updateCoeffs()
 // values too).
 
 /*
+
 ToDo:
--make a rotation class that lets the user set up the rotation axis and angle
- (see OpenGL Programming Guide, p. 852 for formulas - maybe make it possible to decompose the 
- rotation into an x-, y-, z-roation (by successively dividing out the respective inverse
- rotation-matrices, recover also the rotation angles (acos)
- see also: https://www.youtube.com/watch?v=PDgG2Z6T1ho for more on 3D rotations
+
+- Maybe in functions like setAngleX(), etc. do not call updateCoeffs immediately but instead set an
+  atomic dirty flag and upadet the coeffs in apply() when the flag is set. This would optimize 
+  situations where the user automates the different rotations simultaneously (assuming that the
+  respective setParameter() functions in the plugin just call setAngleX(), etc.). But it would 
+  pessimize the situation where no automation is taking place - but maybe in an insignicifant way.
+  The overhead would just be one branch that predictably isn't taken.
+
+- Make a rotation class that lets the user set up the rotation axis and angle
+  (see OpenGL Programming Guide, p. 852 for formulas - maybe make it possible to decompose the 
+  rotation into an x-, y-, z-roation (by successively dividing out the respective inverse
+  rotation-matrices, recover also the rotation angles (acos)
+  see also: https://www.youtube.com/watch?v=PDgG2Z6T1ho for more on 3D rotations
 
 */

@@ -304,6 +304,25 @@ public:
   /** Element access for read only. */
   const T& operator()(const int i, const int j) const { return A[flatIndex(i, j)]; }
 
+
+
+  /** NOT YET TESTED! Applies the matrix to the coordinate values. */
+  void apply(T* x, T* y, T* z)
+  {
+    // Temporaries:
+    T X = *x;
+    T Y = *y;
+    T Z = *z;
+
+    // New vector is given by matrix-vector product:
+    *x = A[0]*X + A[1]*Y + A[2]*Z;
+    *y = A[3]*X + A[4]*Y + A[5]*Z;
+    *z = A[6]*X + A[7]*Y + A[8]*Z;
+  }
+  // Needs tests
+  // API is same as in rsRotationXYZ::apply()
+
+
   // ToDo: arithmetic operators, 
 
 protected:
