@@ -3896,7 +3896,27 @@ void sinCosTable()
 
 double rsSoftBitCrush(double x)
 {
-  return x;  // preliminary
+  // Parameters:
+  double k = 1.0;  // amount - rename. i think, it's the reciprocal of the quantization interval
+  double h = 3.0;  // hardness
+
+
+  double a  = rsAbs(x);
+  double s  = rsSign(x);
+  double kx = k*x;
+  double y  = rsFloor(kx);
+  double z  = kx - y;
+  double w  = rsLinToLin(z, 0.0, 1.0, -1.0, +1.0);
+  //double v  = tanh(h*w) / h;
+  double v  = tanh(h*w);
+  double u  = rsLinToLin(v, -1.0, +1.0, 0.0, 1.0);
+  double f  = (s/k) * (y + u);
+
+  return f;
+
+  //return x;  // preliminary
+
+  // I think, u needs to be scaled by 1/tanh(..something)
 }
 
 void softBitCrush()
