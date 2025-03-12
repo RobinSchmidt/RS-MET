@@ -125,6 +125,7 @@ void ratiosLargeLcm();
 void ratiosEquidistantPowers();
 void ratiosMetallic();
 void sinCosTable();
+void softBitCrush();
 void expBipolar();
 void expGaussBell();
 void fmodTest();

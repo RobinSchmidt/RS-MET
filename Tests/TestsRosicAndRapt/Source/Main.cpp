@@ -118,13 +118,26 @@ int main(int argc, char* argv[])
   //iterativeLinearSolvers();
   //linearSolverPrecision();
 
+  // Geometry:
   //ellipseLineIntersections();
+
+  // Function Evaluation:
   //expBipolar();
   //expGaussBell();
   //fmodTest();                      // Tests for wrap-around functions
-  //mathErrorsTest();                // Tests for behaviors in case of math errors, stub
   //gaussBellProduct();
-  //iteratedNumDiff();
+  //polynomialSinc();                // approximation of sinc by polynomial constructed from roots
+  //productLogPlot();
+  //sinCosTable();                   // new polynomial approximation is called from unit tests
+  softBitCrush();                    // Under construction
+  //twoParamRemap();
+  //unitIntervalMap();
+  //powerIterator();
+  //gaussianIterator();
+  //expPolyIterator();
+  //reciprocalIterator();  // rename to multiStepSolverIVP (IVP: initial value problem)
+  // It implements prototypes of Adams-Bashforth, Adams-Moulton, BDF methods and more using the 
+  // ODE for 1/x as example problem (I think)
 
   // Interpolation:
   //linearFractionalInterpolation();  // aka LinFrac
@@ -138,31 +151,24 @@ int main(int argc, char* argv[])
   //gaussianRegression();
   //butterworthViaGaussians();
 
+  // Numeric Calculus
   //numericOptimization();
   //numericMinimization1D();
   //numericRootFinding1D();
+  //iteratedNumDiff();
 
-
-  //polynomialSinc();          // approximation of sinc by polynomial constructed from roots
-  //polynomialPrediction();  // not yet implemented
+  //polynomialPrediction();     // not yet implemented
   //probabilityLogic();
-  //productLogPlot();
   //ratioGenerator();
   //ratiosLargeLcm();
   //ratiosEquidistantPowers();
   //ratiosMetallic();
-  //sinCosTable();   // new polynomial approximation is called from unit tests
-  //twoParamRemap();
-  //unitIntervalMap();
   //numberTheoreticTrafo();   // move to unit tests!
   //numberTheoreticTrafoModuli();
-  //powerIterator();
-  //gaussianIterator();
-  //expPolyIterator();
 
-  //reciprocalIterator();  // rename to multiStepSolverIVP (IVP: initial value problem)
-  // It implements prototypes of Adams-Bashforth, Adams-Moulton, BDF methods and more using the 
-  // ODE for 1/x as example problem (I think)
+  // Misc math:
+  //mathErrorsTest();                // Tests for behaviors in case of math errors, stub
+
 
 
   // Filter:

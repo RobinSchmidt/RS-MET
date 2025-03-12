@@ -3894,6 +3894,17 @@ void sinCosTable()
   plt.plot();
 }
 
+double rsSoftBitCrush(double x)
+{
+  return x;  // preliminary
+}
+
+void softBitCrush()
+{
+  GNUPlotter plt;
+  plt.plotFunctions(1001, -5.0, +5.0, &rsSoftBitCrush);
+}
+
 void expBipolar()
 {
   // find coeffs for a parametrized exponential function y = f(x) = a * e^(b*x) + c such that 
