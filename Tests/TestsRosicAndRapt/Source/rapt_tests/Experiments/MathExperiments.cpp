@@ -3900,34 +3900,23 @@ double rsSoftBitCrush(double x)
   double k = 1.0;  // amount - rename. i think, it's the reciprocal of the quantization interval
   double h = 10.0;  // hardness
 
-
   double a  = rsAbs(x);
   double s  = rsSign(x);
   double ka = k*a;
   double y  = rsFloor(ka);
   double z  = ka - y;
   double w  = rsLinToLin(z, 0.0, 1.0, -1.0, +1.0);
-  // So far, i think it's probably right. But down below, we have some scaling issue, it seems.
-
-
-  //double v  = tanh(h*w) / h;
-  //double v  = tanh(h*w);
-  double v  = tanh(h*w) / tanh(h);
-
+  //double v  = tanh(h*w) / h;      // Nope!
+  //double v  = tanh(h*w);          // Nope!
+  double v  = tanh(h*w) / tanh(h);  // Yep!
   double u  = rsLinToLin(v, -1.0, +1.0, 0.0, 1.0);
-  //double u  = rsLinToLin(v, -v, +v, 0.0, 1.0);
-
-
-  // I think, this should be ok again:
   double f  = (s/k) * (y + u);
+
   return f;
 
-  //return x;  // preliminary
 
-  // There are jumps for small h (like 1). It looks good for larger h (like 5)
-  // I think, u needs to be scaled by 1/tanh(..something)  maybe tanh(h)
 
-  // ToDo: make a softFloatCrsuh function, integrate them into FuncShaper
+  // ToDo: make a softFloatCrush function, integrate them into FuncShaper
 }
 
 void softBitCrush()
