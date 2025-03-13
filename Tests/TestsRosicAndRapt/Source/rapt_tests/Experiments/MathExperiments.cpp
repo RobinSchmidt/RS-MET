@@ -3917,9 +3917,9 @@ double rsSoftBitCrush(double x)
   //
   //
   // - Make k (or 1/k) and h parameters of the function. Maybe call them "resolution" or "interval"
-  //   and "hardness". Handle hardness = 0 by returning early: Just return the input x in this 
-  //   case. It should probably kick in when hardness < tolerance. I think, the same should go for
-  //   interval < tolerance.
+  //   or "stepSize" and "hardness". Handle hardness = 0 by returning early: Just return the input 
+  //   x in this case. It should probably kick in when hardness < tolerance. I think, the same 
+  //   should go for interval < tolerance.
   //
   // - Maybe give it a 4th parameter for the choice of the stauration function. We use a hardcoded 
   //   tanh here but other functions may be useful as well. To make it completely flexible, it 
