@@ -3897,8 +3897,8 @@ void sinCosTable()
 double rsSoftBitCrush(double x)
 {
   // Parameters:
-  double k = 1.0;  // amount - rename. i think, it's the reciprocal of the quantization interval
-  double h = 10.0;  // hardness
+  double k = 2.0;   // Reciprocal of the quantization interval
+  double h = 3.0;   // Hardness
 
   double a  = rsAbs(x);
   double s  = rsSign(x);
@@ -3906,23 +3906,51 @@ double rsSoftBitCrush(double x)
   double y  = rsFloor(ka);
   double z  = ka - y;
   double w  = rsLinToLin(z, 0.0, 1.0, -1.0, +1.0);
-  //double v  = tanh(h*w) / h;      // Nope!
-  //double v  = tanh(h*w);          // Nope!
-  double v  = tanh(h*w) / tanh(h);  // Yep!
+  double v  = tanh(h*w) / tanh(h);
   double u  = rsLinToLin(v, -1.0, +1.0, 0.0, 1.0);
   double f  = (s/k) * (y + u);
 
   return f;
 
 
-
-  // ToDo: make a softFloatCrush function, integrate them into FuncShaper
+  // ToDo: 
+  //
+  //
+  // - Make k (or 1/k) and h parameters of the function. Maybe call them "resolution" or "interval"
+  //   and "hardness". Handle hardness = 0 by returning early: Just return the input x in this 
+  //   case. It should probably kick in when hardness < tolerance. I think, the same should go for
+  //   interval < tolerance.
+  //
+  // - Maybe give it a 4th parameter for the choice of the stauration function. We use a hardcoded 
+  //   tanh here but other functions may be useful as well. To make it completely flexible, it 
+  //   could take a reference to a std::function. We could also (additionally) provide an 
+  //   implementation that lets the caller select from a couple of predefined sigmoids via an enum.
+  //
+  // - Optimize: the rsLinTiLin calls can be replaced by simplified versions because the ranges are 
+  //   simple. Maybe the tanh(h*w) / tanh(h) can also be optimized? ...but maybe we should just 
+  //   give the function a std::function reference and thus pass the responsibility of optimizing 
+  //   the sigmoid to the implementation of that.
+  //
+  // - Maybe move this function here to Prototypes.cpp before doing any optimizations and keep this
+  //   prototype for reference even when later more efficient and more flexible variants are 
+  //   provided.
+  // 
+  // - Integrate a "softQuant" or "softQuantize" function into FuncShaper as primitive.
+  //
+  // - Make a softFloatCrush function. I'm not sure, if that should be a primitive in FuncShaper, 
+  //   though. Do it the same way as the float crush preset. Maybe it uses the linear quantization
+  //   composed with some other functions (log and exp probably) ...look it up!
+  //
+  // - Figure out what sort of sigmoid function corresponds to a hard quantization. I think it is 
+  //   the step function that immediately jumps from -1 to +1 at x = 0. A hard clipper would 
+  //   probably give straight transition regions at the steps of increasing steepness when the 
+  //   hardness parameter is ramped up.
 }
 
 void softBitCrush()
 {
   GNUPlotter plt;
-  plt.plotFunctions(1001, -5.0, +5.0, &rsSoftBitCrush);
+  plt.plotFunctions(1001, -10.0, +10.0, &rsSoftBitCrush);
 }
 
 void expBipolar()
