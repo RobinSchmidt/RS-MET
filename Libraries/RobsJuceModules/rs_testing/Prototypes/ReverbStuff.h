@@ -4053,16 +4053,18 @@ protected:
 
 /** Under construction...
 
-Prototype implementation of a feedback delay network that is meant purely for experimentation. 
-For this purpose, the focus is deliberately not on efficiency but rather on flexibility with 
-respect to the general configuration, the number of delaylines (no restrcition to powers or two, 
+Prototype implementation of a feedback delay network that is meant purely for experimentation in
+research and development. For this purpose, the focus is deliberately not on efficiency but rather 
+on generality, flexibility with respect to the general configuration (with respect to where we 
+inject inputs, pick up outputs, etc), the number of delaylines (no restriction to powers or two, 
 for example), the feedback matrix (no restriction matrices with efficient implementation of the 
 matrix vector product), etc. It should enable convenient experimentation with various 
-architectures, settings, etc. It's a vehicle to navigate the vast search space of possible 
-reverb designs. Even if we assume a general FDN structure, the design space is still vast - in 
-fact, many of the classic reverb designs can be recast in terms of an FDN structure as well. The 
-goal is to identify promising designs which may later be implemented in a more efficient way for 
-use in production. */
+architectures, settings, etc. It's a vehicle to explore the vast search space of possible reverb 
+designs. Even if we restrict ourselves to an FDN architecture, the design space is still vast. 
+Actually, many of the classic reverb designs can be recast in terms of an FDN structure as well, so
+FDNs indeed provide a general framework to implement and investigate these other structures as well
+(albeit in a suboptimal way with regard to efficiency). The goal is to identify promising designs 
+which may later be implemented in a more efficient way for use in production. */
 
 template<class TSig, class TPar>
 class rsProtoFDN
@@ -4071,11 +4073,42 @@ class rsProtoFDN
 public:
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  void setNumDelayChannels(int newNumber);
+  // We deliberately do not call it setNumDelayLines because 1 delay channel can cosist of more 
+  // than one delayline. It can have a pre- and post-matrix delayline, it can have the delaylines
+  // be split into a normal delay and an allpass or notchpass etc. So, calling it a "delay 
+  // channel".
+
+  // ToDo: setNumInputChannels, setNumOutputChannels
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  int getNumDelayChannels() const
+  {
+    return (int) delaysPre.size();
+
+    // ToDo: Maybe assert that delaysPost() and state have the same size and the feedback matrix is 
+    // size x size
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
+
+  void processFrame(const TSig* inputs, int numInputs, TSig* outputs, int numOutputs);
+
 
 protected:
 
-  std::vector<rsDelay<TSig>> delaysPre;   // Delays pre feedback matrix
-  std::vector<rsDelay<TSig>> delaysPost;  // Delays post feedback matrxi
+  std::vector<TSig> state;                // State of the FDN
+
+  std::vector<rsDelay<TSig>> delaysPre;   // Delaylines pre feedback matrix
+  std::vector<rsDelay<TSig>> delaysPost;  // Delaylines post feedback matrix
 
   rsMatrix<TSig> feedbackMatrix;
 
@@ -4087,8 +4120,19 @@ protected:
   // - Maybe use interpolating delayline to enable experimentation with fractional delays. I think,
   //   using allpass interpolation is most appropriate for this purpose.
   //
-  // 
+  // - Maybe rename to rsFeedbackDelayExplorer
 };
+
+
+template<class TSig, class TPar>
+void rsProtoFDN<TSig, TPar>::setNumDelayChannels(int newNumber)
+{
+  state.resize(newNumber);
+  delaysPre.resize(newNumber);
+  delaysPost.resize(newNumber);
+  feedbackMatrix.setSize(newNumber, newNumber);
+}
+
 
 
 

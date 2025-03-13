@@ -2860,9 +2860,6 @@ void prePostDelayFDN_3x3()
   //   the function somewho to keep the feedbakc loop gain stable.
 }
 
-
-
-
 void protoFDN1()
 {
   using Real = double;
