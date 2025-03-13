@@ -2741,6 +2741,7 @@ void prePostDelayFDN_3x3()
   // anyway.
   //
   // The results with the rotation matrix look actually better - more complex and less regular.
+  // Figure out why this is the case. It seems counterintutive.
     
 
 
@@ -2870,11 +2871,15 @@ void protoFDN1()
 
 
   int dummy = 0;
+
+  // ToDo:
+  //
+  // - Replicate the computations in prePostDelayFDN_3x3 with the rsProtoFDN class.
 }
 
 void feedbackDelayNetworks()
 {
-  prePostDelayFDN_3x3();
+  //prePostDelayFDN_3x3();
   protoFDN1();
 
   // Notes:

@@ -4100,17 +4100,33 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
-  void processFrame(const TSig* inputs, int numInputs, TSig* outputs, int numOutputs);
+  void processFrame(const std::vector<TSig>& inputs, std::vector<TSig>& outputs);
+  // We use std::vector rather than raw arrays because we don't really need the flexibility to deal
+  // with anything other than std::vector in our experiments and std::vector is more convenient and 
+  // safer than raw arrays.
+
 
 
 protected:
 
-  std::vector<TSig> state;                // State of the FDN
+  void processDelayChannels(std::vector<TSig>& ioData);
+  // Assumes that ioData is of length getNumDelayChannels()
+  // Maybe use a member array for the ioData..but maybe it's nicer to pass an array in. Maybe we 
+  // want to make this function public later. Then we may want to look into the ins and outs. Maybe
+  // we should use separate arrays for ins and outs. It may be convenient and we don't care about 
+  // optimizing memory usage here.
 
+
+  // State of the FDN:
+  std::vector<TSig> state;                // State of the FDN
+  // Maybe use several vectors for the state at different position in the signal processing 
+  // pipeline, e.g. before the delays, after the pre-matrix delays, after the pre-matrix dampers, 
+  // after the matrix, after the post matrix dampers, etc.
+
+  // Processing elements:
   std::vector<rsDelay<TSig>> delaysPre;   // Delaylines pre feedback matrix
   std::vector<rsDelay<TSig>> delaysPost;  // Delaylines post feedback matrix
-
-  rsMatrix<TSig> feedbackMatrix;
+  rsMatrix<TPar> feedbackMatrix;
 
 
   // ToDo: 
@@ -4132,6 +4148,27 @@ void rsProtoFDN<TSig, TPar>::setNumDelayChannels(int newNumber)
   delaysPost.resize(newNumber);
   feedbackMatrix.setSize(newNumber, newNumber);
 }
+
+template<class TSig, class TPar>
+void rsProtoFDN<TSig, TPar>::processFrame(
+  const std::vector<TSig>& inputs, std::vector<TSig>& outputs)
+{
+  int numIns   = (int) inputs.size();
+  int numOuts  = (int) outputs.size();
+  int numChans = getNumDelayChannels();
+
+  // ToDo:
+  //
+  // - Form the input vector of size numChans to the FDN from the inputs via an input matrix.
+  //
+  // - Do the actual FDN computations
+  //
+  // - Form the output vector from data that occured in the FDN
+
+  int dummy = 0;
+}
+
+
 
 
 
