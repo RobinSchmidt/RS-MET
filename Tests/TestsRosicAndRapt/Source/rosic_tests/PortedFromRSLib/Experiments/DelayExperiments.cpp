@@ -2640,6 +2640,229 @@ void dampedCombAllpasses()
 //=================================================================================================
 
 
+void prePostDelayFDN_3x3()
+{
+  // We implement the idea that is outlined in Notes/DSP/FeedbackDelayNetworkIdeas.md in the 
+  // research repo
+
+  using Real  = double;
+  using Vec   = std::vector<Real>;
+  using Delay = RAPT::rsDelay<Real>;
+
+
+  int numSamples = 1000;
+
+  // Delay values:
+  int M1 = 17;
+  int M2 = 23;
+  int M3 = 29;
+
+  int N1 = 20;
+  int N2 = 26;
+  int N3 = 36;
+
+
+  // Rotation angles for feedback matrix (in degrees):
+  Real rx, ry, rz;
+  rx = ry = rz = 45;    // Best theoretically? Most diffusive?
+  //rx = ry = rz = 60;  
+  //rx = ry = rz = 90;  // Very bad!
+
+  // Decay time (RT60) in samples:
+  Real decay = 1000;
+
+  // Output vectors:
+  Real c1 = +1, c2 = -1, c3 = +1;
+  Real d1 = -1, d2 = +1, d3 = -1;
+
+
+  // Some stuff to uncomment to test with other settings:
+
+  // Test: Using all zeros here should reduce it to the regular 3x3 FDN. Uncomment to test without
+  // the second round fo delay:
+  //N1 = N2 = N3 = 0; 
+
+
+  // Compute the 9 = 3*3 total roundtrip delays for inspection in debugger:
+  int M1_N1 = M1 + N1;
+  int M1_N2 = M1 + N2;
+  int M1_N3 = M1 + N3;
+  int M2_N1 = M2 + N1;
+  int M2_N2 = M2 + N2;
+  int M2_N3 = M2 + N3;
+  int M3_N1 = M3 + N1;
+  int M3_N2 = M3 + N2;
+  int M3_N3 = M3 + N3;
+
+
+  // Compute the feedback damping gain factors:
+  Real amp = Real(0.001);
+  Real a1  = rsDecayTimeToFeedbackGain(decay, Real(M1), amp);
+  Real a2  = rsDecayTimeToFeedbackGain(decay, Real(M2), amp);
+  Real a3  = rsDecayTimeToFeedbackGain(decay, Real(M3), amp);
+  Real b1  = rsDecayTimeToFeedbackGain(decay, Real(N1), amp);
+  Real b2  = rsDecayTimeToFeedbackGain(decay, Real(N2), amp);
+  Real b3  = rsDecayTimeToFeedbackGain(decay, Real(N3), amp);
+
+
+  // Helper function:
+  auto setDelay = [](Delay& delay, int amount)
+  {
+    delay.setMaxDelayInSamples(amount);
+    delay.setDelayInSamples(amount);
+  };
+
+  // Create and set up the delay lines:
+  Delay A1, A2, A3;  // Delaylines left to the feedback matrix
+  Delay B1, B2, B3;  // Delaylines right to the feedback matrix
+  setDelay(A1, M1);
+  setDelay(A2, M2);
+  setDelay(A3, M3);
+  setDelay(B1, N1);
+  setDelay(B2, N2);
+  setDelay(B3, N3);
+
+  // Create and set up the feedback matrix:
+  rsRotationXYZ<Real> F;
+  Real toRad = PI/180;
+  F.setAngles(toRad*rx, toRad*ry, toRad*rz);
+
+  //rsMatrix3x3<Real> F;
+  ////Real s = Real(1) / rsSqrt(3.0);
+  //Real s = 0.5015;
+  //F.setValues(+s,+s,-s, +s,-s,+s, -s,+s,+s);
+  // This makes the signal blow up when feedback is set to 1! Isn't it supposed to be unitary 
+  // when we divide by sqrt(3)? Oh! no! The rows are actually not orthogonal! Figure out what 
+  // scaler we need to use! 0.5 seems to be stable but may be slightly decaying. 0.51 blows up.
+  // 0.505 also. 0.502 may be very slowly growing. 0.5015 seems to be (close to) the stability 
+  // limit. ToDo: figure out theoretically what the value should be! In think, we need to compute
+  // the eigenvalues of the matrix [+1,+1,-1; +1,-1,+1; -1,+1,+1] and then take the reciprocal of
+  // the magnitude of the one with maximum magnitude. They are probably all the same in magnitude
+  // anyway.
+  //
+  // The results with the rotation matrix look actually better - more complex and less regular.
+    
+
+
+  int N = numSamples;
+  Vec y1(N), y2(N), y3(N);  // Outputs after the the A delaylines
+  Vec z1(N), z2(N), z3(N);  // Outputs after the the B delaylines
+
+
+  // Helper function:
+  auto produceInternalSamples = [&](Real x, int n)
+  {
+    // Establish inputs to the A filters:
+    Real u1 = x + b1 * B1.readOutput();
+    Real u2 = x + b2 * B2.readOutput();
+    Real u3 = x + b3 * B3.readOutput();
+    // In a realtime implementation, we would probably just use "x + b1 * z[n-1]". But that 
+    // wouldn't work for n=0 here. A realtime implementation would just keep a vector of z-values 
+    // as state which could be read from in a getSample() call.
+
+    // Apply A filters:
+    y1[n] = a1 * A1.getSample(u1);
+    y2[n] = a2 * A2.getSample(u2);
+    y3[n] = a3 * A3.getSample(u3);
+
+    // Apply feedback matrix to outputs of A filters:
+    Real v1 = y1[n];
+    Real v2 = y2[n];
+    Real v3 = y3[n];
+    F.apply(&v1, &v2, &v3);
+
+    // Feed those into the B filters:
+    z1[n] = b1 * B1.getSample(v1);
+    z2[n] = b2 * B2.getSample(v2);
+    z3[n] = b3 * B3.getSample(v3);
+  };
+
+
+  // Create all the internal signals and their sum:
+  produceInternalSamples(1.0, 0);
+  for(int n = 1; n < N; n++)
+    produceInternalSamples(0.0, n);
+
+  Vec ySum = c1*y1 + c2*y2 + c3*y3;
+  Vec zSum = d1*z1 + d2*z2 + d3*z3;
+  Vec sum  = ySum + zSum;
+
+  // Plot the signals:
+  //rosic::writeToMonoWaveFile("BiFDN_3x3.wav", &sum[0], N, 44100);
+  //rsPlotVectors(sum, ySum, zSum);
+  rsPlotVectors(sum);
+  //rsPlotVectors(sum, y1, y2, y3, z1, z2, z3);
+
+  // Observations:
+  //
+  // - It looks like we can create complexity pretty fast with this approach. It still sounds bad,
+  //   though - but that is probably due to the unrealistically short delays and the fact that we 
+  //   have just a 3x3 matrix in this toy example.
+  //
+  // - When setting the N values to all zeros, the spikes in zSum and ySum coincide. That means,
+  //   using nonzero values (i.e. actually using the second delay layer rather than bypassing it)
+  //   does indeed add complexity.
+  //
+  // - More experiments are needed to optimize the matrix and the delays. 
+  //
+  // - I think, it may make sense to have all M values odd and all n values even. Then we avoid any
+  //   of the sums Mi+Nj to be even (because odd + even = odd). We want them all odd because 
+  //   otherwise, two even sums have a gcd of 2. Although maybe a gcd of 2 is not as bad as a gcd 
+  //   of 5, say. Ideally we want the gcd to be 1. If that's not possible, we may want it to be as
+  //   small as possible?
+  //
+  // - Maybe when using real delay values (i.e. interpolated delaylines), it could make sense to 
+  //   use power of the golden ratio phi (wrapped back into the interval 1..2 by dividing by an 
+  //   appropriate power of 2)? Maybe look at the continued fraction expansions of the powers of
+  //   phi.
+  //
+  // - Try it with more realistic values for the delays. Maybe write a 2nd function that does the
+  //   same thing with 16 delaylines using a fast Kronecker trafo (FKT) instead of the explicit 
+  //   feedback matrix.
+  //
+  // - But maybe when we use 2*16 = 32 delaylines, it may actually give us more bang for the buck
+  //   to just use the 32 delaylines with a 32x32 matrix? The FKT would have to compute one level
+  //   more. Maybe compare the results for a smaller case: 4x4 with 2nd round of delays vs 8x8 with
+  //   a single round of delays. Maybe try to re-express the smaller case with a particular 
+  //   feedback matrix of the bigger case. Or take an 8x8 network with 2 rounds vs a 16x16 network
+  //   with 1 round of delays: Let's assume that evaluating 1 delayline takes a computational cost 
+  //   of c and one elementary operation inside matrix computation takes a computational amount of 
+  //   1. With the FKT, The 8x8 case with two delays would have a total cost of 
+  //   8*c + 8*log2(8) + 8*c = 16*c + 8*3 = 16*c + 24. The 16x16 case with one round of delays 
+  //   would take 16*c + 16*log2(16) = 16*c + 16*4 = 16*c + 64. It's probably realistic to assume 
+  //   that c > 1, i.e. the evaluation of one delayline (including damping, possibly interpolation, 
+  //   maybe additional allpass or notchpass, etc.) is more costly than the inner matrix operation 
+  //   which we have normalized to have a cost of 1. OK - so the 16*c term is equal in both costs.
+  //   They differ only the N*log2(N) term which is 24 in the 8x8 bi-delay case and 64 in the 16x16
+  //   single delay case. So, indeed, the cost of a 8x8 bi-delay network is less. But maybe the 
+  //   16x16 network will give better result for the higher cost? At the moment, we considered only
+  //   cost, i.e. the buck. What about the bang? Maybe consider the total number of modes and/or 
+  //   the initial echo density as a figure of merit. The first echoes in the 8x8 case arrive at 
+  //   M1,..,M8 and then at M1+N1,...,M1+N8,.....,M8+N1,...,M8+N8. In the 16x16 case, they arrive 
+  //   at M1,...,M16. If we assume that N1,..,N8 ins the 1st case are identical to M8,...,M16 in 
+  //   the 2nd case, we would have more early echoes in the 2nd case. Maybe that means the 16x16 
+  //   network is better. For the total number of modes, I need to write down the transfer 
+  //   functions, I guess. In the 16x16 case, it's also easier to tune the delays to be all 
+  //   mutually prime because we don't get these nasty sums
+  //
+  // - Maybe apply different types of waveshaping in the feedback path: 
+  //   -Saturation: should make early decay faster
+  //   -Antisaturation: should make late decay faster. But be careful: this may break stability
+  //    when we do not limit the slope to unity.
+  //   -Bitcrush: should noisify the tail, relative noisification is stronger for quiet signals
+  //   -Floatcrush: should noisify the tail, relative nosification is independent from level
+  //   -Soft-Bitcrush: should be a bitcrush with adjustable smoothing of the stairsteps into softer
+  //    sigmoid shapes
+  //
+  // - Maybe use a function x + a*x^3 with adjustable a > 0 and its inverse (used with |a| when 
+  //   a < 0). This waveshaping in the feedback path could be used to dial in a balance between
+  //   early and late deacy, I guess. But maybe for the a > 0 case, we need to limit the slope of
+  //   the function somewho to keep the feedbakc loop gain stable.
+}
+
+
+
+
 void protoFDN1()
 {
   using Real = double;
@@ -2654,6 +2877,7 @@ void protoFDN1()
 
 void feedbackDelayNetworks()
 {
+  prePostDelayFDN_3x3();
   protoFDN1();
 
   // Notes:
