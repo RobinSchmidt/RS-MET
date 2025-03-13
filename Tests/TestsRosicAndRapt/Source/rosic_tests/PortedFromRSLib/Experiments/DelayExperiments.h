@@ -5,5 +5,6 @@ void algoVerb();
 void delayLines();
 void twoPoleAllpassDelays();
 void dampedCombAllpasses();
+void feedbackDelayNetworks();
 
 #endif

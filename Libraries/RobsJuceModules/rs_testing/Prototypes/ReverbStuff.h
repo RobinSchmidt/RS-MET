@@ -4049,8 +4049,46 @@ protected:
 
 };
 
+//=================================================================================================
+
+/** Under construction...
+
+Prototype implementation of a feedback delay network that is meant purely for experimentation. 
+For this purpose, the focus is deliberately not on efficiency but rather on flexibility with 
+respect to the general configuration, the number of delaylines (no restrcition to powers or two, 
+for example), the feedback matrix (no restriction matrices with efficient implementation of the 
+matrix vector product), etc. It should enable convenient experimentation with various 
+architectures, settings, etc. It's a vehicle to navigate the vast search space of possible 
+reverb designs. Even if we assume a general FDN structure, the design space is still vast - in 
+fact, many of the classic reverb designs can be recast in terms of an FDN structure as well. The 
+goal is to identify promising designs which may later be implemented in a more efficient way for 
+use in production. */
+
+template<class TSig, class TPar>
+class rsProtoFDN
+{
+
+public:
 
 
+
+protected:
+
+  std::vector<rsDelay<TSig>> delaysPre;   // Delays pre feedback matrix
+  std::vector<rsDelay<TSig>> delaysPost;  // Delays post feedback matrxi
+
+  rsMatrix<TSig> feedbackMatrix;
+
+
+  // ToDo: 
+  //
+  // - Have two sets of delays: pre matrix and post matrix.
+  //
+  // - Maybe use interpolating delayline to enable experimentation with fractional delays. I think,
+  //   using allpass interpolation is most appropriate for this purpose.
+  //
+  // 
+};
 
 
 

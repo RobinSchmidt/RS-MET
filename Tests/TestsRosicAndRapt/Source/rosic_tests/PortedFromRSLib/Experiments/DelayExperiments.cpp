@@ -417,14 +417,14 @@ void universalCombResponses()
 
 void combVsAllpassPhase()
 {
-  // Under construction
+  // Under construction...
 
   // We plot the phase response, group delay and ring response for a comb and Schroeder allpass
   // with the same feedback coefficient
 
 
-
 }
+
 
 void delayLines()
 {
@@ -444,7 +444,7 @@ void delayLines()
   combVsAllpassPhase();
 }
 
-
+//=================================================================================================
 
 template<class T>
 void rsSetupTwoPoleAllpassDelay(rsTwoPoleAllpassDelay<T, T>* filter, int delay, T omega, T Q)
@@ -2635,4 +2635,29 @@ void dampedCombAllpasses()
   //   reduce the feedback when putting two filters in series in order to achieve the same RT60.
   //   Maybe plot the decay envelopes like we do in dampedCombAllpassFreqDependentRT60(). Maybe 
   //   factor out a function for creating such plots and then apply it to this new setting.
+}
+
+//=================================================================================================
+
+
+void protoFDN1()
+{
+  using Real = double;
+  using FDN  = rsProtoFDN<Real, Real>;
+
+
+  FDN fdn;
+
+
+  int dummy = 0;
+}
+
+void feedbackDelayNetworks()
+{
+  protoFDN1();
+
+  // Notes:
+  //
+  // - There are some more, older FDN experiments in rosic_EffectsTest.cpp. Maybe drag them over to
+  //   here. there is also allpassFDN() in FilterExperiments.cpp.
 }

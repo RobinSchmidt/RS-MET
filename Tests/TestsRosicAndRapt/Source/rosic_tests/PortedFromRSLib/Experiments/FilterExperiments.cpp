@@ -112,6 +112,9 @@ void allpassFDN()
   // Ideas for naming the matrices:
   // -FeedIn, FeedBack (standard), FeedOut, FeedThrough
   // -Injection, Transition (standard), Extraction, Circumvention
+
+
+  // Maybe move to a file ReverbExperiments.cpp (which does not yet exist, I think)
 }
 
 // Move to prototypes - maybe rename to rsSVF:

@@ -129,7 +129,7 @@ int main(int argc, char* argv[])
   //polynomialSinc();                // approximation of sinc by polynomial constructed from roots
   //productLogPlot();
   //sinCosTable();                   // new polynomial approximation is called from unit tests
-  softBitCrush();                    // Under construction
+  //softBitCrush();
   //twoParamRemap();
   //unitIntervalMap();
   //powerIterator();
@@ -398,9 +398,10 @@ int main(int argc, char* argv[])
   //sineFromDecayingSines();
 
   // Delay, allpass, reverb stuff:
-  delayLines();
+  //delayLines();
   //twoPoleAllpassDelays();
   //dampedCombAllpasses();
+  feedbackDelayNetworks();
   //allpassFDN();                  // Under construction
 
   // Filter:
