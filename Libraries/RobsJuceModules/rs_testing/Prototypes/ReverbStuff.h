@@ -4076,13 +4076,30 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  void setNumDelayChannels(int newNumber);
+  //void setNumDelayChannels(int newNumber);
   // We deliberately do not call it setNumDelayLines because 1 delay channel can cosist of more 
   // than one delayline. It can have a pre- and post-matrix delayline, it can have the delaylines
   // be split into a normal delay and an allpass or notchpass etc. So, calling it a "delay 
   // channel".
+  // Get rid - the number of channels is contained in the sizes passed to setupDelaysAndFeedback
 
   // ToDo: setNumInputChannels, setNumOutputChannels
+  // ...or maybe setInputMatrix, setOutputMatrix
+
+  /** Sets up the lengths of the delaylines before and after the feedback matrix and the feedback
+  matrix itself. The feedback matrix should be unitary. The damping is taken care of elsewhere. */
+  void setupDelaysAndFeedback(
+    const std::vector<int>& newPreMatrixDelays,
+    const rsMatrix<TPar>& newFeedbackMatrix,
+    const std::vector<int>& newPostMatrixDelays);
+  // We allow to set these 3 things only all at once because there are consistency constraints that 
+  // need to be observed (pre- and post matrix delays must have same size, matrix must be of shape 
+  // size x size). That would be messy to ensure with separate setters for each of the 3. Maybe
+  // make the last parameter optional. ..but then we can't use references, I think. Or can we? If
+  // not, just provide a 2nd function that has only 2 parameters. Inside of it, create a dummy 
+  // vector for the newPostMatrixDelays of all zeros and then delegate to the 3-parameter version 
+  // of the function.
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -4139,7 +4156,7 @@ protected:
   // - Maybe rename to rsFeedbackDelayExplorer
 };
 
-
+/*
 template<class TSig, class TPar>
 void rsProtoFDN<TSig, TPar>::setNumDelayChannels(int newNumber)
 {
@@ -4148,6 +4165,44 @@ void rsProtoFDN<TSig, TPar>::setNumDelayChannels(int newNumber)
   delaysPost.resize(newNumber);
   feedbackMatrix.setSize(newNumber, newNumber);
 }
+*/
+
+
+template<class TSig, class TPar>
+void rsProtoFDN<TSig, TPar>::setupDelaysAndFeedback(
+  const std::vector<int>& newPreMatrixDelays,
+  const rsMatrix<TPar>& newFeedbackMatrix,
+  const std::vector<int>& newPostMatrixDelays)
+{
+  int N = (int) newPreMatrixDelays.size();
+  rsAssert(newFeedbackMatrix.hasShape(N, N));
+  rsAssert((int) newPostMatrixDelays.size() == N);
+
+  delaysPre.resize(N);
+  for(int i = 0; i < N; i++)
+  {
+    delaysPre[i].setMaxDelayInSamples(newPreMatrixDelays[i]);
+    delaysPre[i].setDelayInSamples(   newPreMatrixDelays[i]);
+  }
+
+  delaysPost.resize(N);
+  for(int i = 0; i < N; i++)
+  {
+    delaysPost[i].setMaxDelayInSamples(newPostMatrixDelays[i]);
+    delaysPost[i].setDelayInSamples(   newPostMatrixDelays[i]);
+  }
+
+  feedbackMatrix = newFeedbackMatrix;
+
+  state.resize(N);
+  // ...maybe more to come...
+
+  // Notes:
+  //
+  // - We call setMaxDelayInSamples() before calling setDelayInSamples() to ensure that the 
+  //   delaylines have enough memory allocated.
+}
+
 
 template<class TSig, class TPar>
 void rsProtoFDN<TSig, TPar>::processFrame(

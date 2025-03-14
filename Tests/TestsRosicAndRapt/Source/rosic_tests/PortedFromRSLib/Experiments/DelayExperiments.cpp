@@ -2857,14 +2857,67 @@ void prePostDelayFDN_3x3()
   //
   // - Maybe use a function x + a*x^3 with adjustable a > 0 and its inverse (used with |a| when 
   //   a < 0). This waveshaping in the feedback path could be used to dial in a balance between
-  //   early and late deacy, I guess. But maybe for the a > 0 case, we need to limit the slope of
-  //   the function somewho to keep the feedbakc loop gain stable.
+  //   early and late decay, I guess. But maybe for the a > 0 case, we need to limit the slope of
+  //   the function somehow to keep the feedback loop gain stable.
 }
+
+template<class T>
+void rsRotationMatrixFromEulerAngles(T rx, T ry, T rz, rsMatrix<T>* R)
+{
+  rsAssert(R->hasShape(3,3));
+
+  // Sines/cosines:
+  T sx = sin(rx); T cx = cos(rx);
+  T sy = sin(ry); T cy = cos(ry);
+  T sz = sin(rz); T cz = cos(rz);
+
+  // Rotation matrix coeffs:
+  (*R)(0,0) =  cz*cy;
+  (*R)(0,1) = -sz*cx + cz*sy*sx;
+  (*R)(0,2) =  sz*sx + cz*sy*cx;
+  (*R)(1,0) =  sz*cy;
+  (*R)(1,1) =  cz*cx + sz*sy*sx;
+  (*R)(1,2) = -cz*sx + sz*sy*cx;
+  (*R)(2,0) = -sy;
+  (*R)(2,1) =  cy*sx;
+  (*R)(2,2) =  cy*cx;
+
+  // See also: rsRotationXYZ<T>::updateCoeffs(). We actually duplicate the code from there here.
+  // Maybe try to refactor to get rid of that duplication.
+}
+
+
 
 void protoFDN1()
 {
   using Real = double;
   using FDN  = rsProtoFDN<Real, Real>;
+
+
+  int numSamples = 1000;
+
+  // Delay values:
+  int M1 = 17;
+  int M2 = 23;
+  int M3 = 29;
+
+  int N1 = 20;
+  int N2 = 26;
+  int N3 = 36;
+
+  // Rotation angles for feedback matrix (in degrees):
+  Real rx, ry, rz;
+  rx = ry = rz = 45;    // Best theoretically? Most diffusive?
+
+  // Create and set up the feedback matrix:
+  //rsRotationXYZ<Real> F;
+  //Real toRad = PI/180;
+  //F.setAngles(toRad*rx, toRad*ry, toRad*rz);
+
+  rsMatrix<Real> F(3,3);
+  Real toRad = PI/180;
+  rsRotationMatrixFromEulerAngles(toRad*rx, toRad*ry, toRad*rz, &F);
+
 
 
   FDN fdn;

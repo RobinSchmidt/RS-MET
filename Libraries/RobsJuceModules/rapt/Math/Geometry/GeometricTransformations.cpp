@@ -195,12 +195,12 @@ void rsRotationXYZ<T>::apply(T* x, T* y, T* z)
 template<class T>
 void rsRotationXYZ<T>::updateCoeffs()
 {
-  // sines/cosines:
+  // Sines/cosines:
   T sx = sin(rx); T cx = cos(rx);
   T sy = sin(ry); T cy = cos(ry);
   T sz = sin(rz); T cz = cos(rz);
 
-  // rotation matrix coeffs:
+  // Rotation matrix coeffs:
   xx =  cz*cy;
   xy = -sz*cx + cz*sy*sx;
   xz =  sz*sx + cz*sy*cx;
