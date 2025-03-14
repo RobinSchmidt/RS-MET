@@ -2890,37 +2890,38 @@ void rsRotationMatrixFromEulerAngles(T rx, T ry, T rz, rsMatrix<T>* R)
 
 void protoFDN1()
 {
+  // Under construction
+  //
+  // We reproduce the results from the function prePostDelayFDN_3x3 above but this time using the 
+  // rsProtoFDN class. 
+
+
   using Real = double;
+  using VecI = std::vector<int>;
   using FDN  = rsProtoFDN<Real, Real>;
 
 
   int numSamples = 1000;
 
   // Delay values:
-  int M1 = 17;
-  int M2 = 23;
-  int M3 = 29;
-
-  int N1 = 20;
-  int N2 = 26;
-  int N3 = 36;
-
-  // Rotation angles for feedback matrix (in degrees):
-  Real rx, ry, rz;
-  rx = ry = rz = 45;    // Best theoretically? Most diffusive?
+  VecI delaysPre( { 17, 23, 29 });
+  VecI delaysPost({ 20, 26, 36 });
 
   // Create and set up the feedback matrix:
-  //rsRotationXYZ<Real> F;
-  //Real toRad = PI/180;
-  //F.setAngles(toRad*rx, toRad*ry, toRad*rz);
-
-  rsMatrix<Real> F(3,3);
+  Real rx, ry, rz;
+  rx = ry = rz = 45;
   Real toRad = PI/180;
-  rsRotationMatrixFromEulerAngles(toRad*rx, toRad*ry, toRad*rz, &F);
+  rsMatrix<Real> fbMatrix(3,3);
+  rsRotationMatrixFromEulerAngles(toRad*rx, toRad*ry, toRad*rz, &fbMatrix);
 
-
-
+  // Create and set up the FDN:
   FDN fdn;
+  fdn.setupDelaysAndFeedback(delaysPre, fbMatrix, delaysPost);
+
+
+  // ToDo: 
+  // -define injection and output matrices
+  // -produce impulse response
 
 
   int dummy = 0;
