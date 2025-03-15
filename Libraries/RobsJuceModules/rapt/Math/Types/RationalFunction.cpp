@@ -450,30 +450,49 @@ std::vector<std::complex<R>> rsRationalFunction<T>::partialFractions(
 // https://ccrma.stanford.edu/~jos/filters/FIR_Part_PFE.html
 
 
+//=================================================================================================
 /*
 
-maybe implement a conversion to a Taylor series:
-https://en.wikipedia.org/wiki/Rational_function#Taylor_series
-that may be useful to approximate an IIR filter by an FIR filter or vice versa
+ToDo:
 
-for integrating, see here: ftp://ftp.cs.wisc.edu/pub/techreports/1970/TR91.pdf
-page 9 in particluar - we could let the function return another rational function for the rational 
-part and the alpha_i, b_i coeffs for the transcendental part
+- Implement evaluation with derivative. Use quotient rule  (u/v)' = (u'*v - v'*u) / v^2. The 
+  polynomial class has a function to evaluate the polynomial with derivative. Use that. Oh - we 
+  already have valueAndSlopeAt. 
 
--Implement evaluation with derivative. Use quotient rule  (u/v)' = (u'*v - v'*u) / v^2. The 
- polynomial class has a function to evaluate the polynomial with derivative. Use that. Oh - we 
- already have valueAndSlopeAt. 
--Derive formula for (u/v)'' in terms of u,u',u'',v,v',v'' and implement that, too. Use quotient 
- rule on ((u'*v - v'*u) / v^2)'   v^2' = 2*v*v', so I think, we get:
-    ((u'*v - v'*u)' * v^2 - (u'*v - v'*u)*2*v*v) / (v^4) 
- =  ( ( (u''*v + u'*v')  - (v''*u + v'*u') )' * v^2 - (u'*v - v'*u)*2*v*v) / (v^4) 
- ...Verify this! Check the formulas numerically by comparing to numerical differentiation result.
- Add a function valueSlopeAndCurvature or valueAndDerivatives2. Look into rsPolynomial (it has such 
- functions) and use matching naming conventions and API.
--Add a function evaluateInverse(y, xGuess). It should use Newton or Halley iteration (using the 
- evaluation with derivative(s) function) to find an x such that r(x) = y. The rational function 
- r(x) may not be invertible, so the user should provide an initial guess for x and the function 
- will produce a value near the given x
+- Derive formula for (u/v)'' in terms of u,u',u'',v,v',v'' and implement that, too. Use quotient 
+  rule on ((u'*v - v'*u) / v^2)'   v^2' = 2*v*v', so I think, we get:
+     ((u'*v - v'*u)' * v^2 - (u'*v - v'*u)*2*v*v) / (v^4) 
+  =  ( ( (u''*v + u'*v')  - (v''*u + v'*u') )' * v^2 - (u'*v - v'*u)*2*v*v) / (v^4) 
+  ...Verify this! Check the formulas numerically by comparing to numerical differentiation result.
+  Add a function valueSlopeAndCurvature or valueAndDerivatives2. Look into rsPolynomial (it has 
+  such functions) and use matching naming conventions and API. I think, there are generalizations 
+  of the quotient rule for higher derivatives. Look up the .tex files for the math book. There may
+  be something about that in there, IIRC.
 
+- For integrating, see here: ftp://ftp.cs.wisc.edu/pub/techreports/1970/TR91.pdf  page 9 in 
+  particluar. We could let the function return another rational function for the rational part and 
+  the alpha_i, b_i coeffs for the transcendental part
+
+- Add a function evaluateInverse(y, xGuess). It should use Newton or Halley iteration (using the 
+  evaluation with derivative(s) function) to find an x such that r(x) = y. The rational function 
+  r(x) may not be invertible, so the user should provide an initial guess for x and the function 
+  will produce a value near the given x
+
+- Maybe implement a conversion to a Taylor series:
+  https://en.wikipedia.org/wiki/Rational_function#Taylor_series
+  that may be useful to approximate an IIR filter by an FIR filter or vice versa. See also the
+  functions in the Prototypes.cpp to convert from Taylor to Pade approximation.
+
+- Implement a "less-than" comparison function according to page 16 in "Counterexamples in 
+  Analysis". The book defines an "ordered field" to a be field in which there exists a subset P of
+  the underlying set F, called the "positive elements", for which the following holds:
+  (1) x in P and y in P -> x + y in P, (2) x in P and y in P -> x * y in P, (3) for any x in F 
+  exactly one of the 3 is true: x in P, x = 0, -x in P. The less-than relation is then defined as:
+  x < y  iff  (y - x) in P. And: x >= y  iff  (x - y) in P  or  x = y. For rational functions, 
+  the set P of positive elements is defined to be those, whose leading coefficients of numerator 
+  and denominator have the same sign. So, what we would have to do to implement the < relation of
+  two rational functions R,S is  (1) compute D = S - R, (2) check if leading coeffs of numerator
+  and denominator of D have the same sign. Beware of roundoff error issues, though. It can be used 
+  for polynomials, too - they are just rational functions with denominator 1.
 
 */
