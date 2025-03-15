@@ -4076,16 +4076,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  //void setNumDelayChannels(int newNumber);
-  // We deliberately do not call it setNumDelayLines because 1 delay channel can cosist of more 
-  // than one delayline. It can have a pre- and post-matrix delayline, it can have the delaylines
-  // be split into a normal delay and an allpass or notchpass etc. So, calling it a "delay 
-  // channel".
-  // Get rid - the number of channels is contained in the sizes passed to setupDelaysAndFeedback
-
-  // ToDo: setNumInputChannels, setNumOutputChannels
-  // ...or maybe setInputMatrix, setOutputMatrix
-
   /** Sets up the lengths of the delaylines before and after the feedback matrix and the feedback
   matrix itself. The feedback matrix should be unitary. The damping is taken care of elsewhere. */
   void setDelaysAndFeedback(
@@ -4162,24 +4152,12 @@ protected:
 
   // ToDo: 
   //
-  // - Have two sets of delays: pre matrix and post matrix.
   //
   // - Maybe use interpolating delayline to enable experimentation with fractional delays. I think,
   //   using allpass interpolation is most appropriate for this purpose.
   //
   // - Maybe rename to rsFeedbackDelayExplorer
 };
-
-/*
-template<class TSig, class TPar>
-void rsProtoFDN<TSig, TPar>::setNumDelayChannels(int newNumber)
-{
-  state.resize(newNumber);
-  delaysPre.resize(newNumber);
-  delaysPost.resize(newNumber);
-  feedbackMatrix.setSize(newNumber, newNumber);
-}
-*/
 
 
 template<class TSig, class TPar>
@@ -4217,8 +4195,6 @@ void rsProtoFDN<TSig, TPar>::setDelaysAndFeedback(
   //   delaylines have enough memory allocated.
 }
 
-
-
 template<class TSig, class TPar>
 void rsProtoFDN<TSig, TPar>::setInputMatrices(
   const rsMatrix<TPar>& newInputMatrixPre,
@@ -4231,7 +4207,6 @@ void rsProtoFDN<TSig, TPar>::setInputMatrices(
   inMatrixPre  = newInputMatrixPre;
   inMatrixPost = newInputMatrixPost;
 }
-
 
 template<class TSig, class TPar>
 void rsProtoFDN<TSig, TPar>::setOutputMatrices(
@@ -4246,7 +4221,6 @@ void rsProtoFDN<TSig, TPar>::setOutputMatrices(
   outMatrixPost = newOutputMatrixPost;
 }
 
-
 template<class TSig, class TPar>
 void rsProtoFDN<TSig, TPar>::processFrame(
   const std::vector<TSig>& inputs, std::vector<TSig>& outputs)
@@ -4255,6 +4229,39 @@ void rsProtoFDN<TSig, TPar>::processFrame(
   int numOuts  = (int) outputs.size();
   int numChans = getNumDelayChannels();
 
+  using Vec = std::vector<TSig>;
+
+  // Form the FDN input by applying the pre-feedback input matrix to the inputs vector:
+  Vec x(numChans); rsSetZero(x);     // rsSetZero is superfluous now but maybe later we use a member for x
+  for(int i = 0; i < numChans; i++)
+    for(int j = 0; j < numIns; j++)
+      x[i] += inMatrixPre(i, j) * inputs[j];
+
+  // Form the inputs to the pre-feedback delaylines:
+  Vec u(numChans);
+  for(int i = 0; i < numChans; i++)
+    u[i] = x[i] + state[i];
+
+  // Apply the pre-feedback delaylines:
+  Vec y(numChans);
+  for(int i = 0; i < numChans; i++)
+    y[i] = delaysPre[i].getSample(u[i]);  // ToDo: include damping factors and filters
+
+  // Apply the feedback matrix:
+  Vec v(numChans); rsSetZero(v);
+  for(int i = 0; i < numChans; i++)
+    for(int j = 0; j < numChans; j++)
+      v[i] += feedbackMatrix(i, j) * y[j];
+
+
+  // ...TBC...
+
+
+
+  int dummy = 0;
+
+ 
+
   // ToDo:
   //
   // - Form the input vector of size numChans to the FDN from the inputs via an input matrix.
@@ -4262,8 +4269,6 @@ void rsProtoFDN<TSig, TPar>::processFrame(
   // - Do the actual FDN computations
   //
   // - Form the output vector from data that occured in the FDN
-
-  int dummy = 0;
 }
 
 

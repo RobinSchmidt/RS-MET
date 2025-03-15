@@ -2900,6 +2900,7 @@ void protoFDN1()
 
   using Real = double;
   using VecI = std::vector<int>;
+  using VecR = std::vector<Real>;
   using FDN  = rsProtoFDN<Real, Real>;
 
 
@@ -2922,14 +2923,35 @@ void protoFDN1()
   rsMatrix<Real> outMatrixPre( 1, 3, {+1, -1, +1});
   rsMatrix<Real> outMatrixPost(1, 3, {-1, +1, -1}); 
 
-
   // Create and set up the FDN:
   FDN fdn;
   fdn.setDelaysAndFeedback(delaysPre, fbMatrix, delaysPost);
   fdn.setInputMatrices( inMatrixPre,  inMatrixPost);
   fdn.setOutputMatrices(outMatrixPre, outMatrixPost);
 
+  // Create input impulse signal:
+  int N = numSamples;
+  VecR x(N);
+  x[0] = 1.0;
 
+  // Helper function to produce one output sample at a time. We need it because the API of the FDN 
+  // class uses std::vector for supporting multichannel I/O:
+  auto getSample = [&](Real in)
+  {
+    VecR tmpIn(1), tmpOut(1);
+    tmpIn[0] = in;
+    fdn.processFrame(tmpIn, tmpOut);
+    return tmpOut[0];
+  };
+
+  // Produce FDN output signal, i.e. the impulse response:
+  VecR y(N);
+  y[0] = getSample(1.0);
+  for(int n = 0; n < N; n++)
+    y[n] = getSample(0.0);
+
+
+  rsPlotVectors(y);
 
 
   // ToDo: 
