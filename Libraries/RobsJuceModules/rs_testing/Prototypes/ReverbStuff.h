@@ -4237,12 +4237,12 @@ void rsProtoFDN<TSig, TPar>::processFrame(
     for(int j = 0; j < numIns; j++)
       x[i] += inMatrixPre(i, j) * inputs[j];
 
-  // Form the inputs to the pre-feedback delaylines:
+  // Form the inputs to the pre feedback matrix delaylines:
   Vec u(numChans);
   for(int i = 0; i < numChans; i++)
     u[i] = x[i] + state[i];
 
-  // Apply the pre-feedback delaylines:
+  // Apply the pre feedback matrix delaylines:
   Vec y(numChans);
   for(int i = 0; i < numChans; i++)
     y[i] = delaysPre[i].getSample(u[i]);  // ToDo: include damping factors and filters
@@ -4253,9 +4253,27 @@ void rsProtoFDN<TSig, TPar>::processFrame(
     for(int j = 0; j < numChans; j++)
       v[i] += feedbackMatrix(i, j) * y[j];
 
+  // Inject inputs into v via the post feedback matrix input matrix:
+  for(int i = 0; i < numChans; i++)
+    for(int j = 0; j < numIns; j++)
+      v[i] += inMatrixPost(i, j) * inputs[j];
 
-  // ...TBC...
+  // Apply the post feedback matrix delaylines and save their outputs in the state:
+  Vec z(numChans);
+  for(int i = 0; i < numChans; i++)
+    z[i] = state[i] = delaysPost[i].getSample(v[i]);  // ToDo: include damping factors and filters
+  // Using a local vector z is actually superfluous
 
+  // Form the outputs:
+  rsSetZero(outputs);
+  for(int i = 0; i < numOuts; i++)
+  {
+    for(int j = 0; j < numChans; j++)
+    {
+      outputs[i] += outMatrixPre(i, j)  * y[j];
+      outputs[i] += outMatrixPost(i, j) * z[j];
+    }
+  }
 
 
   int dummy = 0;
@@ -4264,11 +4282,7 @@ void rsProtoFDN<TSig, TPar>::processFrame(
 
   // ToDo:
   //
-  // - Form the input vector of size numChans to the FDN from the inputs via an input matrix.
-  //
-  // - Do the actual FDN computations
-  //
-  // - Form the output vector from data that occured in the FDN
+  // - 
 }
 
 
