@@ -4150,7 +4150,14 @@ protected:
   // Processing elements:
   std::vector<rsDelay<TSig>> delaysPre;   // Delaylines pre feedback matrix
   std::vector<rsDelay<TSig>> delaysPost;  // Delaylines post feedback matrix
+
   rsMatrix<TPar> feedbackMatrix;
+
+  rsMatrix<TPar> inMatrixPre;
+  rsMatrix<TPar> inMatrixPost;
+
+  rsMatrix<TPar> outMatrixPre;
+  rsMatrix<TPar> outMatrixPost;
 
 
   // ToDo: 
@@ -4208,6 +4215,35 @@ void rsProtoFDN<TSig, TPar>::setDelaysAndFeedback(
   //
   // - We call setMaxDelayInSamples() before calling setDelayInSamples() to ensure that the 
   //   delaylines have enough memory allocated.
+}
+
+
+
+template<class TSig, class TPar>
+void rsProtoFDN<TSig, TPar>::setInputMatrices(
+  const rsMatrix<TPar>& newInputMatrixPre,
+  const rsMatrix<TPar>& newInputMatrixPost)
+{
+  int N = getNumDelayChannels();
+  rsAssert(newInputMatrixPre.getNumRows()  == N);
+  rsAssert(newInputMatrixPost.getNumRows() == N);
+
+  inMatrixPre  = newInputMatrixPre;
+  inMatrixPost = newInputMatrixPost;
+}
+
+
+template<class TSig, class TPar>
+void rsProtoFDN<TSig, TPar>::setOutputMatrices(
+  const rsMatrix<TPar>& newOutputMatrixPre,
+  const rsMatrix<TPar>& newOutputMatrixPost)
+{
+  int N = getNumDelayChannels();
+  rsAssert(newOutputMatrixPre.getNumColumns()  == N);
+  rsAssert(newOutputMatrixPost.getNumColumns() == N);
+
+  outMatrixPre  = newOutputMatrixPre;
+  outMatrixPost = newOutputMatrixPost;
 }
 
 

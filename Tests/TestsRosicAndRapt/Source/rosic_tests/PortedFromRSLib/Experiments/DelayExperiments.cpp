@@ -2926,15 +2926,16 @@ void protoFDN1()
   // Create and set up the FDN:
   FDN fdn;
   fdn.setDelaysAndFeedback(delaysPre, fbMatrix, delaysPost);
-  //fdn.setInputMatrices( inMatrixPre,  inMatrixPost);
-  //fdn.setOutputMatrices(outMatrixPre, outMatrixPost);
+  fdn.setInputMatrices( inMatrixPre,  inMatrixPost);
+  fdn.setOutputMatrices(outMatrixPre, outMatrixPost);
 
 
 
 
   // ToDo: 
   // -define injection and output matrices..partially done
-  // -produce impulse response
+  // -produce impulse response and compare to result of previous experiment - they should match
+
 
 
   int dummy = 0;
