@@ -2639,8 +2639,7 @@ void dampedCombAllpasses()
 
 //=================================================================================================
 
-
-void prePostDelayFDN_3x3()
+std::vector<double> prePostDelayFDN_3x3()
 {
   // We implement the idea that is outlined in Notes/DSP/FeedbackDelayNetworkIdeas.md in the 
   // research repo
@@ -2794,7 +2793,8 @@ void prePostDelayFDN_3x3()
   rsPlotVectors(sum);
   //rsPlotVectors(sum, y1, y2, y3, z1, z2, z3);
 
-  // Maybe return the sum so we can compare it with the signals generated in other experiments
+  return sum;
+
 
   // Observations:
   //
@@ -2863,10 +2863,11 @@ void prePostDelayFDN_3x3()
   //   the function somehow to keep the feedback loop gain stable.
 }
 
+// Move to somwhere else - maybe TestUtilities.h/cpp or something
 template<class T>
 void rsRotationMatrixFromEulerAngles(T rx, T ry, T rz, rsMatrix<T>* R)
 {
-  rsAssert(R->hasShape(3,3));
+  rsAssert(R->hasShape(3,3), "Matrix needs to be 3x3 in rsRotationMatrixFromEulerAngles");
 
   // Sines/cosines:
   T sx = sin(rx); T cx = cos(rx);
@@ -2950,8 +2951,13 @@ void protoFDN1()
   for(int n = 0; n < N; n++)
     y[n] = getSample(0.0);
 
+  // Produce reference signal with code from the previous experiment:
+  VecR yr = prePostDelayFDN_3x3();
 
-  rsPlotVectors(y);
+  // Plot the generated signal together with the reference signal:
+  rsPlotVectors(y, yr);
+  // There is an offset by one sample, the overall gain doesn't seem right and there's no decay in
+  // the signal produced here. So - we are close, but not quite there, yet
 
 
   // ToDo: 
