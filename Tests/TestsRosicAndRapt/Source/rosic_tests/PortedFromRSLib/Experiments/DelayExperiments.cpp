@@ -2668,7 +2668,8 @@ std::vector<double> prePostDelayFDN_3x3()
   //rx = ry = rz = 90;  // Very bad!
 
   // Decay time (RT60) in samples:
-  Real decay = 1000;
+  //Real decay = 1000;
+  Real decay = RS_INF(Real);  // Infinite decay time means no deacy at all
 
   // Output vectors:
   Real c1 = +1, c2 = -1, c3 = +1;
@@ -2948,7 +2949,7 @@ void protoFDN1()
   // Produce FDN output signal, i.e. the impulse response:
   VecR y(N);
   y[0] = getSample(1.0);
-  for(int n = 0; n < N; n++)
+  for(int n = 1; n < N; n++)
     y[n] = getSample(0.0);
 
   // Produce reference signal with code from the previous experiment:
@@ -2956,21 +2957,15 @@ void protoFDN1()
 
   // Plot the generated signal together with the reference signal:
   rsPlotVectors(y, yr);
-  // There is an offset by one sample, the overall gain doesn't seem right and there's no decay in
-  // the signal produced here. So - we are close, but not quite there, yet
-
-
-  // ToDo: 
-  // -define injection and output matrices..partially done
-  // -produce impulse response and compare to result of previous experiment - they should match
-
+  // There is no decay in the signal produced here. That's not surprsising because the FDN class 
+  // does not yet apply any damping factors.
 
 
   int dummy = 0;
 
   // ToDo:
   //
-  // - Replicate the computations in prePostDelayFDN_3x3 with the rsProtoFDN class.
+  // - Add damping factors to the rsProtoFDN class.
 }
 
 void feedbackDelayNetworks()

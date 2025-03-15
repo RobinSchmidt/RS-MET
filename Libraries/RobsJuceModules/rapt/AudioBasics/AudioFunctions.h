@@ -333,8 +333,8 @@ inline T rsDecayTimeToFeedbackGain(T decayTime, T roundTripLength, T targetAmpli
   //  things like cutoffFreqToTimeConstant
   //
   // - Test and document, if it can be called with infinity for the decayTime and does the right 
-  //   thing in this case - namely, return 1 for the gain. The roundtripLength and targetAmplitude
-  //   should always be positive, finite numbers, though.
+  //   thing in this case - namely, return 1 for the gain. ...yes - that seems to work. The 
+  //   roundtripLength and targetAmplitude should always be positive, finite numbers, though.
 }
 
 
