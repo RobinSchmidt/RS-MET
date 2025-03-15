@@ -4088,7 +4088,7 @@ public:
 
   /** Sets up the lengths of the delaylines before and after the feedback matrix and the feedback
   matrix itself. The feedback matrix should be unitary. The damping is taken care of elsewhere. */
-  void setupDelaysAndFeedback(
+  void setDelaysAndFeedback(
     const std::vector<int>& newPreMatrixDelays,
     const rsMatrix<TPar>& newFeedbackMatrix,
     const std::vector<int>& newPostMatrixDelays);
@@ -4100,6 +4100,13 @@ public:
   // vector for the newPostMatrixDelays of all zeros and then delegate to the 3-parameter version 
   // of the function.
 
+  void setInputMatrices(
+    const rsMatrix<TPar>& newInputMatrixPre,
+    const rsMatrix<TPar>& newInputMatrixPost);
+
+  void setOutputMatrices(
+    const rsMatrix<TPar>& newOutputMatrixPre,
+    const rsMatrix<TPar>& newOutputMatrixPost);
 
 
   //-----------------------------------------------------------------------------------------------
@@ -4169,7 +4176,7 @@ void rsProtoFDN<TSig, TPar>::setNumDelayChannels(int newNumber)
 
 
 template<class TSig, class TPar>
-void rsProtoFDN<TSig, TPar>::setupDelaysAndFeedback(
+void rsProtoFDN<TSig, TPar>::setDelaysAndFeedback(
   const std::vector<int>& newPreMatrixDelays,
   const rsMatrix<TPar>& newFeedbackMatrix,
   const std::vector<int>& newPostMatrixDelays)

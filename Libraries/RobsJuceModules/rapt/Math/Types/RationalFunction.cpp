@@ -486,13 +486,17 @@ ToDo:
 - Implement a "less-than" comparison function according to page 16 in "Counterexamples in 
   Analysis". The book defines an "ordered field" to a be field in which there exists a subset P of
   the underlying set F, called the "positive elements", for which the following holds:
-  (1) x in P and y in P -> x + y in P, (2) x in P and y in P -> x * y in P, (3) for any x in F 
-  exactly one of the 3 is true: x in P, x = 0, -x in P. The less-than relation is then defined as:
-  x < y  iff  (y - x) in P. And: x >= y  iff  (x - y) in P  or  x = y. For rational functions, 
-  the set P of positive elements is defined to be those, whose leading coefficients of numerator 
-  and denominator have the same sign. So, what we would have to do to implement the < relation of
-  two rational functions R,S is  (1) compute D = S - R, (2) check if leading coeffs of numerator
-  and denominator of D have the same sign. Beware of roundoff error issues, though. It can be used 
-  for polynomials, too - they are just rational functions with denominator 1.
+  (1) x in P and y in P  implies  x + y in P, (2) x in P and y in P  implies  x * y in P, (3) for 
+  any x in F exactly one of the 3 statements is true: x in P, x = 0, -x in P. The less-than 
+  relation is then defined as: x < y  iff  (y - x) in P. So: x >= y  iff  (x - y) in P  or  x = y.
+  For rational functions, the set P of positive elements is defined to be those, whose leading 
+  coefficients of numerator and denominator have the same sign. So, what we would have to do to 
+  implement the < relation of two rational functions R,S is  (1) compute D = S - R,  (2) check if 
+  leading coeffs of numerator and denominator of D have the same sign. Beware of roundoff error 
+  issues, though. Also, the idea works only for rational functions over the integer, rational or 
+  real numbers but not over the complex numbers, for example. Maybe the underlying set of 
+  coefficients (which can be a field or ring, I guess?) must itself be ordered for the idea to 
+  work? Figure out! The same idea can be used for polynomials, too because they are just a special 
+  case of rational functions (those with denominator 1).
 
 */

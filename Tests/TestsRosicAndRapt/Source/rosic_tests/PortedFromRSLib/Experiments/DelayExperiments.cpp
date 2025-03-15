@@ -2794,6 +2794,8 @@ void prePostDelayFDN_3x3()
   rsPlotVectors(sum);
   //rsPlotVectors(sum, y1, y2, y3, z1, z2, z3);
 
+  // Maybe return the sum so we can compare it with the signals generated in other experiments
+
   // Observations:
   //
   // - It looks like we can create complexity pretty fast with this approach. It still sounds bad,
@@ -2903,24 +2905,35 @@ void protoFDN1()
 
   int numSamples = 1000;
 
-  // Delay values:
+  // Create the vectors of delay values:
   VecI delaysPre( { 17, 23, 29 });
   VecI delaysPost({ 20, 26, 36 });
 
-  // Create and set up the feedback matrix:
+  // Create the feedback matrix:
   Real rx, ry, rz;
   rx = ry = rz = 45;
   Real toRad = PI/180;
   rsMatrix<Real> fbMatrix(3,3);
   rsRotationMatrixFromEulerAngles(toRad*rx, toRad*ry, toRad*rz, &fbMatrix);
 
+  // Create the input and output matrices:
+  rsMatrix<Real> inMatrixPre(  3, 1, {+1, +1, +1});
+  rsMatrix<Real> inMatrixPost( 3, 1, { 0,  0,  0});
+  rsMatrix<Real> outMatrixPre( 1, 3, {+1, -1, +1});
+  rsMatrix<Real> outMatrixPost(1, 3, {-1, +1, -1}); 
+
+
   // Create and set up the FDN:
   FDN fdn;
-  fdn.setupDelaysAndFeedback(delaysPre, fbMatrix, delaysPost);
+  fdn.setDelaysAndFeedback(delaysPre, fbMatrix, delaysPost);
+  //fdn.setInputMatrices( inMatrixPre,  inMatrixPost);
+  //fdn.setOutputMatrices(outMatrixPre, outMatrixPost);
+
+
 
 
   // ToDo: 
-  // -define injection and output matrices
+  // -define injection and output matrices..partially done
   // -produce impulse response
 
 
