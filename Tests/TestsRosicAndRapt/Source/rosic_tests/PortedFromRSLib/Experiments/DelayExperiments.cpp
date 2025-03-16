@@ -2999,7 +2999,10 @@ void protoFDN1()
   //
   //   where the top-right 3x3 submatrix would be the feedback matrix used in the 3x3 FDN. Here,
   //   the d in v1d, etc means (unit) delayed. Or maybe this submatrix should sit in the bottom 
-  //   left (swapped with the current bottom left)? 
+  //   left (swapped with the current bottom left)? Hmm - yes - I think so. The current u-vector 
+  //   just gets the old v-vector (from the previous sample) fed back whereas the current v-vector 
+  //   is obtained from the current u-vector via the feedback matrix. So, yeah - I think, that 
+  //   means we need to swap the top-right and bottom-left sub-matrices. Try it in practice!
 }
 
 void feedbackDelayNetworks()
