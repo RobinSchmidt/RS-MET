@@ -2907,6 +2907,7 @@ void protoFDN1()
 
 
   int numSamples = 1000;
+  int numChans   = 3;
 
   // Create the vectors of delay values:
   VecI delaysPre( { 17, 23, 29 });
@@ -2916,14 +2917,19 @@ void protoFDN1()
   Real rx, ry, rz;
   rx = ry = rz = 45;
   Real toRad = PI/180;
-  rsMatrix<Real> fbMatrix(3,3);
+  rsMatrix<Real> fbMatrix(numChans, numChans);
   rsRotationMatrixFromEulerAngles(toRad*rx, toRad*ry, toRad*rz, &fbMatrix);
 
   // Create the input and output matrices:
-  rsMatrix<Real> inMatrixPre(  3, 1, {+1, +1, +1});
-  rsMatrix<Real> inMatrixPost( 3, 1, { 0,  0,  0});
-  rsMatrix<Real> outMatrixPre( 1, 3, {+1, -1, +1});
-  rsMatrix<Real> outMatrixPost(1, 3, {-1, +1, -1}); 
+  rsMatrix<Real> inMatrixPre(  numChans, 1, {+1, +1, +1});
+  rsMatrix<Real> inMatrixPost( numChans, 1, { 0,  0,  0});
+  rsMatrix<Real> outMatrixPre( 1, numChans, {+1, -1, +1});
+  rsMatrix<Real> outMatrixPost(1, numChans, {-1, +1, -1}); 
+
+  // Compute the damping factors from the desired decay time and delay lengths:
+  //
+  // ...something to do...
+
 
   // Create and set up the FDN:
   FDN fdn;
