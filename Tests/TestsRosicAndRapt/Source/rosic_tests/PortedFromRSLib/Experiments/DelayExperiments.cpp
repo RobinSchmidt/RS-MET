@@ -2668,8 +2668,8 @@ std::vector<double> prePostDelayFDN_3x3()
   //rx = ry = rz = 90;  // Very bad!
 
   // Decay time (RT60) in samples:
-  //Real decay = 1000;
-  Real decay = RS_INF(Real);  // Infinite decay time means no deacy at all
+  Real decay = 1000;
+  //Real decay = RS_INF(Real);  // Infinite decay time means no deacy at all
 
   // Output vectors:
   Real c1 = +1, c2 = -1, c3 = +1;
@@ -2909,6 +2909,10 @@ void protoFDN1()
   int numSamples = 1000;
   int numChans   = 3;
 
+
+  // Decay time (RT60) in samples:
+  Real decay = 1000;
+
   // Create the vectors of delay values:
   VecI delaysPre( { 17, 23, 29 });
   VecI delaysPost({ 20, 26, 36 });
@@ -2927,15 +2931,22 @@ void protoFDN1()
   rsMatrix<Real> outMatrixPost(1, numChans, {-1, +1, -1}); 
 
   // Compute the damping factors from the desired decay time and delay lengths:
-  //
-  // ...something to do...
-
+  VecR dampFactorsPre( numChans);
+  VecR dampFactorsPost(numChans);
+  Real amp = Real(0.001);
+  for(int i = 0; i < numChans; i++)
+  {
+    dampFactorsPre[i]  = rsDecayTimeToFeedbackGain(decay, Real(delaysPre[i]),  amp);
+    dampFactorsPost[i] = rsDecayTimeToFeedbackGain(decay, Real(delaysPost[i]), amp);
+  }
 
   // Create and set up the FDN:
   FDN fdn;
   fdn.setDelaysAndFeedback(delaysPre, fbMatrix, delaysPost);
-  fdn.setInputMatrices( inMatrixPre,  inMatrixPost);
-  fdn.setOutputMatrices(outMatrixPre, outMatrixPost);
+  fdn.setInputMatrices( inMatrixPre,    inMatrixPost);
+  fdn.setOutputMatrices(outMatrixPre,   outMatrixPost);
+  //fdn.setDampFactors(   dampFactorsPre, dampFactorsPost); // ToDo
+  // I think, it's important to call setDelaysAndFeedback(..) first. Verify and document this.
 
   // Create input impulse signal:
   int N = numSamples;
