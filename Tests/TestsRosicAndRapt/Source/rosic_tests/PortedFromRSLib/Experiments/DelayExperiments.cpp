@@ -2971,7 +2971,24 @@ void protoFDN1()
 
   // ToDo:
   //
-  // - Add damping factors to the rsProtoFDN class.
+  // - Add damping factors to the rsProtoFDN class. The computation of them should be left to 
+  //   client code for flexibility.
+  //
+  // - Figure out, how a 3x3 FDN with post-matrix delaylines can be re-expressed as 6x6 FDN without
+  //   it. I think, if we arrange the vectors u,v of pre- and post- delayline outputs as single 
+  //   vector by concatenation, the 6x6 feedback matrix would have to look like in this update 
+//     equation:
+  //
+  //     u1     0   0   0   a11 a12 a13     u1
+  //     u2     0   0   0   a21 a22 a23     u2
+  //     u3  =  0   0   0   a31 a32 a33  *  u3
+  //     v1     1   0   0    0   0   0      v1d
+  //     v2     0   1   0    0   0   0      v2d
+  //     v3     0   0   1    0   0   0      v3d
+  //
+  //   where the top-right 3x3 submatrix would be the feedback matrix used in the 3x3 FDN. Here,
+  //   the d in v1d, etc means (unit) delayed. Or maybe this submatrix should sit in the bottom 
+  //   left (swapped with the current bottom left)? 
 }
 
 void feedbackDelayNetworks()
