@@ -2925,8 +2925,8 @@ void protoFDN1()
 
   // Create the input and output matrices:
   rsMatrix<Real> inMatrix(  numChans, 1, {+1, +1, +1});
-  //rsMatrix<Real> outMatrix( 1, numChans, {+1, -1, +1});
-  rsMatrix<Real> outMatrix( 1, numChans, {+1, +1, +1});    // Test
+  rsMatrix<Real> outMatrix( 1, numChans, {+1, -1, +1});
+  //rsMatrix<Real> outMatrix( 1, numChans, {+1, +1, +1});    // Test
 
 
   // Compute the damping factors from the desired decay time and delay lengths:
@@ -2934,8 +2934,8 @@ void protoFDN1()
   Real amp = Real(0.001);
   for(int i = 0; i < numChans; i++)
   {
-    //dampFactors[i] = rsDecayTimeToFeedbackGain(decay, Real(delays[i]), amp);
-    dampFactors[i] = 1.0; // test
+    dampFactors[i] = rsDecayTimeToFeedbackGain(decay, Real(delays[i]), amp);
+    //dampFactors[i] = 1.0; // test
   }
 
   // Create and set up the FDN:
@@ -2973,6 +2973,7 @@ void protoFDN1()
 
   // Produce the impulse response using the convenience function getSample():
   VecR y2 = impulseResponse(fdn, N, 1.0);
+  VecR err = y2 - y;
   ok &= y2 == y;
 
   // Compute transfer function:

@@ -4259,6 +4259,8 @@ public:
   void reset()
   {
     rsSetZero(state);
+    for(size_t i = 0; i < delays.size(); i++)
+      delays[i].reset();
   }
 
 
