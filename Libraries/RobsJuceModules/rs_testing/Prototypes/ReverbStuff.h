@@ -4049,6 +4049,50 @@ protected:
 
 };
 
+
+
+
+
+//=================================================================================================
+
+
+
+/**  Under construction...  */
+
+template<class TSig, class TPar>
+class rsProtoFDN
+{
+
+
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  /** Sets up the lengths of the delaylines and the feedback matrix. */
+  void setDelaysAndFeedback(
+    const std::vector<int>& newDelays,
+    const rsMatrix<TPar>& newFeedbackMatrix);
+
+
+
+
+
+
+protected:
+
+
+
+};
+
+
+
+
+
+
+
+
 //=================================================================================================
 
 /** Under construction...
@@ -4328,6 +4372,9 @@ void rsExtendedProtoFDN<TSig, TPar>::processFrame(
 }
 
 // ToDo:
+//
+// - Maybe get rid of the assertions in the setters and then maybe split the 
+//   setDelaysAndFeedbackMatrix into two functions.
 //
 // - Make a class rsProtoFDN, i.e. a non-extended FDN that gets rid of the post-matrix delays.
 //
