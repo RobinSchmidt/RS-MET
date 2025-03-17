@@ -2903,7 +2903,7 @@ void protoFDN1()
   using Real = double;
   using VecI = std::vector<int>;
   using VecR = std::vector<Real>;
-  using FDN  = rsProtoFDN<Real, Real>;
+  using EFDN = rsExtendedProtoFDN<Real, Real>;
 
 
   int numSamples = 1000;
@@ -2941,10 +2941,10 @@ void protoFDN1()
   }
 
   // Create and set up the FDN:
-  FDN fdn;
-  fdn.setDelaysAndFeedback(delaysPre, fbMatrix, delaysPost);
-  fdn.setInputMatrices( inMatrixPre,    inMatrixPost);
-  fdn.setOutputMatrices(outMatrixPre,   outMatrixPost);
+  EFDN efdn;
+  efdn.setDelaysAndFeedback(delaysPre, fbMatrix, delaysPost);
+  efdn.setInputMatrices( inMatrixPre,    inMatrixPost);
+  efdn.setOutputMatrices(outMatrixPre,   outMatrixPost);
   //fdn.setDampFactors(   dampFactorsPre, dampFactorsPost); // ToDo
   // I think, it's important to call setDelaysAndFeedback(..) first. Verify and document this.
 
@@ -2959,7 +2959,7 @@ void protoFDN1()
   {
     VecR tmpIn(1), tmpOut(1);
     tmpIn[0] = in;
-    fdn.processFrame(tmpIn, tmpOut);
+    efdn.processFrame(tmpIn, tmpOut);
     return tmpOut[0];
   };
 

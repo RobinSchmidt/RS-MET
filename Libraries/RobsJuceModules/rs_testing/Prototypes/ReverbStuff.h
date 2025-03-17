@@ -4067,7 +4067,7 @@ FDNs indeed provide a general framework to implement and investigate these other
 which may later be implemented in a more efficient way for use in production. */
 
 template<class TSig, class TPar>
-class rsProtoFDN
+class rsExtendedProtoFDN
 {
 
 public:
@@ -4161,7 +4161,7 @@ protected:
 
 
 template<class TSig, class TPar>
-void rsProtoFDN<TSig, TPar>::setDelaysAndFeedback(
+void rsExtendedProtoFDN<TSig, TPar>::setDelaysAndFeedback(
   const std::vector<int>& newPreMatrixDelays,
   const rsMatrix<TPar>& newFeedbackMatrix,
   const std::vector<int>& newPostMatrixDelays)
@@ -4196,7 +4196,7 @@ void rsProtoFDN<TSig, TPar>::setDelaysAndFeedback(
 }
 
 template<class TSig, class TPar>
-void rsProtoFDN<TSig, TPar>::setInputMatrices(
+void rsExtendedProtoFDN<TSig, TPar>::setInputMatrices(
   const rsMatrix<TPar>& newInputMatrixPre,
   const rsMatrix<TPar>& newInputMatrixPost)
 {
@@ -4209,7 +4209,7 @@ void rsProtoFDN<TSig, TPar>::setInputMatrices(
 }
 
 template<class TSig, class TPar>
-void rsProtoFDN<TSig, TPar>::setOutputMatrices(
+void rsExtendedProtoFDN<TSig, TPar>::setOutputMatrices(
   const rsMatrix<TPar>& newOutputMatrixPre,
   const rsMatrix<TPar>& newOutputMatrixPost)
 {
@@ -4222,7 +4222,7 @@ void rsProtoFDN<TSig, TPar>::setOutputMatrices(
 }
 
 template<class TSig, class TPar>
-void rsProtoFDN<TSig, TPar>::processFrame(
+void rsExtendedProtoFDN<TSig, TPar>::processFrame(
   const std::vector<TSig>& inputs, std::vector<TSig>& outputs)
 {
   int numIns   = (int) inputs.size();
