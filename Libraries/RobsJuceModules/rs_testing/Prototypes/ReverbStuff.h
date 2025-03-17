@@ -4114,6 +4114,9 @@ public:
     // size x size
   }
 
+  /** Checks, if the lengths and shapes of the various vectors and matrices fit together. */
+  bool areSettingsConsistent() const;
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
@@ -4244,9 +4247,35 @@ void rsExtendedProtoFDN<TSig, TPar>::setDampFactors(
 }
 
 template<class TSig, class TPar>
+bool rsExtendedProtoFDN<TSig, TPar>::areSettingsConsistent() const
+{
+  bool ok = true;
+
+  int N = getNumDelayChannels();
+
+  ok &= feedbackMatrix.hasShape(N, N);
+
+  ok &= inMatrixPre.getNumRows()  == N;
+  ok &= inMatrixPost.getNumRows() == N;
+
+  ok &= outMatrixPre.getNumColumns()  == N;
+  ok &= outMatrixPost.getNumColumns() == N;
+
+  ok &= (int) delaysPre.size()  == N;
+  ok &= (int) delaysPost.size() == N;
+
+  ok &= (int) dampFactorsPre.size()  == N;
+  ok &= (int) dampFactorsPost.size() == N;
+
+  return ok;
+}
+
+template<class TSig, class TPar>
 void rsExtendedProtoFDN<TSig, TPar>::processFrame(
   const std::vector<TSig>& inputs, std::vector<TSig>& outputs)
 {
+  rsAssert(areSettingsConsistent(), "Inconsistent settings in rsExtendedProtoFDN::processFrame()");
+
   int numIns   = (int) inputs.size();
   int numOuts  = (int) outputs.size();
   int numChans = getNumDelayChannels();
@@ -4296,15 +4325,6 @@ void rsExtendedProtoFDN<TSig, TPar>::processFrame(
       outputs[i] += outMatrixPost(i, j) * z[j];
     }
   }
-
-
-  int dummy = 0;
-
- 
-
-  // ToDo:
-  //
-  // - 
 }
 
 
