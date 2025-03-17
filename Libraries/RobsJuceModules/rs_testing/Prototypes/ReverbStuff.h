@@ -4212,6 +4212,10 @@ public:
     int numOuts  = (int) outputs.size();
     int numChans = getNumDelayChannels();
 
+    // ToDo: check, if the number of inputs and outputs matches with the number of rows/columns of
+    // the in/out matrices
+
+
     using Vec = std::vector<TSig>;
 
     // Form the FDN input by applying the pre-feedback input matrix to the inputs vector:
@@ -4243,6 +4247,30 @@ public:
       for(int j = 0; j < numChans; j++)
         outputs[i] += outMatrix(i, j)  * y[j];
   }
+
+
+
+  void reset()
+  {
+    rsSetZero(state);
+  }
+
+
+  // Convenience function for mono I/O:
+
+  TSig getSample(TSig in)
+  {
+    //std::vector<TSig> vIn(inputs.size()), vOut(outputs.size());
+
+    // ToDo: have functions: getNumInputChannels, getNumOutputChannels
+
+    std::vector<TSig> vIn(1), vOut(1); // use getNumIn/OutputChannels
+
+    vIn[0] = in;
+    processFrame(vIn, vOut);
+    return vOut[0];
+  }
+
 
 
 protected:

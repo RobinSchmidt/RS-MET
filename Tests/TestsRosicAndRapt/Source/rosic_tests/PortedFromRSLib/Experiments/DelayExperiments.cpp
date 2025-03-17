@@ -2909,6 +2909,7 @@ void protoFDN1()
 
   // Decay time (RT60) in samples:
   Real decay = 1000;
+  //Real decay = 100;
 
   // Create the vector of delay values:
   VecI delays( { 17, 23, 29 });
@@ -2967,8 +2968,10 @@ void protoFDN1()
 
   // Compute transfer function:
   Complex z(0.9, 0.7);
-  Complex H = fdn.getTransferFunctionAt(z);
-
+  //Complex z(0.8, 0.6);
+  Complex Hn = rsEvaluateTransferFunctionNumerically(fdn, z, 5000);
+  Complex H  = fdn.getTransferFunctionAt(z);
+  // Nope! They totally do not match! :-(   Verify the formulas!
 
   // Plot the generated signal together with the reference signal:
   rsPlotVectors(y);
