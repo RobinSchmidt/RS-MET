@@ -4090,28 +4090,19 @@ public:
   }
 
   void setInputMatrix(const rsMatrix<TPar>& newInputMatrix)
-  {
-    inMatrix  = newInputMatrix;
-  }
+  { inMatrix  = newInputMatrix; }
 
   void setOutputMatrix(const rsMatrix<TPar>& newOutputMatrix)
-  {
-    outMatrix = newOutputMatrix;
-  }
+  { outMatrix = newOutputMatrix; }
 
-  void setDampFactors(const std::vector<TPar>& newDampFactorsPre)
-  {
-    dampFactors = newDampFactors;
-  }
+  void setDampFactors(const std::vector<TPar>& newDampFactors)
+  { dampFactors = newDampFactors; }
 
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-  int getNumDelayChannels() const
-  {
-    return (int) delays.size();
-  }
+  int getNumDelayChannels() const { return (int) delays.size(); }
 
   /** Checks, if the lengths and shapes of the various vectors and matrices fit together. */
   bool areSettingsConsistent() const
@@ -4128,6 +4119,9 @@ public:
 
     return ok;
   }
+
+  // ToDo:
+  //rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) {  return ....;  }
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing

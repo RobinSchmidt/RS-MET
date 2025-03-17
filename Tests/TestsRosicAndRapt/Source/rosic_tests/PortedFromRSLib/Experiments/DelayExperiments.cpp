@@ -2890,12 +2890,91 @@ void rsRotationMatrixFromEulerAngles(T rx, T ry, T rz, rsMatrix<T>* R)
   // Maybe try to refactor to get rid of that duplication.
 }
 
+void protoFDN1()
+{
+  // We reproduce the results from the function prePostDelayFDN_3x3 above but this time using the 
+  // rsProtoFDN class. 
+
+  bool ok = true;
+
+  using Real = double;
+  using VecI = std::vector<int>;
+  using VecR = std::vector<Real>;
+  using FDN  = rsProtoFDN<Real, Real>;
+
+
+  int numSamples = 1000;
+  int numChans   = 3;
+
+
+  // Decay time (RT60) in samples:
+  Real decay = 1000;
+
+  // Create the vector of delay values:
+  VecI delays( { 17, 23, 29 });
+
+
+  // Create the feedback matrix:
+  Real rx, ry, rz;
+  rx = ry = rz = 45;
+  Real toRad = PI/180;
+  rsMatrix<Real> fbMatrix(numChans, numChans);
+  rsRotationMatrixFromEulerAngles(toRad*rx, toRad*ry, toRad*rz, &fbMatrix);
+
+  // Create the input and output matrices:
+  rsMatrix<Real> inMatrix(  numChans, 1, {+1, +1, +1});
+  rsMatrix<Real> outMatrix( 1, numChans, {+1, -1, +1});
+
+
+  // Compute the damping factors from the desired decay time and delay lengths:
+  VecR dampFactors(numChans);
+  Real amp = Real(0.001);
+  for(int i = 0; i < numChans; i++)
+    dampFactors[i] = rsDecayTimeToFeedbackGain(decay, Real(delays[i]), amp);
+
+  // Create and set up the FDN:
+  FDN fdn;
+  fdn.setFeedbackMatrix(fbMatrix);
+  fdn.setDelays(        delays);
+  fdn.setInputMatrix(   inMatrix);
+  fdn.setOutputMatrix(  outMatrix);
+  fdn.setDampFactors(   dampFactors);
+  rsAssert(fdn.areSettingsConsistent());                     // Sanity check
+  // We can set the settings in any order but it's important that after calling all the setters, 
+  // all the vectors and matrices in the FDN are consistent with respect to their sizes and shapes.
+  // They may be inconsistent at an intermediate stage, i.e. in between the calls.
+
+  // Create input impulse signal:
+  int N = numSamples;
+  VecR x(N);
+  x[0] = 1.0;
+
+  // Helper function to produce one output sample at a time. We need it because the API of the FDN 
+  // class uses std::vector for supporting multichannel I/O:
+  auto getSample = [&](Real in)
+  {
+    VecR tmpIn(1), tmpOut(1);
+    tmpIn[0] = in;
+    fdn.processFrame(tmpIn, tmpOut);
+    return tmpOut[0];
+  };
+
+  // Produce FDN output signal, i.e. the impulse response:
+  VecR y(N);
+  y[0] = getSample(1.0);
+  for(int n = 1; n < N; n++)
+    y[n] = getSample(0.0);
+
+  // Plot the generated signal together with the reference signal:
+  rsPlotVectors(y);
+  rsAssert(ok);
+}
+
+
 
 
 void extendedProtoFDN1()
 {
-  // Under construction
-  //
   // We reproduce the results from the function prePostDelayFDN_3x3 above but this time using the 
   // rsProtoFDN class. 
 
@@ -3023,8 +3102,11 @@ void extendedProtoFDN1()
 
 void feedbackDelayNetworks()
 {
+  protoFDN1();
+
 
   extendedFDN_3x3();
+  protoFDN1();
   extendedProtoFDN1();
 
   // Notes:
