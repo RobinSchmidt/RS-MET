@@ -2917,15 +2917,16 @@ void protoFDN1()
 
   // Create the feedback matrix:
   Real rx, ry, rz;
-  rx = ry = rz = 45;
+  //rx = ry = rz = 45;
+  rx = ry = rz = 0;   // Test - leads to identity matrix for feedback
   Real toRad = PI/180;
   rsMatrix<Real> fbMatrix(numChans, numChans);
   rsRotationMatrixFromEulerAngles(toRad*rx, toRad*ry, toRad*rz, &fbMatrix);
 
   // Create the input and output matrices:
   rsMatrix<Real> inMatrix(  numChans, 1, {+1, +1, +1});
-  rsMatrix<Real> outMatrix( 1, numChans, {+1, -1, +1});
-  //rsMatrix<Real> outMatrix( 1, numChans, {+1, +1, +1});    // Test
+  //rsMatrix<Real> outMatrix( 1, numChans, {+1, -1, +1});
+  rsMatrix<Real> outMatrix( 1, numChans, {+1, +1, +1});    // Test
 
 
   // Compute the damping factors from the desired decay time and delay lengths:
@@ -2983,7 +2984,10 @@ void protoFDN1()
   // Nope! They totally do not match! :-(   Verify the formulas and also, if we really implement 
   // the same structure as in the book. The formula in the book does not include the damping
   // factors! But setting the to 1 here for test doesn't seem to help. Try to figure it out with a
-  // simpler feedback matrix. Maybe try the identity matrix.
+  // simpler feedback matrix. Maybe try the identity matrix. ..hmm...in this case even y and y2 
+  // aren't the same anymore! :-O
+  //
+  // Maybe the actual delay in the feedback loop is one sample more? That would be plausible!
 
 
   // Plot the generated signal together with the reference signal:
