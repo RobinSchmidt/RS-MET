@@ -2639,7 +2639,7 @@ void dampedCombAllpasses()
 
 //=================================================================================================
 
-std::vector<double> prePostDelayFDN_3x3()
+std::vector<double> extendedFDN_3x3()
 {
   // We implement the idea that is outlined in Notes/DSP/FeedbackDelayNetworkIdeas.md in the 
   // research repo
@@ -2892,7 +2892,7 @@ void rsRotationMatrixFromEulerAngles(T rx, T ry, T rz, rsMatrix<T>* R)
 
 
 
-void protoFDN1()
+void extendedProtoFDN1()
 {
   // Under construction
   //
@@ -2975,7 +2975,7 @@ void protoFDN1()
     y[n] = getSample(0.0);
 
   // Produce reference signal with code from the previous experiment:
-  VecR yr  = prePostDelayFDN_3x3();  // This call also fires up a plot which is a bit inconvenient here.
+  VecR yr  = extendedFDN_3x3();  // This call also fires up a plot which is a bit inconvenient here.
   VecR err = yr - y;
   ok &= rsIsCloseTo(y, yr, 1.e-16);  // There's a tiny roundoff error! Why?
 
@@ -3023,8 +3023,9 @@ void protoFDN1()
 
 void feedbackDelayNetworks()
 {
-  //prePostDelayFDN_3x3();
-  protoFDN1();
+
+  extendedFDN_3x3();
+  extendedProtoFDN1();
 
   // Notes:
   //
