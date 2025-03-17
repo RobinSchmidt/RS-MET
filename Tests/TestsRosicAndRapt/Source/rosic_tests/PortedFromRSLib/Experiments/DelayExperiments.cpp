@@ -2899,6 +2899,7 @@ void protoFDN1()
   // We reproduce the results from the function prePostDelayFDN_3x3 above but this time using the 
   // rsProtoFDN class. 
 
+  bool ok = true;
 
   using Real = double;
   using VecI = std::vector<int>;
@@ -2970,10 +2971,12 @@ void protoFDN1()
     y[n] = getSample(0.0);
 
   // Produce reference signal with code from the previous experiment:
-  VecR yr = prePostDelayFDN_3x3();
+  VecR yr  = prePostDelayFDN_3x3();  // This call also fires up a plot which is a bit inconvenient here.
+  VecR err = yr - y;
+  ok &= rsIsCloseTo(y, yr, 1.e-16);  // There's a tiny roundoff error! Why?
 
   // Plot the generated signal together with the reference signal:
-  rsPlotVectors(y, yr);
+  rsPlotVectors(y, yr, err);
   // There is no decay in the signal produced here. That's not surprsising because the FDN class 
   // does not yet apply any damping factors.
 
@@ -2985,10 +2988,14 @@ void protoFDN1()
   // - Add damping factors to the rsProtoFDN class. The computation of them should be left to 
   //   client code for flexibility.
   //
+  // - Include a self-test function areSettingsConsistent() and call it at the start of 
+  //   processFrame(). It should check, if the input and output matrices, damping factor arrays,
+  //   feedback matrix, etc. all have lengths and shapes that fit together.
+  //
   // - Figure out, how a 3x3 FDN with post-matrix delaylines can be re-expressed as 6x6 FDN without
   //   it. I think, if we arrange the vectors u,v of pre- and post- delayline outputs as single 
   //   vector by concatenation, the 6x6 feedback matrix would have to look like in this update 
-//     equation:
+  //   equation:
   //
   //     u1     0   0   0   a11 a12 a13     u1
   //     u2     0   0   0   a21 a22 a23     u2

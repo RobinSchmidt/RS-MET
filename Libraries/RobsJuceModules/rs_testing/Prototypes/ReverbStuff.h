@@ -4267,7 +4267,7 @@ void rsExtendedProtoFDN<TSig, TPar>::processFrame(
   // Apply the pre feedback matrix delaylines:
   Vec y(numChans);
   for(int i = 0; i < numChans; i++)
-    y[i] = delaysPre[i].getSample(u[i]);  // ToDo: include damping factors and filters
+    y[i] = dampFactorsPre[i] * delaysPre[i].getSample(u[i]);
 
   // Apply the feedback matrix:
   Vec v(numChans); rsSetZero(v);
@@ -4283,7 +4283,7 @@ void rsExtendedProtoFDN<TSig, TPar>::processFrame(
   // Apply the post feedback matrix delaylines and save their outputs in the state:
   Vec z(numChans);
   for(int i = 0; i < numChans; i++)
-    z[i] = state[i] = delaysPost[i].getSample(v[i]);  // ToDo: include damping factors and filters
+    z[i] = state[i] = dampFactorsPost[i] * delaysPost[i].getSample(v[i]);
   // Using a local vector z is actually superfluous
 
   // Form the outputs:
