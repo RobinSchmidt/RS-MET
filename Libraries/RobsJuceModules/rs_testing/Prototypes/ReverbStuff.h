@@ -4098,6 +4098,10 @@ public:
     const rsMatrix<TPar>& newOutputMatrixPre,
     const rsMatrix<TPar>& newOutputMatrixPost);
 
+  void setDampFactors(
+    const std::vector<TPar>& newDampFactorsPre,
+    const std::vector<TPar>& newDampFactorsPost);
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
@@ -4148,6 +4152,11 @@ protected:
 
   rsMatrix<TPar> outMatrixPre;
   rsMatrix<TPar> outMatrixPost;
+
+
+  std::vector<TPar> dampFactorsPre;
+  std::vector<TPar> dampFactorsPost;
+
 
 
   // ToDo: 
@@ -4219,6 +4228,19 @@ void rsExtendedProtoFDN<TSig, TPar>::setOutputMatrices(
 
   outMatrixPre  = newOutputMatrixPre;
   outMatrixPost = newOutputMatrixPost;
+}
+
+template<class TSig, class TPar>
+void rsExtendedProtoFDN<TSig, TPar>::setDampFactors(
+  const std::vector<TPar>& newDampFactorsPre,
+  const std::vector<TPar>& newDampFactorsPost)
+{
+  int N = getNumDelayChannels();
+  rsAssert((int) newDampFactorsPre.size()  == N);
+  rsAssert((int) newDampFactorsPost.size() == N);
+
+  dampFactorsPre  = newDampFactorsPre;
+  dampFactorsPost = newDampFactorsPost;
 }
 
 template<class TSig, class TPar>

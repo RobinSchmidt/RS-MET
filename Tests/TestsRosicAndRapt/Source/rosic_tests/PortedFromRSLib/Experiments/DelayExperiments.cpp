@@ -2945,7 +2945,7 @@ void protoFDN1()
   efdn.setDelaysAndFeedback(delaysPre, fbMatrix, delaysPost);
   efdn.setInputMatrices( inMatrixPre,    inMatrixPost);
   efdn.setOutputMatrices(outMatrixPre,   outMatrixPost);
-  //fdn.setDampFactors(   dampFactorsPre, dampFactorsPost); // ToDo
+  efdn.setDampFactors(   dampFactorsPre, dampFactorsPost);
   // I think, it's important to call setDelaysAndFeedback(..) first. Verify and document this.
 
   // Create input impulse signal:
@@ -3003,6 +3003,10 @@ void protoFDN1()
   //   just gets the old v-vector (from the previous sample) fed back whereas the current v-vector 
   //   is obtained from the current u-vector via the feedback matrix. So, yeah - I think, that 
   //   means we need to swap the top-right and bottom-left sub-matrices. Try it in practice!
+  //   Implement a class rsProtoFDN and let rsExtendedProtoFDN have a method that converts the
+  //   extended structure into an equivalent basic structure (of twice the order). The API should
+  //   be something like:  rsProtoFDN rsExtendedProtoFDN::getAsBasicFDN()  .or maybe it should take
+  //   the basic FDN as pointer parameter and be called convertToBasicFDN() or something.
 }
 
 void feedbackDelayNetworks()
