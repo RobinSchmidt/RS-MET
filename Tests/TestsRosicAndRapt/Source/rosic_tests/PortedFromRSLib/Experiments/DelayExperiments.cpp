@@ -2989,6 +2989,9 @@ void protoFDN1()
   // aren't the same anymore! :-O
   //
   // Maybe the actual delay in the feedback loop is one sample more? That would be plausible!
+  //
+  // Maybe set all delays to 1 and compare with state-space filters. There, the transfer function 
+  // computation works, I think.
 
 
   // Plot the generated signal together with the reference signal:

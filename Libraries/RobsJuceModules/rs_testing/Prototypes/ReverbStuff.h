@@ -4144,8 +4144,8 @@ public:
     for(int n = 0; n < N; n++)
     {
       //D(n, n) = rsPow(z1, Complex(getDelay(n)));
-      //D(n, n) = dampFactors[n] * rsPow(z1, Complex(getDelay(n))); // Test
-      D(n, n) = dampFactors[n] * rsPow(z1, Complex(getDelay(n) + 1)); // Test
+      D(n, n) = dampFactors[n] * rsPow(z1, Complex(getDelay(n))); // Test
+      //D(n, n) = dampFactors[n] * rsPow(z1, Complex(getDelay(n) + 1)); // Test
       //D(n, n) = rsPow(z, -Complex(getDelay(n)));  // Test
     }
 
