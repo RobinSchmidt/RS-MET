@@ -3014,4 +3014,23 @@ void feedbackDelayNetworks()
   //
   // - There are some more, older FDN experiments in rosic_EffectsTest.cpp. Maybe drag them over to
   //   here. there is also allpassFDN() in FilterExperiments.cpp.
+  //
+  //
+  // Resources:
+  //
+  // - Modal Decomposition of Feedback Delay Networks  https://arxiv.org/pdf/1901.08865
+  //
+  // - Choosing Optimal Delays for Feedback Delay Networks 
+  //   https://pub.dega-akustik.de/DAGA_2014/data/articles/000025.pdf
+  //
+  // - Optimization Approaches for Feedback Delay Networks
+  //   https://www.diva-portal.org/smash/get/diva2:1668199/FULLTEXT01.pdf
+  //
+  // - DIFFERENTIABLE FEEDBACK DELAY NETWORK FOR COLORLESS REVERBERATION
+  //   https://www.dafx.de/paper-archive/2023/DAFx23_paper_32.pdf
+  //
+  // - FDNTB: THE FEEDBACK DELAY NETWORK TOOLBOX
+  //   https://dafx2020.mdw.ac.at/proceedings/papers/DAFx2020_paper_53.pdf
+  //
+  // - Feedback Delay Network Optimization  https://arxiv.org/pdf/2402.11216v1
 }
