@@ -4070,11 +4070,17 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  ///** Sets up the lengths of the delaylines and the feedback matrix. */
-  //void setDelaysAndFeedback(
-  //  const std::vector<int>& newDelays,
-  //  const rsMatrix<TPar>& newFeedbackMatrix);
-
+  //** Sets up the lengths of the delaylines. */
+  void setDelays(const std::vector<int>& newDelays)
+  {
+    int N = (int) newDelays.size();
+    delays.resize(N);
+    for(int i = 0; i < N; i++)
+    {
+      delays[i].setMaxDelayInSamples(newDelays[i]);
+      delays[i].setDelayInSamples(   newDelays[i]);
+    }
+  }
 
   void setFeedbackMatrix(const rsMatrix<TPar>& newFeedbackMatrix)
   {
@@ -4083,7 +4089,45 @@ public:
     state.resize(feedbackMatrix.getNumRows());
   }
 
+  void setInputMatrix(const rsMatrix<TPar>& newInputMatrix)
+  {
+    inMatrix  = newInputMatrix;
+  }
 
+  void setOutputMatrix(const rsMatrix<TPar>& newOutputMatrix)
+  {
+    outMatrix = newOutputMatrix;
+  }
+
+  void setDampFactors(const std::vector<TPar>& newDampFactorsPre)
+  {
+    dampFactors = newDampFactors;
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  int getNumDelayChannels() const
+  {
+    return (int) delays.size();
+  }
+
+  /** Checks, if the lengths and shapes of the various vectors and matrices fit together. */
+  bool areSettingsConsistent() const
+  {
+    bool ok = true;
+    int N = getNumDelayChannels();
+
+    ok &= feedbackMatrix.hasShape(N, N);
+    ok &= inMatrix.getNumRows()     == N;
+    ok &= outMatrix.getNumColumns() == N;
+    ok &= (int) delays.size()       == N;
+    ok &= (int) dampFactors.size()  == N;
+    ok &= (int) state.size()        == N;
+
+    return ok;
+  }
 
 
 protected:
