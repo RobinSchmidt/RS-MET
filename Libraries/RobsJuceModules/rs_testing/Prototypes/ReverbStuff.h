@@ -4124,8 +4124,11 @@ public:
   }
 
 
-  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) 
-  {  
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z/*, int i, int j*/) 
+  {
+    // Maybe rename to getTransferFunctionMatrixAt
+
+    // i: input pin index, j: output pin index
 
 
    
@@ -4144,10 +4147,30 @@ public:
     Matrix A; 
     rsConvert(feedbackMatrix, &A);
 
+    Matrix b;
+    rsConvert(inMatrix, &b);
+
+    Matrix c;
+    rsConvert(outMatrix, &c);
+    Matrix cT = c.getTranspose();
+
+    Matrix DmA  = D - A;
+    Matrix DmAi = rsLinearAlgebraNew::inverse(DmA);
+
+    //Matrix DmAib = DmAi * b;    // for debug
+    //Matrix H = cT * DmAi * b;   // triggers assertion
+
+    Matrix H = c * DmAi * b; 
+    // Seems like we don't need to transpose c here due to using a different convention? Figure 
+    // out! If so, maybe change the code to be consistent with the conventions used in the 
+    // literature. Or maybe just rename the local variable c to cT here and document that we stoer
+    // c^T directly instead of c.
 
 
+    return H(0, 0);  // Preliminary. ToDo: return the whole H matrix
 
-    return z;  // Preliminary
+
+    //return z;  // Preliminary
 
     // According to the DAFX book (1st Ed), page 182, the transfer function of an FDN is given by:
     //
