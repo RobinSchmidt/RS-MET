@@ -2925,13 +2925,17 @@ void protoFDN1()
   // Create the input and output matrices:
   rsMatrix<Real> inMatrix(  numChans, 1, {+1, +1, +1});
   rsMatrix<Real> outMatrix( 1, numChans, {+1, -1, +1});
+  //rsMatrix<Real> outMatrix( 1, numChans, {+1, +1, +1});    // Test
 
 
   // Compute the damping factors from the desired decay time and delay lengths:
   VecR dampFactors(numChans);
   Real amp = Real(0.001);
   for(int i = 0; i < numChans; i++)
-    dampFactors[i] = rsDecayTimeToFeedbackGain(decay, Real(delays[i]), amp);
+  {
+    //dampFactors[i] = rsDecayTimeToFeedbackGain(decay, Real(delays[i]), amp);
+    dampFactors[i] = 1.0; // test
+  }
 
   // Create and set up the FDN:
   FDN fdn;
@@ -2966,15 +2970,24 @@ void protoFDN1()
   for(int n = 1; n < N; n++)
     y[n] = getSample(0.0);
 
+  // Produce the impulse response using the convenience function getSample():
+  VecR y2 = impulseResponse(fdn, N, 1.0);
+  ok &= y2 == y;
+
   // Compute transfer function:
-  Complex z(0.9, 0.7);
+  Complex z(0.9, 0.8);
+  //Complex z(0.9, 0.7);
   //Complex z(0.8, 0.6);
-  Complex Hn = rsEvaluateTransferFunctionNumerically(fdn, z, 5000);
+  Complex Hn = rsEvaluateTransferFunctionNumerically(fdn, z, 50000);
   Complex H  = fdn.getTransferFunctionAt(z);
-  // Nope! They totally do not match! :-(   Verify the formulas!
+  // Nope! They totally do not match! :-(   Verify the formulas and also, if we really implement 
+  // the same structure as in the book. The formula in the book does not include the damping
+  // factors! But setting the to 1 here for test doesn't seem to help. Try to figure it out with a
+  // simpler feedback matrix. Maybe try the identity matrix.
+
 
   // Plot the generated signal together with the reference signal:
-  rsPlotVectors(y);
+  rsPlotVectors(y, y2);
   rsAssert(ok);
 }
 

@@ -4142,7 +4142,11 @@ public:
     Matrix D(N, N);
     D.setToZero(z);                       // Yes, we need this. Otherwise, it's uninitialized.
     for(int n = 0; n < N; n++)
-      D(n, n) = rsPow(z1, Complex(getDelay(n)));
+    {
+      //D(n, n) = rsPow(z1, Complex(getDelay(n)));
+      D(n, n) = dampFactors[n] * rsPow(z1, Complex(getDelay(n))); // Test
+      //D(n, n) = rsPow(z, -Complex(getDelay(n)));  // Test
+    }
 
     Matrix A; 
     rsConvert(feedbackMatrix, &A);
@@ -4157,6 +4161,7 @@ public:
     Matrix DmA  = D - A;
     Matrix DmAi = rsLinearAlgebraNew::inverse(DmA);
 
+    //Matrix test = DmA * DmAi;     // Should be identity matrix - looks good.
     //Matrix DmAib = DmAi * b;    // for debug
     //Matrix H = cT * DmAi * b;   // triggers assertion
 
