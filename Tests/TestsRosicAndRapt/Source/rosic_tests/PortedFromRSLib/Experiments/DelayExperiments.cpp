@@ -2917,8 +2917,8 @@ void protoFDN1()
 
   // Create the feedback matrix:
   Real rx, ry, rz;
-  //rx = ry = rz = 45;
-  rx = ry = rz = 0;   // Test - leads to identity matrix for feedback
+  rx = ry = rz = 45;
+  //rx = ry = rz = 0;   // Test - leads to identity matrix for feedback
   Real toRad = PI/180;
   rsMatrix<Real> fbMatrix(numChans, numChans);
   rsRotationMatrixFromEulerAngles(toRad*rx, toRad*ry, toRad*rz, &fbMatrix);
