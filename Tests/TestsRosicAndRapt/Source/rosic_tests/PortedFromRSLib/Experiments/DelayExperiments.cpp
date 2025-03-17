@@ -2949,9 +2949,9 @@ void protoFDN1()
   efdn.setOutputMatrices(outMatrixPre,   outMatrixPost);
   efdn.setDampFactors(   dampFactorsPre, dampFactorsPost);
   rsAssert(efdn.areSettingsConsistent());                     // Sanity check
-  // I think, it's important to call setDelaysAndFeedback(..) first. Verify and document this.
-  // Nope. Not anymore. We can set the settings in any order. But it's important that after clling 
-  // all the setters, all the vectors and matrices are consistent.
+  // We can set the settings in any order but it's important that after calling all the setters, 
+  // all the vectors and matrices in the FDN are consistent with respect to their sizes and shapes.
+  // They may be inconsistent at an intermediate stage, i.e. in between the calls.
 
   // Create input impulse signal:
   int N = numSamples;
@@ -2980,6 +2980,7 @@ void protoFDN1()
   ok &= rsIsCloseTo(y, yr, 1.e-16);  // There's a tiny roundoff error! Why?
 
   // Plot the generated signal together with the reference signal:
+  rsAssert(ok);
   rsPlotVectors(y, yr, err);
   // There is no decay in the signal produced here. That's not surprsising because the FDN class 
   // does not yet apply any damping factors.

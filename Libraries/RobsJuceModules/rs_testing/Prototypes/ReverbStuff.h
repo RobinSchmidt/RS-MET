@@ -4148,15 +4148,27 @@ public:
 
   void setInputMatrices(
     const rsMatrix<TPar>& newInputMatrixPre,
-    const rsMatrix<TPar>& newInputMatrixPost);
+    const rsMatrix<TPar>& newInputMatrixPost)
+  {
+    inMatrixPre  = newInputMatrixPre;
+    inMatrixPost = newInputMatrixPost;
+  }
 
   void setOutputMatrices(
     const rsMatrix<TPar>& newOutputMatrixPre,
-    const rsMatrix<TPar>& newOutputMatrixPost);
+    const rsMatrix<TPar>& newOutputMatrixPost)
+  {
+    outMatrixPre  = newOutputMatrixPre;
+    outMatrixPost = newOutputMatrixPost;
+  }
 
   void setDampFactors(
     const std::vector<TPar>& newDampFactorsPre,
-    const std::vector<TPar>& newDampFactorsPost);
+    const std::vector<TPar>& newDampFactorsPost)
+  {
+    dampFactorsPre  = newDampFactorsPre;
+    dampFactorsPost = newDampFactorsPost;
+  }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -4254,45 +4266,6 @@ void rsExtendedProtoFDN<TSig, TPar>::setDelays(
   //
   // - We call setMaxDelayInSamples() before calling setDelayInSamples() to ensure that the 
   //   delaylines have enough memory allocated.
-}
-
-template<class TSig, class TPar>
-void rsExtendedProtoFDN<TSig, TPar>::setInputMatrices(
-  const rsMatrix<TPar>& newInputMatrixPre,
-  const rsMatrix<TPar>& newInputMatrixPost)
-{
-  int N = getNumDelayChannels();
-  rsAssert(newInputMatrixPre.getNumRows()  == N);
-  rsAssert(newInputMatrixPost.getNumRows() == N);
-
-  inMatrixPre  = newInputMatrixPre;
-  inMatrixPost = newInputMatrixPost;
-}
-
-template<class TSig, class TPar>
-void rsExtendedProtoFDN<TSig, TPar>::setOutputMatrices(
-  const rsMatrix<TPar>& newOutputMatrixPre,
-  const rsMatrix<TPar>& newOutputMatrixPost)
-{
-  int N = getNumDelayChannels();
-  rsAssert(newOutputMatrixPre.getNumColumns()  == N);
-  rsAssert(newOutputMatrixPost.getNumColumns() == N);
-
-  outMatrixPre  = newOutputMatrixPre;
-  outMatrixPost = newOutputMatrixPost;
-}
-
-template<class TSig, class TPar>
-void rsExtendedProtoFDN<TSig, TPar>::setDampFactors(
-  const std::vector<TPar>& newDampFactorsPre,
-  const std::vector<TPar>& newDampFactorsPost)
-{
-  int N = getNumDelayChannels();
-  rsAssert((int) newDampFactorsPre.size()  == N);
-  rsAssert((int) newDampFactorsPost.size() == N);
-
-  dampFactorsPre  = newDampFactorsPre;
-  dampFactorsPost = newDampFactorsPost;
 }
 
 template<class TSig, class TPar>
