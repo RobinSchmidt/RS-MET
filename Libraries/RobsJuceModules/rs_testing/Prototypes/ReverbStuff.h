@@ -4327,6 +4327,19 @@ void rsExtendedProtoFDN<TSig, TPar>::processFrame(
   }
 }
 
+// ToDo:
+//
+// - Make a class rsProtoFDN, i.e. a non-extended FDN that gets rid of the post-matrix delays.
+//
+// - Let the class rsExtendedProtoFDN have a method to convert itself to a non-extended, i.e. basic 
+//   FDN. The basic FDN will have to be of twice the order, I think.
+//
+// - Implement a getTransferFunctionAt method for both. First for the basic one, then for the 
+//   extended one. A first implementation can be based on converting to basic and then using the
+//   basic implementation. Eventually, we want to implement it without conversion, though.
+//
+// - Find a way to compute the poles of the FDNs in a reasonably efficient way. We want to use the
+//   mode density as a quality measure and for this, I think, we need to compute the poles.
 
 
 
