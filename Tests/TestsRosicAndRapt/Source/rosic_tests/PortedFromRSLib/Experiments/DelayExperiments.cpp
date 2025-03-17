@@ -2943,11 +2943,15 @@ void protoFDN1()
 
   // Create and set up the FDN:
   EFDN efdn;
-  efdn.setDelaysAndFeedback(delaysPre, fbMatrix, delaysPost);
+  efdn.setFeedbackMatrix(fbMatrix);
+  efdn.setDelays(        delaysPre,      delaysPost);
   efdn.setInputMatrices( inMatrixPre,    inMatrixPost);
   efdn.setOutputMatrices(outMatrixPre,   outMatrixPost);
   efdn.setDampFactors(   dampFactorsPre, dampFactorsPost);
+  rsAssert(efdn.areSettingsConsistent());                     // Sanity check
   // I think, it's important to call setDelaysAndFeedback(..) first. Verify and document this.
+  // Nope. Not anymore. We can set the settings in any order. But it's important that after clling 
+  // all the setters, all the vectors and matrices are consistent.
 
   // Create input impulse signal:
   int N = numSamples;

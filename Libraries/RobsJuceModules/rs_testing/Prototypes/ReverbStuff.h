@@ -4070,10 +4070,10 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  /** Sets up the lengths of the delaylines and the feedback matrix. */
-  void setDelaysAndFeedback(
-    const std::vector<int>& newDelays,
-    const rsMatrix<TPar>& newFeedbackMatrix);
+  ///** Sets up the lengths of the delaylines and the feedback matrix. */
+  //void setDelaysAndFeedback(
+  //  const std::vector<int>& newDelays,
+  //  const rsMatrix<TPar>& newFeedbackMatrix);
 
 
 
@@ -4122,10 +4122,10 @@ public:
 
   /** Sets up the lengths of the delaylines before and after the feedback matrix and the feedback
   matrix itself. The feedback matrix should be unitary. The damping is taken care of elsewhere. */
-  void setDelaysAndFeedback(
-    const std::vector<int>& newPreMatrixDelays,
-    const rsMatrix<TPar>& newFeedbackMatrix,
-    const std::vector<int>& newPostMatrixDelays);
+  //void setDelaysAndFeedback(
+  //  const std::vector<int>& newPreMatrixDelays,
+  //  const rsMatrix<TPar>& newFeedbackMatrix,
+  //  const std::vector<int>& newPostMatrixDelays);
   // We allow to set these 3 things only all at once because there are consistency constraints that 
   // need to be observed (pre- and post matrix delays must have same size, matrix must be of shape 
   // size x size). That would be messy to ensure with separate setters for each of the 3. Maybe
@@ -4133,6 +4133,18 @@ public:
   // not, just provide a 2nd function that has only 2 parameters. Inside of it, create a dummy 
   // vector for the newPostMatrixDelays of all zeros and then delegate to the 3-parameter version 
   // of the function.
+
+
+  void setDelays(
+    const std::vector<int>& newPreMatrixDelays,
+    const std::vector<int>& newPostMatrixDelays);
+
+  void setFeedbackMatrix(const rsMatrix<TPar>& newFeedbackMatrix)
+  {
+    rsAssert(newFeedbackMatrix.isSquare());
+    feedbackMatrix = newFeedbackMatrix;
+    state.resize(feedbackMatrix.getNumRows());
+  }
 
   void setInputMatrices(
     const rsMatrix<TPar>& newInputMatrixPre,
@@ -4217,13 +4229,11 @@ protected:
 
 
 template<class TSig, class TPar>
-void rsExtendedProtoFDN<TSig, TPar>::setDelaysAndFeedback(
+void rsExtendedProtoFDN<TSig, TPar>::setDelays(
   const std::vector<int>& newPreMatrixDelays,
-  const rsMatrix<TPar>& newFeedbackMatrix,
   const std::vector<int>& newPostMatrixDelays)
 {
   int N = (int) newPreMatrixDelays.size();
-  rsAssert(newFeedbackMatrix.hasShape(N, N));
   rsAssert((int) newPostMatrixDelays.size() == N);
 
   delaysPre.resize(N);
@@ -4239,11 +4249,6 @@ void rsExtendedProtoFDN<TSig, TPar>::setDelaysAndFeedback(
     delaysPost[i].setMaxDelayInSamples(newPostMatrixDelays[i]);
     delaysPost[i].setDelayInSamples(   newPostMatrixDelays[i]);
   }
-
-  feedbackMatrix = newFeedbackMatrix;
-
-  state.resize(N);
-  // ...maybe more to come...
 
   // Notes:
   //
@@ -4310,6 +4315,8 @@ bool rsExtendedProtoFDN<TSig, TPar>::areSettingsConsistent() const
 
   ok &= (int) dampFactorsPre.size()  == N;
   ok &= (int) dampFactorsPost.size() == N;
+
+  ok &= (int) state.size() == N;
 
   return ok;
 }
