@@ -2917,16 +2917,16 @@ void protoFDN1()
 
   // Create the feedback matrix:
   Real rx, ry, rz;
-  rx = ry = rz = 45;
-  //rx = ry = rz = 0;   // Test - leads to identity matrix for feedback
+  //rx = ry = rz = 45;
+  rx = ry = rz = 0;     // Test - leads to identity matrix for feedback
   Real toRad = PI/180;
   rsMatrix<Real> fbMatrix(numChans, numChans);
   rsRotationMatrixFromEulerAngles(toRad*rx, toRad*ry, toRad*rz, &fbMatrix);
 
   // Create the input and output matrices:
   rsMatrix<Real> inMatrix(  numChans, 1, {+1, +1, +1});
-  rsMatrix<Real> outMatrix( 1, numChans, {+1, -1, +1});
-  //rsMatrix<Real> outMatrix( 1, numChans, {+1, +1, +1});    // Test
+  //rsMatrix<Real> outMatrix( 1, numChans, {+1, -1, +1});
+  rsMatrix<Real> outMatrix( 1, numChans, {+1, +1, +1});    // Test
 
 
   // Compute the damping factors from the desired decay time and delay lengths:
@@ -2934,8 +2934,8 @@ void protoFDN1()
   Real amp = Real(0.001);
   for(int i = 0; i < numChans; i++)
   {
-    dampFactors[i] = rsDecayTimeToFeedbackGain(decay, Real(delays[i]), amp);
-    //dampFactors[i] = 1.0; // test
+    //dampFactors[i] = rsDecayTimeToFeedbackGain(decay, Real(delays[i]), amp);
+    dampFactors[i] = 1.0; // test
   }
 
   // Create and set up the FDN:
