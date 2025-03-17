@@ -4076,13 +4076,24 @@ public:
   //  const rsMatrix<TPar>& newFeedbackMatrix);
 
 
+  void setFeedbackMatrix(const rsMatrix<TPar>& newFeedbackMatrix)
+  {
+    rsAssert(newFeedbackMatrix.isSquare());
+    feedbackMatrix = newFeedbackMatrix;
+    state.resize(feedbackMatrix.getNumRows());
+  }
 
 
 
 
 protected:
 
-
+  std::vector<rsDelay<TSig>> delays;             // Delaylines 
+  std::vector<TSig>          state;              // State of the FDN
+  std::vector<TPar>          dampFactors;
+  rsMatrix<TPar>             feedbackMatrix;
+  rsMatrix<TPar>             inMatrix;
+  rsMatrix<TPar>             outMatrix;
 
 };
 
@@ -4210,7 +4221,9 @@ protected:
   std::vector<TSig> state;                // State of the FDN
   // Maybe use several vectors for the state at different position in the signal processing 
   // pipeline, e.g. before the delays, after the pre-matrix delays, after the pre-matrix dampers, 
-  // after the matrix, after the post matrix dampers, etc.
+  // after the matrix, after the post matrix dampers, etc. and then provide accessors to allow 
+  // client code to peek into these intermediate signals after calling processFrame(). That might 
+  // be useful for R&D.
 
   // Processing elements:
   std::vector<rsDelay<TSig>> delaysPre;   // Delaylines pre feedback matrix
