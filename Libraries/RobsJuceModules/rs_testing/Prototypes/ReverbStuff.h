@@ -4129,6 +4129,50 @@ public:
     return ok;
   }
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
+
+  void processFrame(const std::vector<TSig>& inputs, std::vector<TSig>& outputs)
+  {
+
+    rsAssert(areSettingsConsistent(), "Inconsistent settings in rsExtendedProtoFDN::processFrame()");
+
+    int numIns   = (int) inputs.size();
+    int numOuts  = (int) outputs.size();
+    int numChans = getNumDelayChannels();
+
+    using Vec = std::vector<TSig>;
+
+    // Form the FDN input by applying the pre-feedback input matrix to the inputs vector:
+    Vec x(numChans); 
+    rsSetZero(x);     // rsSetZero is superfluous now but maybe later we use a member for x
+    for(int i = 0; i < numChans; i++)
+      for(int j = 0; j < numIns; j++)
+        x[i] += inMatrix(i, j) * inputs[j];
+
+    // Form the inputs to the pre feedback matrix delaylines:
+    Vec u(numChans);
+    for(int i = 0; i < numChans; i++)
+      u[i] = x[i] + state[i];
+
+    // Apply the delaylines:
+    Vec y(numChans);
+    for(int i = 0; i < numChans; i++)
+      y[i] = dampFactors[i] * delays[i].getSample(u[i]);
+
+    // Apply the feedback matrix:
+    rsSetZero(state);
+    for(int i = 0; i < numChans; i++)
+      for(int j = 0; j < numChans; j++)
+        state[i] += feedbackMatrix(i, j) * y[j];
+
+    // Form the outputs:
+    rsSetZero(outputs);
+    for(int i = 0; i < numOuts; i++)
+      for(int j = 0; j < numChans; j++)
+        outputs[i] += outMatrix(i, j)  * y[j];
+  }
+
 
 protected:
 
@@ -4253,7 +4297,7 @@ public:
 
 protected:
 
-  void processDelayChannels(std::vector<TSig>& ioData);
+  //void processDelayChannels(std::vector<TSig>& ioData);
   // Assumes that ioData is of length getNumDelayChannels()
   // Maybe use a member array for the ioData..but maybe it's nicer to pass an array in. Maybe we 
   // want to make this function public later. Then we may want to look into the ins and outs. Maybe
