@@ -1499,14 +1499,32 @@ std::vector<T> operator*(const std::vector<T>& x, const rsMatrix<T, V>& A)
 
 /** Converts a matrix with element type TIn into a matrix with element type TOut. Can be used for
 common conversions like float -> double, real -> complex, int -> float, etc. */
+/*
 template<class TIn, class TOut>
 rsMatrix<TOut> rsConvert(const rsMatrix<TIn>& A)
 {
   rsMatrix<TOut> B(A.getNumRows(), A.getNumColumns());
   for(int i = 0; i < B.getNumRows(); i++)
-    for(int j = 00; j < B.getNumColumns(); j++)
+    for(int j = 0; j < B.getNumColumns(); j++)
       B(i,j) = (TOut) A(i,j);
   return B;
+}
+*/
+// ToDo: Document usage. How is the compiler supposed to know what TOut is? Is there even a unit 
+// test for this? I don't think so. ..Hmm...okay..I think, this may never have been used and never 
+// have worked. Below is a newer implementation that takes the target matrix as output parameter
+
+
+/** Converts a matrix with element type TIn into a matrix with element type TOut. Can be used for
+common conversions like float -> double, real -> complex, int -> float, etc. */
+template<class TIn, class TOut>
+void rsConvert(const rsMatrix<TIn>& src, rsMatrix<TOut>* dst)
+{
+  dst->setShape(src.getNumRows(), src.getNumColumns());
+  for(int i = 0; i < src.getNumRows(); i++)
+    for(int j = 0; j < src.getNumColumns(); j++)
+      (*dst)(i,j) = (TOut) src(i,j);
+      //dst->at(i,j) = (TOut) src(i,j);  // Alternative. But doesn't compile. Why?
 }
 
 template<class T>

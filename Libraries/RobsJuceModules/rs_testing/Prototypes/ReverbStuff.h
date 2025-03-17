@@ -4104,6 +4104,9 @@ public:
 
   int getNumDelayChannels() const { return (int) delays.size(); }
 
+  int getDelay(int i) const { return delays[i].getDelayInSamples(); }
+  // ToDo: maybe assert that i is within range
+
   /** Checks, if the lengths and shapes of the various vectors and matrices fit together. */
   bool areSettingsConsistent() const
   {
@@ -4120,8 +4123,59 @@ public:
     return ok;
   }
 
-  // ToDo:
-  //rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) {  return ....;  }
+
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) 
+  {  
+
+
+   
+    using Complex = rsComplex<TPar>;
+    using Matrix  = rsMatrix<Complex>;
+
+    int N = getNumDelayChannels();
+
+    Complex z1 = Complex(1) / z;          // z^-1
+
+    Matrix D(N, N);
+    D.setToZero(z);                       // Yes, we need this. Otherwise, it's uninitialized.
+    for(int n = 0; n < N; n++)
+      D(n, n) = rsPow(z1, Complex(getDelay(n)));
+
+    Matrix A; 
+    rsConvert(feedbackMatrix, &A);
+
+
+
+
+    return z;  // Preliminary
+
+    // According to the DAFX book (1st Ed), page 182, the transfer function of an FDN is given by:
+    //
+    //   H(z) = c^T * (D - A)^-1 * b + d
+    //
+    // where
+    //
+    //   D: delay matrix = D(z^-1) = diag(z^-m1, z^-m2, ..., z^-mN)
+    //   A: NxN feedback matrix
+    //   b: input vector
+    //   c: output vector
+    //   d: direct path gain (a scalar in the book - for mono input) - it's zero here
+    //
+    // The poles and zeros are the solutions of:
+    //
+    //  det(A - D) = 0
+    //  det(A - b*c^T / d - D) = 0 
+
+    // But this function assumes scalar inputs and outputs. What about multichannel I/O? Maybe we 
+    // would have to parametrize by two integers i,j to compute the point-to-point transfer 
+    // function between input i and output j. To do this, we would have to extract the respective
+    // row/column of the inMatrix and outMatrix repectively.
+
+    // Try to get rid of computing the inverse by replacing it by a call to a solver of a linear
+    // system.  H = c^T * (D - A)^-1 * b + d  ->  H - d = c^T * (D - A)^-1 * b ..maybe try to
+    // pre (or post) multiply by (D - A) ...not sure, if that works out - we'll see
+  }
+  
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing

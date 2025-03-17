@@ -2897,11 +2897,11 @@ void protoFDN1()
 
   bool ok = true;
 
-  using Real = double;
-  using VecI = std::vector<int>;
-  using VecR = std::vector<Real>;
-  using FDN  = rsProtoFDN<Real, Real>;
-
+  using Real    = double;
+  using Complex = rsComplex<Real>;
+  using VecI    = std::vector<int>;
+  using VecR    = std::vector<Real>;
+  using FDN     = rsProtoFDN<Real, Real>;
 
   int numSamples = 1000;
   int numChans   = 3;
@@ -2964,6 +2964,11 @@ void protoFDN1()
   y[0] = getSample(1.0);
   for(int n = 1; n < N; n++)
     y[n] = getSample(0.0);
+
+  // Compute transfer function:
+  Complex z(0.9, 0.7);
+  Complex H = fdn.getTransferFunctionAt(z);
+
 
   // Plot the generated signal together with the reference signal:
   rsPlotVectors(y);
