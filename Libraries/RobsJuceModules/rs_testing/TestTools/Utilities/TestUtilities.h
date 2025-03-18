@@ -288,6 +288,17 @@ bool rsIsShiftedUnitImpulse(const std::vector<T>& x, int shift, T tol)
   return ok;
 }
 
+
+
+
+template<class TSig, class TFlt>
+TSig rsGetSample(TFlt &filter, TSig in)
+{
+  return filter.getSample(in);
+}
+
+
+
 /** Returns N samples of the impulse response of the passed filter as std::vector. It is necessary
 for you to pass a scale factor of the type of the filter's output signal (for example: 1.0 for
 double), such that the compiler can deduce the template parameter. We also use it to scale the
@@ -300,9 +311,17 @@ inline std::vector<TSig> impulseResponse(TFlt &filter, int length, TSig scale)
 {
   std::vector<TSig> y(length);
   filter.reset();
-  y[0] = filter.getSample(scale);
+
+  //// Old:
+  //y[0] = filter.getSample(scale);
+  //for(int n = 1; n < length; n++)
+  //  y[n] = filter.getSample(TSig(0));
+
+  // New:
+  y[0] = rsGetSample(filter, scale);
   for(int n = 1; n < length; n++)
-    y[n] = filter.getSample(TSig(0));
+    y[n] = rsGetSample(filter, TSig(0));
+
   return y;
 }
 

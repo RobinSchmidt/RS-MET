@@ -3029,7 +3029,7 @@ void protoFDNvsSSF()
 
   // Create the 1-vectors and 1x1-matrices needed to set up the FDN and SSF:
   VecI delays(     1,    { 1        });
-  VecR dampFactors(1,    { 1.0      });  // Unity because damping is done via the matrix here.
+  VecR dampFactors(1,    { 1.0      });   // Unity because damping is done via the matrix here.
   MatR fbMatrix(   1, 1, { feedback });
   MatR inMatrix(   1, 1, { inGain   });
   MatR outMatrix(  1, 1, { outGain  });
@@ -3042,7 +3042,7 @@ void protoFDNvsSSF()
   fdn.setInputMatrix(   inMatrix);
   fdn.setOutputMatrix(  outMatrix);
   fdn.setDampFactors(   dampFactors);
-  rsAssert(fdn.areSettingsConsistent());                     // Sanity check
+  rsAssert(fdn.areSettingsConsistent());  // Sanity check
 
   // Create and set up the SSF:
   SSF ssf;
