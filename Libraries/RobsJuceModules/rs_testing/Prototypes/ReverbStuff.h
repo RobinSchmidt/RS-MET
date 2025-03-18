@@ -4111,7 +4111,11 @@ public:
 
   int getNumDelayChannels() const { return (int) delays.size(); }
 
-  int getDelay(int i) const { return delays[i].getDelayInSamples(); }
+  int getDelay(int i) const 
+  { 
+    //return delays[i].getDelayInSamples();
+    return delays[i].getDelayInSamples() + 1;
+  }
   // ToDo: maybe assert that i is within range
 
   /** Checks, if the lengths and shapes of the various vectors and matrices fit together. */
@@ -4152,9 +4156,10 @@ public:
     for(int n = 0; n < N; n++)
     {
       //D(n, n) = rsPow(z1, Complex(getDelay(n)));
-      D(n, n) = dampFactors[n] * rsPow(z1, Complex(getDelay(n))); // Test
+      //D(n, n) = dampFactors[n] * rsPow(z1, Complex(getDelay(n))); // Test
       //D(n, n) = dampFactors[n] * rsPow(z1, Complex(getDelay(n) + 1)); // Test
       //D(n, n) = rsPow(z, -Complex(getDelay(n)));  // Test
+      D(n, n) = rsPow(z, +Complex(getDelay(n)));  // Test
     }
 
     Matrix A; 

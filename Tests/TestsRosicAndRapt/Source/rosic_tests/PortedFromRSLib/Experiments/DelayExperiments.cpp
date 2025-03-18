@@ -3022,7 +3022,7 @@ void protoFDNvsSSF()
   using SSF     = rsStateSpaceFilter<Real>;
 
   // Setup:
-  int  N        = 100;
+  int  N        = 200;
   Real feedback = 0.9;
   Real inGain   = 1.0;
   Real outGain  = 1.0;
