@@ -1821,7 +1821,7 @@ bool stateSpaceFilterTransferFunctionUnitTest()
   Real outGain  =   0.8;
   Real thruGain =  -0.1;
 
-  // Create the 1-vectors and 1x1-matrices needed to set up the FDN and SSF:
+  // Create the 1x1-matrices needed to set up the SSF:
   MatR A(1, 1, { feedback });
   MatR B(1, 1, { inGain   });
   MatR C(1, 1, { outGain  });
@@ -1860,6 +1860,13 @@ bool stateSpaceFilterUnitTest()
   ok &= stateSpaceFilterTransferFunctionUnitTest();
 
   return ok;
+
+
+  // ToDo:
+  //
+  // - In the research repo, there are some experiments that contain code that also makes for good
+  //   unit test of the state space filter. See function testStateSpaceFilters(). Drag that code 
+  //   over to here and integrate it into the unit test suite.
 }
 
 
