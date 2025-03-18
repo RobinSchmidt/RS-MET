@@ -440,7 +440,7 @@ References:
 */
 
 
-template<class T>     // ToDo: have TSig and TPar
+template<class T>
 class rsStateSpaceFilter
 {
 
@@ -548,6 +548,20 @@ protected:
   // -Implement a getTransferFunction() function that returns an rsMatrix of type
   //  rsRationalFunction (a sparse filter should return a matrix of type rsSparseRationalFunction,
   //  I think)
+  // -Maybe have two template parameter TSig and TPar as usual - but maybe not. The processFrame
+  //  function might not work if the type of the matrices does not match the type of the I/O 
+  //  arrays. It may need adaption. Maybe all the matrixmultiply functions need to be made mor 
+  //  flexible to allow for different types of matrices for both operands and for the result. I 
+  //  think, if we do this, the elements of both operand matrices should be converted to the 
+  //  element type of the result. For example, in the inner loop of the matrix multiplication,
+  //  instead of:
+  //    (*C)(i, j) += A.at(i, k) * B.at(k, j);
+  //  we would write
+  //    (*C)(i, j) += TRes(A.at(i, k)) * TRes(B.at(k, j));
+  //  where TRes is the element type of the result matrix. The operand matrices A and B could have 
+  //  different element types (different from the result type and/or different from one another)
+  //  I think, having this in place and working would be a preliminary to switching to the 
+  //  TSig, TPar pattern here.
 
 };
 

@@ -310,6 +310,8 @@ TSig rsGetSample(rsProtoFDN<TSig, TPar>& fdn, TSig in)
   return vOut[0];
 }
 
+
+
 /** Returns N samples of the impulse response of the passed filter as std::vector. It is necessary
 for you to pass a scale factor of the type of the filter's output signal (for example: 1.0 for
 double), such that the compiler can deduce the template parameter. We also use it to scale the
