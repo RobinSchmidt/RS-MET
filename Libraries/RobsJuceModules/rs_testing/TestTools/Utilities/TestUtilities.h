@@ -369,11 +369,13 @@ inline rsComplex<T> rsEvaluateTransferFunctionNumerically(TFlt& filter, rsComple
   filter.reset();
   rsComplex<T> z1 = T(1) / z;                         // z1 = z^-1
   rsComplex<T> zn = T(1);                             // zn = z^-n, initialized with n = 0
-  rsComplex<T> H  = filter.getSample(T(1)) * zn;      // H: acccumulator for H(z)
+  //rsComplex<T> H  = filter.getSample(T(1)) * zn;      // H: acccumulator for H(z)
+  rsComplex<T> H  = rsGetSample(filter, T(1)) * zn;     // H: acccumulator for H(z)
   for(int n = 1; n < N; n++)
   {
     zn *= z1;                                         // z^-n
-    H  += filter.getSample(T(0)) * zn;
+    //H  += filter.getSample(T(0)) * zn;
+    H  += rsGetSample(filter, T(0)) * zn;
   }
   return H;
 }

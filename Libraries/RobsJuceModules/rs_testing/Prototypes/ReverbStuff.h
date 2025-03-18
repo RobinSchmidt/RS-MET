@@ -4281,6 +4281,7 @@ public:
   }
 
 
+  /*
   // Convenience function for mono I/O:
 
   TSig getSample(TSig in)
@@ -4295,6 +4296,7 @@ public:
     processFrame(vIn, vOut);
     return vOut[0];
   }
+  */
   // Try to remove this function from the class - make it a free function instead. We need it in
   // functions like impulseResonse. Maybe change the implementation of impulseResponse to call a
   // free function template rsGetSample(Filter& flt, ..) that defaults to calling flt.getSample()
