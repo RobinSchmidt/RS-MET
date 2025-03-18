@@ -4139,35 +4139,28 @@ public:
   rsMatrix<rsComplex<TPar>> getTransferFunctionAt(const rsComplex<TPar>& z) 
   {
     using Complex = rsComplex<TPar>;
-    using Matrix  = rsMatrix<Complex>;  // rename ot MatC
+    using MatC    = rsMatrix<Complex>;
 
     int N = getNumDelayChannels();
-
-    Complex z1 = Complex(1) / z;          // z^-1
-
-    Matrix D(N, N);
-    D.setToZero(z);                       // Yes, we need this. Otherwise, it's uninitialized.
+    MatC D(N, N);
+    D.setToZero(z);                              // Class rsMatrix does not auto-initialize!
     for(int n = 0; n < N; n++)
-    {
-      D(n, n) = rsPow(z, Complex(getDelay(n)));
-      // ToDo: Document why it's z^delay and not z^(-delay)
-    }
+      D(n, n) = rsPow(z, Complex(getDelay(n)));  
+      // Why no minus in the exponent?
+      // We may need to multiply by the dampfactor[n] here
 
     // Convert feedback- input- and output matrices to complex:
-    Matrix A;  rsConvert(feedbackMatrix, &A);
-    Matrix b;  rsConvert(inMatrix      , &b);
-    Matrix cT; rsConvert(outMatrix,      &cT);  // c^T, i.e. c transposed
+    MatC A;  rsConvert(feedbackMatrix, &A);
+    MatC b;  rsConvert(inMatrix      , &b);
+    MatC cT; rsConvert(outMatrix,      &cT);  // c^T, i.e. c transposed
 
     // Compute (D - A)^-1, i.e. the inverse of the matrix (D - A):
-    Matrix DmA  = D - A;
-    Matrix DmAi = rsLinearAlgebraNew::inverse(DmA);
-
+    MatC DmA  = D - A;
+    MatC DmAi = rsLinearAlgebraNew::inverse(DmA);
 
     // Compute and return the transfer function matrix:
-    Matrix H = cT * DmAi * b; 
+    MatC H = cT * DmAi * b; 
     return H;
-
-    //return H(0, 0);  // Preliminary. ToDo: return the whole H matrix
 
 
     // According to the DAFX book (1st Ed), page 182, the transfer function of an FDN is given by:
@@ -4187,14 +4180,11 @@ public:
     //  det(A - D) = 0
     //  det(A - b*c^T / d - D) = 0 
 
-    // But this function assumes scalar inputs and outputs. What about multichannel I/O? Maybe we 
-    // would have to parametrize by two integers i,j to compute the point-to-point transfer 
-    // function between input i and output j. To do this, we would have to extract the respective
-    // row/column of the inMatrix and outMatrix repectively.
-
     // Try to get rid of computing the inverse by replacing it by a call to a solver of a linear
     // system.  H = c^T * (D - A)^-1 * b + d  ->  H - d = c^T * (D - A)^-1 * b ..maybe try to
     // pre (or post) multiply by (D - A) ...not sure, if that works out - we'll see
+
+    // See also  rsStateSpaceFilter::getTransferFunctionAt()
   }
   // Allocates!
   
