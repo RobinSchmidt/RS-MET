@@ -3061,7 +3061,7 @@ void protoFDNvsSSF()
   MatC    H_SSF   = ssf.getTransferFunctionAt(z);
   Complex H_FDN   = fdn.getTransferFunctionAt(z);
   Complex H_FDN_n = rsEvaluateTransferFunctionNumerically(fdn, z, N);
-  // They don't match! H_FDN is wrong!
+  //ok &= rsIsCloseTo(H_SSF(0,0))
 
 
   int dummy = 0;
@@ -3070,7 +3070,7 @@ void protoFDNvsSSF()
 
   // ToDo:
   //
-  // - 
+  // - Let fdn.getTransferFunctionAt(z) return a matrix just like ssf.get...
 }
 
 void extendedProtoFDN1()

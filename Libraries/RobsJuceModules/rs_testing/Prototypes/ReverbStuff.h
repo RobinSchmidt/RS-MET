@@ -4162,15 +4162,11 @@ public:
       D(n, n) = rsPow(z, +Complex(getDelay(n)));  // Test
     }
 
-    Matrix A; 
-    rsConvert(feedbackMatrix, &A);
+    Matrix A; rsConvert(feedbackMatrix, &A);
+    Matrix b; rsConvert(inMatrix      , &b);
+    Matrix c; rsConvert(outMatrix,      &c);  // Maybe rename to cT
 
-    Matrix b;
-    rsConvert(inMatrix, &b);
-
-    Matrix c;
-    rsConvert(outMatrix, &c);
-    Matrix cT = c.getTranspose();
+    //Matrix cT = c.getTranspose();
 
     Matrix DmA  = D - A;
     Matrix DmAi = rsLinearAlgebraNew::inverse(DmA);
