@@ -4077,8 +4077,12 @@ public:
     delays.resize(N);
     for(int i = 0; i < N; i++)
     {
-      delays[i].setMaxDelayInSamples(newDelays[i]);
-      delays[i].setDelayInSamples(   newDelays[i]);
+      //delays[i].setMaxDelayInSamples(newDelays[i]);
+      //delays[i].setDelayInSamples(   newDelays[i]);
+
+      delays[i].setMaxDelayInSamples(newDelays[i] - 1);
+      delays[i].setDelayInSamples(   newDelays[i] - 1);
+      // The -1 is because the feedback loop produces an additional implicit unit delay.
     }
   }
 
@@ -4224,6 +4228,13 @@ public:
 
     using Vec = std::vector<TSig>;
 
+    //// Form the outputs - experimental:
+    //rsSetZero(outputs);
+    //for(int i = 0; i < numOuts; i++)
+    //  for(int j = 0; j < numChans; j++)
+    //    outputs[i] += outMatrix(i, j)  * state[j];
+
+
     // Form the FDN input by applying the pre-feedback input matrix to the inputs vector:
     Vec x(numChans); 
     rsSetZero(x);     // rsSetZero is superfluous now but maybe later we use a member for x
@@ -4247,11 +4258,15 @@ public:
       for(int j = 0; j < numChans; j++)
         state[i] += feedbackMatrix(i, j) * y[j];
 
+
+
     // Form the outputs:
     rsSetZero(outputs);
     for(int i = 0; i < numOuts; i++)
       for(int j = 0; j < numChans; j++)
         outputs[i] += outMatrix(i, j)  * y[j];
+    // I think, this should be done first ...maybe...not sure
+
   }
 
 
@@ -4557,6 +4572,8 @@ void rsExtendedProtoFDN<TSig, TPar>::processFrame(
       outputs[i] += outMatrixPost(i, j) * z[j];
     }
   }
+  // I think, this should be done first...but maybe only the "pre" half of it should be done first 
+  // and the "post" half last?
 }
 
 // ToDo:
