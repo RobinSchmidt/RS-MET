@@ -3051,9 +3051,10 @@ void protoFDNvsSSF()
 
   // Produce and plot impulse responses of both filters:
   VecR hFDN = impulseResponse(fdn, N, 1.0);
-  //VecR hSSF = impulseResponse(ssf, N, 1.0);  // has no getSample() method!
-  //rsPlotVectors(hFDN, hSSF);
-  rsPlotVectors(hFDN);
+  VecR hSSF = impulseResponse(ssf, N, 1.0); 
+  rsPlotVectors(hFDN, hSSF);
+  // The SSF has a 1 sample delay with respect to the FDN.
+
 
 
 

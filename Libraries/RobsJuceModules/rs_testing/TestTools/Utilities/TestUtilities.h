@@ -301,7 +301,7 @@ TSig rsGetSample(TFlt& filter, TSig in)
 template<class TSig, class TPar>
 TSig rsGetSample(rsProtoFDN<TSig, TPar>& fdn, TSig in)
 {
-  std::vector<TSig> vIn(1), vOut(1); 
+  std::vector<TSig> vIn(1), vOut(1);
   // ToDo: Use getNumIn/OutputChannels like so:
   //std::vector<TSig> vIn(fdn.getNumInputChannels()), vOut(fdn.getNumOuputChannels()); 
 
@@ -310,7 +310,14 @@ TSig rsGetSample(rsProtoFDN<TSig, TPar>& fdn, TSig in)
   return vOut[0];
 }
 
-
+template<class T>
+T rsGetSample(rsStateSpaceFilter<T>& ssf, T in)
+{
+  std::vector<T> vIn(1), vOut(1);
+  vIn[0] = in;
+  ssf.processFrame(&vIn[0], &vOut[0]);
+  return vOut[0];
+}
 
 /** Returns N samples of the impulse response of the passed filter as std::vector. It is necessary
 for you to pass a scale factor of the type of the filter's output signal (for example: 1.0 for
