@@ -1791,15 +1791,64 @@ bool stateVariableFilterUnitTest()
   ok &= stateVariableFilterUnitTest4();
 
   return ok;
+
+  // ToDo:
+  //
+  // - Give descriptive names to the different tests
 }
 
 
+
+bool stateSpaceFilterTransferFunctionUnitTest()
+{
+  bool ok = true;
+
+  using Real    = double;
+  using Complex = rsComplex<Real>;
+  using VecR    = std::vector<Real>;
+  using MatR    = rsMatrix<Real>;
+  using MatC    = rsMatrix<Complex>;
+  using SSF     = rsStateSpaceFilter<Real>;
+
+  // Setup:
+  int  N        = 100;
+  Real feedback = 0.9;
+  Real inGain   = 1.0;
+  Real outGain  = 1.0;
+  Real thruGain = 0.0;
+
+  // Create the 1-vectors and 1x1-matrices needed to set up the FDN and SSF:
+  MatR A(1, 1, { feedback });
+  MatR B(1, 1, { inGain   });
+  MatR C(1, 1, { outGain  });
+  MatR D(1, 1, { thruGain });
+
+  // Create and set up the SSF:
+  SSF ssf;
+  ssf.setup(A, B, C, D);
+
+  // Test the transfer function computation:
+  //Complex z(0.9, 0.7);
+  Complex z(0.9, 0.8);
+  MatC H = ssf.getTransferFunctionAt(z);
+
+
+
+  //ok &= rsTestGetTransferFunctionAt(ssf, z, 1000, 1.e-13); // Doesn't compile
+
+  return ok;
+
+
+  // ToDo:
+  //
+  // - Test it with more complex settings
+}
 
 bool stateSpaceFilterUnitTest()
 {
   bool ok = true;
 
-
+  ok &= stateSpaceFilterTransferFunctionUnitTest();
 
   return ok;
 }
