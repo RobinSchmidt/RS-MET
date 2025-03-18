@@ -4155,37 +4155,25 @@ public:
     D.setToZero(z);                       // Yes, we need this. Otherwise, it's uninitialized.
     for(int n = 0; n < N; n++)
     {
-      //D(n, n) = rsPow(z1, Complex(getDelay(n)));
-      //D(n, n) = dampFactors[n] * rsPow(z1, Complex(getDelay(n))); // Test
-      //D(n, n) = dampFactors[n] * rsPow(z1, Complex(getDelay(n) + 1)); // Test
-      //D(n, n) = rsPow(z, -Complex(getDelay(n)));  // Test
-      D(n, n) = rsPow(z, +Complex(getDelay(n)));  // Test
+      D(n, n) = rsPow(z, Complex(getDelay(n)));
+      // ToDo: Document why it's z^delay and not z^(-delay)
     }
 
-    Matrix A; rsConvert(feedbackMatrix, &A);
-    Matrix b; rsConvert(inMatrix      , &b);
-    Matrix c; rsConvert(outMatrix,      &c);  // Maybe rename to cT
+    // Convert feedback- input- and output matrices to complex:
+    Matrix A;  rsConvert(feedbackMatrix, &A);
+    Matrix b;  rsConvert(inMatrix      , &b);
+    Matrix cT; rsConvert(outMatrix,      &cT);  // c^T, i.e. c transposed
 
-    //Matrix cT = c.getTranspose();
-
+    // Compute (D - A)^-1, i.e. the inverse of the matrix (D - A):
     Matrix DmA  = D - A;
     Matrix DmAi = rsLinearAlgebraNew::inverse(DmA);
 
-    //Matrix test = DmA * DmAi;     // Should be identity matrix - looks good.
-    //Matrix DmAib = DmAi * b;    // for debug
-    //Matrix H = cT * DmAi * b;   // triggers assertion
 
-    Matrix H = c * DmAi * b; 
-    // Seems like we don't need to transpose c here due to using a different convention? Figure 
-    // out! If so, maybe change the code to be consistent with the conventions used in the 
-    // literature. Or maybe just rename the local variable c to cT here and document that we stoer
-    // c^T directly instead of c.
-
+    // Compute the transfer function matrix:
+    Matrix H = cT * DmAi * b; 
 
     return H(0, 0);  // Preliminary. ToDo: return the whole H matrix
 
-
-    //return z;  // Preliminary
 
     // According to the DAFX book (1st Ed), page 182, the transfer function of an FDN is given by:
     //
@@ -4213,6 +4201,7 @@ public:
     // system.  H = c^T * (D - A)^-1 * b + d  ->  H - d = c^T * (D - A)^-1 * b ..maybe try to
     // pre (or post) multiply by (D - A) ...not sure, if that works out - we'll see
   }
+  // Allocates!
   
 
   //-----------------------------------------------------------------------------------------------

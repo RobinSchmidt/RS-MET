@@ -2982,16 +2982,7 @@ void protoFDN1()
   //Complex z(0.8, 0.6);
   Complex Hn = rsEvaluateTransferFunctionNumerically(fdn, z, 50000);
   Complex H  = fdn.getTransferFunctionAt(z);
-  // Nope! They totally do not match! :-(   Verify the formulas and also, if we really implement 
-  // the same structure as in the book. The formula in the book does not include the damping
-  // factors! But setting the to 1 here for test doesn't seem to help. Try to figure it out with a
-  // simpler feedback matrix. Maybe try the identity matrix. ..hmm...in this case even y and y2 
-  // aren't the same anymore! :-O
-  //
-  // Maybe the actual delay in the feedback loop is one sample more? That would be plausible!
-  //
-  // Maybe set all delays to 1 and compare with state-space filters. There, the transfer function 
-  // computation works, I think.
+  ok &= rsIsCloseTo(H, Hn, 1.e-13);
 
 
   // Plot the generated signal together with the reference signal:
@@ -3202,7 +3193,7 @@ void extendedProtoFDN1()
 
 void feedbackDelayNetworks()
 {
-  //protoFDN1();
+  protoFDN1();
   protoFDNvsSSF();
 
 
