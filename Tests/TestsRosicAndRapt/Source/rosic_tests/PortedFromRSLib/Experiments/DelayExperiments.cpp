@@ -3010,6 +3010,39 @@ void protoFDNvsSSF()
   // the FDN seems to be buggy and the one in the SSF is known to be working. I hope to find the 
   // bug in the FDN that way. ...TBC...
 
+  bool ok = true;
+
+  using Real    = double;
+  using Complex = rsComplex<Real>;
+  using VecI    = std::vector<int>;
+  using VecR    = std::vector<Real>;
+  using FDN     = rsProtoFDN<Real, Real>;
+  using SSF     = rsStateSpaceFilter<Real>;
+
+
+  // Create the vectors and matrices needed to set up the FDN:
+  VecI delays(     1, { 1   });
+  VecR dampFactors(1, { 1.0 });
+  rsMatrix<Real> fbMatrix( 1, 1, { 1.0 });
+  rsMatrix<Real> inMatrix( 1, 1, { 1.0 });
+  rsMatrix<Real> outMatrix(1, 1, { 1.0 });
+  // Maybe be a bit more flexible - allow the values to be determined by variables like A,B,C,D
+  // and do  rsMatrix<Real> fbMatrix( 1, 1, { A });  etc.
+
+  // Create and set up the FDN:
+  FDN fdn;
+  fdn.setFeedbackMatrix(fbMatrix);
+  fdn.setDelays(        delays);
+  fdn.setInputMatrix(   inMatrix);
+  fdn.setOutputMatrix(  outMatrix);
+  fdn.setDampFactors(   dampFactors);
+  rsAssert(fdn.areSettingsConsistent());                     // Sanity check
+
+
+
+
+  int dummy = 0;
+
 }
 
 void extendedProtoFDN1()

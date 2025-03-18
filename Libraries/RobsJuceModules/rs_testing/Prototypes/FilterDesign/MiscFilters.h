@@ -420,7 +420,7 @@ respectively)
 
 The system has the q-by-p MIMO transfer function matrix:
 
-  H(z) = D + C * (z*I - A)^(-1) * B     (1) Eq G.5
+  H(z) = D + C * (z*I - A)^(-1) * B        (1), Eq G.5
 
 The H(i,j) element of this matrix gives the transfer function from the j-th input to the i-th 
 output [VERIFY!].
@@ -435,7 +435,7 @@ ToDo:
 
 References:
 
-  (1) Introduction to Digital Filters with Audio Application (Julius O. Smith)
+  (1) Introduction to Digital Filters with Audio Applications (Julius O. Smith)
 
 */
 
@@ -525,9 +525,9 @@ protected:
 
 
   rsMatrix<T> x, t, A, B, C, D;
-  // Meaning of those matrices
+  // Meaning of those matrices:
   //   x: state vector, N-by-1 column vector
-  //   t: temporary storage for x during state update
+  //   t: temporary workspace for x during state update
   //   A: state transition matrix, N-by-N matrix
   //   B: injection matrix, N-by-p matrix (verify!)
   //   C: output matrix, q-by-N matrix (verify!)
@@ -542,9 +542,12 @@ protected:
   //  doesn't give them special names.
   // -Perhaps production code should use sparse matrices? I think, the state update matrices are
   //  typically sparse, right? But what about the other matrices? Are they also typically sparse?
-  //  Maybe only A should be sparse but B,C,D dense? ...figure out!
+  //  Maybe only A should be sparse but B,C,D dense? Figure out! Maybe make a class 
+  //  rsSparseStateSpaceFilter that uses a sparse matrix implementation. I think, somewhere I have
+  //  a prototype for a class rsSparseMatrix lying around already.
   // -Implement a getTransferFunction() function that returns an rsMatrix of type
-  //  rsRationalFunction
+  //  rsRationalFunction (a sparse filter should return a matrix of type rsSparseRationalFunction,
+  //  I think)
 
 };
 
