@@ -3072,8 +3072,8 @@ void protoFDNvsSSF()
   // think, that is the correct behavior. Now let's compute the transfer function again:
   H_FDN   = fdn.getTransferFunctionAt(z);
   H_FDN_n = rsEvaluateTransferFunctionNumerically(fdn, z, N);
-  Complex ratio = H_FDN_n / H_FDN(0,0);
-
+  //Complex ratio = H_FDN_n / H_FDN(0,0);
+  ok &= rsIsCloseTo(H_FDN(0,0), H_FDN_n, 1.e-13);
 
 
 

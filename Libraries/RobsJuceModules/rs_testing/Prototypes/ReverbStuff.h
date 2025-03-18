@@ -4145,15 +4145,10 @@ public:
     MatC D(N, N);
     D.setToZero(z);                              // Class rsMatrix does not auto-initialize!
     for(int n = 0; n < N; n++)
-    {
-      //D(n, n) = rsPow(z, Complex(getDelay(n)));
-
-      //D(n, n) = dampFactors[n] * rsPow(z, Complex(getDelay(n)));
-
-
-      D(n, n) = (1.0/dampFactors[n]) * rsPow(z, Complex(getDelay(n)));  // Test
-    }
-    // Why no minus in the exponent?
+      D(n, n) = (TPar(1)/dampFactors[n]) * rsPow(z, Complex(getDelay(n)));
+      // Why is there no minus in the exponent and why do we have to use the reciprocals of the 
+      // damping factors? Figure this out and document it. It has been found by trial and error 
+      // and it seems to work but I'm not sure why.
 
     // We may need to multiply by the dampfactor[n] here. Or maybe we need to scale the rows of
     // A by the appropriate damping factor? ..Hmm...that doesn't seem to work either
@@ -4162,14 +4157,6 @@ public:
     MatC A;  rsConvert(feedbackMatrix, &A);
     MatC b;  rsConvert(inMatrix      , &b);
     MatC cT; rsConvert(outMatrix,      &cT);  // c^T, i.e. c transposed
-
-    // Test:
-    for(int n = 0; n < N; n++)
-    {
-      //A.scaleRow(n, dampFactors[n]);
-      //A.scaleColumn(n, dampFactors[n]);
-    }
-
 
     // Compute (D - A)^-1, i.e. the inverse of the matrix (D - A):
     MatC DmA  = D - A;
