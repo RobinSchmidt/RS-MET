@@ -2915,26 +2915,21 @@ void protoFDN1()
 
   // Create the feedback matrix:
   Real rx, ry, rz;
-  //rx = ry = rz = 45;
-  rx = ry = rz = 0;     // Test - leads to identity matrix for feedback
+  rx = ry = rz = 45;
+  //rx = ry = rz = 0;                     // Leads to identity matrix for feedback.
   Real toRad = PI/180;
   rsMatrix<Real> fbMatrix(numChans, numChans);
   rsRotationMatrixFromEulerAngles(toRad*rx, toRad*ry, toRad*rz, &fbMatrix);
 
   // Create the input and output matrices:
   rsMatrix<Real> inMatrix(  numChans, 1, {+1, +1, +1});
-  //rsMatrix<Real> outMatrix( 1, numChans, {+1, -1, +1});
-  rsMatrix<Real> outMatrix( 1, numChans, {+1, +1, +1});    // Test
-
+  rsMatrix<Real> outMatrix( 1, numChans, {+1, -1, +1});
 
   // Compute the damping factors from the desired decay time and delay lengths:
   VecR dampFactors(numChans);
   Real amp = Real(0.001);
   for(int i = 0; i < numChans; i++)
-  {
     dampFactors[i] = rsDecayTimeToFeedbackGain(decay, Real(delays[i]), amp);
-    //dampFactors[i] = 1.0; // test
-  }
 
   // Create and set up the FDN:
   FDN fdn;
@@ -2943,7 +2938,7 @@ void protoFDN1()
   fdn.setInputMatrix(   inMatrix);
   fdn.setOutputMatrix(  outMatrix);
   fdn.setDampFactors(   dampFactors);
-  rsAssert(fdn.areSettingsConsistent());                     // Sanity check
+  rsAssert(fdn.areSettingsConsistent());  // Sanity check
   // We can set the settings in any order but it's important that after calling all the setters, 
   // all the vectors and matrices in the FDN are consistent with respect to their sizes and shapes.
   // They may be inconsistent at an intermediate stage, i.e. in between the calls.
@@ -2976,10 +2971,8 @@ void protoFDN1()
 
   // Compute transfer function:
   Complex z(0.9, 0.8);
-  //Complex z(0.9, 0.7);
-  //Complex z(0.8, 0.6);
-  Complex Hn = rsEvaluateTransferFunctionNumerically(fdn, z, 50000);
-  MatC H = fdn.getTransferFunctionAt(z);
+  Complex Hn = rsEvaluateTransferFunctionNumerically(fdn, z, 5000);
+  MatC    H  = fdn.getTransferFunctionAt(z);
   Complex errH = H(0,0) - Hn;
   ok &= rsIsCloseTo(H(0,0), Hn, 1.e-13);
 
@@ -3062,13 +3055,7 @@ void protoFDNvsSSF()
   // The impulse response is now scaled by the damping factor compared to what it was before. I 
   // think, that is the correct behavior. Or is it?
 
-
   rsAssert(ok);
-
-
-  // ToDo:
-  //
-  // - 
 }
 
 void extendedProtoFDN1()
@@ -3083,10 +3070,8 @@ void extendedProtoFDN1()
   using VecR = std::vector<Real>;
   using EFDN = rsExtendedProtoFDN<Real, Real>;
 
-
   int numSamples = 1000;
   int numChans   = 3;
-
 
   // Decay time (RT60) in samples:
   Real decay = 1000;
@@ -3157,13 +3142,9 @@ void extendedProtoFDN1()
   ok &= rsIsCloseTo(y, yr, 1.e-16);  // There's a tiny roundoff error! Why?
 
   // Plot the generated signal together with the reference signal:
-  rsAssert(ok);
   rsPlotVectors(y, yr, err);
-  // There is no decay in the signal produced here. That's not surprsising because the FDN class 
-  // does not yet apply any damping factors.
+  rsAssert(ok);
 
-
-  int dummy = 0;
 
   // ToDo:
   //

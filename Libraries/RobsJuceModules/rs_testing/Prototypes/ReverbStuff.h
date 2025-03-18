@@ -4143,19 +4143,16 @@ public:
 
     int N = getNumDelayChannels();
     MatC D(N, N);
-    D.setToZero(z);                              // Class rsMatrix does not auto-initialize!
+    D.setToZero(z);                           // Class rsMatrix does not auto-initialize!
     for(int n = 0; n < N; n++)
       D(n, n) = (TPar(1)/dampFactors[n]) * rsPow(z, Complex(getDelay(n)));
       // Why is there no minus in the exponent and why do we have to use the reciprocals of the 
       // damping factors? Figure this out and document it. It has been found by trial and error 
       // and it seems to work but I'm not sure why.
 
-    // We may need to multiply by the dampfactor[n] here. Or maybe we need to scale the rows of
-    // A by the appropriate damping factor? ..Hmm...that doesn't seem to work either
-
     // Convert feedback- input- and output matrices to complex:
     MatC A;  rsConvert(feedbackMatrix, &A);
-    MatC b;  rsConvert(inMatrix      , &b);
+    MatC b;  rsConvert(inMatrix,       &b);
     MatC cT; rsConvert(outMatrix,      &cT);  // c^T, i.e. c transposed
 
     // Compute (D - A)^-1, i.e. the inverse of the matrix (D - A):
@@ -4181,16 +4178,25 @@ public:
     //
     // The poles and zeros are the solutions of:
     //
-    //  det(A - D) = 0
-    //  det(A - b*c^T / d - D) = 0 
-
+    //   det(A - D) = 0
+    //   det(A - b*c^T / d - D) = 0 
+    //
+    // But using the formulas from the DAFX book as is didn't work out. I had to massage them quite
+    // a bit by trial and error and compare with the implementation of getTransferFunctionAt() of
+    // class rsStateSpaceFilter to make it finally work. Without that working implementation in the
+    // state space filter, I wouldn't have had a chance to figure it out. It seems to work now but 
+    // we should really do some thorough unit tests. That implies that the formulas for the poles
+    // and zeros should also be taken with a grain of salt. Also, in our case here, d is zero. What
+    // does that mean for the formula for the zeros which has a division by d? Maybe it means that 
+    // we don't have any zeros? Can we tune b, c and d such that the zeros are mirror images of the
+    // poles reflected at the unit circle such that we get an overall allpass filter? That might be
+    // a nice feature.
+    //
     // Try to get rid of computing the inverse by replacing it by a call to a solver of a linear
     // system.  H = c^T * (D - A)^-1 * b + d  ->  H - d = c^T * (D - A)^-1 * b ..maybe try to
     // pre (or post) multiply by (D - A) ...not sure, if that works out - we'll see
-
-    // See also  rsStateSpaceFilter::getTransferFunctionAt()
   }
-  // Allocates!
+  // Allocates! Not for realtime use!
   
 
   //-----------------------------------------------------------------------------------------------
