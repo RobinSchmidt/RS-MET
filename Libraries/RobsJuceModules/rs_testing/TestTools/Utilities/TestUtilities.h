@@ -292,12 +292,23 @@ bool rsIsShiftedUnitImpulse(const std::vector<T>& x, int shift, T tol)
 
 
 template<class TSig, class TFlt>
-TSig rsGetSample(TFlt &filter, TSig in)
+TSig rsGetSample(TFlt& filter, TSig in)
 {
   return filter.getSample(in);
 }
 
 
+template<class TSig, class TPar>
+TSig rsGetSample(rsProtoFDN<TSig, TPar>& fdn, TSig in)
+{
+  std::vector<TSig> vIn(1), vOut(1); 
+  // ToDo: Use getNumIn/OutputChannels like so:
+  //std::vector<TSig> vIn(fdn.getNumInputChannels()), vOut(fdn.getNumOuputChannels()); 
+
+  vIn[0] = in;
+  fdn.processFrame(vIn, vOut);
+  return vOut[0];
+}
 
 /** Returns N samples of the impulse response of the passed filter as std::vector. It is necessary
 for you to pass a scale factor of the type of the filter's output signal (for example: 1.0 for
@@ -307,7 +318,7 @@ filter class must support the functions reset() and getSample(). We basically us
 Any object that has these two member functions with the correct signature (and hopefully also the
 correct semantics) can be passed as filter. */
 template<class TSig, class TFlt>
-inline std::vector<TSig> impulseResponse(TFlt &filter, int length, TSig scale)
+inline std::vector<TSig> impulseResponse(TFlt& filter, int length, TSig scale)
 {
   std::vector<TSig> y(length);
   filter.reset();
