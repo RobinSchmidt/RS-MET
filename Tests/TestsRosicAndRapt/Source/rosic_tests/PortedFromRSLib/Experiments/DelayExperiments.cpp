@@ -2907,14 +2907,11 @@ void protoFDN1()
   int numSamples = 1000;
   int numChans   = 3;
 
-
   // Decay time (RT60) in samples:
   Real decay = 1000;
-  //Real decay = 100;
 
   // Create the vector of delay values:
   VecI delays( { 17, 23, 29 });
-
 
   // Create the feedback matrix:
   Real rx, ry, rz;
@@ -2982,23 +2979,17 @@ void protoFDN1()
   //Complex z(0.9, 0.7);
   //Complex z(0.8, 0.6);
   Complex Hn = rsEvaluateTransferFunctionNumerically(fdn, z, 50000);
-  //Complex H  = fdn.getTransferFunctionAt(z);
   MatC H = fdn.getTransferFunctionAt(z);
   Complex errH = H(0,0) - Hn;
   ok &= rsIsCloseTo(H(0,0), Hn, 1.e-13);
 
-
   // Plot the generated signal together with the reference signal:
   rsPlotVectors(y, y2);
   rsAssert(ok);
-
-  // It currently only works without damping!
 }
 
 void protoFDNvsSSF()
 {
-  // Under construction
-  //
   // We compare the simplemost case of the rsProtoFDN with just one single channel and with unit 
   // delay against the state space filter (SSF) implementation. FDNs are generalizations of SSFs in
   // the sense that if you just set all the delays to unit delays in an FDN, you get an SSF. We 
@@ -3045,12 +3036,10 @@ void protoFDNvsSSF()
   SSF ssf;
   ssf.setup(fbMatrix, inMatrix, outMatrix, thruMatrix);
 
-
   // Produce and plot impulse responses of both filters:
   VecR h_FDN = impulseResponse(fdn, N, 1.0);
   VecR h_SSF = impulseResponse(ssf, N, 1.0); 
   //rsPlotVectors(h_FDN, h_SSF);
-
 
   // Compute transfer functions at a given z of SSF and FDN:
   Complex z(0.9, 0.7);
@@ -3060,27 +3049,18 @@ void protoFDNvsSSF()
   //ok &= rsIsCloseTo(H_SSF,      H_FDN,   1.e-13); // Doesn't compile
   ok &= rsIsCloseTo(H_FDN(0,0), H_FDN_n, 1.e-13);
 
-
   // Now let thr FDN do the damping via the actual damping coeff:
   dampFactors[0] = feedback;
   fbMatrix(0, 0) = 1.0;
   fdn.setFeedbackMatrix(fbMatrix);
   fdn.setDampFactors(   dampFactors);
   VecR h_FDN2 = impulseResponse(fdn, N, 1.0);
-  rsPlotVectors(h_FDN, h_SSF, h_FDN2);
-  // The impulse response is now scaled by the damping factor compared to what it was before. I 
-  // think, that is the correct behavior. Now let's compute the transfer function again:
+  //rsPlotVectors(h_FDN, h_SSF, h_FDN2);
   H_FDN   = fdn.getTransferFunctionAt(z);
   H_FDN_n = rsEvaluateTransferFunctionNumerically(fdn, z, N);
-  //Complex ratio = H_FDN_n / H_FDN(0,0);
   ok &= rsIsCloseTo(H_FDN(0,0), H_FDN_n, 1.e-13);
-
-
-
-
-
-
-
+  // The impulse response is now scaled by the damping factor compared to what it was before. I 
+  // think, that is the correct behavior. Or is it?
 
 
   rsAssert(ok);
