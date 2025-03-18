@@ -3005,10 +3005,10 @@ void protoFDNvsSSF()
   //
   // We compare the simplemost case of the rsProtoFDN with just one single channel and with unit 
   // delay against the state space filter (SSF) implementation. FDNs are generalizations of SSFs in
-  // the sense that if you just set all the delays to unit delays in and FDN, you get an SSF. We 
+  // the sense that if you just set all the delays to unit delays in an FDN, you get an SSF. We 
   // want to compare the computation of the transfer function of both classes because the one in 
   // the FDN seems to be buggy and the one in the SSF is known to be working. I hope to find the 
-  // bug that way. ...TBC...
+  // bug in the FDN that way. ...TBC...
 
 }
 
