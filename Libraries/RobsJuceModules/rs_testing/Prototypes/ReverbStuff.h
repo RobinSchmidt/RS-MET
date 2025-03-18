@@ -4083,6 +4083,8 @@ public:
       delays[i].setMaxDelayInSamples(newDelays[i] - 1);
       delays[i].setDelayInSamples(   newDelays[i] - 1);
       // The -1 is because the feedback loop produces an additional implicit unit delay.
+      // ToDo: try to solve that problem more elegantly. I'm not sure how, though. Maybe we have to
+      // do it like that.
     }
   }
 
@@ -4293,6 +4295,11 @@ public:
     processFrame(vIn, vOut);
     return vOut[0];
   }
+  // Try to remove this function from the class - make it a free function instead. We need it in
+  // functions like impulseResonse. Maybe change the implementation of impulseResponse to call a
+  // free function template rsGetSample(Filter& flt, ..) that defaults to calling flt.getSample()
+  // but we may provide explicit instantiations for classes that do not have a getSample() method.
+  // 
 
 
 
