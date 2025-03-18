@@ -4093,6 +4093,7 @@ public:
     rsAssert(newFeedbackMatrix.isSquare());
     feedbackMatrix = newFeedbackMatrix;
     state.resize(feedbackMatrix.getNumRows());
+    y.resize(feedbackMatrix.getNumRows());
   }
 
   void setInputMatrix(const rsMatrix<TPar>& newInputMatrix)
@@ -4125,6 +4126,7 @@ public:
     ok &= (int) delays.size()       == N;
     ok &= (int) dampFactors.size()  == N;
     ok &= (int) state.size()        == N;
+    ok &= (int) y.size()            == N;
 
     return ok;
   }
@@ -4230,11 +4232,12 @@ public:
 
     using Vec = std::vector<TSig>;
 
-    //// Form the outputs - experimental:
-    //rsSetZero(outputs);
-    //for(int i = 0; i < numOuts; i++)
-    //  for(int j = 0; j < numChans; j++)
-    //    outputs[i] += outMatrix(i, j)  * state[j];
+    // Form the outputs - experimental:
+    rsSetZero(outputs);
+    for(int i = 0; i < numOuts; i++)
+      for(int j = 0; j < numChans; j++)
+        outputs[i] += outMatrix(i, j)  * y[j];
+    // I think, this should be done first ...maybe...not sure
 
 
     // Form the FDN input by applying the pre-feedback input matrix to the inputs vector:
@@ -4250,7 +4253,7 @@ public:
       u[i] = x[i] + state[i];
 
     // Apply the delaylines:
-    Vec y(numChans);
+    //Vec y(numChans);
     for(int i = 0; i < numChans; i++)
       y[i] = dampFactors[i] * delays[i].getSample(u[i]);
 
@@ -4262,12 +4265,12 @@ public:
 
 
 
-    // Form the outputs:
-    rsSetZero(outputs);
-    for(int i = 0; i < numOuts; i++)
-      for(int j = 0; j < numChans; j++)
-        outputs[i] += outMatrix(i, j)  * y[j];
-    // I think, this should be done first ...maybe...not sure
+    //// Form the outputs:
+    //rsSetZero(outputs);
+    //for(int i = 0; i < numOuts; i++)
+    //  for(int j = 0; j < numChans; j++)
+    //    outputs[i] += outMatrix(i, j)  * y[j];
+    //// I think, this should be done first ...maybe...not sure
 
   }
 
@@ -4276,32 +4279,10 @@ public:
   void reset()
   {
     rsSetZero(state);
+    rsSetZero(y);
     for(size_t i = 0; i < delays.size(); i++)
       delays[i].reset();
   }
-
-
-  /*
-  // Convenience function for mono I/O:
-
-  TSig getSample(TSig in)
-  {
-    //std::vector<TSig> vIn(inputs.size()), vOut(outputs.size());
-
-    // ToDo: have functions: getNumInputChannels, getNumOutputChannels
-
-    std::vector<TSig> vIn(1), vOut(1); // use getNumIn/OutputChannels
-
-    vIn[0] = in;
-    processFrame(vIn, vOut);
-    return vOut[0];
-  }
-  */
-  // Try to remove this function from the class - make it a free function instead. We need it in
-  // functions like impulseResonse. Maybe change the implementation of impulseResponse to call a
-  // free function template rsGetSample(Filter& flt, ..) that defaults to calling flt.getSample()
-  // but we may provide explicit instantiations for classes that do not have a getSample() method.
-  // 
 
 
 
@@ -4313,6 +4294,9 @@ protected:
   rsMatrix<TPar>             feedbackMatrix;
   rsMatrix<TPar>             inMatrix;
   rsMatrix<TPar>             outMatrix;
+
+
+  std::vector<TSig>          y;  // experimental
 
 };
 
