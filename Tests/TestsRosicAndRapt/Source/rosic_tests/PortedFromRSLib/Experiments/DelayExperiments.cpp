@@ -2901,6 +2901,7 @@ void protoFDN1()
   using Complex = rsComplex<Real>;
   using VecI    = std::vector<int>;
   using VecR    = std::vector<Real>;
+  using MatC    = rsMatrix<Complex>;
   using FDN     = rsProtoFDN<Real, Real>;
 
   int numSamples = 1000;
@@ -2981,8 +2982,9 @@ void protoFDN1()
   //Complex z(0.9, 0.7);
   //Complex z(0.8, 0.6);
   Complex Hn = rsEvaluateTransferFunctionNumerically(fdn, z, 50000);
-  Complex H  = fdn.getTransferFunctionAt(z);
-  ok &= rsIsCloseTo(H, Hn, 1.e-13);
+  //Complex H  = fdn.getTransferFunctionAt(z);
+  MatC H = fdn.getTransferFunctionAt(z);
+  ok &= rsIsCloseTo(H(0,0), Hn, 1.e-13);
 
 
   // Plot the generated signal together with the reference signal:
@@ -3050,7 +3052,7 @@ void protoFDNvsSSF()
   // Compute transfer functions at a given z of SSF and FDN:
   Complex z(0.9, 0.7);
   MatC    H_SSF   = ssf.getTransferFunctionAt(z);
-  Complex H_FDN   = fdn.getTransferFunctionAt(z);
+  MatC    H_FDN   = fdn.getTransferFunctionAt(z);
   Complex H_FDN_n = rsEvaluateTransferFunctionNumerically(fdn, z, N);
   //ok &= rsIsCloseTo(H_SSF(0,0))
 

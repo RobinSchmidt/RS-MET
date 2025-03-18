@@ -4136,16 +4136,10 @@ public:
   }
 
 
-  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z/*, int i, int j*/) 
+  rsMatrix<rsComplex<TPar>> getTransferFunctionAt(const rsComplex<TPar>& z) 
   {
-    // Maybe rename to getTransferFunctionMatrixAt
-
-    // i: input pin index, j: output pin index
-
-
-   
     using Complex = rsComplex<TPar>;
-    using Matrix  = rsMatrix<Complex>;
+    using Matrix  = rsMatrix<Complex>;  // rename ot MatC
 
     int N = getNumDelayChannels();
 
@@ -4169,10 +4163,11 @@ public:
     Matrix DmAi = rsLinearAlgebraNew::inverse(DmA);
 
 
-    // Compute the transfer function matrix:
+    // Compute and return the transfer function matrix:
     Matrix H = cT * DmAi * b; 
+    return H;
 
-    return H(0, 0);  // Preliminary. ToDo: return the whole H matrix
+    //return H(0, 0);  // Preliminary. ToDo: return the whole H matrix
 
 
     // According to the DAFX book (1st Ed), page 182, the transfer function of an FDN is given by:
