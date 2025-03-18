@@ -1801,8 +1801,12 @@ bool stateVariableFilterUnitTest()
 
 bool stateSpaceFilterTransferFunctionUnitTest()
 {
+  // We test rsStateSpaceFilter::getTransferFunctionAt() for a very simple 1-in, 1-out filter with
+  // one state (i.e. a 1D state space).
+
   bool ok = true;
 
+  // Type aliases:
   using Real    = double;
   using Complex = rsComplex<Real>;
   using VecR    = std::vector<Real>;
@@ -1812,10 +1816,10 @@ bool stateSpaceFilterTransferFunctionUnitTest()
 
   // Setup:
   int  N        = 100;
-  Real feedback = 0.9;
-  Real inGain   = 1.0;
-  Real outGain  = 1.0;
-  Real thruGain = 0.0;
+  Real feedback =   0.7;
+  Real inGain   =   0.9;
+  Real outGain  =   0.8;
+  Real thruGain =  -0.1;
 
   // Create the 1-vectors and 1x1-matrices needed to set up the FDN and SSF:
   MatR A(1, 1, { feedback });
@@ -1828,27 +1832,25 @@ bool stateSpaceFilterTransferFunctionUnitTest()
   ssf.setup(A, B, C, D);
 
   // Test the transfer function computation:
-  //Complex z(0.9, 0.7);
   Complex z(0.9, 0.8);
   MatC    H  = ssf.getTransferFunctionAt(z);
   Complex Hn = rsEvaluateTransferFunctionNumerically(ssf, z, N);
   ok &= rsIsCloseTo(H(0,0), Hn, 1.e-12);
 
-
-
-  //ok &= rsTestGetTransferFunctionAt(ssf, z, 1000, 1.e-13); // Doesn't compile
-
   return ok;
+
 
   // Observations:
   //
   // - For feedback = 0.9, inGain = outGain = 1, thruGain = 0, z = 0.9 + 0.8i, we get 
-  //   H(z) = 0 - 1.25i. Why do we get such a "nice" number?
+  //   H(z) = 0 - 1.25i. Why do we get such a "nice" number in this case?
   //
   //
   // ToDo:
   //
-  // - Test it with more complex settings
+  // - Test it with more complex settings. Maybe with a 2-in / 3-out filter with 4 states. But it's
+  //   complicated because we will get 6 point-to-point transfer functions, i.e. an actual transfer 
+  //   function matrix that's not just a scalar wrapped into a 1x1 matrix (as we have now).
 }
 
 bool stateSpaceFilterUnitTest()
