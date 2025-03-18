@@ -313,7 +313,8 @@ TSig rsGetSample(rsProtoFDN<TSig, TPar>& fdn, TSig in)
 template<class T>
 T rsGetSample(rsStateSpaceFilter<T>& ssf, T in)
 {
-  std::vector<T> vIn(1), vOut(1);
+  //std::vector<T> vIn(1), vOut(1);
+  std::vector<T> vIn(ssf.getNumInputs()), vOut(ssf.getNumOutputs());
   vIn[0] = in;
   ssf.processFrame(&vIn[0], &vOut[0]);
   return vOut[0];

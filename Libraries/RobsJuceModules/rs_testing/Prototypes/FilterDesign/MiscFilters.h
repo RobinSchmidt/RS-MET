@@ -432,6 +432,9 @@ ToDo:
 
 - Add conversions from/to direct forms
 
+- Implement unit tests. Especially for getTransferFunctionAt(). See some experiments in the 
+  research repo. Maybe some of the code there can be used in such unit tests.
+
 
 References:
 
@@ -445,6 +448,9 @@ class rsStateSpaceFilter
 {
 
 public:
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
 
   /** Sets up the shapes of our matrices to allow for the desired number of ins/outs/states but 
   doesn't initialize the contents of those matrices. If you expect to change these sizes later 
@@ -464,12 +470,25 @@ public:
   //  vector x and its temporary storage t should nevertheless stay non-reference members?
   //  ...hmmm...
 
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  int getNumInputs() const  { return p; }
+
+  int getNumOutputs() const { return q; }
+
+  int getNumStates() const  { return N; }
+
+
   /** Computes the transfer function matrix at the given complex number z. The (i,j)-th element
   of this matrix is the point-to-point transfer function from input j to output i. ...I think...
   or maybe it's the other way around? ...Figure out!  */
-  rsMatrix<rsComplex<T>> getTransferFunctionAt(rsComplex<T> z);
+  rsMatrix<rsComplex<T>> getTransferFunctionAt(rsComplex<T> z) const;
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
 
   /** Processes a single MIMO output frame at a time. */
   void processFrame(T* ins, T* outs)
@@ -616,7 +635,7 @@ void rsStateSpaceFilter<T>::setup(const rsMatrixView<T>& newA, const rsMatrixVie
 }
 
 template<class T> 
-rsMatrix<rsComplex<T>> rsStateSpaceFilter<T>::getTransferFunctionAt(rsComplex<T> z)
+rsMatrix<rsComplex<T>> rsStateSpaceFilter<T>::getTransferFunctionAt(rsComplex<T> z) const
 {
   using Comp = rsComplex<T>;
   using Mat  = rsMatrix<Comp>;
