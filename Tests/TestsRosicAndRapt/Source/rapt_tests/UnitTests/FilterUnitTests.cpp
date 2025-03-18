@@ -1793,6 +1793,19 @@ bool stateVariableFilterUnitTest()
   return ok;
 }
 
+
+
+bool stateSpaceFilterUnitTest()
+{
+  bool ok = true;
+
+
+
+  return ok;
+}
+
+
+
 bool engineersFilterUnitTest()
 {
   bool ok = true;

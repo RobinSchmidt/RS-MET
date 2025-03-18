@@ -82,6 +82,7 @@ bool runUnitTestsRapt()
   ok &= runUnitTest(&movingQuantileUnitTest,      "moving quantile filter"); // under construction
   ok &= runUnitTest(&ladderUnitTest,              "rsLadder"); 
   ok &= runUnitTest(&stateVariableFilterUnitTest, "rsStateVariableFilter");
+  ok &= runUnitTest(&stateSpaceFilterUnitTest,    "rsStateSpaceFilter");
   ok &= runUnitTest(&engineersFilterUnitTest,     "rsEngineersFilter");
   ok &= runUnitTest(&hilbertFilterUnitTest,       "rsHilbertFilterUnitTest");
   ok &= runUnitTest(&allpassUnitTest,             "Allpass filters");
