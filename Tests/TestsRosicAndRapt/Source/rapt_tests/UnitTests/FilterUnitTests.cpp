@@ -1830,7 +1830,9 @@ bool stateSpaceFilterTransferFunctionUnitTest()
   // Test the transfer function computation:
   //Complex z(0.9, 0.7);
   Complex z(0.9, 0.8);
-  MatC H = ssf.getTransferFunctionAt(z);
+  MatC    H  = ssf.getTransferFunctionAt(z);
+  Complex Hn = rsEvaluateTransferFunctionNumerically(ssf, z, N);
+  ok &= rsIsCloseTo(H(0,0), Hn, 1.e-12);
 
 
 
@@ -1838,7 +1840,12 @@ bool stateSpaceFilterTransferFunctionUnitTest()
 
   return ok;
 
-
+  // Observations:
+  //
+  // - For feedback = 0.9, inGain = outGain = 1, thruGain = 0, z = 0.9 + 0.8i, we get 
+  //   H(z) = 0 - 1.25i. Why do we get such a "nice" number?
+  //
+  //
   // ToDo:
   //
   // - Test it with more complex settings
