@@ -3017,6 +3017,7 @@ void protoFDNvsSSF()
   using VecI    = std::vector<int>;
   using VecR    = std::vector<Real>;
   using MatR    = rsMatrix<Real>;
+  using MatC    = rsMatrix<Complex>;
   using FDN     = rsProtoFDN<Real, Real>;
   using SSF     = rsStateSpaceFilter<Real>;
 
@@ -3050,25 +3051,26 @@ void protoFDNvsSSF()
 
 
   // Produce and plot impulse responses of both filters:
-  VecR hFDN = impulseResponse(fdn, N, 1.0);
-  VecR hSSF = impulseResponse(ssf, N, 1.0); 
-  rsPlotVectors(hFDN, hSSF);
-  // The SSF has a 1 sample delay with respect to the FDN.
+  VecR h_FDN = impulseResponse(fdn, N, 1.0);
+  VecR h_SSF = impulseResponse(ssf, N, 1.0); 
+  //rsPlotVectors(h_FDN, h_SSF);
 
 
+  // Compute transfer functions at a given z of SSF and FDN:
+  Complex z(0.9, 0.7);
+  MatC    H_SSF   = ssf.getTransferFunctionAt(z);
+  Complex H_FDN   = fdn.getTransferFunctionAt(z);
+  Complex H_FDN_n = rsEvaluateTransferFunctionNumerically(fdn, z, N);
+  // They don't match! H_FDN is wrong!
+
+
+  int dummy = 0;
 
 
 
   // ToDo:
   //
-  // - Produce impulse responses of both filters
-
-
-
-
-
-  int dummy = 0;
-
+  // - 
 }
 
 void extendedProtoFDN1()
