@@ -3016,18 +3016,24 @@ void protoFDNvsSSF()
   using Complex = rsComplex<Real>;
   using VecI    = std::vector<int>;
   using VecR    = std::vector<Real>;
+  using MatR    = rsMatrix<Real>;
   using FDN     = rsProtoFDN<Real, Real>;
   using SSF     = rsStateSpaceFilter<Real>;
 
+  // Setup:
+  int  N        = 200;
+  Real feedback = 0.9;
+  Real inGain   = 1.0;
+  Real outGain  = 1.0;
+  Real thruGain = 0.0;
 
-  // Create the vectors and matrices needed to set up the FDN:
-  VecI delays(     1, { 1   });
-  VecR dampFactors(1, { 1.0 });
-  rsMatrix<Real> fbMatrix( 1, 1, { 1.0 });
-  rsMatrix<Real> inMatrix( 1, 1, { 1.0 });
-  rsMatrix<Real> outMatrix(1, 1, { 1.0 });
-  // Maybe be a bit more flexible - allow the values to be determined by variables like A,B,C,D
-  // and do  rsMatrix<Real> fbMatrix( 1, 1, { A });  etc.
+  // Create the 1-vectors and 1x1-matrices needed to set up the FDN and SSF:
+  VecI delays(     1,    { 1        });
+  VecR dampFactors(1,    { 1.0      });  // Unity because damping is done via the matrix here.
+  MatR fbMatrix(   1, 1, { feedback });
+  MatR inMatrix(   1, 1, { inGain   });
+  MatR outMatrix(  1, 1, { outGain  });
+  MatR thruMatrix (1, 1, { thruGain });
 
   // Create and set up the FDN:
   FDN fdn;
@@ -3037,6 +3043,25 @@ void protoFDNvsSSF()
   fdn.setOutputMatrix(  outMatrix);
   fdn.setDampFactors(   dampFactors);
   rsAssert(fdn.areSettingsConsistent());                     // Sanity check
+
+  // Create and set up the SSF:
+  SSF ssf;
+  ssf.setup(fbMatrix, inMatrix, outMatrix, thruMatrix);
+
+
+  // Produce and plot impulse responses of both filters:
+  VecR hFDN = impulseResponse(fdn, N, 1.0);
+  //VecR hSSF = impulseResponse(ssf, N, 1.0);  // has no getSample() method!
+  //rsPlotVectors(hFDN, hSSF);
+  rsPlotVectors(hFDN);
+
+
+
+
+  // ToDo:
+  //
+  // - Produce impulse responses of both filters
+
 
 
 
