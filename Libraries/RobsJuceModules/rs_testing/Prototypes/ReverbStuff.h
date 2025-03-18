@@ -4145,14 +4145,31 @@ public:
     MatC D(N, N);
     D.setToZero(z);                              // Class rsMatrix does not auto-initialize!
     for(int n = 0; n < N; n++)
-      D(n, n) = rsPow(z, Complex(getDelay(n)));  
-      // Why no minus in the exponent?
-      // We may need to multiply by the dampfactor[n] here
+    {
+      //D(n, n) = rsPow(z, Complex(getDelay(n)));
+
+      //D(n, n) = dampFactors[n] * rsPow(z, Complex(getDelay(n)));
+
+
+      D(n, n) = (1.0/dampFactors[n]) * rsPow(z, Complex(getDelay(n)));  // Test
+    }
+    // Why no minus in the exponent?
+
+    // We may need to multiply by the dampfactor[n] here. Or maybe we need to scale the rows of
+    // A by the appropriate damping factor? ..Hmm...that doesn't seem to work either
 
     // Convert feedback- input- and output matrices to complex:
     MatC A;  rsConvert(feedbackMatrix, &A);
     MatC b;  rsConvert(inMatrix      , &b);
     MatC cT; rsConvert(outMatrix,      &cT);  // c^T, i.e. c transposed
+
+    // Test:
+    for(int n = 0; n < N; n++)
+    {
+      //A.scaleRow(n, dampFactors[n]);
+      //A.scaleColumn(n, dampFactors[n]);
+    }
+
 
     // Compute (D - A)^-1, i.e. the inverse of the matrix (D - A):
     MatC DmA  = D - A;
@@ -4215,14 +4232,14 @@ public:
     // I think, this should be done first ...maybe...not sure
 
 
-    // Form the FDN input by applying the pre-feedback input matrix to the inputs vector:
+    // Form the FDN input by applying the input matrix to the inputs vector:
     Vec x(numChans); 
     rsSetZero(x);     // rsSetZero is superfluous now but maybe later we use a member for x
     for(int i = 0; i < numChans; i++)
       for(int j = 0; j < numIns; j++)
         x[i] += inMatrix(i, j) * inputs[j];
 
-    // Form the inputs to the pre feedback matrix delaylines:
+    // Form the inputs to the delaylines:
     Vec u(numChans);
     for(int i = 0; i < numChans; i++)
       u[i] = x[i] + state[i];

@@ -2935,8 +2935,8 @@ void protoFDN1()
   Real amp = Real(0.001);
   for(int i = 0; i < numChans; i++)
   {
-    //dampFactors[i] = rsDecayTimeToFeedbackGain(decay, Real(delays[i]), amp);
-    dampFactors[i] = 1.0; // test
+    dampFactors[i] = rsDecayTimeToFeedbackGain(decay, Real(delays[i]), amp);
+    //dampFactors[i] = 1.0; // test
   }
 
   // Create and set up the FDN:
@@ -2984,12 +2984,15 @@ void protoFDN1()
   Complex Hn = rsEvaluateTransferFunctionNumerically(fdn, z, 50000);
   //Complex H  = fdn.getTransferFunctionAt(z);
   MatC H = fdn.getTransferFunctionAt(z);
+  Complex errH = H(0,0) - Hn;
   ok &= rsIsCloseTo(H(0,0), Hn, 1.e-13);
 
 
   // Plot the generated signal together with the reference signal:
   rsPlotVectors(y, y2);
   rsAssert(ok);
+
+  // It currently only works without damping!
 }
 
 void protoFDNvsSSF()
@@ -3015,8 +3018,8 @@ void protoFDNvsSSF()
   using SSF     = rsStateSpaceFilter<Real>;
 
   // Setup:
-  int  N        = 200;
-  Real feedback = 0.9;
+  int  N        = 100;
+  Real feedback = 0.8;
   Real inGain   = 1.0;
   Real outGain  = 1.0;
   Real thruGain = 0.0;
@@ -3056,6 +3059,29 @@ void protoFDNvsSSF()
   Complex H_FDN_n = rsEvaluateTransferFunctionNumerically(fdn, z, N);
   //ok &= rsIsCloseTo(H_SSF,      H_FDN,   1.e-13); // Doesn't compile
   ok &= rsIsCloseTo(H_FDN(0,0), H_FDN_n, 1.e-13);
+
+
+  // Now let thr FDN do the damping via the actual damping coeff:
+  dampFactors[0] = feedback;
+  fbMatrix(0, 0) = 1.0;
+  fdn.setFeedbackMatrix(fbMatrix);
+  fdn.setDampFactors(   dampFactors);
+  VecR h_FDN2 = impulseResponse(fdn, N, 1.0);
+  rsPlotVectors(h_FDN, h_SSF, h_FDN2);
+  // The impulse response is now scaled by the damping factor compared to what it was before. I 
+  // think, that is the correct behavior. Now let's compute the transfer function again:
+  H_FDN   = fdn.getTransferFunctionAt(z);
+  H_FDN_n = rsEvaluateTransferFunctionNumerically(fdn, z, N);
+  Complex ratio = H_FDN_n / H_FDN(0,0);
+
+
+
+
+
+
+
+
+
 
   rsAssert(ok);
 
