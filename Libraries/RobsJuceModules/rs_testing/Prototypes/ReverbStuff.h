@@ -4158,6 +4158,7 @@ public:
   {
     using Complex = rsComplex<TPar>;
     using MatC    = rsMatrix<Complex>;
+    using LinAlg  = rsLinearAlgebraNew;
 
     int N = getNumDelayChannels();
     MatC D(N, N);
@@ -4198,7 +4199,7 @@ public:
 
     // Compute (D - A)^-1, i.e. the inverse of the matrix (D - A):
     MatC M  = D - A;
-    M = rsLinearAlgebraNew::inverse(M); // Can we pass D-A directly
+    M = LinAlg::inverse(M);   // Can we pass D-A directly?
 
     // Compute and return the transfer function matrix:
     MatC H = C * M * B;
@@ -4304,13 +4305,19 @@ public:
 
 protected:
 
-  std::vector<rsDelay<TSig>> delays;          // Delaylines (ToDo: Use interpolating ones)
-  std::vector<TSig>          state;           // State of the FDN
-  std::vector<TSig>          outs;            // Output signals
-  std::vector<TPar>          dampFactors;     // Damping/decay factors
-  rsMatrix<TPar>             feedbackMatrix;
-  rsMatrix<TPar>             inMatrix;
-  rsMatrix<TPar>             outMatrix;
+  using Delay = rsDelay<TSig>;        // ToDo: Use an interpolating delay class later
+
+  // State:
+  std::vector<Delay> delays;          // Delaylines
+  std::vector<TSig>  state;           // State of the FDN
+  std::vector<TSig>  outs;            // Output signals
+
+  // Settings:
+  std::vector<TPar>  dampFactors;     // Damping/decay factors
+  rsMatrix<TPar>     feedbackMatrix;  // Feedback matrix
+  rsMatrix<TPar>     inMatrix;        // Input matrix
+  rsMatrix<TPar>     outMatrix;       // Output matrix
+
 };
 
 

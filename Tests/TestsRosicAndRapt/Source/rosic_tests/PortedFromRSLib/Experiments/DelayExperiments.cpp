@@ -3050,12 +3050,12 @@ void protoFDNvsSSF()
   fdn.setFeedbackMatrix(fbMatrix);
   fdn.setDampFactors(   dampFactors);
   VecR h_FDN2 = impulseResponse(fdn, N, 1.0);
-  //rsPlotVectors(h_FDN, h_SSF, h_FDN2);
   H_FDN   = fdn.getTransferFunctionAt(z);
   H_FDN_n = rsEvaluateTransferFunctionNumerically(fdn, z, N);
   ok &= rsIsCloseTo(H_FDN(0,0), H_FDN_n, 1.e-13);
+  rsPlotVectors(h_FDN, h_SSF, h_FDN2);
   // The impulse response is now scaled by the damping factor compared to what it was before. I 
-  // think, that is the correct behavior. Or is it?
+  // think, that is the correct behavior. Or is it? Verify!
 
   rsAssert(ok);
 }
