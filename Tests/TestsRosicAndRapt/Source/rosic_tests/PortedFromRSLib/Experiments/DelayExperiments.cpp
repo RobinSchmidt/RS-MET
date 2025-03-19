@@ -2922,8 +2922,10 @@ void protoFDN1()
   rsRotationMatrixFromEulerAngles(toRad*rx, toRad*ry, toRad*rz, &fbMatrix);
 
   // Create the input and output matrices:
-  rsMatrix<Real> inMatrix(  numChans, 1, {+1, +1, +1});
-  rsMatrix<Real> outMatrix( 1, numChans, {+1, -1, +1});
+  rsMatrix<Real> inMatrix( numChans, 1, {+1, +1, +1});
+  rsMatrix<Real> outMatrix(1, numChans, {+1, -1, +1});
+  //rsMatrix<Real> inMatrix( numChans, 1, {+1.1, +1.3, +1.2});
+  //rsMatrix<Real> outMatrix(1, numChans, {+1.4, -1.2, +1.1});
 
   // Compute the damping factors from the desired decay time and delay lengths:
   VecR dampFactors(numChans);
