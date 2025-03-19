@@ -4114,18 +4114,23 @@ public:
 
   void setDampFactors(const std::vector<TPar>& newDampFactors) { dampFactors = newDampFactors; }
 
+  // ToDo: Maybe provide a setup() function similar to the one in rsStateSpaceFilter. It needs
+  // an additional parameter (of type std::vector<int>) for the delays
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
   int getNumDelayChannels() const { return (int) delays.size(); }
 
+  // ToDo: getNumInputs, getNumOutputs
+
   int getDelay(int i) const 
   { 
-    //return delays[i].getDelayInSamples();
+    rsAssert(i >= 0 && i < (int)delays.size(), "Index out of range in rsProtoFDN::getDelay");
     return delays[i].getDelayInSamples() + 1;
+    // +1 for the implicit unit delay in the feedback loop.
   }
-  // ToDo: maybe assert that i is within range
 
   /** Checks, if the lengths and shapes of the various vectors and matrices fit together. */
   bool areSettingsConsistent() const
@@ -4158,11 +4163,16 @@ public:
       // Why is there no minus in the exponent and why do we have to use the reciprocals of the 
       // damping factors? Figure this out and document it. It has been found by trial and error 
       // and it seems to work but I'm not sure why.
+      // I think, when damping filters are included, we should multiply D(n,n) by the transfer 
+      // function of the n-th damping filter. Or maybe we need to divide for the same strange 
+      // reason that we need to divide by the damping factor? ToDo: Try that!
 
     // Convert feedback- input- and output matrices to complex:
     MatC A;  rsConvert(feedbackMatrix, &A);
     MatC b;  rsConvert(inMatrix,       &b);
     MatC cT; rsConvert(outMatrix,      &cT);  // c^T, i.e. c transposed
+    // ToDo: use A,B,C like in the SSF. But be careful - the D has a different meaning there! Maybe
+    // rename our D to Z and let us have a D similar to the SSF for pass-through / feed-around
 
     // Compute (D - A)^-1, i.e. the inverse of the matrix (D - A):
     MatC DmA  = D - A;
@@ -4250,6 +4260,7 @@ public:
     //Vec y(numChans);
     for(int i = 0; i < numChans; i++)
       outs[i] = dampFactors[i] * delays[i].getSample(u[i]);
+    // I think, when damping filters are included, they should be applied here.
 
     // Apply the feedback matrix:
     rsSetZero(state);
@@ -4283,10 +4294,10 @@ public:
 
 protected:
 
-  std::vector<rsDelay<TSig>> delays;             // Delaylines 
-  std::vector<TSig>          state;              // State of the FDN
-  std::vector<TSig>          outs;               // Output signals
-  std::vector<TPar>          dampFactors;
+  std::vector<rsDelay<TSig>> delays;          // Delaylines (ToDo: Use interpolating ones)
+  std::vector<TSig>          state;           // State of the FDN
+  std::vector<TSig>          outs;            // Output signals
+  std::vector<TPar>          dampFactors;     // Damping/decay factors
   rsMatrix<TPar>             feedbackMatrix;
   rsMatrix<TPar>             inMatrix;
   rsMatrix<TPar>             outMatrix;
