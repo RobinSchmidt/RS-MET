@@ -4077,16 +4077,26 @@ public:
     delays.resize(N);
     for(int i = 0; i < N; i++)
     {
-      //delays[i].setMaxDelayInSamples(newDelays[i]);
-      //delays[i].setDelayInSamples(   newDelays[i]);
+      int d = newDelays[i];
+      rsAssert(d >= 1, "Delay must be at leat 1 to avoid delayless feedback loop.");
+      d = rsMax(d, 1) - 1;                // -1 to compensate for implicit feedback loop delay
+      delays[i].setMaxDelayInSamples(d);  // Reallocates in case of too small capacity
+      delays[i].setDelayInSamples(   d);
 
-      delays[i].setMaxDelayInSamples(newDelays[i] - 1);
-      delays[i].setDelayInSamples(   newDelays[i] - 1);
+
+
+      //delays[i].setMaxDelayInSamples(newDelays[i] - 1);
+      //delays[i].setDelayInSamples(   newDelays[i] - 1);
       // The -1 is because the feedback loop produces an additional implicit unit delay.
-      // ToDo: try to solve that problem more elegantly. I'm not sure how, though. Maybe we have to
-      // do it like that.
+      // ToDo: Try to solve that problem more elegantly. I'm not sure how, though. Maybe we have to
+      // do it like that. ...yeah - I think so. Otherwise, we'd get delay-free feedback loops. In 
+      // the extended FDN, we need to do that only for the pre-matrix delaylines. We actually want
+      // to be able to set the post-matrix delays to zero because that's how we deactivate them.
+      //
+      // But: what about the dampFactors? Are they now wrong? I don't think so, though.
     }
   }
+  // May allocate. Maybe make it safely non-allocating
 
   void setFeedbackMatrix(const rsMatrix<TPar>& newFeedbackMatrix)
   {
