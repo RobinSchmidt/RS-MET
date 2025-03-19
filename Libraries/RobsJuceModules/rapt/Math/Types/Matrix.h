@@ -1106,11 +1106,19 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Construction/Assignment/Destruction */
 
-  /** Standard constructor. You must pass the initial number of rows and columns */
+  /** Standard constructor. You may pass the initial number of rows and columns. If you don't pass
+  anything, you'll get an empty matrix, i.e. one with 0 rows and 0 columns. */
   rsMatrix(int numRows = 0, int numColumns = 0)
   {
     setShape(numRows, numColumns);
-    // todo: optionally init with zeros
+  }
+
+  /** Constructor that creates a matrix with the given initial number of rows and columns and  
+  initializes all elements with the given initValue. */
+  rsMatrix(int numRows, int numColumns, const T&& initValue)
+  {
+    setShape(numRows, numColumns);
+    setAllValues(initValue);
   }
 
   /** Constructor to create a matrix from a flat raw array. */

@@ -4157,13 +4157,15 @@ public:
 
   rsMatrix<rsComplex<TPar>> getTransferFunctionAt(const rsComplex<TPar>& z) 
   {
+    // Maybe don't hardcode the type of z to be rsComplex<TPar>. Maybe use a template parameter 
+    // TArg instead (and return rsMatrix<TArg>). See rsDelay::getTransferFunctionAt().
+
     using Complex = rsComplex<TPar>;
     using MatC    = rsMatrix<Complex>;
     using LinAlg  = rsLinearAlgebraNew;
 
     int N = getNumDelayChannels();
-    MatC D(N, N);
-    D.setToZero(z);                           // Class rsMatrix does not auto-initialize!
+    MatC D(N, N, rsZeroValue(z));
     for(int n = 0; n < N; n++)
     {
       // Old:
@@ -4188,6 +4190,7 @@ public:
       tmp  = delays[n].getTransferFunctionAt(z); 
       tmp /= z;                                    // * z^-1 for the implicit unit delay
       tmp *= dampFactors[n];
+      //tmp *= dampers[n].getTransferFunctionAt(z);  // ToDo: Include the damping filter here.
       tmp  = TPar(1) / tmp;                        // I don't know why we need to invert
       D(n, n) = tmp;
       int dummy = 0;
@@ -4283,8 +4286,12 @@ public:
 
     // Apply the delaylines:
     for(int i = 0; i < numChans; i++)
+    {
       outs[i] = dampFactors[i] * delays[i].getSample(u[i]);
-    // I think, when damping filters are included, they should be applied here.
+
+      // I think, when damping filters are included, they should be applied here, like so:
+      //outs[i] = dampFactors[i] * dampers[i].getSample(delays[i].getSample(u[i]));
+    }
 
     // Apply the feedback matrix:
     rsSetZero(state);

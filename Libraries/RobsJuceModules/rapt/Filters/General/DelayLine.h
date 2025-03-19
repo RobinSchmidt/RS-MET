@@ -60,25 +60,15 @@ public:
   // Maybe rename to getMaxDelay
 
   /** Returns the value of the transfer function H(z) at the given value of z. If M is the delay in
-  samples, then H(z) = z^-M. */
-  //rsComplex<T> getTransferFunctionAt(rsComplex<T> z) const
-  //{
-  //  int M = getDelayInSamples();           // M is our delay
-  //  return rsPow(z, rsComplex<T>(T(-M)));  // H(z) = z^-M
-  //}
-  //// Needs tests
-  //// This is problematic because when using the delayline in higher level objects then the type T
-  //// will be the TSig of the higher level object - but here, we actually want it to be the TPar.
-  //// One way to solve this might be to give the delayline also TSig,TPar template parameters. But
-  //// I'm not sure, if that's really justified just for implementing such a simple 
-  //// getTransferFunctionAt function.
-  // ...ok - we now do this in rsDelayRounding which is currently in ReverbStuff.h in the prototypes
-
+  samples, then H(z) = z^-M. The function has its own template parameter TArg because the argument 
+  type will typically be different from the type T with which the class is instantiated. A higher 
+  level class that uses template parameters TSig, TPar for parameters and signals may instantiate 
+  the rsDelay class with T = TSig and call getTransferFunctionAt() with an argument of type 
+  rsComplex<TPar>, for example. */
   template<class TArg>
   TArg getTransferFunctionAt(const TArg& z) const
   {
     int M = getDelayInSamples();     // M is our delay
-    //return rsPow(z, TArg(T(-M)));    // H(z) = z^-M
     return rsPow(z, TArg(-M));       // H(z) = z^-M
   }
 
