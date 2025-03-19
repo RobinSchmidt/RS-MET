@@ -74,6 +74,15 @@ public:
   //// getTransferFunctionAt function.
   // ...ok - we now do this in rsDelayRounding which is currently in ReverbStuff.h in the prototypes
 
+  template<class TArg>
+  TArg getTransferFunctionAt(const TArg& z) const
+  {
+    int M = getDelayInSamples();     // M is our delay
+    //return rsPow(z, TArg(T(-M)));    // H(z) = z^-M
+    return rsPow(z, TArg(-M));       // H(z) = z^-M
+  }
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */

@@ -71,6 +71,7 @@ public:
     int M = dl.getDelayInSamples();        // M is our delay
     return rsPow(z, rsComplex<TPar>(-M));  // H(z) = z^-M
   }
+  // Maybe use a template parameter TArg for input and output. See rsDelay
 
   void getTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const
   {
@@ -4165,7 +4166,8 @@ public:
     D.setToZero(z);                           // Class rsMatrix does not auto-initialize!
     for(int n = 0; n < N; n++)
     {
-      D(n, n) = (TPar(1)/dampFactors[n]) * rsPow(z, Complex(getDelay(n)));
+      // Old:
+      //D(n, n) = (TPar(1)/dampFactors[n]) * rsPow(z, Complex(getDelay(n)));
       // Why is there no minus in the exponent and why do we have to use the reciprocals of the 
       // damping factors? Figure this out and document it. It has been found by trial and error 
       // and it seems to work but I'm not sure why.
@@ -4181,13 +4183,14 @@ public:
       // assuming that we need to invert everything - for some reason.
 
 
-      //// Test:
-      //Complex tmp;
-      //tmp  = delays[n].getTransferFunctionAt(z);   // Doesn't compile
-      //tmp /= z;                                    // * z^-1 for the implicit unit delay
-      //tmp *= dampFactors[n];
-      //tmp  = TPar(1) / tmp;
-      //int dummy = 0;
+      // New:
+      Complex tmp;
+      tmp  = delays[n].getTransferFunctionAt(z); 
+      tmp /= z;                                    // * z^-1 for the implicit unit delay
+      tmp *= dampFactors[n];
+      tmp  = TPar(1) / tmp;                        // I don't know why we need to invert
+      D(n, n) = tmp;
+      int dummy = 0;
     }
 
     // Convert feedback- input- and output matrices to complex:
