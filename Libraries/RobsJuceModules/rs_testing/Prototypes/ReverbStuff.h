@@ -4123,8 +4123,12 @@ public:
 
   int getNumDelayChannels() const { return (int) delays.size(); }
 
-  // ToDo: getNumInputs, getNumOutputs
+  int getNumInputs()        const { return inMatrix.getNumColumns(); }
 
+  int getNumOutputs()       const { return outMatrix.getNumRows(); }
+
+  /** Returns the amount of delay of the i-th delayline. This amount includes the implicit unit 
+  delay of the feedback loop. */
   int getDelay(int i) const 
   { 
     rsAssert(i >= 0 && i < (int)delays.size(), "Index out of range in rsProtoFDN::getDelay");
@@ -4159,6 +4163,7 @@ public:
     MatC D(N, N);
     D.setToZero(z);                           // Class rsMatrix does not auto-initialize!
     for(int n = 0; n < N; n++)
+    {
       D(n, n) = (TPar(1)/dampFactors[n]) * rsPow(z, Complex(getDelay(n)));
       // Why is there no minus in the exponent and why do we have to use the reciprocals of the 
       // damping factors? Figure this out and document it. It has been found by trial and error 
@@ -4166,6 +4171,23 @@ public:
       // I think, when damping filters are included, we should multiply D(n,n) by the transfer 
       // function of the n-th damping filter. Or maybe we need to divide for the same strange 
       // reason that we need to divide by the damping factor? ToDo: Try that!
+      // And what about the case when we use interpolating delaylines? Maybe then we should do:
+      //
+      //   tmp  = dampFactors[n] * delays[n].getTransferFunctionAt(z) 
+      //   tmp *= dampers.getTransferFunctionAt(z);
+      //   D(n,n) = 1/tmp;
+      //
+      // assuming that we need to invert everything - for some reason.
+
+
+      //// Test:
+      //Complex tmp;
+      //tmp  = delays[n].getTransferFunctionAt(z);   // Doesn't compile
+      //tmp /= z;                                    // * z^-1 for the implicit unit delay
+      //tmp *= dampFactors[n];
+      //tmp  = TPar(1) / tmp;
+      //int dummy = 0;
+    }
 
     // Convert feedback- input- and output matrices to complex:
     MatC A; rsConvert(feedbackMatrix, &A);
@@ -4176,7 +4198,7 @@ public:
 
     // Compute (D - A)^-1, i.e. the inverse of the matrix (D - A):
     MatC M  = D - A;
-    MatC M = rsLinearAlgebraNew::inverse(M);
+    M = rsLinearAlgebraNew::inverse(M); // Can we pass D-A directly
 
     // Compute and return the transfer function matrix:
     MatC H = C * M * B;
@@ -4227,26 +4249,21 @@ public:
 
   void processFrame(const std::vector<TSig>& inputs, std::vector<TSig>& outputs)
   {
-
-    rsAssert(areSettingsConsistent(), "Inconsistent settings in rsExtendedProtoFDN::processFrame()");
-
     int numIns   = (int) inputs.size();
     int numOuts  = (int) outputs.size();
     int numChans = getNumDelayChannels();
 
-    // ToDo: check, if the number of inputs and outputs matches with the number of rows/columns of
-    // the in/out matrices
-
+    rsAssert(areSettingsConsistent(), "Inconsistent settings in rsProtoFDN::processFrame()");
+    rsAssert(numIns  == getNumInputs());
+    rsAssert(numOuts == getNumOutputs()); 
 
     using Vec = std::vector<TSig>;
 
-    // Form the outputs - experimental:
+    // Form the outputs:
     rsSetZero(outputs);
     for(int i = 0; i < numOuts; i++)
       for(int j = 0; j < numChans; j++)
         outputs[i] += outMatrix(i, j)  * outs[j];
-    // I think, this should be done first ...maybe...not sure
-
 
     // Form the FDN input by applying the input matrix to the inputs vector:
     Vec x(numChans); 
@@ -4261,7 +4278,6 @@ public:
       u[i] = x[i] + state[i];
 
     // Apply the delaylines:
-    //Vec y(numChans);
     for(int i = 0; i < numChans; i++)
       outs[i] = dampFactors[i] * delays[i].getSample(u[i]);
     // I think, when damping filters are included, they should be applied here.
@@ -4272,18 +4288,8 @@ public:
       for(int j = 0; j < numChans; j++)
         state[i] += feedbackMatrix(i, j) * outs[j];
 
-
-
-    //// Form the outputs:
-    //rsSetZero(outputs);
-    //for(int i = 0; i < numOuts; i++)
-    //  for(int j = 0; j < numChans; j++)
-    //    outputs[i] += outMatrix(i, j)  * y[j];
-    //// I think, this should be done first ...maybe...not sure
-
     // Can we reorder the operations to get rid of the "outs" member?
   }
-
 
 
   void reset()
