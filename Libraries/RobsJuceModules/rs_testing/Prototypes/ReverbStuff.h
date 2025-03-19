@@ -4105,7 +4105,7 @@ public:
     rsAssert(newFeedbackMatrix.isSquare());
     feedbackMatrix = newFeedbackMatrix;
     state.resize(feedbackMatrix.getNumRows());
-    y.resize(feedbackMatrix.getNumRows());
+    outs.resize( feedbackMatrix.getNumRows());
   }
 
   void setInputMatrix(const rsMatrix<TPar>& newInputMatrix)    { inMatrix  = newInputMatrix; }
@@ -4139,7 +4139,7 @@ public:
     ok &= (int) delays.size()       == N;
     ok &= (int) dampFactors.size()  == N;
     ok &= (int) state.size()        == N;
-    ok &= (int) y.size()            == N;
+    ok &= (int) outs.size()         == N;
 
     return ok;
   }
@@ -4230,7 +4230,7 @@ public:
     rsSetZero(outputs);
     for(int i = 0; i < numOuts; i++)
       for(int j = 0; j < numChans; j++)
-        outputs[i] += outMatrix(i, j)  * y[j];
+        outputs[i] += outMatrix(i, j)  * outs[j];
     // I think, this should be done first ...maybe...not sure
 
 
@@ -4249,13 +4249,13 @@ public:
     // Apply the delaylines:
     //Vec y(numChans);
     for(int i = 0; i < numChans; i++)
-      y[i] = dampFactors[i] * delays[i].getSample(u[i]);
+      outs[i] = dampFactors[i] * delays[i].getSample(u[i]);
 
     // Apply the feedback matrix:
     rsSetZero(state);
     for(int i = 0; i < numChans; i++)
       for(int j = 0; j < numChans; j++)
-        state[i] += feedbackMatrix(i, j) * y[j];
+        state[i] += feedbackMatrix(i, j) * outs[j];
 
 
 
@@ -4266,6 +4266,7 @@ public:
     //    outputs[i] += outMatrix(i, j)  * y[j];
     //// I think, this should be done first ...maybe...not sure
 
+    // Can we reorder the operations to get rid of the "outs" member?
   }
 
 
@@ -4273,7 +4274,7 @@ public:
   void reset()
   {
     rsSetZero(state);
-    rsSetZero(y);
+    rsSetZero(outs);
     for(size_t i = 0; i < delays.size(); i++)
       delays[i].reset();
   }
@@ -4284,14 +4285,11 @@ protected:
 
   std::vector<rsDelay<TSig>> delays;             // Delaylines 
   std::vector<TSig>          state;              // State of the FDN
+  std::vector<TSig>          outs;               // Output signals
   std::vector<TPar>          dampFactors;
   rsMatrix<TPar>             feedbackMatrix;
   rsMatrix<TPar>             inMatrix;
   rsMatrix<TPar>             outMatrix;
-
-
-  std::vector<TSig>          y;  // experimental...rename to outs
-
 };
 
 
