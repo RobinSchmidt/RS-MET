@@ -4168,18 +4168,18 @@ public:
       // reason that we need to divide by the damping factor? ToDo: Try that!
 
     // Convert feedback- input- and output matrices to complex:
-    MatC A;  rsConvert(feedbackMatrix, &A);
-    MatC b;  rsConvert(inMatrix,       &b);
-    MatC cT; rsConvert(outMatrix,      &cT);  // c^T, i.e. c transposed
+    MatC A; rsConvert(feedbackMatrix, &A);
+    MatC B; rsConvert(inMatrix,       &B);
+    MatC C; rsConvert(outMatrix,      &C);
     // ToDo: use A,B,C like in the SSF. But be careful - the D has a different meaning there! Maybe
     // rename our D to Z and let us have a D similar to the SSF for pass-through / feed-around
 
     // Compute (D - A)^-1, i.e. the inverse of the matrix (D - A):
-    MatC DmA  = D - A;
-    MatC DmAi = rsLinearAlgebraNew::inverse(DmA);
+    MatC M  = D - A;
+    MatC M = rsLinearAlgebraNew::inverse(M);
 
     // Compute and return the transfer function matrix:
-    MatC H = cT * DmAi * b; 
+    MatC H = C * M * B;
     return H;
 
 
@@ -4212,8 +4212,12 @@ public:
     // a nice feature.
     //
     // Try to get rid of computing the inverse by replacing it by a call to a solver of a linear
-    // system.  H = c^T * (D - A)^-1 * b + d  ->  H - d = c^T * (D - A)^-1 * b ..maybe try to
-    // pre (or post) multiply by (D - A) ...not sure, if that works out - we'll see
+    // system. Not sure, if that works though. The inverse´matrix is sandwiched between two vectors
+    // so we can't just rewrite it as a linear system. In general, whenever we have a matrix 
+    // equation like X = A^-1 * B for an unknown matrix X, it's better to write it as A * X = B
+    // and give it to a linear system solver. But here, the A^-1 is sandwiched (our matrix M has 
+    // the role of A^-1 of the general form) between two other matrices, so I don't know, if we can
+    // do something similar here.
   }
   // Allocates! Not for realtime use!
   
