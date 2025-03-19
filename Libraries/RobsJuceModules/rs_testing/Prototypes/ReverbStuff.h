@@ -4083,11 +4083,6 @@ public:
       delays[i].setMaxDelayInSamples(d);  // Reallocates in case of too small capacity
       delays[i].setDelayInSamples(   d);
 
-
-
-      //delays[i].setMaxDelayInSamples(newDelays[i] - 1);
-      //delays[i].setDelayInSamples(   newDelays[i] - 1);
-      // The -1 is because the feedback loop produces an additional implicit unit delay.
       // ToDo: Try to solve that problem more elegantly. I'm not sure how, though. Maybe we have to
       // do it like that. ...yeah - I think so. Otherwise, we'd get delay-free feedback loops. In 
       // the extended FDN, we need to do that only for the pre-matrix delaylines. We actually want
@@ -4096,7 +4091,14 @@ public:
       // But: what about the dampFactors? Are they now wrong? I don't think so, though.
     }
   }
-  // May allocate. Maybe make it safely non-allocating
+  // May allocate. Maybe make it safely non-allocating. Perhaps provide a setMaxDelayInSamples()
+  // method. Maybe, for optimization of memory usage, it may also take a vector parameter such that
+  // the different delaylines may use different maximal delays. This might be more more economic 
+  // when we want to use a wide range of (maximum) delays such that it would be wasteful to give 
+  // all delaylines the greatest maximum length. Although - none of that really matters unless 
+  // this class is used in a production environment which shouldn't be done anyway. It's purely for
+  // research purposes.
+
 
   void setFeedbackMatrix(const rsMatrix<TPar>& newFeedbackMatrix)
   {
@@ -4106,14 +4108,11 @@ public:
     y.resize(feedbackMatrix.getNumRows());
   }
 
-  void setInputMatrix(const rsMatrix<TPar>& newInputMatrix)
-  { inMatrix  = newInputMatrix; }
+  void setInputMatrix(const rsMatrix<TPar>& newInputMatrix)    { inMatrix  = newInputMatrix; }
 
-  void setOutputMatrix(const rsMatrix<TPar>& newOutputMatrix)
-  { outMatrix = newOutputMatrix; }
+  void setOutputMatrix(const rsMatrix<TPar>& newOutputMatrix)  { outMatrix = newOutputMatrix; }
 
-  void setDampFactors(const std::vector<TPar>& newDampFactors)
-  { dampFactors = newDampFactors; }
+  void setDampFactors(const std::vector<TPar>& newDampFactors) { dampFactors = newDampFactors; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -4291,7 +4290,7 @@ protected:
   rsMatrix<TPar>             outMatrix;
 
 
-  std::vector<TSig>          y;  // experimental
+  std::vector<TSig>          y;  // experimental...rename to outs
 
 };
 
