@@ -2610,7 +2610,7 @@ protected:
 
 
 //=================================================================================================
-// continued fraction stuff:
+// Continued fraction stuff:
 
 /** A class for generating the (integer) continued fraction expansion coefficients of a given
 (floating point) number. You pass the number to the constructor and after that, you can pull out
@@ -2673,7 +2673,7 @@ rsFraction<T> rsContinuedFractionConvergent(T* a, int N)
 // https://en.wikipedia.org/wiki/Continued_fraction
 // https://en.wikipedia.org/wiki/Generalized_continued_fraction
 
-// returns the (simple) continued fraction coeffs of the given rational number
+// Returns the (simple) continued fraction coeffs of the given rational number
 template<class T>
 std::vector<T> rsContinuedFraction(rsFraction<T> x)
 {
@@ -2687,8 +2687,12 @@ std::vector<T> rsContinuedFraction(rsFraction<T> x)
     c.push_back(a); }
   return c;
 }
-// algo adapted from from cfrat.c
-// i think, this is some variation of the Euclidean algorithm
+// Rename to rsSimpleContinuedFraction. Or maybe make a class rsContinuedFraction and have a static
+// method toSimple(const rsFraction<T>& x)
+
+// Algo adapted from from cfrat.c in Libraries/ThirdParty/PatternGeneration/Programs
+// I think, this is some variation of the Euclidean algorithm
+
 
 // Wikipedia says: "Even-numbered convergents are smaller than the original number, while
 // odd-numbered ones are larger."
@@ -2700,6 +2704,21 @@ std::vector<T> rsContinuedFraction(rsFraction<T> x)
 
 // other fun stuff that can be done with fractions:
 // https://en.wikipedia.org/wiki/Egyptian_fraction
+
+// ToDo:
+//
+// - Make a class rsContinuedFraction. Maybe it should store two arrays of integers a[], b[] to
+//   represent a[0] + (b[0] / (a[1] / (b[1] + (a[2] / (b[2] + ...)))))
+//
+// - Allow conversion from/to floating point numbers and rsFraction.
+//
+// - Maybe allow conversion from/to simple continued fractions (where all b-coeffs are 1). 
+//
+// - Allow arithmetic operations +,-,*,/. See: 
+//   https://www.youtube.com/watch?v=tBc_xcRzMxk  Continued Fraction Arithmetic
+//   https://github.com/thegraycuber/continued_fraction_arithmetic/blob/main/continued_fraction_arithmetic.py
+//   Cached in private repo
+
 
 
 //=================================================================================================

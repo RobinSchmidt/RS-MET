@@ -189,6 +189,20 @@ public:
   }
 
 
+  ///** NOT YET TESTED! FORMULA MAY STILL BE WRONG! ...I just wrote it down off the cuff */
+  //template<class TArg>
+  //TArg getTransferFunctionAt(const TArg& z) const
+  //{
+  //  int  M   = dl.getDelayInSamples();  // M is our delay
+  //  TArg z1  = TArg(1) / z;             // z^-1
+  //  TArg zM  = rsPow(z, TArg(-M));      // z^(-M)
+  //  TArg zM1 = zM * z1;                 // z^(-M-1)
+  //  return (c*zM + zM1) / (1 + c*zM1);  // H(z) = (c*z^(-M) + z^(-M-1)) / (1 + c*z^(-M-1))
+  //}
+  //// Verify the formula and create a unit test for it!
+
+
+
   TSig getSample(TSig x)
   {
     dl.writeInputNoUpdate(x);
@@ -4160,13 +4174,13 @@ public:
   TArg getDelayTransferFunctionAt(const TArg& z, int n)
   {
     TArg H = rsUnityValue(z) / z;                // Init with z^-1 for the implicit unit delay.
-    H *= delays[n].getTransferFunctionAt(z);     // Include the delay transfer function.
-    H *= dampFactors[n];                         // Include the damping/decay factor.
-    //H *= dampers[n].getTransferFunctionAt(z);  // ToDo: Include the damping filter here.
+    H *= delays[n].getTransferFunctionAt(z);     // Bake in the delay transfer function.
+    H *= dampFactors[n];                         // Bake in the damping/decay factor.
+    //H *= dampers[n].getTransferFunctionAt(z);  // ToDo: Bake in the damping filter here.
     return H;
   }
 
-
+  // Maybe rename to getTransferMatrixAt (also in class rsStateSpaceFilter for consistency)
   template<class TArg>
   rsMatrix<TArg> getTransferFunctionAt(const TArg& z) 
   {
@@ -4179,18 +4193,13 @@ public:
     for(int n = 0; n < N; n++)
       D(n, n) = TPar(1) / getDelayTransferFunctionAt(z, n);  // Why reciprocal?
 
-    // Convert feedback- input- and output-matrices to TArg:
+    // Convert feedback-, input- and output-matrices to TArg (which is typically complex):
     Mat A; rsConvert(feedbackMatrix, &A);
     Mat B; rsConvert(inMatrix,       &B);
     Mat C; rsConvert(outMatrix,      &C);
-    // ToDo: use A,B,C like in the SSF. But be careful - the D has a different meaning there! Maybe
-    // rename our D to Z and let us have a D similar to the SSF for pass-through / feed-around
-
-    // Compute (D - A)^-1, i.e. the inverse of the matrix (D - A):
-    Mat M = D - A;
-    M = LinAlg::inverse(M);   // Can we pass D-A directly?
 
     // Compute and return the transfer function matrix:
+    Mat M = LinAlg::inverse(D-A);  // (D-A)^-1
     Mat H = C * M * B;
     return H;
 
@@ -4229,7 +4238,10 @@ public:
     // equation like X = A^-1 * B for an unknown matrix X, it's better to write it as A * X = B
     // and give it to a linear system solver. But here, the A^-1 is sandwiched (our matrix M has 
     // the role of A^-1 of the general form) between two other matrices, so I don't know, if we can
-    // do something similar here.
+    // do something similar here. Maybe we could premultiply both sides with C^-1 to get the form
+    // C^-1 * H = C^-1 * C * M * B = M * B, compute the LHS using a linear solver and then do a
+    // matrix multiply by C to get H? But C need not to be invertible. It's usually not even a 
+    // square matrix. Maybe the pseudoinverse could be used? ...but maybe not.
     //
     //
     // ToDo:
@@ -4238,7 +4250,11 @@ public:
     //   that out by trial and error. Maybe it has to do with the fact that in the DAFX book, 
     //   they call the matrix D(z^-1) rather than D(z)?
     //
-    //
+    // - Maybe rename the D matrix to Z to be compatible with the notation in class 
+    //   rsStateSpaceFilter. This class also has a D matrix but there, it has a different menaing: 
+    //   It is the "feedaround" matrix (i.e. the direct path from inputs to outputs) there. Maybe
+    //   introduce such a feedaround matrix here, too (defaulting to all zeros) and call *that* D. 
+    //   Document that deviation in notation from DAFX (and possibly the wider DSP/FDN literature).
   }
   // Allocates! Not for realtime use!
   
@@ -4307,7 +4323,7 @@ public:
 
 protected:
 
-  using Delay = rsDelay<TSig>;        // ToDo: Use an interpolating delay class later
+  using Delay = rsDelay<TSig>;        // Type alias for convenience
 
   // State:
   std::vector<Delay> delays;          // Delaylines
@@ -4319,7 +4335,26 @@ protected:
   rsMatrix<TPar>     feedbackMatrix;  // Feedback matrix
   rsMatrix<TPar>     inMatrix;        // Input matrix
   rsMatrix<TPar>     outMatrix;       // Output matrix
+  //rsMatrix<TPar>     thruMatrix;       // Direct throughput/feedaround matrix
 
+  // ToDo:
+  //
+  // - Use an interpolating delayline class. Using allpass interpolation makes the most sense in 
+  //   this context, I think. It doesn't destroy the unitarity of the prototype network (assuming 
+  //   a unitary feedback matrix and dampFactors of all 1s), if I'm not mistaken.
+  //
+  // - Maybe we could even use the class rsUniversalComb instead of the simple delaylines. But 
+  //   maybe then wen should have a variant of this class that also incoprorates (allpass) 
+  //   interpolation. It may make sense to use the universal comb in notchpass mode. 
+  //
+  // - Try to make an 1-in/1-out FDN with an overall allpass transfer function. Maybe take the 
+  //   feedback matrix and input matrix as given and try to tune the output matrix. Or maybe take
+  //   only the feedback matrix as given and tune in and output matrices. Or maybe take feedback- 
+  //   input and output matrices as given and try to add an appropriate feedaround matrix that 
+  //   turns the whole FDN into an allpass. Or take the whole FDN as given and try to create a 
+  //   compensation filter that turns the series of FDN -> compensator into an allpass. Maybe as a
+  //   preliminary step, investigate how to create state space filters with allpass characteristic
+  //   and then generalize the findings to FDNs.
 };
 
 

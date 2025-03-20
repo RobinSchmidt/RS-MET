@@ -807,6 +807,9 @@ https://github.com/nidefawl/bassstudio
  bass-studio-master.7z in a temp folder. Apparently, I once downloaded the repo from GitHub. But 
  it's not there anymore.
 
+Acidus Versio:
+https://github.com/abluenautilus/AcidusVersio
+-Open303 port for the Noise Engineering Versio platform
 
 
 ----------------------------------------------------------------------------------------------------
