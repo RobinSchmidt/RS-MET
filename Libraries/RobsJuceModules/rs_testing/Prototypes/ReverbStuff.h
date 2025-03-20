@@ -4173,30 +4173,13 @@ public:
     using Mat    = rsMatrix<TArg>;
     using LinAlg = rsLinearAlgebraNew;
 
+    // Compute delay matrix D(z):
     int N = getNumDelayChannels();
     Mat D(N, N, rsZeroValue(z));
     for(int n = 0; n < N; n++)
-    {
-      //TArg tmp;
-      //tmp  = delays[n].getTransferFunctionAt(z); 
-      //tmp /= z;                                    // * z^-1 for the implicit unit delay
-      //tmp *= dampFactors[n];
-      ////tmp *= dampers[n].getTransferFunctionAt(z);  // ToDo: Include the damping filter here.
-      //D(n, n) = TPar(1) / tmp;                     // I don't know why we need to invert
+      D(n, n) = TPar(1) / getDelayTransferFunctionAt(z, n);  // Why reciprocal?
 
-      D(n, n) = TPar(1) / getDelayTransferFunctionAt(z, n);
-
-      // ToDo:
-      //
-      // - Figure out, why we need to take the reciprocal of tmp and not tmp itself. I've figured 
-      //   that out by trial and error. Maybe it has to do with the fact that in the DAFX book, 
-      //   they call the matrix D(z^-1) rather than D(z)?
-      //
-      // - Maybe factor out a function getDelayTransferFunctionAt(z, n) and do here:
-      //   D(n, n) = TPar(1) / getDelayTransferFunctionAt(z, n);
-    }
-
-    // Convert feedback- input- and output matrices to complex:
+    // Convert feedback- input- and output-matrices to TArg:
     Mat A; rsConvert(feedbackMatrix, &A);
     Mat B; rsConvert(inMatrix,       &B);
     Mat C; rsConvert(outMatrix,      &C);
@@ -4247,6 +4230,15 @@ public:
     // and give it to a linear system solver. But here, the A^-1 is sandwiched (our matrix M has 
     // the role of A^-1 of the general form) between two other matrices, so I don't know, if we can
     // do something similar here.
+    //
+    //
+    // ToDo:
+    //
+    // - Figure out, why we need to take the reciprocal in the computation of D(n, n). I've figured 
+    //   that out by trial and error. Maybe it has to do with the fact that in the DAFX book, 
+    //   they call the matrix D(z^-1) rather than D(z)?
+    //
+    //
   }
   // Allocates! Not for realtime use!
   
