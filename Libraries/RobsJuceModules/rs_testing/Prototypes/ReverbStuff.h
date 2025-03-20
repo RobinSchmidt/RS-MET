@@ -4155,6 +4155,18 @@ public:
   }
 
 
+
+  template<class TArg>
+  TArg getDelayTransferFunctionAt(const TArg& z, int n)
+  {
+    TArg H = rsUnityValue(z) / z;                // Init with z^-1 for the implicit unit delay.
+    H *= delays[n].getTransferFunctionAt(z);     // Include the delay transfer function.
+    H *= dampFactors[n];                         // Include the damping/decay factor.
+    //H *= dampers[n].getTransferFunctionAt(z);  // ToDo: Include the damping filter here.
+    return H;
+  }
+
+
   template<class TArg>
   rsMatrix<TArg> getTransferFunctionAt(const TArg& z) 
   {
@@ -4165,12 +4177,14 @@ public:
     Mat D(N, N, rsZeroValue(z));
     for(int n = 0; n < N; n++)
     {
-      TArg tmp;
-      tmp  = delays[n].getTransferFunctionAt(z); 
-      tmp /= z;                                    // * z^-1 for the implicit unit delay
-      tmp *= dampFactors[n];
-      //tmp *= dampers[n].getTransferFunctionAt(z);  // ToDo: Include the damping filter here.
-      D(n, n) = TPar(1) / tmp;                     // I don't know why we need to invert
+      //TArg tmp;
+      //tmp  = delays[n].getTransferFunctionAt(z); 
+      //tmp /= z;                                    // * z^-1 for the implicit unit delay
+      //tmp *= dampFactors[n];
+      ////tmp *= dampers[n].getTransferFunctionAt(z);  // ToDo: Include the damping filter here.
+      //D(n, n) = TPar(1) / tmp;                     // I don't know why we need to invert
+
+      D(n, n) = TPar(1) / getDelayTransferFunctionAt(z, n);
 
       // ToDo:
       //
