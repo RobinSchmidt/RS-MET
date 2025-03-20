@@ -2979,7 +2979,7 @@ void protoFDN1()
   ok &= rsIsCloseTo(H(0,0), Hn, 1.e-13);
 
   // Plot the generated signal together with the reference signal:
-  rsPlotVectors(y, y2);
+  //rsPlotVectors(y, y2);
   rsAssert(ok);
 }
 
@@ -3053,7 +3053,7 @@ void protoFDNvsSSF()
   H_FDN   = fdn.getTransferFunctionAt(z);
   H_FDN_n = rsEvaluateTransferFunctionNumerically(fdn, z, N);
   ok &= rsIsCloseTo(H_FDN(0,0), H_FDN_n, 1.e-13);
-  rsPlotVectors(h_FDN, h_SSF, h_FDN2);
+  //rsPlotVectors(h_FDN, h_SSF, h_FDN2);
   // The impulse response is now scaled by the damping factor compared to what it was before. I 
   // think, that is the correct behavior. Or is it? Verify!
 
@@ -3144,7 +3144,7 @@ void extendedProtoFDN1()
   ok &= rsIsCloseTo(y, yr, 1.e-16);  // There's a tiny roundoff error! Why?
 
   // Plot the generated signal together with the reference signal:
-  rsPlotVectors(y, yr, err);
+  //rsPlotVectors(y, yr, err);
   rsAssert(ok);
 
 

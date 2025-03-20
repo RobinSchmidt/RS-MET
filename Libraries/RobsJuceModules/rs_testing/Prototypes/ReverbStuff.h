@@ -4155,20 +4155,17 @@ public:
   }
 
 
-  rsMatrix<rsComplex<TPar>> getTransferFunctionAt(const rsComplex<TPar>& z) 
+  template<class TArg>
+  rsMatrix<TArg> getTransferFunctionAt(const TArg& z) 
   {
-    // Maybe don't hardcode the type of z to be rsComplex<TPar>. Maybe use a template parameter 
-    // TArg instead (and return rsMatrix<TArg>). See rsDelay::getTransferFunctionAt().
-
-    using Complex = rsComplex<TPar>;
-    using MatC    = rsMatrix<Complex>;
-    using LinAlg  = rsLinearAlgebraNew;
+    using Mat    = rsMatrix<TArg>;
+    using LinAlg = rsLinearAlgebraNew;
 
     int N = getNumDelayChannels();
-    MatC D(N, N, rsZeroValue(z));
+    Mat D(N, N, rsZeroValue(z));
     for(int n = 0; n < N; n++)
     {
-      Complex tmp;
+      TArg tmp;
       tmp  = delays[n].getTransferFunctionAt(z); 
       tmp /= z;                                    // * z^-1 for the implicit unit delay
       tmp *= dampFactors[n];
@@ -4186,18 +4183,18 @@ public:
     }
 
     // Convert feedback- input- and output matrices to complex:
-    MatC A; rsConvert(feedbackMatrix, &A);
-    MatC B; rsConvert(inMatrix,       &B);
-    MatC C; rsConvert(outMatrix,      &C);
+    Mat A; rsConvert(feedbackMatrix, &A);
+    Mat B; rsConvert(inMatrix,       &B);
+    Mat C; rsConvert(outMatrix,      &C);
     // ToDo: use A,B,C like in the SSF. But be careful - the D has a different meaning there! Maybe
     // rename our D to Z and let us have a D similar to the SSF for pass-through / feed-around
 
     // Compute (D - A)^-1, i.e. the inverse of the matrix (D - A):
-    MatC M  = D - A;
+    Mat M = D - A;
     M = LinAlg::inverse(M);   // Can we pass D-A directly?
 
     // Compute and return the transfer function matrix:
-    MatC H = C * M * B;
+    Mat H = C * M * B;
     return H;
 
 
