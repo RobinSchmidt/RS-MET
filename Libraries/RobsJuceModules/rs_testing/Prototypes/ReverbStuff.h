@@ -4168,32 +4168,21 @@ public:
     MatC D(N, N, rsZeroValue(z));
     for(int n = 0; n < N; n++)
     {
-      // Old:
-      //D(n, n) = (TPar(1)/dampFactors[n]) * rsPow(z, Complex(getDelay(n)));
-      // Why is there no minus in the exponent and why do we have to use the reciprocals of the 
-      // damping factors? Figure this out and document it. It has been found by trial and error 
-      // and it seems to work but I'm not sure why.
-      // I think, when damping filters are included, we should multiply D(n,n) by the transfer 
-      // function of the n-th damping filter. Or maybe we need to divide for the same strange 
-      // reason that we need to divide by the damping factor? ToDo: Try that!
-      // And what about the case when we use interpolating delaylines? Maybe then we should do:
-      //
-      //   tmp  = dampFactors[n] * delays[n].getTransferFunctionAt(z) 
-      //   tmp *= dampers.getTransferFunctionAt(z);
-      //   D(n,n) = 1/tmp;
-      //
-      // assuming that we need to invert everything - for some reason.
-
-
-      // New:
       Complex tmp;
       tmp  = delays[n].getTransferFunctionAt(z); 
       tmp /= z;                                    // * z^-1 for the implicit unit delay
       tmp *= dampFactors[n];
       //tmp *= dampers[n].getTransferFunctionAt(z);  // ToDo: Include the damping filter here.
-      tmp  = TPar(1) / tmp;                        // I don't know why we need to invert
-      D(n, n) = tmp;
-      int dummy = 0;
+      D(n, n) = TPar(1) / tmp;                     // I don't know why we need to invert
+
+      // ToDo:
+      //
+      // - Figure out, why we need to take the reciprocal of tmp and not tmp itself. I've figured 
+      //   that out by trial and error. Maybe it has to do with the fact that in the DAFX book, 
+      //   they call the matrix D(z^-1) rather than D(z)?
+      //
+      // - Maybe factor out a function getDelayTransferFunctionAt(z, n) and do here:
+      //   D(n, n) = TPar(1) / getDelayTransferFunctionAt(z, n);
     }
 
     // Convert feedback- input- and output matrices to complex:
