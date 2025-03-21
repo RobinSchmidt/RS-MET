@@ -214,8 +214,13 @@ public:
     return y1;
 
     // Maybe we need to scale the feedback by some number like 0.999 to avoid a parasitic
-    // oscillations at the Nyquist freq for certain settings. See the old implemementations. The 
+    // oscillations at the Nyquist freq for certain settings. See the old implementations. The 
     // oscillation occurs when c is close to 1. This happens the the fractional part f is zero.
+    // This is very unfortunate because it means that in the limit of the delay approaching an 
+    // integer, the behavior of the allpass interpolated does not approach the one of a simpler 
+    // integer delayline. Maybe we should treat f = 0 as special case? But then the question 
+    // about an appropriate numeric tolerance arises. Maybe check if higher order Thiran allpass
+    // interpolators have the same problem.
   }
 
   void reset() 

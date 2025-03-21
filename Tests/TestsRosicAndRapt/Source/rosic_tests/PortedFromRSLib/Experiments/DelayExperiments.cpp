@@ -124,11 +124,25 @@ void delayLineLinear()
   //   in the 10th response. This is all as it should be.
 }
 
+
+bool testDelayLineAllpass()
+{
+  // Stub.
+  // ToDo: Move this into the unit tests!
+
+  bool ok = true;
+
+
+  return ok;
+}
+
 void delayLineAllpass()
 {
   // This basically replicates the code of delayLineLinear but with an allpass interpolated 
   // delayline. Maybe templaize this function on the delayline type such that we can use the same
   // function for both types of delayline
+
+  bool ok = testDelayLineAllpass();
 
   static const int N = 30;
   using Real = double;
@@ -428,9 +442,8 @@ void combVsAllpassPhase()
 
 void delayLines()
 {
-  //universalCombVsOnePole();
-  universalCombResponses();
-  //combVsAllpassPhase();
+  delayLineAllpass();
+
 
 
   // Delaylines with different interpolation methods:
