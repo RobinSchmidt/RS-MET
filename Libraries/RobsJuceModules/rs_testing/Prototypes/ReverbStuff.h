@@ -189,17 +189,18 @@ public:
   }
 
 
-  ///** NOT YET TESTED! FORMULA MAY STILL BE WRONG! ...I just wrote it down off the cuff */
-  //template<class TArg>
-  //TArg getTransferFunctionAt(const TArg& z) const
-  //{
-  //  int  M   = dl.getDelayInSamples();  // M is our delay
-  //  TArg z1  = TArg(1) / z;             // z^-1
-  //  TArg zM  = rsPow(z, TArg(-M));      // z^(-M)
-  //  TArg zM1 = zM * z1;                 // z^(-M-1)
-  //  return (c*zM + zM1) / (1 + c*zM1);  // H(z) = (c*z^(-M) + z^(-M-1)) / (1 + c*z^(-M-1))
-  //}
-  //// Verify the formula and create a unit test for it!
+  /** NOT YET TESTED! FORMULA MAY STILL BE WRONG! ...I just wrote it down off the cuff */
+  template<class TArg>
+  TArg getTransferFunctionAt(const TArg& z) const
+  {
+    int  M   = dl.getDelayInSamples();        // M is our delay
+    TArg z1  = TArg(1) / z;                   // z^-1
+    TArg zM  = rsPow(z, TArg(-M));            // z^(-M)
+    TArg zM1 = zM * z1;                       // z^(-M-1)
+    //return (c*zM + zM1) / (TArg(1) + c*zM1);  // H(z) = (c*z^(-M) + z^(-M-1)) / (1 + c*z^(-M-1))
+    return (c*zM + zM1) / (TArg(1) + c*z1);   // H(z) = (c*z^(-M) + z^(-M-1)) / (1 + c*z^(-1))
+  }
+  // Verify the formula and create a unit test for it!
 
 
 
