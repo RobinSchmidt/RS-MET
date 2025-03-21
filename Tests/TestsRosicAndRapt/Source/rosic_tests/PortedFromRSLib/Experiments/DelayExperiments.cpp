@@ -132,6 +132,23 @@ bool testDelayLineAllpass()
 
   bool ok = true;
 
+  using Real = double;
+  using Vec  = std::vector<Real>;
+
+  rsDelayAllpass<Real, Real> dl; 
+  dl.setMaxDelayInSamples(20);
+  dl.setDelayInSamples(10.2);
+
+
+
+  int N = 128;
+
+  Vec h = impulseResponse(dl, N, 1.0);
+  rsPlotVectors(h);
+  ok &= isAllpass(h, 1.e-7);
+
+  //ok &= rsTestGetTransferFunctionAt(flt, z, N, 1.e-7);
+
 
   return ok;
 }
