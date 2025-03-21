@@ -124,43 +124,11 @@ void delayLineLinear()
   //   in the 10th response. This is all as it should be.
 }
 
-
-// Move to unit tests!
-bool testDelayLineAllpass()
-{
-  bool ok = true;
-
-  using Real    = double;
-  using Complex = rsComplex<Real>;
-  using Vec     = std::vector<Real>;
-
-  rsDelayAllpass<Real, Real> dl; 
-  dl.setMaxDelayInSamples(20);
-
-  int  N  = 128;                    // Number of samples for impulse response
-  Real d0 = 5;                      // Reference delay
-  Complex z(0.9, 0.8);              // Value z at which we evaluate H(z)
-  for(int i = 0; i <= 10; i++)
-  {
-    Real f = Real(i) / Real(10);
-    Real d = d0 + f;
-    dl.setDelayInSamples(d);
-    Vec h = impulseResponse(dl, N, 1.0);
-    ok &= isAllpass(h, 1.e-10);
-    ok &= rsTestGetTransferFunctionAt(dl, z, N, 1.e-14);
-    //rsPlotVectors(h);
-  }
-
-  return ok;
-}
-
 void delayLineAllpass()
 {
   // This basically replicates the code of delayLineLinear but with an allpass interpolated 
   // delayline. Maybe templaize this function on the delayline type such that we can use the same
   // function for both types of delayline
-
-  bool ok = testDelayLineAllpass();
 
   static const int N = 30;
   using Real = double;
