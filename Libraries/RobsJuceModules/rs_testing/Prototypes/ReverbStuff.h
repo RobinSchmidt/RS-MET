@@ -193,10 +193,9 @@ public:
   template<class TArg>
   TArg getTransferFunctionAt(const TArg& z) const
   {
-    int  M   = dl.getDelayInSamples();       // M is our delay
-    TArg z1  = TArg(1) / z;                  // z^-1
-    TArg zM  = rsPow(z, TArg(-M));           // z^(-M)
-    //TArg zM1 = zM * z1;                      // z^(-M-1)
+    int  M   = dl.getDelayInSamples();         // M is our delay
+    TArg z1  = TArg(1) / z;                    // z^-1
+    TArg zM  = rsPow(z, TArg(-M));             // z^(-M)
     return (c*zM + z1*zM) / (TArg(1) + c*z1);  // H(z) = (c*z^(-M) + z^(-M-1)) / (1 + c*z^(-1))
   }
 
@@ -218,7 +217,11 @@ public:
     // integer, the behavior of the allpass interpolated does not approach the one of a simpler 
     // integer delayline. Maybe we should treat f = 0 as special case? But then the question 
     // about an appropriate numeric tolerance arises. Maybe check if higher order Thiran allpass
-    // interpolators have the same problem.
+    // interpolators have the same problem. ...although...maybe it's not actually a problem?
+    // It seems that when the delay is an exact integer, the impulse response looks fine. But
+    // slightly above an integer (like n + 0.01), we see a long ringing at the Nyquist freq.
+    // Slighly below an integer, e.g. n + 0.99, there is not such ringing.
+
   }
 
   void reset() 

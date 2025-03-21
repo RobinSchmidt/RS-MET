@@ -174,6 +174,11 @@ void delayLineAllpass()
   dl.setDelayInSamples(5.01);
   RAPT::getImpulseResponse(dl, h, N);
   plotData(N, t, h);
+  dl.setDelayInSamples(5.99);
+  RAPT::getImpulseResponse(dl, h, N);
+  plotData(N, t, h);
+
+
 
   Real d0 = 5;                                // Reference delay
   for(int i = 0; i <= 10; i++)
