@@ -125,11 +125,9 @@ void delayLineLinear()
 }
 
 
+// Move to unit tests!
 bool testDelayLineAllpass()
 {
-  // Stub.
-  // ToDo: Move this into the unit tests!
-
   bool ok = true;
 
   using Real    = double;
@@ -177,8 +175,6 @@ void delayLineAllpass()
   dl.setDelayInSamples(5.99);
   RAPT::getImpulseResponse(dl, h, N);
   plotData(N, t, h);
-
-
 
   Real d0 = 5;                                // Reference delay
   for(int i = 0; i <= 10; i++)

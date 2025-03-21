@@ -193,9 +193,9 @@ public:
   template<class TArg>
   TArg getTransferFunctionAt(const TArg& z) const
   {
-    int  M   = dl.getDelayInSamples();         // M is our delay
-    TArg z1  = TArg(1) / z;                    // z^-1
-    TArg zM  = rsPow(z, TArg(-M));             // z^(-M)
+    int  M  = dl.getDelayInSamples();          // M is our delay
+    TArg z1 = TArg(1) / z;                     // z^-1
+    TArg zM = rsPow(z, TArg(-M));              // z^(-M)
     return (c*zM + z1*zM) / (TArg(1) + c*z1);  // H(z) = (c*z^(-M) + z^(-M-1)) / (1 + c*z^(-1))
   }
 
