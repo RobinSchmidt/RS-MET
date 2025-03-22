@@ -71,21 +71,16 @@ public:
     int M = getDelayInSamples();     // M is our delay
     return rsPow(z, TArg(-M));       // H(z) = z^-M
   }
-
-  /*
+  // Needs unit tests!
+  
   void getTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
   {
     int M = getDelayInSamples();
-    tf->num._setNumTerms(1); tf->num._setTerm(0, TPar(1), M);
-    tf->den._setNumTerms(1); tf->den._setTerm(0, TPar(1), 0);
+    tf->num._setNumTerms(1); tf->num._setTerm(0, T(1), M);
+    tf->den._setNumTerms(1); tf->den._setTerm(0, T(1), 0);
   }
-  // Does not compile. I think, class rsSparseDigitalTransferFunction is not yet integrated into 
-  // the library. It's still in the prototypes section. To make this code compile, we need to drag
-  // it over. ...or no! It actually seems to be in the library already. I guess, we need to change
-  // the include order within the library. But damn! including SparseFilter.h before DelayLine.h in
-  // Filters.h also doesn't work because the sparse filter uses a delayline. Maybe move the class
-  // rsSparseDigitalTransferFunction into Math/Types/SparseRationalFunction.
-  */
+  // Needs unit tests!
+  
 
 
 
@@ -252,12 +247,12 @@ This class implements a basic delay-line with various interpolation methods.
 
 ToDo:
 
-- Try to get rid! We want to reclaim the name for a different implementation. But we can'T because
+- Try to get rid! We want to reclaim the name for a different implementation. But we can't because
   it's actually used in rsFakeResonanceFilter. But maybe we can turn this implementation into the 
   one, we want
 
 - Or rename this one into rsTimeBasedDelayLine and factor out a class rsDelayTempoSynced that
-  only has the stuff that is needed to set it up in terms of a frcational delay in samples. None
+  only has the stuff that is needed to set it up in terms of a fractional delay in samples. None
   of that sampleRate, bpm, tempoSync stuff   ...or rsDelayTempoSynced
 
 */
