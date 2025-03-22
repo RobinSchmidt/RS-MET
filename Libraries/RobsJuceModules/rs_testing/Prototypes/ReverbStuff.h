@@ -4269,7 +4269,7 @@ public:
   // Allocates! Not for realtime use!
   
 
-
+  /*
   void getDelayTransferFunction(int n, rsSparseDigitalTransferFunction<TPar>* tf) const
   {
     int M = getDelayInSamples(n);
@@ -4277,6 +4277,32 @@ public:
     tf->den._setNumTerms(1); tf->den._setTerm(0, TPar(1),              0);
   }
   // Needs tests
+  */
+
+
+  /*
+  // Under construction:
+  rsMatrix<rsSparseDigitalTransferFunction<TPar>> getTransferFunction()
+  {
+    int numIns   = (int) inputs.size();
+    int numOuts  = (int) outputs.size();
+    int numChans = getNumDelayChannels();
+
+
+    // I think, the matrix inversion step will be complicated. Maybe as a preliminary, we need to
+    // try creating matrices of sparse transfer functions and doing linear algebra with them. 
+    // That's actually a pretty complicated thing to do. I'm not sure, how pivoting should work in
+    // this case, for example. Maybe in the implementation of the Gauss-Jordan algorithm, when we
+    // search for the pivot, we should use a template function rsIsBetterPivot(T lhs, T rhs) that
+    // defaults to calling: rsGreaterAbs(lhs, rhs) but can be "overriden" for other datatypes by
+    // explicit specialization. For matrices of type rsFraction, the greater-abs criterion may also
+    // be inappropriate because in this case, rounding errors are no issue. Instead, we may have to
+    // worry about overflow. There, we may want to choose the "simplest" fraction in order to make
+    // overflow less likely.
+
+  }
+  */
+
 
 
 
