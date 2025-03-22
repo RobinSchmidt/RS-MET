@@ -81,7 +81,10 @@ public:
   }
   // Does not compile. I think, class rsSparseDigitalTransferFunction is not yet integrated into 
   // the library. It's still in the prototypes section. To make this code compile, we need to drag
-  // it over.
+  // it over. ...or no! It actually seems to be in the library already. I guess, we need to change
+  // the include order within the library. But damn! including SparseFilter.h before DelayLine.h in
+  // Filters.h also doesn't work because the sparse filter uses a delayline. Maybe move the class
+  // rsSparseDigitalTransferFunction into Math/Types/SparseRationalFunction.
   */
 
 
