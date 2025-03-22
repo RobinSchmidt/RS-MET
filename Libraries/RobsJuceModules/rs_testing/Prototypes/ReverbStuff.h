@@ -4269,6 +4269,7 @@ public:
   // Allocates! Not for realtime use!
   
 
+
   /*
   void getDelayTransferFunction(int n, rsSparseDigitalTransferFunction<TPar>* tf) const
   {
@@ -4278,7 +4279,6 @@ public:
   }
   // Needs tests
   */
-
 
   /*
   // Under construction:
@@ -4296,9 +4296,11 @@ public:
     // search for the pivot, we should use a template function rsIsBetterPivot(T lhs, T rhs) that
     // defaults to calling: rsGreaterAbs(lhs, rhs) but can be "overriden" for other datatypes by
     // explicit specialization. For matrices of type rsFraction, the greater-abs criterion may also
-    // be inappropriate because in this case, rounding errors are no issue. Instead, we may have to
-    // worry about overflow. There, we may want to choose the "simplest" fraction in order to make
-    // overflow less likely.
+    // be inappropriate because in this case, floating point rounding errors are no issue. Instead,
+    // we may have to worry about integer overflow. There, we may want to choose the "simplest" 
+    // fraction in order to make overflow less likely. ...and with rational functions? Maybe the
+    // simplest (nonzero) rational function in terms of degrees of numerator and denominator would 
+    // make for the best pivot?
 
   }
   */
