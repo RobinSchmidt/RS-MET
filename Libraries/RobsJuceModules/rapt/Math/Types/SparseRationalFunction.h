@@ -352,6 +352,252 @@ void rsSparseRationalFunction<T>::weightedSumDestructive(
 
 
 
+//=================================================================================================
+
+/** A subclass of rsSparseRationalFunction that is meant to deal specifically with transfer 
+functions of digital filters. A general transfer function for a digital filter looks like:
+
+          b0 + b1 * z^-1 + b2 * z^-2 + ... + bN * z^-N
+  H(z) = ----------------------------------------------
+          1  + a1 * z^-1 + a2 * z^-2 + ... + aM * z^-M
+
+Note that this is actually a rational function not in z itself but in z^-1. We override the 
+function evaluation operator () to take care of this reciprocation of z. We also implement some 
+additional functionality on top of the baseclass that is specific to such transfer functions. For 
+example, digital filter transfer functions are usually normalized to a0 = 1, as seen above. We 
+implement a check for that condition (and a few others) isCanonical(). We also provide functions to
+invert the transfer function (basically, swapping numerator and denominator but maintaining the 
+a0 = 1 condition by appropriate pre- and post scaling), reflecting the zeros about the unit circle 
+(turning minimum phase filters into maximum phase ones), etc. ...TBC... */
+
+
+template<class T>
+class rsSparseDigitalTransferFunction : public rsSparseRationalFunction<T>
+{
+
+public:
+
+  using Base = rsSparseRationalFunction<T>;    // For convenience
+  using Base::Base;                            // Inherit constructors
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Adds an overall predelay to the whole filter by shifting all exponents of z^-1 by the given
+  amount. */
+  void addPreDelay(int amountInSamples)
+  {
+    if(amountInSamples < 0)
+    {
+      rsError("Negative predelay is not allowed");
+      return;
+      // We could allow it if we already have some predelay and the given amount would just 
+      // reduce it. Maybe we can relax the restriction to amountInSamples >= -num.getMinPower() or
+      // something. If the minimum power is 3, we could allow a predelay amount of -3. This would 
+      // then just reduce the predelay to zero.
+    }
+
+    num.shiftPowers(amountInSamples);
+
+
+    // Maybe do num.shiftPowers(rsMax(amountInSamples, -getPreDelay()) ); and write unit tests for
+    // this
+  }
+
+  /** Removes the predelay from this filter, if any is present. This makes sure that the lowest
+  exponent of z^-1 in the numerator is zero. see getPreDelay(), addPreDelay()  */
+  void removePreDelay() { num.shiftPowers(-getPreDelay()); }
+
+  /** Turns the filter into its inverse. This basically amounts to swapping numerator and
+  denominator and possibly applying some scaling of the coefficients if b0 != 1. */
+  void invert()
+  {
+    rsAssert(isCanonical());
+
+    // A filter with predelay cannot be inverted (at least not if it operates in realtime). The 
+    // best thing we can do in this case is to invert the filter up to the predelay. Removing the
+    // predelay ensures that the 0-th term in the numerator has power of 0, i.e. it's a  b0 * z^-0  
+    // term:
+    removePreDelay();
+    rsAssert(num.getPower(0) == 0); // Numerator is already asserted to be non-empty in isCanoncial
+    rsAssert(num.getCoeff(0) != 0); // ..so we can access the 0-th element without risk here
+
+    // Swap numerator and denominator while maintaining the a0 = 0 normalization condition by 
+    // appropriately scaling the numerator before and after the swap:
+    T s = T(1) / num.getCoeff(0);  // Desired scaler s is 1/b0
+    scale(s);                      // Scale old numerator to achieve b0 = 1 before swap
+    std::swap(num, den);           // Swap numerator and denominator. b0 is now 1 because a0 was.
+    scale(s);                      // Scale new numerator to achieve desired overall gain
+
+    // I'm pretty sure it doesnt' allocate. The swap of the underyling std::vectors should use move 
+    // semantics. Verify and document this. We need to be able to call this function on a realtime 
+    // thread in some damped comb allpass filters, so it is important that this function is 
+    // non-allocating.
+  }
+
+  /** Reflects the zeros of the filter about the unit circle. This will turn a minimum phase
+  filter into a maximum phase one and vice versa. For mixed phase filters, it inverts the mix.
+  It doesn't affect stability or filter order. */
+  void reflectZeros()
+  {
+    int deg = num._getDegree();                   // ToDo: use canonical getDegree
+    for(int i = 0; i < num.getNumTerms(); i++)
+      num._setPower(i, deg - num.getPower(i));
+    num._reverse();                               // Order array by ascending powers again
+
+    // How about a reflectPoles() function? But that would turn stable filters into unstable ones,
+    // so it's usefulness is questionable. For the time being, we can do without. Maybe we should 
+    // also apply complex conjugation of the coeffs in case of complex coeffs? If so, maybe
+    // do it in a function num.conjugateCoeffs() which just calls rsConj() on each coeff (which is
+    // an empty function for real types)
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  /** Returns the predelay introduced by this filter. A predelay is characterized by the fact that
+  the lowest exponent of z^-1 in the numerator is not zero. That means the numerator does not look
+  like b0 + b1*z-^1 + b2*z^-2 + ... but rather something like b7*z^-7 + b8*z^-8 + b9*z^-9 + ...
+  for a predelay of 7 samples, for example. */
+  int getPreDelay() const { return num.getPower(0); }
+
+  /** Returns the order of the filter. This is the maximum exponent of z^-1 that occurs in the
+  transfer function. */
+  int getFilterOrder() const { return rsMax(num._getDegree(), den._getDegree()); }
+  // ToDo: use canonical getDegree() rather than _getDegree() which should also work with 
+  // non-canonical representations of sparse polynomials but has O(N) complexity rather than O(1).
+  // We can assume a canonical representation here, I think - so we don't need to be so defensive
+  // here to allow also for non-canonical polynomials.
+
+  /** Performs some sanity checks. Is meant for debug assertions. */
+  bool isCanonical() const
+  {
+    bool ok = true;
+
+    // Numerator and denominator polynomials should not be empty:
+    ok &= num.getNumTerms() > 0 && den.getNumTerms() > 0;
+
+    // We assume the filter polynomials to be in canonical shape:
+    ok &= num.isCanonical();
+    ok &= den.isCanonical();
+
+    // Filter should satisfy the a0 == 1 normalization property:
+    ok &= den.getPower(0) == 0 && den.getCoeff(0) == T(1);
+
+    return ok;
+  }
+
+
+  /** Computes the density of the numerator defined as the number of actual nonzero coeffs divided
+  by the number of potentially nonzero coeffs given the degree of the numerator. */
+  double getNumeratorDensity() const
+  { return double(num.getNumTerms()) / double(num._getDegree()+1); }
+  // ToDo: use canonical getDegree()
+
+  /** Computes the density of the denominator defined as the number of actual nonzero coeffs 
+  divided by the number of potentially nonzero coeffs given the degree of the denominator. */
+  double getDenominatorDensity() const
+  { return double(den.getNumTerms()-1) / double(den._getDegree()); }
+  // ToDo: use canonical getDegree()
+
+  /** Returns the "combined density" defined as the number of actual nonzero coeffs of the filter 
+  divided by the number of potential nonzero coeffs for the given filter order. The a0 coeff 
+  doesn't count because it's always 1. */
+  double getCombinedDensity() const
+  {
+    int numPossibleCoeffs = 2*getFilterOrder() + 1;
+    int numActualCoeffs   = num.getNumTerms() + (den.getNumTerms()-1);
+    return double(numActualCoeffs) / double(numPossibleCoeffs);
+  }
+
+  /** Returns the "separated density" defined as the as number of actual nonzero coeffs in 
+  numerator and denominator divided by the number of potential nozero coeffs for the given orders
+  of numerator and denominator. */
+  double getSeparatedDensity() const
+  {
+    int numPossibleCoeffs = num._getDegree()+1 + den._getDegree();  // ToDo: use canonical getDegree
+    int numActualCoeffs   = num.getNumTerms() + (den.getNumTerms()-1);
+    return double(numActualCoeffs) / double(numPossibleCoeffs);
+  }
+  // ToDo: Explain this better! We consider numerator and denominator as separate filters that can
+  // have their own orders and therefore the computation of the number of possibly nonzero coeffs
+  // is different. For example, in an Nth order allpole filter, we have a 0th order numerator. In 
+  // getCombinedDensity, we would assume that it could potentially have N+1 coeffs. Here, we assume
+  // that it can have only one because the order of the numerator is zero.
+
+  // Maybe this could be moved into the baseclass. But I'm not sure, if the +1 fo the num and
+  // no +1 for the den also applies there...well...I think, it does when we assume a canonical
+  // representation with monic denomionator. Here we normalize the denominator to a0=1 - but
+  // whatever way we normalize the function, the denominator has always one degree of freedom
+  // less than the numerator (for the same degree). A degree 1 polynomial has 2 coeffs and a degree
+  // N polynomial has N+1 coeffs. That number applies to the numerator as is. But the denominator
+  // is normalized so we lose one degree of freedom and subtract 1 again.
+
+  // ToDo: Maybe return the densities as rsFraction<int>. They are rational numbers so maybe we 
+  // should treat them as such.
+
+  // ToDo: Document use cases for these getDensity() functions.
+
+
+
+
+
+  T operator()(T x) const 
+  { 
+    T xr = T(1) / x;
+    return num(xr) / den(xr); 
+  }
+  // Do we really need this when we already have the variant with TArg below? Maybe we need it only
+  // because the baseclass also has it and we need to override that? If so, maybe delete it here 
+  // *and* in the baseclass and keep only the variant with TArg in both
+
+
+  template<class TArg>
+  TArg operator()(TArg z) const 
+  { 
+    TArg zr = TArg(1) / z;
+    return num(zr) / den(zr);
+  }
+  // Reciprocation of z needed because we store the coeffs of H(z^-1)
+
+  // We also need to override the evaluateAt functions...or maybe get rid of them in the baseclass.
+  // Oh - looks like, we don't have such functions there. OK - good.
+
+  // This boilerplate is needed to have the desired arithmetic operators available also for the 
+  // derived class. They can not be inherited from the baseclass because their parameter and
+  // return types are different. It may work with pointer-types but not with value-types (I guess):
+
+
+  rsSparseDigitalTransferFunction<T> operator+(const rsSparseDigitalTransferFunction<T>& q) const 
+  { rsSparseDigitalTransferFunction<T> r; weightedSum(*this, T(1), q, T(1), &r, T(0)); return r; }
+
+  rsSparseDigitalTransferFunction<T> operator-(const rsSparseDigitalTransferFunction<T>& q) const 
+  { rsSparseDigitalTransferFunction<T> r; weightedSum(*this, T(1), q, T(-1), &r, T(0)); return r; }
+
+  rsSparseDigitalTransferFunction<T> operator*(const rsSparseDigitalTransferFunction<T>& q) const 
+  { return rsSparseDigitalTransferFunction(num * q.num, den * q.den); }
+
+  rsSparseDigitalTransferFunction<T> operator/(const rsSparseDigitalTransferFunction<T>& q) const 
+  { return rsSparseDigitalTransferFunction(num * q.den, den * q.num); }
+
+  // ToDo: Check if we need to reduce the results to lowest terms or maybe to "canonicalize".
+
+
+};
+
+/** Multiplies a coefficient and a sparse digital transfer function. */
+template<class T>
+inline rsSparseDigitalTransferFunction<T> operator*(
+  const T& s, const rsSparseDigitalTransferFunction<T>& p)
+{
+  rsSparseDigitalTransferFunction<T> r(p);
+  r.scale(s);
+  return r;
+}
+
 
 
 
