@@ -812,6 +812,9 @@ https://github.com/abluenautilus/AcidusVersio
 -Open303 port for the Noise Engineering Versio platform
 
 
+https://librosa.org/
+-audio and music processing in Python
+
 ----------------------------------------------------------------------------------------------------
 Resources
 

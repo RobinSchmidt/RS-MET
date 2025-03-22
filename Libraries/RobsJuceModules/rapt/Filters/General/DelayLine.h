@@ -72,6 +72,19 @@ public:
     return rsPow(z, TArg(-M));       // H(z) = z^-M
   }
 
+  /*
+  void getTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
+  {
+    int M = getDelayInSamples();
+    tf->num._setNumTerms(1); tf->num._setTerm(0, TPar(1), M);
+    tf->den._setNumTerms(1); tf->den._setTerm(0, TPar(1), 0);
+  }
+  // Does not compile. I think, class rsSparseDigitalTransferFunction is not yet integrated into 
+  // the library. It's still in the prototypes section. To make this code compile, we need to drag
+  // it over.
+  */
+
+
 
 
   //-----------------------------------------------------------------------------------------------

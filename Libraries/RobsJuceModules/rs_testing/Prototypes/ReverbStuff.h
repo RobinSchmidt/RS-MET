@@ -4176,6 +4176,10 @@ public:
 
 
 
+
+
+
+
   template<class TArg>
   TArg getDelayTransferFunctionAt(const TArg& z, int n)
   {
@@ -4264,6 +4268,17 @@ public:
   }
   // Allocates! Not for realtime use!
   
+
+
+  void getDelayTransferFunction(int n, rsSparseDigitalTransferFunction<TPar>* tf) const
+  {
+    int M = getDelayInSamples(n);
+    tf->num._setNumTerms(1); tf->num._setTerm(0, TPar(dampFactors[n]), M+1);
+    tf->den._setNumTerms(1); tf->den._setTerm(0, TPar(1),              0);
+  }
+  // Needs tests
+
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
