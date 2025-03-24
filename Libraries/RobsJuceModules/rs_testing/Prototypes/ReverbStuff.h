@@ -4286,14 +4286,9 @@ public:
     using LA  = rsLinearAlgebraNew;
     using Mat = rsMatrix<TF>;
 
-
     int numIns   = getNumInputs();
     int numOuts  = getNumOutputs();
     int numChans = getNumDelayChannels();
-
-    //TF zero;
-    //zero.initToZero();
-    //Mat D(numChans, numChans, zero);  // Doesn't compile
 
     // Create the required matrices with transfer functions as elements:
     Mat D(numChans, numChans);
@@ -4313,6 +4308,7 @@ public:
     //return H;
 
 
+    // Preliminary (and wrong!):
     rsMatrix<TF> H(numOuts, numIns);
     return H;
 
@@ -4329,6 +4325,13 @@ public:
     // fraction in order to make overflow less likely. ...and with rational functions? Maybe the
     // simplest (nonzero) rational function in terms of degrees of numerator and denominator would 
     // make for the best pivot?
+
+
+    // Notes:
+    //
+    // - We do not need to explicitly initialize the D matrix by all zeros (even though the 
+    //   constructor of rsMatrix does no zero-initialization) because the default 
+    //   constructor of class rsSparseDigitalTransferFunction class initializes with zero.
   }
 
 
