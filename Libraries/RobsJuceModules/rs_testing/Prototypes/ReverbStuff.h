@@ -4270,23 +4270,50 @@ public:
   
 
 
-  /*
   void getDelayTransferFunction(int n, rsSparseDigitalTransferFunction<TPar>* tf) const
   {
-    int M = getDelayInSamples(n);
+    int M = getDelay(n);
     tf->num._setNumTerms(1); tf->num._setTerm(0, TPar(dampFactors[n]), M+1);
     tf->den._setNumTerms(1); tf->den._setTerm(0, TPar(1),              0);
   }
   // Needs tests
-  */
 
-  /*
+
   // Under construction:
   rsMatrix<rsSparseDigitalTransferFunction<TPar>> getTransferFunction()
   {
-    int numIns   = (int) inputs.size();
-    int numOuts  = (int) outputs.size();
+    using TF  = rsSparseDigitalTransferFunction<TPar>;
+    using Mat = rsMatrix<TF>;
+
+
+    int numIns   = getNumInputs();
+    int numOuts  = getNumOutputs();
     int numChans = getNumDelayChannels();
+
+    //TF zero;
+    //zero.initToZero();
+    //Mat D(numChans, numChans, zero);  // Doesn't compile
+    Mat D(numChans, numChans);
+    for(int n = 0; n < numChans; n++)
+    {
+      getDelayTransferFunction(n, &(D(n,n)));
+      D(n,n).invert();
+    }
+
+
+
+    //Mat A; rsConvert(feedbackMatrix, &A); 
+    //Mat B; rsConvert(inMatrix,       &B);
+    //Mat C; rsConvert(outMatrix,      &C);
+    // Doesn't compile. I think, we need to implement rsConvert for matrices of element type TF or
+    // implement a conversion constructor in class TF that takes a number and promotes it to a 
+    // constant rational function.
+
+
+
+
+    rsMatrix<TF> H(numOuts, numIns);
+    return H;
 
 
     // I think, the matrix inversion step will be complicated. Maybe as a preliminary, we need to
@@ -4301,9 +4328,8 @@ public:
     // fraction in order to make overflow less likely. ...and with rational functions? Maybe the
     // simplest (nonzero) rational function in terms of degrees of numerator and denominator would 
     // make for the best pivot?
-
   }
-  */
+
 
 
 

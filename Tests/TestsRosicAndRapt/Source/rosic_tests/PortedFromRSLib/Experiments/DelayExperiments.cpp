@@ -2905,6 +2905,7 @@ void protoFDN1()
   using VecR    = std::vector<Real>;
   using MatC    = rsMatrix<Complex>;
   using FDN     = rsProtoFDN<Real, Real>;
+  using TF      = rsSparseDigitalTransferFunction<Real>;
 
   int numSamples = 1000;
   int numChans   = 3;
@@ -2979,6 +2980,11 @@ void protoFDN1()
   MatC    H  = fdn.getTransferFunctionAt(z);
   Complex errH = H(0,0) - Hn;
   ok &= rsIsCloseTo(H(0,0), Hn, 1.e-13);
+
+
+  rsMatrix<TF> tf = fdn.getTransferFunction();
+
+
 
   // Plot the generated signal together with the reference signal:
   //rsPlotVectors(y, y2);
