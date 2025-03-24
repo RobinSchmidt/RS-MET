@@ -4283,6 +4283,7 @@ public:
   rsMatrix<rsSparseDigitalTransferFunction<TPar>> getTransferFunction()
   {
     using TF  = rsSparseDigitalTransferFunction<TPar>;
+    using LA  = rsLinearAlgebraNew;
     using Mat = rsMatrix<TF>;
 
 
@@ -4293,23 +4294,23 @@ public:
     //TF zero;
     //zero.initToZero();
     //Mat D(numChans, numChans, zero);  // Doesn't compile
+
+    // Create the required matrices with transfer functions as elements:
     Mat D(numChans, numChans);
     for(int n = 0; n < numChans; n++)
     {
       getDelayTransferFunction(n, &(D(n,n)));
       D(n,n).invert();
     }
+    Mat A; rsConvert(feedbackMatrix, &A);
+    Mat B; rsConvert(inMatrix,       &B);
+    Mat C; rsConvert(outMatrix,      &C);
 
 
-
-    //Mat A; rsConvert(feedbackMatrix, &A); 
-    //Mat B; rsConvert(inMatrix,       &B);
-    //Mat C; rsConvert(outMatrix,      &C);
-    // Doesn't compile. I think, we need to implement rsConvert for matrices of element type TF or
-    // implement a conversion constructor in class TF that takes a number and promotes it to a 
-    // constant rational function.
-
-
+    // Compute and return the transfer function matrix:
+    //Mat M = LA::inverse(D-A);  // (D-A)^-1   ...produces linker error (unresovled external symbol)
+    //Mat H = C * M * B;
+    //return H;
 
 
     rsMatrix<TF> H(numOuts, numIns);

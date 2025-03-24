@@ -60,18 +60,28 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Lifetime */
 
-
+  /** Default constructor. Creates the rational function that is constantly zero. */
   rsSparseRationalFunction() 
   {
     den._appendTerm(T(1), 0);
   }
 
+  /** Constructor that converts a number c to the constnat function that just produces c for any 
+  input. */
+  rsSparseRationalFunction(const T& c) 
+  {
+    num._appendTerm(c,    0);
+    den._appendTerm(T(1), 0);
+  }
 
   rsSparseRationalFunction(
     const rsSparsePolynomial<T>& numerator, const rsSparsePolynomial<T>& denominator) 
     : num(numerator), den(denominator)  {}
 
   // Maybe implement it for const rsSparsePolynomial<T>&&, too. Or maybe that one is enough?
+
+
+
 
 
   //-----------------------------------------------------------------------------------------------
