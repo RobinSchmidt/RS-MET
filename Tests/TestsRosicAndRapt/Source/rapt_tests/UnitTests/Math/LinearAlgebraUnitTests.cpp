@@ -990,14 +990,37 @@ bool testRationalLinAlg()
   using LA  = RAPT::rsLinearAlgebraNew;
 
   // Test inversion:
-  //Mat A(2, 2, { Rat(1,2), Rat(2,3),   Rat(-6,5), Rat(3,7) });
-  Mat A(2, 2, { {1,2}, {2,3},  {-6,5}, {3,7} });   // Maybe try a larger matrix
-  Mat B = LA::inverse(A);
-  Mat I(2,2, {1,0,0,1});
-  Mat AB = A*B;
-  ok &= AB == I;
+
+  // 1x1:
+  Mat A1(1, 1, { {2,3} });
+  Mat B1 = LA::inverse(A1);
+  ok &= B1 == Mat(1, 1, { {3,2} });
+
+  // 2x2:
+  Mat A2(2, 2, { {1,2}, {2,3},  {-6,5}, {3,7} });
+  Mat B2 = LA::inverse(A2);
+  Mat I2(2,2, {1,0,0,1});
+  Mat AB2 = A2*B2;
+  ok &= AB2 == I2;
+
+  // 3x3:
+  Mat A3(3, 3, { {1,2},{2,3},{-6,5},  {3,7},{-5,12},{-3,8},  {-8,3},{5,2},{7,6} });
+  Mat B3 = LA::inverse(A3);
+  Mat I3(3,3, {1,0,0, 0,1,0, 0,0,1});
+  Mat AB3 = A3*B3;
+  ok &= AB3 == I3;
 
   return ok;
+
+
+  // ToDo:
+  //
+  // - Check what the pivoting does. I think, it uses the fallback implementation that selects the
+  //   pivot with greatest absolute value. This may be unsuitable for matrices of rational numbers.
+  //   Instead, we may want to use the simplest nonzero element where simplcity should somehwo be
+  //   defined in terms of size of numerator and denominator. But maybe only the denominator should
+  //   count because it's the denominators that get used in the cross-multiplication when computing
+  //   the sum of two fractions.
 }
 
 
