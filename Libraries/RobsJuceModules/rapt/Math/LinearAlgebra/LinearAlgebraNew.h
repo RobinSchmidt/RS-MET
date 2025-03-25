@@ -44,12 +44,13 @@ public:
   /** Returns the inverse of the given matrix A which is assumed to be a square matrix. */
   template<class T>
   static rsMatrix<T> inverse(const RAPT::rsMatrixView<T>& A);
-  // allocates, todo: pseudoInverse
+  // Allocates, ToDo: pseudoInverse
 
   /** Computes the determinant of A by Gaussian elemination. */
   template<class T>
   static T determinant(const rsMatrixView<T>& A);
-  // allocates
+  // Allocates, ToDo: check, if we have proper test coverage (i.e. all possible qualitatively 
+  // different cases)
 
 
   //-----------------------------------------------------------------------------------------------

@@ -4324,7 +4324,10 @@ public:
     // we may have to worry about integer overflow. There, we may want to choose the "simplest" 
     // fraction in order to make overflow less likely. ...and with rational functions? Maybe the
     // simplest (nonzero) rational function in terms of degrees of numerator and denominator would 
-    // make for the best pivot?
+    // make for the best pivot? Do we even need pivoting or can we get away without it? Maybe the 
+    // matrix D-A has special properties that make pivoting superfluous (maybe it's diagonally 
+    // dominant or something?)
+    // https://math.stackexchange.com/questions/2485574/strictly-column-diagonally-dominant-matrices-and-gaussian-elimination-with-parti?rq=1
 
 
     // Notes:

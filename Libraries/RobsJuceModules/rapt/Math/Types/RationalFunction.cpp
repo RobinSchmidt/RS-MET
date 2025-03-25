@@ -493,10 +493,19 @@ ToDo:
   coefficients of numerator and denominator have the same sign. So, what we would have to do to 
   implement the < relation of two rational functions R,S is  (1) compute D = S - R,  (2) check if 
   leading coeffs of numerator and denominator of D have the same sign. Beware of roundoff error 
-  issues, though. Also, the idea works only for rational functions over the integer, rational or 
-  real numbers but not over the complex numbers, for example. Maybe the underlying set of 
-  coefficients (which can be a field or ring, I guess?) must itself be ordered for the idea to 
-  work? Figure out! The same idea can be used for polynomials, too because they are just a special 
-  case of rational functions (those with denominator 1).
+  issues, though. Also, the idea works only for rational functions with the integer, rational or 
+  real coefficients but not for rational functions with complex coefficients, for example. I think,
+  the arguments may still be complex though - but the coeffs must be real (verify!). Maybe the 
+  underlying set of coefficients (which can be a field or ring, I guess?) must itself be ordered 
+  for the idea to work? Figure out! The same idea can be used for polynomials, too because they are
+  just a special case of rational functions (those with denominator 1). Based on the < relation, we
+  may also implement an absloute value function: |f| = f  iff  f >= 0  and  f = -f  iff  f < 0  
+  where 0 is the zero rational function (represented as  0*x^0 / 1*x^0  here, i.e. the zero 
+  polynomial over the one polynomial...I think - verify!). All these things may be needed when we
+  want to do linear algebra with matrices of rational functions because the pivoting steps in 
+  Gaussian elemination need these operations. And we do indeed need matrix inversion of matrices of
+  rational functions when we want to compute the transfer function of a state space filter 
+  symbolically - so this stuff may actually be relevant in practice and not just an academic 
+  excercise.
 
 */

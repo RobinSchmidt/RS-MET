@@ -245,34 +245,54 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B, i
       A.addWeightedRowToOther(i, j, w, i, A.getNumColumns()-1); // start at i: avoid adding zeros
       B.addWeightedRowToOther(i, j, w); }}
   return i;
+
+  // ToDo:
+  //
+  // - Rename "biggest" to "best" and replace the call to rsGreaterAbs with a call to 
+  //   rsIsBetterPivot which needs to be written. The idea is that choosing the element with
+  //   greatest absolute value is not always appropriate. It is appropriate for T being a floating
+  //   point number type but not so much for rational numbers, rational functions, modular 
+  //   integers, etc. We may want to use another criterion for these other types which we implement
+  //   by providing explicit specializations of rsIsBetterPivot for these types (it should have a 
+  //   default/generic implementation that calls rsGreaterAbs). ...But hwo do we deal with tooSmall
+  //   and rsIsCloseTo? Maybe we need to write a function 
+  //   rsIsBadPivot(const T& trialPivot, const T& tol)  where tol is set to the tooSmall parameter.
+  //   But: what about the call to A.getAbsoluteMaximum? Also: isn't the call to
+  //     if(rsIsCloseTo(biggest, T(0), tooSmall)) a bug? 
+  //   Shouldn't it be:
+  //     if(rsIsCloseTo(rsAbs(biggest), T(0), tooSmall))
+
+  // Maybe in if(rsIsCloseTo... we should not return early, if at the same time A(i,i) is zero - in
+  // this case the i-th column is already zero from i downward - this is ok - or wait - no - this
+  // check is already includes in the for(int j=i ...loop
+  // pass a tol
+
+  // Maybe allow the function to be called without an rhs B. It may make sense to use it with a 
+  // single input in order to compute determinants - when the function returns, the determinant is
+  // the product of diagonal elements - up to a sign flip, which occurs when we had an odd number 
+  // of row-swaps. Maybe keep track of whether the number of swaps was even or odd by doing
+  // oddSwaps *= -1 in if(p !=i) and return +1 or -1 - or better: return the determinant! if we
+  // run into the error branch, immediately return zero - but no - often, we don't need the 
+  // determinant, so this extra computation should be avoided - but maybe return the rank which is
+  // the iteration number i - callers may look at it and if it's less than N, they conclude that
+  // the matrix was singular
+  // instead of actually writing the zeros into the rows below, write the weights w - 
+  // addWeightedRow should then start at i+1 instead of at i - doing it this way produces the LU
+  // decomposition of a permutation of A ...but in order to be useful for later solving other 
+  // systems with ethe same matrix but other right-hand-sides, we would need to keep track of the
+  // permutations - here it is no problem, because we immediately apply the swaps to the RHS as 
+  // well
+
+  // i think, this function is useful also for singular matrices - in this case, it should stop as
+  // soon as it encounters a situation where there are only zeros in th i-th column below the 
+  // diagonal element A(i,i) such that no pivot can be found - ith should then return i - it should
+  // always return the number of successful elimination steps - how does this number relate to the 
+  // rank - it can't be the rank itself because when the matrix already is triangular, we take no 
+  // step at all but it may still have full rank -  i think, the rank is given by the greatest 
+  // index i for which A(i,i) is nonzero after the function returns
+
 }
-// maybe in if(rsIsCloseTo... we should not return early, if at the same time A(i,i) is zero - in 
-// this case the i-th column is already zero from i downward - this is ok - or wait - no - this
-// check is already includes in the for(int j=i ...loop
-// pass a tol
 
-// Maybe allow the function to be called without an rhs B. It may make sense to use it with a 
-// single input in order to compute determinants - when the function returns, the determinant is
-// the product of diagonal elements - up to a sign flip, which occurs when we had an odd number of
-// row-swaps. Maybe keep track of whether the number of swaps was even or odd by doing
-// oddSwaps *= -1 in if(p !=i) and return +1 or -1 - or better: return the determinant! if we
-// run into the error branch, immediately return zero - but no - often, we don't need the 
-// determinant, so this extra computation should be avoided - but maybe return the rank which is
-// the iteration number i - callers may look at it and if it's less than N, they conclude that
-// the matrix was singular
-// instead of actually writing the zeros into the rows below, write the weights w - 
-// addWeightedRow should then start at i+1 instead of at i - doing it this way produces the LU
-// decomposition of a permutation of A ...but in order to be useful for later solving other 
-// systems with ethe same matrix but other right-hand-sides, we would need to keep track of the
-// permutations - here it is no problem, because we immediately apply the swaps to the RHS as well
-
-// i think, this function is useful also for singular matrices - in this case, it should stop as
-// soon as it encounters a situation where there are only zeros in th i-th column below the 
-// diagonla element A(i,i) such that no pivot can be found - ith should then return i - it should
-// always return the number of successful elimination steps - how does this number relate to the 
-// rank - it can't be the rank itself because when the matrix already is triangular, we take no step
-// at all but it may still have full rank -  i think, the rank is given by the greatest index i for
-// which A(i,i) is nonzero after the function returns
 
 /*
 template<class T>
