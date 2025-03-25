@@ -222,20 +222,25 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B, i
   rsAssert(A.getNumRows() == B.getNumRows());
   *numSwaps = 0;
 
-  //T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
-  T tooSmall = T(1000) * rsEpsilon(T(0)) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
+  //T tol = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
+  T tol = T(1000) * rsEpsilon(T(0)) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
 
   int i, numRows = A.getNumRows();
   for(i = 0; i < rsMin(numRows, A.getNumColumns()); i++) {
     //rsMatrix<T> dbg; dbg.copyDataFrom(A);  // uncomment for debugging
     int p = i; 
-    T biggest = T(0);
+    T best = T(0);
     for(int j = i; j < numRows; j++) {                          // search pivot row
-      if( rsGreaterAbs(A(j, i), biggest) ){ 
-        biggest = A(j, i); 
+
+      //if( rsGreaterAbs(A(j, i), best) ) {   // old
+      if( rsIsBetterPivot(A(j, i), best) ) {  // new
+        best = A(j, i); 
         p = j; }}
-    if(rsIsCloseTo(biggest, T(0), tooSmall))                    // no pivot found - return early
+
+    if(rsIsCloseTo(best, T(0), tol))                            // no pivot found - return early
       return i;
+    // This needs to be replaced by a sort of rsIsBadPivot function
+
     if(p != i) {                                                // turn pivot row into current row
       A.swapRows(i, p); 
       B.swapRows(i, p);
@@ -248,8 +253,8 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B, i
 
   // ToDo:
   //
-  // - Rename "biggest" to "best" and replace the call to rsGreaterAbs with a call to 
-  //   rsIsBetterPivot which needs to be written. The idea is that choosing the element with
+  // - [partially done] Rename "biggest" to "best" and replace the call to rsGreaterAbs with a call
+  //   to rsIsBetterPivot. The idea is that choosing the element with
   //   greatest absolute value is not always appropriate. It is appropriate for T being a floating
   //   point number type but not so much for rational numbers, rational functions, modular 
   //   integers, etc. We may want to use another criterion for these other types which we implement

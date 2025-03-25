@@ -179,7 +179,7 @@ public:
   The process used is Gaussian elimination with partial pivoting. */
   template<class T>
   static int makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B);
-  // todo: document return value: it returns the ietration number, i.e. the number of row 
+  // todo: document return value: it returns the iteration number, i.e. the number of row 
   // reductions that have been performed. for a NxN matrix, if this number is < N it means, the 
   // function encountered a zero pivot and returns early and indicates that A is singular, i think
   // the returned value is the rank of the matrix
@@ -198,7 +198,7 @@ public:
   matrices, so it's not recommended for general use, but if you know that the elimination will 
   never encounter a zero diagonal element, you may use this version for optimization purposes. It 
   also has less requirements on the datatype T, so it may be used in cases where the datatype 
-  doesn't meet all reuqirements needed for pivoting. It doesn't require comparison operators <,>
+  doesn't meet all requirements needed for pivoting. It doesn't require comparison operators <,>
   or an rsAbs function defined for it - it does, however, require an == operator. */
   //template<class T>
   //static void makeTriangularNoPivot(rsMatrixView<T>& A, rsMatrixView<T>& B);
@@ -213,7 +213,8 @@ public:
   matrix with the eigenvalues on the main diagonal - this is *NOT* what this function does. */
   template<class T>
   static int makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B);
-  // doesn't allocate, todo: needs test, maybe renmae to reducedRowEchelonForm
+  // doesn't allocate, todo: needs test, maybe rename to reducedRowEchelonForm so it doesn't get
+  // confused with diagonalization
 
   /** Solves the system(s) of linear equations A * X = B for the special case where A is an upper
   triangular matrix. */

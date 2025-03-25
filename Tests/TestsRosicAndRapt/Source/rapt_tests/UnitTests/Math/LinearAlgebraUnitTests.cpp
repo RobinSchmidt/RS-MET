@@ -1015,12 +1015,9 @@ bool testRationalLinAlg()
 
   // ToDo:
   //
-  // - Check what the pivoting does. I think, it uses the fallback implementation that selects the
-  //   pivot with greatest absolute value. This may be unsuitable for matrices of rational numbers.
-  //   Instead, we may want to use the simplest nonzero element where simplcity should somehwo be
-  //   defined in terms of size of numerator and denominator. But maybe only the denominator should
-  //   count because it's the denominators that get used in the cross-multiplication when computing
-  //   the sum of two fractions.
+  // - Maybe try bigger matrices and use random entries. Try to cover all cases in
+  //   rsIsBetterPivot(const rsFraction<T>& x, const rsFraction<T>& y). Try to cover singular
+  //   matrices as well.
 }
 
 
@@ -1050,10 +1047,10 @@ bool testLinearAlgebra()
   ok &= testIterativeLinearSolvers();
   ok &= testPowerIterationDense();
 
-  // Linear algebra on complex matrices:
-  ok &= testStdComplexLinAlg();             // Uses std::complex
-  ok &= testRsComplexLinAlg();              // Uses RAPT::rsComplex
-  ok &= testRationalLinAlg();               // Uses RAPT::rsFraction
+  // Linear algebra on matrices of more complicated data types T:
+  ok &= testStdComplexLinAlg();  // T = std::complex
+  ok &= testRsComplexLinAlg();   // T = RAPT::rsComplex
+  ok &= testRationalLinAlg();    // T = RAPT::rsFraction
 
   return ok;
 }

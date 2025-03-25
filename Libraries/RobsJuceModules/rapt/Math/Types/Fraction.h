@@ -143,6 +143,44 @@ rsFraction<T> operator/(const T& i, const rsFraction<T>& r)
 { return rsFraction<T>(i * r.getDenominator(), r.getNumerator()); }
 
 
+template<class T>
+inline bool rsIsBetterPivot(const rsFraction<T>& x, const rsFraction<T>& y)
+{
+  //return rsGreaterAbs(x, y); // Default implementation suitable for floating point types
+
+  // A zero x is never a better pivot than any y:
+  if(x.isZero())
+    return false;
+
+  // Any nonzero x is always better than a zero y:
+  if(y.isZero())
+    return true;
+
+  // An x with smaller denominator is better than a y with larger denominator:
+  if(x.getDenominator() < y.getDenominator())
+    return true;
+
+  // An x with larger denominator is worse that a y with smaller denominator:
+  if(x.getDenominator() > y.getDenominator())
+    return false;
+
+  // When x and y have the same denominator, we compare the numerators. A smaller absolute value is
+  // better (except when it's zero - but this has already been ruled out):
+  return rsAbs(x.getNumerator()) < rsAbs(y.getNumerator());
+
+  // The rationale behind this is that a good pivot should be "simple" in the sense that it is
+  // unlikely to blow up the size of the denominators in subsequent arithmetic operations. It's a 
+  // heuristic, though. If we will see a blow up of complexity depends on many more variables. But
+  // it might be the most reasonable thing we can do when we take into account only two values. 
+  // Doing any better would require us to analyze the whole matrix with all the interactions 
+  // between all the elements. That may very well make pivoting so expensive that it totally 
+  // dominates the cost of a matrix inversion, I guess (Verify! ...or at least justify)
+}
+// Needs tests. I'm not yet quite sure about the appropriateness of the applied criteria.
+
+
+
+
 // ToDo:
 // -Implement functions for truncation, floor, ceiling, rounding. Maybe as free functions rsTrunc, 
 //  rsFloor, rsCeil, rsRound. I think, truncation can simply be done by returning num / den, i.e. 
