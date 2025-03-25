@@ -43,7 +43,7 @@ public:
 
   operator double() const { return toDouble(); }
   // Perhaps it's not a good idea to allow implicit conversions to double. Client code should be
-  // explicit. But it does make sense to have such an implicit conversion operator availabel when
+  // explicit. But it does make sense to have such an implicit conversion operator available when
   // rsFraction is used in e.g. rsQuadraticField (in the reserach repo). So, I tend to think, we
   // should keep it.
 

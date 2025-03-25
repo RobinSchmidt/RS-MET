@@ -989,9 +989,13 @@ bool testRationalLinAlg()
   using Mat = rsMatrix<Rat>;
   using LA  = RAPT::rsLinearAlgebraNew;
 
-  Mat A(2, 2, { Rat(1,2), Rat(2,3),   Rat(-6,5), Rat(3,7) });
-  //Mat B = LA::inverse(A);   // Linker error!
-
+  // Test inversion:
+  //Mat A(2, 2, { Rat(1,2), Rat(2,3),   Rat(-6,5), Rat(3,7) });
+  Mat A(2, 2, { {1,2}, {2,3},  {-6,5}, {3,7} });   // Maybe try a larger matrix
+  Mat B = LA::inverse(A);
+  Mat I(2,2, {1,0,0,1});
+  Mat AB = A*B;
+  ok &= AB == I;
 
   return ok;
 }
