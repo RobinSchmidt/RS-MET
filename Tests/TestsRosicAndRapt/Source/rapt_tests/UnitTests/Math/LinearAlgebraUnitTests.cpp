@@ -989,7 +989,7 @@ bool testRationalLinAlg()
   using Mat = rsMatrix<Rat>;
   using LA  = RAPT::rsLinearAlgebraNew;
 
-  // Test inversion:
+  // Test matrix inversion:
 
   // 1x1:
   Mat A1(1, 1, { {2,3} });

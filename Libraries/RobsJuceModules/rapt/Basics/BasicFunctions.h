@@ -362,9 +362,32 @@ example rational numbers, i.e. pairs of integers where roundoff error is not a t
 more appropriate to that type (for example, check for x being nonzero and "simpler" than y - 
 however that is defined - we want to avoid integer overflow in the case of rationals). */
 template<class T>
-inline bool rsIsBetterPivot(const T& x, const T& y) 
+inline bool rsIsBetterPivot(const T& x, const T& y)
 { 
   return rsGreaterAbs(x, y);
+}
+
+template<class T>
+inline bool rsIsBadPivot(const T& p, const T& tol)
+{ 
+  //return rsIsCloseTo(p, T(0), tol);
+    // Compiles but is slightly wrong, I think. It may mess up the tolerance by a factor of 2 or 
+    // something?
+
+  //return rsIsCloseTo(rsAbs(p), T(0), tol);
+    // Doesn't compile for T = complex.
+
+  return rsIsCloseTo(rsAbs(p), rsAbs(T(0)), rsAbs(tol));
+    // Compiles also for complex T and is also always correct but not optimal due to the extra 
+    // calls to rsAbs() on numbers which are always nonnegative anyway.
+
+  // This implementation needs some more careful consideration. Maybe we should provide explicit 
+  // specializations for T = std::complex and T = rsComplex so we can get rid of the superfluous
+  // calls to rsAbs(). Maybe we should also use the function rsZeroValue(p) instead of T(0) to make
+  // it work with T = rsModularInteger. But maybe we should just provide an explicit specialization
+  // for that type, too. Yeah - indeed we should because the criterion applied here is not suitable
+  // for modular integers. A modular integer is a bad pivot, if it's not invertible (i.e. not 
+  // coprime with the modulus, I think).
 }
 
 
