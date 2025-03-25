@@ -239,7 +239,7 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B, i
     if(rsIsBadPivot(best, tol))                                 // No pivot found - return early
       return i;
     if(p != i) {                                                // Turn pivot row into current row
-      A.swapRows(i, p); 
+      A.swapRows(i, p);
       B.swapRows(i, p);
       (*numSwaps)++;     }                                      // Keep track of number of swaps
     for(int j = i+1; j < numRows; j++) {                        // Pivot row subtraction
@@ -248,10 +248,17 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B, i
       B.addWeightedRowToOther(i, j, w); }}
   return i;
 
-  // Maybe in if(rsIsCloseTo... we should not return early, if at the same time A(i,i) is zero - in
+  // Maybe the tol = ... should be replaced by a function template call rsGetPivotingTolerance(A).
+  // Maybe we shouldn't even call it a tolerance because that interpretation applies only to 
+  // (real or complex) floating point types T, I think. For other types, it may be more like a 
+  // reference value and may even be completely ignored by rsIsBadPivot() because it's irrelevant
+  // for that type T. For example, for T = rsFraction or T = rsModularInteger, the decision what 
+  // constitutes a "bad pivot" is not based on any sort of tolerance test at all and there, the 
+  // test doesn't need any reference (or tolerance) value.
+
+  // Maybe in if(rsIsBadPivot... we should not return early, if at the same time A(i,i) is zero - in
   // this case the i-th column is already zero from i downward - this is ok - or wait - no - this
-  // check is already includes in the for(int j=i ...loop
-  // pass a tol
+  // check is already included in the for(int j=i ...loop
 
   // Maybe allow the function to be called without an rhs B. It may make sense to use it with a 
   // single input in order to compute determinants - when the function returns, the determinant is
