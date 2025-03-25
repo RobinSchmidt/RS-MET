@@ -328,7 +328,6 @@ T rsReal(const T& z)  // This is for when z is already a real number type such a
   return z;
 }
 
-
 template <class T>
 T rsReal(const std::complex<T>& z)
 {
@@ -348,7 +347,25 @@ inline void rsSetComplex(std::complex<T>* z, const T& newReal, const T& newImag)
   z->imag(newImag);
 }
 
+// ToDo:
+//
+// - Add function rsConj(). For real numbers, it should just be the identity. For compelx numbers,
+//   it should negate the imaginary part (and keep the real part as is).
 
+
+/** Returns true, iff x is a better pivot element than y in the Gaussian elemination algorithm. The
+default implementation just compares the absolute values of x and y and is suitable for floating 
+point number types (real or complex). An element with larger absolute value is considered to be a 
+better pivot element. This has reasons rooted in numerical roundoff behavior. For other types (for 
+example rational numbers, i.e. pairs of integers where roundoff error is not a thing), you may 
+"override" this behavior by providing an explicit specialization that does something else that is 
+more appropriate to that type (for example, check for x being nonzero and "simpler" than y - 
+however that is defined - we want to avoid integer overflow in the case of rationals). */
+template<class T>
+inline bool rsIsBetterPivot(const T& x, const T& y) 
+{ 
+  return rsGreaterAbs(x, y);
+}
 
 
 

@@ -972,6 +972,28 @@ bool testRsComplexLinAlg()
   //ok &= rsIsCloseTo(AB, I, tol);
 
   return ok;
+
+  // ToDo:
+  //
+  // - Make a single implementation that can be used for tests with std::complex and 
+  //   RAPT::rsComplex by letting it have a template parameter
+}
+
+bool testRationalLinAlg()
+{
+  // Under construction
+
+  bool ok = true;
+
+  using Rat = rsFraction<int>;
+  using Mat = rsMatrix<Rat>;
+  using LA  = RAPT::rsLinearAlgebraNew;
+
+  Mat A(2, 2, { Rat(1,2), Rat(2,3),   Rat(-6,5), Rat(3,7) });
+  //Mat B = LA::inverse(A);   // Linker error!
+
+
+  return ok;
 }
 
 
@@ -980,7 +1002,7 @@ bool testLinearAlgebra()
   bool ok = true;
 
   // LAPACK based solvers:
-  ok &= testBandDiagonalSolver();  // fails with gcc
+  ok &= testBandDiagonalSolver();           // Fails with gcc
 
   // Old (2D array based) solvers:
   ok &= testMatrix2x2();
@@ -1002,8 +1024,9 @@ bool testLinearAlgebra()
   ok &= testPowerIterationDense();
 
   // Linear algebra on complex matrices:
-  ok &= testStdComplexLinAlg();            // uses std::complex
-  ok &= testRsComplexLinAlg();             // uses RAPT::rsComplex
+  ok &= testStdComplexLinAlg();             // Uses std::complex
+  ok &= testRsComplexLinAlg();              // Uses RAPT::rsComplex
+  ok &= testRationalLinAlg();               // Uses RAPT::rsFraction
 
   return ok;
 }
