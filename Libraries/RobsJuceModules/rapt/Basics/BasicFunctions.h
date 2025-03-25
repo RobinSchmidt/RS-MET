@@ -349,8 +349,12 @@ inline void rsSetComplex(std::complex<T>* z, const T& newReal, const T& newImag)
 
 // ToDo:
 //
-// - Add function rsConj(). For real numbers, it should just be the identity. For compelx numbers,
-//   it should negate the imaginary part (and keep the real part as is).
+// - Add function rsConj(). For real numbers, it should just be the identity. For complex numbers,
+//   it should negate the imaginary part and keep the real part as is. Maybe have an in-place 
+//   version of it, too - i.e. one that manipulates the input rather than returning a result. It 
+//   may be more efficient to use that on complex types that have a complicated real type (such as
+//   arbitrary precision floats, for example - they may use heap memory, so copies may be expensive
+//   whereas conjugating in place may be a matter of inverting a flag)
 
 
 /** Returns true, iff x is a better pivot element than y in the Gaussian elemination algorithm. The
@@ -386,8 +390,10 @@ inline bool rsIsBadPivot(const T& p, const T& tol)
   // calls to rsAbs(). Maybe we should also use the function rsZeroValue(p) instead of T(0) to make
   // it work with T = rsModularInteger. But maybe we should just provide an explicit specialization
   // for that type, too. Yeah - indeed we should because the criterion applied here is not suitable
-  // for modular integers. A modular integer is a bad pivot, if it's not invertible (i.e. not 
-  // coprime with the modulus, I think).
+  // for modular integers. A modular integer is a bad pivot, if it's not invertible (i.e. zero or 
+  // not coprime with the modulus, I think). We will also need a special implementation of 
+  // rsIsBetterPivot for rsModularInteger because the greater-abs criterion doesn't make sense for
+  // them either.
 }
 
 

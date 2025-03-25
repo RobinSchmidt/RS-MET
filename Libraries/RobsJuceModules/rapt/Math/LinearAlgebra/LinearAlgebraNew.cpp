@@ -222,49 +222,31 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B, i
   rsAssert(A.getNumRows() == B.getNumRows());
   *numSwaps = 0;
 
-  T tol = T(1000) * rsEpsilon(T(0)) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
+  T tol = T(1024) * rsEpsilon(T(0)) * A.getAbsoluteMaximum();
+  // Ad hoc. The epsilon of double is of the order of e.-16 and the roundoff error that I often see
+  // is often around e.-13, so a factor of around 1000 seemed appropriate. But that's very 
+  // unscientific!  ->  ToDo: Research, perhaps change, document decision.
 
   int i, numRows = A.getNumRows();
   for(i = 0; i < rsMin(numRows, A.getNumColumns()); i++) {
-    //rsMatrix<T> dbg; dbg.copyDataFrom(A);  // uncomment for debugging
+    //rsMatrix<T> dbg; dbg.copyDataFrom(A);                     // Uncomment for debugging
     int p = i; 
     T best = T(0);
-    for(int j = i; j < numRows; j++) {                          // search pivot row
-
-      //if( rsGreaterAbs(A(j, i), best) ) {   // old
-      if( rsIsBetterPivot(A(j, i), best) ) {  // new
+    for(int j = i; j < numRows; j++) {                          // Search pivot row
+      if( rsIsBetterPivot(A(j, i), best) ) {
         best = A(j, i); 
         p = j; }}
-
-    //if(rsIsCloseTo(best, T(0), tol))                            // no pivot found - return early
-    if(rsIsBadPivot(best, tol))                                 // no pivot found - return early
+    if(rsIsBadPivot(best, tol))                                 // No pivot found - return early
       return i;
-
-    if(p != i) {                                                // turn pivot row into current row
+    if(p != i) {                                                // Turn pivot row into current row
       A.swapRows(i, p); 
       B.swapRows(i, p);
-      (*numSwaps)++;     }                                      // keep track of number of swaps
-    for(int j = i+1; j < numRows; j++) {                        // pivot row subtraction
-      T w = -A(j, i) / A(i, i);                                 // weight
-      A.addWeightedRowToOther(i, j, w, i, A.getNumColumns()-1); // start at i: avoid adding zeros
+      (*numSwaps)++;     }                                      // Keep track of number of swaps
+    for(int j = i+1; j < numRows; j++) {                        // Pivot row subtraction
+      T w = -A(j, i) / A(i, i);                                 // Weight
+      A.addWeightedRowToOther(i, j, w, i, A.getNumColumns()-1); // Start at i: avoid adding zeros
       B.addWeightedRowToOther(i, j, w); }}
   return i;
-
-  // ToDo:
-  //
-  // - [partially done] Rename "biggest" to "best" and replace the call to rsGreaterAbs with a call
-  //   to rsIsBetterPivot. The idea is that choosing the element with
-  //   greatest absolute value is not always appropriate. It is appropriate for T being a floating
-  //   point number type but not so much for rational numbers, rational functions, modular 
-  //   integers, etc. We may want to use another criterion for these other types which we implement
-  //   by providing explicit specializations of rsIsBetterPivot for these types (it should have a 
-  //   default/generic implementation that calls rsGreaterAbs). ...But hwo do we deal with tooSmall
-  //   and rsIsCloseTo? Maybe we need to write a function 
-  //   rsIsBadPivot(const T& trialPivot, const T& tol)  where tol is set to the tooSmall parameter.
-  //   But: what about the call to A.getAbsoluteMaximum? Also: isn't the call to
-  //     if(rsIsCloseTo(biggest, T(0), tooSmall)) a bug? 
-  //   Shouldn't it be:
-  //     if(rsIsCloseTo(rsAbs(biggest), T(0), tooSmall))
 
   // Maybe in if(rsIsCloseTo... we should not return early, if at the same time A(i,i) is zero - in
   // this case the i-th column is already zero from i downward - this is ok - or wait - no - this
