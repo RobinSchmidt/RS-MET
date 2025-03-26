@@ -1051,6 +1051,9 @@ bool testLinAlgSparseTransFunc()
   Mat I1(1, 1, { one });
   //ok &= AB1 == I1;         // Doesn't compile because of missing != operator in class TF
 
+  // Try to implement the array comparison (that is used in the matrxi comparison) only with the ==
+  // operator (using negation of the result of the comparison). Maybe try both variants in compiler
+  // explorer.
 
   return ok;
 }
