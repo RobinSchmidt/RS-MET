@@ -258,7 +258,7 @@ inline bool rsIsBetterPivot(const T& x, const T& y)
 }
 
 template<class T>
-inline bool rsIsBadPivot(const T& p, const T& tol)
+inline bool rsIsInvalidDivisor(const T& x, const T& tol)
 { 
   //return rsIsCloseTo(p, T(0), tol);
   // Compiles but is slightly wrong, I think. It may mess up the tolerance by a factor of 2 or 
@@ -267,7 +267,7 @@ inline bool rsIsBadPivot(const T& p, const T& tol)
   //return rsIsCloseTo(rsAbs(p), T(0), tol);
   // Doesn't compile for T = complex.
 
-  return rsIsCloseTo(rsAbs(p), rsAbs(T(0)), rsAbs(tol));
+  return rsIsCloseTo(rsAbs(x), rsAbs(T(0)), rsAbs(tol));
   // Compiles also for complex T and is also always correct but not optimal due to the extra 
   // calls to rsAbs() on numbers which are always nonnegative anyway.
 
@@ -283,9 +283,13 @@ inline bool rsIsBadPivot(const T& p, const T& tol)
   // invertible. So maybe in this case, we should implement it in a way that avoids unnecessary row
   // swaps. Check out, if it should return true or false in case of x and y being equally good.
 }
-// Maybe rename to rsIsInvalidPivot() or rsIsInvalidDivisor(). "Bad" may be misleading in this 
-// context as being interpreted as opposite of "good" - but an element may be a bad pivot while 
-// still being valid. See also comment in solveTriangular().
+// Maybe the number x and the tolerance tol should potentially have different types? For example, x
+// may be complex but the tolerance real. For T = rsSparseRationalFunction, the type for the 
+// tolerance may be the underlyinf coefficient type. But maybe then we need an implementation of
+// rsAbs that admits different types for input and output.
+
+// See also comment in solveTriangular().
+
 
 template<class T>
 inline T rsGetPivotingTolerance(const rsMatrixView<T>& A)

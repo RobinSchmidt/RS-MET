@@ -670,11 +670,11 @@ inline bool rsIsBetterPivot(
 }
 
 template<class T>
-inline bool rsIsBadPivot(
-  const rsSparseDigitalTransferFunction<T>& p, 
+inline bool rsIsInvalidDivisor(
+  const rsSparseDigitalTransferFunction<T>& p,
   const rsSparseDigitalTransferFunction<T>& tol)
 {
-  return p.isZero();
+  return p.isZero(); // Maybe we should pass in a tolerance into this function?
 }
 
 template<class T>

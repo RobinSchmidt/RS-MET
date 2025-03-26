@@ -231,8 +231,8 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B, i
       if( rsIsBetterPivot(A(j, i), best) ) {
         best = A(j, i); 
         p = j; }}
-    if(rsIsBadPivot(best, tol))                                 // No pivot found - return early
-      return i;
+    if(rsIsInvalidDivisor(best, tol))                           // No valid pivot found was found
+      return i;                                                 //   ->  return early
     if(p != i) {                                                // Turn pivot row into current row
       A.swapRows(i, p);
       B.swapRows(i, p);
@@ -246,12 +246,12 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B, i
   // Maybe the tol = ... should be replaced by a function template call rsGetPivotingTolerance(A).
   // Maybe we shouldn't even call it a tolerance because that interpretation applies only to 
   // (real or complex) floating point types T, I think. For other types, it may be more like a 
-  // reference value and may even be completely ignored by rsIsBadPivot() because it's irrelevant
+  // reference value and may even be completely ignored by rsIsInvalidDivisor() because it's irrelevant
   // for that type T. For example, for T = rsFraction or T = rsModularInteger, the decision what 
   // constitutes a "bad pivot" is not based on any sort of tolerance test at all and there, the 
   // test doesn't need any reference (or tolerance) value.
 
-  // Maybe in if(rsIsBadPivot... we should not return early, if at the same time A(i,i) is zero - in
+  // Maybe in if(rsIsInvalidDivisor... we should not return early, if at the same time A(i,i) is zero - in
   // this case the i-th column is already zero from i downward - this is ok - or wait - no - this
   // check is already included in the for(int j=i ...loop
 
@@ -333,7 +333,7 @@ void rsLinearAlgebraNew::solveTriangular(
   //   What it means to be non-invertible depends on the data type T. For floating point numbers,
   //   being numerically close to zero is appropriate - but not so much for rationals, modular 
   //   integers, rational functions, etc. We need to be more flexible here. Maybe using
-  //   rsIsBadPivot() is the appropriate thing to do. But we should probably rename it to 
+  //   rsIsInvalidDivisor() is the appropriate thing to do. But we should probably rename it to 
   //   rsIsInvalidDivisor()
 }
 // what if A(i,i) == 0? it means that x_i doesn't occur in that equation for b_i, so it can have 

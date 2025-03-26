@@ -179,7 +179,7 @@ inline bool rsIsBetterPivot(const rsFraction<T>& x, const rsFraction<T>& y)
 // Needs tests. I'm not yet quite sure about the appropriateness of the applied criteria.
 
 template<class T>
-inline bool rsIsBadPivot(const rsFraction<T>& p, const rsFraction<T>& tol)
+inline bool rsIsInvalidDivisor(const rsFraction<T>& p, const rsFraction<T>& tol)
 {
   return p.isZero();
 }
