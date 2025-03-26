@@ -493,6 +493,16 @@ public:
   template<class TArg>
   TArg operator()(TArg z) const { return evaluateTyped(z); }
 
+
+  rsSparsePolynomial<T> operator-() const 
+  { 
+    rsSparsePolynomial<T> r;
+    r.copyDataFrom(*this);
+    r.scale(T(-1));  // Maybe use a special negate() function
+    return r;
+  }
+
+
   /** Adds two polynomials. */
   rsSparsePolynomial<T> operator+(const rsSparsePolynomial<T>& q) const 
   { rsSparsePolynomial<T> r; add(*this, q, &r, T(0)); return r; }

@@ -266,6 +266,13 @@ public:
   template<class TArg>
   TArg operator()(TArg z) const { return num(z) / den(z); }
 
+
+  rsSparseRationalFunction<T> operator-() const
+  {
+    return rsSparseRationalFunction<T>(-num, den);
+  }
+
+
   /** Adds two rational functions. */
   rsSparseRationalFunction<T> operator+(const rsSparseRationalFunction<T>& q) const 
   { rsSparseRationalFunction<T> r; weightedSum(*this, T(1), q, T(1), &r, T(0)); return r; }
@@ -284,6 +291,16 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
+  /** \name Boilerplate */
+
+  rsSparseRationalFunction& operator+=(const rsSparseRationalFunction& b) 
+  { return *this = (*this) + b; }
+
+
+
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Low level API.  */
 
 
@@ -296,7 +313,7 @@ public:
     rsSparseRationalFunction<T>* p, T wp,
     rsSparseRationalFunction<T>* q, T wq,
     rsSparseRationalFunction<T>* r, T tol);
-  // The first parameter p may alias to the result r. 
+  // The first parameter p may alias to the result r.
 
 
 };
@@ -585,6 +602,12 @@ public:
   // return types are different. It may work with pointer-types but not with value-types (I guess):
 
 
+  rsSparseDigitalTransferFunction<T> operator-() const
+  {
+    return rsSparseDigitalTransferFunction<T>(-num, den);
+  }
+
+
   rsSparseDigitalTransferFunction<T> operator+(const rsSparseDigitalTransferFunction<T>& q) const 
   { rsSparseDigitalTransferFunction<T> r; weightedSum(*this, T(1), q, T(1), &r, T(0)); return r; }
 
@@ -654,7 +677,12 @@ inline bool rsIsBadPivot(
   return p.isZero();
 }
 
-
+template<class T>
+inline rsSparseDigitalTransferFunction<T> rsGetPivotingTolerance(
+  const rsMatrixView<rsSparseDigitalTransferFunction<T>>& A)
+{
+  return rsSparseDigitalTransferFunction<T>();
+}
 
 
 

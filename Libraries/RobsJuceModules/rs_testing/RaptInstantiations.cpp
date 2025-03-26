@@ -357,6 +357,13 @@ template RAPT::rsMatrix<RAPT::rsFraction<int>> RAPT::rsLinearAlgebraNew::inverse
   const RAPT::rsMatrixView<RAPT::rsFraction<int>>& A);
 
 
+//template RAPT::rsMatrix<RAPT::rsSparseDigitalTransferFunction<double>> 
+//RAPT::rsLinearAlgebraNew::inverse(
+//  const RAPT::rsMatrixView<RAPT::rsSparseDigitalTransferFunction<double>>& A);
+// Does not yet compile because rsSparseDigitalTransferFunction doesn't define a <= operator
+// ToDo: figure out why this operator is needed, i.e. where it is invoked. Apparently, there's a
+// call to rsIsCloseTo() somewhere - but where and why?
+
 
 template double RAPT::rsLinearAlgebraNew::determinant(const RAPT::rsMatrixView<double>& A);
 
