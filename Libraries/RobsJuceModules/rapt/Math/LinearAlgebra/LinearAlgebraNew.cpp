@@ -305,20 +305,36 @@ template<class T>
 void rsLinearAlgebraNew::solveTriangular(
   rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
 {
-  T tol = T(1.e-12);
-  // ToDo: let the user pass this in
+  T tol = T(1.e-12);  // !!! VERY BAD !!!
+
+  // ToDo: let the user pass this in or do something else entirely
+
+
 
   int M = X.getNumColumns();  // number of required solution vectors
   int N = A.getNumRows();     // number of elements in each solution vector
   for(int k = 0; k < M; k++) {
     for(int i = N-1; i >= 0; i--) {
       if( rsIsCloseTo(A(i,i), T(0), tol) ) {
-        X(i, k) = T(0);       
+        X(i, k) = T(0);
         continue;      }
       T tmp = T(0);
       for(int j = i+1; j < N; j++)
         tmp += A(i, j) * X(j, k);
       X(i, k) = (B(i, k) - tmp) / A(i, i); }}
+
+
+  // ToDo:
+  //
+  // - Don't hardcode the tolerance. Maybe let the user pass it in as parameter. But actually, we
+  //   do not want to use rsIsCloseTo() anyway. It's not suitable for all types T. What we actually
+  //   mean here is something like A(i,i).isZero() or A(i,i).isZeroDivisor() or something like 
+  //   that. We need to divide by A(i,i) and want to avoid divisions by non-invertible elements.
+  //   What it means to be non-invertible depends on the data type T. For floating point numbers,
+  //   being numerically close to zero is appropriate - but not so much for rationals, modular 
+  //   integers, rational functions, etc. We need to be more flexible here. Maybe using
+  //   rsIsBadPivot() is the appropriate thing to do. But we should probably rename it to 
+  //   rsIsInvalidDivisor()
 }
 // what if A(i,i) == 0? it means that x_i doesn't occur in that equation for b_i, so it can have 
 // any value - maybe we should simply set it zero? or one?

@@ -234,6 +234,15 @@ public:
 };
 
 
+//=================================================================================================
+// The free functions defined below are used inside some of the linear algebra algorithms 
+// implemented in class rsLinearAlgebraNew above. The implementations given here are suitable for
+// the template parameter type T being a floating point number type (real or complex). To 
+// "override" the default implementation for other types T, you can provide explicit 
+// specializations for these types. For example, modular integers (e.g. rsModularInteger) and 
+// rational numbers (e.g. rsFraction) will need different implementations.
+
+
 /** Returns true, iff x is a better pivot element than y in the Gaussian elemination algorithm. The
 default implementation just compares the absolute values of x and y and is suitable for floating 
 point number types (real or complex). An element with larger absolute value is considered to be a 
@@ -274,8 +283,9 @@ inline bool rsIsBadPivot(const T& p, const T& tol)
   // invertible. So maybe in this case, we should implement it in a way that avoids unnecessary row
   // swaps. Check out, if it should return true or false in case of x and y being equally good.
 }
-// Maybe rename to rsIsInvalidPivot. "Bad" may be misleading in this context as being interpreted
-// as opposite of "good" - but an element may be a bad pivot while still being valid.
+// Maybe rename to rsIsInvalidPivot() or rsIsInvalidDivisor(). "Bad" may be misleading in this 
+// context as being interpreted as opposite of "good" - but an element may be a bad pivot while 
+// still being valid. See also comment in solveTriangular().
 
 template<class T>
 inline T rsGetPivotingTolerance(const rsMatrixView<T>& A)
