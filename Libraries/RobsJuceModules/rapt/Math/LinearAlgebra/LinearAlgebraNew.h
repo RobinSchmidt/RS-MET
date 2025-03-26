@@ -285,7 +285,7 @@ inline bool rsIsInvalidDivisor(const T& x, const T& tol)
 }
 // Maybe the number x and the tolerance tol should potentially have different types? For example, x
 // may be complex but the tolerance real. For T = rsSparseRationalFunction, the type for the 
-// tolerance may be the underlyinf coefficient type. But maybe then we need an implementation of
+// tolerance may be the underlying coefficient type. But maybe then we need an implementation of
 // rsAbs that admits different types for input and output.
 
 // See also comment in solveTriangular().

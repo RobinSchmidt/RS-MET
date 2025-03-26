@@ -671,10 +671,14 @@ inline bool rsIsBetterPivot(
 
 template<class T>
 inline bool rsIsInvalidDivisor(
-  const rsSparseDigitalTransferFunction<T>& p,
+  const rsSparseDigitalTransferFunction<T>& x,
   const rsSparseDigitalTransferFunction<T>& tol)
 {
-  return p.isZero(); // Maybe we should pass in a tolerance into this function?
+  return x.isZero(); 
+  // Maybe we should pass in a tolerance into this function? But then this tolerance should 
+  // probably be just passed on from our second parameter. But for this, we need to make the 2nd
+  // parameter of type T rather than rsSparseDigitalTransferFunction. I think, we generally need to
+  // change the API to admit different types for x and tol
 }
 
 template<class T>

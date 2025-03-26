@@ -222,24 +222,26 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B, i
   rsAssert(A.getNumRows() == B.getNumRows());
   *numSwaps = 0;
   T tol = rsGetPivotingTolerance(A);
-  int i, numRows = A.getNumRows();
-  for(i = 0; i < rsMin(numRows, A.getNumColumns()); i++) {
-    //rsMatrix<T> dbg; dbg.copyDataFrom(A);                     // Uncomment for debugging
+  int M = A.getNumRows();
+  int N = A.getNumColumns();
+  int i;
+  for(i = 0; i < rsMin(M, N); i++) {
+    //rsMatrix<T> dbg; dbg.copyDataFrom(A);      // Uncomment for debugging
     int p = i; 
     T best = T(0);
-    for(int j = i; j < numRows; j++) {                          // Search pivot row
+    for(int j = i; j < M; j++) {                 // Search pivot row
       if( rsIsBetterPivot(A(j, i), best) ) {
         best = A(j, i); 
         p = j; }}
-    if(rsIsInvalidDivisor(best, tol))                           // No valid pivot found was found
-      return i;                                                 //   ->  return early
-    if(p != i) {                                                // Turn pivot row into current row
+    if(rsIsInvalidDivisor(best, tol))            // No valid pivot found was found
+      return i;                                  //   ->  return early
+    if(p != i) {                                 // Turn pivot row into current row
       A.swapRows(i, p);
       B.swapRows(i, p);
-      (*numSwaps)++;     }                                      // Keep track of number of swaps
-    for(int j = i+1; j < numRows; j++) {                        // Pivot row subtraction
-      T w = -A(j, i) / A(i, i);                                 // Weight
-      A.addWeightedRowToOther(i, j, w, i, A.getNumColumns()-1); // Start at i: avoid adding zeros
+      (*numSwaps)++;     }                       // Keep track of number of swaps
+    for(int j = i+1; j < M; j++) {               // Pivot row subtraction
+      T w = -A(j, i) / A(i, i);                  // Weight
+      A.addWeightedRowToOther(i, j, w, i, N-1);  // Start at i: avoid adding zeros
       B.addWeightedRowToOther(i, j, w); }}
   return i;
 
@@ -249,7 +251,9 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B, i
   // reference value and may even be completely ignored by rsIsInvalidDivisor() because it's irrelevant
   // for that type T. For example, for T = rsFraction or T = rsModularInteger, the decision what 
   // constitutes a "bad pivot" is not based on any sort of tolerance test at all and there, the 
-  // test doesn't need any reference (or tolerance) value.
+  // test doesn't need any reference (or tolerance) value. Maybe the tol value should be passed in
+  // by the caller - but optionally with reasonable default. If we make it optional, is should come
+  // before numSwaps because numSwaps is even more optional (i.e. even more rarely used, I guess).
 
   // Maybe in if(rsIsInvalidDivisor... we should not return early, if at the same time A(i,i) is zero - in
   // this case the i-th column is already zero from i downward - this is ok - or wait - no - this
