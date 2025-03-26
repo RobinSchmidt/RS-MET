@@ -4296,6 +4296,9 @@ public:
     {
       getDelayTransferFunction(n, &(D(n,n)));
       D(n,n).invert();
+      // After the loop, the denominators of the diagonal elements of D are almost 1 but not 
+      // exactly. Maybe an epsilon below or something? But why? Shouldn't the values be exact? 
+      // Figure out and document!
     }
     Mat A; rsConvert(feedbackMatrix, &A);
     Mat B; rsConvert(inMatrix,       &B);
@@ -4303,14 +4306,24 @@ public:
 
 
     // Compute and return the transfer function matrix:
-    //Mat M = LA::inverse(D-A);  // (D-A)^-1   ...produces linker error (unresovled external symbol)
-    //Mat H = C * M * B;
-    //return H;
+    // Mat dmA = D-A;  // This is fine
+
+    Mat M = LA::inverse(D-A);  // (D-A)^-1
+    // Triggers rsAssert. It occurs when searching for the pivot in the inversion algorithm. 
+    // Apparently, one of the matrix elements isn't in canonical representation when we expect it
+    // to be. Figure out why and fix this! Maybe implement a unit test that tests linear algebra
+    // with rational functions (sparse and non-sparse)
+
+    Mat H = C * M * B;
+    return H;
 
 
     // Preliminary (and wrong!):
-    rsMatrix<TF> H(numOuts, numIns);
-    return H;
+    //rsMatrix<TF> H(numOuts, numIns);
+    //return H;
+
+
+
 
 
     // I think, the matrix inversion step will be complicated. Maybe as a preliminary, we need to
