@@ -1034,6 +1034,9 @@ bool testLinAlgSparseTransFunc()
 
   // Set up some transfer functions that we can use as matrix elements:
 
+  TF one;  one.initToOne();
+  TF zero; zero.initToZero();
+
   TF h11(SP({Mon(2, 0), Mon(-4, 2)}),     // h11(z) = (2 - 4 z^-2) / 
          SP({Mon(3, 0), Mon( 5, 3)}));    //                         (3 + 5 z^-3)
 
@@ -1043,14 +1046,10 @@ bool testLinAlgSparseTransFunc()
 
   // 1x1:
   Mat A1(1, 1, { h11 });
-
-
-  //Mat B1 = LA::inverse(A1);
-  // Triggers rsAssert because apparently we call isZero() on a non-canonical representation of
-  // a sparse polynomial. I think, it's because of initializing  "T best = T(0);"  in 
-  // LA::inverse(). Maybe it initializes to a non-canonical representation of a zero polynomial. 
-  // This should be checked in the unit test for rsSparsePolynomial and rsSparseRationalFunction.
-
+  Mat B1 = LA::inverse(A1);
+  Mat AB1 = A1 * B1;         // Result is one but not in canonical representation
+  Mat I1(1, 1, { one });
+  //ok &= AB1 == I1;         // Doesn't compile because of missing != operator in class TF
 
 
   return ok;
