@@ -335,15 +335,11 @@ void rsLinearAlgebraNew::solveTriangular(
 
   // ToDo:
   //
-  // - Don't hardcode the tolerance. Maybe let the user pass it in as parameter. But actually, we
-  //   do not want to use rsIsCloseTo() anyway. It's not suitable for all types T. What we actually
-  //   mean here is something like A(i,i).isZero() or A(i,i).isZeroDivisor() or something like 
-  //   that. We need to divide by A(i,i) and want to avoid divisions by non-invertible elements.
-  //   What it means to be non-invertible depends on the data type T. For floating point numbers,
-  //   being numerically close to zero is appropriate - but not so much for rationals, modular 
-  //   integers, rational functions, etc. We need to be more flexible here. Maybe using
-  //   rsIsInvalidDivisor() is the appropriate thing to do. But we should probably rename it to 
-  //   rsIsInvalidDivisor()
+  // - Don't hardcode the tolerance. Maybe let the user pass it in as parameter. But maybe the type
+  //   of the tolerance should not necessarrily be T, i.e. the type of the matrix elements. For 
+  //   example, for matrices of polynomials, the tolerance type might be the type of the underlying
+  //   coefficients. But what about polynomials with complex coeffs? There, the tolerance may hev 
+  //   the underlying real number type. So - yeah - tol should have its own type TTol, I think.
 }
 // what if A(i,i) == 0? it means that x_i doesn't occur in that equation for b_i, so it can have 
 // any value - maybe we should simply set it zero? or one?

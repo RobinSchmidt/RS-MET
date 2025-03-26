@@ -927,7 +927,7 @@ bool testSolveOptimal()
   return ok;
 }
 
-bool testStdComplexLinAlg()
+bool testLinAlgStdComplex()
 {
   bool ok = true;
 
@@ -951,7 +951,7 @@ bool testStdComplexLinAlg()
   return ok;
 }
 
-bool testRsComplexLinAlg()
+bool testLinAlgRsComplex()
 {
   bool ok = true;
 
@@ -979,7 +979,7 @@ bool testRsComplexLinAlg()
   //   RAPT::rsComplex by letting it have a template parameter
 }
 
-bool testRationalLinAlg()
+bool testLinAlgRational()
 {
   bool ok = true;
 
@@ -1018,8 +1018,30 @@ bool testRationalLinAlg()
   //   matrices as well.
 }
 
+bool testLinAlgSparseTransFunc()
+{
+  // Under construction
+
+  bool ok = true;
+
+  using Real = double;
+  using Mon  = rsMonomial<Real>;
+  using SP   = RAPT::rsSparsePolynomial<Real>;
+  using TF   = RAPT::rsSparseDigitalTransferFunction<Real>;
+  using Mat  = rsMatrix<TF>;
 
 
+  Mon m_2_0(2.0, 0);   // 2.0 * x^0
+  Mon m_3_0(3.0, 0);   // 3.0 * x^0
+  Mon m_5_3(5.0, 3);   // 5.0 * x^3
+  Mon m_4_2(4.0, 2);   // 4.0 * x^2
+
+  TF h11(SP({m_2_0, m_4_2}), SP({m_3_0, m_5_3}));  // h11(z) = (2 + 4 z^-1) / (3 + 5 z^-3)
+
+
+
+  return ok;
+}
 
 
 bool testLinearAlgebra()
@@ -1049,9 +1071,18 @@ bool testLinearAlgebra()
   ok &= testPowerIterationDense();
 
   // Linear algebra on matrices of more complicated data types T:
-  ok &= testStdComplexLinAlg();  // T = std::complex
-  ok &= testRsComplexLinAlg();   // T = RAPT::rsComplex
-  ok &= testRationalLinAlg();    // T = RAPT::rsFraction
+  ok &= testLinAlgStdComplex();       // T = std::complex
+  ok &= testLinAlgRsComplex();        // T = RAPT::rsComplex
+  ok &= testLinAlgRational();         // T = RAPT::rsFraction
+  ok &= testLinAlgSparseTransFunc();  // T = RAPT::rsSparseDigitalTransferFunction, stub
 
   return ok;
+
+  // ToDo:
+  //
+  // - Add tests for linear algebra on matrices of: rsModularInteger, rsPolynomial, 
+  //   rsRationalFunction, rsSparsePolynomial, rsMatrix (1 level of nesting), rsMatrix2x2, 
+  //   rsMatrix3x3, SIMD types like rsFloat64x2 and their complex versions, rsSparseMatrix, 
+  //   rsMultiVector, ...Maybe for this, we should create a very general implementation that uses
+  //   a random matrix of various sizes (1x1, 2x2, 3x3, ...) and tries to invert it
 }
