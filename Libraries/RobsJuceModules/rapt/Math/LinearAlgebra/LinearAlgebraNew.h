@@ -266,11 +266,13 @@ inline bool rsIsBadPivot(const T& p, const T& tol)
   // specializations for T = std::complex and T = rsComplex so we can get rid of the superfluous
   // calls to rsAbs(). Maybe we should also use the function rsZeroValue(p) instead of T(0) to make
   // it work with T = rsModularInteger. But maybe we should just provide an explicit specialization
-  // for that type, too. Yeah - indeed we should because the criterion applied here is not suitable
-  // for modular integers. A modular integer is a bad pivot, if it's not invertible (i.e. zero or 
-  // not coprime with the modulus, I think). We will also need a special implementation of 
+  // for that type anyway. Yeah - indeed we should because the criterion applied here is not 
+  // suitable for modular integers. A modular integer is a bad pivot, if it's not invertible (i.e. 
+  // zero or not coprime with the modulus, I think). We will also need a special implementation of 
   // rsIsBetterPivot for rsModularInteger because the greater-abs criterion doesn't make sense for
-  // them either.
+  // them either. I think, for modular integers, any pivot is as good as any other as long as it is
+  // invertible. So maybe in this case, we should implement it in a way that avoids unnecessary row
+  // swaps. Check out, if it should return true or false in case of x and y being equally good.
 }
 
 template<class T>
