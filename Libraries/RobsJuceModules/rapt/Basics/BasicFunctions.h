@@ -145,11 +145,17 @@ template<class T> inline int rsCeilInt( T x) { return (int) ceil(x);  }
 template <class T>
 T rsAbs(T x)
 {
+  // This (default, fallback, generic) implementation is suitable for real number types (float, 
+  // double, int, rational, etc.) but not for complex types because in the complex case, the return
+  // value is not of type T but rather of the underlying real number type.
+
   if( x < rsZeroValue(x) )
     return -x;
   else
     return  x;
 }
+
+
 inline double  rsAbs(double  x) { return fabs(x); }
 inline float   rsAbs(float   x) { return fabs(x); }
 //inline rsInt8  rsAbs(rsInt8  x) { return  abs(x); }
@@ -159,12 +165,16 @@ inline rsInt32 rsAbs(rsInt32 x) { return  abs(x); }
 template<class T> inline T rsAbs(std::complex<T> z) { return abs(z); }
 
 
+
+
 /** Squared absolute value of a complex number. */
 template<class T> 
 T rsAbsSquared(const std::complex<T>& z)
 {
   return z.real()*z.real() + z.imag()*z.imag(); // == conj(z) * z
 }
+
+
 
 /*
 template<class T> 
