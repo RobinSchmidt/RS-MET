@@ -315,6 +315,7 @@ template std::vector<std::complex<double>> RAPT::rsLinearAlgebraNew::solve(
   const rsMatrixView<std::complex<double>>& A,
   const std::vector<std::complex<double>>& B);
 
+// Comment obsolete?
 // doesn't compile because the > comparison in the pivoting doesn't work with complex numbers
 // possible solution: implement a > operator for std::complex numbers - compare real parts first,
 // then imag
@@ -324,8 +325,8 @@ template std::vector<std::complex<double>> RAPT::rsLinearAlgebraNew::solve(
 //  if(rsAbs(A(j, i)) > rsAbs(maxAbs))
 // or use comparison function rsGreater with an explicit specialization for complex<double>
 // or use rsGreaterAbs
-
 // figure out!
+
 
 // these instantiations need some more operations defined on rsRationalFunction
 //template std::vector<RAPT::rsRationalFunction<double>> RAPT::rsLinearAlgebraNew::solveLinearSystem(
@@ -356,17 +357,11 @@ template RAPT::rsMatrix<rsComplex<double>> RAPT::rsLinearAlgebraNew::inverse(
 template RAPT::rsMatrix<RAPT::rsFraction<int>> RAPT::rsLinearAlgebraNew::inverse(
   const RAPT::rsMatrixView<RAPT::rsFraction<int>>& A);
 
+template RAPT::rsMatrix<RAPT::rsSparseDigitalTransferFunction<double>> 
+RAPT::rsLinearAlgebraNew::inverse(
+  const RAPT::rsMatrixView<RAPT::rsSparseDigitalTransferFunction<double>>& A);
 
-//template RAPT::rsMatrix<RAPT::rsSparseDigitalTransferFunction<double>> 
-//RAPT::rsLinearAlgebraNew::inverse(
-//  const RAPT::rsMatrixView<RAPT::rsSparseDigitalTransferFunction<double>>& A);
-// Does not yet compile because rsSparseDigitalTransferFunction doesn't define a <= operator
-// ToDo: figure out why this operator is needed, i.e. where it is invoked. Apparently, there's a
-// call to rsIsCloseTo() somewhere - but where and why?
-// ...when we comment out the call to solve() in inverse(), it compiles and links
-// ...when we comment out solveTriagular() in solve, it compiles but doesn't link
-// Aha! The call to rsIsCloseTo() is in rsLinearAlgebraNew::solveTriangular(). See comment there 
-// about what we can do about it
+
 
 
 template double RAPT::rsLinearAlgebraNew::determinant(const RAPT::rsMatrixView<double>& A);

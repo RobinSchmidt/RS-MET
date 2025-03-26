@@ -309,9 +309,13 @@ template<class T>
 void rsLinearAlgebraNew::solveTriangular(
   rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
 {
-  T tol = T(1.e-12);  // !!! VERY BAD !!!
-
+  //T tol = T(1.e-12);  // !!! VERY BAD !!!
   // ToDo: let the user pass this in or do something else entirely
+
+
+  T tol = rsGetPivotingTolerance(A);
+  // I'm not sure about that either. It's better than the old code, though. But perhaps, the 
+  // tolerance should be passed in as parameter.
 
 
 
@@ -319,7 +323,8 @@ void rsLinearAlgebraNew::solveTriangular(
   int N = A.getNumRows();     // number of elements in each solution vector
   for(int k = 0; k < M; k++) {
     for(int i = N-1; i >= 0; i--) {
-      if( rsIsCloseTo(A(i,i), T(0), tol) ) {
+      //if( rsIsCloseTo(A(i,i), T(0), tol) ) {   // old
+      if( rsIsInvalidDivisor(A(i,i), tol) ) {    // new
         X(i, k) = T(0);
         continue;      }
       T tmp = T(0);
