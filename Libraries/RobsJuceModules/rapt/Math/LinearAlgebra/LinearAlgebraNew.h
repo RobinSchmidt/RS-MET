@@ -252,15 +252,15 @@ template<class T>
 inline bool rsIsBadPivot(const T& p, const T& tol)
 { 
   //return rsIsCloseTo(p, T(0), tol);
-    // Compiles but is slightly wrong, I think. It may mess up the tolerance by a factor of 2 or 
-    // something?
+  // Compiles but is slightly wrong, I think. It may mess up the tolerance by a factor of 2 or 
+  // something?
 
   //return rsIsCloseTo(rsAbs(p), T(0), tol);
-    // Doesn't compile for T = complex.
+  // Doesn't compile for T = complex.
 
   return rsIsCloseTo(rsAbs(p), rsAbs(T(0)), rsAbs(tol));
-    // Compiles also for complex T and is also always correct but not optimal due to the extra 
-    // calls to rsAbs() on numbers which are always nonnegative anyway.
+  // Compiles also for complex T and is also always correct but not optimal due to the extra 
+  // calls to rsAbs() on numbers which are always nonnegative anyway.
 
   // This implementation needs some more careful consideration. Maybe we should provide explicit 
   // specializations for T = std::complex and T = rsComplex so we can get rid of the superfluous
@@ -272,6 +272,18 @@ inline bool rsIsBadPivot(const T& p, const T& tol)
   // rsIsBetterPivot for rsModularInteger because the greater-abs criterion doesn't make sense for
   // them either.
 }
+
+template<class T>
+inline T rsGetPivotingTolerance(const rsMatrixView<T>& A)
+{
+  return T(1024) * rsEpsilon(T(0)) * A.getAbsoluteMaximum();
+  // Ad hoc. The epsilon of double is of the order of e.-16 and the roundoff error that I often see
+  // is often around e.-13, so a factor of around 1000 seemed appropriate. But that's very 
+  // unscientific!  ->  ToDo: Research, perhaps change, document decision.
+}
+
+
+
 
 
 

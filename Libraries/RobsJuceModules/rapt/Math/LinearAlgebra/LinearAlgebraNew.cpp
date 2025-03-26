@@ -221,12 +221,7 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B, i
 {
   rsAssert(A.getNumRows() == B.getNumRows());
   *numSwaps = 0;
-
-  T tol = T(1024) * rsEpsilon(T(0)) * A.getAbsoluteMaximum();
-  // Ad hoc. The epsilon of double is of the order of e.-16 and the roundoff error that I often see
-  // is often around e.-13, so a factor of around 1000 seemed appropriate. But that's very 
-  // unscientific!  ->  ToDo: Research, perhaps change, document decision.
-
+  T tol = rsGetPivotingTolerance(A);
   int i, numRows = A.getNumRows();
   for(i = 0; i < rsMin(numRows, A.getNumColumns()); i++) {
     //rsMatrix<T> dbg; dbg.copyDataFrom(A);                     // Uncomment for debugging
