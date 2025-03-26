@@ -228,7 +228,15 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B, i
   for(i = 0; i < rsMin(M, N); i++) {
     //rsMatrix<T> dbg; dbg.copyDataFrom(A);      // Uncomment for debugging
     int p = i; 
+
+
     T best = T(0);
+    // I think, this might be problematic with certain types. We need a prototype based 
+    // initialization for rsModularInteger and probably also something else for 
+    // rsSparseRationalFunction (I think, it produces a non-canonical representation of the zero
+    // function - this should actually be tested in the unit test for rsRationalFunction)
+
+
     for(int j = i; j < M; j++) {                 // Search pivot row
       if( rsIsBetterPivot(A(j, i), best) ) {
         best = A(j, i); 

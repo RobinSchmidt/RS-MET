@@ -1025,18 +1025,31 @@ bool testLinAlgSparseTransFunc()
   bool ok = true;
 
   using Real = double;
-  using Mon  = rsMonomial<Real>;
+  using Mon  = RAPT::rsMonomial<Real>;
   using SP   = RAPT::rsSparsePolynomial<Real>;
   using TF   = RAPT::rsSparseDigitalTransferFunction<Real>;
-  using Mat  = rsMatrix<TF>;
+  using LA   = RAPT::rsLinearAlgebraNew;
+  using Mat  = RAPT::rsMatrix<TF>;
 
 
-  Mon m_2_0(2.0, 0);   // 2.0 * x^0
-  Mon m_3_0(3.0, 0);   // 3.0 * x^0
-  Mon m_5_3(5.0, 3);   // 5.0 * x^3
-  Mon m_4_2(4.0, 2);   // 4.0 * x^2
+  // Set up some transfer functions that we can use as matrix elements:
 
-  TF h11(SP({m_2_0, m_4_2}), SP({m_3_0, m_5_3}));  // h11(z) = (2 + 4 z^-1) / (3 + 5 z^-3)
+  TF h11(SP({Mon(2, 0), Mon(-4, 2)}),     // h11(z) = (2 - 4 z^-2) / 
+         SP({Mon(3, 0), Mon( 5, 3)}));    //                         (3 + 5 z^-3)
+
+
+
+  // Test matrix inversion:
+
+  // 1x1:
+  Mat A1(1, 1, { h11 });
+
+
+  //Mat B1 = LA::inverse(A1);
+  // Triggers rsAssert because apparently we call isZero() on a non-canonical representation of
+  // a sparse polynomial. I think, it's because of initializing  "T best = T(0);"  in 
+  // LA::inverse(). Maybe it initializes to a non-canonical representation of a zero polynomial. 
+  // This should be checked in the unit test for rsSparsePolynomial and rsSparseRationalFunction.
 
 
 
