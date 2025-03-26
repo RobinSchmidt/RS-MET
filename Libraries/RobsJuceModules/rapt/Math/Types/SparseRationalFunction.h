@@ -68,9 +68,10 @@ public:
 
   /** Constructor that converts a number c to the constnat function that just produces c for any 
   input. */
-  rsSparseRationalFunction(const T& c) 
+  rsSparseRationalFunction(const T& c)
   {
-    num._appendTerm(c,    0);
+    if(!rsIsZero(c))           // The zero sparse polynomial is canonically represented as empty,
+      num._appendTerm(c, 0);   // ..so we append the c*x^0 term only if c is nonzero.
     den._appendTerm(T(1), 0);
   }
 
@@ -78,7 +79,10 @@ public:
     const rsSparsePolynomial<T>& numerator, const rsSparsePolynomial<T>& denominator) 
     : num(numerator), den(denominator)  {}
 
-  // Maybe implement it for const rsSparsePolynomial<T>&&, too. Or maybe that one is enough?
+  // Maybe implement it for const rsSparsePolynomial<T>&&, too. Or maybe that one is then enough, 
+  // i.e. can also accept lvalue references? I think, an rvalue reference parameter can accept 
+  // both kinds of arguments: rvalue- and lvalue references but lvalue reference parameters can
+  // only accept lvalue reference arguments. Verify!
 
 
 

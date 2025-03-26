@@ -2595,8 +2595,10 @@ bool testSparsePolynomial()
   PolyS p, q, r, s, t, u;
   p.setupFromDenseCoeffs(coeffs1, tol);
 
-
   // Test inquiry functions:
+  ok &= q.isEmpty()        == true;
+  ok &= q.isZero()         == true;
+  ok &= q._isZero(tol)     == true;
   ok &= p.isEmpty()        == false;
   ok &= p.getNumTerms()    == 3;
   ok &= p._getMinPower()   == 0;
@@ -3001,7 +3003,12 @@ bool testSparseRationalFunction()
   // expected. I just wanted to try it. So - that means: RatS::weightedSumDestructive can be called
   // with the 1st argument aliasing to the result - but the 2nd argument must be distinct.
 
-
+  rs = RatS(0); ok &= rs.isZero(); 
+  // Did formerly trigger an rsAssert in rs.isZero() due to a bug in the RatS(0) constructor that 
+  // takes a constant c of type T. We did not special case the situation when the constant c is 
+  // zero - but this is needed because a zero sparse polynomial is canonically represented as empty
+  // and not as explicit, single 0 * x^0 term. That bug is fixed now and this test here shall 
+  // henceforth assure that this remains so.
 
 
   return ok;

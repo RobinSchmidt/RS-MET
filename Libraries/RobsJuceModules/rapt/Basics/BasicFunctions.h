@@ -53,6 +53,12 @@ template<class T> inline T rsIdentity(  T value) { return value; }
 // identity function
 
 
+/** Returns true, iff x is equal to zero. */
+template<class T> inline bool rsIsZero(T x)
+{
+  return x == rsZeroValue(x);
+}
+
 /** Returns true, if x is not-a-number, false otherwise. */
 template<class T> inline bool rsIsNaN(T x)
 {
