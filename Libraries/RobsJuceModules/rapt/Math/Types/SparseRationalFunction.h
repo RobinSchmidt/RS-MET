@@ -611,6 +611,38 @@ inline rsSparseDigitalTransferFunction<T> operator*(
 
 
 
+// Under construction:
+
+// ToDo: Maybe define these for the baseclass instead - then verify, that the right functions are
+// called:
+
+template<class T>
+inline bool rsIsBetterPivot(
+  const rsSparseDigitalTransferFunction<T>& x,
+  const rsSparseDigitalTransferFunction<T>& y)
+{ 
+  // A zero x is never a better pivot than any y:
+  if(x.isZero())
+    return false;
+
+  // Any nonzero x is always better than a zero y:
+  if(y.isZero())
+    return true;
+
+  // An x with simpler denominator is better than a y with more complex denominator:
+  if(x.den.getNumTerms() < y.den.getNumTerms())
+    return true;
+
+  // An x with more complex denominator is worse that a y with simpler denominator:
+  if(x.den.getNumTerms() > y.den.getNumTerms())
+    return false;
+
+  // When x and y have the same denominator, we compare the numerators. A smaller absolute value is
+  // better (except when it's zero - but this has already been ruled out):
+  return rsAbs(x.num.getNumTerms()) < rsAbs(y.num.getNumTerms());
+}
+
+
 
 
 

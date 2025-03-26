@@ -75,13 +75,13 @@ public:
   rsFraction operator*(const rsFraction& b) const { return rsFraction(num * b.num, den * b.den); }
   rsFraction operator/(const rsFraction& b) const { return rsFraction(num * b.den, den * b.num); }
 
-  // ..same for integer right arguments:
+  // The same for integer right arguments:
   rsFraction operator+(const T& b) const { return rsFraction(num + b*den, den); }
   rsFraction operator-(const T& b) const { return rsFraction(num - b*den, den); }
   rsFraction operator*(const T& b) const { return rsFraction(num * b, den); }
   rsFraction operator/(const T& b) const { return rsFraction(num, den * b); }
 
-  // boilerplate for the +=, -=, *=, /= operators:
+  // Boilerplate for the +=, -=, *=, /= operators:
   rsFraction& operator+=(const rsFraction& b) { return *this = (*this) + b; }
   rsFraction& operator-=(const rsFraction& b) { return *this = (*this) - b; }
   rsFraction& operator*=(const rsFraction& b) { return *this = (*this) * b; }
@@ -177,6 +177,18 @@ inline bool rsIsBetterPivot(const rsFraction<T>& x, const rsFraction<T>& y)
   // dominates the cost of a matrix inversion, I guess (Verify! ...or at least justify)
 }
 // Needs tests. I'm not yet quite sure about the appropriateness of the applied criteria.
+
+template<class T>
+inline bool rsIsBadPivot(const rsFraction<T>& p, const rsFraction<T>& tol)
+{
+  return p.isZero();
+}
+
+template<class T>
+inline rsFraction<T> rsGetPivotingTolerance(const rsMatrixView<rsFraction<T>>& A)
+{
+  return rsFraction<T>(0, 1);
+}
 
 
 
