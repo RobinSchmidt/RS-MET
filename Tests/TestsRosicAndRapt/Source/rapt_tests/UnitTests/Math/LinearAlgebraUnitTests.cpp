@@ -981,8 +981,6 @@ bool testRsComplexLinAlg()
 
 bool testRationalLinAlg()
 {
-  // Under construction
-
   bool ok = true;
 
   using Rat = rsFraction<int>;
@@ -1019,6 +1017,9 @@ bool testRationalLinAlg()
   //   rsIsBetterPivot(const rsFraction<T>& x, const rsFraction<T>& y). Try to cover singular
   //   matrices as well.
 }
+
+
+
 
 
 bool testLinearAlgebra()
