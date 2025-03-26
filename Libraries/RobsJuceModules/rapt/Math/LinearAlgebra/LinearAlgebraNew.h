@@ -274,6 +274,8 @@ inline bool rsIsBadPivot(const T& p, const T& tol)
   // invertible. So maybe in this case, we should implement it in a way that avoids unnecessary row
   // swaps. Check out, if it should return true or false in case of x and y being equally good.
 }
+// Maybe rename to rsIsInvalidPivot. "Bad" may be misleading in this context as being interpreted
+// as opposite of "good" - but an element may be a bad pivot while still being valid.
 
 template<class T>
 inline T rsGetPivotingTolerance(const rsMatrixView<T>& A)

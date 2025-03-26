@@ -243,6 +243,8 @@ public:
   // and the denominator is monic
 
 
+  bool isZero() const { return num.isZero(); }
+
 
   rsSparsePolynomial<T>& getNumerator() { return num; }
 
@@ -489,6 +491,8 @@ public:
 
     // Numerator and denominator polynomials should not be empty:
     ok &= num.getNumTerms() > 0 && den.getNumTerms() > 0;
+    // But is that right? Maybe an empty numerator is admissible to represent the zero function? 
+    // It's not very useful as a transfer function, but still...
 
     // We assume the filter polynomials to be in canonical shape:
     ok &= num.isCanonical();
@@ -637,12 +641,18 @@ inline bool rsIsBetterPivot(
   if(x.den.getNumTerms() > y.den.getNumTerms())
     return false;
 
-  // When x and y have the same denominator, we compare the numerators. A smaller absolute value is
+  // When x and y have the same denominator, we compare the numerators. A simpler numerator is
   // better (except when it's zero - but this has already been ruled out):
-  return rsAbs(x.num.getNumTerms()) < rsAbs(y.num.getNumTerms());
+  return x.num.getNumTerms() < y.num.getNumTerms();
 }
 
-
+template<class T>
+inline bool rsIsBadPivot(
+  const rsSparseDigitalTransferFunction<T>& p, 
+  const rsSparseDigitalTransferFunction<T>& tol)
+{
+  return p.isZero();
+}
 
 
 

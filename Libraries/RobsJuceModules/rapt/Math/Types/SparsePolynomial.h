@@ -387,6 +387,12 @@ public:
   /** Returns true, iff this polynomial is empty, i.e. has no terms. */
   bool isEmpty() const { return terms.empty(); }
 
+  bool isZero() const
+  {
+    rsAssert(isCanonical()); // This function assumes a canonical representation
+    return isEmpty();
+  }
+
   /** Returns true, iff this polynomial is zero, i.e. all absolute values of the coefficients are 
   below the given tolerance. So, this is a zero-test that works also on non-canonical 
   representations. */
@@ -416,8 +422,8 @@ public:
 
   /** Returns the minimum power that occurs in this polynomial. */
   int _getMinPower() const;
-  // Implement a getMinPower() for canonical representations that juts returns 0 or the power of
-  // the 0-th terms
+  // Implement a getMinPower() for canonical representations that just returns 0 or the power of
+  // the 0-th term
 
   /** Returns the maximum power that occurs in this polynomial. In mathematical jargon, the 
   highest power in a polynomial is also known as the degree or order of the polynomial. */
