@@ -1047,7 +1047,7 @@ bool testLinAlgSparseTransFunc()
   // 1x1:
   Mat A1(1, 1, { h11 });
   Mat B1 = LA::inverse(A1);
-  Mat AB1 = A1 * B1;         // Result is one but not in canonical representation
+  Mat AB1 = A1 * B1;         // Result is one but not in canonical representation (num and den are not reduced by gcd)
   Mat I1(1, 1, { one });
   //ok &= AB1 == I1;         // Doesn't compile because of missing != operator in class TF
 
