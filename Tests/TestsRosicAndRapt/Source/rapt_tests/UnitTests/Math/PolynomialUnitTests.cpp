@@ -2582,9 +2582,8 @@ bool testSparsePolynomial()
   using Real  = double;
   using Mon   = rsMonomial<Real>;
   using Vec   = std::vector<Real>;
-  using PolyD = rsPolynomial<Real>;         // Dense polynomials
-  //using PolyS = rsSparsePolynomial<Real>;   // Sparse polynomials
-  using PolyS = rsSparsePolynomial<Real, Real>;   // Sparse polynomials
+  using PolyD = rsPolynomial<Real>;              // Dense polynomials
+  using PolyS = rsSparsePolynomial<Real, Real>;  // Sparse polynomials
 
 
   Real tiny = 1.e-16;
@@ -2944,6 +2943,10 @@ bool testSparsePolynomial()
   //   canonicalize, etc.
   //
   // - Implement and test copyDataFrom, copy/move constructor/assigment, etc.
+  //
+  // - Implement some tests with the default 2nd template parameter (which is rsEmptyType). Using
+  //   that implies to do exact comparisons, so we may want to do these tests with T = int or 
+  //   rsFraction<int>.
 }
 
 
