@@ -162,7 +162,7 @@ class rsSparsePolynomial
 public:
 
   // ToDo: Maybe use this abbreviation for convenience in the member function declarations:
-  //using SparsePoly = rsSparsePolynomial<T, TTol>;
+  using SparsePoly = rsSparsePolynomial<T, TTol>;
 
   //-----------------------------------------------------------------------------------------------
   /** \name Lifetime */
@@ -222,7 +222,7 @@ public:
   { addTerm(-newTerm.getCoeff(), newTerm.getPower(), tol); }
 
   /** Adds a scaled version of the given polynomial p to this polynomial. */
-  void addScaledPolynomial(const rsSparsePolynomial<T, TTol> p, T scaler, TTol tol)
+  void addScaledPolynomial(const SparsePoly p, T scaler, TTol tol)
   {
     // WHY IS p NOT PASSED BY CONST REFERENCE? If this is intentional, document why. If this is a 
     // bug, fix it!
@@ -327,7 +327,7 @@ public:
 
   /** Multiplies this polynomial by the given other polynomial factor. Works in place and 
   re-allocates only when the capacity is too low (VERIFY!). */
-  void multiplyBy(const rsSparsePolynomial<T, TTol>& factor, TTol tol)
+  void multiplyBy(const SparsePoly& factor, TTol tol)
   { multiply(*this, factor, this, tol); }
   // I think, this may also decanonicalize! We may get multiple terms with same exponent. But we
   // may actually repair this inside the function. But no! It calls canonicalize at the end, so 
@@ -355,7 +355,7 @@ public:
 
 
 
-  void addScaled(const rsSparsePolynomial<T, TTol>& summand, const rsMonomial<T>& scaler, TTol tol);
+  void addScaled(const SparsePoly& summand, const rsMonomial<T>& scaler, TTol tol);
   // ToDo: implement add(summand, tol), i.e. the same thing but without the scaler.
   // ...and maybe one with the scaler being a simple coeff
 
@@ -375,7 +375,7 @@ public:
   terms and finally deleting all terms that have a coefficient zero (up to the given tolerance). */
   void canonicalize(TTol tol);
 
-  void copyDataFrom(const rsSparsePolynomial<T, TTol>& other)
+  void copyDataFrom(const SparsePoly& other)
   {
     _setNumTerms(other.getNumTerms());
     for(int i = 0; i < getNumTerms(); i++)
@@ -417,7 +417,7 @@ public:
   the order of the terms does matter in the comparison we do here. For example 2*x^3 + 3*x^5 would 
   be considered distinct from 3*x^5 + 2*x^3 by this function even though they are mathematically 
   the same polynomial. */
-  bool isCloseTo(const rsSparsePolynomial<T, TTol>& rhs, TTol tol) const;
+  bool isCloseTo(const SparsePoly& rhs, TTol tol) const;
 
   /** Return true, iff the given index is valid, i.e. the object has a term with given index. */
   bool isValidIndex(int i) const { return i >= 0 && i < getNumTerms(); }
@@ -506,36 +506,38 @@ public:
   // evaluateTyped() function. All of this can be handled by the templated () operator, I think.
 
 
-  rsSparsePolynomial<T, TTol> operator-() const 
+  /** Implements the unary minus operator. */
+  SparsePoly operator-() const 
   { 
-    rsSparsePolynomial<T, TTol> r;
+    SparsePoly r;
     r.copyDataFrom(*this);
     r.scale(T(-1));  // Maybe use a special negate() function. It may be more efficient.
     return r;
   }
+  // ToDo: Implement unary plus, too. It's trivial but sometimes, we may want to use it for 
+  // clarity. But maybe it should return a (const?) reference rather than a value? Is that even 
+  // possible?
 
 
   /** Adds two polynomials. */
-  rsSparsePolynomial<T, TTol> operator+(const rsSparsePolynomial<T, TTol>& q) const 
-  { rsSparsePolynomial<T, TTol> r; add(*this, q, &r, T(0)); return r; }
+  SparsePoly operator+(const SparsePoly& q) const 
+  { SparsePoly r; add(*this, q, &r, tol); return r; }
 
   /** Subtracts two polynomials. */
-  rsSparsePolynomial<T, TTol> operator-(const rsSparsePolynomial<T, TTol>& q) const 
-  { rsSparsePolynomial<T, TTol> r; subtract(*this, q, &r, T(0)); return r; }
+  SparsePoly operator-(const SparsePoly& q) const 
+  { SparsePoly r; subtract(*this, q, &r, tol); return r; }
 
   /** Multiplies two polynomials. */
-  rsSparsePolynomial<T, TTol> operator*(const rsSparsePolynomial<T, TTol>& q) const 
-  { rsSparsePolynomial<T, TTol> r; multiply(*this, q, &r, T(0)); return r; }
+  SparsePoly operator*(const SparsePoly& q) const 
+  { SparsePoly r; multiply(*this, q, &r, tol); return r; }
 
   /** Divides two polynomials. */
-  rsSparsePolynomial<T, TTol> operator/(const rsSparsePolynomial<T, TTol>& q) const 
-  { rsSparsePolynomial<T, TTol> quot, rem; divide(*this, q, &quot, &rem, T(0)); return quot; }
+  SparsePoly operator/(const SparsePoly& q) const 
+  { SparsePoly quot, rem; divide(*this, q, &quot, &rem, tol); return quot; }
 
   /** Computes remainder of polynomial division, i.e. implements the modulo operation. */
-  rsSparsePolynomial<T, TTol> operator%(const rsSparsePolynomial<T, TTol>& q) const 
-  { rsSparsePolynomial<T, TTol> quot, rem; divide(*this, q, &quot, &rem, T(0)); return rem; }
-
-  // REPLACE the T(0) by tol!
+  SparsePoly operator%(const SparsePoly& q) const 
+  { SparsePoly quot, rem; divide(*this, q, &quot, &rem, tol); return rem; }
 
 
   //-----------------------------------------------------------------------------------------------
