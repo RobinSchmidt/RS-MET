@@ -1037,9 +1037,15 @@ bool testLinAlgSparseTransFunc()
   TF one;  one.initToOne();
   TF zero; zero.initToZero();
 
-  TF h11(SP({Mon(2, 0), Mon(-4, 2)}),     // h11(z) = (2 - 4 z^-2) / 
-         SP({Mon(3, 0), Mon( 5, 3)}));    //                         (3 + 5 z^-3)
+  TF h11(SP({Mon( 2, 0), Mon(-4, 2)}),     // h11(z) = (2 - 4 z^-2) / 
+         SP({Mon( 1, 0), Mon( 5, 3)}));    //          (1 + 5 z^-3)
 
+  TF h12(SP({Mon(-3, 2), Mon( 6, 4)}),     // h12(z) = (-3 z^-2 + 6 z^-4) / 
+         SP({Mon( 1, 0), Mon(-3, 1)}));    //          ( 1 - 3 z^-1)
+
+
+  TF h11i = h11;
+  h11i.invert();
 
 
   // Test matrix inversion:
@@ -1049,19 +1055,66 @@ bool testLinAlgSparseTransFunc()
   Mat B1 = LA::inverse(A1);
   Mat AB1 = A1 * B1;         // Result is one but not in canonical representation (num and den are not reduced by gcd)
   Mat I1(1, 1, { one });
+  //ok &= B1 == Mat(1, 1, { h11i });  // Doesn't compile
   //ok &= AB1 == I1;         // Doesn't compile because of missing != operator in class TF
 
-  // Try to implement the array comparison (that is used in the matrxi comparison) only with the ==
-  // operator (using negation of the result of the comparison). Maybe try both variants in compiler
-  // explorer.
 
   return ok;
+
+  // ToDo:
+  //
+  // - Try to implement the array comparison (that is used in the matrix comparison) only with the 
+  //   == operator (using negation of the result of the comparison). Maybe try both variants in 
+  //   compiler explorer.
+  //
+  // - Maybe classes like rsPolynomial, rsSparsePolynomial, etc. should have a tolerance member 
+  //   "tol" whose type is another template parameter. It should not be the same type T as the 
+  //   coeffs because that may not be suitable for polynomials with complex-valued or even 
+  //   matrix-valued coeffs. Maybe then we should have a function template 
+  //   rsIsNegligible(T x, TTol tol) that can be implemented for different pairs of types T/TTol to
+  //   get different behaviors. The algorithms in rsPolynomial etc. that implement operations like 
+  //   addition and so on, would use this rsIsNegligible function with a coeff and the tolerance 
+  //   member to decide which coeffs can be considered to be zero. The type of TTol may also be an 
+  //   empty class rsEmpty. We can provide an explicit (partial) specialization of rsIsNegligible.
+  //   Whenever TTol == rsEmpty, it just returns false, regardless of what x is (or maybe it 
+  //   should return true only if x is exactly zero). With an empty tolerance, nothing except zero 
+  //   is negligible. This should be the default behavior, I think. Maybe we can even use this to 
+  //   not break old code that instantiates rsPolynomial with just a single template parameter - it 
+  //   just defaults TTol to rsEmpty and we get the same old behavior as ever and don't need to 
+  //   store another member (i.e. save a little bit of memory). But maybe before modifying 
+  //   rsPolynomial which is used in a lot of places in production, we should try it first in 
+  //   rsSparsePolynomial/rsSparseRationalFunction which is currently only used in research code.
+  //
+  // - If it turns out to work well, we can retrofit the strategy to rsPolynomial and 
+  //   rsRationalFunction, too. Another question that arises is whether rsRationalFunction should 
+  //   just pass through its TTol template parameter to its two underlying polynomials (implying 
+  //   that both of them would have a tolerance field) or if it should make its num, den 
+  //   polynomials tolerance free (i.e. pass rsEmpty as TTol) and store itself a tol member. We 
+  //   may generally have to think about how to handle the tolerance of the two operands in cases 
+  //   when they are different. Should we always use the tolerance of the 1st argument? Or maybe 
+  //   the minimum of both tolerances? Or the maximum? Should the tolerance be relative or 
+  //   absolute? I think, relative makes more sense. Maybe one could also use a (perhaps 
+  //   thread-local) static member for the tolerance? But that would introduce global state (albeit
+  //   thread local) which is generally considered a bad thing and may bite us in the ass later. 
+  //   So - nah - I think, a member for the tolerance is the right decision. I also tend to think, 
+  //   that when operating on two (or more) objects with different tolerances, we should always use
+  //   the maximum. The rationale is that the tolerance is also an indicator of the numeric 
+  //   precision of the coeffs - and when combining polynomials of different precision, the result 
+  //   should be considered to have the lesser precision (i.e. the higher tolerance). Imprecision 
+  //   is infectious. Precision is (unfortunately) not.
 }
 
 
 bool testLinearAlgebra()
 {
   bool ok = true;
+
+
+  // Under development:
+  ok &= testLinAlgSparseTransFunc();
+
+
+
 
   // LAPACK based solvers:
   ok &= testBandDiagonalSolver();           // Fails with gcc
@@ -1100,4 +1153,16 @@ bool testLinearAlgebra()
   //   rsMatrix3x3, SIMD types like rsFloat64x2 and their complex versions, rsSparseMatrix, 
   //   rsMultiVector, ...Maybe for this, we should create a very general implementation that uses
   //   a random matrix of various sizes (1x1, 2x2, 3x3, ...) and tries to invert it
+  //
+  // - Try to write a function that produces the characteristic polynomial of a given matrix of 
+  //   numbers. Maybe we need to "upgrade" the matrix to be one consisting of constant polynomials,
+  //   then subtract x from the diagonal elements, then bring the matrix into triangular form, then
+  //   compute the product of diagonal elements. In the Gaussian elemination, maybe we need to 
+  //   avoid picking the (a_ii - x) elements (i.e. the nonconstant polynomials) as pivots because 
+  //   we can't easily divide by them. We could, if we would use rational functions as matrix 
+  //   elements - but it somehow feels wrong to invoke rational function arithmetic when the end 
+  //   result is supposed to be a polynomial. Maybe it's always possible to select a constant as 
+  //   pivot? Or is it possible that avoiding the nonconstant polynomials as pivots may be 
+  //   impossible for certain matrices? Figure this out!
+
 }
