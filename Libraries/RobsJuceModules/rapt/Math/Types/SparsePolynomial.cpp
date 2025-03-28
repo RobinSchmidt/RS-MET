@@ -1,12 +1,12 @@
 
 template<class T, class TTol>
-void rsSparsePolynomial<T, TTol>::setupFromDenseCoeffs(const T* newCoeffs, int newNumTerms, TTol tol)
+void rsSparsePolynomial<T, TTol>::setupFromDenseCoeffs(
+  const T* newCoeffs, int newNumTerms, TTol tol)
 {
   terms.clear();
   terms.reserve(newNumTerms);
   for(int i = 0; i < newNumTerms; i++)
-    //if(rsAbs(newCoeffs[i]) > tol)            // old
-    if( !rsIsNegligible(newCoeffs[i], tol) )   // new
+    if( !rsIsNegligible(newCoeffs[i], tol) ) 
       terms.emplace_back(rsMonomial<T>(newCoeffs[i], i));
 
   //canonicalize(); // Not sure, if we should do this automatically...maybe not
@@ -29,8 +29,7 @@ void rsSparsePolynomial<T, TTol>::addTerm(T coeff, int power, TTol tol)
     if(getPower(i) == power)
     {
       _shiftCoeff(i, coeff);
-      //if(rsAbs(getCoeff(i)) <= tol)          // old
-      if( rsIsNegligible(getCoeff(i), tol) )   // new
+      if( rsIsNegligible(getCoeff(i), tol) )
         rsRemove(terms, (size_t) i);
       return;
     }
@@ -145,17 +144,10 @@ bool rsSparsePolynomial<T, TTol>::isCloseTo(const rsSparsePolynomial<T, TTol>& q
     if(getPower(i) != q.getPower(i))
       return false;
 
-
-    //// Old:
-    //if(rsAbs(getCoeff(i) - q.getCoeff(i)) > tol)
-    //  return false;
-
-    // New:
     if( !rsIsNegligible(getCoeff(i) - q.getCoeff(i), tol) )
       return false;
-
-    // ToDo: Maybe use rsIsCloseTo. But we may need a new implementation for that - one that takes
-    // a TTol template parameter
+    // ToDo: Maybe use rsIsCloseTo(getCoeff(i), q.getCoeff(i), tol). But we may need a new 
+    // implementation for that - one that takes a TTol template parameter
 
   }
 
@@ -417,7 +409,7 @@ void rsSparsePolynomial<T, TTol>::divide(
   // Main loop:
   while(!rem->_isZero(tol) && rem->_getDegree() >= den._getDegree())  // ToDo: use canonical isZero()/getDegree()...or should we not?
   {
-    rsMonomial<T> t = rem->_getLeadingTerm() / den._getLeadingTerm();    // t = lead(r) / lead(d)   ToDo: use canonical getLeadingTerm()
+    rsMonomial<T> t = rem->_getLeadingTerm() / den._getLeadingTerm();  // t = lead(r) / lead(d)
     quot->addTerm(t, tol);                                             // q = q + t
     rem->addScaled(den, -t, tol);                                      // r = r - t * d
 
@@ -441,7 +433,7 @@ void rsSparsePolynomial<T, TTol>::divide(
   // r = n                                     # Init remainder to numerator
   // while( r != 0 and deg(r) >= deg(d) )
   // {
-  //    t = lead(r) / lead(d)                  # t is a monomial
+  //    t = lead(r) / lead(d)                  # t is a monomial, not just a coeff (!)
   //    q = q + t
   //    r = r - t * d
   // }
@@ -454,7 +446,8 @@ void rsSparsePolynomial<T, TTol>::divide(
   //   code that checks the loop invariant. But maybe leave it in. It helped me a lot to find a bug
   //   that I had initially in the computation of the greatest common divisor, i.e. a bug 
   //   elsewhere. It had to do with attempting to do in place processing. It would now be caught by
-  //   rsAssert(rsAreAddressesDistinct(den, *rem);  which I didn't have back then.
+  //   rsAssert(rsAreAddressesDistinct(den, *rem);  which I didn't have back then. But the learning
+  //   is that the assertion may actually catch bugs in higher level code.
   //
   // - Figure out and document, if it can be used in place in certain cases. If this is not the 
   //   case, explicitly document that too and maybe explain why it's not possible. In the loop, we
@@ -500,6 +493,24 @@ void rsSparsePolynomial<T, TTol>::greatestCommonDivisorInPlace(
 
 
 ToDo:
+
+- Verify the usage pattern of the tolerance tol. I think, many member functions that receive a tol
+  parameter should now not receive the tolerance as parameter anymore. If they are non-static,
+  they should use the tol member. If they are static but receive at least one sparse polynomial
+  as parameter, they should retriever the tolerance from there. If they receive more than one 
+  polynomial as parameter, they should use the max of all tolerances. Also, the non-static 
+  functions that receive an additional sparse polynomial p should use  max(this->tol, p.tol), etc.
+
+- We also do not yet use a relative tolerance anywhere. Maybe to facilitate this, we should provide 
+  a member getScaledTolerance() or getAbsoluteTolerance that returns tol * getMaxAbsCoeff() where 
+  getMaxAbsCoeff() should find the maximum absolute value of all of the coeffs. Maybe that function 
+  should return a value of type TTol - not of type T. Then, whenever we need to actually use the 
+  tolerance, we should retrieve it by calling getScaledTolerance().
+
+- We may also want to implement a getter for the unscaled tolerance (maybe getTolerance() or 
+  getRelativeTolerance()) and a setter. And maybe constructors that can (optionally) take the 
+  tolerance to be used. Ah - and copyFataFrom should also copy the tolerance. Check, if we need to
+  do this also in some copy constructors and/or assignment operators.
 
 - Figure out what happens if client code uses negative powers. Currently, there's nothing that
   prevents this and maybe it could even make sense to allow it. But then the notion of degree

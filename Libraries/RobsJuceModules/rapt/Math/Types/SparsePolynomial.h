@@ -404,8 +404,7 @@ public:
   bool _isZero(TTol tol) const
   {
     for(int i = 0; i < getNumTerms(); i++)
-      //if( rsAbs(getCoeff(i)) > tol )         // old
-      if( !rsIsNegligible(getCoeff(i), tol) )  // new
+      if( !rsIsNegligible(getCoeff(i), tol) )
         return false;
     return true;
   }
@@ -476,6 +475,18 @@ public:
   increasing (as function of term-index). The empty polynomial is also accepted as a canonical 
   representation. It represents the zero polynomial. */
   bool isCanonical(TTol tol = T(0)) const;
+  // Should not take a tol parameter. Should call getRelativeTolerance() instead.
+
+  /** Returns the numerical tolerance that is used to determine, if a coefficient should be 
+  considered to be zero. */
+  TTol getRelativeTolerance() const { return tol; }
+  // ToDo: Elaborate ..or maybe do that in the doc for the setter.
+  // Not sure if it should be called getRelativeTolerance() or just getTolerance()
+
+  //TTol getAbsoluteTolerance() const { return tol * getMaxAbsCoeff(); }
+  // getMaxAbsCoeff() should return a TTol. It shouldfind the coeff with the maximum absolute value
+  // and return that maximum absolute value. I think, for that, we need a more felxible 
+  // implementation of rsMaxAbs(T x, T y) that has a return type different from it argument type T.
 
 
   //-----------------------------------------------------------------------------------------------
@@ -612,7 +623,7 @@ public:
 protected:
 
   std::vector<rsMonomial<T>> terms;
-  TTol tol = TTol(0);
+  TTol tol = TTol(0);                    // Maybe rename to relTol or tolRel
 
 };
 

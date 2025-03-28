@@ -2806,9 +2806,14 @@ stored as sorted array and random access requires binary search. In the product,
 iterate over all the stored elements. 
 
 ToDo:
--Document complexity of element write access. I think, it should also be O(log(K)) when we 
- overwrite an existing element and O(K) when we insert a new element (or remove one - removal 
- should be triggered on write when the caller writes a zero). */
+
+- Document complexity of element write access. I think, it should also be O(log(K)) when we 
+  overwrite an existing element and O(K) when we insert a new element (or remove one - removal 
+  should be triggered on write when the caller writes a zero). 
+
+- Implement a tolerance handling similar to what we have in rsSparsePolynomial  
+
+*/
 
 template<class T>
 class rsSparseMatrix
