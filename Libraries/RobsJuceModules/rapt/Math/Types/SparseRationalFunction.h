@@ -39,7 +39,18 @@ public:
   anything like that so it's ok to let client code directly access and manipulate the numerator and 
   denominator. The only donwside may be that the variable names "num" and "den" now become part of
   the public API of the class and can't be changed later. I can live with that. */
-  rsSparsePolynomial<T> num, den;
+
+  rsSparsePolynomial<T> num, den;  
+  // This now breaks the allpass unit test since we use TTol in rsSparsePolynomial. I expect the 
+  // problem to go away when we also introduce TTol here an assign it properly (to double) in the 
+  // unit tests. It's understandable that the tests are now broken because instantiating 
+  // rsSparsePolynomial with the default empty 2nd template parameter will implicitly set the 
+  // tolerances in the tests to zero such that now all float comparisons are exact comparisons and 
+  // therefore fail.
+
+  //rsSparsePolynomial<T, T> num, den;  
+  // This variant doesn't compile. ToDo: use <T, TTol> later
+
   // ...well...wait: There actually is a class invariant that (maybe) should be maintained: The 
   // denominator should be nonzero...hmmm...well...or maybe we just take the position that the onus 
   // is on the client to avoid divisions by zero. That's actually also how it works for int and 
