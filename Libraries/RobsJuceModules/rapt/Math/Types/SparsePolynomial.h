@@ -544,7 +544,6 @@ public:
   /** \name Static member functions */
 
   /** Computes the greatest common divisor of the polynomials p and q. */
-  //template<class T>
   static SparsePoly greatestCommonDivisor(
     const SparsePoly& p, 
     const SparsePoly& q, 
@@ -576,34 +575,20 @@ public:
   operators. So, for real time code, these operators are actually forbidden and one has to resort 
   to the low level API. */
 
-  static void add(
-    const rsSparsePolynomial<T, TTol>& p,
-    const rsSparsePolynomial<T, TTol>& q,
-    rsSparsePolynomial<T, TTol>* r, TTol tol);
+  static void add(const SparsePoly& p, const SparsePoly& q, SparsePoly* r, TTol tol);
 
-  static void subtract(
-    const rsSparsePolynomial<T, TTol>& p,
-    const rsSparsePolynomial<T, TTol>& q,
-    rsSparsePolynomial<T, TTol>* r, TTol tol);
+  static void subtract(const SparsePoly& p, const SparsePoly& q, SparsePoly* r, TTol tol);
 
-  static void weightedSum(
-    const rsSparsePolynomial<T, TTol>& p, T wp,
-    const rsSparsePolynomial<T, TTol>& q, T wq,
-    rsSparsePolynomial<T, TTol>* r, TTol tol);
+  static void weightedSum(const SparsePoly& p, T wp, const SparsePoly& q, T wq,
+    SparsePoly* r, TTol tol);
 
   /** Multiplies polynomials p and q and stores the result in r. It may be used in place, i.e. the
   result polynomial r can point to the memory location of the arguments p and/or q. */
-  static void multiply(
-    const rsSparsePolynomial<T, TTol>& p,
-    const rsSparsePolynomial<T, TTol>& q,
-    rsSparsePolynomial<T, TTol>* r, TTol tol);
+  static void multiply(const SparsePoly& p, const SparsePoly& q, SparsePoly* r, TTol tol);
 
   /** Implements polynomial division with remainder. ...TBC... */
-  static void divide(
-    const rsSparsePolynomial<T, TTol>& numerator,
-    const rsSparsePolynomial<T, TTol>& denominator,
-    rsSparsePolynomial<T, TTol>* quotient,
-    rsSparsePolynomial<T, TTol>* remainder, TTol tol);
+  static void divide(const SparsePoly& numerator, const SparsePoly& denominator,
+    SparsePoly* quotient, SparsePoly* remainder, TTol tol);
 
   /** Computes the greatest common divisor of two polynomials. It works in place meaning that it
   allocates no temporary sparse polynomials internally. The first parameter is an input/output 
@@ -614,15 +599,10 @@ public:
   content on output is undefined. On input, they may contain anything - it doesn't matter. For 
   example usage, see the greatestCommonDivisor() function which basically serves as convenience 
   function for the in-place version. */
-  static void greatestCommonDivisorInPlace(
-    rsSparsePolynomial<T, TTol>* FirstArgAndResult,
-    rsSparsePolynomial<T, TTol>* SecondArg,
-    rsSparsePolynomial<T, TTol>* temp1,
-    rsSparsePolynomial<T, TTol>* temp2,
-    TTol tol, bool makeResultMonic);
+  static void greatestCommonDivisorInPlace(SparsePoly* FirstArgAndResult, SparsePoly* SecondArg,
+    SparsePoly* temp1, SparsePoly* temp2, TTol tol, bool makeResultMonic);
   // I think, if all passed polynomials have large enough capacity, then the function should not
   // (re)allocate any heap memory. Verify and document this! How large is "large enough"?
-
 
 
   // ToDo: Implement compose (see free function rsComposeNaive() in Prototypes.h file), 
