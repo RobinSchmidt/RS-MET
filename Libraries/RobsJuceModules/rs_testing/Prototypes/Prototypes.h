@@ -205,12 +205,12 @@ std::vector<T> rsChebyToPoly(const std::vector<T>& coeffs)
 
 
 
-template<class T>
-rsSparsePolynomial<T> rsPowNaive(const rsSparsePolynomial<T>& p, int n)
+template<class T, class TTol>
+rsSparsePolynomial<T, TTol> rsPowNaive(const rsSparsePolynomial<T, TTol>& p, int n)
 {
   //rsWarning("rsPow(rsSparsePolynomial&) is preliminary");
 
-  rsSparsePolynomial<T> r;
+  rsSparsePolynomial<T, TTol> r;
   r._appendTerm(T(1), 0);
   for(int i = 1; i <= n; i++)
     r = r * p;
@@ -223,12 +223,12 @@ rsSparsePolynomial<T> rsPowNaive(const rsSparsePolynomial<T>& p, int n)
   //   rsPowNaive()
 }
 
-template<class T>
-rsSparsePolynomial<T> rsComposeNaive(
-  const rsSparsePolynomial<T>& inner,
-  const rsSparsePolynomial<T>& outer, T tol)
+template<class T, class TTol>
+rsSparsePolynomial<T, TTol> rsComposeNaive(
+  const rsSparsePolynomial<T, TTol>& inner,
+  const rsSparsePolynomial<T, TTol>& outer, T tol)
 {
-  rsSparsePolynomial<T> r;
+  rsSparsePolynomial<T, TTol> r;
   for(int i = 0; i < outer.getNumTerms(); i++)
     r = r + outer.getCoeff(i) * rsPowNaive(inner, outer.getPower(i));
   return r;

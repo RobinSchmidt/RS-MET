@@ -2583,7 +2583,8 @@ bool testSparsePolynomial()
   using Mon   = rsMonomial<Real>;
   using Vec   = std::vector<Real>;
   using PolyD = rsPolynomial<Real>;         // Dense polynomials
-  using PolyS = rsSparsePolynomial<Real>;   // Sparse polynomials
+  //using PolyS = rsSparsePolynomial<Real>;   // Sparse polynomials
+  using PolyS = rsSparsePolynomial<Real, Real>;   // Sparse polynomials
 
 
   Real tiny = 1.e-16;

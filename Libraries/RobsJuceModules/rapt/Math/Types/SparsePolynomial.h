@@ -195,11 +195,11 @@ public:
 
   /** Sets up the polynomial from a dense arrays of polynomial coeffs. When a coefficient in the 
   dense representation is zero, we not create a term for that. */
-  void setupFromDenseCoeffs(const std::vector<T>& newCoeffs, T tol)
+  void setupFromDenseCoeffs(const std::vector<T>& newCoeffs, TTol tol)
   { setupFromDenseCoeffs(&newCoeffs[0], (int) newCoeffs.size(), tol); }
 
   /** Like setupFromDenseCoeffs(const std::vector<T>&, ...) but for raw C-arrays. */
-  void setupFromDenseCoeffs(const T* newCoeffs, int newNumTerms, T tol);
+  void setupFromDenseCoeffs(const T* newCoeffs, int newNumTerms, TTol tol);
 
   /** Appends a term with given coeff and power to the end of our terms array. Beware that this 
   may decanonicalize the representation. */
@@ -209,20 +209,20 @@ public:
   /** Adds the term c * x^p with coeff c and power p to the polynomial. If a term with the same 
   power already exists, this will just shift its coefficient. If the cofficient happens to be zero 
   after shift (up to the given tolerance), the term will be removed. */
-  void addTerm(T coeff, int power, T tol);
+  void addTerm(T coeff, int power, TTol tol);
   // This function assumes that the polynomial is in canonical representation! Document this and 
   // maybe reflect it in the function name. Maybe addTerm_c
 
   /** Adds the given monomial to the polynomial. */
-  void addTerm(const rsMonomial<T>& newTerm, T tol)
+  void addTerm(const rsMonomial<T>& newTerm, TTol tol)
   { addTerm(newTerm.getCoeff(), newTerm.getPower(), tol); }
 
   /** Subtracts the given monomial from the polynomial. */
-  void subtractTerm(const rsMonomial<T>& newTerm, T tol)
+  void subtractTerm(const rsMonomial<T>& newTerm, TTol tol)
   { addTerm(-newTerm.getCoeff(), newTerm.getPower(), tol); }
 
   /** Adds a scaled version of the given polynomial p to this polynomial. */
-  void addScaledPolynomial(const rsSparsePolynomial<T, TTol> p, T scaler, T tol)
+  void addScaledPolynomial(const rsSparsePolynomial<T, TTol> p, T scaler, TTol tol)
   {
     // WHY IS p NOT PASSED BY CONST REFERENCE? If this is intentional, document why. If this is a 
     // bug, fix it!
@@ -327,7 +327,7 @@ public:
 
   /** Multiplies this polynomial by the given other polynomial factor. Works in place and 
   re-allocates only when the capacity is too low (VERIFY!). */
-  void multiplyBy(const rsSparsePolynomial<T, TTol>& factor, T tol)
+  void multiplyBy(const rsSparsePolynomial<T, TTol>& factor, TTol tol)
   { multiply(*this, factor, this, tol); }
   // I think, this may also decanonicalize! We may get multiple terms with same exponent. But we
   // may actually repair this inside the function. But no! It calls canonicalize at the end, so 
@@ -335,7 +335,7 @@ public:
 
   /** Multiplies this polynomial by a desne polynomial represented by the given array of 
   coefficients. Works in place and re-allocates only when the capacity is too low. */
-  void multiplyByDenseCoeffs(const T* coeffs, int numTerms, T tol);
+  void multiplyByDenseCoeffs(const T* coeffs, int numTerms, TTol tol);
   // I think, this may also decanonicalize! See comment above. It's the same here
 
 
@@ -355,7 +355,7 @@ public:
 
 
 
-  void addScaled(const rsSparsePolynomial<T, TTol>& summand, const rsMonomial<T>& scaler, T tol);
+  void addScaled(const rsSparsePolynomial<T, TTol>& summand, const rsMonomial<T>& scaler, TTol tol);
   // ToDo: implement add(summand, tol), i.e. the same thing but without the scaler.
   // ...and maybe one with the scaler being a simple coeff
 
@@ -373,7 +373,7 @@ public:
   (2) No power appears more than once. (3) No zero coefficients appear. We achieve this by 
   first sorting the terms, then consolidating multiple terms with equal exponents into single
   terms and finally deleting all terms that have a coefficient zero (up to the given tolerance). */
-  void canonicalize(T tol);
+  void canonicalize(TTol tol);
 
   void copyDataFrom(const rsSparsePolynomial<T, TTol>& other)
   {
@@ -401,10 +401,11 @@ public:
   /** Returns true, iff this polynomial is zero, i.e. all absolute values of the coefficients are 
   below the given tolerance. So, this is a zero-test that works also on non-canonical 
   representations. */
-  bool _isZero(T tol) const
+  bool _isZero(TTol tol) const
   {
     for(int i = 0; i < getNumTerms(); i++)
-      if( rsAbs(getCoeff(i)) > tol )
+      //if( rsAbs(getCoeff(i)) > tol )         // old
+      if( !rsIsNegligible(getCoeff(i), tol) )  // new
         return false;
     return true;
   }
@@ -416,7 +417,7 @@ public:
   the order of the terms does matter in the comparison we do here. For example 2*x^3 + 3*x^5 would 
   be considered distinct from 3*x^5 + 2*x^3 by this function even though they are mathematically 
   the same polynomial. */
-  bool isCloseTo(const rsSparsePolynomial<T, TTol>& rhs, T tol) const;
+  bool isCloseTo(const rsSparsePolynomial<T, TTol>& rhs, TTol tol) const;
 
   /** Return true, iff the given index is valid, i.e. the object has a term with given index. */
   bool isValidIndex(int i) const { return i >= 0 && i < getNumTerms(); }
@@ -463,6 +464,9 @@ public:
 
   /** Returns the coefficient of the term with given index. */
   T getCoeff(int index) const {  rsAssert(isValidIndex(index)); return terms[index].getCoeff(); }
+  // ToDo: Return the coeff as const reference! We intend this class to be potentially used with
+  // large coeff types like matrices or arbitrary precision floats, so this optimization may make 
+  // sense
 
   /** Returns the power of the term with given index. */
   int getPower(int index) const { rsAssert(isValidIndex(index)); return terms[index].getPower(); }
@@ -471,7 +475,7 @@ public:
   canonical if it has no zero coefficients (up to a given tolerance) and if the powers are strictly
   increasing (as function of term-index). The empty polynomial is also accepted as a canonical 
   representation. It represents the zero polynomial. */
-  bool isCanonical(T tol = T(0)) const;
+  bool isCanonical(TTol tol = T(0)) const;
 
 
   //-----------------------------------------------------------------------------------------------
@@ -528,6 +532,8 @@ public:
   rsSparsePolynomial<T, TTol> operator%(const rsSparsePolynomial<T, TTol>& q) const 
   { rsSparsePolynomial<T, TTol> quot, rem; divide(*this, q, &quot, &rem, T(0)); return rem; }
 
+  // REPLACE the T(0) by tol!
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Static member functions */
@@ -537,7 +543,7 @@ public:
   static rsSparsePolynomial<T, TTol> greatestCommonDivisor(
     const rsSparsePolynomial<T, TTol>& p, 
     const rsSparsePolynomial<T, TTol>& q, 
-    T tol, bool monic = true)
+    TTol tol, bool monic = true)
   {
     rsSparsePolynomial<T, TTol> a = p, b = q, tmp1, tmp2;
     rsSparsePolynomial<T, TTol>::greatestCommonDivisorInPlace(&a, &b, &tmp1, &tmp2, tol, monic);
@@ -568,31 +574,31 @@ public:
   static void add(
     const rsSparsePolynomial<T, TTol>& p,
     const rsSparsePolynomial<T, TTol>& q,
-    rsSparsePolynomial<T, TTol>* r, T tol);
+    rsSparsePolynomial<T, TTol>* r, TTol tol);
 
   static void subtract(
     const rsSparsePolynomial<T, TTol>& p,
     const rsSparsePolynomial<T, TTol>& q,
-    rsSparsePolynomial<T, TTol>* r, T tol);
+    rsSparsePolynomial<T, TTol>* r, TTol tol);
 
   static void weightedSum(
     const rsSparsePolynomial<T, TTol>& p, T wp,
     const rsSparsePolynomial<T, TTol>& q, T wq,
-    rsSparsePolynomial<T, TTol>* r, T tol);
+    rsSparsePolynomial<T, TTol>* r, TTol tol);
 
   /** Multiplies polynomials p and q and stores the result in r. It may be used in place, i.e. the
   result polynomial r can point to the memory location of the arguments p and/or q. */
   static void multiply(
     const rsSparsePolynomial<T, TTol>& p,
     const rsSparsePolynomial<T, TTol>& q,
-    rsSparsePolynomial<T, TTol>* r, T tol);
+    rsSparsePolynomial<T, TTol>* r, TTol tol);
 
   /** Implements polynomial division with remainder. ...TBC... */
   static void divide(
     const rsSparsePolynomial<T, TTol>& numerator,
     const rsSparsePolynomial<T, TTol>& denominator,
     rsSparsePolynomial<T, TTol>* quotient,
-    rsSparsePolynomial<T, TTol>* remainder, T tol);
+    rsSparsePolynomial<T, TTol>* remainder, TTol tol);
 
   /** Computes the greatest common divisor of two polynomials. It works in place meaning that it
   allocates no temporary sparse polynomials internally. The first parameter is an input/output 
@@ -608,7 +614,7 @@ public:
     rsSparsePolynomial<T, TTol>* SecondArg,
     rsSparsePolynomial<T, TTol>* temp1,
     rsSparsePolynomial<T, TTol>* temp2,
-    T tol, bool makeResultMonic);
+    TTol tol, bool makeResultMonic);
   // I think, if all passed polynomials have large enough capacity, then the function should not
   // (re)allocate any heap memory. Verify and document this! How large is "large enough"?
 

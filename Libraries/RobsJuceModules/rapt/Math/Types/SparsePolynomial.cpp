@@ -1,11 +1,12 @@
 
 template<class T, class TTol>
-void rsSparsePolynomial<T, TTol>::setupFromDenseCoeffs(const T* newCoeffs, int newNumTerms, T tol)
+void rsSparsePolynomial<T, TTol>::setupFromDenseCoeffs(const T* newCoeffs, int newNumTerms, TTol tol)
 {
   terms.clear();
   terms.reserve(newNumTerms);
   for(int i = 0; i < newNumTerms; i++)
-    if(rsAbs(newCoeffs[i]) > tol)
+    //if(rsAbs(newCoeffs[i]) > tol)            // old
+    if( !rsIsNegligible(newCoeffs[i], tol) )   // new
       terms.emplace_back(rsMonomial<T>(newCoeffs[i], i));
 
   //canonicalize(); // Not sure, if we should do this automatically...maybe not
@@ -17,7 +18,7 @@ void rsSparsePolynomial<T, TTol>::setupFromDenseCoeffs(const T* newCoeffs, int n
 }
 
 template<class T, class TTol>
-void rsSparsePolynomial<T, TTol>::addTerm(T coeff, int power, T tol)
+void rsSparsePolynomial<T, TTol>::addTerm(T coeff, int power, TTol tol)
 {
   // We assume that this polynomial is in canonical representation:
   rsAssert(isCanonical());
@@ -28,7 +29,8 @@ void rsSparsePolynomial<T, TTol>::addTerm(T coeff, int power, T tol)
     if(getPower(i) == power)
     {
       _shiftCoeff(i, coeff);
-      if(rsAbs(getCoeff(i)) <= tol)
+      //if(rsAbs(getCoeff(i)) <= tol)          // old
+      if( rsIsNegligible(getCoeff(i), tol) )   // new
         rsRemove(terms, (size_t) i);
       return;
     }
@@ -49,7 +51,7 @@ void rsSparsePolynomial<T, TTol>::addTerm(T coeff, int power, T tol)
 
 template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::addScaled(
-  const rsSparsePolynomial<T, TTol>& q, const rsMonomial<T>& s, T tol)
+  const rsSparsePolynomial<T, TTol>& q, const rsMonomial<T>& s, TTol tol)
 {
   rsAssert(rsAreAddressesDistinct(*this, q), 
            "rsSparsePolynomial::addScaled() can't be used in place.");
@@ -68,7 +70,7 @@ void rsSparsePolynomial<T, TTol>::addScaled(
 }
 
 template<class T, class TTol>
-void rsSparsePolynomial<T, TTol>::canonicalize(T tol)
+void rsSparsePolynomial<T, TTol>::canonicalize(TTol tol)
 {
   // In the empty case, we have nothing to do and we really *need* to return early in order to not 
   // get an access violation in the code below (in the  int p = getPower(0);  line):
@@ -104,7 +106,9 @@ void rsSparsePolynomial<T, TTol>::canonicalize(T tol)
   // assert that the terms are sorted.
 
   // Remove terms with coefficient zero:
-  rsRemoveIf(terms, [&tol](const Mon& term){ return rsAbs(term.getCoeff()) <= tol; });
+  //rsRemoveIf(terms, [&tol](const Mon& term){ return rsAbs(term.getCoeff()) <= tol; });  // old
+  rsRemoveIf(terms, [&tol](const Mon& term){ return rsIsNegligible(term.getCoeff(), tol); }); // new
+
 
   // Check postcondition:
   rsAssert(isCanonical(), "Canonicalization failed");
@@ -131,7 +135,7 @@ void rsSparsePolynomial<T, TTol>::canonicalize(T tol)
 }
 
 template<class T, class TTol>
-bool rsSparsePolynomial<T, TTol>::isCloseTo(const rsSparsePolynomial<T, TTol>& q, T tol) const
+bool rsSparsePolynomial<T, TTol>::isCloseTo(const rsSparsePolynomial<T, TTol>& q, TTol tol) const
 {
   if(getNumTerms() != q.getNumTerms())
     return false;
@@ -140,11 +144,26 @@ bool rsSparsePolynomial<T, TTol>::isCloseTo(const rsSparsePolynomial<T, TTol>& q
   {
     if(getPower(i) != q.getPower(i))
       return false;
-    if(rsAbs(getCoeff(i) - q.getCoeff(i)) > tol)
+
+
+    //// Old:
+    //if(rsAbs(getCoeff(i) - q.getCoeff(i)) > tol)
+    //  return false;
+
+    // New:
+    if( !rsIsNegligible(getCoeff(i) - q.getCoeff(i), tol) )
       return false;
+
+    // ToDo: Maybe use rsIsCloseTo. But we may need a new implementation for that - one that takes
+    // a TTol template parameter
+
   }
 
   return true;
+
+  // Maybe assert that *this and q are canonical. Maybe we should add such assertion everywhere 
+  // where we assume a canonical representation. That's quite an overhead because the test is 
+  // (moderately) costly - but only in debug versions.
 }
 
 template<class T, class TTol>
@@ -234,14 +253,17 @@ rsMonomial<T> rsSparsePolynomial<T, TTol>::_getLeadingTerm() const
 }
 
 template<class T, class TTol>
-bool rsSparsePolynomial<T, TTol>::isCanonical(T tol) const
+bool rsSparsePolynomial<T, TTol>::isCanonical(TTol tol) const
 {
+  // TODO: use rsIsNegligible instead of direct comparisons with tol
+
   // An empty polynomial is the canonical representation of the zero polynomial:
   if(isEmpty())
     return true;
 
   // Check that 0-th coeff is nonzero:
-  if(rsAbs(getCoeff(0)) <= tol)
+  //if(rsAbs(getCoeff(0)) <= tol)         // old
+  if( rsIsNegligible(getCoeff(0), tol) )  // new
     return false;
 
   // Check that all other coeffs are also nonzero and that the powers are strictly increasing:
@@ -249,7 +271,8 @@ bool rsSparsePolynomial<T, TTol>::isCanonical(T tol) const
   for(int i = 1; i < getNumTerms(); i++)
   {
     // Coeffs should be nonzero:
-    if(rsAbs(getCoeff(i)) <= tol)
+    //if(rsAbs(getCoeff(i)) <= tol)         // old
+    if( rsIsNegligible(getCoeff(i), tol) )  // new
       return false;
 
     // Powers should be strictly increasing:
@@ -275,7 +298,7 @@ template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::add(
   const rsSparsePolynomial<T, TTol>& p,
   const rsSparsePolynomial<T, TTol>& q,
-  rsSparsePolynomial<T, TTol>* r, T tol)
+  rsSparsePolynomial<T, TTol>* r, TTol tol)
 {
   int Np = p.getNumTerms();      // Number of terms in left operand p
   int Nq = q.getNumTerms();      // Number of terms in right operand q
@@ -294,7 +317,7 @@ template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::subtract(
   const rsSparsePolynomial<T, TTol>& p,
   const rsSparsePolynomial<T, TTol>& q,
-  rsSparsePolynomial<T, TTol>* r, T tol)
+  rsSparsePolynomial<T, TTol>* r, TTol tol)
 {
   int Np = p.getNumTerms();
   int Nq = q.getNumTerms();
@@ -313,7 +336,7 @@ template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::weightedSum(
   const rsSparsePolynomial<T, TTol>& p, T wp,
   const rsSparsePolynomial<T, TTol>& q, T wq,
-  rsSparsePolynomial<T, TTol>* r, T tol)
+  rsSparsePolynomial<T, TTol>* r, TTol tol)
 {
   int Np = p.getNumTerms();
   int Nq = q.getNumTerms();
@@ -332,7 +355,7 @@ template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::multiply(
   const rsSparsePolynomial<T, TTol>& p,
   const rsSparsePolynomial<T, TTol>& q,
-  rsSparsePolynomial<T, TTol>* r, T tol)
+  rsSparsePolynomial<T, TTol>* r, TTol tol)
 {
   int Np = p.getNumTerms();
   int Nq = q.getNumTerms();
@@ -352,7 +375,7 @@ void rsSparsePolynomial<T, TTol>::multiply(
 }
 
 template<class T, class TTol>
-void rsSparsePolynomial<T, TTol>::multiplyByDenseCoeffs(const T* coeffs, int numTerms, T tol)
+void rsSparsePolynomial<T, TTol>::multiplyByDenseCoeffs(const T* coeffs, int numTerms, TTol tol)
 {
   int Np = getNumTerms();
   int Nq = numTerms;
@@ -372,7 +395,7 @@ void rsSparsePolynomial<T, TTol>::divide(
   const rsSparsePolynomial<T, TTol>& den,
   rsSparsePolynomial<T, TTol>* quot,
   rsSparsePolynomial<T, TTol>* rem,
-  T tol)
+  TTol tol)
 {
   // Sanity checks:
   rsAssert(rsAreAddressesDistinct(num,   *quot));
@@ -454,7 +477,7 @@ void rsSparsePolynomial<T, TTol>::greatestCommonDivisorInPlace(
   rsSparsePolynomial<T, TTol>* b,
   rsSparsePolynomial<T, TTol>* tmp1,
   rsSparsePolynomial<T, TTol>* tmp2,
-  T tol, bool monic)
+  TTol tol, bool monic)
 {
   rsAssert(a->isCanonical());
   rsAssert(b->isCanonical());
