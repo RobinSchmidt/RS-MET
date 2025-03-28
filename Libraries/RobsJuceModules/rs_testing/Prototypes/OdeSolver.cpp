@@ -224,5 +224,9 @@ The Special Math of Translating Theory to Software in Differential Eqs | Chris R
  could potentially be better than standard methods.
 
 
+https://www.youtube.com/watch?v=QUJSsWM1ick
+Numerical Integrators From Scratch in C++ - Vincent Reverdy - CppCon 2024
+-At around 46 min, he mentions this website:  https://www.sfu.ca/~jverner/
+ which has coeffs for new Runge-Kutta like methods which are supposed to be very good, I guess.
 
 */

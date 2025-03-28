@@ -505,7 +505,11 @@ ToDo:
   a member getScaledTolerance() or getAbsoluteTolerance that returns tol * getMaxAbsCoeff() where 
   getMaxAbsCoeff() should find the maximum absolute value of all of the coeffs. Maybe that function 
   should return a value of type TTol - not of type T. Then, whenever we need to actually use the 
-  tolerance, we should retrieve it by calling getScaledTolerance().
+  tolerance, we should retrieve it by calling getScaledTolerance(). Maybe we should use a new
+  function name like rsMaxNorm<TNorm>(TArg x) that returns the maximum norm of the given x, e.g.
+  for complex type, it would return max(abs(re), abs(im)) ...but maybe instead of invoking abs, it 
+  should actually invoke a single argument variant rsMaxNorm<TNorm>(TArg x) that we may specialize
+  for float, double, complex, etc explicitly
 
 - We may also want to implement a getter for the unscaled tolerance (maybe getTolerance() or 
   getRelativeTolerance()) and a setter. And maybe constructors that can (optionally) take the 

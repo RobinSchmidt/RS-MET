@@ -394,6 +394,7 @@ inline unsigned long rsBitReverse(unsigned long number, unsigned long numBits)
 
 
 //-------------------------------------------------------------------------------------------------
+// Under construction
 
 // The rsIsNegligible() stuff is under construction. The intention is to provide a general 
 // infrastructure to identify negligible values such as floating point numbers below a numerical 
@@ -407,6 +408,45 @@ inline unsigned long rsBitReverse(unsigned long number, unsigned long numBits)
 // compute these, we need to run Gauss-Jordan matrix inversion on such matrices of transfer 
 // functions. For such purposes, the negligibility/pruning/canonicalization infrastructure is 
 // needed.
+
+
+
+///** Implements the maximum norm for primitive built in types like int, float, double, etc. It's just
+//the absolute value. This serves also as the general fallback implementation. */
+//template<class T>
+//T rsMaxNorm(const T& x)
+//{
+//  return std::abs(x);
+//}
+////template<class TArg, class TNorm>
+////TNorm rsMaxNorm(const TArg& x)
+////{
+////  return (TNorm) std::abs(x);
+////}
+//// Shouldn't we use just a single template parameter, i.e. argument type and return type should match?
+//
+//template<class TArg, class TNorm>
+//TNorm rsMaxNorm(const TArg& x, const TArg& y)
+//{
+//  return rsMax(rsMaxNorm(x), rsMaxNorm(y));
+//}
+//
+///** Implements the maximum norm for std::complex<TReal> where TReal */
+//template<class TReal, class TNorm>
+//TNorm rsMaxNorm(const std::complex<TReal>& z)
+//{
+//  return rsMaxNorm<TReal, TNorm>(std::abs(z.real()), std::abs(z.imag)); 
+//
+//  //return rsMax(std::abs(z.real()), std::abs(z.imag)); 
+//  // Maybe we should use rsMaxNorm rather than rsMax? What if TReal is a simd type, for example? Might 
+//  // rsMax then be unsuitable because the max function should return the underlying scalar type?
+//}
+//
+//
+//
+//
+
+
 
 template<class TVal, class TTol> 
 inline bool rsIsNegligible(TVal val, TTol tol)
