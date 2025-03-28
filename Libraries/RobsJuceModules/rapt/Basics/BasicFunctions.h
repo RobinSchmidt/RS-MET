@@ -84,7 +84,6 @@ template<class T> inline bool rsIsFiniteNonNegativeNumber(T x)
   return rsIsFiniteNumber(x) && x >= T(0);
 }
 
-
 /** Returns true, if the passed array of length N contains only finite numbers, false otherwise, */
 template<class T> inline bool rsIsFiniteNumbers(T* x, int N)
 {
@@ -94,6 +93,7 @@ template<class T> inline bool rsIsFiniteNumbers(T* x, int N)
   return true;
 }
 // rename to rsAllFiniteNumbers
+
 
 // We wrap the math functions from the standard library such that in the code, we can call these 
 // instead. The reason is that we want the code to be generic - we may provide different explicit
@@ -240,7 +240,6 @@ bool rsIsCloseTo(const std::complex<T>& a, const std::complex<T>& b, const T& to
   T m2 = rsAbsSquared(d);   // magnitude squared of difference
   return m2 <= tol*tol;
 }
-
 
 template <class T>
 bool rsLessOrEqual(const T& left, const T& right)
@@ -394,6 +393,51 @@ inline unsigned long rsBitReverse(unsigned long number, unsigned long numBits)
 
 
 
+//-------------------------------------------------------------------------------------------------
+
+// The rsIsNegligible() stuff is under construction. The intention is to provide a general 
+// infrastructure to identify negligible values such as floating point numbers below a numerical 
+// roundoff error threshold. This shall then be used to prune nonzero data that should actually be
+// considered zero - for example, trailing polynomial coefficients after an addition of two 
+// polynomials. Such things are especially needed when we deal with matrices of elements of a more
+// complicated type (like polynomials or rational functions) and want to do linear algebra on them.
+// If we don't prune/canonicalize the intermediate results after every arithmetic operation, the 
+// expressions may blow up in e.g. Gaussian elimination. Matrices of rational functions occurr, for
+// example, as transfer function matrices in state space filters and feedback delay networks. To 
+// compute these, we need to run Gauss-Jordan matrix inversion on such matrices of transfer 
+// functions. For such purposes, the negligibility/pruning/canonicalization infrastructure is 
+// needed.
+
+template<class TVal, class TTol> 
+inline bool rsIsNegligible(TVal val, TTol tol)
+{
+  return rsLessOrEqual(rsAbs(val), tol);
+
+  // This is the default implementation of the negligibility test. A value is considered negligible
+  // if its absolute value is less than or equal to a given tolerance threshold. ...TBC...
+
+  // ToDo: 
+  //
+  // - Figure out if we may need an rsAbs() function that takes two template parameters - one for 
+  //   the argument type and one for the return type. The type of an absolute value may in general 
+  //   differ from the argument type. For example, for complex arguments, the return type may be 
+  //   the underlying real type. Maybe we need to call it like rsAbs<TVal, TTol>(val) here because 
+  //   the return type (here TTol) cannot be inferred from the passed argument. So, maybe we need 
+  //   to revisit the implementation(s) of rsAbs to make that work. Maybe we should call the 
+  //   template parameters TVal, TAbs or TArg, TRes (for result). And maybe we should pass the 
+  //   argument by const reference because at some point, the argument may be something like a 
+  //   matrix (in which case we would return the max-abs value of all elements). We'll see...
+}
+
+template<class TVal> 
+inline bool rsIsNegligible(TVal val, rsEmptyType tol)
+{
+  return rsIsZero(val);
+
+  // This is an explicit partial specialization of the rsIsNegligible() function for when the 
+  // tolerance type is an empty dummy type. In such cases, a value is considered to be negligible
+  // only when it is exactly equal to zero.
+}
 
 
 

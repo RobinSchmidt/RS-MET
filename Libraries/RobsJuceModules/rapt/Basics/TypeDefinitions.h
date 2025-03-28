@@ -73,6 +73,6 @@ struct rsEmptyType
   rsEmptyType(int) {};
 };
 // The constructors are meant to be able to define default arguments for function calls and make
-// the work also with the empty struct (todo: check, if that is actually necessarry)
+// them work also with the empty struct (todo: check, if that is actually necessarry)
 
 #endif
