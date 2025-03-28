@@ -155,12 +155,14 @@ ToDo:
 
 */
 
-template<class T>
+template<class T, class TTol = rsEmptyType>
 class rsSparsePolynomial
 {
 
 public:
 
+  // ToDo: Maybe use this abbreviation for convenience in the member function declarations:
+  //using SparsePoly = rsSparsePolynomial<T, TTol>;
 
   //-----------------------------------------------------------------------------------------------
   /** \name Lifetime */
@@ -220,8 +222,11 @@ public:
   { addTerm(-newTerm.getCoeff(), newTerm.getPower(), tol); }
 
   /** Adds a scaled version of the given polynomial p to this polynomial. */
-  void addScaledPolynomial(const rsSparsePolynomial<T> p, T scaler, T tol)
+  void addScaledPolynomial(const rsSparsePolynomial<T, TTol> p, T scaler, T tol)
   {
+    // WHY IS p NOT PASSED BY CONST REFERENCE? If this is intentional, document why. If this is a 
+    // bug, fix it!
+
     for(int i = 0; i < p.getNumTerms(); i++)
       addTerm(scaler * p.getCoeff(i), p.getPower(i), tol);
   }
@@ -322,7 +327,7 @@ public:
 
   /** Multiplies this polynomial by the given other polynomial factor. Works in place and 
   re-allocates only when the capacity is too low (VERIFY!). */
-  void multiplyBy(const rsSparsePolynomial<T>& factor, T tol)
+  void multiplyBy(const rsSparsePolynomial<T, TTol>& factor, T tol)
   { multiply(*this, factor, this, tol); }
   // I think, this may also decanonicalize! We may get multiple terms with same exponent. But we
   // may actually repair this inside the function. But no! It calls canonicalize at the end, so 
@@ -350,7 +355,7 @@ public:
 
 
 
-  void addScaled(const rsSparsePolynomial<T>& summand, const rsMonomial<T>& scaler, T tol);
+  void addScaled(const rsSparsePolynomial<T, TTol>& summand, const rsMonomial<T>& scaler, T tol);
   // ToDo: implement add(summand, tol), i.e. the same thing but without the scaler.
   // ...and maybe one with the scaler being a simple coeff
 
@@ -370,7 +375,7 @@ public:
   terms and finally deleting all terms that have a coefficient zero (up to the given tolerance). */
   void canonicalize(T tol);
 
-  void copyDataFrom(const rsSparsePolynomial<T>& other)
+  void copyDataFrom(const rsSparsePolynomial<T, TTol>& other)
   {
     _setNumTerms(other.getNumTerms());
     for(int i = 0; i < getNumTerms(); i++)
@@ -411,7 +416,7 @@ public:
   the order of the terms does matter in the comparison we do here. For example 2*x^3 + 3*x^5 would 
   be considered distinct from 3*x^5 + 2*x^3 by this function even though they are mathematically 
   the same polynomial. */
-  bool isCloseTo(const rsSparsePolynomial<T>& rhs, T tol) const;
+  bool isCloseTo(const rsSparsePolynomial<T, TTol>& rhs, T tol) const;
 
   /** Return true, iff the given index is valid, i.e. the object has a term with given index. */
   bool isValidIndex(int i) const { return i >= 0 && i < getNumTerms(); }
@@ -494,9 +499,9 @@ public:
   TArg operator()(TArg z) const { return evaluateTyped(z); }
 
 
-  rsSparsePolynomial<T> operator-() const 
+  rsSparsePolynomial<T, TTol> operator-() const 
   { 
-    rsSparsePolynomial<T> r;
+    rsSparsePolynomial<T, TTol> r;
     r.copyDataFrom(*this);
     r.scale(T(-1));  // Maybe use a special negate() function
     return r;
@@ -504,24 +509,24 @@ public:
 
 
   /** Adds two polynomials. */
-  rsSparsePolynomial<T> operator+(const rsSparsePolynomial<T>& q) const 
-  { rsSparsePolynomial<T> r; add(*this, q, &r, T(0)); return r; }
+  rsSparsePolynomial<T, TTol> operator+(const rsSparsePolynomial<T, TTol>& q) const 
+  { rsSparsePolynomial<T, TTol> r; add(*this, q, &r, T(0)); return r; }
 
   /** Subtracts two polynomials. */
-  rsSparsePolynomial<T> operator-(const rsSparsePolynomial<T>& q) const 
-  { rsSparsePolynomial<T> r; subtract(*this, q, &r, T(0)); return r; }
+  rsSparsePolynomial<T, TTol> operator-(const rsSparsePolynomial<T, TTol>& q) const 
+  { rsSparsePolynomial<T, TTol> r; subtract(*this, q, &r, T(0)); return r; }
 
   /** Multiplies two polynomials. */
-  rsSparsePolynomial<T> operator*(const rsSparsePolynomial<T>& q) const 
-  { rsSparsePolynomial<T> r; multiply(*this, q, &r, T(0)); return r; }
+  rsSparsePolynomial<T, TTol> operator*(const rsSparsePolynomial<T, TTol>& q) const 
+  { rsSparsePolynomial<T, TTol> r; multiply(*this, q, &r, T(0)); return r; }
 
   /** Divides two polynomials. */
-  rsSparsePolynomial<T> operator/(const rsSparsePolynomial<T>& q) const 
-  { rsSparsePolynomial<T> quot, rem; divide(*this, q, &quot, &rem, T(0)); return quot; }
+  rsSparsePolynomial<T, TTol> operator/(const rsSparsePolynomial<T, TTol>& q) const 
+  { rsSparsePolynomial<T, TTol> quot, rem; divide(*this, q, &quot, &rem, T(0)); return quot; }
 
   /** Computes remainder of polynomial division, i.e. implements the modulo operation. */
-  rsSparsePolynomial<T> operator%(const rsSparsePolynomial<T>& q) const 
-  { rsSparsePolynomial<T> quot, rem; divide(*this, q, &quot, &rem, T(0)); return rem; }
+  rsSparsePolynomial<T, TTol> operator%(const rsSparsePolynomial<T, TTol>& q) const 
+  { rsSparsePolynomial<T, TTol> quot, rem; divide(*this, q, &quot, &rem, T(0)); return rem; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -529,13 +534,13 @@ public:
 
   /** Computes the greatest common divisor of the polynomials p and q. */
   template<class T>
-  static rsSparsePolynomial<T> greatestCommonDivisor(
-    const rsSparsePolynomial<T>& p, 
-    const rsSparsePolynomial<T>& q, 
+  static rsSparsePolynomial<T, TTol> greatestCommonDivisor(
+    const rsSparsePolynomial<T, TTol>& p, 
+    const rsSparsePolynomial<T, TTol>& q, 
     T tol, bool monic = true)
   {
-    rsSparsePolynomial<T> a = p, b = q, tmp1, tmp2;
-    rsSparsePolynomial<T>::greatestCommonDivisorInPlace(&a, &b, &tmp1, &tmp2, tol, monic);
+    rsSparsePolynomial<T, TTol> a = p, b = q, tmp1, tmp2;
+    rsSparsePolynomial<T, TTol>::greatestCommonDivisorInPlace(&a, &b, &tmp1, &tmp2, tol, monic);
     return a;
   }
   // ToDo: document the tol and monic parameters. tol is the usual numeric tolerance for floating 
@@ -561,33 +566,33 @@ public:
   to the low level API. */
 
   static void add(
-    const rsSparsePolynomial<T>& p,
-    const rsSparsePolynomial<T>& q,
-    rsSparsePolynomial<T>* r, T tol);
+    const rsSparsePolynomial<T, TTol>& p,
+    const rsSparsePolynomial<T, TTol>& q,
+    rsSparsePolynomial<T, TTol>* r, T tol);
 
   static void subtract(
-    const rsSparsePolynomial<T>& p,
-    const rsSparsePolynomial<T>& q,
-    rsSparsePolynomial<T>* r, T tol);
+    const rsSparsePolynomial<T, TTol>& p,
+    const rsSparsePolynomial<T, TTol>& q,
+    rsSparsePolynomial<T, TTol>* r, T tol);
 
   static void weightedSum(
-    const rsSparsePolynomial<T>& p, T wp,
-    const rsSparsePolynomial<T>& q, T wq,
-    rsSparsePolynomial<T>* r, T tol);
+    const rsSparsePolynomial<T, TTol>& p, T wp,
+    const rsSparsePolynomial<T, TTol>& q, T wq,
+    rsSparsePolynomial<T, TTol>* r, T tol);
 
   /** Multiplies polynomials p and q and stores the result in r. It may be used in place, i.e. the
   result polynomial r can point to the memory location of the arguments p and/or q. */
   static void multiply(
-    const rsSparsePolynomial<T>& p,
-    const rsSparsePolynomial<T>& q,
-    rsSparsePolynomial<T>* r, T tol);
+    const rsSparsePolynomial<T, TTol>& p,
+    const rsSparsePolynomial<T, TTol>& q,
+    rsSparsePolynomial<T, TTol>* r, T tol);
 
   /** Implements polynomial division with remainder. ...TBC... */
   static void divide(
-    const rsSparsePolynomial<T>& numerator,
-    const rsSparsePolynomial<T>& denominator,
-    rsSparsePolynomial<T>* quotient,
-    rsSparsePolynomial<T>* remainder, T tol);
+    const rsSparsePolynomial<T, TTol>& numerator,
+    const rsSparsePolynomial<T, TTol>& denominator,
+    rsSparsePolynomial<T, TTol>* quotient,
+    rsSparsePolynomial<T, TTol>* remainder, T tol);
 
   /** Computes the greatest common divisor of two polynomials. It works in place meaning that it
   allocates no temporary sparse polynomials internally. The first parameter is an input/output 
@@ -599,10 +604,10 @@ public:
   example usage, see the greatestCommonDivisor() function which basically serves as convenience 
   function for the in-place version. */
   static void greatestCommonDivisorInPlace(
-    rsSparsePolynomial<T>* FirstArgAndResult,
-    rsSparsePolynomial<T>* SecondArg,
-    rsSparsePolynomial<T>* temp1,
-    rsSparsePolynomial<T>* temp2,
+    rsSparsePolynomial<T, TTol>* FirstArgAndResult,
+    rsSparsePolynomial<T, TTol>* SecondArg,
+    rsSparsePolynomial<T, TTol>* temp1,
+    rsSparsePolynomial<T, TTol>* temp2,
     T tol, bool makeResultMonic);
   // I think, if all passed polynomials have large enough capacity, then the function should not
   // (re)allocate any heap memory. Verify and document this! How large is "large enough"?
@@ -616,15 +621,19 @@ public:
 protected:
 
   std::vector<rsMonomial<T>> terms;
+  TTol tol = TTol(0);
 
 };
 
 
+// ToDo: Move these implementations below into the class or maybe try to get rid of the 
+// evaluateTyped() function completely
+
 /** Multiplies a coefficient and a sparse polynomial. */
-template<class T>
-inline rsSparsePolynomial<T> operator*(const T& s, const rsSparsePolynomial<T>& p)
+template<class T, class TTol>
+inline rsSparsePolynomial<T, TTol> operator*(const T& s, const rsSparsePolynomial<T, TTol>& p)
 {
-  rsSparsePolynomial<T> r;
+  rsSparsePolynomial<T, TTol> r;
   r.copyDataFrom(p);
   r.scale(s);
   return r;
@@ -635,9 +644,9 @@ inline rsSparsePolynomial<T> operator*(const T& s, const rsSparsePolynomial<T>& 
 // we should call it copyScaledDataFrom and/or copyScaledAndShiftedDataFrom.
 
 
-template<class T>
+template<class T, class TTol>
 template<class TArg>
-TArg rsSparsePolynomial<T>::evaluateTyped(const TArg& z) const
+TArg rsSparsePolynomial<T, TTol>::evaluateTyped(const TArg& z) const
 {
   TArg w = TArg(0);
   for(auto& term : terms)
