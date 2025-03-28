@@ -544,14 +544,14 @@ public:
   /** \name Static member functions */
 
   /** Computes the greatest common divisor of the polynomials p and q. */
-  template<class T>
-  static rsSparsePolynomial<T, TTol> greatestCommonDivisor(
-    const rsSparsePolynomial<T, TTol>& p, 
-    const rsSparsePolynomial<T, TTol>& q, 
+  //template<class T>
+  static SparsePoly greatestCommonDivisor(
+    const SparsePoly& p, 
+    const SparsePoly& q, 
     TTol tol, bool monic = true)
   {
-    rsSparsePolynomial<T, TTol> a = p, b = q, tmp1, tmp2;
-    rsSparsePolynomial<T, TTol>::greatestCommonDivisorInPlace(&a, &b, &tmp1, &tmp2, tol, monic);
+    SparsePoly a = p, b = q, tmp1, tmp2;
+    SparsePoly::greatestCommonDivisorInPlace(&a, &b, &tmp1, &tmp2, tol, monic);
     return a;
   }
   // ToDo: document the tol and monic parameters. tol is the usual numeric tolerance for floating 
