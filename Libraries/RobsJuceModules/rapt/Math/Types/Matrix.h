@@ -465,6 +465,10 @@ public:
   /** Returns the total size, i.e. the number of elements in the matrix. */
   int getSize() const { return numRows * numCols; }
 
+  /** Returns true, iff this matrix is empty, i.e. has a size of zero. This means it has zero rows
+  and/or zero columns. */
+  bool isEmpty() const { return getSize() == 0; }
+
   /** Returns true, iff this matrix is a row vector. */
   bool isRowVector() const { return numRows == 1; }
 
