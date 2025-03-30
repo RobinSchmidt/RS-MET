@@ -53,12 +53,22 @@ public:
   rsPolynomial(const T& number) { coeffs.resize(1); coeffs[0] = number; }
 
   // ToDo:
-  // Make a constructor that initializes from a raw array. Implement copy and move constructors.
-  // See rsMatrix. This will help to avoid unnecessary copies in expressions like
-  // r = p + q; where r,p,q are polynomials. It enables return value optimization for the 
-  // operators.
   //
+  // - Make a constructor that initializes from a raw array. But: Should the passed number be the
+  //   length of the array or the degree of the polynomial? The user would probably expect to pass
+  //   the length of the array - but that would make it inconsistent with other parts of the class.
+  //   So, due to this ambiguity and confusiveness, maybe it's better to not provide such a 
+  //   constructor.
   //
+  // - Implement copy and move constructors. See rsMatrix. This will help to avoid unnecessary 
+  //   copies in expressions like r = p + q; where r,p,q are polynomials. It enables return value 
+  //   optimization for the operators.
+  //
+  // - Do not let the constructor that takes an optional int for the degree and an optional bool
+  //   to init with zeros serve double duty as parameter-less default constructor. Provide a 
+  //   separate parameterless constructor for that. Then make the parameters of that degree/init
+  //   constructor non-optional. ...or at least the degree parameter should be non optional - which
+  //   it must then be anyway to resolve ambiguity with the new dedicated default constructor.
 
 
   //-----------------------------------------------------------------------------------------------
