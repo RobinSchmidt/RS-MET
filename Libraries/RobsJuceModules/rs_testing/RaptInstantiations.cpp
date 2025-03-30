@@ -235,6 +235,7 @@ template class RAPT::rsPolynomial<std::complex<float>>;
 template class RAPT::rsPolynomial<std::complex<double>>;
 template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
 template class RAPT::rsPolynomial<RAPT::rsModularInteger<int>>;
+template class RAPT::rsPolynomial<rsFloat32x4>; 
 // ToDo: instantiate rsPolynomial also for for rsMatrix<float>, etc. I'd like to have polynomials 
 // where the coeffs are real numbers (or from some other field) and the x and y-values could be 
 // matrices. It would be nice, if the coeffs could be matrices, too

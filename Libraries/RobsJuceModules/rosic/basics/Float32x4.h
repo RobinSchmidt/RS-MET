@@ -1,5 +1,6 @@
 #ifndef RAPT_FLOAT32X4_H_INCLUDED
 #define RAPT_FLOAT32X4_H_INCLUDED
+// ToDo: change RAPT to rosic, move the class into namespace rosic
 
 //#include <emmintrin.h>
 //#include <xmmintrin.h>
