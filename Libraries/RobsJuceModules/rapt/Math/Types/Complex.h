@@ -134,6 +134,15 @@ inline rsComplex<T> operator+(const rsComplex<T> &z, const T &r)
   return rsComplex<T>(z.re+r, z.im);
 }
 
+template<class T, class L>
+inline rsComplex<T> operator+(const L& x, const rsComplex<T>& y)
+{
+  return T(x) + y;
+}
+// Needs tests
+
+
+
 template<class T>
 inline rsComplex<T> operator-(const rsComplex<T> &z, const rsComplex<T> &w)
 {
@@ -152,6 +161,15 @@ inline rsComplex<T> operator-(const T &r, const rsComplex<T> &z)
   return rsComplex<T>(r-z.re, -z.im);
 }
 
+template<class T, class L>
+inline rsComplex<T> operator-(const L& x, const rsComplex<T>& y)
+{
+  return T(x) - y;
+}
+// Needs tests
+
+
+
 template<class T>
 inline rsComplex<T> operator*(const rsComplex<T> &z, const rsComplex<T> &w)
 {
@@ -169,6 +187,15 @@ inline rsComplex<T> operator*(const T &r, const rsComplex<T> &z)
 {
   return rsComplex<T>(z.re*r, z.im*r);
 }
+
+template<class T, class L>
+inline rsComplex<T> operator*(const L& x, const rsComplex<T>& y)
+{
+  return T(x) * y;
+}
+// Needs tests
+
+
 
 template<class T>
 inline rsComplex<T> operator/(const rsComplex<T> &z, const rsComplex<T> &w)
@@ -193,6 +220,16 @@ inline rsComplex<T> operator/(const T &r, const rsComplex<T> &z)
   T s = r / (z.re*z.re + z.im*z.im);
   return rsComplex<T>(s*z.re, -s*z.im);
 }
+
+template<class T, class L>
+inline rsComplex<T> operator/(const L& x, const rsComplex<T>& y)
+{
+  return T(x) / y;
+}
+// Needs tests
+
+
+
 
 //=================================================================================================
 // Elementary math functions for complex numbers:
