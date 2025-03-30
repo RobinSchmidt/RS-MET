@@ -40,12 +40,12 @@ public:
   T getDenominator() const { return den; }
 
   double toDouble() const { return double(num) / double(den); }
+  float  toFloat()  const { return (float) toDouble(); }
 
-  operator double() const { return toDouble(); }
-  // Perhaps it's not a good idea to allow implicit conversions to double. Client code should be
-  // explicit. But it does make sense to have such an implicit conversion operator available when
-  // rsFraction is used in e.g. rsQuadraticField (in the reserach repo). So, I tend to think, we
-  // should keep it.
+  explicit operator double() const { return toDouble(); }
+  // It's not a good idea to allow implicit conversions to double but an explicit conversion 
+  // operator can be useful. See class rsQuadraticField in the research repo for usage of that 
+  // operator. 
 
 
   // These need tests:
