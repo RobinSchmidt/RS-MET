@@ -443,6 +443,27 @@ T rsMaxNorm(const std::complex<T>& z)
   return std::max(std::abs(z.real()), std::abs(z.imag()));
 }
 
+/** Implements rsMaxNorm for an array of elements of length N passed as raw pointer. This is meant
+to be used as utility function to implement rsMaxNorm() for types that maintain an array of 
+elements like rsMatrix or rsPolynomial. See implementations of rsMaxNorm() for these classes. */
+template<class T>
+auto rsMaxNorm(const T* p, int N)
+{
+  auto max = rsMaxNorm(T(0));
+  for(int i = 0; i < N; i++)
+    max = rsMax(max, rsMaxNorm(p[i]));
+  return max;
+
+  // ToDo:
+  //
+  // - Try it with a type T that requires a prototype for correct initialization. Maybe something
+  //   like rsMultiVector or rsModularInteger - although, for the latter, the notion of a 
+  //   maximum-norm may be mathematically questionable and maybe for the former as well. But we may
+  //   need to implement it, if we want to do linear algebra with them. But maybe we can directly
+  //   implement rsIsNegligible() or maybe we don't need it for rsModularInteger if rsIsZero is 
+  //   correctly implemented. We'll see.
+}
+
 /** Implements the maximum norm for a std::vector of some type T. The max-norm of a vector is 
 defined recursively as the maximum of the max-norms of the vector's elements. */
 template<class T>
@@ -456,15 +477,17 @@ auto rsMaxNorm(const std::vector<T>& v)
   // Maybe use std::max instead of rsMax and maybe use std::accumulate instead of a loop.
 }
 
-template<class T>
-auto rsMaxNorm(const std::list<T>& v)
-{
-  auto max = rsMaxNorm(T(0));
-  for(auto& e : v)
-    max = rsMax(max, rsMaxNorm(e));
-  return max;
-}
-
+// For std::list, the code would look exactly the same as for std::vector:
+//
+//template<class T>
+//auto rsMaxNorm(const std::list<T>& v)
+//{
+//  auto max = rsMaxNorm(T(0));
+//  for(auto& e : v)
+//    max = rsMax(max, rsMaxNorm(e));
+//  return max;
+//}
+//
 // It's annyoing that we need to duplicate the code for any container type for which we want to
 // support the rsMaxNorm() operation (i.e. std::vector and std::list here). But if we want to 
 // implement it generically for all sorts of containers like below, we get an error related to 
@@ -490,28 +513,7 @@ auto rsMaxNorm(const std::list<T>& v)
 // an upcast (cast to baseclass reference). Try that! It would be the less invasive solution and 
 // therefore perhaps preferable over modifying rsMatrix(View). At the moment, it's fine as is 
 // because I currently don't really need a max-norm function for any STL containers except 
-// std::vector. The implementation for std::list is just there for testing purposes. So, for the 
-// time being, it's fine. But maybe it's something to change later.
-
-template<class T>
-auto rsMaxNorm(const T* p, int N)
-{
-  auto max = rsMaxNorm(T(0));
-  for(int i = 0; i < N; i++)
-    max = rsMax(max, rsMaxNorm(p[i]));
-  return max;
-
-  // ToDo:
-  //
-  // - Try it with a type T that requires a prototype for correct initialization. Maybe something
-  //   like rsMultiVector or rsModularInteger - although, for the latter, the notion of a 
-  //   maximum-norm may be mathematically questionable and maybe for the former as well. But we may
-  //   need to implement it, if we wnat to do linear algebra with them. But maybe we can directly
-  //   implement rsIsNegligible() or maybe we don't need it for rsModularInteger if rsIsZero is 
-  //   correctly implemented. We'll see.
-}
-
-
+// std::vector. So, for the time being, it's fine. But maybe it's something to change later.
 
 
 //-------------------------------------------------------------------------------------------------
@@ -562,7 +564,13 @@ inline bool rsIsNegligible(TVal val, TTol tol)
   //   better word than "roundoff" because it actually *may* be used for other kinds of zero-tests 
   //   with tolerance. It's just that the roundoff error tolerance is the primary intended use 
   //   case. ...considering all of this, I gravitate to rsIsZeroWithTolerance(). A bit verbose. May
-  //   be abbreviated with rsIsZeroWithTol(). We'll see....
+  //   be abbreviated with rsIsZeroWithTol(). Or maybe just overload rsIsZero() itself. The fact 
+  //   that it should be a test with tolerance can be inferred from the fact that it is called with 
+  //   two arguments. But then it would be difficult to distinguish between the two functions in a 
+  //   text search. Hmm...I think, rsIsCloseToZero() is the most accurate description. It doesn't 
+  //   make any assumption about usage patterns - which is actually a good thing becasue it totally 
+  //   *can* be used in other ways. Then, we could also implement rsIsCloseTo(x,y,tol) by just 
+  //   calling rsIsCloseToZero(x-y,tol). That would be rather elegant. We'll see....
 }
 
 template<class TVal> 

@@ -73,6 +73,21 @@ int main(int argc, char* argv[])
   ok &= runUnitTestsRosic();
   return 0;
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
+
+  // The allpass unit test currently fails because I changed the implementation of 
+  // rsSparsePolynomial to accomodate for coming new infrastruture to handle inexact floating 
+  // point comparisons. The unit tests now implicitly do some exact float comparisions where 
+  // inexact ones are needed and therefore fails. I also added a comment about this in this
+  // commit:  84a9b2baf591da5c41d5d2dd31b310d6f1ead34f
+  // What needs to be done to make it pass again is to use rsSparsePolynomial<double, double>
+  // instead of rsSparsePolynomial<double> (which defaults the 2nd template parameter (for TTol, 
+  // the tolerance) to rsEmptyType which results in the exact floating point comparisons. We need
+  // to instantiate with TTol = double as well and then set up a suitable value for the tolerance.
+  // I think, the last version that passes the test is the commit 
+  // 5d5e4a5ee809c57ddc0be24d6f30a3845ab295ac with comment "Give rsSparsePolynomial a second 
+  // template parameter TTol and a member of..." from 2025/03/28 or some commit very near that
+  // one.
+
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
   // of testing. 0: should be able to do all tests in 5 seconds, 1: 20 seconds, 2: 80 seconds etc.
   // ...we may run very exhaustive tests that may take hours - but we don't want to run them as 
