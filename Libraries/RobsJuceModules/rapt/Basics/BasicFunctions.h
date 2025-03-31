@@ -393,19 +393,20 @@ inline unsigned long rsBitReverse(unsigned long number, unsigned long numBits)
 
 
 //--------------------------------------------------------------------------------------------------
-// Definitions of a function rsMaxNorm for different types. The main intention of this function is 
+// Definitions of a function rsMaxNorm() for different types. The main intention of this function is 
 // to find the maximum absolute value in an arbitrarily nested template container type. For 
 // example, one could have a vector of complex values or a matrix of matrices of complex vectors or
-// whatever. The behavior of rsMaxNorm should always be: return the maximum absolute element of the
-// bottommost type which is one of the primitive types, i.e. built in C++ types like int or float.
-// This rsMaxNorm function shall then be used as basis to implement an rsIsNegligible() function 
-// that can be used to determine if a value is so close to zero that it can be considered zero. We
-// need this mostly to deal with inexact floating point comparisons for equality (to zero).
+// whatever. The behavior of rsMaxNorm() should always be: Return the maximum absolute element of 
+// the innermost type which is one of the primitive types, i.e. built in C++ types like int or 
+// float or a more complex type for which an explicit specialization exists. This rsMaxNorm() 
+// function shall then be used as basis to implement an rsIsNegligible() function that can be used 
+// to determine if a value is so close to zero that it can be considered zero. We need this mostly 
+// to deal with inexact floating point comparisons for equality (to zero).
 //
 // My first attempt was to use two template parameters: one for the argument type and another for
 // the return type and then somehow structure the implementations such that it all works. It was 
 // quite tricky to predict the interactions between C++ template instantiations, type deductions, 
-// and function overload resolution rules to make the overload set of the rsMaxNorm function 
+// and function overload resolution rules to make the overload set of the rsMaxNorm() function 
 // behave exactly the way I want it to. I couldn't make it work this way. It turned out that the
 // trick is to use return type deduction, i.e. to use auto for the return value rather than 
 // manually declaring it via another template parameter (we already need one template parameter 
@@ -461,10 +462,11 @@ auto rsMaxNorm(const std::list<T>& v)
 }
 
 // It's annyoing that we need to duplicate the code for any container type for which we want to
-// support the rsMaxNorm operation. But if we want to implement it generically for all sorts of
-// containers like below, we get an error related to rsMatrix not defining value_type. Apparently,
-// the compiler tries to invoke this template for rsMatrix. Maybe it's because the specific 
-// implementation actually takes an rsMatrixView rather than an rsMatrix.
+// support the rsMaxNorm() operation (i.e. std::vector and std::list here). But if we want to 
+// implement it generically for all sorts of containers like below, we get an error related to 
+// rsMatrix not defining value_type. Apparently, the compiler tries to invoke this template for
+// rsMatrix. Maybe it's because the specific implementation actually takes an rsMatrixView rather
+// than an rsMatrix.
 //
 //template<class TCont>
 //auto rsMaxNorm(const TCont& v)
@@ -501,7 +503,7 @@ auto rsMaxNorm(const T* p, int N)
   //   like rsMultiVector or rsModularInteger - although, for the latter, the notion of a 
   //   maximum-norm may be mathematically questionable and maybe for the former as well. But we may
   //   need to implement it, if we wnat to do linear algebra with them. But maybe we can directly
-  //   implement rsIsNegligible or maybe we don't need it for rsModularInteger if rsIsZero is 
+  //   implement rsIsNegligible() or maybe we don't need it for rsModularInteger if rsIsZero is 
   //   correctly implemented. We'll see.
 }
 
@@ -527,7 +529,7 @@ auto rsMaxNorm(const T* p, int N)
 template<class TVal, class TTol> 
 inline bool rsIsNegligible(TVal val, TTol tol)
 {
-  return rsLessOrEqual(rsAbs(val), tol);
+  return rsLessOrEqual(rsAbs(val), tol); // ToDo: Use rsMaxNorm instead of rsAbs
 
   // This is the default implementation of the negligibility test. A value is considered negligible
   // if its absolute value is less than or equal to a given tolerance threshold. ...TBC...
