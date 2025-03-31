@@ -477,7 +477,7 @@ auto rsMaxNorm(const std::vector<T>& v)
   // Maybe use std::max instead of rsMax and maybe use std::accumulate instead of a loop.
 }
 
-// For std::list, the code would look exactly the same as for std::vector:
+// For std::list, the code would look exactly the same as for std::vector. Namely, like this:
 //
 //template<class T>
 //auto rsMaxNorm(const std::list<T>& v)
@@ -487,13 +487,13 @@ auto rsMaxNorm(const std::vector<T>& v)
 //    max = rsMax(max, rsMaxNorm(e));
 //  return max;
 //}
-//
+// 
+// I commented it out when moving it over here (it was formerly in Experiments.cpp in the research 
+// repo) because it doesn't compile here because apparently the header for std::list is not 
+// included and I don't want to include it here just for the sake of testing this function.
 // It's annyoing that we need to duplicate the code for any container type for which we want to
-// support the rsMaxNorm() operation (i.e. std::vector and std::list here). But if we want to 
-// implement it generically for all sorts of containers like below, we get an error related to 
-// rsMatrix not defining value_type. Apparently, the compiler tries to invoke this template for
-// rsMatrix. Maybe it's because the specific implementation actually takes an rsMatrixView rather
-// than an rsMatrix.
+// support the rsMaxNorm() operation. But if we want to implement it generically for all sorts of 
+// containers like below:
 //
 //template<class TCont>
 //auto rsMaxNorm(const TCont& v)
@@ -505,15 +505,23 @@ auto rsMaxNorm(const std::vector<T>& v)
 //  return max;
 //}
 //
-// To make that work, I think rsMatrix (or maybe already rsMatrixView) needs to implement the 
-// following STL compatibility features: a "using value_type = T;" definition, definition of the
-// iterator type and begin() and end() functions. Maybe more. Another possibility could be to
-// define an explicit specialization for rsMatrix itself such that the compiler selects that 
-// instead of the generic container template. It could invoke the definition for rsMatrixView by 
-// an upcast (cast to baseclass reference). Try that! It would be the less invasive solution and 
-// therefore perhaps preferable over modifying rsMatrix(View). At the moment, it's fine as is 
-// because I currently don't really need a max-norm function for any STL containers except 
-// std::vector. So, for the time being, it's fine. But maybe it's something to change later.
+// we get an error related to rsMatrix not defining value_type. Apparently, when it's not commented
+// out, the compiler tries to instantiate the template above also for rsMatrix where we really 
+// would like it to invoke our explicit specialization that we have defined for rsMatrixView (which
+// is the baseclass of rsMatrix that doesn't own the data). Apparently, the template instantiation 
+// and overload resolution rules of C++ think otherwise. The explicit specialization for the 
+// baseclass seems not to be preferred over the generic implementation above.
+//
+// To make the generic code above compile and work with rsMatrix, I think rsMatrix (or maybe 
+// already rsMatrixView) needs to implement the following STL compatibility features: a 
+// "using value_type = T;" definition, a definition of the iterator type and begin() and end() 
+// functions. Maybe more. Another possibility could be to define an explicit specialization for 
+// rsMatrix itself such that the compiler selects that instead of the generic container template. 
+// It could invoke the definition for rsMatrixView by an upcast (cast to baseclass reference). Try 
+// that! It would be the less invasive solution and therefore perhaps preferable over modifying 
+// rsMatrix(View). At the moment, it's fine as is because I currently don't really need a max-norm 
+// function for any STL containers except td::vector. So, for the time being, it's fine. But maybe 
+// it's something to change later.
 
 
 //-------------------------------------------------------------------------------------------------
@@ -535,7 +543,10 @@ auto rsMaxNorm(const std::vector<T>& v)
 template<class TVal, class TTol> 
 inline bool rsIsNegligible(TVal val, TTol tol)
 {
-  return rsLessOrEqual(rsAbs(val), tol); // ToDo: Use rsMaxNorm instead of rsAbs
+  //return rsLessOrEqual(rsAbs(val), tol); // ToDo: Use rsMaxNorm instead of rsAbs
+
+  return rsLessOrEqual(rsMaxNorm(val), tol);  // New - needs tests
+
 
   // This is the default implementation of the negligibility test. A value is considered negligible
   // if its absolute value is less than or equal to a given tolerance threshold. ...TBC...
