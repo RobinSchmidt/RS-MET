@@ -543,8 +543,7 @@ auto rsMaxNorm(const std::vector<T>& v)
 template<class TVal, class TTol> 
 inline bool rsIsNegligible(TVal val, TTol tol)
 {
-  //return rsLessOrEqual(rsAbs(val), tol); // ToDo: Use rsMaxNorm instead of rsAbs
-
+  //return rsLessOrEqual(rsAbs(val), tol);    // Old
   return rsLessOrEqual(rsMaxNorm(val), tol);  // New - needs tests
 
 
@@ -562,8 +561,11 @@ inline bool rsIsNegligible(TVal val, TTol tol)
   //   template parameters TVal, TAbs or TArg, TRes (for result). And maybe we should pass the 
   //   argument by const reference because at some point, the argument may be something like a 
   //   matrix (in which case we would return the max-abs value of all elements). We'll see...
-  //
-  // - Replace call to rsAbs by rsMaxNorm
+  //   Maybe the return value of rsAbs should also be defined as "auto". Maybe that would solve
+  //   a couple of other problems as well - namely those where we compare complex values for 
+  //   equality with tolerance invoking rsAbs(). When this function returns a complex value, it
+  //   is inconvenient. I worked around this inconvenience by taking the real part in certain 
+  //   places - but that's an ugly hack.
   //
   // - Maybe rename to rsIsCloseToZero. This is more specific (or is it really?). Anyway, 
   //   "negligible" may mean different things depending on the context. In math, it is often used to
@@ -581,7 +583,9 @@ inline bool rsIsNegligible(TVal val, TTol tol)
   //   text search. Hmm...I think, rsIsCloseToZero() is the most accurate description. It doesn't 
   //   make any assumption about usage patterns - which is actually a good thing becasue it totally 
   //   *can* be used in other ways. Then, we could also implement rsIsCloseTo(x,y,tol) by just 
-  //   calling rsIsCloseToZero(x-y,tol). That would be rather elegant. We'll see....
+  //   calling rsIsCloseToZero(x-y,tol). That would be rather elegant. But we already have an 
+  //   implementation of rsIsCloseTo(). We also have rsArrayTools::almostEqual() and 
+  //   rsArrayTools::isAllZeros(). We should use consistent naming for these.  We'll see....
 }
 
 template<class TVal> 
