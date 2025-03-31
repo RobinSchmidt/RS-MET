@@ -580,4 +580,12 @@ protected:
 
 #endif
 
+
+inline float rsMaxNorm(const rsFloat32x4& v)
+{
+  return RAPT::rsMax(std::abs(v[0]), std::abs(v[1]), std::abs(v[2]), std::abs(v[3]));
+}
+
+
+
 #endif

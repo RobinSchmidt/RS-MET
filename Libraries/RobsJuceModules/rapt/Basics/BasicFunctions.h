@@ -393,15 +393,17 @@ inline unsigned long rsBitReverse(unsigned long number, unsigned long numBits)
 
 
 //--------------------------------------------------------------------------------------------------
-// Definitions of a function rsMaxNorm() for different types. The main intention of this function is 
-// to find the maximum absolute value in an arbitrarily nested template container type. For 
-// example, one could have a vector of complex values or a matrix of matrices of complex vectors or
-// whatever. The behavior of rsMaxNorm() should always be: Return the maximum absolute element of 
-// the innermost type which is one of the primitive types, i.e. built in C++ types like int or 
-// float or a more complex type for which an explicit specialization exists. This rsMaxNorm() 
-// function shall then be used as basis to implement an rsIsNegligible() function that can be used 
-// to determine if a value is so close to zero that it can be considered zero. We need this mostly 
-// to deal with inexact floating point comparisons for equality (to zero).
+// Definitions of a function rsMaxNorm() for different standard types. The main intention of this 
+// function is to find the maximum absolute value in an arbitrarily nested template container type.
+// For example, one could have a vector of complex values or a matrix of matrices of complex 
+// vectors or whatever. The behavior of rsMaxNorm() should always be: Return the maximum absolute 
+// element of the innermost type which is one of the primitive types, i.e. built in C++ types like 
+// int or float or a more complex type for which an explicit specialization exists. This 
+// rsMaxNorm() function shall then be used as basis to implement an rsIsNegligible() function that 
+// can be used to determine if a value is so close to zero that it can be considered zero. We need 
+// this mostly to deal with inexact floating point comparisons for equality (to zero). The other 
+// expilicit specilaizations for class templates like rsMatrix, rsFraction, rsPolynomial, etc. are 
+// located in the header files of the respective classes.
 //
 // My first attempt was to use two template parameters: one for the argument type and another for
 // the return type and then somehow structure the implementations such that it all works. It was 
@@ -418,6 +420,8 @@ inline unsigned long rsBitReverse(unsigned long number, unsigned long numBits)
 // https://en.wikipedia.org/wiki/Norm_(mathematics)
 // https://en.wikipedia.org/wiki/Norm_(mathematics)#Maximum_norm_(special_case_of:_infinity_norm,_uniform_norm,_or_supremum_norm)
 // https://math.stackexchange.com/questions/285398/what-is-the-norm-of-a-complex-number 
+//
+// Maybe rsMaxAbs() would be better? ...think about that...
 
 
 // Base cases for rsMaxNorm for built in primitive types:
@@ -547,6 +551,18 @@ inline bool rsIsNegligible(TVal val, TTol tol)
   //   matrix (in which case we would return the max-abs value of all elements). We'll see...
   //
   // - Replace call to rsAbs by rsMaxNorm
+  //
+  // - Maybe rename to rsIsCloseToZero. This is more specific (or is it really?). Anyway, 
+  //   "negligible" may mean different things depending on the context. In math, it is often used to
+  //   justify neglecting higher order terms in series expansions. But that's not the meaning we 
+  //   intend to convey here. Here, we actually mean that it is (likely to be) nonzero only due to 
+  //   floating point roundoff error. Maybe we should call it something like 
+  //   rsIsWithinRoundoffTolerance...although that's rather verbose. Maybe rsIsZeroWithinRoundoff()
+  //   or rsIsZeroWithinError or rsIsZeroWithTolerance or something. Maybe "tolerance" is the 
+  //   better word than "roundoff" because it actually *may* be used for other kinds of zero-tests 
+  //   with tolerance. It's just that the roundoff error tolerance is the primary intended use 
+  //   case. ...considering all of this, I gravitate to rsIsZeroWithTolerance(). A bit verbose. May
+  //   be abbreviated with rsIsZeroWithTol(). We'll see....
 }
 
 template<class TVal> 
