@@ -262,6 +262,13 @@ rsMatrix2x2<T> rsInv(rsMatrix2x2<T> A)
   return A.getInverse();
 }
 
+template<class T>
+auto rsMaxNorm(const rsMatrix2x2<T>& A)
+{
+  return rsMax(rsMaxNorm(A.a), rsMaxNorm(A.b), rsMaxNorm(A.c), rsMaxNorm(A.d));
+}
+
+
 // ToDo: 
 // -Implement matrix exponential for 2x2 matrices as free function rsExp. If A is invertible, use
 //  the formula based on diagonalization. If it isn't...dunno...maybe use Taylor expansion similar
@@ -1077,6 +1084,13 @@ protected:
   T *dataPointer = nullptr;      // pointer to the actual data
 
 };
+
+
+template<class T>
+auto rsMaxNorm(const rsMatrixView<T>& A)
+{
+  return rsMaxNorm(A.getDataPointerConst(), A.getSize());
+}
 
 //=================================================================================================
 

@@ -1254,6 +1254,13 @@ inline rsPolynomial<T> operator*(const T& s, const rsPolynomial<T>& p)
   return q;
 }
 
+template<class T>
+auto rsMaxNorm(const rsPolynomial<T>& p)
+{
+  return rsMaxNorm(p.getCoeffPointerConst(), p.getNumCoeffs());
+}
+
+
 
 // todo: implement a function that determines the number of real roots of a polynomial in an
 // interval by means of Sturmian sequences (see Einführung in die computerorientierte Mathematik

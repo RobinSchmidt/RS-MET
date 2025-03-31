@@ -397,6 +397,14 @@ T angle(const rsVector3D<T>& a, const rsVector3D<T>& b)
 
 // maybe return references from operators - avoid copying
 
+template<class T>
+auto rsMaxNorm(const rsVector3D<T>& v)
+{
+  return rsMax(rsMaxNorm(v.x), rsMaxNorm(v.y), rsMaxNorm(v.z));
+}
+
+
+
 /*
 Vector identities:
 (a x b) x c = (ac)b - (bc)a  "double cross"

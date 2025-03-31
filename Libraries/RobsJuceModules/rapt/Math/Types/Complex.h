@@ -384,7 +384,11 @@ inline void rsSetComplex(rsComplex<T>* z, const T& newReal, const T& newImag)
   z->im = newImag;
 }
 
-
+template<class T>
+auto rsMaxNorm(const rsComplex<T>& z)
+{
+  return rsMax(rsMaxNorm(z.re), rsMaxNorm(z.im));
+}
 
 
 

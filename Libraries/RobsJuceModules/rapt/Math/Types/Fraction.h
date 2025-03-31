@@ -190,7 +190,18 @@ inline rsFraction<T> rsGetPivotingTolerance(const rsMatrixView<rsFraction<T>>& A
   return rsFraction<T>(0, 1);
 }
 
+template<class T>
+auto rsMaxNorm(const rsFraction<T>& q)
+{
+  return rsAbs(q);
 
+  // This currently invokes the fallback implementation of rsAbs that checks if less then zero and
+  // if so, returns -x otherwise returns x. Maybe we can provide a more efficient implementation 
+  // of rsAbs specifically for rsFraction. We just need to take the abs of the numerator and leave 
+  // the denominator as is. Maybe we can even bypass the canonicalization in the constructor. 
+  // Perhaps by using a private factory function makeUnchecked(T newNum, T newDen) or something 
+  // like that.
+}
 
 
 // ToDo:

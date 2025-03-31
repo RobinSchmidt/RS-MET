@@ -392,6 +392,121 @@ inline unsigned long rsBitReverse(unsigned long number, unsigned long numBits)
 // routines.
 
 
+//--------------------------------------------------------------------------------------------------
+// Definitions of a function rsMaxNorm for different types. The main intention of this function is 
+// to find the maximum absolute value in an arbitrarily nested template container type. For 
+// example, one could have a vector of complex values or a matrix of matrices of complex vectors or
+// whatever. The behavior of rsMaxNorm should always be: return the maximum absolute element of the
+// bottommost type which is one of the primitive types, i.e. built in C++ types like int or float.
+// This rsMaxNorm function shall then be used as basis to implement an rsIsNegligible() function 
+// that can be used to determine if a value is so close to zero that it can be considered zero. We
+// need this mostly to deal with inexact floating point comparisons for equality (to zero).
+//
+// My first attempt was to use two template parameters: one for the argument type and another for
+// the return type and then somehow structure the implementations such that it all works. It was 
+// quite tricky to predict the interactions between C++ template instantiations, type deductions, 
+// and function overload resolution rules to make the overload set of the rsMaxNorm function 
+// behave exactly the way I want it to. I couldn't make it work this way. It turned out that the
+// trick is to use return type deduction, i.e. to use auto for the return value rather than 
+// manually declaring it via another template parameter (we already need one template parameter 
+// for the argument type). Return type deduction requires at least C++14.
+//
+// I'm not sure if we should call it rsMaxNorm. Maybe think about the name some more. For 
+// mathematical usage of the term, see:
+//
+// https://en.wikipedia.org/wiki/Norm_(mathematics)
+// https://en.wikipedia.org/wiki/Norm_(mathematics)#Maximum_norm_(special_case_of:_infinity_norm,_uniform_norm,_or_supremum_norm)
+// https://math.stackexchange.com/questions/285398/what-is-the-norm-of-a-complex-number 
+
+
+// Base cases for rsMaxNorm for built in primitive types:
+
+inline unsigned int rsMaxNorm(unsigned int x) { return x;           }
+inline int          rsMaxNorm(int          x) { return std::abs(x); }
+inline float        rsMaxNorm(float        x) { return std::abs(x); }
+inline double       rsMaxNorm(double       x) { return std::abs(x); }
+// ToDo: add all primitive types like int64_t etc.
+
+
+/** Implements the maximum norm for std::complex<T> where T can be either double or float. The 
+maximum of a complex number x + i*y is defined as max(|x|,|y|). When viewing the complex plane as
+a 2D real vector space, this is also called the infinity norm for this vector space. That's because
+it's the limit of the p-norm: L_p(x,y) = (|x|^p + |y|^p)^(1/p) as p approaches infinity. */
+template<class T>
+T rsMaxNorm(const std::complex<T>& z)
+{
+  return std::max(std::abs(z.real()), std::abs(z.imag()));
+}
+
+/** Implements the maximum norm for a std::vector of some type T. The max-norm of a vector is 
+defined recursively as the maximum of the max-norms of the vector's elements. */
+template<class T>
+auto rsMaxNorm(const std::vector<T>& v)
+{
+  auto max = rsMaxNorm(T(0));
+  for(auto& e : v)
+    max = rsMax(max, rsMaxNorm(e));
+  return max;
+
+  // Maybe use std::max instead of rsMax and maybe use std::accumulate instead of a loop.
+}
+
+template<class T>
+auto rsMaxNorm(const std::list<T>& v)
+{
+  auto max = rsMaxNorm(T(0));
+  for(auto& e : v)
+    max = rsMax(max, rsMaxNorm(e));
+  return max;
+}
+
+// It's annyoing that we need to duplicate the code for any container type for which we want to
+// support the rsMaxNorm operation. But if we want to implement it generically for all sorts of
+// containers like below, we get an error related to rsMatrix not defining value_type. Apparently,
+// the compiler tries to invoke this template for rsMatrix. Maybe it's because the specific 
+// implementation actually takes an rsMatrixView rather than an rsMatrix.
+//
+//template<class TCont>
+//auto rsMaxNorm(const TCont& v)
+//{
+//  using T = TCont::value_type;
+//  auto max = rsMaxNorm(T(0));
+//  for(auto& e : v)
+//    max = rsMax(max, rsMaxNorm(e));  // Maybe try to use std::max
+//  return max;
+//}
+//
+// To make that work, I think rsMatrix (or maybe already rsMatrixView) needs to implement the 
+// following STL compatibility features: a "using value_type = T;" definition, definition of the
+// iterator type and begin() and end() functions. Maybe more. Another possibility could be to
+// define an explicit specialization for rsMatrix itself such that the compiler selects that 
+// instead of the generic container template. It could invoke the definition for rsMatrixView by 
+// an upcast (cast to baseclass reference). Try that! It would be the less invasive solution and 
+// therefore perhaps preferable over modifying rsMatrix(View). At the moment, it's fine as is 
+// because I currently don't really need a max-norm function for any STL containers except 
+// std::vector. The implementation for std::list is just there for testing purposes. So, for the 
+// time being, it's fine. But maybe it's something to change later.
+
+template<class T>
+auto rsMaxNorm(const T* p, int N)
+{
+  auto max = rsMaxNorm(T(0));
+  for(int i = 0; i < N; i++)
+    max = rsMax(max, rsMaxNorm(p[i]));
+  return max;
+
+  // ToDo:
+  //
+  // - Try it with a type T that requires a prototype for correct initialization. Maybe something
+  //   like rsMultiVector or rsModularInteger - although, for the latter, the notion of a 
+  //   maximum-norm may be mathematically questionable and maybe for the former as well. But we may
+  //   need to implement it, if we wnat to do linear algebra with them. But maybe we can directly
+  //   implement rsIsNegligible or maybe we don't need it for rsModularInteger if rsIsZero is 
+  //   correctly implemented. We'll see.
+}
+
+
+
 
 //-------------------------------------------------------------------------------------------------
 // Under construction
@@ -408,11 +523,6 @@ inline unsigned long rsBitReverse(unsigned long number, unsigned long numBits)
 // compute these, we need to run Gauss-Jordan matrix inversion on such matrices of transfer 
 // functions. For such purposes, the negligibility/pruning/canonicalization infrastructure is 
 // needed.
-
-
-
-
-
 
 template<class TVal, class TTol> 
 inline bool rsIsNegligible(TVal val, TTol tol)
@@ -433,6 +543,8 @@ inline bool rsIsNegligible(TVal val, TTol tol)
   //   template parameters TVal, TAbs or TArg, TRes (for result). And maybe we should pass the 
   //   argument by const reference because at some point, the argument may be something like a 
   //   matrix (in which case we would return the max-abs value of all elements). We'll see...
+  //
+  // - Replace call to rsAbs by rsMaxNorm
 }
 
 template<class TVal> 
