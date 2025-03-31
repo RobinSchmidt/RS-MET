@@ -12,6 +12,22 @@ using namespace RAPT;
 //  return accu;
 //}
 
+
+//-------------------------------------------------------------------------------------------------
+// Basics (if this section grows large, maybe move it into dedicated file BasicsUnitTests.cpp):
+
+bool testBasics()
+{
+  bool ok = true;
+
+
+
+  return ok;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Data:
+
 bool testContainerFuncs()
 {
   bool ok = true;

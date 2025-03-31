@@ -40,7 +40,8 @@ bool runUnitTestsRapt()
   // not yet implemented - this is supposed to test the test utility functions and classes such
   // as rsLoggingVector
 
-  // Data:
+  // Basics and Data:
+  ok &= runUnitTest(&testBasics,               "Basics");
   ok &= runUnitTest(&arrayUnitTest,            "rsArrayTools and std::vector stuff");
   ok &= runUnitTest(&testBufferFunctions,      "BufferFunctions");  // merge with rsArrayTools tests
   ok &= runUnitTest(&testSortAndSearch,        "SortAndSearch");
@@ -120,6 +121,13 @@ bool runUnitTestsRapt()
   else   std::cout << "RAPT: !!!!----> F A I L E D <----!!!!\n";
   std::cout << "\n";
   return ok;
+
+  // ToDo:
+  //
+  // - Use a consistent naming convention for the unit tests. Currently, some are named like 
+  //   testSomeStuff() while others are named like someStuffUnitTest(). I think, it would be best
+  //   to have all units tests named like unitTestSomeStuff. When we use unitTest as prefix, it
+  //   makes it work nicely with code completion.
 }
 
 // Currently, a unit test is just a function that returns a bool: true if the test has passed and 
