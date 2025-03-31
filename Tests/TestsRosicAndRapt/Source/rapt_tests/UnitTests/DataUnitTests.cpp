@@ -16,11 +16,182 @@ using namespace RAPT;
 //-------------------------------------------------------------------------------------------------
 // Basics (if this section grows large, maybe move it into dedicated file BasicsUnitTests.cpp):
 
+
+// Unit tests for the max-norm implementations (ToDo: move these into the main repo):
+
+bool testMaxNormBaseCases()
+{
+  bool ok = true;
+
+  using Uint = unsigned int;
+
+  int    intVal    = -5;
+  Uint   uintVal   =  5;
+  float  floatVal  = -5.f;
+  double doubleVal = -5.0;
+
+  // Make sure that typeid comparison does the right thing (I'm not so familiar with that language
+  // feature):
+  ok &= typeid(intVal) == typeid(3);
+  ok &= typeid(intVal) != typeid(uintVal);
+  ok &= typeid(intVal) != typeid(floatVal);
+  ok &= typeid(intVal) != typeid(doubleVal);
+  // ...ok - looks good.
+
+  // Compute some norms of values of different types where we let the compiler infer the right type
+  // for the computed norm. In these cases here, the return type is actually equal to the argument 
+  // type. This is the simplest situation and it should invoke the version of the template 
+  // rsMaxNorm with a single argument of a given type T and return a result of the same type T as 
+  // well:
+                                           // Expected return type
+  auto intNorm    = rsMaxNorm(intVal);     // int
+  auto uintNorm   = rsMaxNorm(uintVal);    // unsigned int
+  auto floatNorm  = rsMaxNorm(floatVal);   // float
+  auto doubleNorm = rsMaxNorm(doubleVal);  // double
+
+  // Check that the return types are as expected:
+  ok &= typeid(intNorm)    == typeid(intVal);
+  ok &= typeid(uintNorm)   == typeid(uintVal);
+  ok &= typeid(floatNorm)  == typeid(floatVal);
+  ok &= typeid(doubleNorm) == typeid(doubleVal);
+
+  // Check also that the return values are as expected:
+  ok &= intNorm    == 5;
+  ok &= uintNorm   == 5;
+  ok &= floatNorm  == 5.f;
+  ok &= doubleNorm == 5.0;
+
+  // Take the max-norm of a complex number. This is defined to be max(|re|,|im|). It should return a 
+  // norm of the underlying real type which is float here:
+  std::complex<float> compVal1(3.f, -5.f);
+  auto compNorm1 = rsMaxNorm(compVal1);
+  ok &= typeid(compNorm1) == typeid(floatVal);
+  ok &= compNorm1 == 5.f;
+
+  // Now with double for the underlying real type:
+  std::complex<double> compVal2(3.f, -5.f);
+  auto compNorm2 = rsMaxNorm(compVal2);
+  ok &= typeid(compNorm2) == typeid(doubleVal);
+  ok &= compNorm2 == 5.0;
+
+  // Test max-norm for the selfmade rsFloat32x4 type:
+  rsFloat32x4 f32x4(2.f, -3.f, -5.f, 4.f);
+  auto f32x4Norm = rsMaxNorm(f32x4);
+  ok &= typeid(f32x4Norm) == typeid(floatVal);
+  ok &= f32x4Norm == 5.f;
+  // ToDo: Add implementation and test for rsFloat64x2.
+
+  return ok;
+}
+
+// Helper function to verify the type and value of a computed maximum norm:
+template<class T, class TNorm>
+bool testMaxNorm(const T& value, const TNorm& expectedNorm)
+{
+  bool ok = true;
+  auto computedNorm = rsMaxNorm(value);                // Compute maximum norm of value
+  ok &= typeid(computedNorm) == typeid(expectedNorm);  // Verify type of computed norm
+  ok &=        computedNorm  ==        expectedNorm;   // Verify value of computed norm
+  return ok;
+
+  // See: https://en.cppreference.com/w/cpp/language/typeid
+}
+
+template<class T> 
+bool testMaxNormTemplates()
+{
+  // We verify that the various implementations of the rsMaxNorm function template produce the 
+  // correct return types and return the right return values. The latter is more or less trivial. 
+  // There's not much that could go wrong with that. It's mostly the return *types* about which we
+  // care here. We make sure that we get the right return types using the typeid operator.
+
+  bool ok = true;
+
+  // Type aliases for convenience:
+  using C  = rsComplex<T>;
+  using V3 = rsVector3D<T>;
+
+  // Imaginary unit:
+  C i(0, 1);
+
+  // We use the testMaxNorm() helper functionto verify that the data type and value of the norm
+  // returned by rsMaxNorm is as expected. We do this for various input data types such as complex
+  // numbers, vectors, vectors of complex numbers, complex numbers whose real and imaginary parts
+  // are vectors, real and complex matrices, etc. In any case, we expect the returned value to be
+  // maximum of the absolute values of the innermost type and its type should be equal to our 
+  // template parameter T.
+  //
+  //                Argument                                                  Norm
+  ok &= testMaxNorm(rsComplex<T> (T(-3),          T(5)        ),              T(5));
+  ok &= testMaxNorm(rsComplex<V3>(V3({ 1,-7,3 }), V3({3,2,-5})),              T(7));
+
+  ok &= testMaxNorm(rsVector3D<T>(T(-2),   T(3),    T(5)   ),                 T(5));
+  ok &= testMaxNorm(rsVector3D<C>(2 + 3*i, 3 - 2*i, 4 - 5*i),                 T(5));
+
+  ok &= testMaxNorm(rsMatrix2x2<T>(3,      -5,      -7,       6      ),       T(7));
+  ok &= testMaxNorm(rsMatrix2x2<C>(3 + 2*i, 3 - 5*i, 2 - 7*i, 6 + 4*i),       T(7));
+
+  ok &= testMaxNorm(rsMatrix<T>(2, 2, {3,      -5,      -7,      6       }),  T(7));
+  ok &= testMaxNorm(rsMatrix<C>(2, 2, {3 + 2*i, 3 - 5*i, 2 - 7*i, 6 + 4*i}),  T(7));
+
+  ok &= testMaxNorm(std::vector<T>({2,-5,4,-2}),                              T(5));
+  //ok &= testMaxNorm(std::list<T>(  {2,-5,4,-2}),                              T(5));
+
+  // Some tests with classes that can be initialized with a std::vector of values:
+  {
+    std::vector<T> vals({ 1, 3, -7, 5, -2, 3 });
+    rsMatrixView<T> matView(2, 3, &vals[0]);  ok &= testMaxNorm(matView, T(7));
+    rsPolynomial<T> poly(vals);               ok &= testMaxNorm(poly,    T(7));
+  }
+
+  return ok;
+
+  // ToDo:
+  //
+  // - Nested vectors, i.e. vectors of vectors. Maybe use rsVector2D for that. 
+  //   std::vector<Complex>, rsSparsePolynomial<T>, rsSparsePolynomial<Complex>, 
+  //   rsComplex<rsMatrix2x2<T>>. 
+  //
+  // - We need to define what rsMaxAbs should mean for rational functions. It may make sense to 
+  //   only take the numerator into account...at least when the goal is to decide if the maxNorm is
+  //   close enough to zero to consider the function zero. A function  0 / 1  or  0 / (1 + 2 x^2)  
+  //   is still zero. But maybe we should handle that in an overload for rsIsNegligible. Maybe we
+  //   shouldn't even define rsMaxNorm for rs(Sparse)RationalFunction at all.
+}
+
+bool testMaxNorm()
+{
+  bool ok = true;
+
+  ok &=  testMaxNormBaseCases();
+  ok &=  testMaxNormTemplates<int>();
+  ok &=  testMaxNormTemplates<float>();
+  ok &=  testMaxNormTemplates<double>();
+  ok &= !testMaxNormTemplates<rsFloat32x4>();      // Yes. This should return false. See below.
+  ok &=  testMaxNormTemplates<rsFraction<int>>();
+
+  return ok;
+
+  // Notes:
+  //
+  // - The call to "testMaxNormTemplates<rsFloat32x4>()" should return false because the type of 
+  //   the norm of rsFloat32x4 is float whereas the test expects the type of the norm to be 
+  //   rsFloat32x4, i.e. the type of the norm is expected to be equal to the template parameter T.
+  //   ToDo: Try rsFloat64x2 as well
+  //
+  // - Trying to call "ok &= testMaxNormTemplates<unsigned int>();" would give a compilation error
+  //   because the test would try to assign negative numbers to unsigned int variables. That's why 
+  //   we don't include a call for that type even though it is one of the primitive types for which
+  //   rsMaxNorm is defined.
+}
+
+
+
 bool testBasics()
 {
   bool ok = true;
 
-
+  ok &= testMaxNorm();
 
   return ok;
 }
