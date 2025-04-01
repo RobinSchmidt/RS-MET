@@ -309,7 +309,7 @@ public:
   /** \name Inquiry */
 
   /** Returns true, iff this polynomial is empty, i.e. has no terms. */
-  bool isEmpty() const { return terms.empty(); }
+  //bool isEmpty() const { return terms.empty(); }
   // Maybe get rid. Clients should use isZero()
 
   /** Returns the numerical tolerance that is used to determine if a coefficient should be 
@@ -317,7 +317,7 @@ public:
   TTol getRoundoffTolerance() const { return tol; }
 
   /** Returns true iff this polynomial is the zero polynomial. */
-  bool isZero() const { rsAssert(isCanonical()); return isEmpty(); }
+  bool isZero() const { rsAssert(isCanonical()); return terms.empty(); }
 
   /** Returns true, iff the rhs polynomial equals this polynomial up to the given tolerance. */
   bool isCloseTo(const SparsePoly& rhs, TTol tol) const;
@@ -357,11 +357,7 @@ public:
 
 
   /** Copy assignment operator. Copies data from rhs into this object. */
-  SparsePoly& operator=(const SparsePoly& rhs) 
-  { 
-    _copyDataFrom(rhs); 
-    return *this; 
-  }
+  SparsePoly& operator=(const SparsePoly& rhs) { _copyDataFrom(rhs); return *this; }
   // ToDo: Implement move assignment
 
 

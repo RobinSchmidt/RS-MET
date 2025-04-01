@@ -61,7 +61,7 @@ void rsSparsePolynomial<T, TTol>::canonicalize()
 {
   // In the empty case, we have nothing to do and we really *need* to return early in order to not 
   // get an access violation in the code below (in the  int p = getPower(0);  line):
-  if(isEmpty())
+  if(terms.empty())
     return;
 
   // Sort the terms by power/exponent:
@@ -148,7 +148,7 @@ bool rsSparsePolynomial<T, TTol>::isCloseTo(const rsSparsePolynomial<T, TTol>& q
 template<class T, class TTol>
 int rsSparsePolynomial<T, TTol>::_getMinPower() const
 {
-  if(isEmpty())
+  if(terms.empty())
     return 0;
   int minPower = std::numeric_limits<int>::max();
   for(auto& term : terms)
@@ -159,7 +159,7 @@ int rsSparsePolynomial<T, TTol>::_getMinPower() const
 template<class T, class TTol>
 int rsSparsePolynomial<T, TTol>::_getMaxPower() const
 {
-  if(isEmpty())
+  if(terms.empty())
     return 0;
   int maxPower = std::numeric_limits<int>::min();
   for(auto& term : terms)
@@ -198,7 +198,7 @@ int rsSparsePolynomial<T, TTol>::_getMaxPowerIndex() const
   // representation - that's what the underscore means!
 
 
-  if(isEmpty())
+  if(terms.empty())
     return -1;
 
   int maxIndex = 0;
@@ -235,7 +235,7 @@ template<class T, class TTol>
 bool rsSparsePolynomial<T, TTol>::isCanonical() const
 {
   // An empty polynomial is the canonical representation of the zero polynomial:
-  if(isEmpty())
+  if(terms.empty())
     return true;
 
   // Check that 0-th coeff is nonzero:

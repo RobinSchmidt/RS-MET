@@ -2596,9 +2596,10 @@ bool testSparsePolynomial()
   p.setupFromDenseCoeffs(coeffs1, tol);
 
   // Test inquiry functions:
-  ok &= q.isEmpty()        == true;
+  //ok &= q.isEmpty()        == true;
   ok &= q.isZero()         == true;
-  ok &= p.isEmpty()        == false;
+  //ok &= p.isEmpty()        == false;
+  ok &= p.isZero()         == false;
   ok &= p.getNumTerms()    == 3;
   ok &= p._getMinPower()   == 0;
   ok &= p._getMaxPower()   == 5;
@@ -2632,7 +2633,7 @@ bool testSparsePolynomial()
 
   // Clear the polynomial and check the inquiry functions in this case:
   p.clear();
-  ok &= p.isEmpty();
+  ok &= p.isZero();
   ok &= p.getNumTerms()    == 0;
   ok &= p._getMinPower()   == 0;
   ok &= p._getMaxPower()   == 0;
