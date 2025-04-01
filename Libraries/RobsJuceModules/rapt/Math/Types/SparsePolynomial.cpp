@@ -125,6 +125,8 @@ void rsSparsePolynomial<T, TTol>::canonicalize()
 template<class T, class TTol>
 bool rsSparsePolynomial<T, TTol>::isCloseTo(const rsSparsePolynomial<T, TTol>& q, TTol tol) const
 {
+  rsAssert(isCanonical() && q.isCanonical());
+
   if(getNumTerms() != q.getNumTerms())
     return false;
 
@@ -132,12 +134,8 @@ bool rsSparsePolynomial<T, TTol>::isCloseTo(const rsSparsePolynomial<T, TTol>& q
   {
     if(getPower(i) != q.getPower(i))
       return false;
-
     if( !rsIsNegligible(getCoeff(i) - q.getCoeff(i), tol) )
       return false;
-    // ToDo: Maybe use rsIsCloseTo(getCoeff(i), q.getCoeff(i), tol). But we may need a new 
-    // implementation for that - one that takes a TTol template parameter
-
   }
 
   return true;

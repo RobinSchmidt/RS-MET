@@ -310,24 +310,21 @@ public:
 
   /** Returns true, iff this polynomial is empty, i.e. has no terms. */
   bool isEmpty() const { return terms.empty(); }
+  // Maybe get rid. Clients should use isZero()
 
   /** Returns the numerical tolerance that is used to determine if a coefficient should be 
   considered zero, i.e. with in the numerical roundoff noise. */
   TTol getRoundoffTolerance() const { return tol; }
 
-  bool isZero() const
-  {
-    rsAssert(isCanonical()); // This function assumes a canonical representation
-    return isEmpty();
-  }
+  /** Returns true iff this polynomial is the zero polynomial. */
+  bool isZero() const { rsAssert(isCanonical()); return isEmpty(); }
 
-  /** Returns true, iff the rhs polynomial equals this polynomial up to the given tolerance. This 
-  is not a mathematical comparison but rather a raw data comparison which is stricter. For example,
-  the order of the terms does matter in the comparison we do here. For example 2*x^3 + 3*x^5 would 
-  be considered distinct from 3*x^5 + 2*x^3 by this function even though they are mathematically 
-  the same polynomial. */
+  /** Returns true, iff the rhs polynomial equals this polynomial up to the given tolerance. */
   bool isCloseTo(const SparsePoly& rhs, TTol tol) const;
-  // Maybe get rid of tol param and use rsMax(tol, rhs.tol) instead
+
+  /** Like isCloseTo above but without the tol parameter. It uses the maximum of our tol member 
+  and the rhs's tol member. */
+  bool isCloseTo(const SparsePoly& rhs) const { return isCloseTo(rhs, rsMax(tol, rhs.tol)); }
 
   /** Return true, iff the given index is valid, i.e. the object has a term with given index. */
   bool isValidIndex(int i) const { return i >= 0 && i < getNumTerms(); }
