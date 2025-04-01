@@ -291,7 +291,7 @@ public:
   // it should even go into the protected section. ...but maybe client code sometimes needs it.
 
 
-  void copyDataFrom(const SparsePoly& other)
+  void _copyDataFrom(const SparsePoly& other)
   {
     tol = other.tol;
     _setNumTerms(other.getNumTerms());
@@ -358,6 +358,16 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
+
+  /** Copy assignment operator. Copies data from rhs into this object. */
+  SparsePoly& operator=(const SparsePoly& rhs) 
+  { 
+    _copyDataFrom(rhs); 
+    return *this; 
+  }
+  // ToDo: Implement move assignment
+
+
   /** Evaluates the function at the given input z whose type may be different from the 
   coefficient type T. This may be used, for example, for evaluating polynomials with real coeffs at
   complex arguments. 
@@ -375,7 +385,7 @@ public:
   SparsePoly operator-() const 
   { 
     SparsePoly r;
-    r.copyDataFrom(*this);
+    r._copyDataFrom(*this);
     r.scale(T(-1));  // Maybe use a special negate() function. It may be more efficient.
     return r;
   }
@@ -591,7 +601,7 @@ template<class T, class TTol>
 inline rsSparsePolynomial<T, TTol> operator*(const T& s, const rsSparsePolynomial<T, TTol>& p)
 {
   rsSparsePolynomial<T, TTol> r;
-  r.copyDataFrom(p);
+  r._copyDataFrom(p);
   r.scale(s);
   return r;
 

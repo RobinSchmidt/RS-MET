@@ -2773,22 +2773,27 @@ bool testSparsePolynomial()
   // and which argument is shorter:
 
   PolyS::multiply(p, q, &r);           // Reference, computed out of place
-  s.copyDataFrom(p);
+  //s.copyDataFrom(p);
+  s = p;
   PolyS::multiply(s, q, &s);           // res == arg1, arg1 < arg2  where "<" means: shorter
   ok &= s.isCloseTo(r, 0.0);
-  s.copyDataFrom(q);
+  //s.copyDataFrom(q);
+  s = q;
   PolyS::multiply(s, p, &s);           // res == arg1, arg1 > arg2
   ok &= s.isCloseTo(r, 0.0);
-  s.copyDataFrom(p);
+  //s.copyDataFrom(p);
+  s = p;
   PolyS::multiply(q, s, &s);           // res == arg2, arg1 > arg2
   ok &= s.isCloseTo(r, 0.0);
-  s.copyDataFrom(q);
+  //s.copyDataFrom(q);
+  s = q;
   PolyS::multiply(p, s, &s);           // res == arg2, arg1 < arg2
   ok &= s.isCloseTo(r, 0.0);
 
   // Now with res == arg1 == arg2
   PolyS::multiply(p, p, &r);           // We need a new reference
-  s.copyDataFrom(p);
+  //s.copyDataFrom(p);
+  s = p;
   PolyS::multiply(s, s, &s);           // res == arg1 == arg2
   ok &= s.isCloseTo(r, 0.0);
 
