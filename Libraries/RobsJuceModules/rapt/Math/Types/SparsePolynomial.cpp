@@ -267,7 +267,7 @@ T rsSparsePolynomial<T, TTol>::evaluateAt(T x) const
 { 
   T y = 0;
   for(auto& term : terms)
-    y += term.evaluateAt(x);
+    y += term(x);
   return y;
 }
 

@@ -46,7 +46,7 @@ public:
   int getPower() const { return power; }
 
   /** Evaluates the expression c * x^p at the given x. */
-  T evaluateAt(T x) const { return coeff * rsPow(x, T(power)); }
+  //T evaluateAt(T x) const { return coeff * rsPow(x, T(power)); }
   // get rid
 
 
@@ -56,8 +56,8 @@ public:
   /** Returns the coefficient c in the expression c * x^p where the type of x may be different from
   the type T with which the class is instantiated. Can be used, for example, to evaluate monomials
   with real coefficients at complex arguments. */
-  template<class TArg>
-  TArg evaluateTyped(TArg z) const { return TArg(coeff) * rsPow(z, TArg(power)); }
+  //template<class TArg>
+  //TArg evaluateTyped(TArg z) const { return TArg(coeff) * rsPow(z, TArg(power)); }
   // get rid
 
 
@@ -65,13 +65,13 @@ public:
   /** \name Operators */
 
   /** Evaluates the monomial at the given input x. */
-  T operator()(T x) const { return evaluateAt(x); }
+  //T operator()(T x) const { return evaluateAt(x); }
   // get rid
 
 
-
+  /** Evaluates the expression c * x^p at the given x. */
   template<class TArg>
-  T operator()(TArg x) const { return TArg(coeff) * rsPow(x, TArg(power)); }
+  TArg operator()(TArg x) const { return TArg(coeff) * rsPow(x, TArg(power)); }
   // Preliminary. We may want to use rsPowInt for integer exponents. That may be more efficient.
   // Here, we explicitly first convert the exponent to type T and then call rsPow(T x, T y).
   // But currently rsPowInt is not suitably defined. It expects two unsigned ints. But
@@ -684,7 +684,7 @@ TArg rsSparsePolynomial<T, TTol>::evaluateTyped(const TArg& z) const
 {
   TArg w = TArg(0);
   for(auto& term : terms)
-    w += term.evaluateTyped(z);
+    w += term(z);
   return w;
 
   // This implementation needs to be in the header file or we will need an explicit instantiation 
