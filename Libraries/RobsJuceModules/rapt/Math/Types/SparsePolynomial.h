@@ -129,6 +129,9 @@ stuff is going on and special care should be taken. ...TBC...
 
 ToDo:
 
+- Remove the tol parameter from the non-static member functions. These should now use the tol 
+  member for that purpose.
+
 - Document clearly under which circumstances the user can assume the polynomial to be in a 
   canonical representation (and what that even means). I'm still not quite sure myself, whether or 
   not the API should always enforce a canonical representation as class invariant. Maintaining that
@@ -668,11 +671,29 @@ TArg rsSparsePolynomial<T, TTol>::evaluateTyped(const TArg& z) const
   for(auto& term : terms)
     w += term.evaluateTyped(z);
   return w;
+
+  // This implementation needs to be in the header file or we will need an explicit instantiation 
+  // for the member function somewhere even when we already have an explicit instatiation of the 
+  // class. It's probably due to the additional template parameter TArg. Try to get rid of the 
+  // function. Evaluation should be done via the () operator.
 }
-// This implementation needs to be in the header file or we will need an explicit instantiation for
-// the member function somewhere even when we already have an explicit instatiation of the class.
-// It's probably due to the additional template parameter TArg.
-// Try to get rid of the function. Evaluation should be done via the () operator.
+
+template<class T, class TTol>
+void rsSparsePolynomial<T, TTol>::setupFromDenseCoeffs(
+  const T* newCoeffs, int newNumTerms, TTol tol)
+{
+  terms.clear();
+  terms.reserve(newNumTerms);
+  for(int i = 0; i < newNumTerms; i++)
+    if( !rsIsNegligible(newCoeffs[i], tol) ) 
+      terms.emplace_back(rsMonomial<T>(newCoeffs[i], i));
+
+  //canonicalize();  // Superfluous!
+  // The result is actually ensured to be canonical already anyway. The dense coeffs are always in
+  // the right order and we take care of not appending negligible coeffs.
+
+  // The tol parameter should go away! We should use the tol member instead!
+}
 
 
 /** Specializes rsMaxNorm() for rsSparsePolynomial. The max norm of a sparse polynomial is defined

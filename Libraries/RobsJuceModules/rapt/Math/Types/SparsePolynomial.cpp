@@ -1,22 +1,5 @@
 
-template<class T, class TTol>
-void rsSparsePolynomial<T, TTol>::setupFromDenseCoeffs(
-  const T* newCoeffs, int newNumTerms, TTol tol)
-{
-  terms.clear();
-  terms.reserve(newNumTerms);
-  for(int i = 0; i < newNumTerms; i++)
-    if( !rsIsNegligible(newCoeffs[i], tol) ) 
-      terms.emplace_back(rsMonomial<T>(newCoeffs[i], i));
 
-  //canonicalize(); // Not sure, if we should do this automatically...maybe not
-  // ...wait - the result is actually ensured to be canonical already anyway. The dense coeffs are
-  // always in the right order and we take care of not appending negligible coeffs.
-
-  // It's really important to use  >  rather than  >=  in the conditional. Consider tol = 0. If we
-  // would use  >=  then  >= 0  would return true when the coeff is zero, so zero coeffs would get 
-  // accepted which is not what we want.
-}
 
 template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::addTerm(T coeff, int power, TTol tol)
