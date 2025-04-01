@@ -142,6 +142,13 @@ bool testMaxNormTemplates()
     std::vector<T> vals({ 1, 3, -7, 5, -2, 3 });
     rsMatrixView<T> matView(2, 3, &vals[0]);  ok &= testMaxNorm(matView, T(7));
     rsPolynomial<T> poly(vals);               ok &= testMaxNorm(poly,    T(7));
+
+    //rsSparsePolynomial<T> sparPoly(vals);
+    // Linker error. We may put rsSparsePolynomial<T, TTol>::setupFromDenseCoeffs() into the.h
+    // file or do explicit instantiations for all desired types to be tested (currently int, float,
+    // double, rsFloat64x2, rsFraction<int>
+
+    int dummy = 0;
   }
 
   return ok;

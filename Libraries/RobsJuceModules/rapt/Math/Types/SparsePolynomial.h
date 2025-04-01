@@ -174,6 +174,14 @@ public:
   /** Creates a polynomial from an initializer list for the terms. */
   rsSparsePolynomial(std::initializer_list<rsMonomial<T>> initList) : terms(initList) {}
 
+  rsSparsePolynomial(const std::vector<T>& coefficients) 
+  { 
+    setupFromDenseCoeffs(coefficients, TTol(0));
+    // Maybe let the caller optionally pass a value for the tolerance and then pass it on to 
+    // setupFromDenseCoeffs(). Then, we should do this in the other constructors, too.
+  }
+
+
   // What about copy- and move constructors and copy- and move assignment operators? Do we need to
   // define them or can we rely on the auto-generated ones? It's important that swapping two
   // sparse polynomials can be done allocation free. This is needed for inverting sparse filters by
@@ -479,13 +487,20 @@ public:
 
   /** Returns the numerical tolerance that is used to determine, if a coefficient should be 
   considered to be zero. */
-  TTol getRelativeTolerance() const { return tol; }
+  //TTol getRelativeTolerance() const { return tol; }
   // ToDo: Elaborate ..or maybe do that in the doc for the setter.
   // Not sure if it should be called getRelativeTolerance() or just getTolerance()
+  // ...well - I'm not even sure if we should treat the tolerance as relative. There are two 
+  // possible use cases for which we may use a tolerance: to check if some of the coeffs are very 
+  // small compared to the others (measured by the size of the max-coeff) or to check if all coeffs
+  // are below some tolerance. In the former case, we want a relative tolerance, in the latter an
+  // absolute tolerance. We may even want to use different values for both tolerances - but I'm not
+  // sure about that. We may also use one and the same value but in one case use it as is and in 
+  // the other, multiply it by the max-norm of the coeffs.
 
   //TTol getAbsoluteTolerance() const { return tol * getMaxAbsCoeff(); }
-  // getMaxAbsCoeff() should return a TTol. It shouldfind the coeff with the maximum absolute value
-  // and return that maximum absolute value. I think, for that, we need a more felxible 
+  // getMaxAbsCoeff() should return a TTol. It should find the coeff with the maximum absolute 
+  // value and return that maximum absolute value. I think, for that, we need a more felxible 
   // implementation of rsMaxAbs(T x, T y) that has a return type different from it argument type T.
 
 
@@ -645,7 +660,6 @@ inline rsSparsePolynomial<T, TTol> operator*(const T& s, const rsSparsePolynomia
 // "copyDataFrom" function should already include the possible scaling and shifting. But then
 // we should call it copyScaledDataFrom and/or copyScaledAndShiftedDataFrom.
 
-
 template<class T, class TTol>
 template<class TArg>
 TArg rsSparsePolynomial<T, TTol>::evaluateTyped(const TArg& z) const
@@ -658,6 +672,20 @@ TArg rsSparsePolynomial<T, TTol>::evaluateTyped(const TArg& z) const
 // This implementation needs to be in the header file or we will need an explicit instantiation for
 // the member function somewhere even when we already have an explicit instatiation of the class.
 // It's probably due to the additional template parameter TArg.
+// Try to get rid of the function. Evaluation should be done via the () operator.
+
+
+/** Specializes rsMaxNorm() for rsSparsePolynomial. The max norm of a sparse polynomial is defined
+as the maximum norm of all the coefficients. */
+template<class T, class TTol>
+auto rsMaxNorm(rsSparsePolynomial<T, TTol>& p)
+{
+  auto max = rsMaxNorm(T(0));
+  for(int i = 0; i < p.getNumTerms(); i++)
+    max = rsMax(max, rsMaxNorm(p.getCoeff(i)));
+  return max;
+}
+// Needs test
 
 
 
