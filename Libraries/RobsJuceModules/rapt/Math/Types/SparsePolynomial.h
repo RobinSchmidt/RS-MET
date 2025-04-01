@@ -533,22 +533,6 @@ public:
   versa) and when producing allpass filters from allpole filters. */
   void _reverse() { rsReverse(terms); }
 
-
-  /** Returns true, iff this polynomial is zero, i.e. all absolute values of the coefficients are 
-  below the given tolerance. So, this is a zero-test that works also on non-canonical 
-  representations. */
-  bool _areAllCoeffsZero(TTol tol) const
-  {
-    for(int i = 0; i < getNumTerms(); i++)
-      if( !rsIsNegligible(getCoeff(i), tol) )
-        return false;
-    return true;
-  }
-  // Maybe implement a variant isZero() that works only on canonical representations. It could 
-  // just call isEmpty()
-  // Maybe rename to isCloseToZero. Or maybe get rid of it. It's confusing. Or maybe rename to
-  // _areAllCoeffsZero(). 
-
   /** Returns the minimum power that occurs in this polynomial. */
   int _getMinPower() const;
   // Implement a getMinPower() for canonical representations that just returns 0 or the power of
@@ -582,8 +566,13 @@ public:
 
 
 
-  // ToDo: Implement compose (see free function rsComposeNaive() in Prototypes.h file), 
-  // lowestCommonMultiple
+  // ToDo: 
+  //
+  // - Implement compose (see free function rsComposeNaive() in Prototypes.h file), 
+  //   lowestCommonMultiple
+  //
+  // - Maybe try to get rid of some of the _ functions like _getDegree() etc. I don't think, we 
+  //   will ever need them.
 
 
 protected:

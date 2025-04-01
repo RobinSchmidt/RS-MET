@@ -2598,7 +2598,6 @@ bool testSparsePolynomial()
   // Test inquiry functions:
   ok &= q.isEmpty()        == true;
   ok &= q.isZero()         == true;
-  ok &= q._areAllCoeffsZero(tol) == true;  // Maybe get rid of that function
   ok &= p.isEmpty()        == false;
   ok &= p.getNumTerms()    == 3;
   ok &= p._getMinPower()   == 0;
