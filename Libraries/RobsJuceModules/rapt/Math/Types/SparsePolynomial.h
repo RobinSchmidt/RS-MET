@@ -229,11 +229,8 @@ public:
     // them.
   }
 
-  void scaleCoeffs(T scaler)
-  {
-    rsAssert(scaler != T(0));
-    _scaleCoeffs(scaler);
-  }
+  /** Scales all coeffs by the given scaler. */
+  void scaleCoeffs(T scaler) { rsAssert(scaler != T(0)); _scaleCoeffs(scaler); }
 
   /** Alias for scaleCoeffs() for compatibility with API of rsPolynomial. */
   void scale(T scaler) { scaleCoeffs(scaler); }
@@ -241,8 +238,7 @@ public:
   /** Makes the polynomial monic by dividing all coeffs by the leading coeff. A monic polynomial is
   a polynomial in which the leading coefficient is unity (aka one).*/
   void makeMonic() { scale(T(1) / _getLeadingCoeff()); }
-  // Maybe use canonical getLeadingCoeff or rename to _makeMonic
-
+  // Maybe use canonical getLeadingCoeff()
 
   /** Shifts all powers by the given amount. If the amount is p, this corresponds to multiplying 
   the polynomial by a monomial factor with unit coefficient, i.e. by x^p. */
@@ -253,7 +249,6 @@ public:
   }
   // Shifting all powers by the same amount should be unproblematic with regard to 
   // decanonicalization. That's why this function doesn't need an underscore
-
 
   /** Multiplies this polynomial by the given monomial factor. This results in all coeffs being 
   multiplied by the coeff of the monomial and all powers being increased by the pwer of the 
@@ -266,7 +261,7 @@ public:
   void multiplyBy(const SparsePoly& factor, TTol tol) { multiply(*this, factor, this); }
   // I think, this may also decanonicalize! We may get multiple terms with same exponent. But we
   // may actually repair this inside the function. But no! It calls canonicalize at the end, so 
-  // even
+  // even if it temporarily decanonicalizes, it cleans everything up at the end.
 
   /** Multiplies this polynomial by a desne polynomial represented by the given array of 
   coefficients. Works in place and re-allocates only when the capacity is too low. */
@@ -292,6 +287,9 @@ public:
   first sorting the terms, then consolidating multiple terms with equal exponents into single
   terms and finally deleting all terms that have a coefficient zero (up to the given tolerance). */
   void canonicalize();
+  // Maybe it should also go into the low level interface section and get and underscore. Or maybe
+  // it should even go into the protected section. ...but maybe client code sometimes needs it.
+
 
   void copyDataFrom(const SparsePoly& other)
   {
@@ -323,21 +321,6 @@ public:
     return isEmpty();
   }
 
-  /** Returns true, iff this polynomial is zero, i.e. all absolute values of the coefficients are 
-  below the given tolerance. So, this is a zero-test that works also on non-canonical 
-  representations. */
-  bool _isZero(TTol tol) const
-  {
-    for(int i = 0; i < getNumTerms(); i++)
-      if( !rsIsNegligible(getCoeff(i), tol) )
-        return false;
-    return true;
-  }
-  // Maybe implement a variant isZero() that works only on canonical representations. It could 
-  // just call isEmpty()
-  // Maybe rename to isCloseToZero. Or maybe get rid of it. It's confusing. Or maybe rename to
-  // _areAllCoeffsZero(). 
-
   /** Returns true, iff the rhs polynomial equals this polynomial up to the given tolerance. This 
   is not a mathematical comparison but rather a raw data comparison which is stricter. For example,
   the order of the terms does matter in the comparison we do here. For example 2*x^3 + 3*x^5 would 
@@ -353,38 +336,8 @@ public:
   ci * x^pi with a coefficient ci and a power/exponent pi. */
   int getNumTerms() const { return (int) terms.size(); }
 
-  /** Returns the minimum power that occurs in this polynomial. */
-  int _getMinPower() const;
-  // Implement a getMinPower() for canonical representations that just returns 0 or the power of
-  // the 0-th term
-
-  /** Returns the maximum power that occurs in this polynomial. In mathematical jargon, the 
-  highest power in a polynomial is also known as the degree or order of the polynomial. */
-  int _getMaxPower() const;
-  // dito
-
-  /** Returns the index of the maximum power or -1 in the case of an empty array of terms. */
-  int _getMaxPowerIndex() const;
-  // dito
-
-  /** Alias for getMaxPower() for compatibility with API of rsPolynomial. Returns the degree of
-  the polynomial. This is mathematical term for the term with the highest power/exponent that has 
-  a nonzero coefficient. */
-  int _getDegree() const { return _getMaxPower(); }
-  // This is basically an alias name for getMaxPower(). I'm not sure, if it's a good idea to have 
-  // two functions that do the exact same thing. Maybe get rid of it. But on the other hand, it's 
-  // nice to have to be consistent with the API of class rsPolynomial. 
-
-  /** Returns the leading coefficient, i.e. the coefficient that multiplies the highest power of
-  the input variable x. */
-  T _getLeadingCoeff() const;
-
   /** Returns the term (i.e. the monomial) at the given index. */
   rsMonomial<T> getTerm(int index) const { rsAssert(isValidIndex(index)); return terms[index]; }
-
-  /** Returns the leading term in this polynomial, i.e. the monomial  cn x^n  that has the highest
-  exponent n. */
-  rsMonomial<T> _getLeadingTerm() const;
 
   /** Returns the coefficient of the term with given index. */
   T getCoeff(int index) const {  rsAssert(isValidIndex(index)); return terms[index].getCoeff(); }
@@ -429,7 +382,6 @@ public:
   // ToDo: Implement unary plus, too. It's trivial but sometimes, we may want to use it for 
   // clarity. But maybe it should return a (const?) reference rather than a value? Is that even 
   // possible?
-
 
   /** Adds two polynomials. */
   SparsePoly operator+(const SparsePoly& q) const 
@@ -570,6 +522,52 @@ public:
   operation is needed when transforming minimum phase filters into maximum phase ones (or vice 
   versa) and when producing allpass filters from allpole filters. */
   void _reverse() { rsReverse(terms); }
+
+
+  /** Returns true, iff this polynomial is zero, i.e. all absolute values of the coefficients are 
+  below the given tolerance. So, this is a zero-test that works also on non-canonical 
+  representations. */
+  bool _isZero(TTol tol) const
+  {
+    for(int i = 0; i < getNumTerms(); i++)
+      if( !rsIsNegligible(getCoeff(i), tol) )
+        return false;
+    return true;
+  }
+  // Maybe implement a variant isZero() that works only on canonical representations. It could 
+  // just call isEmpty()
+  // Maybe rename to isCloseToZero. Or maybe get rid of it. It's confusing. Or maybe rename to
+  // _areAllCoeffsZero(). 
+
+  /** Returns the minimum power that occurs in this polynomial. */
+  int _getMinPower() const;
+  // Implement a getMinPower() for canonical representations that just returns 0 or the power of
+  // the 0-th term
+
+  /** Returns the maximum power that occurs in this polynomial. In mathematical jargon, the 
+  highest power in a polynomial is also known as the degree or order of the polynomial. */
+  int _getMaxPower() const;
+  // dito
+
+  /** Returns the index of the maximum power or -1 in the case of an empty array of terms. */
+  int _getMaxPowerIndex() const;
+  // dito
+
+  /** Alias for getMaxPower() for compatibility with API of rsPolynomial. Returns the degree of
+  the polynomial. This is mathematical term for the term with the highest power/exponent that has 
+  a nonzero coefficient. */
+  int _getDegree() const { return _getMaxPower(); }
+  // This is basically an alias name for getMaxPower(). I'm not sure, if it's a good idea to have 
+  // two functions that do the exact same thing. Maybe get rid of it. But on the other hand, it's 
+  // nice to have to be consistent with the API of class rsPolynomial. 
+
+  /** Returns the leading coefficient, i.e. the coefficient that multiplies the highest power of
+  the input variable x. */
+  T _getLeadingCoeff() const;
+
+  /** Returns the leading term in this polynomial, i.e. the monomial  cn x^n  that has the highest
+  exponent n. */
+  rsMonomial<T> _getLeadingTerm() const;
 
 
 
