@@ -2621,7 +2621,7 @@ bool testSparsePolynomial()
   Real y1, y2;
   Real d;
   y1 = pd.evaluate(x);
-  y2 = p.evaluateAt(x);
+  y2 = p(x);
   d  = y2-y1;
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
   // We don't want x to be an integer because if it is one, we might get false positive passes
@@ -2653,10 +2653,10 @@ bool testSparsePolynomial()
   p._setTerm(3, -7.0, 2);
   p._setTerm(4, +4.0, 0);
   ok &= p.isCanonical() == false;
-  y1 = p.evaluateAt(x);
+  y1 = p(x);
   p.canonicalize();
   ok &= p.isCanonical() == true;
-  y2 = p.evaluateAt(x);
+  y2 = p(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
   ok &= p._getLeadingCoeff() == 5.0;
 
@@ -2673,11 +2673,11 @@ bool testSparsePolynomial()
   p._setTerm(6, -4.0, 4);
   p._setTerm(7, +6.0, 4);
   ok &= p.isCanonical() == false;
-  y1 = p.evaluateAt(x);
+  y1 = p(x);
   p.canonicalize();
   ok &= p.isCanonical() == true;
   ok &= p.getNumTerms() == 4;
-  y2 = p.evaluateAt(x);
+  y2 = p(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
   ok &= p._getLeadingCoeff() == 2.0;
 
@@ -2695,11 +2695,11 @@ bool testSparsePolynomial()
   p._setTerm(6, -4.0, 4);
   p._setTerm(7, +4.0, 4);
   ok &= p.isCanonical() == false;
-  y1 = p.evaluateAt(x);
+  y1 = p(x);
   p.canonicalize();
   ok &= p.isCanonical() == true;
   ok &= p.getNumTerms() == 2;
-  y2 = p.evaluateAt(x);
+  y2 = p(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
   ok &= p._getLeadingCoeff() == 2.0;
 

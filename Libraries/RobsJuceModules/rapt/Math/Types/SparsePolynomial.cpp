@@ -263,18 +263,6 @@ bool rsSparsePolynomial<T, TTol>::isCanonical() const
 }
 
 template<class T, class TTol>
-T rsSparsePolynomial<T, TTol>::evaluateAt(T x) const 
-{ 
-  T y = 0;
-  for(auto& term : terms)
-    y += term(x);
-  return y;
-}
-
-
-
-
-template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::add(
   const rsSparsePolynomial<T, TTol>& p,
   const rsSparsePolynomial<T, TTol>& q,

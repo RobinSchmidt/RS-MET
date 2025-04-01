@@ -487,20 +487,7 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Processing */
-
-  /** Evaluates the polynomial at the given x and returns the result. */
-  T evaluateAt(T x) const;
-
-  template<class TArg>
-  TArg evaluateTyped(const TArg& z) const;
-
-
-  //-----------------------------------------------------------------------------------------------
   /** \name Operators */
-
-  /** Evaluates the polynomial at the given input x. */
-  T operator()(T x) const { return evaluateAt(x); }
 
   /** Evaluates the function at the given input z whose type may be different from the 
   coefficient type T. This may be used, for example, for evaluating polynomials with real coeffs at
@@ -514,16 +501,6 @@ public:
       y += term(z);
     return y;
   }
-
-
-
-  // Maybe keep only this operator and get rid of the version that has the return type T hardcoded.
-  // I think, the template covers that case, too. I think, we also do not need the evaluateAt() and 
-  // evaluateTyped() function. All of this can be handled by the templated () operator, I think.
-
-
-
-
 
   /** Implements the unary minus operator. */
   SparsePoly operator-() const 
@@ -653,20 +630,6 @@ inline rsSparsePolynomial<T, TTol> operator*(const T& s, const rsSparsePolynomia
 // "copyDataFrom" function should already include the possible scaling and shifting. But then
 // we should call it copyScaledDataFrom and/or copyScaledAndShiftedDataFrom.
 
-template<class T, class TTol>
-template<class TArg>
-TArg rsSparsePolynomial<T, TTol>::evaluateTyped(const TArg& z) const
-{
-  TArg w = TArg(0);
-  for(auto& term : terms)
-    w += term(z);
-  return w;
-
-  // This implementation needs to be in the header file or we will need an explicit instantiation 
-  // for the member function somewhere even when we already have an explicit instatiation of the 
-  // class. It's probably due to the additional template parameter TArg. Try to get rid of the 
-  // function. Evaluation should be done via the () operator.
-}
 
 template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::setupFromDenseCoeffs(
