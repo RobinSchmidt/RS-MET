@@ -206,11 +206,13 @@ public:
 
   /** Sets up the polynomial from a dense arrays of polynomial coeffs. When a coefficient in the 
   dense representation is zero, we not create a term for that. */
-  void setupFromDenseCoeffs(const std::vector<T>& newCoeffs, TTol tol)
+  void setupFromDenseCoeffs(const std::vector<T>& newCoeffs, TTol newTol)
   { setupFromDenseCoeffs(&newCoeffs[0], (int) newCoeffs.size(), tol); }
 
   /** Like setupFromDenseCoeffs(const std::vector<T>&, ...) but for raw C-arrays. */
-  void setupFromDenseCoeffs(const T* newCoeffs, int newNumTerms, TTol tol);
+  void setupFromDenseCoeffs(const T* newCoeffs, int newNumTerms, TTol newTol);
+  // ToDo: Provide methods that don't require a tol parameter. They should do the same thing 
+  // except setting our tol member. 
 
   /** Appends a term with given coeff and power to the end of our terms array. Beware that this 
   may decanonicalize the representation. */
@@ -680,8 +682,9 @@ TArg rsSparsePolynomial<T, TTol>::evaluateTyped(const TArg& z) const
 
 template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::setupFromDenseCoeffs(
-  const T* newCoeffs, int newNumTerms, TTol tol)
+  const T* newCoeffs, int newNumTerms, TTol newTol)
 {
+  tol = newTol;
   terms.clear();
   terms.reserve(newNumTerms);
   for(int i = 0; i < newNumTerms; i++)
@@ -691,8 +694,6 @@ void rsSparsePolynomial<T, TTol>::setupFromDenseCoeffs(
   //canonicalize();  // Superfluous!
   // The result is actually ensured to be canonical already anyway. The dense coeffs are always in
   // the right order and we take care of not appending negligible coeffs.
-
-  // The tol parameter should go away! We should use the tol member instead!
 }
 
 
