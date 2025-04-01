@@ -507,10 +507,22 @@ public:
   complex arguments. 
   WARNING: the same considerations as for @see rsPolynomial::operator(TArg) apply. */
   template<class TArg>
-  TArg operator()(TArg z) const { return evaluateTyped(z); }
+  TArg operator()(TArg z) const // { return evaluateTyped(z); }
+  { 
+    TArg y(0);
+    for(auto& term : terms)
+      y += term(z);
+    return y;
+  }
+
+
+
   // Maybe keep only this operator and get rid of the version that has the return type T hardcoded.
   // I think, the template covers that case, too. I think, we also do not need the evaluateAt() and 
   // evaluateTyped() function. All of this can be handled by the templated () operator, I think.
+
+
+
 
 
   /** Implements the unary minus operator. */

@@ -271,6 +271,9 @@ T rsSparsePolynomial<T, TTol>::evaluateAt(T x) const
   return y;
 }
 
+
+
+
 template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::add(
   const rsSparsePolynomial<T, TTol>& p,
