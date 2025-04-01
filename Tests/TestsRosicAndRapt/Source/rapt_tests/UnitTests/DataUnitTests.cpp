@@ -142,7 +142,13 @@ bool testMaxNormTemplates()
     std::vector<T> vals({ 1, 3, -7, 5, -2, 3 });
     rsMatrixView<T> matView(2, 3, &vals[0]); ok &= testMaxNorm(matView,    T(7));
     rsPolynomial<T> poly(vals);              ok &= testMaxNorm(poly,       T(7));
-    rsSparsePolynomial<T> sparPolyT(vals);   ok &= testMaxNorm(sparPolyT,  T(7)); // TTol = rsEmptyType
+
+    rsSparsePolynomial<T> sparPolyT(vals, rsEmptyType());   
+    ok &= testMaxNorm(sparPolyT,  T(7)); // TTol = rsEmptyType
+    // ToDo: Make the tolerance parameter for the constructor optional such that we don't have to
+    // pass rsEmptyType. But for the transition phase while we implement this tolerance stuff, 
+    // it's good to have it non-optional to make sure, every constructor call that needs a 
+    // tolerance parameter actually gets one.
 
     //rsSparsePolynomial<T,T> sparPolyTT(vals); ok &= testMaxNorm(sparPolyTT, T(7)); // TTol = T
     // This doesn't compile with T = rsFloat32x4 - which should be expected, I think. A sparse

@@ -2,7 +2,7 @@
 
 
 template<class T, class TTol>
-void rsSparsePolynomial<T, TTol>::addTerm(T coeff, int power, TTol tol)
+void rsSparsePolynomial<T, TTol>::addTerm(T coeff, int power)
 {
   // We assume that this polynomial is in canonical representation:
   rsAssert(isCanonical());
@@ -34,13 +34,13 @@ void rsSparsePolynomial<T, TTol>::addTerm(T coeff, int power, TTol tol)
 
 template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::addScaled(
-  const rsSparsePolynomial<T, TTol>& q, const rsMonomial<T>& s, TTol tol)
+  const rsSparsePolynomial<T, TTol>& q, const rsMonomial<T>& s)
 {
   rsAssert(rsAreAddressesDistinct(*this, q), 
            "rsSparsePolynomial::addScaled() can't be used in place.");
 
   for(int i = 0; i < q.getNumTerms(); i++)
-    addTerm(s.getCoeff() * q.getCoeff(i), s.getPower() + q.getPower(i), tol);
+    addTerm(s.getCoeff() * q.getCoeff(i), s.getPower() + q.getPower(i));
 
   // ToDo:
   //
@@ -50,6 +50,9 @@ void rsSparsePolynomial<T, TTol>::addScaled(
   //   canonicalize(). Benchmark both variants and then choose the faster (but keep the slower 
   //   around for reference and unit tests). Maybe implement an _addScaled or _appendScaled()
   //   function that client code can call (perhaps in combination with canonicalize())
+  //
+  // - Make it work in place, i.e. when this == &q. We may need to write a special case handler
+  //   for that.
 }
 
 template<class T, class TTol>
@@ -394,10 +397,11 @@ void rsSparsePolynomial<T, TTol>::divide(
   while(!rem->_isZero(tol) && rem->_getDegree() >= den._getDegree())  // ToDo: use canonical isZero()/getDegree()...or should we not?
   {
     rsMonomial<T> t = rem->_getLeadingTerm() / den._getLeadingTerm();  // t = lead(r) / lead(d)
-    quot->addTerm(t, tol);                                             // q = q + t
-    rem->addScaled(den, -t, tol);                                      // r = r - t * d
+    quot->addTerm(t);                                                  // q = q + t
+    rem->addScaled(den, -t);                                           // r = r - t * d
 
     // Check the loop invariant n = d*q + r:
+    SparsePoly test = den * *quot + *rem;  // For inspection in debugger
     rsAssert(num.isCloseTo(den * *quot + *rem, tol), "Loop invariant violated");
   }
 

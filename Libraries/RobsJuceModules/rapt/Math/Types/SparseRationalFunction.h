@@ -225,9 +225,9 @@ public:
 
 
 
-  void addConstant(T constant, T tol)
+  void addConstant(T constant)
   {
-    num.addScaledPolynomial(den, constant, tol);
+    num.addScaledPolynomial(den, constant);
   }
   // ToDo: Document why this formula is right:
   //

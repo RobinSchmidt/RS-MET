@@ -175,13 +175,16 @@ public:
   rsSparsePolynomial() {}
 
   /** Creates a polynomial from an initializer list for the terms. */
-  rsSparsePolynomial(std::initializer_list<rsMonomial<T>> initList) : terms(initList) {}
+  rsSparsePolynomial(std::initializer_list<rsMonomial<T>> initList, TTol tolerance) 
+    : terms(initList), tol(tolerance) {}
 
-  rsSparsePolynomial(const std::vector<T>& coefficients) 
+  rsSparsePolynomial(const std::vector<T>& coefficients, TTol tolerance) 
   { 
-    setupFromDenseCoeffs(coefficients, TTol(0));
-    // Maybe let the caller optionally pass a value for the tolerance and then pass it on to 
-    // setupFromDenseCoeffs(). Then, we should do this in the other constructors, too.
+    setupFromDenseCoeffs(coefficients, tolerance);
+
+    // Maybe make the tolerance parameter optional. I'm not sure about that, though. It may invite
+    // forgetting to set it when it's really needed. But on the other hand, some types T don't need
+    // any tolerance at all.
   }
 
 
@@ -207,7 +210,7 @@ public:
   /** Sets up the polynomial from a dense arrays of polynomial coeffs. When a coefficient in the 
   dense representation is zero, we not create a term for that. */
   void setupFromDenseCoeffs(const std::vector<T>& newCoeffs, TTol newTol)
-  { setupFromDenseCoeffs(&newCoeffs[0], (int) newCoeffs.size(), tol); }
+  { setupFromDenseCoeffs(&newCoeffs[0], (int) newCoeffs.size(), newTol); }
 
   /** Like setupFromDenseCoeffs(const std::vector<T>&, ...) but for raw C-arrays. */
   void setupFromDenseCoeffs(const T* newCoeffs, int newNumTerms, TTol newTol);
@@ -222,26 +225,26 @@ public:
   /** Adds the term c * x^p with coeff c and power p to the polynomial. If a term with the same 
   power already exists, this will just shift its coefficient. If the cofficient happens to be zero 
   after shift (up to the given tolerance), the term will be removed. */
-  void addTerm(T coeff, int power, TTol tol);
+  void addTerm(T coeff, int power);
   // This function assumes that the polynomial is in canonical representation! Document this and 
   // maybe reflect it in the function name. Maybe addTerm_c
 
   /** Adds the given monomial to the polynomial. */
-  void addTerm(const rsMonomial<T>& newTerm, TTol tol)
-  { addTerm(newTerm.getCoeff(), newTerm.getPower(), tol); }
+  void addTerm(const rsMonomial<T>& newTerm)
+  { addTerm(newTerm.getCoeff(), newTerm.getPower()); }
 
   /** Subtracts the given monomial from the polynomial. */
-  void subtractTerm(const rsMonomial<T>& newTerm, TTol tol)
-  { addTerm(-newTerm.getCoeff(), newTerm.getPower(), tol); }
+  void subtractTerm(const rsMonomial<T>& newTerm)
+  { addTerm(-newTerm.getCoeff(), newTerm.getPower()); }
 
   /** Adds a scaled version of the given polynomial p to this polynomial. */
-  void addScaledPolynomial(const SparsePoly p, T scaler, TTol tol)
+  void addScaledPolynomial(const SparsePoly p, T scaler)
   {
     // WHY IS p NOT PASSED BY CONST REFERENCE? If this is intentional, document why. If this is a 
     // bug, fix it!
 
     for(int i = 0; i < p.getNumTerms(); i++)
-      addTerm(scaler * p.getCoeff(i), p.getPower(i), tol);
+      addTerm(scaler * p.getCoeff(i), p.getPower(i));
   }
   // Maybe it would be better to just append a scaled version and then canonicalize? This may 
   // result in less data movement - but it may blow up the required memory temporarily. So - no - 
@@ -368,7 +371,7 @@ public:
 
 
 
-  void addScaled(const SparsePoly& summand, const rsMonomial<T>& scaler, TTol tol);
+  void addScaled(const SparsePoly& summand, const rsMonomial<T>& scaler);
   // ToDo: implement add(summand, tol), i.e. the same thing but without the scaler.
   // ...and maybe one with the scaler being a simple coeff
 
@@ -387,9 +390,11 @@ public:
   first sorting the terms, then consolidating multiple terms with equal exponents into single
   terms and finally deleting all terms that have a coefficient zero (up to the given tolerance). */
   void canonicalize(TTol tol);
+  // Get rid of tol parameter!
 
   void copyDataFrom(const SparsePoly& other)
   {
+    tol = other.tol;
     _setNumTerms(other.getNumTerms());
     for(int i = 0; i < getNumTerms(); i++)
       _setTerm(i, other.getCoeff(i), other.getPower(i));

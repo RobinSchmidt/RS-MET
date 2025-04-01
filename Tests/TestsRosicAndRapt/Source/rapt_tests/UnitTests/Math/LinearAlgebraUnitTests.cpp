@@ -1036,12 +1036,13 @@ bool testLinAlgSparseTransFunc()
 
   TF one;  one.initToOne();
   TF zero; zero.initToZero();
+  Real tol(1.e-13);                           // Maybe use something based on epsilon later
 
-  TF h11(SP({Mon( 2, 0), Mon(-4, 2)}),     // h11(z) = (2 - 4 z^-2) / 
-         SP({Mon( 1, 0), Mon( 5, 3)}));    //          (1 + 5 z^-3)
+  TF h11(SP({Mon( 2, 0), Mon(-4, 2)}, tol),   // h11(z) = (2 - 4 z^-2) / 
+         SP({Mon( 1, 0), Mon( 5, 3)}, tol));  //          (1 + 5 z^-3)
 
-  TF h12(SP({Mon(-3, 2), Mon( 6, 4)}),     // h12(z) = (-3 z^-2 + 6 z^-4) / 
-         SP({Mon( 1, 0), Mon(-3, 1)}));    //          ( 1 - 3 z^-1)
+  TF h12(SP({Mon(-3, 2), Mon( 6, 4)}, tol),   // h12(z) = (-3 z^-2 + 6 z^-4) / 
+         SP({Mon( 1, 0), Mon(-3, 1)}, tol));  //          ( 1 - 3 z^-1)
 
 
   TF h11i = h11;

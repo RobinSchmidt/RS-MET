@@ -1730,7 +1730,8 @@ public:
     getDamperTransferFunction(tf);        // tf = F, F(z) is transfer function in feedback path
     tf->multiplyBy(Mon(k, 1));            // tf = F * k * z^-1
     mulByDelayTransFunc(tf);              // tf = F * k * z^-1 * A
-    tf->addConstant(TCoef(1), TCoef(0));  // tf = 1 + F * k * z^-1 * A
+    //tf->addConstant(TCoef(1), TCoef(0));  // tf = 1 + F * k * z^-1 * A   old - with tol param
+    tf->addConstant(TCoef(1));            // tf = 1 + F * k * z^-1 * A
     tf->invert();                         // tf = 1 / (1 + F * k * z^-1 * A)
     if(preDelay)
       mulByDelayTransFunc(tf);            // tf = A / (1 + F * k * z^-1 * A)
