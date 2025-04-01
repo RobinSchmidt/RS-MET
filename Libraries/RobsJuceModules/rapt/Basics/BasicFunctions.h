@@ -39,12 +39,16 @@ as the size of "value"). If no explicit instantiation exists for the given type,
 back to the default implementation, which returns T(1). It's also useful for modular integers to
 create 1 with the same modulus as some other number. */
 template<class T> inline T rsUnityValue(T /*value*/) { return T(1); }
+// ToDo: Take parameter by const reference. It's intended to be used with matrices, after all!
+// Although, it actually shouldn't matter for the overload resolution, how the argument is passed
+// for primitive types. As long the the specialization for the matrix class takes it by reference,
+// we should be fine.
 
 /** Returns a zero value of the given type. @see rsUnityValue */
 template<class T> inline T rsZeroValue( T /*value*/) { return T(0); }
 
 /** Turns a given integer constant into another target type T using a value from that target type
-as prototype. It is used, for example, to convert an integer into a modular integer. in this case, 
+as prototype. It is used, for example, to convert an integer into a modular integer. In this case,
 the prototype value is used to copy the modulus from the prototype into the result. */
 template<class T> inline T rsIntValue(int value, T targetTemplate) { return T(value); }
 
@@ -153,7 +157,10 @@ T rsAbs(T x)
 {
   // This (default, fallback, generic) implementation is suitable for real number types (float, 
   // double, int, rational, etc.) but not for complex types because in the complex case, the return
-  // value is not of type T but rather of the underlying real number type.
+  // value is not of type T but rather of the underlying real number type. However - for int, 
+  // float, etc. explicit specializations exists and it is recommended to provide explicit 
+  // specializations for cutom types, too because they tend to be more efficient than this 
+  // implementation here
 
   if( x < rsZeroValue(x) )
     return -x;
@@ -173,11 +180,12 @@ template<class T> inline T rsAbs(std::complex<T> z) { return abs(z); }
 
 
 
-/** Squared absolute value of a complex number. */
+/** Squared absolute value of a complex number. The return value has the underlying real data 
+type. */
 template<class T> 
 T rsAbsSquared(const std::complex<T>& z)
 {
-  return z.real()*z.real() + z.imag()*z.imag(); // == conj(z) * z
+  return z.real()*z.real() + z.imag()*z.imag(); // == conj(z) * z, just for info
 }
 
 
@@ -249,7 +257,8 @@ bool rsLessOrEqual(const T& left, const T& right)
 
 /** Returns the biggest of the two values x and y where "biggest" means: has largest absolute 
 value. (...could also be called rsBigger, but "biggest" may generalized to more than two values 
-later and bigger may suggest something else) */
+later and bigger may suggest something else - for example to return a value bigger than the two 
+passed ones - or to embiggen the first by the second) */
 template <class T>
 T rsBiggest(const T& x, const T& y)
 {
@@ -300,7 +309,12 @@ inline T rsMaxViaLess(T in1, T in2)
     return in1;
   else
     return in2;
+
+  // ToDo:
+  //
+  // - Maybe get rid of this function and use the less operator in rsMax itself.
 }
+
 
 /** The minimum of two objects on which the "<"-operator is defined. */
 template <class T>
@@ -328,7 +342,10 @@ inline T rsMin(T in1, T in2, T in3, T in4)
 
 /** Checks, if x is even. */
 template<class T>
-inline bool rsIsEven(T x) { return x % 2 == 0; } // maybe use bit-mask
+inline bool rsIsEven(T x) { return x % 2 == 0; } 
+// Maybe use bit-mask. But maybe that would work only for built in integer types. But what if the
+// template is instantiated for a custom integer type such as rsBigInt? I guess that for built in 
+// integers, the compiler will be smart enough to make that optimization itself.
 
 /** Checks, if x is odd. */
 template<class T>
@@ -543,8 +560,7 @@ auto rsMaxNorm(const std::vector<T>& v)
 template<class TVal, class TTol> 
 inline bool rsIsNegligible(TVal val, TTol tol)
 {
-  //return rsLessOrEqual(rsAbs(val), tol);    // Old
-  return rsLessOrEqual(rsMaxNorm(val), tol);  // New - needs tests
+  return rsLessOrEqual(rsMaxNorm(val), tol);
 
 
   // This is the default implementation of the negligibility test. A value is considered negligible

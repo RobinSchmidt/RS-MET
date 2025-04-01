@@ -1,8 +1,21 @@
 #ifndef RAPT_TYPEDEFINITIONS_H_INCLUDED
 #define RAPT_TYPEDEFINITIONS_H_INCLUDED
 
-// todo: move them to rosic - rapt is not supposed to use typed code anyway - everything should be
-// generic/templated
+// ToDo: move them to rosic - rapt is not supposed to use typed code anyway - everything should be
+// generic/templated. ..well...much of the code here seems to be obsolete anyway. Maybe try to get 
+// rid or replace by more modern ways of doing it like using e.g. uint32_t, float64_t, etc. See:
+// https://en.cppreference.com/w/cpp/types/integer
+// https://en.cppreference.com/w/cpp/types/floating-point
+//
+// But it says:
+//
+// "Unlike the fixed width integer types, which may be aliases to standard integer types, the fixed
+// width floating-point types must be aliases to extended floating-point types (not float / double 
+// / long double), therefore not drop-in replacements for standard floating-point types"
+//
+// which seems to contradict the information given in the table above which would make it seem that
+// float32_t and float64_t should be perfectly fine drop-in replacements for float and double. 
+
 
 /** 8-bit signed integer */
 typedef signed char rsInt8;
@@ -34,13 +47,9 @@ typedef float rsFloat32;
 /** 64-bit floating point number */
 typedef double rsFloat64;
 
-/** 80-bit floating point number */
-typedef long double rsFloat80;
+/** 80-bit floating point number. Deprecated. On x64 platforms, long double is also 64 bit. */
+//typedef long double rsFloat80;
 
-// Maybe get rid of them and just use int8_t, uint8_t, etc. see:
-// https://www.quora.com/If-there-is-128-bit-integer-type-introduce-in-the-C-standard-what-would-it-be-called-as-a-general-name
-// long double is not 80 bits wide on x64 anymore, so it seems, we need to get rid of that, too
-// ...although that's kinda bad because the extended precision is sometimes useful
 
 /** Pointer to a function that takes a double parameter and returns a double */
 typedef double(*FunctionPointerDoubleToDouble) (double);
@@ -50,6 +59,8 @@ typedef double(*FunctionPointer2DoublesToDouble) (double, double);
 
 /** Pointer to a function that takes a 3 double parameters and returns a double */
 typedef double(*FunctionPointer3DoublesToDouble) (double, double, double);
+// These typedefs are very questionable as well! Try to get rid of them!
+
 
 ///** doubles, aligned at 64-bit (8 byte) boundaries - conflict with rosic - not needed in RAPT */
 //#ifdef _MSC_VER

@@ -19,7 +19,12 @@ public:
   // \name Lifetime
 
 
-  rsFraction(T numerator = T(0), T denominator = T(1)) : num(numerator), den(denominator)
+  rsFraction() {}
+
+  /** Constructor that initializes numerator and denominator to the given values and then 
+  canonicalizes the result (i.e. reduces it to lowest terms and makes sure that the minus sign, if 
+  any, is in the numerator)  */
+  rsFraction(T numerator, T denominator = T(1)) : num(numerator), den(denominator)
   { 
     canonicalize();
     // ToDo: 
@@ -121,7 +126,7 @@ protected:
 
   /** Numerator and denominator. They are always kept canonical, i.e. in reduced form and with 
   minus sign in numerator if the number is negative. */
-  T num, den;
+  T num = 0, den = 1;
 
 };
 

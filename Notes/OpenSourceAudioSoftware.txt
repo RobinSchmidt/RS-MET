@@ -493,7 +493,8 @@ https://github.com/aaronaanderson/ofxATK
 -DSP library made specifically for openFrameworks. Made by the author of the Terrain synth.
 
 DaisySP
-https://github.com/xiashj24/DaisySP
+https://github.com/electro-smith/DaisySP
+https://github.com/xiashj24/DaisySP (Fork)
 
 FFTConvolver:
 https://github.com/HiFi-LoFi/FFTConvolver
