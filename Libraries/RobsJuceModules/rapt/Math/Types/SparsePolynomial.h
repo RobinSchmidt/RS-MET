@@ -111,12 +111,18 @@ protected:
 //=================================================================================================
 
 /** A class for representing sparse polynomials, i.e. polynomials that have many zero coefficients.
-We represent such sparse polynomials basically as a std::vector of monomials which we call terms in
-this context. We say that a sparse polynomial is in canonical representation if the powers of the 
-terms are strictly increasing as function of array index (implying that no power appears more than 
-once) and there are no terms with a coefficient of zero (up to some tolerance - i.e. the absolute 
-values of all coeffs should be greater than the tolerance). If the array of terms is empty, we 
-treat that as the canonical representaion of the zero polynomial. 
+Think of something like p(x) = 2*x^37 - 5*x^129 + 3*x^435. Such polynomials occur in filter 
+transfer functions that use delaylines instead of unit delays. We represent such sparse polynomials
+basically as a std::vector of monomials which we call terms in this context. We say that a sparse 
+polynomial is in canonical representation if the powers of the terms are strictly increasing as 
+function of array index (implying that no power appears more than once) and there are no terms with
+a coefficient of zero (up to some tolerance - i.e. the absolute values of all coeffs should be 
+greater than the tolerance). If the array of terms is empty, we treat that as the canonical 
+representaion of the zero polynomial. This is different from how we represent the zero polynomial 
+in the class rsPolynomial for dense polynomials. There, the coeff array of the zero polynomial has 
+a single element whose value is zero. But because we want to avoid (near) zero coeffs here, this 
+representation would not be a good fit because then we would have to make a special rule for the 
+zeroth coeff which may not even exist in certain nonzero sparse polynomials like p(x) = 3*x^100.
 
 For many purposes, it is convenient to assume a canonical representation and many setters will 
 maintain such a representation - but not all of them. Sometimes, one needs to - at least 
@@ -242,10 +248,12 @@ public:
   { addTerm(-newTerm.getCoeff(), newTerm.getPower()); }
 
   /** Adds a scaled version of the given polynomial p to this polynomial. */
-  void addScaledPolynomial(const SparsePoly p, T scaler)
+  void addScaledPolynomial(const SparsePoly& p, T scaler)
   {
     // WHY IS p NOT PASSED BY CONST REFERENCE? If this is intentional, document why. If this is a 
-    // bug, fix it! And maybe we should update our tolerance to tol = rsMax(tol, p.tol)?
+    // bug, fix it!  ...ok...done!
+    
+    // And maybe we should update our tolerance to tol = rsMax(tol, p.tol)?
 
     for(int i = 0; i < p.getNumTerms(); i++)
       addTerm(scaler * p.getCoeff(i), p.getPower(i));
