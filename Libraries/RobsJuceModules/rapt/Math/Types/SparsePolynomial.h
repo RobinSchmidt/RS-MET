@@ -251,10 +251,11 @@ public:
   void addScaledPolynomial(const SparsePoly& p, T scaler)
   {
     // WHY IS p NOT PASSED BY CONST REFERENCE? If this is intentional, document why. If this is a 
-    // bug, fix it!  ...ok...done!
+    // bug, fix it!  ...ok...done! Seems to still work fine. Was probably just a typo.
     
-    // And maybe we should update our tolerance to tol = rsMax(tol, p.tol)?
+    // And maybe we should update our tolerance to tol = rsMax(tol, p.tol)? ...done
 
+    tol = rsMax(tol, p.tol);
     for(int i = 0; i < p.getNumTerms(); i++)
       addTerm(scaler * p.getCoeff(i), p.getPower(i));
   }

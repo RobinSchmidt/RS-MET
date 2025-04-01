@@ -39,8 +39,7 @@ void rsSparsePolynomial<T, TTol>::addScaled(
   rsAssert(rsAreAddressesDistinct(*this, q), 
            "rsSparsePolynomial::addScaled() can't be used in place.");
 
-  // Maybe update tol = rsMax(tol, q.tol)
-
+  tol = rsMax(tol, q.tol);
   for(int i = 0; i < q.getNumTerms(); i++)
     addTerm(s.getCoeff() * q.getCoeff(i), s.getPower() + q.getPower(i));
 
@@ -357,7 +356,9 @@ void rsSparsePolynomial<T, TTol>::multiply(
   // We may have to re-canonicalize to combine terms with equal exponent:
   r->canonicalize(r->tol);
   // Maybe a full canonicalization is not needed. Maybe the first step (the sorting) is superfluous
-  // if we can assume that p and q are canonical (or even just sorted)?
+  // if we can assume that p and q are canonical (or even just sorted)? Maybe factor out the 
+  // partial steps of the canonicalization and think about, if we can get away with less steps 
+  // here. But the create thorough unit tests for that.
 }
 
 template<class T, class TTol>
@@ -472,6 +473,7 @@ void rsSparsePolynomial<T, TTol>::greatestCommonDivisorInPlace(
 {
   rsAssert(a->isCanonical());
   rsAssert(b->isCanonical());
+  //a->tol = rsMax(a->tol, b->tol); // I think, we should do that
   while(!b->_isZero(b->tol))        // ToDo: use canonical isZero
   {
     tmp1->copyDataFrom(*b);
