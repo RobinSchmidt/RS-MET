@@ -391,8 +391,8 @@ void rsSparsePolynomial<T, TTol>::divide(
   rem->tol  = newTol;                     // Important to do this *after* rem->copyDataFrom()
   
   // Main loop:
-  //while(!rem->isZero() && rem->_getDegree() >= den._getDegree())
-  while(!rem->isZero() && rem->getDegree() >= den.getDegree())
+  //while(!rem->isZero() && rem->_getDegree() >= den._getDegree())  // Old
+  while(!rem->isZero() && rem->getDegree() >= den.getDegree())      // New
   {
     // For debug:
     rsAssert(den.getDegree()  == den._getDegree());
@@ -401,9 +401,12 @@ void rsSparsePolynomial<T, TTol>::divide(
     // let's really make sure, that both versions return the same result.
 
 
+    // This is the actual business logic code:
     rsMonomial<T> t = rem->_getLeadingTerm() / den._getLeadingTerm();    // t = lead(r) / lead(d)
     quot->addTerm(t);                                                  // q = q + t
     rem->addScaled(den, -t);                                           // r = r - t * d
+    // The rest is just sanity checks needed during development.
+
 
     // Check the loop invariant n = d*q + r:
     SparsePoly test = den * *quot + *rem;  // For inspection in debugger
@@ -412,6 +415,7 @@ void rsSparsePolynomial<T, TTol>::divide(
     // I'm not totally sure, if these should always hold, but I think so:
     rsAssert(quot->isCanonical());
     rsAssert( rem->isCanonical());
+    // Yeah - it seems to hold. Good.
   }
 
   // The algorithm has been adapted from: 
