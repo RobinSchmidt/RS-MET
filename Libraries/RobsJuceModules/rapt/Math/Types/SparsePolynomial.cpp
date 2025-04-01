@@ -234,17 +234,14 @@ rsMonomial<T> rsSparsePolynomial<T, TTol>::_getLeadingTerm() const
 }
 
 template<class T, class TTol>
-bool rsSparsePolynomial<T, TTol>::isCanonical(TTol tol) const
+bool rsSparsePolynomial<T, TTol>::isCanonical() const
 {
-  // TODO: use rsIsNegligible instead of direct comparisons with tol
-
   // An empty polynomial is the canonical representation of the zero polynomial:
   if(isEmpty())
     return true;
 
   // Check that 0-th coeff is nonzero:
-  //if(rsAbs(getCoeff(0)) <= tol)         // old
-  if( rsIsNegligible(getCoeff(0), tol) )  // new
+  if( rsIsNegligible(getCoeff(0), tol) )
     return false;
 
   // Check that all other coeffs are also nonzero and that the powers are strictly increasing:
@@ -252,8 +249,7 @@ bool rsSparsePolynomial<T, TTol>::isCanonical(TTol tol) const
   for(int i = 1; i < getNumTerms(); i++)
   {
     // Coeffs should be nonzero:
-    //if(rsAbs(getCoeff(i)) <= tol)         // old
-    if( rsIsNegligible(getCoeff(i), tol) )  // new
+    if( rsIsNegligible(getCoeff(i), tol) )
       return false;
 
     // Powers should be strictly increasing:
@@ -474,7 +470,7 @@ void rsSparsePolynomial<T, TTol>::greatestCommonDivisorInPlace(
 {
   rsAssert(a->isCanonical());
   rsAssert(b->isCanonical());
-  //a->tol = rsMax(a->tol, b->tol); // I think, we should do that
+  a->tol = rsMax(a->tol, b->tol);
   while(!b->_isZero(b->tol))        // ToDo: use canonical isZero
   {
     tmp1->copyDataFrom(*b);

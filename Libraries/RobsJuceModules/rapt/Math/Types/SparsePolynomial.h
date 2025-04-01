@@ -509,26 +509,7 @@ public:
   canonical if it has no zero coefficients (up to a given tolerance) and if the powers are strictly
   increasing (as function of term-index). The empty polynomial is also accepted as a canonical 
   representation. It represents the zero polynomial. */
-  bool isCanonical(TTol tol = T(0)) const;
-  // Should not take a tol parameter. 
-
-  /** Returns the numerical tolerance that is used to determine, if a coefficient should be 
-  considered to be zero. */
-  //TTol getRelativeTolerance() const { return tol; }
-  // ToDo: Elaborate ..or maybe do that in the doc for the setter.
-  // Not sure if it should be called getRelativeTolerance() or just getTolerance()
-  // ...well - I'm not even sure if we should treat the tolerance as relative. There are two 
-  // possible use cases for which we may use a tolerance: to check if some of the coeffs are very 
-  // small compared to the others (measured by the size of the max-coeff) or to check if all coeffs
-  // are below some tolerance. In the former case, we want a relative tolerance, in the latter an
-  // absolute tolerance. We may even want to use different values for both tolerances - but I'm not
-  // sure about that. We may also use one and the same value but in one case use it as is and in 
-  // the other, multiply it by the max-norm of the coeffs.
-
-  //TTol getAbsoluteTolerance() const { return tol * getMaxAbsCoeff(); }
-  // getMaxAbsCoeff() should return a TTol. It should find the coeff with the maximum absolute 
-  // value and return that maximum absolute value. I think, for that, we need a more felxible 
-  // implementation of rsMaxAbs(T x, T y) that has a return type different from it argument type T.
+  bool isCanonical() const;
 
 
   //-----------------------------------------------------------------------------------------------
@@ -539,7 +520,6 @@ public:
 
   template<class TArg>
   TArg evaluateTyped(const TArg& z) const;
-
 
 
   //-----------------------------------------------------------------------------------------------

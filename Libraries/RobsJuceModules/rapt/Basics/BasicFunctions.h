@@ -602,6 +602,8 @@ inline bool rsIsNegligible(TVal val, TTol tol)
   //   calling rsIsCloseToZero(x-y,tol). That would be rather elegant. But we already have an 
   //   implementation of rsIsCloseTo(). We also have rsArrayTools::almostEqual() and 
   //   rsArrayTools::isAllZeros(). We should use consistent naming for these.  We'll see....
+  //   Also: "negligible" could also mean "close to one" when we are multiplying things together
+  //   rather than adding. Yet another point for closeToZero.
 }
 
 template<class TVal> 
