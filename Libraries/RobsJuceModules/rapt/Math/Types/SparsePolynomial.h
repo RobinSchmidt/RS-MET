@@ -211,7 +211,7 @@ public:
   after shift (up to the given tolerance), the term will be removed. */
   void addTerm(T coeff, int power);
   // This function assumes that the polynomial is in canonical representation! Document this and 
-  // maybe reflect it in the function name. Maybe addTerm_c
+  // maybe reflect it in the function name.
 
   /** Adds the given monomial to the polynomial. */
   void addTerm(const rsMonomial<T>& newTerm)
@@ -224,18 +224,15 @@ public:
   /** Adds a scaled version of the given polynomial p to this polynomial. */
   void addScaledPolynomial(const SparsePoly& p, T scaler)
   {
-    // WHY IS p NOT PASSED BY CONST REFERENCE? If this is intentional, document why. If this is a 
-    // bug, fix it!  ...ok...done! Seems to still work fine. Was probably just a typo.
-    
-    // And maybe we should update our tolerance to tol = rsMax(tol, p.tol)? ...done
-
     tol = rsMax(tol, p.tol);
     for(int i = 0; i < p.getNumTerms(); i++)
       addTerm(scaler * p.getCoeff(i), p.getPower(i));
+
+    // Maybe it would be better to just append a scaled version and then canonicalize? This may 
+    // result in less data movement - but it may blow up the required memory temporarily. So: no -
+    // let's not do that in general. It may even lead to allocations when we really don't want 
+    // them.
   }
-  // Maybe it would be better to just append a scaled version and then canonicalize? This may 
-  // result in less data movement - but it may blow up the required memory temporarily. So - no - 
-  // let's not do that in general. It may even lead to allocations when we really don't want them.
 
   /** Sets the number of terms. If the new number is less than the current number, it will just 
   cut off terms from the end. If the new number is greater than the current number, it will just
@@ -297,15 +294,6 @@ public:
   to the coeff. It may decanonicalize the representation by leading to a zero coeff. */
   void _shiftCoeff(int index, T amount) { _setCoeff(index, amount + getCoeff(index)); }
 
-
-  //void shiftCoeffs(T amount)
-  //{
-  //  for(int i = 0; i < getNumTerms(); i++)
-  //    shiftCoeff(i, amount);
-  //}
-  //// Needs test. Or maybe get rid? This seems to be useless, i.e. mathematically not meaningful.
-
-
   /** Shifts the power at the given index by the given amount. It may decanonicalize the 
   representation by introducing two terms with equal power. */
   void _shiftPower(int index, int amount) { _setPower(index, amount + getPower(index)); }
@@ -319,7 +307,7 @@ public:
       _shiftPower(i, amount);
   }
   // Shifting all powers by the same amount should be unproblematic with regard to 
-  // decanonicalization
+  // decanonicalization. That's why this function doesn't need an underscore
 
 
   /** Multiplies this polynomial by the given monomial factor. This results in all coeffs being 
@@ -354,16 +342,9 @@ public:
 
 
 
-
-
-
   void addScaled(const SparsePoly& summand, const rsMonomial<T>& scaler);
   // ToDo: implement add(summand), i.e. the same thing but without the scaler.
   // ...and maybe one with the scaler being a simple coeff
-
-
-
-
 
   /** Reverses the array of terms. It may appear to be a weird thing to do on polynomials but this 
   operation is needed when transforming minimum phase filters into maximum phase ones (or vice 
@@ -387,6 +368,8 @@ public:
   // Maybe this should have an _ at the start. It will decanonicalize this polynomial, iff the 
   // other polynomial is in non-canonical representation. Hmmm...this is a gray area. if the client
   // code uses only other non-underscored function, this here may get away without underscore, too.
+  // But maybe client code should use the assignment operator anyway (which we need to define - for
+  // copy and move assignment)
 
 
   //-----------------------------------------------------------------------------------------------
@@ -417,7 +400,8 @@ public:
   }
   // Maybe implement a variant isZero() that works only on canonical representations. It could 
   // just call isEmpty()
-  // Maybe rename to isCloseToZero. Or maybe get rid of it. It's confusing.
+  // Maybe rename to isCloseToZero. Or maybe get rid of it. It's confusing. Or maybe rename to
+  // _areAllCoeffsZero(). 
 
   /** Returns true, iff the rhs polynomial equals this polynomial up to the given tolerance. This 
   is not a mathematical comparison but rather a raw data comparison which is stricter. For example,
@@ -455,12 +439,10 @@ public:
   // This is basically an alias name for getMaxPower(). I'm not sure, if it's a good idea to have 
   // two functions that do the exact same thing. Maybe get rid of it. But on the other hand, it's 
   // nice to have to be consistent with the API of class rsPolynomial. 
-  // Rename to _getDegree()
 
   /** Returns the leading coefficient, i.e. the coefficient that multiplies the highest power of
   the input variable x. */
   T _getLeadingCoeff() const;
-  // Rename to _getLeadingCoeff
 
   /** Returns the term (i.e. the monomial) at the given index. */
   rsMonomial<T> getTerm(int index) const { rsAssert(isValidIndex(index)); return terms[index]; }
@@ -468,7 +450,6 @@ public:
   /** Returns the leading term in this polynomial, i.e. the monomial  cn x^n  that has the highest
   exponent n. */
   rsMonomial<T> _getLeadingTerm() const;
-  // Rename to _getLeadingTerm
 
   /** Returns the coefficient of the term with given index. */
   T getCoeff(int index) const {  rsAssert(isValidIndex(index)); return terms[index].getCoeff(); }
@@ -494,11 +475,11 @@ public:
   complex arguments. 
   WARNING: the same considerations as for @see rsPolynomial::operator(TArg) apply. */
   template<class TArg>
-  TArg operator()(TArg z) const // { return evaluateTyped(z); }
+  TArg operator()(TArg z) const
   { 
     TArg y(0);
-    for(auto& term : terms)
-      y += term(z);
+    for(auto& t_i : terms)
+      y += t_i(z);             // t_i(z) = coeffs[i] * z^powers[i]
     return y;
   }
 
@@ -539,7 +520,12 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Static member functions */
 
-  /** Computes the greatest common divisor of the polynomials p and q. */
+  /** Computes the greatest common divisor of the polynomials p and q. The monic parameter defines 
+  if the returned gcd should be normalized to be monic. The gcd of polynomials is unique only up to
+  a constant scale factor, so it may make sense to make it well defined by requiring it to be
+  monic. If monic is false, the returned gcd may be scaled by some arbitrary scale factor which
+  depends on the details of the algorithm but has no mathematical significance (I think). But maybe
+  it has? Figure out! */
   static SparsePoly greatestCommonDivisor(
     const SparsePoly& p, const SparsePoly& q, bool monic = true)
   {
@@ -547,18 +533,6 @@ public:
     SparsePoly::greatestCommonDivisorInPlace(&a, &b, &tmp1, &tmp2, monic);
     return a;
   }
-  // ToDo: document the tol and monic parameters. tol is the usual numeric tolerance for floating 
-  // point numbers (we have to check against zero polynomials in the algo) and monic defines if the
-  // returned gcd should be normalized to be monic. The gcd of polynomials is unique only up to a 
-  // constant scale factor, so it may make sense to make it well defined by requiring it to be
-  // monic. If monic is false, the returned gcd may be scaled by some arbitrary scale factor which
-  // depends on the details of the algorithm but has no mathematical significance (I think). But
-  // maybe it has? Figure out!
-
-
-
-
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -571,6 +545,10 @@ public:
 
   // These functions should not take a tol parameter. Instead the should assign the tolerance of
   // the result to the max of the tolerances of the operands:
+
+  // Maybe move the functions with underscore into this area, too
+
+
 
   static void add(const SparsePoly& p, const SparsePoly& q, SparsePoly* r);
 
@@ -608,13 +586,12 @@ public:
 protected:
 
   std::vector<rsMonomial<T>> terms;
-  TTol tol = TTol(0);                    // Maybe rename to relTol or tolRel
+  TTol tol = TTol(0);
 
 };
 
 
-// ToDo: Move these implementations below into the class or maybe try to get rid of the 
-// evaluateTyped() function completely
+// ToDo: Move these implementations below into the class
 
 /** Multiplies a coefficient and a sparse polynomial. */
 template<class T, class TTol>
@@ -624,12 +601,12 @@ inline rsSparsePolynomial<T, TTol> operator*(const T& s, const rsSparsePolynomia
   r.copyDataFrom(p);
   r.scale(s);
   return r;
-}
-// ToDo: Write an operator that takes a monomial as left operand. It should scale r by the 
-// monomial's coeff as above and shift the powers of r by the monomial's power. Maybe the 
-// "copyDataFrom" function should already include the possible scaling and shifting. But then
-// we should call it copyScaledDataFrom and/or copyScaledAndShiftedDataFrom.
 
+  // ToDo: Write an operator that takes a monomial as left operand. It should scale r by the 
+  // monomial's coeff as above and shift the powers of r by the monomial's power. Maybe the 
+  // "copyDataFrom" function should already include the possible scaling and shifting. But then
+  // we should call it copyScaledDataFrom and/or copyScaledAndShiftedDataFrom.
+}
 
 template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::setupFromDenseCoeffs(
