@@ -208,10 +208,10 @@ public:
   void multiplyByDenseCoeffs(const T* numeratorCoeffs,   int numNumeratorTerms,
                              const T* denominatorCoeffs, int numDenominatorTerms, T tol)
   {
-    num.multiplyByDenseCoeffs(numeratorCoeffs,   numNumeratorTerms,   tol);
-    den.multiplyByDenseCoeffs(denominatorCoeffs, numDenominatorTerms, tol);
+    num.multiplyByDenseCoeffs(numeratorCoeffs,   numNumeratorTerms);
+    den.multiplyByDenseCoeffs(denominatorCoeffs, numDenominatorTerms);
   }
-  // Needs test
+  // Needs test, get rid of tol param
 
 
   // Maybe also make a divideByDenseCoeffs function by just calling multiplyByDenseCoeffs with
@@ -359,7 +359,7 @@ template<class T>
 void rsSparseRationalFunction<T>::weightedSumDestructive(
   rsSparseRationalFunction<T>* p, T wp,
   rsSparseRationalFunction<T>* q, T wq,
-  rsSparseRationalFunction<T>* r, T tol)
+  rsSparseRationalFunction<T>* r, T tol)  // Get rid of tol param!
 
 {
   rsAssert(rsAreAddressesDistinct(*p, *q));
@@ -379,10 +379,10 @@ void rsSparseRationalFunction<T>::weightedSumDestructive(
   using SP = rsSparsePolynomial<T>;
 
   //              arg1        arg2        result
-  SP::multiply(   p->num,     q->den,     &p->num, tol);  // Replace p->num by p->num * q->den
-  SP::multiply(   q->num,     p->den,     &q->num, tol);  // Replace q->num by q->num * p->den
-  SP::weightedSum(p->num, wp, q->num, wq, &r->num, tol);  // Establish r->num
-  SP::multiply(   p->den,     q->den,     &r->den, tol);  // Establish r->den
+  SP::multiply(   p->num,     q->den,     &p->num);  // Replace p->num by p->num * q->den
+  SP::multiply(   q->num,     p->den,     &q->num);  // Replace q->num by q->num * p->den
+  SP::weightedSum(p->num, wp, q->num, wq, &r->num);  // Establish r->num
+  SP::multiply(   p->den,     q->den,     &r->den);  // Establish r->den
 
   // ToDo:
   //

@@ -277,68 +277,73 @@ template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::add(
   const rsSparsePolynomial<T, TTol>& p,
   const rsSparsePolynomial<T, TTol>& q,
-  rsSparsePolynomial<T, TTol>* r, TTol tol)
+  rsSparsePolynomial<T, TTol>* r)
 {
   int Np = p.getNumTerms();      // Number of terms in left operand p
   int Nq = q.getNumTerms();      // Number of terms in right operand q
   int Nr = Np + Nq;              // Number of terms in result r (before canonicalization)
 
+  r->tol = rsMax(p.tol, q.tol);
   r->_setNumTerms(Nr);
   for(int i = 0; i < Np; i++)
     r->_setTerm(i, p.getCoeff(i), p.getPower(i));
   for(int i = 0; i < Nq; i++)
     r->_setTerm(Np + i, q.getCoeff(i), q.getPower(i));
 
-  r->canonicalize(tol);
+  r->canonicalize(r->tol);
 }
 
 template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::subtract(
   const rsSparsePolynomial<T, TTol>& p,
   const rsSparsePolynomial<T, TTol>& q,
-  rsSparsePolynomial<T, TTol>* r, TTol tol)
+  rsSparsePolynomial<T, TTol>* r)
 {
   int Np = p.getNumTerms();
   int Nq = q.getNumTerms();
   int Nr = Np + Nq;
 
+  r->tol = rsMax(p.tol, q.tol);
   r->_setNumTerms(Nr);
   for(int i = 0; i < Np; i++)
     r->_setTerm(i, p.getCoeff(i), p.getPower(i));
   for(int i = 0; i < Nq; i++)
     r->_setTerm(Np + i, -q.getCoeff(i), q.getPower(i));
 
-  r->canonicalize(tol);
+  r->canonicalize(r->tol);
 }
 
 template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::weightedSum(
   const rsSparsePolynomial<T, TTol>& p, T wp,
   const rsSparsePolynomial<T, TTol>& q, T wq,
-  rsSparsePolynomial<T, TTol>* r, TTol tol)
+  rsSparsePolynomial<T, TTol>* r)
 {
   int Np = p.getNumTerms();
   int Nq = q.getNumTerms();
   int Nr = Np + Nq;
 
+  r->tol = rsMax(p.tol, q.tol);
   r->_setNumTerms(Nr);
   for(int i = 0; i < Np; i++)
     r->_setTerm(i, wp * p.getCoeff(i), p.getPower(i));
   for(int i = 0; i < Nq; i++)
     r->_setTerm(Np + i, wq * q.getCoeff(i), q.getPower(i));
 
-  r->canonicalize(tol);
+  r->canonicalize(r->tol);
 }
 
 template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::multiply(
   const rsSparsePolynomial<T, TTol>& p,
   const rsSparsePolynomial<T, TTol>& q,
-  rsSparsePolynomial<T, TTol>* r, TTol tol)
+  rsSparsePolynomial<T, TTol>* r)
 {
   int Np = p.getNumTerms();
   int Nq = q.getNumTerms();
   int Nr = Np * Nq;
+
+  r->tol = rsMax(p.tol, q.tol);
   r->_setNumTerms(Nr);
 
   // Running through the loops backwards allows us to use it in place, i.e. the polynomial r can
@@ -348,17 +353,18 @@ void rsSparsePolynomial<T, TTol>::multiply(
       r->_setTerm(i*Nq+j, p.getCoeff(i) * q.getCoeff(j), p.getPower(i) + q.getPower(j));
 
   // We may have to re-canonicalize to combine terms with equal exponent:
-  r->canonicalize(tol);
+  r->canonicalize(r->tol);
   // Maybe a full canonicalization is not needed. Maybe the first step (the sorting) is superfluous
   // if we can assume that p and q are canonical (or even just sorted)?
 }
 
 template<class T, class TTol>
-void rsSparsePolynomial<T, TTol>::multiplyByDenseCoeffs(const T* coeffs, int numTerms, TTol tol)
+void rsSparsePolynomial<T, TTol>::multiplyByDenseCoeffs(const T* coeffs, int numTerms)
 {
   int Np = getNumTerms();
   int Nq = numTerms;
   int Nr = Np * Nq;
+
   this->_setNumTerms(Nr);
 
   for(int i = Np-1; i >= 0; i--)
@@ -373,8 +379,7 @@ void rsSparsePolynomial<T, TTol>::divide(
   const rsSparsePolynomial<T, TTol>& num,
   const rsSparsePolynomial<T, TTol>& den,
   rsSparsePolynomial<T, TTol>* quot,
-  rsSparsePolynomial<T, TTol>* rem,
-  TTol tol)
+  rsSparsePolynomial<T, TTol>* rem)
 {
   // Sanity checks:
   rsAssert(rsAreAddressesDistinct(num,   *quot));
@@ -382,7 +387,7 @@ void rsSparsePolynomial<T, TTol>::divide(
   rsAssert(rsAreAddressesDistinct(den,   *quot));
   rsAssert(rsAreAddressesDistinct(den,   *rem ));
   rsAssert(rsAreAddressesDistinct(*quot, *rem ));
-  rsAssert(!den._isZero(tol));   // ToDo: use canonical isZero ..or maybe not
+  rsAssert(!den._isZero(den.tol));   // ToDo: use canonical isZero ..or maybe not
   rsAssert(num.isCanonical());
   rsAssert(den.isCanonical());
   // What about num == den (address-wise)? I think, we should also check that this is not the case.
@@ -390,11 +395,14 @@ void rsSparsePolynomial<T, TTol>::divide(
   // maybe num == rem could be ok - except for the verification of the loop invariant.
 
   // Initialization:
-  quot->clear();             // q = 0
-  rem->copyDataFrom(num);    // r = n, Invariant holds: n = d*q + r = d*0 + r = r
-
+  TTol newTol = rsMax(num.tol, den.tol);  // Tolerance of the results
+  quot->clear();                          // q = 0. Quotient is empty/zero.
+  quot->tol = newTol;                     // Set up tolerance of quotient.
+  rem->copyDataFrom(num);                 // r = n. Invariant holds: n = d*q + r = d*0 + r = r
+  rem->tol  = newTol;                     // Important to do this *after* rem->copyDataFrom()
+  
   // Main loop:
-  while(!rem->_isZero(tol) && rem->_getDegree() >= den._getDegree())  // ToDo: use canonical isZero()/getDegree()...or should we not?
+  while(!rem->_isZero(rem->tol) && rem->_getDegree() >= den._getDegree())  // ToDo: use canonical isZero()/getDegree()...or should we not?
   {
     rsMonomial<T> t = rem->_getLeadingTerm() / den._getLeadingTerm();  // t = lead(r) / lead(d)
     quot->addTerm(t);                                                  // q = q + t
@@ -402,7 +410,7 @@ void rsSparsePolynomial<T, TTol>::divide(
 
     // Check the loop invariant n = d*q + r:
     SparsePoly test = den * *quot + *rem;  // For inspection in debugger
-    rsAssert(num.isCloseTo(den * *quot + *rem, tol), "Loop invariant violated");
+    rsAssert(num.isCloseTo(den * *quot + *rem, num.tol), "Loop invariant violated");
   }
 
   // The algorithm has been adapted from: 
@@ -458,14 +466,14 @@ void rsSparsePolynomial<T, TTol>::greatestCommonDivisorInPlace(
   rsSparsePolynomial<T, TTol>* b,
   rsSparsePolynomial<T, TTol>* tmp1,
   rsSparsePolynomial<T, TTol>* tmp2,
-  TTol tol, bool monic)
+  bool monic)
 {
   rsAssert(a->isCanonical());
   rsAssert(b->isCanonical());
-  while(!b->_isZero(tol))        // ToDo: use canonical isZero
+  while(!b->_isZero(b->tol))        // ToDo: use canonical isZero
   {
     tmp1->copyDataFrom(*b);
-    rsSparsePolynomial<T, TTol>::divide(*a, *tmp1, tmp2, b, tol);
+    rsSparsePolynomial<T, TTol>::divide(*a, *tmp1, tmp2, b);
     a->copyDataFrom(*tmp1);
   }
   if(monic)

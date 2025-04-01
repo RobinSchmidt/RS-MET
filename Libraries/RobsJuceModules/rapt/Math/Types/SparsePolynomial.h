@@ -343,15 +343,14 @@ public:
 
   /** Multiplies this polynomial by the given other polynomial factor. Works in place and 
   re-allocates only when the capacity is too low (VERIFY!). */
-  void multiplyBy(const SparsePoly& factor, TTol tol)
-  { multiply(*this, factor, this, tol); }
+  void multiplyBy(const SparsePoly& factor, TTol tol) { multiply(*this, factor, this); }
   // I think, this may also decanonicalize! We may get multiple terms with same exponent. But we
   // may actually repair this inside the function. But no! It calls canonicalize at the end, so 
   // even
 
   /** Multiplies this polynomial by a desne polynomial represented by the given array of 
   coefficients. Works in place and re-allocates only when the capacity is too low. */
-  void multiplyByDenseCoeffs(const T* coeffs, int numTerms, TTol tol);
+  void multiplyByDenseCoeffs(const T* coeffs, int numTerms);
   // I think, this may also decanonicalize! See comment above. It's the same here
 
 
@@ -557,23 +556,23 @@ public:
 
   /** Adds two polynomials. */
   SparsePoly operator+(const SparsePoly& q) const 
-  { SparsePoly r; add(*this, q, &r, tol); return r; }
+  { SparsePoly r; add(*this, q, &r); return r; }
 
   /** Subtracts two polynomials. */
   SparsePoly operator-(const SparsePoly& q) const 
-  { SparsePoly r; subtract(*this, q, &r, tol); return r; }
+  { SparsePoly r; subtract(*this, q, &r); return r; }
 
   /** Multiplies two polynomials. */
   SparsePoly operator*(const SparsePoly& q) const 
-  { SparsePoly r; multiply(*this, q, &r, tol); return r; }
+  { SparsePoly r; multiply(*this, q, &r); return r; }
 
   /** Divides two polynomials. */
   SparsePoly operator/(const SparsePoly& q) const 
-  { SparsePoly quot, rem; divide(*this, q, &quot, &rem, tol); return quot; }
+  { SparsePoly quot, rem; divide(*this, q, &quot, &rem); return quot; }
 
   /** Computes remainder of polynomial division, i.e. implements the modulo operation. */
   SparsePoly operator%(const SparsePoly& q) const 
-  { SparsePoly quot, rem; divide(*this, q, &quot, &rem, tol); return rem; }
+  { SparsePoly quot, rem; divide(*this, q, &quot, &rem); return rem; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -581,12 +580,10 @@ public:
 
   /** Computes the greatest common divisor of the polynomials p and q. */
   static SparsePoly greatestCommonDivisor(
-    const SparsePoly& p, 
-    const SparsePoly& q, 
-    TTol tol, bool monic = true)
+    const SparsePoly& p, const SparsePoly& q, bool monic = true)
   {
     SparsePoly a = p, b = q, tmp1, tmp2;
-    SparsePoly::greatestCommonDivisorInPlace(&a, &b, &tmp1, &tmp2, tol, monic);
+    SparsePoly::greatestCommonDivisorInPlace(&a, &b, &tmp1, &tmp2, monic);
     return a;
   }
   // ToDo: document the tol and monic parameters. tol is the usual numeric tolerance for floating 
@@ -611,20 +608,22 @@ public:
   operators. So, for real time code, these operators are actually forbidden and one has to resort 
   to the low level API. */
 
-  static void add(const SparsePoly& p, const SparsePoly& q, SparsePoly* r, TTol tol);
+  // These functions should not take a tol parameter. Instead the should assign the tolerance of
+  // the result to the max of the tolerances of the operands:
 
-  static void subtract(const SparsePoly& p, const SparsePoly& q, SparsePoly* r, TTol tol);
+  static void add(const SparsePoly& p, const SparsePoly& q, SparsePoly* r);
 
-  static void weightedSum(const SparsePoly& p, T wp, const SparsePoly& q, T wq,
-    SparsePoly* r, TTol tol);
+  static void subtract(const SparsePoly& p, const SparsePoly& q, SparsePoly* r);
+
+  static void weightedSum(const SparsePoly& p, T wp, const SparsePoly& q, T wq, SparsePoly* r);
 
   /** Multiplies polynomials p and q and stores the result in r. It may be used in place, i.e. the
   result polynomial r can point to the memory location of the arguments p and/or q. */
-  static void multiply(const SparsePoly& p, const SparsePoly& q, SparsePoly* r, TTol tol);
+  static void multiply(const SparsePoly& p, const SparsePoly& q, SparsePoly* r);
 
   /** Implements polynomial division with remainder. ...TBC... */
   static void divide(const SparsePoly& numerator, const SparsePoly& denominator,
-    SparsePoly* quotient, SparsePoly* remainder, TTol tol);
+    SparsePoly* quotient, SparsePoly* remainder);
 
   /** Computes the greatest common divisor of two polynomials. It works in place meaning that it
   allocates no temporary sparse polynomials internally. The first parameter is an input/output 
@@ -636,7 +635,7 @@ public:
   example usage, see the greatestCommonDivisor() function which basically serves as convenience 
   function for the in-place version. */
   static void greatestCommonDivisorInPlace(SparsePoly* FirstArgAndResult, SparsePoly* SecondArg,
-    SparsePoly* temp1, SparsePoly* temp2, TTol tol, bool makeResultMonic);
+    SparsePoly* temp1, SparsePoly* temp2, bool makeResultMonic);
   // I think, if all passed polynomials have large enough capacity, then the function should not
   // (re)allocate any heap memory. Verify and document this! How large is "large enough"?
 
