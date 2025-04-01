@@ -39,6 +39,8 @@ void rsSparsePolynomial<T, TTol>::addScaled(
   rsAssert(rsAreAddressesDistinct(*this, q), 
            "rsSparsePolynomial::addScaled() can't be used in place.");
 
+  // Maybe update tol = rsMax(tol, q.tol)
+
   for(int i = 0; i < q.getNumTerms(); i++)
     addTerm(s.getCoeff() * q.getCoeff(i), s.getPower() + q.getPower(i));
 
@@ -56,7 +58,7 @@ void rsSparsePolynomial<T, TTol>::addScaled(
 }
 
 template<class T, class TTol>
-void rsSparsePolynomial<T, TTol>::canonicalize(TTol tol)
+void rsSparsePolynomial<T, TTol>::canonicalize(TTol tol)  // Remove tol param!
 {
   // In the empty case, we have nothing to do and we really *need* to return early in order to not 
   // get an access violation in the code below (in the  int p = getPower(0);  line):

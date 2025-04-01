@@ -207,6 +207,10 @@ public:
   /** Clears the array of terms. */
   void clear() { terms.clear(); }
 
+  /** Sets up the numerical tolerance that is used to determine if a coefficient should be 
+  considered zero, i.e. with in the numerical roundoff noise. */
+  void setRoundoffTolerance(TTol newTolerance) { tol = newTolerance; }
+
   /** Sets up the polynomial from a dense arrays of polynomial coeffs. When a coefficient in the 
   dense representation is zero, we not create a term for that. */
   void setupFromDenseCoeffs(const std::vector<T>& newCoeffs, TTol newTol)
@@ -241,7 +245,7 @@ public:
   void addScaledPolynomial(const SparsePoly p, T scaler)
   {
     // WHY IS p NOT PASSED BY CONST REFERENCE? If this is intentional, document why. If this is a 
-    // bug, fix it!
+    // bug, fix it! And maybe we should update our tolerance to tol = rsMax(tol, p.tol)?
 
     for(int i = 0; i < p.getNumTerms(); i++)
       addTerm(scaler * p.getCoeff(i), p.getPower(i));
@@ -409,6 +413,10 @@ public:
   /** Returns true, iff this polynomial is empty, i.e. has no terms. */
   bool isEmpty() const { return terms.empty(); }
 
+  /** Returns the numerical tolerance that is used to determine if a coefficient should be 
+  considered zero, i.e. with in the numerical roundoff noise. */
+  TTol getRoundoffTolerance() const { return tol; }
+
   bool isZero() const
   {
     rsAssert(isCanonical()); // This function assumes a canonical representation
@@ -427,6 +435,7 @@ public:
   }
   // Maybe implement a variant isZero() that works only on canonical representations. It could 
   // just call isEmpty()
+  // Maybe rename to isCloseToZero. Or maybe get rid of it. It's confusing.
 
   /** Returns true, iff the rhs polynomial equals this polynomial up to the given tolerance. This 
   is not a mathematical comparison but rather a raw data comparison which is stricter. For example,
@@ -434,6 +443,7 @@ public:
   be considered distinct from 3*x^5 + 2*x^3 by this function even though they are mathematically 
   the same polynomial. */
   bool isCloseTo(const SparsePoly& rhs, TTol tol) const;
+  // Maybe get rid of tol param and use rsMax(tol, rhs.tol) instead
 
   /** Return true, iff the given index is valid, i.e. the object has a term with given index. */
   bool isValidIndex(int i) const { return i >= 0 && i < getNumTerms(); }
@@ -492,7 +502,7 @@ public:
   increasing (as function of term-index). The empty polynomial is also accepted as a canonical 
   representation. It represents the zero polynomial. */
   bool isCanonical(TTol tol = T(0)) const;
-  // Should not take a tol parameter. Should call getRelativeTolerance() instead.
+  // Should not take a tol parameter. 
 
   /** Returns the numerical tolerance that is used to determine, if a coefficient should be 
   considered to be zero. */
