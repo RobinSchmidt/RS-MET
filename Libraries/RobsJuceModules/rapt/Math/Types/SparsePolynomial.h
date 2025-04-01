@@ -699,15 +699,13 @@ void rsSparsePolynomial<T, TTol>::setupFromDenseCoeffs(
 /** Specializes rsMaxNorm() for rsSparsePolynomial. The max norm of a sparse polynomial is defined
 as the maximum norm of all the coefficients. */
 template<class T, class TTol>
-auto rsMaxNorm(rsSparsePolynomial<T, TTol>& p)
+auto rsMaxNorm(const rsSparsePolynomial<T, TTol>& p)
 {
   auto max = rsMaxNorm(T(0));
   for(int i = 0; i < p.getNumTerms(); i++)
     max = rsMax(max, rsMaxNorm(p.getCoeff(i)));
   return max;
 }
-// Needs test
-
 
 
 #endif

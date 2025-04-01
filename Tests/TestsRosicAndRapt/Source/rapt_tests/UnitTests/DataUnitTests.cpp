@@ -140,15 +140,17 @@ bool testMaxNormTemplates()
   // Some tests with classes that can be initialized with a std::vector of values:
   {
     std::vector<T> vals({ 1, 3, -7, 5, -2, 3 });
-    rsMatrixView<T> matView(2, 3, &vals[0]);  ok &= testMaxNorm(matView, T(7));
-    rsPolynomial<T> poly(vals);               ok &= testMaxNorm(poly,    T(7));
+    rsMatrixView<T> matView(2, 3, &vals[0]); ok &= testMaxNorm(matView,    T(7));
+    rsPolynomial<T> poly(vals);              ok &= testMaxNorm(poly,       T(7));
+    rsSparsePolynomial<T> sparPolyT(vals);   ok &= testMaxNorm(sparPolyT,  T(7)); // TTol = rsEmptyType
 
-    //rsSparsePolynomial<T> sparPoly(vals);
-    // Linker error. We may put rsSparsePolynomial<T, TTol>::setupFromDenseCoeffs() into the.h
-    // file or do explicit instantiations for all desired types to be tested (currently int, float,
-    // double, rsFloat64x2, rsFraction<int>
-
-    int dummy = 0;
+    //rsSparsePolynomial<T,T> sparPolyTT(vals); ok &= testMaxNorm(sparPolyTT, T(7)); // TTol = T
+    // This doesn't compile with T = rsFloat32x4 - which should be expected, I think. A sparse
+    // polynomial with coeffs of type rsFloat32x4 should use float as tolerance type, not 
+    // rsFloat32x4. To make it work, we need to give this test function a second template parameter
+    // for the tolerance type and in the calls, always pass two template parameters. That should 
+    // work, I think. But maybe such tests with two template parameters should go into another
+    // test function that also tests the negligibility test rsIsNegligible()
   }
 
   return ok;
@@ -190,9 +192,10 @@ bool testMaxNorm()
   //   because the test would try to assign negative numbers to unsigned int variables. That's why 
   //   we don't include a call for that type even though it is one of the primitive types for which
   //   rsMaxNorm is defined.
+  //
+  // - The tests for rsMaxNorm() on mathematical class types should probably go into 
+  //   MathUnitTests.cpp. Testing the base cases here seems appropriate, though.
 }
-
-
 
 bool testBasics()
 {
