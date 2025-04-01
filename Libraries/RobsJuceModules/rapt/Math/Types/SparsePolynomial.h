@@ -2,9 +2,7 @@
 #define RAPT_SPARSEPOLYNOMIAL_H
 
 
-
 //=================================================================================================
-
 
 /** A class for representing (univariate) monomials, i.e. expressions of the form  c * x^p  for
 some coefficient c and integer power (or exponent) p. Strictly speaking, we should require p to be
@@ -45,39 +43,20 @@ public:
   /** Returns the power (aka exponent) p in the expression c * x^p. */
   int getPower() const { return power; }
 
-  /** Evaluates the expression c * x^p at the given x. */
-  //T evaluateAt(T x) const { return coeff * rsPow(x, T(power)); }
-  // get rid
-
-
-  //T evaluateAt(T x) const { return coeff * rsPowInt(x, power); }
-
-
-  /** Returns the coefficient c in the expression c * x^p where the type of x may be different from
-  the type T with which the class is instantiated. Can be used, for example, to evaluate monomials
-  with real coefficients at complex arguments. */
-  //template<class TArg>
-  //TArg evaluateTyped(TArg z) const { return TArg(coeff) * rsPow(z, TArg(power)); }
-  // get rid
-
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
-  /** Evaluates the monomial at the given input x. */
-  //T operator()(T x) const { return evaluateAt(x); }
-  // get rid
-
-
-  /** Evaluates the expression c * x^p at the given x. */
+  /** Evaluates the expression c * x^p at the given x. The data type of the argument x may be 
+  different from the type T with which the class is instantiated. Can be used, for example, to 
+  evaluate monomials with real coefficients at complex arguments. */
   template<class TArg>
   TArg operator()(TArg x) const { return TArg(coeff) * rsPow(x, TArg(power)); }
   // Preliminary. We may want to use rsPowInt for integer exponents. That may be more efficient.
-  // Here, we explicitly first convert the exponent to type T and then call rsPow(T x, T y).
-  // But currently rsPowInt is not suitably defined. It expects two unsigned ints. But
-  // rsPowInt is currently only defined for x and power being both integers. We really need a 
-  // function where the base is an arbitrary type and the epxonent is an integer
-
+  // Here, we explicitly first convert the exponent to type TArg and then call 
+  // rsPow(TArg x, TArg y). But currently rsPowInt is not suitably defined. It expects two 
+  // (unsigned?) ints. rsPowInt is currently only defined for x and power being both integers. We 
+  // really need a function where the base is an arbitrary type and the epxonent is an integer.
 
   /** Returns the negative of this monomial. */
   rsMonomial<T> operator-() const { return rsMonomial<T>(-getCoeff(), getPower()); }
@@ -101,22 +80,6 @@ protected:
   int power = T(0);
 
 };
-
-///** Function to compare two monomials for a less-than relation that is defined by comparing
-//the powers only. Monomials with the same power but with different coefficients are considered
-//equivalent by this relation, i.e. if neither  lhs < rhs  nor  rhs < lhs  via inspecting the 
-//powers only, the terms are considered equivalent. This kind of less-than relation is needed to sort
-//the terms in rsSparsePolynomial to bring it into a canonical representation. */
-//template<class T>
-//bool rsLessByPower(const rsMonomial<T>& lhs, const rsMonomial<T>& rhs)
-//{
-//  if(lhs.getPower() < rhs.getPower())
-//    return true;
-//  return false;
-//}
-//// Needs tests
-
-
 
 
 //=================================================================================================
