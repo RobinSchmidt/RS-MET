@@ -1747,6 +1747,12 @@ public:
   void getDamperTransferFunction(rsSparseDigitalTransferFunction<TCoef>* tf) const
   {
     tf->setupFromDenseCoeffs(bD, dmpOrd+1, aD, dmpOrd+1, TCoef(0));
+
+    // ToDo: here and elsewhere in similar calls, do not pass TCoeff(0) for the roundoff error
+    // tolerance. Try to come up with a sensible value. Maybe implement a (protected) member 
+    // function getExpectedTransFuncRoundoffError() or something like that. It may take into 
+    // account the complexity of the filter - or at least provide the infrastructure for doing that
+    // later.
   }
 
 
