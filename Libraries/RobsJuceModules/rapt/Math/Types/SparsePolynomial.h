@@ -200,11 +200,6 @@ public:
   void setupFromDenseCoeffs(const T* newCoeffs, int newNumTerms, TTol newTol);
   // ToDo: Provide methods that don't require a tol parameter. They should do the same thing 
   // except setting our tol member. 
-
-  /** Appends a term with given coeff and power to the end of our terms array. Beware that this 
-  may decanonicalize the representation. */
-  void _appendTerm(T coeff, int power) { terms.emplace_back(rsMonomial<T>(coeff, power)); } 
-  // May decanonicalize
   
   /** Adds the term c * x^p with coeff c and power p to the polynomial. If a term with the same 
   power already exists, this will just shift its coefficient. If the cofficient happens to be zero 
@@ -234,53 +229,11 @@ public:
     // them.
   }
 
-  /** Sets the number of terms. If the new number is less than the current number, it will just 
-  cut off terms from the end. If the new number is greater than the current number, it will just
-  extend our vector of terms and the added terms at the end are uninitialized, i.e. may contain 
-  garbage. This function should only be used if you intend to set up the new terms via e.g. 
-  _setTerm() after calling _setNumTerms(). So, it's a function that needs a lot of care to be used
-  properly. */
-  void _setNumTerms(int newNumTerms) { terms.resize(newNumTerms); }
-
-  /** Directly sets the coefficient and power of the term with given index with no regard for 
-  maintaining a canonical representation. This is intended to be used in a sequence of calls with a 
-  subsequent manual call to canonicalize when performance matters. */
-  void _setTerm(int index, T coeff, int power) 
-  { rsAssert(isValidIndex(index));  terms[index].setup(coeff, power); }
-  // May decanonicalize in various ways.
-
-  /** Directly sets the power of the term with given index with no regard for maintaining a 
-  canonical representation. This is intended to be used in a sequence of calls with a subsequent 
-  manual call to canonicalize when performance matters. */
-  void _setPower(int index, int newPower)
-  { rsAssert(isValidIndex(index)); terms[index].setPower(newPower); }
-  // May decanonicalize by destroying the "all powers appear only once" property.
-
-  /** Directly sets the coefficient of the term with given index with no regard for maintaining a 
-  canonical representation. This is intended to be used in a sequence of calls with a subsequent 
-  manual call to canonicalize when performance matters. */
-  void _setCoeff(int index, T newCoeff)
-  { rsAssert(isValidIndex(index)); terms[index].setCoeff(newCoeff); }
-
-  /** Scales the coefficient with the given index by the given scaler. */
-  void _scaleCoeff(int index, T scaler) { _setCoeff(index, scaler * getCoeff(index)); }
-  // May decanonicalize if the scaler is zero.
-
-  /** Scales all coefficients by the given scaler. */
-  void _scaleCoeffs(T scaler)
-  {
-    for(int i = 0; i < getNumTerms(); i++)
-      _scaleCoeff(i, scaler);
-  }
-  // Decanonicalizes when scaler == 0
-
   void scaleCoeffs(T scaler)
   {
     rsAssert(scaler != T(0));
     _scaleCoeffs(scaler);
   }
-
-
 
   /** Alias for scaleCoeffs() for compatibility with API of rsPolynomial. */
   void scale(T scaler) { scaleCoeffs(scaler); }
@@ -289,14 +242,6 @@ public:
   a polynomial in which the leading coefficient is unity (aka one).*/
   void makeMonic() { scale(T(1) / _getLeadingCoeff()); }
   // Maybe use canonical getLeadingCoeff or rename to _makeMonic
-
-  /** Shifts the coefficient with the given index by the given amount, i.e. adds the given amount 
-  to the coeff. It may decanonicalize the representation by leading to a zero coeff. */
-  void _shiftCoeff(int index, T amount) { _setCoeff(index, amount + getCoeff(index)); }
-
-  /** Shifts the power at the given index by the given amount. It may decanonicalize the 
-  representation by introducing two terms with equal power. */
-  void _shiftPower(int index, int amount) { _setPower(index, amount + getPower(index)); }
 
 
   /** Shifts all powers by the given amount. If the amount is p, this corresponds to multiplying 
@@ -328,9 +273,6 @@ public:
   void multiplyByDenseCoeffs(const T* coeffs, int numTerms);
   // I think, this may also decanonicalize! See comment above. It's the same here
 
-
-
-
   void divideBy(const rsMonomial<T>& divisor)
   {
     scaleCoeffs(T(1) / divisor.getCoeff());
@@ -340,16 +282,9 @@ public:
   // Maybe assert that this->getMinPower() >= divisor.getPower() to avoid producing negative 
   // powers.
 
-
-
   void addScaled(const SparsePoly& summand, const rsMonomial<T>& scaler);
   // ToDo: implement add(summand), i.e. the same thing but without the scaler.
   // ...and maybe one with the scaler being a simple coeff
-
-  /** Reverses the array of terms. It may appear to be a weird thing to do on polynomials but this 
-  operation is needed when transforming minimum phase filters into maximum phase ones (or vice 
-  versa) and when producing allpass filters from allpole filters. */
-  void _reverse() { rsReverse(terms); }
 
   /** Turns the representation of the polynomial into a canonical one. A canonical representation 
   has the following properties: (1) The powers are strictly increasing as function of index. 
@@ -548,8 +483,6 @@ public:
 
   // Maybe move the functions with underscore into this area, too
 
-
-
   static void add(const SparsePoly& p, const SparsePoly& q, SparsePoly* r);
 
   static void subtract(const SparsePoly& p, const SparsePoly& q, SparsePoly* r);
@@ -577,6 +510,68 @@ public:
     SparsePoly* temp1, SparsePoly* temp2, bool makeResultMonic);
   // I think, if all passed polynomials have large enough capacity, then the function should not
   // (re)allocate any heap memory. Verify and document this! How large is "large enough"?
+
+
+
+  /** Appends a term with given coeff and power to the end of our terms array. Beware that this 
+  may decanonicalize the representation. */
+  void _appendTerm(T coeff, int power) { terms.emplace_back(rsMonomial<T>(coeff, power)); } 
+  // May decanonicalize
+
+  /** Sets the number of terms. If the new number is less than the current number, it will just 
+  cut off terms from the end. If the new number is greater than the current number, it will just
+  extend our vector of terms and the added terms at the end are uninitialized, i.e. may contain 
+  garbage. This function should only be used if you intend to set up the new terms via e.g. 
+  _setTerm() after calling _setNumTerms(). So, it's a function that needs a lot of care to be used
+  properly. */
+  void _setNumTerms(int newNumTerms) { terms.resize(newNumTerms); }
+
+  /** Directly sets the coefficient and power of the term with given index with no regard for 
+  maintaining a canonical representation. This is intended to be used in a sequence of calls with a 
+  subsequent manual call to canonicalize when performance matters. */
+  void _setTerm(int index, T coeff, int power) 
+  { rsAssert(isValidIndex(index));  terms[index].setup(coeff, power); }
+  // May decanonicalize in various ways.
+
+  /** Directly sets the power of the term with given index with no regard for maintaining a 
+  canonical representation. This is intended to be used in a sequence of calls with a subsequent 
+  manual call to canonicalize when performance matters. */
+  void _setPower(int index, int newPower)
+  { rsAssert(isValidIndex(index)); terms[index].setPower(newPower); }
+  // May decanonicalize by destroying the "all powers appear only once" property.
+
+  /** Directly sets the coefficient of the term with given index with no regard for maintaining a 
+  canonical representation. This is intended to be used in a sequence of calls with a subsequent 
+  manual call to canonicalize when performance matters. */
+  void _setCoeff(int index, T newCoeff)
+  { rsAssert(isValidIndex(index)); terms[index].setCoeff(newCoeff); }
+
+  /** Scales the coefficient with the given index by the given scaler. */
+  void _scaleCoeff(int index, T scaler) { _setCoeff(index, scaler * getCoeff(index)); }
+  // May decanonicalize if the scaler is zero.
+
+  /** Scales all coefficients by the given scaler. */
+  void _scaleCoeffs(T scaler)
+  {
+    for(int i = 0; i < getNumTerms(); i++)
+      _scaleCoeff(i, scaler);
+  }
+  // Decanonicalizes when scaler == 0
+
+  /** Shifts the coefficient with the given index by the given amount, i.e. adds the given amount 
+  to the coeff. It may decanonicalize the representation by leading to a zero coeff. */
+  void _shiftCoeff(int index, T amount) { _setCoeff(index, amount + getCoeff(index)); }
+
+  /** Shifts the power at the given index by the given amount. It may decanonicalize the 
+  representation by introducing two terms with equal power. */
+  void _shiftPower(int index, int amount) { _setPower(index, amount + getPower(index)); }
+
+  /** Reverses the array of terms. It may appear to be a weird thing to do on polynomials but this 
+  operation is needed when transforming minimum phase filters into maximum phase ones (or vice 
+  versa) and when producing allpass filters from allpole filters. */
+  void _reverse() { rsReverse(terms); }
+
+
 
 
   // ToDo: Implement compose (see free function rsComposeNaive() in Prototypes.h file), 
