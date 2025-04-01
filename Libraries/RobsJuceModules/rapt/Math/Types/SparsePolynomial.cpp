@@ -378,9 +378,9 @@ void rsSparsePolynomial<T, TTol>::divide(
   rsAssert(rsAreAddressesDistinct(den,   *quot));
   rsAssert(rsAreAddressesDistinct(den,   *rem ));
   rsAssert(rsAreAddressesDistinct(*quot, *rem ));
-  rsAssert(!den._isZero(den.tol));   // ToDo: use canonical isZero ..or maybe not
   rsAssert(num.isCanonical());
   rsAssert(den.isCanonical());
+  rsAssert(!den.isZero());
   // What about num == den (address-wise)? I think, we should also check that this is not the case.
   // But in such a case, we can just assign quot to 1 and rem to 0 and return early. Right? Also, 
   // maybe num == rem could be ok - except for the verification of the loop invariant.
@@ -393,7 +393,7 @@ void rsSparsePolynomial<T, TTol>::divide(
   rem->tol  = newTol;                     // Important to do this *after* rem->copyDataFrom()
   
   // Main loop:
-  while(!rem->_isZero(rem->tol) && rem->_getDegree() >= den._getDegree())  // ToDo: use canonical isZero()/getDegree()...or should we not?
+  while(!rem->isZero() && rem->_getDegree() >= den._getDegree())  // Maybe use getDegree without underscore
   {
     rsMonomial<T> t = rem->_getLeadingTerm() / den._getLeadingTerm();  // t = lead(r) / lead(d)
     quot->addTerm(t);                                                  // q = q + t
@@ -462,7 +462,7 @@ void rsSparsePolynomial<T, TTol>::greatestCommonDivisorInPlace(
   rsAssert(a->isCanonical());
   rsAssert(b->isCanonical());
   a->tol = rsMax(a->tol, b->tol);
-  while(!b->_isZero(b->tol))        // ToDo: use canonical isZero
+  while(!b->isZero())
   {
     tmp1->_copyDataFrom(*b);
     rsSparsePolynomial<T, TTol>::divide(*a, *tmp1, tmp2, b);

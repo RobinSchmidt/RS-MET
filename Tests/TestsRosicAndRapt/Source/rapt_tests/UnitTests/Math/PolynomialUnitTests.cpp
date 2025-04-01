@@ -2598,7 +2598,7 @@ bool testSparsePolynomial()
   // Test inquiry functions:
   ok &= q.isEmpty()        == true;
   ok &= q.isZero()         == true;
-  ok &= q._isZero(tol)     == true;
+  ok &= q._areAllCoeffsZero(tol) == true;  // Maybe get rid of that function
   ok &= p.isEmpty()        == false;
   ok &= p.getNumTerms()    == 3;
   ok &= p._getMinPower()   == 0;
@@ -2836,7 +2836,7 @@ bool testSparsePolynomial()
   r = p * q;
   PolyS::divide(r, q, &quot, &rem);
   ok &= quot.isCloseTo(p, tol);
-  ok &= rem._isZero(tol);
+  ok &= rem.isZero();
   p = PolyS({ Mon(+3.0, 1), Mon(-2.0, 3), Mon(+4.0, 8)               }, tol);
   q = PolyS({ Mon(+2.0, 2), Mon(-3.0, 3), Mon(+5.0, 7), Mon(-5.0, 9) }, tol);
   r = PolyS({ Mon(-5.0, 3), Mon(+3.0, 5)                             }, tol);

@@ -537,7 +537,7 @@ public:
   /** Returns true, iff this polynomial is zero, i.e. all absolute values of the coefficients are 
   below the given tolerance. So, this is a zero-test that works also on non-canonical 
   representations. */
-  bool _isZero(TTol tol) const
+  bool _areAllCoeffsZero(TTol tol) const
   {
     for(int i = 0; i < getNumTerms(); i++)
       if( !rsIsNegligible(getCoeff(i), tol) )
