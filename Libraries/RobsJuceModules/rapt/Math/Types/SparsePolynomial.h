@@ -308,16 +308,21 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  /** Returns true, iff this polynomial is empty, i.e. has no terms. */
-  //bool isEmpty() const { return terms.empty(); }
-  // Maybe get rid. Clients should use isZero()
-
   /** Returns the numerical tolerance that is used to determine if a coefficient should be 
   considered zero, i.e. with in the numerical roundoff noise. */
   TTol getRoundoffTolerance() const { return tol; }
 
   /** Returns true iff this polynomial is the zero polynomial. */
   bool isZero() const { rsAssert(isCanonical()); return terms.empty(); }
+
+
+  int getDegree() const
+  {
+    if(terms.empty())
+      return 0;
+    return terms[terms.size()-1].getPower();
+  }
+  // New - needs tests!
 
   /** Returns true, iff the rhs polynomial equals this polynomial up to the given tolerance. */
   bool isCloseTo(const SparsePoly& rhs, TTol tol) const;
@@ -337,10 +342,11 @@ public:
   rsMonomial<T> getTerm(int index) const { rsAssert(isValidIndex(index)); return terms[index]; }
 
   /** Returns the coefficient of the term with given index. */
-  T getCoeff(int index) const {  rsAssert(isValidIndex(index)); return terms[index].getCoeff(); }
+  T getCoeff(int index) const { rsAssert(isValidIndex(index)); return terms[index].getCoeff(); }
   // ToDo: Return the coeff as const reference! We intend this class to be potentially used with
   // large coeff types like matrices or arbitrary precision floats, so this optimization may make 
-  // sense
+  // sense. Hmm...I tried it and it breaks a unit test. Figure out why that happens and document 
+  // it!
 
   /** Returns the power of the term with given index. */
   int getPower(int index) const { rsAssert(isValidIndex(index)); return terms[index].getPower(); }

@@ -175,4 +175,12 @@ https://medium.com/@Alikayaspor/essential-mathematical-gifs-that-will-make-mathe
 more math fun:
 https://medium.com/@Alikayaspor/essential-mathematical-gifs-that-will-make-mathematics-finally-make-sense-4873573f5883
 
+
+Some open source fractal drawing software:
+https://larryriddle.agnesscott.org/ifs/software/software.htm
+https://github.com/mathriddle/IFS-Lsystem
+The golden dragon curve looks nice: 
+https://larryriddle.agnesscott.org/ifs/heighway/goldenDragon.htm
+https://pythonturtle.academy/golden-dragon-curve-fractal-source-code/
+
 */

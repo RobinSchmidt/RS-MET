@@ -391,15 +391,27 @@ void rsSparsePolynomial<T, TTol>::divide(
   rem->tol  = newTol;                     // Important to do this *after* rem->copyDataFrom()
   
   // Main loop:
-  while(!rem->isZero() && rem->_getDegree() >= den._getDegree())  // Maybe use getDegree without underscore
+  //while(!rem->isZero() && rem->_getDegree() >= den._getDegree())
+  while(!rem->isZero() && rem->getDegree() >= den.getDegree())
   {
-    rsMonomial<T> t = rem->_getLeadingTerm() / den._getLeadingTerm();  // t = lead(r) / lead(d)
+    // For debug:
+    rsAssert(den.getDegree()  == den._getDegree());
+    rsAssert(rem->getDegree() == rem->_getDegree());
+    // We eventually want to get rid of the versions with the underscore. But for the time being, 
+    // let's really make sure, that both versions return the same result.
+
+
+    rsMonomial<T> t = rem->_getLeadingTerm() / den._getLeadingTerm();    // t = lead(r) / lead(d)
     quot->addTerm(t);                                                  // q = q + t
     rem->addScaled(den, -t);                                           // r = r - t * d
 
     // Check the loop invariant n = d*q + r:
     SparsePoly test = den * *quot + *rem;  // For inspection in debugger
     rsAssert(num.isCloseTo(den * *quot + *rem, num.tol), "Loop invariant violated");
+
+    // I'm not totally sure, if these should always hold, but I think so:
+    rsAssert(quot->isCanonical());
+    rsAssert( rem->isCanonical());
   }
 
   // The algorithm has been adapted from: 
@@ -426,6 +438,9 @@ void rsSparsePolynomial<T, TTol>::divide(
   //
   //
   // ToDo:
+  //
+  // - Implement and use getDegree(), getLeadingTerm() without the _. Also: getLeadingCoeff().
+  //   ...partially done
   //
   // - Maybe at some point, when the function is battle tested well enough, we can get rid of the
   //   code that checks the loop invariant. But maybe leave it in. It helped me a lot to find a bug
