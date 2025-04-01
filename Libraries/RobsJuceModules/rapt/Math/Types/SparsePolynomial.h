@@ -384,7 +384,7 @@ public:
 
 
   void addScaled(const SparsePoly& summand, const rsMonomial<T>& scaler);
-  // ToDo: implement add(summand, tol), i.e. the same thing but without the scaler.
+  // ToDo: implement add(summand), i.e. the same thing but without the scaler.
   // ...and maybe one with the scaler being a simple coeff
 
 
@@ -401,8 +401,7 @@ public:
   (2) No power appears more than once. (3) No zero coefficients appear. We achieve this by 
   first sorting the terms, then consolidating multiple terms with equal exponents into single
   terms and finally deleting all terms that have a coefficient zero (up to the given tolerance). */
-  void canonicalize(TTol tol);
-  // Get rid of tol parameter!
+  void canonicalize();
 
   void copyDataFrom(const SparsePoly& other)
   {

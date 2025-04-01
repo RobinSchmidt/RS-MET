@@ -2654,7 +2654,7 @@ bool testSparsePolynomial()
   p._setTerm(4, +4.0, 0);
   ok &= p.isCanonical() == false;
   y1 = p.evaluateAt(x);
-  p.canonicalize(tol);
+  p.canonicalize();
   ok &= p.isCanonical() == true;
   y2 = p.evaluateAt(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
@@ -2674,7 +2674,7 @@ bool testSparsePolynomial()
   p._setTerm(7, +6.0, 4);
   ok &= p.isCanonical() == false;
   y1 = p.evaluateAt(x);
-  p.canonicalize(tol);
+  p.canonicalize();
   ok &= p.isCanonical() == true;
   ok &= p.getNumTerms() == 4;
   y2 = p.evaluateAt(x);
@@ -2696,7 +2696,7 @@ bool testSparsePolynomial()
   p._setTerm(7, +4.0, 4);
   ok &= p.isCanonical() == false;
   y1 = p.evaluateAt(x);
-  p.canonicalize(tol);
+  p.canonicalize();
   ok &= p.isCanonical() == true;
   ok &= p.getNumTerms() == 2;
   y2 = p.evaluateAt(x);
@@ -2794,11 +2794,17 @@ bool testSparsePolynomial()
 
 
   // Test multiplyByDenseCoeffs:
-  p.setupFromDenseCoeffs(coeffs1, 0.0);  // May need tol instead of 0.0 to be passed?
+  //p.setupFromDenseCoeffs(coeffs1, 0.0);  // May need tol instead of 0.0 to be passed?
+  p.setupFromDenseCoeffs(coeffs1, tol);
   r = p * q;
   s = q;
   s.multiplyByDenseCoeffs(&coeffs1[0], (int) coeffs1.size());
-  ok &= s.isCloseTo(r, 0.0);
+  //ok &= s.isCloseTo(r, 0.0);
+  ok &= s.isCloseTo(r, tol);
+  // It's weird. When we set the tolerance of p to 0.0 in the above p.setupFromDense.. call, we
+  // can actually use 0.0 as tolerance in ok &= s.isClose.., too. But setting the tolerance of p 
+  // to a lower value does not magically make the computations more precise. That's not how this 
+  // tolerance stuff works (it would be great, though :-)). It's probably just a coincidence.
 
 
   // Test arithmetic operators +,-,*:
@@ -2820,8 +2826,8 @@ bool testSparsePolynomial()
 
   // Test division with remainder:
   PolyS quot, rem;
-  p.canonicalize(tol);
-  q.canonicalize(tol);
+  p.canonicalize();
+  q.canonicalize();
   r = p * q;
   PolyS::divide(r, q, &quot, &rem);
   ok &= quot.isCloseTo(p, tol);

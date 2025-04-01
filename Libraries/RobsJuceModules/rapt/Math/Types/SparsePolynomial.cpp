@@ -57,7 +57,7 @@ void rsSparsePolynomial<T, TTol>::addScaled(
 }
 
 template<class T, class TTol>
-void rsSparsePolynomial<T, TTol>::canonicalize(TTol tol)  // Remove tol param!
+void rsSparsePolynomial<T, TTol>::canonicalize()
 {
   // In the empty case, we have nothing to do and we really *need* to return early in order to not 
   // get an access violation in the code below (in the  int p = getPower(0);  line):
@@ -94,7 +94,8 @@ void rsSparsePolynomial<T, TTol>::canonicalize(TTol tol)  // Remove tol param!
 
   // Remove terms with coefficient zero:
   //rsRemoveIf(terms, [&tol](const Mon& term){ return rsAbs(term.getCoeff()) <= tol; });  // old
-  rsRemoveIf(terms, [&tol](const Mon& term){ return rsIsNegligible(term.getCoeff(), tol); }); // new
+  //rsRemoveIf(terms, [&tol](const Mon& term){ return rsIsNegligible(term.getCoeff(), tol); }); // new
+  rsRemoveIf(terms, [this](const Mon& term){ return rsIsNegligible(term.getCoeff(), tol); }); // newer
 
 
   // Check postcondition:
@@ -291,7 +292,7 @@ void rsSparsePolynomial<T, TTol>::add(
   for(int i = 0; i < Nq; i++)
     r->_setTerm(Np + i, q.getCoeff(i), q.getPower(i));
 
-  r->canonicalize(r->tol);
+  r->canonicalize();
 }
 
 template<class T, class TTol>
@@ -311,7 +312,7 @@ void rsSparsePolynomial<T, TTol>::subtract(
   for(int i = 0; i < Nq; i++)
     r->_setTerm(Np + i, -q.getCoeff(i), q.getPower(i));
 
-  r->canonicalize(r->tol);
+  r->canonicalize();
 }
 
 template<class T, class TTol>
@@ -331,7 +332,7 @@ void rsSparsePolynomial<T, TTol>::weightedSum(
   for(int i = 0; i < Nq; i++)
     r->_setTerm(Np + i, wq * q.getCoeff(i), q.getPower(i));
 
-  r->canonicalize(r->tol);
+  r->canonicalize();
 }
 
 template<class T, class TTol>
@@ -354,7 +355,7 @@ void rsSparsePolynomial<T, TTol>::multiply(
       r->_setTerm(i*Nq+j, p.getCoeff(i) * q.getCoeff(j), p.getPower(i) + q.getPower(j));
 
   // We may have to re-canonicalize to combine terms with equal exponent:
-  r->canonicalize(r->tol);
+  r->canonicalize();
   // Maybe a full canonicalization is not needed. Maybe the first step (the sorting) is superfluous
   // if we can assume that p and q are canonical (or even just sorted)? Maybe factor out the 
   // partial steps of the canonicalization and think about, if we can get away with less steps 
@@ -374,7 +375,7 @@ void rsSparsePolynomial<T, TTol>::multiplyByDenseCoeffs(const T* coeffs, int num
     for(int j = Nq-1; j >= 0; j--)
       this->_setTerm(i*Nq+j, getCoeff(i) * coeffs[j], getPower(i) + j);
 
-  this->canonicalize(tol);
+  this->canonicalize();
 }
 
 template<class T, class TTol>
