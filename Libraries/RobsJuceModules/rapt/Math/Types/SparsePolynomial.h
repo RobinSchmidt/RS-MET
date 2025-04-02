@@ -31,19 +31,22 @@ public:
 
   void setCoeff(T newCoeff)   { coeff = newCoeff; }
 
+  // ToDo: pass newCoeff by const ref
+
   void setPower(int newPower) { power = newPower; }
 
   void negate() { coeff = -coeff; }
 
   void shiftPower(int amount) { power += amount; }
 
-  // ToDo: scaleCoeff()
+  void scaleCoeff(const T& scaler) { coeff *= scaler; }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns the coefficient c in the expression c * x^p. */
   T getCoeff() const { return coeff; }
+  // Maybe return by const ref?
 
   /** Returns the power (aka exponent) p in the expression c * x^p. */
   int getPower() const { return power; }
@@ -472,11 +475,7 @@ public:
 
   /** Scales all coefficients by the given scaler. It may destroy the canonical representation 
   by setting the coeffs to zero. */
-  void _scaleCoeffs(T scaler)
-  {
-    for(int i = 0; i < getNumTerms(); i++)
-      _scaleCoeff(i, scaler);
-  }
+  void _scaleCoeffs(T scaler) { for(auto& t : terms) t.scaleCoeff(scaler); }
 
   /** Shifts the coefficient with the given index by the given amount, i.e. adds the given amount 
   to the coeff. It may decanonicalize the representation by leading to a zero coeff. */
