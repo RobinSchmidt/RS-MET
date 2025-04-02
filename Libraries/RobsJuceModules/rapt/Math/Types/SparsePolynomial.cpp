@@ -409,7 +409,7 @@ void rsSparsePolynomial<T, TTol>::divide(
 
 
     // Check the loop invariant n = d*q + r:
-    SparsePoly test = den * *quot + *rem;  // For inspection in debugger
+    //SparsePoly test = den * *quot + *rem;  // For inspection in debugger
     rsAssert(num.isCloseTo(den * *quot + *rem, num.tol), "Loop invariant violated");
 
     // I'm not totally sure, if these should always hold, but I think so:
