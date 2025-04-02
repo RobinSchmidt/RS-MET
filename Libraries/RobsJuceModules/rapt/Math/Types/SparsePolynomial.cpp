@@ -502,8 +502,13 @@ ToDo:
   and q have been produced via  p = g*a, q = g*b  where polynomials a,b have no common divisors 
   such that g is the gcd of p and q. If g happens to be non-monic, then calling gcd(p,q,false) 
   will restore g correctly including its leading coeff. I think...not sure...verify! 
-  
  
+- Implement composition of sparse polynomials (see free function rsComposeNaive() in Prototypes.h 
+  file)
+
+- Implement a lowestCommonMultiple() function, aka lcm - the cousin of gcd.
+
+
 Notes:
 
 - It might be tempting to write a constructor and/or setup function that takes a dense 

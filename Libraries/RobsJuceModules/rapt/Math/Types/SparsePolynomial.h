@@ -495,15 +495,6 @@ public:
   bool _isCanonical() const;
 
 
-  // ToDo: 
-  //
-  // - Implement compose (see free function rsComposeNaive() in Prototypes.h file), 
-  //   lowestCommonMultiple
-  //
-  // - Maybe try to get rid of some of the _ functions like _getDegree() etc. I don't think, we 
-  //   will ever need them.
-
-
 protected:
 
   std::vector<rsMonomial<T>> terms;
@@ -512,18 +503,15 @@ protected:
 };
 
 
-// ToDo: Maybe move these implementations below into the class or .cpp file. But I think, 
-// operators that take the polynomial as left operand and a right operand of the coeff type or 
-// monomial type, they must be defined outside the class. 
-
 /** Multiplies a coefficient and a sparse polynomial. */
 template<class T, class TTol>
 inline rsSparsePolynomial<T, TTol> operator*(const T& s, const rsSparsePolynomial<T, TTol>& p)
 {
   rsSparsePolynomial<T, TTol> r(p);
-  r.scale(s);
+  r._scaleCoeffs(s);
   return r;
 }
+
 
 // ToDo: Write an operator that takes a monomial as left operand. It should scale r by the 
 // monomial's coeff as above and shift the powers of r by the monomial's power. Maybe the 
