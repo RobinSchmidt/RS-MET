@@ -402,7 +402,8 @@ void rsSparsePolynomial<T, TTol>::divide(
 
 
     // This is the actual business logic code:
-    rsMonomial<T> t = rem->_getLeadingTerm() / den._getLeadingTerm();    // t = lead(r) / lead(d)
+    //rsMonomial<T> t = rem->_getLeadingTerm() / den._getLeadingTerm();    // t = lead(r) / lead(d)
+    rsMonomial<T> t = rem->getLeadingTerm() / den.getLeadingTerm();    // t = lead(r) / lead(d)
     quot->addTerm(t);                                                  // q = q + t
     rem->addScaled(den, -t);                                           // r = r - t * d
     // The rest is just sanity checks needed during development.

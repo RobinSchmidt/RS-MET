@@ -315,14 +315,28 @@ public:
   /** Returns true iff this polynomial is the zero polynomial. */
   bool isZero() const { rsAssert(isCanonical()); return terms.empty(); }
 
+  /** Returns the leading term in this polynomial, i.e. the monomial  cn x^n  that has the highest
+  exponent n. */
+  rsMonomial<T> getLeadingTerm() const
+  {
+    if(terms.empty())
+      rsMonomial<T>(T(0), 0);
+    return terms[terms.size()-1];
+  }
+
 
   int getDegree() const
   {
     if(terms.empty())
       return 0;
     return terms[terms.size()-1].getPower();
+
+    // Maybe use: "return getLeadingTerm().getPower();
   }
   // New - needs tests!
+
+
+
 
   /** Returns true, iff the rhs polynomial equals this polynomial up to the given tolerance. */
   bool isCloseTo(const SparsePoly& rhs, TTol tol) const;
@@ -516,8 +530,10 @@ public:
   {
     for(int i = 0; i < getNumTerms(); i++)
       _scaleCoeff(i, scaler);
+
+    // Decanonicalizes when scaler == 0, or more precisely: when the product of the scaler and the
+    // original coeff falls below the roundoff tolerance.
   }
-  // Decanonicalizes when scaler == 0
 
   /** Shifts the coefficient with the given index by the given amount, i.e. adds the given amount 
   to the coeff. It may decanonicalize the representation by leading to a zero coeff. */
