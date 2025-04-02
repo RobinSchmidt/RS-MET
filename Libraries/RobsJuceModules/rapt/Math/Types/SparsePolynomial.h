@@ -414,6 +414,14 @@ public:
     SparsePoly::greatestCommonDivisorInPlace(&a, &b, &tmp1, &tmp2, monic);
     return a;
   }
+  // I think, the significance of the leading coeff of the result may be: Assume p and q have been 
+  // produced via  p = g*a, q = g*b  where polynomials a,b have no common divisors such that g is 
+  // the gcd of p and q. If g happens to be non-monic, then calling gcd(p,q,false) will restore g 
+  // correctly including its leading coeff. ...I think...not sure...verify! Maybe it's useful to be
+  // able to restore g completely in some context, so I'll leave normalization to a monic result
+  // optional for the time being. It may turn out to be useless to retain this leading coeff 
+  // information, but we'll see...
+
 
   /** Computes the greatest common divisor of two polynomials. It works in place meaning that it
   allocates no temporary sparse polynomials internally. The first parameter is an input/output 
