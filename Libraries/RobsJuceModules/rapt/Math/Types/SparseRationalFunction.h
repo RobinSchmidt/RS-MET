@@ -523,8 +523,8 @@ public:
     // It's not very useful as a transfer function, but still...
 
     // We assume the filter polynomials to be in canonical shape:
-    ok &= num.isCanonical();
-    ok &= den.isCanonical();
+    ok &= num._isCanonical();
+    ok &= den._isCanonical();
 
     // Filter should satisfy the a0 == 1 normalization property:
     ok &= den.getPower(0) == 0 && den.getCoeff(0) == T(1);

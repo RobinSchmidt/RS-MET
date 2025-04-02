@@ -4,7 +4,7 @@ template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::addTerm(T coeff, int power)
 {
   // We assume that this polynomial is in canonical representation:
-  rsAssert(isCanonical());
+  rsAssert(_isCanonical());
 
   int i = 0;
   while(i < getNumTerms())
@@ -28,7 +28,7 @@ void rsSparsePolynomial<T, TTol>::addTerm(T coeff, int power)
   rsInsert(terms, rsMonomial<T>(coeff, power), (size_t) i);
 
   // After the operation, it should still be in canonical representation
-  rsAssert(isCanonical());
+  rsAssert(_isCanonical());
 }
 
 template<class T, class TTol>
@@ -92,15 +92,12 @@ void rsSparsePolynomial<T, TTol>::_canonicalize()
   // assert that the terms are sorted.
 
   // Remove terms with coefficient zero:
-  //rsRemoveIf(terms, [&tol](const Mon& term){ return rsAbs(term.getCoeff()) <= tol; });  // old
-  //rsRemoveIf(terms, [&tol](const Mon& term){ return rsIsNegligible(term.getCoeff(), tol); }); // new
-  rsRemoveIf(terms, [this](const Mon& term){ return rsIsNegligible(term.getCoeff(), tol); }); // newer
-
+  rsRemoveIf(terms, [this](const Mon& term){ return rsIsNegligible(term.getCoeff(), tol); });
 
   // Check postcondition:
-  rsAssert(isCanonical(), "Canonicalization failed");
+  rsAssert(_isCanonical(), "Canonicalization failed");
   // If this triggers, there's a bug in the canonicalization code above and/or in the 
-  // implementation of isCanonical().
+  // implementation of _isCanonical().
 
 
   // ToDo:
@@ -124,7 +121,7 @@ void rsSparsePolynomial<T, TTol>::_canonicalize()
 template<class T, class TTol>
 bool rsSparsePolynomial<T, TTol>::isCloseTo(const rsSparsePolynomial<T, TTol>& q, TTol tol) const
 {
-  rsAssert(isCanonical() && q.isCanonical());
+  rsAssert(_isCanonical() && q._isCanonical());
 
   if(getNumTerms() != q.getNumTerms())
     return false;
@@ -145,7 +142,7 @@ bool rsSparsePolynomial<T, TTol>::isCloseTo(const rsSparsePolynomial<T, TTol>& q
 }
 
 template<class T, class TTol>
-bool rsSparsePolynomial<T, TTol>::isCanonical() const
+bool rsSparsePolynomial<T, TTol>::_isCanonical() const
 {
   // An empty polynomial is the canonical representation of the zero polynomial:
   if(terms.empty())
@@ -289,8 +286,8 @@ void rsSparsePolynomial<T, TTol>::divide(
   rsAssert(rsAreAddressesDistinct(den,   *quot));
   rsAssert(rsAreAddressesDistinct(den,   *rem ));
   rsAssert(rsAreAddressesDistinct(*quot, *rem ));
-  rsAssert(num.isCanonical());
-  rsAssert(den.isCanonical());
+  rsAssert(num._isCanonical());
+  rsAssert(den._isCanonical());
   rsAssert(!den.isZero());
   // What about num == den (address-wise)? I think, we should also check that this is not the case.
   // But in such a case, we can just assign quot to 1 and rem to 0 and return early. Right? Also, 
@@ -311,8 +308,8 @@ void rsSparsePolynomial<T, TTol>::divide(
     rem->addScaled(den, -t);                                         // r = r - t * d
 
     // Check sanity and loop invariant n = d*q + r:
-    rsAssert(quot->isCanonical());
-    rsAssert( rem->isCanonical());
+    rsAssert(quot->_isCanonical());
+    rsAssert( rem->_isCanonical());
     rsAssert(num.isCloseTo(den * *quot + *rem, num.tol), "Loop invariant violated");
   }
 
@@ -375,8 +372,9 @@ void rsSparsePolynomial<T, TTol>::greatestCommonDivisorInPlace(
   rsSparsePolynomial<T, TTol>* tmp2,
   bool monic)
 {
-  rsAssert(a->isCanonical());
-  rsAssert(b->isCanonical());
+  rsAssert(a->_isCanonical());
+  rsAssert(b->_isCanonical());
+
   a->tol = rsMax(a->tol, b->tol);
   while(!b->isZero())
   {
@@ -397,6 +395,11 @@ void rsSparsePolynomial<T, TTol>::greatestCommonDivisorInPlace(
 
 
 ToDo:
+
+- Sprinkle in rsAssert(_isCanonical()); calls in all functions that assume a canonical 
+  reprensentation in the spirit of defensive programming and contract based programming. Client
+  code that uses the low level API and thereby messes up the canonical representation will fail
+  early when we do this.
 
 - Verify the usage pattern of the tolerance tol. I think, many member functions that receive a tol
   parameter should now not receive the tolerance as parameter anymore. If they are non-static,

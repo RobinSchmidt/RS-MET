@@ -2608,7 +2608,7 @@ bool testSparsePolynomial()
   ok &= p.isValidIndex( 0) == true;
   ok &= p.isValidIndex( 2) == true;   // There are 3 nonzero coeffs so max valid index is 2.
   ok &= p.isValidIndex( 3) == false;
-  ok &= p.isCanonical()    == true;
+  ok &= p._isCanonical()   == true;
   ok &= p.getCoeff(0)      ==  0.5;
   ok &= p.getCoeff(1)      == -0.7;
   ok &= p.getCoeff(2)      ==  0.3;
@@ -2641,7 +2641,7 @@ bool testSparsePolynomial()
   ok &= p.isValidIndex(-1) == false;
   ok &= p.isValidIndex( 0) == false;
   ok &= p.isValidIndex(+1) == false;
-  ok &= p.isCanonical()    == true;
+  ok &= p._isCanonical()   == true;
 
   // Create a non-canonical representation of a sparse polynomial. The terms are not ordered by 
   // increasing powers. The powers all apear only once, though:
@@ -2652,10 +2652,10 @@ bool testSparsePolynomial()
   p._setTerm(2, +5.0, 4);
   p._setTerm(3, -7.0, 2);
   p._setTerm(4, +4.0, 0);
-  ok &= p.isCanonical() == false;
+  ok &= p._isCanonical() == false;
   y1 = p(x);
   p._canonicalize();
-  ok &= p.isCanonical() == true;
+  ok &= p._isCanonical() == true;
   y2 = p(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
   ok &= p.getLeadingCoeff() == 5.0;
@@ -2672,10 +2672,10 @@ bool testSparsePolynomial()
   p._setTerm(5, +3.0, 2);
   p._setTerm(6, -4.0, 4);
   p._setTerm(7, +6.0, 4);
-  ok &= p.isCanonical() == false;
+  ok &= p._isCanonical() == false;
   y1 = p(x);
   p._canonicalize();
-  ok &= p.isCanonical() == true;
+  ok &= p._isCanonical() == true;
   ok &= p.getNumTerms() == 4;
   y2 = p(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
@@ -2694,10 +2694,10 @@ bool testSparsePolynomial()
   p._setTerm(5, +2.0, 2);
   p._setTerm(6, -4.0, 4);
   p._setTerm(7, +4.0, 4);
-  ok &= p.isCanonical() == false;
+  ok &= p._isCanonical() == false;
   y1 = p(x);
   p._canonicalize();
-  ok &= p.isCanonical() == true;
+  ok &= p._isCanonical() == true;
   ok &= p.getNumTerms() == 2;
   y2 = p(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);

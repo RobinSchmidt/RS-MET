@@ -275,7 +275,7 @@ public:
   TTol getRoundoffTolerance() const { return tol; }
 
   /** Returns true iff this polynomial is the zero polynomial. */
-  bool isZero() const { rsAssert(isCanonical()); return terms.empty(); }
+  bool isZero() const { rsAssert(_isCanonical()); return terms.empty(); }
 
   /** Returns the leading term in this polynomial, i.e. the monomial  cn x^n  that has the highest
   exponent n. */
@@ -326,7 +326,7 @@ public:
   canonical if it has no zero coefficients (up to a given tolerance) and if the powers are strictly
   increasing (as function of term-index). The empty polynomial is also accepted as a canonical 
   representation. It represents the zero polynomial. */
-  bool isCanonical() const;
+  bool _isCanonical() const;
   // Maybe make it an _underscore method
 
   //-----------------------------------------------------------------------------------------------
@@ -513,6 +513,9 @@ public:
   // code uses only other non-underscored function, this here may get away without underscore, too.
   // But maybe client code should use the assignment operator anyway (which we need to define - for
   // copy and move assignment)
+  // ...actually, the method may be superfluous. We could use the default assignment operator
+  // for the same purpose, I think. It should do the same thing and have the same or even better
+  // performance. Try that!
 
 
 
