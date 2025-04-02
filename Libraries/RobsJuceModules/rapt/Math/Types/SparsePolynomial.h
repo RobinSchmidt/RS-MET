@@ -150,7 +150,8 @@ public:
 
   /** Creates a polynomial from an initializer list for the terms. */
   rsSparsePolynomial(std::initializer_list<rsMonomial<T>> initList, TTol tolerance) 
-    : terms(initList), tol(tolerance) {}
+    : terms(initList), tol(tolerance) 
+  { _canonicalize(); }
 
   rsSparsePolynomial(const std::vector<T>& coefficients, TTol tolerance) 
   { setupFromDenseCoeffs(coefficients, tolerance); }
@@ -499,28 +500,6 @@ public:
   increasing (as function of term-index). The empty polynomial is also accepted as a canonical 
   representation. It represents the zero polynomial. */
   bool _isCanonical() const;
-
-
-
-  /*
-  void _copyDataFrom(const SparsePoly& other)
-  {
-    tol = other.tol;
-    _setNumTerms(other.getNumTerms());
-    for(int i = 0; i < getNumTerms(); i++)
-      _setTerm(i, other.getCoeff(i), other.getPower(i));
-  }
-  */
-  // Maybe this should have an _ at the start. It will decanonicalize this polynomial, iff the 
-  // other polynomial is in non-canonical representation. Hmmm...this is a gray area. if the client
-  // code uses only other non-underscored function, this here may get away without underscore, too.
-  // But maybe client code should use the assignment operator anyway (which we need to define - for
-  // copy and move assignment)
-  // ...actually, the method may be superfluous. We could use the default assignment operator
-  // for the same purpose, I think. It should do the same thing and have the same or even better
-  // performance. Try that!
-
-
 
 
   // ToDo: 

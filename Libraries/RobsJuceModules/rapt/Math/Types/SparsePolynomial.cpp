@@ -176,6 +176,9 @@ void rsSparsePolynomial<T, TTol>::add(
   const rsSparsePolynomial<T, TTol>& q,
   rsSparsePolynomial<T, TTol>* r)
 {
+  rsAssert(p._isCanonical());
+  rsAssert(q._isCanonical());
+
   int Np = p.getNumTerms();      // Number of terms in left operand p
   int Nq = q.getNumTerms();      // Number of terms in right operand q
   int Nr = Np + Nq;              // Number of terms in result r (before canonicalization)
@@ -196,6 +199,9 @@ void rsSparsePolynomial<T, TTol>::subtract(
   const rsSparsePolynomial<T, TTol>& q,
   rsSparsePolynomial<T, TTol>* r)
 {
+  rsAssert(p._isCanonical());
+  rsAssert(q._isCanonical());
+
   int Np = p.getNumTerms();
   int Nq = q.getNumTerms();
   int Nr = Np + Nq;
@@ -216,6 +222,9 @@ void rsSparsePolynomial<T, TTol>::weightedSum(
   const rsSparsePolynomial<T, TTol>& q, T wq,
   rsSparsePolynomial<T, TTol>* r)
 {
+  rsAssert(p._isCanonical());
+  rsAssert(q._isCanonical());
+
   int Np = p.getNumTerms();
   int Nq = q.getNumTerms();
   int Nr = Np + Nq;
@@ -236,6 +245,9 @@ void rsSparsePolynomial<T, TTol>::multiply(
   const rsSparsePolynomial<T, TTol>& q,
   rsSparsePolynomial<T, TTol>* r)
 {
+  rsAssert(p._isCanonical());
+  rsAssert(q._isCanonical());
+
   int Np = p.getNumTerms();
   int Nq = q.getNumTerms();
   int Nr = Np * Nq;
@@ -260,6 +272,8 @@ void rsSparsePolynomial<T, TTol>::multiply(
 template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::multiplyByDenseCoeffs(const T* coeffs, int numTerms)
 {
+  rsAssert(_isCanonical());
+
   int Np = getNumTerms();
   int Nq = numTerms;
   int Nr = Np * Nq;
@@ -271,6 +285,10 @@ void rsSparsePolynomial<T, TTol>::multiplyByDenseCoeffs(const T* coeffs, int num
       _setTerm(i*Nq+j, getCoeff(i) * coeffs[j], getPower(i) + j);
 
   _canonicalize();
+  // Do we need this? If so, document why. I think in the loop above, it will tpyically happen that
+  // we produce multiple terms with the same power. "getPower(i) + j" will take on the same value
+  // multiple times, so _setTerm(..) will set multiple different terms to the same power. Verify 
+  // this!
 }
 
 template<class T, class TTol>
@@ -281,14 +299,14 @@ void rsSparsePolynomial<T, TTol>::divide(
   rsSparsePolynomial<T, TTol>* rem)
 {
   // Sanity checks:
+  rsAssert(num._isCanonical());
+  rsAssert(den._isCanonical());
+  rsAssert(!den.isZero());
   rsAssert(rsAreAddressesDistinct(num,   *quot));
   rsAssert(rsAreAddressesDistinct(num,   *rem ));
   rsAssert(rsAreAddressesDistinct(den,   *quot));
   rsAssert(rsAreAddressesDistinct(den,   *rem ));
   rsAssert(rsAreAddressesDistinct(*quot, *rem ));
-  rsAssert(num._isCanonical());
-  rsAssert(den._isCanonical());
-  rsAssert(!den.isZero());
   // What about num == den (address-wise)? I think, we should also check that this is not the case.
   // But in such a case, we can just assign quot to 1 and rem to 0 and return early. Right? Also, 
   // maybe num == rem could be ok - except for the verification of the loop invariant.
@@ -379,12 +397,8 @@ void rsSparsePolynomial<T, TTol>::greatestCommonDivisorInPlace(
   a->tol = rsMax(a->tol, b->tol);
   while(!b->isZero())
   {
-    //tmp1->_copyDataFrom(*b);
     *tmp1 = *b;
-
     rsSparsePolynomial<T, TTol>::divide(*a, *tmp1, tmp2, b);
-
-    //a->_copyDataFrom(*tmp1);
     *a = *tmp1;
   }
   if(monic)
