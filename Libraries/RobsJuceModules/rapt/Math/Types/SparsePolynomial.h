@@ -117,7 +117,7 @@ stuff is going on and special care should be taken. ...TBC...
 ToDo:
 
 - Implement all the needed copy- and move constructors and assignement operators (rule of 5). Or
-  maybe we can rely on implicit definitions (rule of 0)?
+  maybe we can rely on implicit definitions (rule of 0)? Yes - I think so.
 
 - Document clearly under which circumstances the user can assume the polynomial to be in a 
   canonical representation (and what that even means). I'm still not quite sure myself, whether or 
@@ -138,8 +138,8 @@ class rsSparsePolynomial
 
 public:
 
-  // ToDo: Maybe use this abbreviation for convenience in the member function declarations:
-  using SparsePoly = rsSparsePolynomial<T, TTol>;
+  using SparsePoly = rsSparsePolynomial<T, TTol>;  // For convenience
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Lifetime */
@@ -153,21 +153,10 @@ public:
     : terms(initList), tol(tolerance) {}
 
   rsSparsePolynomial(const std::vector<T>& coefficients, TTol tolerance) 
-  { 
-    setupFromDenseCoeffs(coefficients, tolerance);
-
-    // Maybe make the tolerance parameter optional. I'm not sure about that, though. It may invite
-    // forgetting to set it when it's really needed. But on the other hand, some types T don't need
-    // any tolerance at all.
-  }
-
-
-  // What about copy- and move constructors and copy- and move assignment operators? Do we need to
-  // define them or can we rely on the auto-generated ones? It's important that swapping two
-  // sparse polynomials can be done allocation free. This is needed for inverting sparse filters by
-  // swapping numerator and denominator of their transfer functions (plus some extra stuff to 
-  // maintain the a0 = 1 normalization). This is an an operation that we need to do in a realtime 
-  // safe manner. Verify and document this!
+  { setupFromDenseCoeffs(coefficients, tolerance); }
+  // Maybe make the tolerance parameter optional. I'm not sure about that, though. It may invite
+  // forgetting to set it when it's really needed. But on the other hand, some types T don't need
+  // any tolerance at all.
 
 
   //-----------------------------------------------------------------------------------------------
@@ -364,14 +353,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
-
-  /** Copy assignment operator. Copies data from rhs into this object. */
-  //SparsePoly& operator=(const SparsePoly& rhs) { _copyDataFrom(rhs); return *this; }
-  // Wait - no! We should rely on automatic, compiler generated implementations of assignment
-  // operator and copy/move constructors (rule of zero)
-  // ToDo: Implement move assignment
-
-
   /** Evaluates the function at the given input z whose type may be different from the 
   coefficient type T. This may be used, for example, for evaluating polynomials with real coeffs at
   complex arguments. 
@@ -419,7 +400,34 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Static member functions */
+  /** \name Low level API. The static functions operate on pre-allocated output parameters passed 
+  by pointer (to make it obvious at the call site that the parameter may be modified). Using these 
+  functions with pre-allocated sparse polynomials may potentially avoid heap allocations which the 
+  more convenient functions that return sparse polynomials do. This includes the +,-,*,/,% 
+  operators. So, for real time code, these operators are actually forbidden and one has to resort 
+  to the low level API. The low level non-static member functions starting with an underscore are
+  meant for low level manipulations that may temporarily destroy the canonical representation. If
+  you use these, it's your own responsibility to maintain a canonical representation or when you 
+  destroy it in some process, to restore it when your are finished, for example by calling 
+  canonicalize(). */
+
+
+  static void add(const SparsePoly& p, const SparsePoly& q, SparsePoly* r);
+
+  static void subtract(const SparsePoly& p, const SparsePoly& q, SparsePoly* r);
+
+  /** Computes the weighted sum r = wp * p + wq * q of the polynomials p and q and stores the 
+  result in r. */
+  static void weightedSum(const SparsePoly& p, T wp, const SparsePoly& q, T wq, SparsePoly* r);
+  // ToDo: document whether or not it can be used in place.
+
+  /** Multiplies polynomials p and q and stores the result in r. It may be used in place, i.e. the
+  result polynomial r can point to the memory location of the arguments p and/or q. */
+  static void multiply(const SparsePoly& p, const SparsePoly& q, SparsePoly* r);
+
+  /** Implements polynomial division with remainder. ...TBC... */
+  static void divide(const SparsePoly& numerator, const SparsePoly& denominator,
+    SparsePoly* quotient, SparsePoly* remainder);
 
   /** Computes the greatest common divisor of the polynomials p and q. The monic parameter defines 
   if the returned gcd should be normalized to be monic. The gcd of polynomials is unique only up to
@@ -434,29 +442,6 @@ public:
     SparsePoly::greatestCommonDivisorInPlace(&a, &b, &tmp1, &tmp2, monic);
     return a;
   }
-
-
-  //-----------------------------------------------------------------------------------------------
-  /** \name Low level API. The static functions operate on pre-allocated output parameters passed 
-  by pointer (to make it obvious at the call site that the parameter may be modified). Using these 
-  functions with pre-allocated sparse polynomials may potentially avoid heap allocations which the 
-  more convenient functions that return sparse polynomials do. This includes the +,-,*,/,% 
-  operators. So, for real time code, these operators are actually forbidden and one has to resort 
-  to the low level API. The low level non-static member functions starting with an underscore */
-
-  static void add(const SparsePoly& p, const SparsePoly& q, SparsePoly* r);
-
-  static void subtract(const SparsePoly& p, const SparsePoly& q, SparsePoly* r);
-
-  static void weightedSum(const SparsePoly& p, T wp, const SparsePoly& q, T wq, SparsePoly* r);
-
-  /** Multiplies polynomials p and q and stores the result in r. It may be used in place, i.e. the
-  result polynomial r can point to the memory location of the arguments p and/or q. */
-  static void multiply(const SparsePoly& p, const SparsePoly& q, SparsePoly* r);
-
-  /** Implements polynomial division with remainder. ...TBC... */
-  static void divide(const SparsePoly& numerator, const SparsePoly& denominator,
-    SparsePoly* quotient, SparsePoly* remainder);
 
   /** Computes the greatest common divisor of two polynomials. It works in place meaning that it
   allocates no temporary sparse polynomials internally. The first parameter is an input/output 
@@ -473,11 +458,10 @@ public:
   // (re)allocate any heap memory. Verify and document this! How large is "large enough"?
 
 
-
-  /** Appends a term with given coeff and power to the end of our terms array. Beware that this 
-  may decanonicalize the representation. */
+  /** Appends a term with given coeff and power to the end of our terms array. This may 
+  decanonicalize the representation by appending a term of a power lower than the current degree
+  and/or by duplicating one of the existing exponents. */
   void _appendTerm(T coeff, int power) { terms.emplace_back(rsMonomial<T>(coeff, power)); } 
-  // May decanonicalize
 
   /** Sets the number of terms. If the new number is less than the current number, it will just 
   cut off terms from the end. If the new number is greater than the current number, it will just
@@ -487,38 +471,33 @@ public:
   properly. */
   void _setNumTerms(int newNumTerms) { terms.resize(newNumTerms); }
 
-  /** Directly sets the coefficient and power of the term with given index with no regard for 
-  maintaining a canonical representation. This is intended to be used in a sequence of calls with a 
-  subsequent manual call to canonicalize when performance matters. */
+  /** Directly sets the coefficient and power of the term with given index. This may 
+  decanonicalize the representation in all sorts of ways: by destroying the strict order, by 
+  destroying the "powers appear at most once" property, by setting a coeff to zero. */
   void _setTerm(int index, T coeff, int power) 
   { rsAssert(isValidIndex(index));  terms[index].setup(coeff, power); }
-  // May decanonicalize in various ways.
 
-  /** Directly sets the power of the term with given index with no regard for maintaining a 
-  canonical representation. This is intended to be used in a sequence of calls with a subsequent 
-  manual call to canonicalize when performance matters. */
+  /** Directly sets the power of the term with given index. It may decanonicalize by destroying 
+  the "all powers appear only once" property and/or the "powers are in strict ascending order"
+  property. */
   void _setPower(int index, int newPower)
   { rsAssert(isValidIndex(index)); terms[index].setPower(newPower); }
-  // May decanonicalize by destroying the "all powers appear only once" property.
 
-  /** Directly sets the coefficient of the term with given index with no regard for maintaining a 
-  canonical representation. This is intended to be used in a sequence of calls with a subsequent 
-  manual call to canonicalize when performance matters. */
+  /** Directly sets the coefficient of the term with given index. It may destroy the canonical
+  representation by setting a coeff to zero. */
   void _setCoeff(int index, T newCoeff)
   { rsAssert(isValidIndex(index)); terms[index].setCoeff(newCoeff); }
 
-  /** Scales the coefficient with the given index by the given scaler. */
+  /** Scales the coefficient with the given index by the given scaler. It may destroy the 
+  canonical representation by setting a coeff to zero. */
   void _scaleCoeff(int index, T scaler) { _setCoeff(index, scaler * getCoeff(index)); }
-  // May decanonicalize if the scaler is zero.
 
-  /** Scales all coefficients by the given scaler. */
+  /** Scales all coefficients by the given scaler. It may destroy the canonical representation 
+  by setting the coeffs to zero. */
   void _scaleCoeffs(T scaler)
   {
     for(int i = 0; i < getNumTerms(); i++)
       _scaleCoeff(i, scaler);
-
-    // Decanonicalizes when scaler == 0, or more precisely: when the product of the scaler and the
-    // original coeff falls below the roundoff tolerance.
   }
 
   /** Shifts the coefficient with the given index by the given amount, i.e. adds the given amount 

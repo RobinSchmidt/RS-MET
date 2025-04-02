@@ -444,6 +444,13 @@ ToDo:
   be like  evalWithDerivatives(T x, int M, T* f)  where f is an array of M (or maybe M+1) values
   for p(x), p'(x), p''(x), ... up to the M-th derivative. 
 
+- What about copy- and move constructors and copy- and move assignment operators? Do we need to
+  define them or can we rely on the auto-generated ones? It's important that swapping two
+  sparse polynomials can be done allocation free. This is needed for inverting sparse filters by
+  swapping numerator and denominator of their transfer functions (plus some extra stuff to 
+  maintain the a0 = 1 normalization). This is an an operation that we need to do in a realtime 
+  safe manner. Verify and document this!
+
  
 Notes:
 
