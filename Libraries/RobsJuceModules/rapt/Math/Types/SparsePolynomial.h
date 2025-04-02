@@ -340,8 +340,7 @@ public:
   /** Implements the unary minus operator. */
   SparsePoly operator-() const 
   { 
-    SparsePoly r;
-    r._copyDataFrom(*this);
+    SparsePoly r(*this);
     r.scale(T(-1));  // Maybe use a special negate() function. It may be more efficient.
     return r;
   }
@@ -501,7 +500,7 @@ public:
 
 
 
-
+  /*
   void _copyDataFrom(const SparsePoly& other)
   {
     tol = other.tol;
@@ -509,6 +508,7 @@ public:
     for(int i = 0; i < getNumTerms(); i++)
       _setTerm(i, other.getCoeff(i), other.getPower(i));
   }
+  */
   // Maybe this should have an _ at the start. It will decanonicalize this polynomial, iff the 
   // other polynomial is in non-canonical representation. Hmmm...this is a gray area. if the client
   // code uses only other non-underscored function, this here may get away without underscore, too.
@@ -544,8 +544,8 @@ protected:
 template<class T, class TTol>
 inline rsSparsePolynomial<T, TTol> operator*(const T& s, const rsSparsePolynomial<T, TTol>& p)
 {
-  rsSparsePolynomial<T, TTol> r;
-  r._copyDataFrom(p);
+  rsSparsePolynomial<T, TTol> r(p);
+  //r._copyDataFrom(p);
   r.scale(s);
   return r;
 

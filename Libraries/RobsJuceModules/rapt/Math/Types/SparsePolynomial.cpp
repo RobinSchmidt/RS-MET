@@ -297,8 +297,9 @@ void rsSparsePolynomial<T, TTol>::divide(
   TTol newTol = rsMax(num.tol, den.tol);  // Tolerance of the results
   quot->clear();                          // q = 0. Quotient is empty/zero.
   quot->tol = newTol;                     // Set up tolerance of quotient.
-  rem->_copyDataFrom(num);                // r = n. Invariant holds: n = d*q + r = d*0 + r = r
-  rem->tol  = newTol;                     // Important to do this *after* rem->copyDataFrom()
+  //rem->_copyDataFrom(num);                // r = n. Invariant holds: n = d*q + r = d*0 + r = r
+  *rem = num;                             // r = n. Invariant holds: n = d*q + r = d*0 + r = r
+  rem->tol = newTol;                      // Important to do this after *rem = num
   
   // Main loop:
   while(!rem->isZero() && rem->getDegree() >= den.getDegree())
@@ -378,9 +379,13 @@ void rsSparsePolynomial<T, TTol>::greatestCommonDivisorInPlace(
   a->tol = rsMax(a->tol, b->tol);
   while(!b->isZero())
   {
-    tmp1->_copyDataFrom(*b);
+    //tmp1->_copyDataFrom(*b);
+    *tmp1 = *b;
+
     rsSparsePolynomial<T, TTol>::divide(*a, *tmp1, tmp2, b);
-    a->_copyDataFrom(*tmp1);
+
+    //a->_copyDataFrom(*tmp1);
+    *a = *tmp1;
   }
   if(monic)
     a->makeMonic();

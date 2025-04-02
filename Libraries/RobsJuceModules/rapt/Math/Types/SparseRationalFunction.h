@@ -171,10 +171,10 @@ public:
 
   void copyDataFrom(const rsSparseRationalFunction<T>& q)
   {
-    num._copyDataFrom(q.num);
-    den._copyDataFrom(q.den);
+    num = q.num;
+    den = q.den;
   }
-  // Use underscore - maybe
+  // Use underscore - maybe ..or get rid of it and use (default) assignment operator instead.
 
 
   /** Applies a scaling factor to this rational function. This basically means to scale all 
