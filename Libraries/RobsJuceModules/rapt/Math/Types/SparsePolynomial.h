@@ -264,28 +264,7 @@ public:
   // ToDo: implement add(summand), i.e. the same thing but without the scaler.
   // ...and maybe one with the scaler being a simple coeff
 
-  /** Turns the representation of the polynomial into a canonical one. A canonical representation 
-  has the following properties: (1) The powers are strictly increasing as function of index. 
-  (2) No power appears more than once. (3) No zero coefficients appear. We achieve this by 
-  first sorting the terms, then consolidating multiple terms with equal exponents into single
-  terms and finally deleting all terms that have a coefficient zero (up to the given tolerance). */
-  void canonicalize();
-  // Maybe it should also go into the low level interface section and get and underscore. Or maybe
-  // it should even go into the protected section. ...but maybe client code sometimes needs it.
 
-
-  void _copyDataFrom(const SparsePoly& other)
-  {
-    tol = other.tol;
-    _setNumTerms(other.getNumTerms());
-    for(int i = 0; i < getNumTerms(); i++)
-      _setTerm(i, other.getCoeff(i), other.getPower(i));
-  }
-  // Maybe this should have an _ at the start. It will decanonicalize this polynomial, iff the 
-  // other polynomial is in non-canonical representation. Hmmm...this is a gray area. if the client
-  // code uses only other non-underscored function, this here may get away without underscore, too.
-  // But maybe client code should use the assignment operator anyway (which we need to define - for
-  // copy and move assignment)
 
 
   //-----------------------------------------------------------------------------------------------
@@ -348,7 +327,7 @@ public:
   increasing (as function of term-index). The empty polynomial is also accepted as a canonical 
   representation. It represents the zero polynomial. */
   bool isCanonical() const;
-
+  // Maybe make it an _underscore method
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
@@ -405,11 +384,13 @@ public:
   functions with pre-allocated sparse polynomials may potentially avoid heap allocations which the 
   more convenient functions that return sparse polynomials do. This includes the +,-,*,/,% 
   operators. So, for real time code, these operators are actually forbidden and one has to resort 
-  to the low level API. The low level non-static member functions starting with an underscore are
-  meant for low level manipulations that may temporarily destroy the canonical representation. If
-  you use these, it's your own responsibility to maintain a canonical representation or when you 
-  destroy it in some process, to restore it when your are finished, for example by calling 
-  canonicalize(). */
+  to the low level API. 
+  
+  The low level non-static member functions starting with an underscore are meant for low level 
+  manipulations that may temporarily destroy the canonical representation. If you use these (for 
+  example, for performance reasons), it's your own responsibility to maintain a canonical 
+  representation or when you destroy it in some process, to restore it when your are finished, for
+  example by calling _canonicalize(). */
 
 
   static void add(const SparsePoly& p, const SparsePoly& q, SparsePoly* r);
@@ -457,6 +438,13 @@ public:
   // I think, if all passed polynomials have large enough capacity, then the function should not
   // (re)allocate any heap memory. Verify and document this! How large is "large enough"?
 
+
+  /** Turns the representation of the polynomial into a canonical one. A canonical representation 
+  has the following properties: (1) The powers are strictly increasing as function of index. 
+  (2) No power appears more than once. (3) No zero coefficients appear. We achieve this by 
+  first sorting the terms, then consolidating multiple terms with equal exponents into single
+  terms and finally deleting all terms that have a coefficient zero (up to the given tolerance). */
+  void _canonicalize();
 
   /** Appends a term with given coeff and power to the end of our terms array. This may 
   decanonicalize the representation by appending a term of a power lower than the current degree
@@ -512,6 +500,21 @@ public:
   operation is needed when transforming minimum phase filters into maximum phase ones (or vice 
   versa) and when producing allpass filters from allpole filters. */
   void _reverse() { rsReverse(terms); }
+
+  void _copyDataFrom(const SparsePoly& other)
+  {
+    tol = other.tol;
+    _setNumTerms(other.getNumTerms());
+    for(int i = 0; i < getNumTerms(); i++)
+      _setTerm(i, other.getCoeff(i), other.getPower(i));
+  }
+  // Maybe this should have an _ at the start. It will decanonicalize this polynomial, iff the 
+  // other polynomial is in non-canonical representation. Hmmm...this is a gray area. if the client
+  // code uses only other non-underscored function, this here may get away without underscore, too.
+  // But maybe client code should use the assignment operator anyway (which we need to define - for
+  // copy and move assignment)
+
+
 
 
   // ToDo: 

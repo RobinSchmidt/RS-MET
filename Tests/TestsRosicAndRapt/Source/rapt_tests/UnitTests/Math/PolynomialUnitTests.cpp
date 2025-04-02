@@ -2654,7 +2654,7 @@ bool testSparsePolynomial()
   p._setTerm(4, +4.0, 0);
   ok &= p.isCanonical() == false;
   y1 = p(x);
-  p.canonicalize();
+  p._canonicalize();
   ok &= p.isCanonical() == true;
   y2 = p(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
@@ -2674,7 +2674,7 @@ bool testSparsePolynomial()
   p._setTerm(7, +6.0, 4);
   ok &= p.isCanonical() == false;
   y1 = p(x);
-  p.canonicalize();
+  p._canonicalize();
   ok &= p.isCanonical() == true;
   ok &= p.getNumTerms() == 4;
   y2 = p(x);
@@ -2696,7 +2696,7 @@ bool testSparsePolynomial()
   p._setTerm(7, +4.0, 4);
   ok &= p.isCanonical() == false;
   y1 = p(x);
-  p.canonicalize();
+  p._canonicalize();
   ok &= p.isCanonical() == true;
   ok &= p.getNumTerms() == 2;
   y2 = p(x);
@@ -2831,8 +2831,8 @@ bool testSparsePolynomial()
 
   // Test division with remainder:
   PolyS quot, rem;
-  p.canonicalize();
-  q.canonicalize();
+  p._canonicalize();
+  q._canonicalize();
   r = p * q;
   PolyS::divide(r, q, &quot, &rem);
   ok &= quot.isCloseTo(p, tol);
