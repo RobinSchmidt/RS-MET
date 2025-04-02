@@ -35,6 +35,9 @@ public:
 
   void negate() { coeff = -coeff; }
 
+  void shiftPower(int amount) { power += amount; }
+
+  // ToDo: scaleCoeff()
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -220,28 +223,18 @@ public:
 
   /** Alias for scaleCoeffs() for compatibility with API of rsPolynomial. */
   void scale(T scaler) { scaleCoeffs(scaler); }
+  // Maybe get rid - keep only the _ methods
 
   /** Negates this polynomial, i.e. multiplies all coeffs by -1. */
-  void negate()
-  {
-    for(auto& t : terms)
-      t.negate();
-  }
+  void negate() { for(auto& t : terms) t.negate(); }
 
   /** Makes the polynomial monic by dividing all coeffs by the leading coeff. A monic polynomial is
   a polynomial in which the leading coefficient is unity (aka one).*/
   void makeMonic() { scale(T(1) / getLeadingCoeff()); }
-  // Maybe use canonical getLeadingCoeff()
 
   /** Shifts all powers by the given amount. If the amount is p, this corresponds to multiplying 
   the polynomial by a monomial factor with unit coefficient, i.e. by x^p. */
-  void shiftPowers(int amount)
-  {
-    for(int i = 0; i < getNumTerms(); i++)
-      _shiftPower(i, amount);
-  }
-  // Shifting all powers by the same amount should be unproblematic with regard to 
-  // decanonicalization. That's why this function doesn't need an underscore
+  void shiftPowers(int amount) { for(auto& t : terms) t.shiftPower(amount); }
 
   /** Multiplies this polynomial by the given monomial factor. This results in all coeffs being 
   multiplied by the coeff of the monomial and all powers being increased by the pwer of the 
@@ -351,10 +344,6 @@ public:
   /** Implements the unary minus operator. */
   SparsePoly operator-() const 
   { SparsePoly r(*this); r.negate(); return r; }
-  // Needs unit test.
-  // ToDo: Implement unary plus, too. It's trivial but sometimes, we may want to use it for 
-  // clarity. But maybe it should return a (const?) reference rather than a value? Is that even 
-  // possible?
 
   /** Adds two polynomials. */
   SparsePoly operator+(const SparsePoly& q) const 

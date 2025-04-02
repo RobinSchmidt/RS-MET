@@ -414,6 +414,11 @@ void rsSparsePolynomial<T, TTol>::greatestCommonDivisorInPlace(
 
 ToDo:
 
+- Implement unary plus. It's trivial but sometimes, we may want to use it for clarity. But maybe 
+  it should return a (const?) reference rather than a value? Is that even possible? In any case, 
+  we should make sure, that the unary + operator doesn't create a copy. A unit test should verify
+  that - perhaps by looking at the addresses of objects.
+
 - Sprinkle in rsAssert(_isCanonical()); calls in all functions that assume a canonical 
   reprensentation in the spirit of defensive programming and contract based programming. Client
   code that uses the low level API and thereby messes up the canonical representation will fail

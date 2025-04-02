@@ -2632,9 +2632,11 @@ bool testSparsePolynomial()
   // fails when the base is erroneously converted to int. 
 
   // Test negation:
-  p.negate();
+  //p.negate();
+  p = -p;          // Creates copy of p, negates it, assigns it back to p
   y2 = p(x);
   ok &= rsIsCloseTo(y1, -y2, 1.e-15);
+  // ToDo: Figure out, how many copies happen in the unary -. I think, it should be one.
 
   // Clear the polynomial and check the inquiry functions in this case:
   p.clear();
