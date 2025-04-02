@@ -241,7 +241,7 @@ public:
     delayLine.writeInputNoUpdate(tmp);
 
     // Apply reversed numerator of H as feedforward path:
-    int deg = H.num._getDegree();  // ToDo: use canonical getDegree()
+    int deg = H.num.getDegree();
     tmp = 0;
     for(int i = 0; i < H.num.getNumTerms(); i++)
       tmp += H.num.getCoeff(i) * delayLine.readOutputAt(deg - H.num.getPower(i));

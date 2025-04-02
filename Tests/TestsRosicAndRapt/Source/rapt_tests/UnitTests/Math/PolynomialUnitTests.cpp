@@ -2601,9 +2601,9 @@ bool testSparsePolynomial()
   //ok &= p.isEmpty()        == false;
   ok &= p.isZero()         == false;
   ok &= p.getNumTerms()    == 3;
-  ok &= p._getMinPower()   == 0;
-  ok &= p._getMaxPower()   == 5;
-  ok &= p._getDegree()     == 5;
+  //ok &= p._getMinPower()   == 0;
+  //ok &= p._getMaxPower()   == 5;
+  ok &= p.getDegree()     == 5;
   ok &= p.isValidIndex(-1) == false;
   ok &= p.isValidIndex( 0) == true;
   ok &= p.isValidIndex( 2) == true;   // There are 3 nonzero coeffs so max valid index is 2.
@@ -2635,9 +2635,9 @@ bool testSparsePolynomial()
   p.clear();
   ok &= p.isZero();
   ok &= p.getNumTerms()    == 0;
-  ok &= p._getMinPower()   == 0;
-  ok &= p._getMaxPower()   == 0;
-  ok &= p._getDegree()     == 0;
+  //ok &= p._getMinPower()   == 0;
+  //ok &= p._getMaxPower()   == 0;
+  ok &= p.getDegree()     == 0;
   ok &= p.isValidIndex(-1) == false;
   ok &= p.isValidIndex( 0) == false;
   ok &= p.isValidIndex(+1) == false;
@@ -2658,7 +2658,7 @@ bool testSparsePolynomial()
   ok &= p.isCanonical() == true;
   y2 = p(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
-  ok &= p._getLeadingCoeff() == 5.0;
+  ok &= p.getLeadingCoeff() == 5.0;
 
   // Now make it a bit harder by also having multiple terms with the same power. The 
   // canonicalization should consolidate these into single terms:
@@ -2679,7 +2679,7 @@ bool testSparsePolynomial()
   ok &= p.getNumTerms() == 4;
   y2 = p(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
-  ok &= p._getLeadingCoeff() == 2.0;
+  ok &= p.getLeadingCoeff() == 2.0;
 
 
   // Now make it even more intersting by letting the coefficients for x^2 and x^4 conspire to add
@@ -2701,7 +2701,7 @@ bool testSparsePolynomial()
   ok &= p.getNumTerms() == 2;
   y2 = p(x);
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
-  ok &= p._getLeadingCoeff() == 2.0;
+  ok &= p.getLeadingCoeff() == 2.0;
 
   // Test addTerm:
   p.clear();

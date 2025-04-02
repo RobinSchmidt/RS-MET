@@ -145,6 +145,7 @@ bool rsSparsePolynomial<T, TTol>::isCloseTo(const rsSparsePolynomial<T, TTol>& q
   // (moderately) costly - but only in debug versions.
 }
 
+/*
 template<class T, class TTol>
 int rsSparsePolynomial<T, TTol>::_getMinPower() const
 {
@@ -230,6 +231,7 @@ rsMonomial<T> rsSparsePolynomial<T, TTol>::_getLeadingTerm() const
   else
     return rsMonomial<T>(T(0), 0);  // This branch has no test coverage yet
 }
+*/
 
 template<class T, class TTol>
 bool rsSparsePolynomial<T, TTol>::isCanonical() const
@@ -395,8 +397,8 @@ void rsSparsePolynomial<T, TTol>::divide(
   while(!rem->isZero() && rem->getDegree() >= den.getDegree())      // New
   {
     // For debug:
-    rsAssert(den.getDegree()  == den._getDegree());
-    rsAssert(rem->getDegree() == rem->_getDegree());
+    //rsAssert(den.getDegree()  == den._getDegree());
+    //rsAssert(rem->getDegree() == rem->_getDegree());
     // We eventually want to get rid of the versions with the underscore. But for the time being, 
     // let's really make sure, that both versions return the same result.
 

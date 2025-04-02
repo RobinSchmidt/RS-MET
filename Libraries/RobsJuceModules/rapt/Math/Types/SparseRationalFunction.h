@@ -486,7 +486,7 @@ public:
   It doesn't affect stability or filter order. */
   void reflectZeros()
   {
-    int deg = num._getDegree();                   // ToDo: use canonical getDegree
+    int deg = num.getDegree();                   // ToDo: use canonical getDegree
     for(int i = 0; i < num.getNumTerms(); i++)
       num._setPower(i, deg - num.getPower(i));
     num._reverse();                               // Order array by ascending powers again
@@ -510,11 +510,7 @@ public:
 
   /** Returns the order of the filter. This is the maximum exponent of z^-1 that occurs in the
   transfer function. */
-  int getFilterOrder() const { return rsMax(num._getDegree(), den._getDegree()); }
-  // ToDo: use canonical getDegree() rather than _getDegree() which should also work with 
-  // non-canonical representations of sparse polynomials but has O(N) complexity rather than O(1).
-  // We can assume a canonical representation here, I think - so we don't need to be so defensive
-  // here to allow also for non-canonical polynomials.
+  int getFilterOrder() const { return rsMax(num.getDegree(), den.getDegree()); }
 
   /** Performs some sanity checks. Is meant for debug assertions. */
   bool isCanonical() const
@@ -540,14 +536,12 @@ public:
   /** Computes the density of the numerator defined as the number of actual nonzero coeffs divided
   by the number of potentially nonzero coeffs given the degree of the numerator. */
   double getNumeratorDensity() const
-  { return double(num.getNumTerms()) / double(num._getDegree()+1); }
-  // ToDo: use canonical getDegree()
+  { return double(num.getNumTerms()) / double(num.getDegree()+1); }
 
   /** Computes the density of the denominator defined as the number of actual nonzero coeffs 
   divided by the number of potentially nonzero coeffs given the degree of the denominator. */
   double getDenominatorDensity() const
-  { return double(den.getNumTerms()-1) / double(den._getDegree()); }
-  // ToDo: use canonical getDegree()
+  { return double(den.getNumTerms()-1) / double(den.getDegree()); }
 
   /** Returns the "combined density" defined as the number of actual nonzero coeffs of the filter 
   divided by the number of potential nonzero coeffs for the given filter order. The a0 coeff 
@@ -564,7 +558,7 @@ public:
   of numerator and denominator. */
   double getSeparatedDensity() const
   {
-    int numPossibleCoeffs = num._getDegree()+1 + den._getDegree();  // ToDo: use canonical getDegree
+    int numPossibleCoeffs = num.getDegree()+1 + den.getDegree();
     int numActualCoeffs   = num.getNumTerms() + (den.getNumTerms()-1);
     return double(numActualCoeffs) / double(numPossibleCoeffs);
   }
