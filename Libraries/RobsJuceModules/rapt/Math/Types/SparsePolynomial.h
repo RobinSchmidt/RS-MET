@@ -220,13 +220,7 @@ public:
     // let's not do that in general. It may even lead to allocations when we really don't want 
     // them.
   }
-
-  /** Scales all coeffs by the given scaler. */
-  //void scaleCoeffs(T scaler) { rsAssert(scaler != T(0)); _scaleCoeffs(scaler); }
-
-  /** Alias for scaleCoeffs() for compatibility with API of rsPolynomial. */
-  //void scale(T scaler) { scaleCoeffs(scaler); }
-  // Maybe get rid - keep only the _ methods
+  // Move to cpp file.
 
   /** Negates this polynomial, i.e. multiplies all coeffs by -1. */
   void negate() { for(auto& t : terms) t.negate(); }
@@ -239,14 +233,6 @@ public:
   the polynomial by a monomial factor with unit coefficient, i.e. by x^p. */
   void shiftPowers(int amount) { for(auto& t : terms) t.shiftPower(amount); }
 
-  /** Multiplies this polynomial by the given monomial factor. This results in all coeffs being 
-  multiplied by the coeff of the monomial and all powers being increased by the pwer of the 
-  monomial. */
-  void multiplyBy(const rsMonomial<T>& factor)
-  { _scaleCoeffs(factor.getCoeff()); shiftPowers(factor.getPower()); }
-  // It may decanonicalize if factor.power == 0, so maybe we should move it to the low level 
-  // section and give it an underscore
-
   /** Multiplies this polynomial by the given other polynomial factor. Works in place and 
   re-allocates only when the capacity is too low (VERIFY!). */
   void multiplyBy(const SparsePoly& factor, TTol tol) { multiply(*this, factor, this); }
@@ -258,13 +244,6 @@ public:
   coefficients. Works in place and re-allocates only when the capacity is too low. */
   void multiplyByDenseCoeffs(const T* coeffs, int numTerms);
   // I think, this may also decanonicalize! See comment above. It's the same here
-
-  void divideBy(const rsMonomial<T>& divisor)
-  { _scaleCoeffs(T(1) / divisor.getCoeff()); shiftPowers(-divisor.getPower()); }
-  // Needs tests. 
-  // Maybe assert that this->getMinPower() >= divisor.getPower() to avoid producing negative 
-  // powers. Also: what if divisor.coeff is zero (division by zero error) or infinite (makes all
-  // our coeffs zero and thereby destroys canonical representation)
 
   void addScaled(const SparsePoly& summand, const rsMonomial<T>& scaler);
   // ToDo: implement add(summand), i.e. the same thing but without the scaler.
@@ -486,6 +465,21 @@ public:
   /** Shifts the power at the given index by the given amount. It may decanonicalize the 
   representation by introducing two terms with equal power. */
   void _shiftPower(int index, int amount) { _setPower(index, amount + getPower(index)); }
+
+  /** Multiplies this polynomial by the given monomial factor. This results in all coeffs being 
+  multiplied by the coeff of the monomial and all powers being increased by the pwer of the 
+  monomial. */
+  void _multiplyBy(const rsMonomial<T>& factor)
+  { _scaleCoeffs(factor.getCoeff()); shiftPowers(factor.getPower()); }
+  // It may decanonicalize if factor.coeff == 0, so maybe we should move it to the low level 
+  // section and give it an underscore
+
+  void _divideBy(const rsMonomial<T>& divisor)
+  { _scaleCoeffs(T(1) / divisor.getCoeff()); shiftPowers(-divisor.getPower()); }
+  // Needs tests. 
+  // Maybe assert that this->getMinPower() >= divisor.getPower() to avoid producing negative 
+  // powers. Also: what if divisor.coeff is zero (division by zero error) or infinite (makes all
+  // our coeffs zero and thereby destroys canonical representation)
 
   /** Reverses the array of terms. It may appear to be a weird thing to do on polynomials but this 
   operation is needed when transforming minimum phase filters into maximum phase ones (or vice 

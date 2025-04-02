@@ -182,7 +182,8 @@ public:
   void scale(T scaler) { num._scaleCoeffs(scaler); }
 
 
-  void multiplyBy(rsMonomial<T> factor) { num.multiplyBy(factor); }
+  void multiplyBy(rsMonomial<T> factor) { num._multiplyBy(factor); }
+  // Give it an underscore
 
 
   void multiplyBy(const rsSparseRationalFunction<T>& factor, T tol) 

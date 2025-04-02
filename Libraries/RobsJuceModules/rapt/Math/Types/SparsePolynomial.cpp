@@ -521,6 +521,17 @@ ToDo:
   We should have a class rsTypeConverter that has static functions for various type conversions.
   The function to convert matrices from one element type to another could then also go there.
 
+- Make sure that for all member functions without underscore, at least one of the 3 things is 
+  true:
+    (1) We know that they don't mess up the canonical representation. In this case they should
+        call rsAssert(_isCanonical()) at the end to document that. Well, maybe only in those cases
+        where this is not trivially obvious.
+    (2) They call _canonicalize() at the end. This is needed, if they potentially do destroy a
+        canonical representation.
+    (3) They call only other member functions without underscore, i.e. other members that are 
+        already known to be safe.
+  Then we can be sure that they always maintain a canonical representation.
+   
 
 Notes:
 
