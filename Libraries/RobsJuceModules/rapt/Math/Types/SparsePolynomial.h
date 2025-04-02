@@ -55,8 +55,15 @@ public:
   // Preliminary. We may want to use rsPowInt for integer exponents. That may be more efficient.
   // Here, we explicitly first convert the exponent to type TArg and then call 
   // rsPow(TArg x, TArg y). But currently rsPowInt is not suitably defined. It expects two 
-  // (unsigned?) ints. rsPowInt is currently only defined for x and power being both integers. We 
-  // really need a function where the base is an arbitrary type and the epxonent is an integer.
+  // (unsigned?) ints. We really need a function where the base is an arbitrary type and the 
+  // exponent is an integer. I think, the fast exponentiation algorithm should work in these 
+  // cases, too. It is important to not require x^n to be defined for n being of type T or TArg 
+  // because the Type T or TArg may be a matrix type and we don't know how to raise a matrix to 
+  // the power of another matrix - but we do know how to raise a matrix to an integer power. So,
+  // to make the class as flexibly instantiatable as possible, we should require only integer
+  // powers to be defined. Actually, it would be enough to require non-negative integer powers,
+  // i.e. not require inversion/reciprocation to be defined. Or we could use an unsigned int type
+  // for the power.
 
   /** Returns the negative of this monomial. */
   rsMonomial<T> operator-() const { return rsMonomial<T>(-getCoeff(), getPower()); }
@@ -109,8 +116,8 @@ stuff is going on and special care should be taken. ...TBC...
 
 ToDo:
 
-- Remove the tol parameter from the non-static member functions. These should now use the tol 
-  member for that purpose.
+- Implement all the needed copy- and move constructors and assignement operators (rule of 5). Or
+  maybe we can rely on implicit definitions (rule of 0)?
 
 - Document clearly under which circumstances the user can assume the polynomial to be in a 
   canonical representation (and what that even means). I'm still not quite sure myself, whether or 
@@ -118,23 +125,10 @@ ToDo:
   at all times - in particluar when adding or modifying terms - is costly. On the other hand, 
   certain other operations (like extracting the leading term) are cheaper when we can assume a 
   canonical representation. At the moment a canonical representation is not enforced. ...TBC...
-
-- Maybe prefix the low-level functions that may destroy a canonical representation by an 
-  underscore. This signals at the call site that now the low-level API is being used and special 
-  care is required, if maintaining a canonical representation is desired. ...done...
-
-- Or: maybe add suffixes _c and _n to functions that work with canonical and non-canonical 
-  representations. For setters, _c should mean that the function assumes the polynomial in 
-  canonical representation as precondition *and* ensures that this still holds when the function 
-  returns, i.e. as postcondition. For getters, only the precondition is relevant because they don't
-  change the object. Functions with suffix _n do not assume such a precondition and even in the 
-  case that the condition is met, they do not assure to maintain it. ...hmm...or maybe only mark
-  the decanonicalizing methods somehow
-
-- Sort the high-level and low-level access functions, i.e. let them have their own category like
-  Setup (high level, maintaining canonical representation), Setup (low level, may destroy canonical
-  representation), Inquiry (assuming canonical representation), Inquiry (not assuming canonical
-  representation)
+  ..OK..Update: As long as the user sticks to the high-level API, i.e. the regular member functions
+  without an underscore prefix, a canonical representation is maintained. As soon as the user 
+  reaches for the low level API indicated by an underscore, more care is needed at the client side
+  to maintain a canoncial representation themselves.
 
 */
 
@@ -372,7 +366,9 @@ public:
 
 
   /** Copy assignment operator. Copies data from rhs into this object. */
-  SparsePoly& operator=(const SparsePoly& rhs) { _copyDataFrom(rhs); return *this; }
+  //SparsePoly& operator=(const SparsePoly& rhs) { _copyDataFrom(rhs); return *this; }
+  // Wait - no! We should rely on automatic, compiler generated implementations of assignment
+  // operator and copy/move constructors (rule of zero)
   // ToDo: Implement move assignment
 
 
@@ -441,17 +437,12 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Low level API. These functions operate on pre-allocated output parameters passed by 
-  pointer (to make it obvious at the call site that the parameter may be modified). Using these 
+  /** \name Low level API. The static functions operate on pre-allocated output parameters passed 
+  by pointer (to make it obvious at the call site that the parameter may be modified). Using these 
   functions with pre-allocated sparse polynomials may potentially avoid heap allocations which the 
   more convenient functions that return sparse polynomials do. This includes the +,-,*,/,% 
   operators. So, for real time code, these operators are actually forbidden and one has to resort 
-  to the low level API. */
-
-  // These functions should not take a tol parameter. Instead the should assign the tolerance of
-  // the result to the max of the tolerances of the operands:
-
-  // Maybe move the functions with underscore into this area, too
+  to the low level API. The low level non-static member functions starting with an underscore */
 
   static void add(const SparsePoly& p, const SparsePoly& q, SparsePoly* r);
 
@@ -561,7 +552,7 @@ protected:
 };
 
 
-// ToDo: Move these implementations below into the class
+// ToDo: Maybe move these implementations below into the class:
 
 /** Multiplies a coefficient and a sparse polynomial. */
 template<class T, class TTol>
@@ -574,8 +565,8 @@ inline rsSparsePolynomial<T, TTol> operator*(const T& s, const rsSparsePolynomia
 
   // ToDo: Write an operator that takes a monomial as left operand. It should scale r by the 
   // monomial's coeff as above and shift the powers of r by the monomial's power. Maybe the 
-  // "copyDataFrom" function should already include the possible scaling and shifting. But then
-  // we should call it copyScaledDataFrom and/or copyScaledAndShiftedDataFrom.
+  // "_copyDataFrom" function should already include the possible scaling and shifting. But then
+  // we should call it _copyScaledDataFrom and/or _copyScaledAndShiftedDataFrom.
 }
 
 template<class T, class TTol>
