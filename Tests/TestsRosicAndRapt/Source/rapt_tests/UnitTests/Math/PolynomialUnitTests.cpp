@@ -2586,7 +2586,7 @@ bool testSparsePolynomial()
   using PolyS = rsSparsePolynomial<Real, Real>;  // Sparse polynomials
 
 
-  Real tiny = 1.e-16;
+  Real tiny = 1.e-16;     // Should be below tol
   Real tol  = 1.e-14;
 
   Vec coeffs1({ 0.5, 0.0, -0.7, 0.0, tiny, 0.3});
@@ -2622,7 +2622,7 @@ bool testSparsePolynomial()
   Real d;
   y1 = pd.evaluate(x);
   y2 = p(x);
-  d  = y2-y1;
+  //d  = y2-y1;
   ok &= rsIsCloseTo(y1, y2, 1.e-15);
   // We don't want x to be an integer because if it is one, we might get false positive passes
   // (i.e. the test passes when it should fail) when we later change the implementation of
@@ -2630,6 +2630,11 @@ bool testSparsePolynomial()
   // integers. We want to replace it with one for which the base can be non-integer. And we want to
   // catch any bugs that such a replacement may introduce. We want to make sure that the test
   // fails when the base is erroneously converted to int. 
+
+  // Test negation:
+  p.negate();
+  y2 = p(x);
+  ok &= rsIsCloseTo(y1, -y2, 1.e-15);
 
   // Clear the polynomial and check the inquiry functions in this case:
   p.clear();
@@ -2773,26 +2778,25 @@ bool testSparsePolynomial()
   // and which argument is shorter:
 
   PolyS::multiply(p, q, &r);           // Reference, computed out of place
-  //s.copyDataFrom(p);
+
   s = p;
   PolyS::multiply(s, q, &s);           // res == arg1, arg1 < arg2  where "<" means: shorter
   ok &= s.isCloseTo(r, 0.0);
-  //s.copyDataFrom(q);
+
   s = q;
   PolyS::multiply(s, p, &s);           // res == arg1, arg1 > arg2
   ok &= s.isCloseTo(r, 0.0);
-  //s.copyDataFrom(p);
+
   s = p;
   PolyS::multiply(q, s, &s);           // res == arg2, arg1 > arg2
   ok &= s.isCloseTo(r, 0.0);
-  //s.copyDataFrom(q);
+
   s = q;
   PolyS::multiply(p, s, &s);           // res == arg2, arg1 < arg2
   ok &= s.isCloseTo(r, 0.0);
 
   // Now with res == arg1 == arg2
   PolyS::multiply(p, p, &r);           // We need a new reference
-  //s.copyDataFrom(p);
   s = p;
   PolyS::multiply(s, s, &s);           // res == arg1 == arg2
   ok &= s.isCloseTo(r, 0.0);

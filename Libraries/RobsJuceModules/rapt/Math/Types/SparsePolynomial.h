@@ -33,6 +33,8 @@ public:
 
   void setPower(int newPower) { power = newPower; }
 
+  void negate() { coeff = -coeff; }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -219,6 +221,13 @@ public:
   /** Alias for scaleCoeffs() for compatibility with API of rsPolynomial. */
   void scale(T scaler) { scaleCoeffs(scaler); }
 
+  /** Negates this polynomial, i.e. multiplies all coeffs by -1. */
+  void negate()
+  {
+    for(auto& t : terms)
+      t.negate();
+  }
+
   /** Makes the polynomial monic by dividing all coeffs by the leading coeff. A monic polynomial is
   a polynomial in which the leading coefficient is unity (aka one).*/
   void makeMonic() { scale(T(1) / getLeadingCoeff()); }
@@ -280,6 +289,7 @@ public:
   exponent n. */
   rsMonomial<T> getLeadingTerm() const
   {
+    rsAssert(_isCanonical());
     if(terms.empty())
       return rsMonomial<T>(T(0), 0);
     return terms[terms.size()-1];
@@ -340,11 +350,8 @@ public:
 
   /** Implements the unary minus operator. */
   SparsePoly operator-() const 
-  { 
-    SparsePoly r(*this);
-    r.scale(T(-1));  // Maybe use a special negate() function. It may be more efficient.
-    return r;
-  }
+  { SparsePoly r(*this); r.negate(); return r; }
+  // Needs unit test.
   // ToDo: Implement unary plus, too. It's trivial but sometimes, we may want to use it for 
   // clarity. But maybe it should return a (const?) reference rather than a value? Is that even 
   // possible?

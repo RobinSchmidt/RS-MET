@@ -315,7 +315,6 @@ void rsSparsePolynomial<T, TTol>::divide(
   TTol newTol = rsMax(num.tol, den.tol);  // Tolerance of the results
   quot->clear();                          // q = 0. Quotient is empty/zero.
   quot->tol = newTol;                     // Set up tolerance of quotient.
-  //rem->_copyDataFrom(num);                // r = n. Invariant holds: n = d*q + r = d*0 + r = r
   *rem = num;                             // r = n. Invariant holds: n = d*q + r = d*0 + r = r
   rem->tol = newTol;                      // Important to do this after *rem = num
   
