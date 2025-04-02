@@ -314,7 +314,7 @@ void rsSparsePolynomial<T, TTol>::multiplyByDenseCoeffs(const T* coeffs, int num
       _setTerm(i*Nq+j, getCoeff(i) * coeffs[j], getPower(i) + j);
 
   _canonicalize();
-  // Do we need this? If so, document why. I think in the loop above, it will tpyically happen that
+  // Do we need this? If so, document why. I think in the loop above, it will typically happen that
   // we produce multiple terms with the same power. "getPower(i) + j" will take on the same value
   // multiple times, so _setTerm(..) will set multiple different terms to the same power. Verify 
   // this!
