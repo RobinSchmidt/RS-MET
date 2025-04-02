@@ -296,6 +296,17 @@ template std::vector<std::complex<double>> RAPT::rsRationalFunction<double>::par
 template class RAPT::rsSparsePolynomial<double>;  // Uses default rsEmptyType for 2nd param
 template class RAPT::rsSparsePolynomial<double, double>;
 
+// New:
+template class RAPT::rsSparsePolynomial<float>;
+template class RAPT::rsSparsePolynomial<float, float>;
+
+template class RAPT::rsSparsePolynomial<rsFloat32x4>;
+template class RAPT::rsSparsePolynomial<rsFloat32x4, float>;
+
+template class RAPT::rsSparsePolynomial<int>;
+template class RAPT::rsSparsePolynomial<rsFraction<int>>;
+
+
 
 
 template class RAPT::rsMatrixView<double>;

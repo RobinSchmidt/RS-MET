@@ -343,6 +343,9 @@ public:
       y += t_i(z);             // t_i(z) = coeffs[i] * z^powers[i]
     return y;
   }
+  // Maybe try to use std::accumulate() if possible. It might not be because of mismatch of types
+  // of vector elements and output. Also, it may not use the potentially more efficient += 
+  // operator. ...soo - maybe it's better to leave the code as is.
 
   /** Implements the unary minus operator. */
   SparsePoly operator-() const 
@@ -410,12 +413,7 @@ public:
   this normalization would throw away a piece of information. See comments in the .cpp file for an 
   idea for what the leading coeff could mean. */
   static SparsePoly greatestCommonDivisor(
-    const SparsePoly& p, const SparsePoly& q, bool monic = true)
-  {
-    SparsePoly a = p, b = q, tmp1, tmp2;
-    SparsePoly::greatestCommonDivisorInPlace(&a, &b, &tmp1, &tmp2, monic);
-    return a;
-  }
+    const SparsePoly& p, const SparsePoly& q, bool monic = true);
 
   /** Computes the greatest common divisor of two polynomials. It works in place meaning that it
   allocates no temporary sparse polynomials internally. The first parameter is an input/output 
@@ -514,38 +512,24 @@ protected:
 };
 
 
-// ToDo: Maybe move these implementations below into the class:
+// ToDo: Maybe move these implementations below into the class or .cpp file. But I think, 
+// operators that take the polynomial as left operand and a right operand of the coeff type or 
+// monomial type, they must be defined outside the class. 
 
 /** Multiplies a coefficient and a sparse polynomial. */
 template<class T, class TTol>
 inline rsSparsePolynomial<T, TTol> operator*(const T& s, const rsSparsePolynomial<T, TTol>& p)
 {
   rsSparsePolynomial<T, TTol> r(p);
-  //r._copyDataFrom(p);
   r.scale(s);
   return r;
-
-  // ToDo: Write an operator that takes a monomial as left operand. It should scale r by the 
-  // monomial's coeff as above and shift the powers of r by the monomial's power. Maybe the 
-  // "_copyDataFrom" function should already include the possible scaling and shifting. But then
-  // we should call it _copyScaledDataFrom and/or _copyScaledAndShiftedDataFrom.
 }
 
-template<class T, class TTol>
-void rsSparsePolynomial<T, TTol>::setupFromDenseCoeffs(
-  const T* newCoeffs, int newNumTerms, TTol newTol)
-{
-  tol = newTol;
-  terms.clear();
-  terms.reserve(newNumTerms);
-  for(int i = 0; i < newNumTerms; i++)
-    if( !rsIsNegligible(newCoeffs[i], tol) ) 
-      terms.emplace_back(rsMonomial<T>(newCoeffs[i], i));
+// ToDo: Write an operator that takes a monomial as left operand. It should scale r by the 
+// monomial's coeff as above and shift the powers of r by the monomial's power. Maybe the 
+// "_copyDataFrom" function should already include the possible scaling and shifting. But then
+// we should call it _copyScaledDataFrom and/or _copyScaledAndShiftedDataFrom.
 
-  //canonicalize();  // Superfluous!
-  // The result is actually ensured to be canonical already anyway. The dense coeffs are always in
-  // the right order and we take care of not appending negligible coeffs.
-}
 
 
 /** Specializes rsMaxNorm() for rsSparsePolynomial. The max norm of a sparse polynomial is defined

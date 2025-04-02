@@ -1,4 +1,19 @@
 
+template<class T, class TTol>
+void rsSparsePolynomial<T, TTol>::setupFromDenseCoeffs(
+  const T* newCoeffs, int newNumTerms, TTol newTol)
+{
+  tol = newTol;
+  terms.clear();
+  terms.reserve(newNumTerms);
+  for(int i = 0; i < newNumTerms; i++)
+    if( !rsIsNegligible(newCoeffs[i], tol) ) 
+      terms.emplace_back(rsMonomial<T>(newCoeffs[i], i));
+
+  //canonicalize();  // Superfluous!
+  // The result is actually ensured to be canonical already anyway. The dense coeffs are always in
+  // the right order and we take care of not appending negligible coeffs.
+}
 
 template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::addTerm(T coeff, int power)
@@ -383,12 +398,18 @@ void rsSparsePolynomial<T, TTol>::divide(
 }
 
 template<class T, class TTol>
+rsSparsePolynomial<T, TTol> rsSparsePolynomial<T, TTol>::greatestCommonDivisor(
+  const rsSparsePolynomial<T, TTol>& p, const rsSparsePolynomial<T, TTol>& q, bool monic)
+{
+  SparsePoly a = p, b = q, tmp1, tmp2;
+  greatestCommonDivisorInPlace(&a, &b, &tmp1, &tmp2, monic);
+  return a;
+}
+
+template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::greatestCommonDivisorInPlace(
-  rsSparsePolynomial<T, TTol>* a, 
-  rsSparsePolynomial<T, TTol>* b,
-  rsSparsePolynomial<T, TTol>* tmp1,
-  rsSparsePolynomial<T, TTol>* tmp2,
-  bool monic)
+  rsSparsePolynomial<T, TTol>* a,    rsSparsePolynomial<T, TTol>* b,
+  rsSparsePolynomial<T, TTol>* tmp1, rsSparsePolynomial<T, TTol>* tmp2, bool monic)
 {
   rsAssert(a->_isCanonical());
   rsAssert(b->_isCanonical());
