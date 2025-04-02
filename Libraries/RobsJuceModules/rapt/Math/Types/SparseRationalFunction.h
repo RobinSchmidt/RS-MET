@@ -179,7 +179,7 @@ public:
 
   /** Applies a scaling factor to this rational function. This basically means to scale all 
   numerator coeffs by that factor. */
-  void scale(T scaler) { num.scale(scaler); }
+  void scale(T scaler) { num._scaleCoeffs(scaler); }
 
 
   void multiplyBy(rsMonomial<T> factor) { num.multiplyBy(factor); }

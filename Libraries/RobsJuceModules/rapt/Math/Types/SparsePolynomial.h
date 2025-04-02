@@ -222,10 +222,10 @@ public:
   }
 
   /** Scales all coeffs by the given scaler. */
-  void scaleCoeffs(T scaler) { rsAssert(scaler != T(0)); _scaleCoeffs(scaler); }
+  //void scaleCoeffs(T scaler) { rsAssert(scaler != T(0)); _scaleCoeffs(scaler); }
 
   /** Alias for scaleCoeffs() for compatibility with API of rsPolynomial. */
-  void scale(T scaler) { scaleCoeffs(scaler); }
+  //void scale(T scaler) { scaleCoeffs(scaler); }
   // Maybe get rid - keep only the _ methods
 
   /** Negates this polynomial, i.e. multiplies all coeffs by -1. */
@@ -233,7 +233,7 @@ public:
 
   /** Makes the polynomial monic by dividing all coeffs by the leading coeff. A monic polynomial is
   a polynomial in which the leading coefficient is unity (aka one).*/
-  void makeMonic() { scale(T(1) / getLeadingCoeff()); }
+  void makeMonic() { _scaleCoeffs(T(1) / getLeadingCoeff()); }
 
   /** Shifts all powers by the given amount. If the amount is p, this corresponds to multiplying 
   the polynomial by a monomial factor with unit coefficient, i.e. by x^p. */
@@ -243,7 +243,9 @@ public:
   multiplied by the coeff of the monomial and all powers being increased by the pwer of the 
   monomial. */
   void multiplyBy(const rsMonomial<T>& factor)
-  { scaleCoeffs(factor.getCoeff()); shiftPowers(factor.getPower()); }
+  { _scaleCoeffs(factor.getCoeff()); shiftPowers(factor.getPower()); }
+  // It may decanonicalize if factor.power == 0, so maybe we should move it to the low level 
+  // section and give it an underscore
 
   /** Multiplies this polynomial by the given other polynomial factor. Works in place and 
   re-allocates only when the capacity is too low (VERIFY!). */
@@ -258,13 +260,11 @@ public:
   // I think, this may also decanonicalize! See comment above. It's the same here
 
   void divideBy(const rsMonomial<T>& divisor)
-  {
-    scaleCoeffs(T(1) / divisor.getCoeff());
-    shiftPowers(     - divisor.getPower());
-  }
+  { _scaleCoeffs(T(1) / divisor.getCoeff()); shiftPowers(-divisor.getPower()); }
   // Needs tests. 
   // Maybe assert that this->getMinPower() >= divisor.getPower() to avoid producing negative 
-  // powers.
+  // powers. Also: what if divisor.coeff is zero (division by zero error) or infinite (makes all
+  // our coeffs zero and thereby destroys canonical representation)
 
   void addScaled(const SparsePoly& summand, const rsMonomial<T>& scaler);
   // ToDo: implement add(summand), i.e. the same thing but without the scaler.
@@ -386,10 +386,13 @@ public:
   representation or when you destroy it in some process, to restore it when your are finished, for
   example by calling _canonicalize(). */
 
-
+  /** Computes the sum r = p + q of the polynomials p and q and stores the result in r. */
   static void add(const SparsePoly& p, const SparsePoly& q, SparsePoly* r);
+  // ToDo: document whether or not it can be used in place.
 
+  /** Computes the difference r = p - q of the polynomials p and q and stores the result in r. */
   static void subtract(const SparsePoly& p, const SparsePoly& q, SparsePoly* r);
+  // ToDo: document whether or not it can be used in place.
 
   /** Computes the weighted sum r = wp * p + wq * q of the polynomials p and q and stores the 
   result in r. */
@@ -399,6 +402,7 @@ public:
   /** Multiplies polynomials p and q and stores the result in r. It may be used in place, i.e. the
   result polynomial r can point to the memory location of the arguments p and/or q. */
   static void multiply(const SparsePoly& p, const SparsePoly& q, SparsePoly* r);
+  // ToDo: document whether or not it can be used in place.
 
   /** Implements polynomial division with remainder. ...TBC... */
   static void divide(const SparsePoly& numerator, const SparsePoly& denominator,

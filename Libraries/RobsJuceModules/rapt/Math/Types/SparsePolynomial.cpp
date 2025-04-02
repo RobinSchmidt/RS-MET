@@ -182,6 +182,12 @@ bool rsSparsePolynomial<T, TTol>::_isCanonical() const
     prevPow = curPow;                            // ..becomes previous power for next iteration.
   }
 
+  // Check that all the powers are nonnegative. Maybe this restriction can be lifted later but
+  // for the time being, let's be conservative:
+  for(int i = 0; i < getNumTerms(); i++)
+    if(getPower(i) < 0)
+      return false;
+
   return true;
 }
 
