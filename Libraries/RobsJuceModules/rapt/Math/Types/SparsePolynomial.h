@@ -505,19 +505,25 @@ protected:
 
 /** Multiplies a coefficient and a sparse polynomial. */
 template<class T, class TTol>
-inline rsSparsePolynomial<T, TTol> operator*(const T& s, const rsSparsePolynomial<T, TTol>& p)
+inline rsSparsePolynomial<T, TTol> operator*(
+  const T& s, const rsSparsePolynomial<T, TTol>& p)
 {
   rsSparsePolynomial<T, TTol> r(p);
   r._scaleCoeffs(s);
   return r;
 }
 
-
-// ToDo: Write an operator that takes a monomial as left operand. It should scale r by the 
-// monomial's coeff as above and shift the powers of r by the monomial's power. Maybe the 
-// "_copyDataFrom" function should already include the possible scaling and shifting. But then
-// we should call it _copyScaledDataFrom and/or _copyScaledAndShiftedDataFrom.
-
+/** Multiplies a monomial and a sparse polynomial. */
+template<class T, class TTol>
+inline rsSparsePolynomial<T, TTol> operator*(
+  const rsMonomial<T>& mon, const rsSparsePolynomial<T, TTol>& p)
+{
+  rsSparsePolynomial<T, TTol> r(p);
+  r._scaleCoeffs(mon.getCoeff());
+  r.shiftPowers(mon.getPower());
+  return r;
+}
+// Needs tests!
 
 
 /** Specializes rsMaxNorm() for rsSparsePolynomial. The max norm of a sparse polynomial is defined

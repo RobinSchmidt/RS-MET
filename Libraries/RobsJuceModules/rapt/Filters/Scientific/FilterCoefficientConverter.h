@@ -5,10 +5,10 @@
 representations and realization structures. */
 
 template<class T>
-class rsFilterCoefficientConverter
+class rsFilterCoefficientConverter  // Rename to rsFilterConverter
 {
 
-  typedef std::complex<T> Complex; // preliminary
+  typedef std::complex<T> Complex; // Preliminary. ToDo: use rsComplex
 
 public:
 

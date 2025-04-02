@@ -508,6 +508,13 @@ ToDo:
 
 - Implement a lowestCommonMultiple() function, aka lcm - the cousin of gcd.
 
+- Implement back and forth conversions between rsPolynomial and rsSparsePolynomial. In principle,
+  both classes can be used for both purposes. It's just that the performance of the two 
+  implementations is optimized for different cases. The conversion functions should be free 
+  functions, I think. I don't want to couple the two classes too tightly to one another. Maybe
+  We should have a class rsTypeConverter that has static functions for various type conversions.
+  The function to convert matrices from one element type to another could then also go there.
+
 
 Notes:
 
