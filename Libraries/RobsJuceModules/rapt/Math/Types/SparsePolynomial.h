@@ -265,8 +265,6 @@ public:
   // ...and maybe one with the scaler being a simple coeff
 
 
-
-
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
@@ -322,12 +320,6 @@ public:
   /** Returns the power of the term with given index. */
   int getPower(int index) const { rsAssert(isValidIndex(index)); return terms[index].getPower(); }
 
-  /** Checks if this sparse polynomial is in canonical representation. A representation is 
-  canonical if it has no zero coefficients (up to a given tolerance) and if the powers are strictly
-  increasing (as function of term-index). The empty polynomial is also accepted as a canonical 
-  representation. It represents the zero polynomial. */
-  bool _isCanonical() const;
-  // Maybe make it an _underscore method
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
@@ -500,6 +492,15 @@ public:
   operation is needed when transforming minimum phase filters into maximum phase ones (or vice 
   versa) and when producing allpass filters from allpole filters. */
   void _reverse() { rsReverse(terms); }
+
+  /** Checks if this sparse polynomial is in canonical representation. A representation is 
+  canonical if it has no zero coefficients (up to a given tolerance) and if the powers are strictly
+  increasing (as function of term-index). The empty polynomial is also accepted as a canonical 
+  representation. It represents the zero polynomial. */
+  bool _isCanonical() const;
+
+
+
 
   void _copyDataFrom(const SparsePoly& other)
   {
