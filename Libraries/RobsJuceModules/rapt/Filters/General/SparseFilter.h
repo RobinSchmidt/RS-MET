@@ -28,8 +28,10 @@ public:
   void setupFromDenseCoeffs(const std::vector<TPar>& numCoeffs, 
     const std::vector<TPar>& denCoeffs, TPar tol)
   {
-    H.num.setupFromDenseCoeffs(numCoeffs, tol);
-    H.den.setupFromDenseCoeffs(denCoeffs, tol);
+    H.num.setRoundoffTolerance(tol);
+    H.den.setRoundoffTolerance(tol);
+    H.num.setupFromDenseCoeffs(numCoeffs);
+    H.den.setupFromDenseCoeffs(denCoeffs);
     updateDelayLineLength();
   }
   // This may allocate!

@@ -2593,7 +2593,8 @@ bool testSparsePolynomial()
 
   PolyD pd(coeffs1);
   PolyS p, q, r, s, t, u;
-  p.setupFromDenseCoeffs(coeffs1, tol);
+  p.setRoundoffTolerance(tol);
+  p.setupFromDenseCoeffs(coeffs1);
 
   // Test inquiry functions:
   //ok &= q.isEmpty()        == true;
@@ -2806,7 +2807,7 @@ bool testSparsePolynomial()
 
   // Test multiplyByDenseCoeffs:
   //p.setupFromDenseCoeffs(coeffs1, 0.0);  // May need tol instead of 0.0 to be passed?
-  p.setupFromDenseCoeffs(coeffs1, tol);
+  p.setupFromDenseCoeffs(coeffs1);
   r = p * q;
   s = q;
   s.multiplyByDenseCoeffs(&coeffs1[0], (int) coeffs1.size());
@@ -2906,12 +2907,12 @@ bool testSparsePolynomial()
   Vec tv = RatFunc::polyMul(qv, rv, tol);
   Vec uv = RatFunc::polyGCD(sv, tv, tol, false);
   PolyS tgt;
-  tgt.setupFromDenseCoeffs(uv, tol);
+  tgt.setupFromDenseCoeffs(uv);
 
   // Produce result and check against target:
-  p.setupFromDenseCoeffs(pv, tol);
-  q.setupFromDenseCoeffs(qv, tol);
-  r.setupFromDenseCoeffs(rv, tol);
+  p.setupFromDenseCoeffs(pv);
+  q.setupFromDenseCoeffs(qv);
+  r.setupFromDenseCoeffs(rv);
   s = p*r;
   t = q*r;
   u = PolyS::greatestCommonDivisor(s, t, false);
@@ -2921,7 +2922,7 @@ bool testSparsePolynomial()
 
   // Now with normalization to make the gcd monic:
   uv = RatFunc::polyGCD(sv, tv, tol, true);
-  tgt.setupFromDenseCoeffs(uv, tol);
+  tgt.setupFromDenseCoeffs(uv);
   u = PolyS::greatestCommonDivisor(s, t, true);
   ok &= u.isCloseTo(tgt, tol);
   u = PolyS::greatestCommonDivisor(t, s, true);

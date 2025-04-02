@@ -155,17 +155,22 @@ public:
     const std::vector<T>& newDenominatorCoeffs,
     T tol)
   {
-    num.setupFromDenseCoeffs(newNumeratorCoeffs,   tol);
-    den.setupFromDenseCoeffs(newDenominatorCoeffs, tol);
+    num.setRoundoffTolerance(tol);
+    den.setRoundoffTolerance(tol);
+    num.setupFromDenseCoeffs(newNumeratorCoeffs);
+    den.setupFromDenseCoeffs(newDenominatorCoeffs);
   }
+  // Remove tol param!
 
   void setupFromDenseCoeffs(
     const T* newNumeratorCoeffs,   int newNumNumeratorTerms, 
     const T* newDenominatorCoeffs, int newNumDenominatorTerms,
     T tol)
   {
-    num.setupFromDenseCoeffs(newNumeratorCoeffs,   newNumNumeratorTerms,   tol);
-    den.setupFromDenseCoeffs(newDenominatorCoeffs, newNumDenominatorTerms, tol);
+    num.setRoundoffTolerance(tol);
+    den.setRoundoffTolerance(tol);
+    num.setupFromDenseCoeffs(newNumeratorCoeffs,   newNumNumeratorTerms);
+    den.setupFromDenseCoeffs(newDenominatorCoeffs, newNumDenominatorTerms);
   }
 
 

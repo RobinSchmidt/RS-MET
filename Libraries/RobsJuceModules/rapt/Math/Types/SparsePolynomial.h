@@ -162,10 +162,13 @@ public:
   { _canonicalize(); }
 
   rsSparsePolynomial(const std::vector<T>& coefficients, TTol tolerance) 
-  { setupFromDenseCoeffs(coefficients, tolerance); }
+  { 
+    tol = tolerance;
+    setupFromDenseCoeffs(coefficients);
+  }
   // Maybe make the tolerance parameter optional. I'm not sure about that, though. It may invite
   // forgetting to set it when it's really needed. But on the other hand, some types T don't need
-  // any tolerance at all.
+  // any tolerance at all. Maybe keep it mandatory for a while and make it optional later.
 
 
   //-----------------------------------------------------------------------------------------------
@@ -185,11 +188,11 @@ public:
 
   /** Sets up the polynomial from a dense arrays of polynomial coeffs. When a coefficient in the 
   dense representation is zero, we not create a term for that. */
-  void setupFromDenseCoeffs(const std::vector<T>& newCoeffs, TTol newTol)
-  { setupFromDenseCoeffs(&newCoeffs[0], (int) newCoeffs.size(), newTol); }
+  void setupFromDenseCoeffs(const std::vector<T>& newCoeffs)
+  { setupFromDenseCoeffs(&newCoeffs[0], (int) newCoeffs.size()); }
 
   /** Like setupFromDenseCoeffs(const std::vector<T>&, ...) but for raw C-arrays. */
-  void setupFromDenseCoeffs(const T* newCoeffs, int newNumTerms, TTol newTol);
+  void setupFromDenseCoeffs(const T* newCoeffs, int newNumTerms);
   // ToDo: Provide methods that don't require a tol parameter. They should do the same thing 
   // except setting our tol member. 
   
