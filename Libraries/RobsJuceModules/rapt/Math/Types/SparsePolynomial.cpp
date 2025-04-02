@@ -459,6 +459,11 @@ ToDo:
   maintain the a0 = 1 normalization). This is an an operation that we need to do in a realtime 
   safe manner. Verify and document this!
 
+- I think, the significance of the leading coeff of the result of the gcd algo may be: Assume p 
+  and q have been produced via  p = g*a, q = g*b  where polynomials a,b have no common divisors 
+  such that g is the gcd of p and q. If g happens to be non-monic, then calling gcd(p,q,false) 
+  will restore g correctly including its leading coeff. I think...not sure...verify! 
+  
  
 Notes:
 

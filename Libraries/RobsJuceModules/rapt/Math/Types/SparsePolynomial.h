@@ -401,12 +401,14 @@ public:
   static void divide(const SparsePoly& numerator, const SparsePoly& denominator,
     SparsePoly* quotient, SparsePoly* remainder);
 
-  /** Computes the greatest common divisor of the polynomials p and q. The monic parameter defines 
-  if the returned gcd should be normalized to be monic. The gcd of polynomials is unique only up to
-  a constant scale factor, so it may make sense to make it well defined by requiring it to be
-  monic. If monic is false, the returned gcd may be scaled by some arbitrary scale factor which
-  depends on the details of the algorithm but has no mathematical significance (I think). But maybe
-  it has? Figure out! */
+  /** Computes the greatest common divisor of the polynomials p and q. The "monic" parameter 
+  selects if the returned gcd should be normalized to be monic (that is: have leading coeff 1).
+  The gcd of polynomials is unique only up to a constant scale factor, so it may make sense to 
+  make it uniquely defined by requiring it to be monic. If "monic" is false, the returned gcd may 
+  be scaled by some arbitrary scale factor which I'm not sure about whether or not it could be 
+  useful to retain. That's why I make the normalization to a monic polynomial optional. After all, 
+  this normalization would throw away a piece of information. See comments in the .cpp file for an 
+  idea for what the leading coeff could mean. */
   static SparsePoly greatestCommonDivisor(
     const SparsePoly& p, const SparsePoly& q, bool monic = true)
   {
@@ -414,14 +416,6 @@ public:
     SparsePoly::greatestCommonDivisorInPlace(&a, &b, &tmp1, &tmp2, monic);
     return a;
   }
-  // I think, the significance of the leading coeff of the result may be: Assume p and q have been 
-  // produced via  p = g*a, q = g*b  where polynomials a,b have no common divisors such that g is 
-  // the gcd of p and q. If g happens to be non-monic, then calling gcd(p,q,false) will restore g 
-  // correctly including its leading coeff. ...I think...not sure...verify! Maybe it's useful to be
-  // able to restore g completely in some context, so I'll leave normalization to a monic result
-  // optional for the time being. It may turn out to be useless to retain this leading coeff 
-  // information, but we'll see...
-
 
   /** Computes the greatest common divisor of two polynomials. It works in place meaning that it
   allocates no temporary sparse polynomials internally. The first parameter is an input/output 
