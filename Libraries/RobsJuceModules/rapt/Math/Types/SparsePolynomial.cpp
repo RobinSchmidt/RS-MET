@@ -64,10 +64,22 @@ void rsSparsePolynomial<T, TTol>::addScaled(
   //   algorithm that just appends the (scaled) content of q to our terms array and then calls 
   //   canonicalize(). Benchmark both variants and then choose the faster (but keep the slower 
   //   around for reference and unit tests). Maybe implement an _addScaled or _appendScaled()
-  //   function that client code can call (perhaps in combination with canonicalize())
+  //   function that client code can call (perhaps in combination with canonicalize()). This may 
+  //   result in less data movement - but it may blow up the required memory temporarily. So: 
+  //   no - let's not do that in general. It may even lead to allocations when we really don't 
+  //   want them.
   //
   // - Make it work in place, i.e. when this == &q. We may need to write a special case handler
   //   for that.
+}
+
+template<class T, class TTol>
+void rsSparsePolynomial<T, TTol>::addScaledPolynomial(
+  const rsSparsePolynomial<T, TTol>&  p, T scaler)
+{
+  tol = rsMax(tol, p.tol);
+  for(int i = 0; i < p.getNumTerms(); i++)
+    addTerm(scaler * p.getCoeff(i), p.getPower(i));
 }
 
 template<class T, class TTol>

@@ -208,20 +208,6 @@ public:
   void subtractTerm(const rsMonomial<T>& newTerm)
   { addTerm(-newTerm.getCoeff(), newTerm.getPower()); }
 
-  /** Adds a scaled version of the given polynomial p to this polynomial. */
-  void addScaledPolynomial(const SparsePoly& p, T scaler)
-  {
-    tol = rsMax(tol, p.tol);
-    for(int i = 0; i < p.getNumTerms(); i++)
-      addTerm(scaler * p.getCoeff(i), p.getPower(i));
-
-    // Maybe it would be better to just append a scaled version and then canonicalize? This may 
-    // result in less data movement - but it may blow up the required memory temporarily. So: no -
-    // let's not do that in general. It may even lead to allocations when we really don't want 
-    // them.
-  }
-  // Move to cpp file.
-
   /** Negates this polynomial, i.e. multiplies all coeffs by -1. */
   void negate() { for(auto& t : terms) t.negate(); }
 
@@ -248,6 +234,26 @@ public:
   void addScaled(const SparsePoly& summand, const rsMonomial<T>& scaler);
   // ToDo: implement add(summand), i.e. the same thing but without the scaler.
   // ...and maybe one with the scaler being a simple coeff
+
+
+  /** Adds a scaled version of the given polynomial p to this polynomial. */
+  void addScaledPolynomial(const SparsePoly& p, T scaler);
+  /*
+  {
+    tol = rsMax(tol, p.tol);
+    for(int i = 0; i < p.getNumTerms(); i++)
+      addTerm(scaler * p.getCoeff(i), p.getPower(i));
+
+    // Maybe it would be better to just append a scaled version and then canonicalize? This may 
+    // result in less data movement - but it may blow up the required memory temporarily. So: no -
+    // let's not do that in general. It may even lead to allocations when we really don't want 
+    // them.
+  }
+  */
+  // Move to cpp file.
+
+
+
 
 
   //-----------------------------------------------------------------------------------------------
