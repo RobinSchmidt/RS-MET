@@ -76,8 +76,15 @@ public:
   void getTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
   {
     int M = getDelayInSamples();
-    tf->num._setNumTerms(1); tf->num._setTerm(0, T(1), M);
-    tf->den._setNumTerms(1); tf->den._setTerm(0, T(1), 0);
+
+    //// Old:
+    //tf->num._setNumTerms(1); tf->num._setTerm(0, T(1), M);
+    //tf->den._setNumTerms(1); tf->den._setTerm(0, T(1), 0);
+
+    // New:
+    tf->_setNumTerms(1, 1);
+    tf->_setNumeratorTerm(  0, T(1), M);
+    tf->_setDenominatorTerm(0, T(1), 0);
   }
   // Needs unit tests!
   

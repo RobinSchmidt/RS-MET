@@ -11,7 +11,8 @@ template<class T>
 class rsSparseRationalFunction
 {
 
-public:
+public:   // old
+//protected:  // new
 
 
   //-----------------------------------------------------------------------------------------------
@@ -64,8 +65,10 @@ public:
   // If really access to the full functionality of rsSparsPolynomial is needed, we could provide
   // getters like getNumerator/DenominatorReference() for that.
   //
-  // We'll see.....
+  // We'll see.....naaah! I think, I should make them protected!
 
+
+public:
 
 
   //-----------------------------------------------------------------------------------------------
@@ -149,6 +152,18 @@ public:
   }
   // Maybe it should have an underscore! It's a low level method. It may put the object into an
   // undefined state
+
+  void _setNumeratorTerm(int index, const T& newCoeff, int power)
+  {
+    num._setTerm(index, newCoeff, power);
+  }
+
+  void _setDenominatorTerm(int index, const T& newCoeff, int power)
+  {
+    den._setTerm(index, newCoeff, power);
+  }
+
+
 
   void setupFromDenseCoeffs(
     const std::vector<T>& newNumeratorCoeffs,
@@ -272,6 +287,10 @@ public:
 
   rsSparsePolynomial<T>& getDenominator() { return den; }
 
+
+  const rsSparsePolynomial<T>& getNumeratorConst() { return num; }
+
+  const rsSparsePolynomial<T>& getDenominatorConst() { return den; }
 
 
 
