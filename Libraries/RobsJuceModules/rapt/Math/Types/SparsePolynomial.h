@@ -543,38 +543,6 @@ public:
   versa) and when producing allpass filters from allpole filters. */
   void _reverse() { rsReverse(terms); }
 
-  /** Returns the minimum power that occurs in this polynomial. */
-  //int _getMinPower() const;
-  // Implement a getMinPower() for canonical representations that just returns 0 or the power of
-  // the 0-th term
-
-  /** Returns the maximum power that occurs in this polynomial. In mathematical jargon, the 
-  highest power in a polynomial is also known as the degree or order of the polynomial. */
-  //int _getMaxPower() const;
-  // dito
-
-  /** Returns the index of the maximum power or -1 in the case of an empty array of terms. */
-  //int _getMaxPowerIndex() const;
-  // dito
-
-  /** Alias for getMaxPower() for compatibility with API of rsPolynomial. Returns the degree of
-  the polynomial. This is mathematical term for the term with the highest power/exponent that has 
-  a nonzero coefficient. */
-  //int _getDegree() const { return _getMaxPower(); }
-  // This is basically an alias name for getMaxPower(). I'm not sure, if it's a good idea to have 
-  // two functions that do the exact same thing. Maybe get rid of it. But on the other hand, it's 
-  // nice to have to be consistent with the API of class rsPolynomial. 
-
-  /** Returns the leading coefficient, i.e. the coefficient that multiplies the highest power of
-  the input variable x. */
-  //T _getLeadingCoeff() const;
-
-  /** Returns the leading term in this polynomial, i.e. the monomial  cn x^n  that has the highest
-  exponent n. */
-  //rsMonomial<T> _getLeadingTerm() const;
-
-
-
 
   // ToDo: 
   //

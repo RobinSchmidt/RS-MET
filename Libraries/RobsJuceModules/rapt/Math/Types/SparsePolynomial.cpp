@@ -1,6 +1,5 @@
 
 
-
 template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::addTerm(T coeff, int power)
 {
@@ -144,94 +143,6 @@ bool rsSparsePolynomial<T, TTol>::isCloseTo(const rsSparsePolynomial<T, TTol>& q
   // where we assume a canonical representation. That's quite an overhead because the test is 
   // (moderately) costly - but only in debug versions.
 }
-
-/*
-template<class T, class TTol>
-int rsSparsePolynomial<T, TTol>::_getMinPower() const
-{
-  if(terms.empty())
-    return 0;
-  int minPower = std::numeric_limits<int>::max();
-  for(auto& term : terms)
-    minPower = rsMin(minPower, term.getPower());
-  return minPower;
-}
-
-template<class T, class TTol>
-int rsSparsePolynomial<T, TTol>::_getMaxPower() const
-{
-  if(terms.empty())
-    return 0;
-  int maxPower = std::numeric_limits<int>::min();
-  for(auto& term : terms)
-    maxPower = rsMax(maxPower, term.getPower());
-  return maxPower;
-
-  // The implementation is written in such a way that it should still work reasonably when the
-  // client code sets up terms with negative powers. The empty polynomial will still have a max
-  // power (aka degree) of zero. I'm not yet sure, if we should allow for negative powers, though.
-  // For causal filters, it's not needed. But maybe there could be other applications where it 
-  // makes more sense. We'll see...
-  //
-  // Maybe init with maxPower = terms[0].getPower(). We can do this because at that point, we know
-  // that the terms array is not empty. Then we can start the loop at 1, i.e. don't use a 
-  // range-based loop. The range based loop should still work though - but it does one superfluous
-  // iteration.
-}
-
-template<class T, class TTol>
-int rsSparsePolynomial<T, TTol>::_getMaxPowerIndex() const
-{
-  //rsAssert(isCanonical());
-  // The output of this function is not well defined when there are multiple terms with the highest
-  // power, so this function should really only be used on canonical representations. But wait:
-  // In a canonical representation, the index of the maximum power is already known so we don't 
-  // need to do a search in this case. It's always at terms.size()-1. Maybe we should do a test 
-  // like: rsAssert(arePowersUnique()) - but such a check would be expensive (O(N^2)) on an 
-  // unsorted terms array. It would even need temporary memory. On the other hand, it's only 
-  // compiled into debug versions anyway.
-  //
-  // I think, we should remove this assertion. We can make the function well defined even in case 
-  // of mutliple terms with same exponent. It should just return the index of the first or last of 
-  // these terms then. I think, it currently returns the first. If we would use 
-  // "if(getPower(i) >= maxPower)" rather than "if(getPower(i) > maxPower)", it would return the 
-  // last, I think. In an underscore-prefixed method, it is not appropriate to assume a canonical
-  // representation - that's what the underscore means!
-
-
-  if(terms.empty())
-    return -1;
-
-  int maxIndex = 0;
-  int maxPower = getPower(0);
-  for(int i = 1; i < getNumTerms(); i++)
-  {
-    if(getPower(i) > maxPower)
-    {
-      maxPower = getPower(i);
-      maxIndex = i;
-    }
-  }
-
-  return maxIndex;
-}
-
-template<class T, class TTol>
-T rsSparsePolynomial<T, TTol>::_getLeadingCoeff() const 
-{ 
-  return _getLeadingTerm().getCoeff();
-}
-
-template<class T, class TTol>
-rsMonomial<T> rsSparsePolynomial<T, TTol>::_getLeadingTerm() const 
-{ 
-  int i = _getMaxPowerIndex();
-  if(i != -1)
-    return getTerm(i);
-  else
-    return rsMonomial<T>(T(0), 0);  // This branch has no test coverage yet
-}
-*/
 
 template<class T, class TTol>
 bool rsSparsePolynomial<T, TTol>::isCanonical() const
@@ -393,32 +304,16 @@ void rsSparsePolynomial<T, TTol>::divide(
   rem->tol  = newTol;                     // Important to do this *after* rem->copyDataFrom()
   
   // Main loop:
-  //while(!rem->isZero() && rem->_getDegree() >= den._getDegree())  // Old
-  while(!rem->isZero() && rem->getDegree() >= den.getDegree())      // New
+  while(!rem->isZero() && rem->getDegree() >= den.getDegree())
   {
-    // For debug:
-    //rsAssert(den.getDegree()  == den._getDegree());
-    //rsAssert(rem->getDegree() == rem->_getDegree());
-    // We eventually want to get rid of the versions with the underscore. But for the time being, 
-    // let's really make sure, that both versions return the same result.
+    rsMonomial<T> t = rem->getLeadingTerm() / den.getLeadingTerm();  // t = lead(r) / lead(d)
+    quot->addTerm(t);                                                // q = q + t
+    rem->addScaled(den, -t);                                         // r = r - t * d
 
-
-    // This is the actual business logic code:
-    //rsMonomial<T> t = rem->_getLeadingTerm() / den._getLeadingTerm();    // t = lead(r) / lead(d)
-    rsMonomial<T> t = rem->getLeadingTerm() / den.getLeadingTerm();    // t = lead(r) / lead(d)
-    quot->addTerm(t);                                                  // q = q + t
-    rem->addScaled(den, -t);                                           // r = r - t * d
-    // The rest is just sanity checks needed during development.
-
-
-    // Check the loop invariant n = d*q + r:
-    //SparsePoly test = den * *quot + *rem;  // For inspection in debugger
-    rsAssert(num.isCloseTo(den * *quot + *rem, num.tol), "Loop invariant violated");
-
-    // I'm not totally sure, if these should always hold, but I think so:
+    // Check sanity and loop invariant n = d*q + r:
     rsAssert(quot->isCanonical());
     rsAssert( rem->isCanonical());
-    // Yeah - it seems to hold. Good.
+    rsAssert(num.isCloseTo(den * *quot + *rem, num.tol), "Loop invariant violated");
   }
 
   // The algorithm has been adapted from: 
@@ -446,8 +341,9 @@ void rsSparsePolynomial<T, TTol>::divide(
   //
   // ToDo:
   //
-  // - Implement and use getDegree(), getLeadingTerm() without the _. Also: getLeadingCoeff().
-  //   ...partially done
+  // - Maybe call den.getDegree() and den.getLeadingTerm() outside the loop and use variables like
+  //   denDeg, denLead in the loop. These do not change during the loop. The calls are cheap, but 
+  //   still.
   //
   // - Maybe at some point, when the function is battle tested well enough, we can get rid of the
   //   code that checks the loop invariant. But maybe leave it in. It helped me a lot to find a bug
