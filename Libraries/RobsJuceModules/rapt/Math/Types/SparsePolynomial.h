@@ -197,8 +197,6 @@ public:
   power already exists, this will just shift its coefficient. If the cofficient happens to be zero 
   after shift (up to the given tolerance), the term will be removed. */
   void addTerm(T coeff, int power);
-  // This function assumes that the polynomial is in canonical representation! Document this and 
-  // maybe reflect it in the function name.
 
   /** Adds the given monomial to the polynomial. */
   void addTerm(const rsMonomial<T>& newTerm)
@@ -222,38 +220,16 @@ public:
   /** Multiplies this polynomial by the given other polynomial factor. Works in place and 
   re-allocates only when the capacity is too low (VERIFY!). */
   void multiplyBy(const SparsePoly& factor, TTol tol) { multiply(*this, factor, this); }
-  // I think, this may also decanonicalize! We may get multiple terms with same exponent. But we
-  // may actually repair this inside the function. But no! It calls canonicalize at the end, so 
-  // even if it temporarily decanonicalizes, it cleans everything up at the end.
 
   /** Multiplies this polynomial by a desne polynomial represented by the given array of 
   coefficients. Works in place and re-allocates only when the capacity is too low. */
   void multiplyByDenseCoeffs(const T* coeffs, int numTerms);
-  // I think, this may also decanonicalize! See comment above. It's the same here
 
-  void addScaled(const SparsePoly& summand, const rsMonomial<T>& scaler);
-  // ToDo: implement add(summand), i.e. the same thing but without the scaler.
-  // ...and maybe one with the scaler being a simple coeff
+  /** Adds the polynomial p scaled by the given scaler monomial to this polynomial. */
+  void addScaled(const SparsePoly& p, const rsMonomial<T>& scaler);
 
-
-  /** Adds a scaled version of the given polynomial p to this polynomial. */
-  void addScaledPolynomial(const SparsePoly& p, T scaler);
-  /*
-  {
-    tol = rsMax(tol, p.tol);
-    for(int i = 0; i < p.getNumTerms(); i++)
-      addTerm(scaler * p.getCoeff(i), p.getPower(i));
-
-    // Maybe it would be better to just append a scaled version and then canonicalize? This may 
-    // result in less data movement - but it may blow up the required memory temporarily. So: no -
-    // let's not do that in general. It may even lead to allocations when we really don't want 
-    // them.
-  }
-  */
-  // Move to cpp file.
-
-
-
+  /** Adds the polynomial p scaled by the given scaling factor to this polynomial. */
+  void addScaled(const SparsePoly& p, T scaler);
 
 
   //-----------------------------------------------------------------------------------------------

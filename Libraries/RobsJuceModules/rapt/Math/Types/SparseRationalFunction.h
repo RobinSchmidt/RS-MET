@@ -228,7 +228,7 @@ public:
 
   void addConstant(T constant)
   {
-    num.addScaledPolynomial(den, constant);
+    num.addScaled(den, constant);
   }
   // ToDo: Document why this formula is right:
   //

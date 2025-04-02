@@ -74,7 +74,7 @@ void rsSparsePolynomial<T, TTol>::addScaled(
 }
 
 template<class T, class TTol>
-void rsSparsePolynomial<T, TTol>::addScaledPolynomial(
+void rsSparsePolynomial<T, TTol>::addScaled(
   const rsSparsePolynomial<T, TTol>&  p, T scaler)
 {
   tol = rsMax(tol, p.tol);
@@ -544,6 +544,12 @@ ToDo:
         already known to be safe.
   Then we can be sure that they always maintain a canonical representation.
    
+- Implement += operator for right operand being another polynomial, a monomial, a constant. Do 
+  the same for -=, *=, /=
+
+- Implement setupFromDenseCoeffs() methods that don't require a tol parameter. They should do the
+  same thing except setting our tol member. Maybe we should only have those, to be honest.
+
 
 Notes:
 
