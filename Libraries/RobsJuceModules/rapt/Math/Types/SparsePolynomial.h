@@ -161,14 +161,10 @@ public:
     : terms(initList), tol(tolerance) 
   { _canonicalize(); }
 
+  /** Creates a polynomial from a std::vector that is interpreted as containing the coefficients 
+  for a dense polynomial. */
   rsSparsePolynomial(const std::vector<T>& coefficients, TTol tolerance) 
-  { 
-    tol = tolerance;
-    setupFromDenseCoeffs(coefficients);
-  }
-  // Maybe make the tolerance parameter optional. I'm not sure about that, though. It may invite
-  // forgetting to set it when it's really needed. But on the other hand, some types T don't need
-  // any tolerance at all. Maybe keep it mandatory for a while and make it optional later.
+  { tol = tolerance; setupFromDenseCoeffs(coefficients);  }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -193,8 +189,6 @@ public:
 
   /** Like setupFromDenseCoeffs(const std::vector<T>&, ...) but for raw C-arrays. */
   void setupFromDenseCoeffs(const T* newCoeffs, int newNumTerms);
-  // ToDo: Provide methods that don't require a tol parameter. They should do the same thing 
-  // except setting our tol member. 
   
   /** Adds the term c * x^p with coeff c and power p to the polynomial. If a term with the same 
   power already exists, this will just shift its coefficient. If the cofficient happens to be zero 
@@ -452,12 +446,10 @@ public:
   void _shiftPower(int index, int amount) { _setPower(index, amount + getPower(index)); }
 
   /** Multiplies this polynomial by the given monomial factor. This results in all coeffs being 
-  multiplied by the coeff of the monomial and all powers being increased by the pwer of the 
+  multiplied by the coeff of the monomial and all powers being increased by the power of the 
   monomial. */
   void _multiplyBy(const rsMonomial<T>& factor)
   { _scaleCoeffs(factor.getCoeff()); shiftPowers(factor.getPower()); }
-  // It may decanonicalize if factor.coeff == 0, so maybe we should move it to the low level 
-  // section and give it an underscore
 
   void _divideBy(const rsMonomial<T>& divisor)
   { _scaleCoeffs(T(1) / divisor.getCoeff()); shiftPowers(-divisor.getPower()); }
@@ -468,7 +460,8 @@ public:
 
   /** Reverses the array of terms. It may appear to be a weird thing to do on polynomials but this 
   operation is needed when transforming minimum phase filters into maximum phase ones (or vice 
-  versa) and when producing allpass filters from allpole filters. */
+  versa) and when producing allpass filters from allpole filters. This destroys the canonical 
+  order from lower to higher powers of x. */
   void _reverse() { rsReverse(terms); }
 
   /** Checks if this sparse polynomial is in canonical representation. A representation is 
@@ -480,8 +473,8 @@ public:
 
 protected:
 
-  std::vector<rsMonomial<T>> terms;
-  TTol tol = TTol(0);
+  std::vector<rsMonomial<T>> terms;  // Terms of the form a_i * x^i
+  TTol tol = TTol(0);                // Roundoff error tolerance (relevant for e.g. T = float)
 
 };
 

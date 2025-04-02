@@ -2,7 +2,6 @@
 template<class T, class TTol>
 void rsSparsePolynomial<T, TTol>::setupFromDenseCoeffs(const T* newCoeffs, int newNumTerms)
 {
-  //tol = newTol;
   terms.clear();
   terms.reserve(newNumTerms);
   for(int i = 0; i < newNumTerms; i++)
@@ -546,6 +545,11 @@ ToDo:
 
 - Implement setupFromDenseCoeffs() methods that don't require a tol parameter. They should do the
   same thing except setting our tol member. Maybe we should only have those, to be honest.
+
+- Maybe make the tolerance parameter for the constructors optional. I'm not sure about that, 
+  though. It may invite forgetting to set it when it's really needed. But on the other hand, some
+  types T don't need any tolerance at all. Maybe keep it mandatory for a while and make it optional
+  later.
 
 
 Notes:
