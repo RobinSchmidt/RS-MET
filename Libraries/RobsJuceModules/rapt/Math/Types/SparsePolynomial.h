@@ -320,23 +320,18 @@ public:
   rsMonomial<T> getLeadingTerm() const
   {
     if(terms.empty())
-      rsMonomial<T>(T(0), 0);
+      rsMonomial<T>(T(0), 0);      // This branch needs a unit test!
     return terms[terms.size()-1];
   }
 
+  /** Returns the leading coefficient of this polynomial, i.e. the coefficient in front of the 
+  highest power of x. */
+  T getLeadingCoeff() const { return getLeadingTerm().getCoeff(); }
+  // Needs unit test.
 
-  int getDegree() const
-  {
-    if(terms.empty())
-      return 0;
-    return terms[terms.size()-1].getPower();
-
-    // Maybe use: "return getLeadingTerm().getPower();
-  }
-  // New - needs tests!
-
-
-
+  /** Returns the degree of the polynomial, i.e. the exponent of the highest power of x that 
+  occurs. */
+  int getDegree() const { return getLeadingTerm().getPower(); }
 
   /** Returns true, iff the rhs polynomial equals this polynomial up to the given tolerance. */
   bool isCloseTo(const SparsePoly& rhs, TTol tol) const;
