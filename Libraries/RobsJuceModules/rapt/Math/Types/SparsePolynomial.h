@@ -119,7 +119,10 @@ temporarily - violate such a canonical representation for performance reasons. T
 has two levels. A higher level that assumes and maintains canonical representations and a lower 
 level that makes no such assumption and gives no such maintenance guarantee. The lower level member
 functions are prefixed with an underscore _ to indicate at the call site that now some low-level 
-stuff is going on and special care should be taken. ...TBC...
+stuff is going on and special care should be taken. When using the potentially decanonicalizing 
+setup methods (prefixed by an underscore), there are 2 options: (1) You know exactly what you are 
+doing and that this is in fact ok, i.e. doesn't actually decanonicalize. (2) You re-canonicalize 
+after you have finished with your operations by calling e.g. canonicalize().
 
 
 ToDo:
@@ -183,7 +186,9 @@ public:
   void setRoundoffTolerance(TTol newTolerance) { tol = newTolerance; }
 
   /** Sets up the polynomial from a dense arrays of polynomial coeffs. When a coefficient in the 
-  dense representation is zero, we not create a term for that. */
+  dense representation is zero, we will not create a term for that. The comparison to zero is to be
+  understood as an inexact comparison with some tolerance that can be set up via 
+  setRoundoffTolerance() to accomodate for floating point roundoff errors. */
   void setupFromDenseCoeffs(const std::vector<T>& newCoeffs)
   { setupFromDenseCoeffs(&newCoeffs[0], (int) newCoeffs.size()); }
 
@@ -192,7 +197,7 @@ public:
   
   /** Adds the term c * x^p with coeff c and power p to the polynomial. If a term with the same 
   power already exists, this will just shift its coefficient. If the cofficient happens to be zero 
-  after shift (up to the given tolerance), the term will be removed. */
+  after shift (up to the roundoff tolerance), the term will be removed. */
   void addTerm(T coeff, int power);
 
   /** Adds the given monomial to the polynomial. */
@@ -213,6 +218,10 @@ public:
   /** Shifts all powers by the given amount. If the amount is p, this corresponds to multiplying 
   the polynomial by a monomial factor with unit coefficient, i.e. by x^p. */
   void shiftPowers(int amount) { for(auto& t : terms) t.shiftPower(amount); }
+  // ToDo: Maybe assert that the amount is <= the power of our smallest terms because otherwise,
+  // we'll produce negative powers. It may at some point make sense to allow negative coeffs, 
+  // though (for example, to represent truncated Laurent series), but at the moment, we assume to
+  // deal with just normal polynomials.
 
   /** Multiplies this polynomial by the given other polynomial factor. Works in place and 
   re-allocates only when the capacity is too low (VERIFY!). */
@@ -239,8 +248,8 @@ public:
   /** Returns true iff this polynomial is the zero polynomial. */
   bool isZero() const { rsAssert(_isCanonical()); return terms.empty(); }
 
-  /** Returns the leading term in this polynomial, i.e. the monomial  cn x^n  that has the highest
-  exponent n. */
+  /** Returns the leading term in this polynomial, i.e. the monomial  a_n * x^p[n]  that has the 
+  highest exponent p[n]. */
   rsMonomial<T> getLeadingTerm() const
   {
     rsAssert(_isCanonical());
@@ -252,7 +261,8 @@ public:
   /** Returns the leading coefficient of this polynomial, i.e. the coefficient in front of the 
   highest power of x. */
   T getLeadingCoeff() const { return getLeadingTerm().getCoeff(); }
-  // Needs unit test.
+  // Needs unit test. ..I think, it should be covered already because it's called by makeMonic 
+  // which is called in the gcd algo - and gcd has a unit test. -> Verify this!
 
   /** Returns the degree of the polynomial, i.e. the exponent of the highest power of x that 
   occurs. */
@@ -401,7 +411,9 @@ public:
 
   /** Appends a term with given coeff and power to the end of our terms array. This may 
   decanonicalize the representation by appending a term of a power lower than the current degree
-  and/or by duplicating one of the existing exponents. */
+  and/or by duplicating one of the existing exponents and/or by having a zero coefficient. So, if 
+  you use this function, you need to either ensure that none of these things happen or else call 
+  canonicalize() at some point after your manipulations. */
   void _appendTerm(T coeff, int power) { terms.emplace_back(rsMonomial<T>(coeff, power)); } 
 
   /** Sets the number of terms. If the new number is less than the current number, it will just 
@@ -466,14 +478,14 @@ public:
 
   /** Checks if this sparse polynomial is in canonical representation. A representation is 
   canonical if it has no zero coefficients (up to a given tolerance) and if the powers are strictly
-  increasing (as function of term-index). The empty polynomial is also accepted as a canonical 
-  representation. It represents the zero polynomial. */
+  increasing (as function of term-index) and if no power occurrs more than once. The empty 
+  polynomial is also accepted as a canonical epresentation. It represents the zero polynomial. */
   bool _isCanonical() const;
 
 
 protected:
 
-  std::vector<rsMonomial<T>> terms;  // Terms of the form a_i * x^i
+  std::vector<rsMonomial<T>> terms;  // Terms of the form a_i * x^p[i]
   TTol tol = TTol(0);                // Roundoff error tolerance (relevant for e.g. T = float)
 
 };

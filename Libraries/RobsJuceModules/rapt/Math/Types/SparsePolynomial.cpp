@@ -17,6 +17,8 @@ void rsSparsePolynomial<T, TTol>::addTerm(T coeff, int power)
   // We assume that this polynomial is in canonical representation:
   rsAssert(_isCanonical());
 
+  // Find the point where we have to insert the term or update the coeff. In the latter case, do 
+  // the update and return early
   int i = 0;
   while(i < getNumTerms())
   {
@@ -25,7 +27,9 @@ void rsSparsePolynomial<T, TTol>::addTerm(T coeff, int power)
       _shiftCoeff(i, coeff);
       if( rsIsNegligible(getCoeff(i), tol) )
         rsRemove(terms, (size_t) i);
+      rsAssert(_isCanonical());               // Make sure we didn't mess up canonicalness
       return;
+      // Check, if this has test coverage!
     }
     else if(getPower(i) < power)
     {
@@ -37,9 +41,19 @@ void rsSparsePolynomial<T, TTol>::addTerm(T coeff, int power)
     }
   }
   rsInsert(terms, rsMonomial<T>(coeff, power), (size_t) i);
+  // Maybe move this into the else branch instead of breaking there. Then return directly from this 
+  // branch. I think, this makes the code more readable. ...but no! That would be wrong because the
+  // insertion may also happen at the end. Make sure to have unit test coverage for all 3 possible 
+  // cases: insert, remove, append. Make sure that one of the unit tests would fail, if we would 
+  // put the rsInsert() into the else branch.
 
-  // After the operation, it should still be in canonical representation
+  // After the operation, it should still be in canonical representation:
   rsAssert(_isCanonical());
+
+  // Notes:
+  //
+  // - The assertion at the bottom is not always reached because we have this early return 
+  //   statement in the if statement. 
 }
 
 template<class T, class TTol>
@@ -408,7 +422,7 @@ void rsSparsePolynomial<T, TTol>::divide(
   //   allowed to alias to num and den is allowed to alias to quot after we make that change? Check
   //   this! Aaah...noo...wrong! We do read from den in rem->addScaled(den, ...). OK - so den must
   //   be distinct. It could still make sense to drag den.getDegree() and den.getLeadingTerm out of
-  //   the loop as the operations are O(N) in non-canonical representations.
+  //   the loop.
 }
 
 template<class T, class TTol>
@@ -438,33 +452,31 @@ void rsSparsePolynomial<T, TTol>::greatestCommonDivisorInPlace(
   if(monic)
     a->makeMonic();
 
-  // Algorithm implementation has been adapted from rsRationalFunction<T>::polyGCD. I'm not sure, 
-  // if we strictly require a,b to be canonical, but let's err to the conservative side. If we use
-  // the non-canonical b->isZero() function, we need at least b to be canonical, I think.
+  // Notes:
+  //
+  // - Algorithm implementation has been adapted from rsRationalFunction<T>::polyGCD. I'm not sure,
+  //   if we strictly require a,b to be canonical, but let's err to the conservative side. 
+  //
+  // - I think, the significance of the leading coeff of the result of the gcd algo may be: Assume 
+  //   p and q have been produced via  p = g*a, q = g*b  where polynomials a,b have no common 
+  //   divisors such that g is the gcd of p and q. If g happens to be non-monic, then calling 
+  //   gcd(p, q, false) will restore g correctly including its leading coeff. ...I think. Verify! 
 }
 
 
 /**================================================================================================
 
-
 ToDo:
 
-- Implement unary plus. It's trivial but sometimes, we may want to use it for clarity. But maybe 
-  it should return a (const?) reference rather than a value? Is that even possible? In any case, 
-  we should make sure, that the unary + operator doesn't create a copy. A unit test should verify
-  that - perhaps by looking at the addresses of objects.
+- Implement unary plus. It's trivial but sometimes, we may want to use it at call sites for 
+  clarity. But maybe it should return a (const?) reference rather than a value? Is that even 
+  possible? In any case, we should make sure, that the unary + operator doesn't create a copy. A 
+  unit test should verify that - perhaps by looking at the addresses of objects.
 
 - Sprinkle in rsAssert(_isCanonical()); calls in all functions that assume a canonical 
   reprensentation in the spirit of defensive programming and contract based programming. Client
   code that uses the low level API and thereby messes up the canonical representation will fail
-  early when we do this.
-
-- Verify the usage pattern of the tolerance tol. I think, many member functions that receive a tol
-  parameter should now not receive the tolerance as parameter anymore. If they are non-static,
-  they should use the tol member. If they are static but receive at least one sparse polynomial
-  as parameter, they should retriever the tolerance from there. If they receive more than one 
-  polynomial as parameter, they should use the max of all tolerances. Also, the non-static 
-  functions that receive an additional sparse polynomial p should use  max(this->tol, p.tol), etc.
+  early when we do this. ...ok done - not everywhere, though - but in a lot of places.
 
 - We also do not yet use a relative tolerance anywhere. Maybe to facilitate this, we should provide 
   a member getScaledTolerance() or getAbsoluteTolerance that returns tol * getMaxAbsCoeff() where 
@@ -476,24 +488,12 @@ ToDo:
   should actually invoke a single argument variant rsMaxNorm<TNorm>(TArg x) that we may specialize
   for float, double, complex, etc explicitly
 
-- We may also want to implement a getter for the unscaled tolerance (maybe getTolerance() or 
-  getRelativeTolerance()) and a setter. And maybe constructors that can (optionally) take the 
-  tolerance to be used. Ah - and copyFataFrom should also copy the tolerance. Check, if we need to
-  do this also in some copy constructors and/or assignment operators.
-
 - Figure out what happens if client code uses negative powers. Currently, there's nothing that
   prevents this and maybe it could even make sense to allow it. But then the notion of degree
   gets murky. Maybe then there is indeed a difference between the degree and the max power in
   the case of an empty polynomial? Maybe, for the time being, we should trap attempts to set up
-  terms with negative powers. This can later be relaxed, if needed.
-
-- Maybe keep the class invariant that the polynomial is in canonical representation. 
-  Implementing algorithms for both cases is a mess. Maybe prepend a __ to those member functions
-  that could destroy the canonical representation to signal to the caller that they are now 
-  doing something low level and potentially dangerous. Like __shiftPower(int index, int amount). 
-  The regular shiftPower function can still be present. It would just call __shiftPower() and 
-  then canonicalize(). Or maybe just scan through the terms to find a term with the same power
-  and if one is found, consolidate the two terms into one.
+  terms with negative powers. This can later be relaxed, if needed. ...ok done: _isCanonical() now
+  also verifies that the powers are all nonnegative.
 
 - Implement root finding/factorization. Maybe we first need evaluation of derivatives. Maybe we can
   add an optimized function for evaluating the polynomial itself along with its 1st and 2nd 
@@ -510,13 +510,9 @@ ToDo:
   sparse polynomials can be done allocation free. This is needed for inverting sparse filters by
   swapping numerator and denominator of their transfer functions (plus some extra stuff to 
   maintain the a0 = 1 normalization). This is an an operation that we need to do in a realtime 
-  safe manner. Verify and document this!
+  safe manner. Verify and document this! We are currently relying on the auto-generated copy- and
+  move constructors and assignment operators and I think, this is totally fine.
 
-- I think, the significance of the leading coeff of the result of the gcd algo may be: Assume p 
-  and q have been produced via  p = g*a, q = g*b  where polynomials a,b have no common divisors 
-  such that g is the gcd of p and q. If g happens to be non-monic, then calling gcd(p,q,false) 
-  will restore g correctly including its leading coeff. I think...not sure...verify! 
- 
 - Implement composition of sparse polynomials (see free function rsComposeNaive() in Prototypes.h 
   file)
 
@@ -531,20 +527,21 @@ ToDo:
 
 - Make sure that for all member functions without underscore, at least one of the 3 things is 
   true:
+
     (1) We know that they don't mess up the canonical representation. In this case they should
         call rsAssert(_isCanonical()) at the end to document that. Well, maybe only in those cases
         where this is not trivially obvious.
+
     (2) They call _canonicalize() at the end. This is needed, if they potentially do destroy a
         canonical representation.
+
     (3) They call only other member functions without underscore, i.e. other members that are 
         already known to be safe.
+
   Then we can be sure that they always maintain a canonical representation.
    
 - Implement += operator for right operand being another polynomial, a monomial, a constant. Do 
   the same for -=, *=, /=
-
-- Implement setupFromDenseCoeffs() methods that don't require a tol parameter. They should do the
-  same thing except setting our tol member. Maybe we should only have those, to be honest.
 
 - Maybe make the tolerance parameter for the constructors optional. I'm not sure about that, 
   though. It may invite forgetting to set it when it's really needed. But on the other hand, some
@@ -557,19 +554,5 @@ Notes:
 - It might be tempting to write a constructor and/or setup function that takes a dense 
   polynomial, i.e. an object of type rsPolynomial<T>. But I think, that's not a good idea 
   because it would introduce unnecessary coupling.
-
-- When using the potentially decanonicalizing setup methods (prefixed by an underscore), there are
-  3 options:
-
-    (1) You know exactly what you are doing and that this is in fact ok, i.e. doesn't actually
-        decanonicalize.
-
-    (2) You re-canonicalize after you have finished with your operations by calling e.g.
-        canonicalize().
-
-    (3) You don't really care if the representation is canonical or not. For many purposes, a
-        non-canonical representation should work just fine, although being suboptimal.
-
-
 
 */
