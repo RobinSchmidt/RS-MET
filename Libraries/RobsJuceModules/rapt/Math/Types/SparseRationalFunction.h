@@ -7,12 +7,17 @@
 
 /** Implements a sparse rational function. ...TBC... */
 
-template<class T>
+//template<class T>
+template<class T, class TTol = rsEmptyType>
 class rsSparseRationalFunction
 {
 
 public:   // old
 //protected:  // new
+
+
+  using SparsePoly    = rsSparsePolynomial<T, TTol>;  // For convenience
+  using SparseRatFunc = rsSparseRationalFunction<T, TTol>;  
 
 
   //-----------------------------------------------------------------------------------------------
@@ -41,7 +46,7 @@ public:   // old
   denominator. The only donwside may be that the variable names "num" and "den" now become part of
   the public API of the class and can't be changed later. I can live with that. */
 
-  rsSparsePolynomial<T> num, den;  
+  //rsSparsePolynomial<T> num, den;  
   // This now breaks the allpass unit test since we use TTol in rsSparsePolynomial. I expect the 
   // problem to go away when we also introduce TTol here an assign it properly (to double) in the 
   // unit tests. It's understandable that the tests are now broken because instantiating 
@@ -49,7 +54,7 @@ public:   // old
   // tolerances in the tests to zero such that now all float comparisons are exact comparisons and 
   // therefore fail.
 
-  //rsSparsePolynomial<T, T> num, den;  
+  rsSparsePolynomial<T, TTol> num, den;  
   // This variant doesn't compile. ToDo: use <T, TTol> later
 
   // ...well...wait: There actually is a class invariant that (maybe) should be maintained: The 
@@ -90,7 +95,7 @@ public:
   }
 
   rsSparseRationalFunction(
-    const rsSparsePolynomial<T>& numerator, const rsSparsePolynomial<T>& denominator) 
+    const SparsePoly& numerator, const SparsePoly& denominator) 
     : num(numerator), den(denominator)  {}
 
   // Maybe implement it for const rsSparsePolynomial<T>&&, too. Or maybe that one is then enough, 
@@ -189,7 +194,7 @@ public:
   }
 
 
-  void copyDataFrom(const rsSparseRationalFunction<T>& q)
+  void copyDataFrom(const SparseRatFunc& q)
   {
     num = q.num;
     den = q.den;
@@ -206,7 +211,7 @@ public:
   // Give it an underscore
 
 
-  void multiplyBy(const rsSparseRationalFunction<T>& factor, T tol) 
+  void multiplyBy(const SparseRatFunc& factor, T tol) 
   { 
     num.multiplyBy(factor.num, tol);
     den.multiplyBy(factor.den, tol);
@@ -268,7 +273,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  bool isCloseTo(const rsSparseRationalFunction<T>& q, T tol) const
+  bool isCloseTo(const SparseRatFunc& q, T tol) const
   {
     return q.num.isCloseTo(num, tol) && q.den.isCloseTo(den, tol);
   }
@@ -307,33 +312,33 @@ public:
   TArg operator()(TArg z) const { return num(z) / den(z); }
 
 
-  rsSparseRationalFunction<T> operator-() const
+  SparseRatFunc operator-() const
   {
-    return rsSparseRationalFunction<T>(-num, den);
+    return SparseRatFunc(-num, den);
   }
 
 
   /** Adds two rational functions. */
-  rsSparseRationalFunction<T> operator+(const rsSparseRationalFunction<T>& q) const 
-  { rsSparseRationalFunction<T> r; weightedSum(*this, T(1), q, T(1), &r, T(0)); return r; }
+  SparseRatFunc operator+(const SparseRatFunc& q) const 
+  { SparseRatFunc r; weightedSum(*this, T(1), q, T(1), &r, T(0)); return r; }
 
   /** Subtracts two rational functions. */
-  rsSparseRationalFunction<T> operator-(const rsSparseRationalFunction<T>& q) const 
-  { rsSparseRationalFunction<T> r; weightedSum(*this, T(1), q, T(-1), &r, T(0)); return r; }
+  SparseRatFunc operator-(const SparseRatFunc& q) const 
+  { SparseRatFunc r; weightedSum(*this, T(1), q, T(-1), &r, T(0)); return r; }
 
   /** Multiplies two rational functions. */
-  rsSparseRationalFunction<T> operator*(const rsSparseRationalFunction<T>& q) const 
-  { return rsSparseRationalFunction(num * q.num, den * q.den); }
+  SparseRatFunc operator*(const SparseRatFunc& q) const 
+  { return SparseRatFunc(num * q.num, den * q.den); }
 
   /** Divides two rational functions. */
-  rsSparseRationalFunction<T> operator/(const rsSparseRationalFunction<T>& q) const 
-  { return rsSparseRationalFunction(num * q.den, den * q.num); }
+  SparseRatFunc operator/(const SparseRatFunc& q) const 
+  { return SparseRatFunc(num * q.den, den * q.num); }
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Boilerplate */
 
-  rsSparseRationalFunction& operator+=(const rsSparseRationalFunction& b) 
+  SparseRatFunc& operator+=(const SparseRatFunc& b) 
   { return *this = (*this) + b; }
 
 
@@ -345,33 +350,34 @@ public:
 
 
   static void weightedSum(
-    const rsSparseRationalFunction<T>& p, T wp,
-    const rsSparseRationalFunction<T>& q, T wq,
-    rsSparseRationalFunction<T>* r, T tol);
+    const SparseRatFunc& p, T wp,
+    const SparseRatFunc& q, T wq,
+    SparseRatFunc* r, T tol);
 
   static void weightedSumDestructive(
-    rsSparseRationalFunction<T>* p, T wp,
-    rsSparseRationalFunction<T>* q, T wq,
-    rsSparseRationalFunction<T>* r, T tol);
+    SparseRatFunc* p, T wp,
+    SparseRatFunc* q, T wq,
+    SparseRatFunc* r, T tol);
   // The first parameter p may alias to the result r.
 
 
 };
 
 /** Multiplies a coefficient and a sparse rational function. */
-template<class T>
-inline rsSparseRationalFunction<T> operator*(const T& s, const rsSparseRationalFunction<T>& p)
+template<class T, class TTol>
+inline rsSparseRationalFunction<T, TTol> operator*(
+  const T& s, const rsSparseRationalFunction<T, TTol>& p)
 {
-  rsSparseRationalFunction<T> r(p);
+  rsSparseRationalFunction<T, TTol> r(p);
   r.scale(s);
   return r;
 }
 
-template<class T>
-void rsSparseRationalFunction<T>::weightedSum(
-  const rsSparseRationalFunction<T>& p, T wp,
-  const rsSparseRationalFunction<T>& q, T wq,
-  rsSparseRationalFunction<T>* r, T tol)
+template<class T, class TTol>
+void rsSparseRationalFunction<T, TTol>::weightedSum(
+  const rsSparseRationalFunction<T, TTol>& p, T wp,
+  const rsSparseRationalFunction<T, TTol>& q, T wq,
+  rsSparseRationalFunction<T, TTol>* r, T tol)
 {
   r->den = p.den * q.den;
   r->num = wp * p.num * q.den  +  wq * q.num * p.den;
@@ -380,11 +386,11 @@ void rsSparseRationalFunction<T>::weightedSum(
   // allocations. We may also use the gcd instead of just cross-mutiplying the denominators.
 }
 
-template<class T>
-void rsSparseRationalFunction<T>::weightedSumDestructive(
-  rsSparseRationalFunction<T>* p, T wp,
-  rsSparseRationalFunction<T>* q, T wq,
-  rsSparseRationalFunction<T>* r, T tol)  // Get rid of tol param!
+template<class T, class TTol>
+void rsSparseRationalFunction<T, TTol>::weightedSumDestructive(
+  rsSparseRationalFunction<T, TTol>* p, T wp,
+  rsSparseRationalFunction<T, TTol>* q, T wq,
+  rsSparseRationalFunction<T, TTol>* r, T tol)  // Get rid of tol param!
 
 {
   rsAssert(rsAreAddressesDistinct(*p, *q));
@@ -401,7 +407,7 @@ void rsSparseRationalFunction<T>::weightedSumDestructive(
   // (wp+wq), I think. I think, the p == q != r case could possibly also be handled - just copy p
   // or q into r and then scale by (wp+wq)
 
-  using SP = rsSparsePolynomial<T>;
+  using SP = rsSparsePolynomial<T, TTol>;
 
   //              arg1        arg2        result
   SP::multiply(   p->num,     q->den,     &p->num);  // Replace p->num by p->num * q->den
