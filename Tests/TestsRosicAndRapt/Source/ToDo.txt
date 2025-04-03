@@ -1,6 +1,11 @@
 
 - Make allpass unit tests pass again by givin rsSparseRationalFunction a tolerance and then using 
-  it in the unit tests.
+  it in the unit tests. In dampedMultiCombAllpassUnitTest(), we need to change 
+    using TransFunc = rsSparseDigitalTransferFunction<Real>;
+  to
+    using TransFunc = rsSparseDigitalTransferFunction<Real, Real>;
+  such that we don't get te default value of rsEmptyType for the tolerance type. But first, we 
+  actually have to add the 2nd template parameter TTol to rsSparseDigitalTransferFunction.
 
 - Clean up rsSparseRationalFunction
 

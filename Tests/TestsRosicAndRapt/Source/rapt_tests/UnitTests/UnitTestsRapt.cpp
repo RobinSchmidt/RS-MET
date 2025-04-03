@@ -23,11 +23,12 @@ bool runUnitTestsRapt()
   // Test for the currently developed class - it's also again run down there below, but I want
   // the test for the code i'm currently working on to go first for faster edit/build/test cycles, 
   // because some of the test take longer to perfom. So this section is volatile:
-  ok &= runUnitTest(&testLinearAlgebra,       "rsLinearAlgebra");
+  //ok &= runUnitTest(&testLinearAlgebra,       "rsLinearAlgebra");
+  ok &= runUnitTest(&allpassUnitTest,        "Allpass filters");
   ok &= runUnitTest(&testPolynomial,         "rsPolynomial");
   //ok &= runUnitTest(&miscFiltersUnitTest,    "Misc filters");
   //ok &= runUnitTest(&basicFiltersUnitTests,  "Basic filters");
-  //ok &= runUnitTest(&allpassUnitTest,        "Allpass filters");
+
 
 
   //// these tests should go into UnitTestsRosic.cpp:

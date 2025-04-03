@@ -55,7 +55,6 @@ public:   // old
   // therefore fail.
 
   rsSparsePolynomial<T, TTol> num, den;  
-  // This variant doesn't compile. ToDo: use <T, TTol> later
 
   // ...well...wait: There actually is a class invariant that (maybe) should be maintained: The 
   // denominator should be nonzero...hmmm...well...or maybe we just take the position that the onus 

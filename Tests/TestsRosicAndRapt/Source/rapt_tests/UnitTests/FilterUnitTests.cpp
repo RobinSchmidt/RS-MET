@@ -3075,7 +3075,7 @@ bool allpassUnitTest()
   ok &= dampedCombAllpassUnitTest2();
   ok &= dampedCombAllpassUnitTest3(false);
   ok &= dampedCombAllpassUnitTest3(true);
-  ok &= dampedMultiCombAllpassUnitTest();
+  ok &= dampedMultiCombAllpassUnitTest();    // Fails now
   ok &= dampedSchroederAllpassUnitTest();
   ok &= dampedAllpassBiCombUnitTest();
 
