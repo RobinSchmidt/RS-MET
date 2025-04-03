@@ -485,3 +485,12 @@ Waveform Orthogonalization:
  possibly in a more intuitive way due to their orthogonality (i.e. non-interference)
 -Maybe the original waveforms could be saws and square waves at different frequencies (i.e. 
  multiples of a fundamental)
+
+-------------------------------------------------------------------------------
+Z-Transform
+
+-To implement the Z-transform of a given signal x[n], we can multiply it by various exponential
+ envelope functions e_m[n] and of each of those exponentially enveloped signals e_m[n]*x[n], we take
+ an FFT. The index m is the index into the exponential decay rates that we use, i.e. 
+ e_m[n] = exp(d[m] * n) where d[m] is the m-th decay rate. To test it, compare the results to what
+ we produce with  rsEvaluateTransferFunctionNumerically()  with filter impulse responses
