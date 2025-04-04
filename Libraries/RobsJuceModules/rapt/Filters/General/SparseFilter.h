@@ -13,7 +13,7 @@ type rsSparseRationalFunction to store the coefficients of the transfer function
 actually store the coeffs of H(z-^1) there because that's what's needed for implementation of the
 difference equation. The filter is implemented in direct form 2 using a single delayline. */
 
-template<class TSig, class TPar>
+template<class TSig, class TPar, class TTol>  // ToDo: have optional TTol template parameter for passing to H
 class rsSparseFilter
 {
 
@@ -39,7 +39,7 @@ public:
   // use  H.setupFromDenseCoeffs(numCoeffs, denCoeffs, tol)
 
 
-  void setup(const rsSparseRationalFunction<TPar>& newTransferFunction)
+  void setup(const rsSparseRationalFunction<TPar, TTol>& newTransferFunction)
   { H.copyDataFrom(newTransferFunction); updateDelayLineLength(); }
   // The parameter should really be of type rsSparseDigitalTransferFunction
 
@@ -128,7 +128,7 @@ public:
 
   /** Copies the settings (i.e. the coefficients) from the given other filter into this object and
   possibly adjusts the delayline length, if necessary. */
-  void copySettingsFrom(const rsSparseFilter<TSig, TPar>& other)
+  void copySettingsFrom(const rsSparseFilter<TSig, TPar, TTol>& other)
   { H.copyDataFrom(other.H); updateDelayLineLength(); }
 
   // Maybe also provide a copyStateFrom() method which would also copy the content of the 
@@ -171,7 +171,7 @@ public:
 
 
   /** Returns a const reference to our transfer function object H(z). */
-  const rsSparseDigitalTransferFunction<TPar>& getTransferFunction() const { return H; }
+  const rsSparseDigitalTransferFunction<TPar, TTol>& getTransferFunction() const { return H; }
 
 
 
@@ -303,8 +303,8 @@ protected:
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  rsDelay<TSig> delayLine;                  // Delayline for the direct form 2 implementation.
-  rsSparseDigitalTransferFunction<TPar> H;  // Transfer function H(z). Contains filter coeffs.
+  rsDelay<TSig> delayLine;                        // Delayline for direct form 2 implementation.
+  rsSparseDigitalTransferFunction<TPar, TTol> H;  // Transfer function H(z). Has filter coeffs.
 
 };
 

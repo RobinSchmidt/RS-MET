@@ -1029,10 +1029,10 @@ bool testPowersChebychevExpansionConversion() // Find shorter name! maybe tesPol
 
   // Create a bunch of random polynomials and convert them to the Chebychev basis and back and
   // evaulate them in both bases and compare results:
-  int minDegree =  0;    // Minimum degree to test
-  int maxDegree = 10;    // Maximum degree to test
-  int numTests  =  5;    // Number of test cases per degree
-  Real tol = 1.e-6;      // Error tolerance
+  int minDegree =  0;      // Minimum degree to test
+  int maxDegree = 10;      // Maximum degree to test
+  int numTests  =  5;      // Number of test cases per degree
+  Real tol = Real(1.e-6);  // Error tolerance
   for(int d = minDegree; d <= maxDegree; d++) 
   {
     for(int i = 0; i < numTests; i++)
@@ -1050,7 +1050,7 @@ bool testPowersChebychevExpansionConversion() // Find shorter name! maybe tesPol
       ok &= rsIsCloseTo(c, a, tol);
 
       // Evaluate polynomial in monomial basis at some given x:
-      Real x = 0.3254;
+      Real x = Real(0.3254);
       Real ya = Poly::evaluate(x, &a[0], d);
 
       // Evaluate it in Chebychev basis naively and check result:

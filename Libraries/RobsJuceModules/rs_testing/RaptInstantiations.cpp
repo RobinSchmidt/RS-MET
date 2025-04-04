@@ -368,9 +368,9 @@ template RAPT::rsMatrix<rsComplex<double>> RAPT::rsLinearAlgebraNew::inverse(
 template RAPT::rsMatrix<RAPT::rsFraction<int>> RAPT::rsLinearAlgebraNew::inverse(
   const RAPT::rsMatrixView<RAPT::rsFraction<int>>& A);
 
-template RAPT::rsMatrix<RAPT::rsSparseDigitalTransferFunction<double>> 
+template RAPT::rsMatrix<RAPT::rsSparseDigitalTransferFunction<double, double>> 
 RAPT::rsLinearAlgebraNew::inverse(
-  const RAPT::rsMatrixView<RAPT::rsSparseDigitalTransferFunction<double>>& A);
+  const RAPT::rsMatrixView<RAPT::rsSparseDigitalTransferFunction<double, double>>& A);
 
 
 

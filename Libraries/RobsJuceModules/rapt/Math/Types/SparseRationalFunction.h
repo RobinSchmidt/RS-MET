@@ -269,6 +269,12 @@ public:
   // numerator? But no! This can't represent the zero function.
 
 
+  void setRoundoffTolerance(TTol newTolerance)
+  {
+    num.setRoundoffTolerance(newTolerance);
+    den.setRoundoffTolerance(newTolerance);
+  }
+
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
@@ -442,17 +448,21 @@ example, digital filter transfer functions are usually normalized to a0 = 1, as 
 implement a check for that condition (and a few others) isCanonical(). We also provide functions to
 invert the transfer function (basically, swapping numerator and denominator but maintaining the 
 a0 = 1 condition by appropriate pre- and post scaling), reflecting the zeros about the unit circle 
-(turning minimum phase filters into maximum phase ones), etc. ...TBC... */
+(turning minimum phase filters into maximum phase ones), etc. ...TBC... 
+
+ToDo: Move this class into its own dedicated pair of .h/.cpp files in Filters/General
+
+*/
 
 
-template<class T>
-class rsSparseDigitalTransferFunction : public rsSparseRationalFunction<T>
+template<class T, class TTol>  // ToDo: Let TTol default to rsEmptyType
+class rsSparseDigitalTransferFunction : public rsSparseRationalFunction<T, TTol>
 {
 
 public:
 
-  using Base = rsSparseRationalFunction<T>;    // For convenience
-  using Base::Base;                            // Inherit constructors
+  using Base = rsSparseRationalFunction<T, TTol>;  // For convenience
+  using Base::Base;                                // Inherit constructors
 
 
 
@@ -641,22 +651,22 @@ public:
   // return types are different. It may work with pointer-types but not with value-types (I guess):
 
 
-  rsSparseDigitalTransferFunction<T> operator-() const
+  rsSparseDigitalTransferFunction<T, TTol> operator-() const
   {
-    return rsSparseDigitalTransferFunction<T>(-num, den);
+    return rsSparseDigitalTransferFunction<T, TTol>(-num, den);
   }
 
 
-  rsSparseDigitalTransferFunction<T> operator+(const rsSparseDigitalTransferFunction<T>& q) const 
-  { rsSparseDigitalTransferFunction<T> r; weightedSum(*this, T(1), q, T(1), &r, T(0)); return r; }
+  rsSparseDigitalTransferFunction<T, TTol> operator+(const rsSparseDigitalTransferFunction<T, TTol>& q) const 
+  { rsSparseDigitalTransferFunction<T, TTol> r; weightedSum(*this, T(1), q, T(1), &r, T(0)); return r; }
 
-  rsSparseDigitalTransferFunction<T> operator-(const rsSparseDigitalTransferFunction<T>& q) const 
-  { rsSparseDigitalTransferFunction<T> r; weightedSum(*this, T(1), q, T(-1), &r, T(0)); return r; }
+  rsSparseDigitalTransferFunction<T, TTol> operator-(const rsSparseDigitalTransferFunction<T, TTol>& q) const 
+  { rsSparseDigitalTransferFunction<T, TTol> r; weightedSum(*this, T(1), q, T(-1), &r, T(0)); return r; }
 
-  rsSparseDigitalTransferFunction<T> operator*(const rsSparseDigitalTransferFunction<T>& q) const 
+  rsSparseDigitalTransferFunction<T, TTol> operator*(const rsSparseDigitalTransferFunction<T, TTol>& q) const 
   { return rsSparseDigitalTransferFunction(num * q.num, den * q.den); }
 
-  rsSparseDigitalTransferFunction<T> operator/(const rsSparseDigitalTransferFunction<T>& q) const 
+  rsSparseDigitalTransferFunction<T, TTol> operator/(const rsSparseDigitalTransferFunction<T, TTol>& q) const 
   { return rsSparseDigitalTransferFunction(num * q.den, den * q.num); }
 
   // ToDo: Check if we need to reduce the results to lowest terms or maybe to "canonicalize".
@@ -665,11 +675,11 @@ public:
 };
 
 /** Multiplies a coefficient and a sparse digital transfer function. */
-template<class T>
-inline rsSparseDigitalTransferFunction<T> operator*(
-  const T& s, const rsSparseDigitalTransferFunction<T>& p)
+template<class T, class TTol>
+inline rsSparseDigitalTransferFunction<T, TTol> operator*(
+  const T& s, const rsSparseDigitalTransferFunction<T, TTol>& p)
 {
-  rsSparseDigitalTransferFunction<T> r(p);
+  rsSparseDigitalTransferFunction<T, TTol> r(p);
   r.scale(s);
   return r;
 }
@@ -682,10 +692,10 @@ inline rsSparseDigitalTransferFunction<T> operator*(
 // ToDo: Maybe define these for the baseclass instead - then verify, that the right functions are
 // called:
 
-template<class T>
+template<class T, class TTol>
 inline bool rsIsBetterPivot(
-  const rsSparseDigitalTransferFunction<T>& x,
-  const rsSparseDigitalTransferFunction<T>& y)
+  const rsSparseDigitalTransferFunction<T, TTol>& x,
+  const rsSparseDigitalTransferFunction<T, TTol>& y)
 { 
   // A zero x is never a better pivot than any y:
   if(x.isZero())
@@ -708,10 +718,10 @@ inline bool rsIsBetterPivot(
   return x.num.getNumTerms() < y.num.getNumTerms();
 }
 
-template<class T>
+template<class T, class TTol>
 inline bool rsIsInvalidDivisor(
-  const rsSparseDigitalTransferFunction<T>& x,
-  const rsSparseDigitalTransferFunction<T>& tol)
+  const rsSparseDigitalTransferFunction<T, TTol>& x,
+  const rsSparseDigitalTransferFunction<T, TTol>& tol)
 {
   return x.isZero(); 
   // Maybe we should pass in a tolerance into this function? But then this tolerance should 
@@ -720,11 +730,11 @@ inline bool rsIsInvalidDivisor(
   // change the API to admit different types for x and tol
 }
 
-template<class T>
-inline rsSparseDigitalTransferFunction<T> rsGetPivotingTolerance(
-  const rsMatrixView<rsSparseDigitalTransferFunction<T>>& A)
+template<class T, class TTol>
+inline rsSparseDigitalTransferFunction<T, TTol> rsGetPivotingTolerance(
+  const rsMatrixView<rsSparseDigitalTransferFunction<T, TTol>>& A)
 {
-  return rsSparseDigitalTransferFunction<T>();
+  return rsSparseDigitalTransferFunction<T, TTol>();
 }
 
 

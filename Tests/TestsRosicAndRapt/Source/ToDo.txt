@@ -5,7 +5,10 @@
   to
     using TransFunc = rsSparseDigitalTransferFunction<Real, Real>;
   such that we don't get te default value of rsEmptyType for the tolerance type. But first, we 
-  actually have to add the 2nd template parameter TTol to rsSparseDigitalTransferFunction.
+  actually have to add the 2nd template parameter TTol to rsSparseDigitalTransferFunction. We may 
+  need to give classes like rsDampedCombAllpass a way to determine the tolerance type. Maybe let 
+  the getCombTransferFunctionAt() etc. functions take a tolerance as parameter. 
+
 
 - Clean up rsSparseRationalFunction
 

@@ -100,18 +100,23 @@ protected:
 //=================================================================================================
 
 /** A class for representing sparse polynomials, i.e. polynomials that have many zero coefficients.
-Think of something like p(x) = 2*x^37 - 5*x^129 + 3*x^435. Such polynomials occur in filter 
-transfer functions that use delaylines instead of unit delays. We represent such sparse polynomials
-basically as a std::vector of monomials which we call terms in this context. We say that a sparse 
-polynomial is in canonical representation if the powers of the terms are strictly increasing as 
-function of array index (implying that no power appears more than once) and there are no terms with
-a coefficient of zero (up to some tolerance - i.e. the absolute values of all coeffs should be 
-greater than the tolerance). If the array of terms is empty, we treat that as the canonical 
-representaion of the zero polynomial. This is different from how we represent the zero polynomial 
-in the class rsPolynomial for dense polynomials. There, the coeff array of the zero polynomial has 
-a single element whose value is zero. But because we want to avoid (near) zero coeffs here, this 
-representation would not be a good fit because then we would have to make a special rule for the 
-zeroth coeff which may not even exist in certain nonzero sparse polynomials like p(x) = 3*x^100.
+Think of something like p(x) = 2*x^37 - 5*x^129 + 3*x^435. With a dense representation (as in e.g.
+rsPolynomial), we would have to store 436 coefficients 433 of which would be zero. This is, of
+course, inacceptably wasteful. And such polynomials actually do occur a lot in filter transfer 
+functions that use delaylines instead of unit delays. Think of Schroeder allpasses, feedback delay 
+networks (FDNs), etc. i.e. the building blocks of reverb algorithms. 
+
+We represent such sparse polynomials basically as a std::vector of monomials which we call terms in
+this context. We say that a sparse polynomial is in canonical representation if the powers of the 
+terms are strictly increasing as function of array index (implying that no power appears more than 
+once) and there are no terms with a coefficient of zero (up to some tolerance - i.e. the absolute 
+values of all coeffs should be greater than the tolerance). If the array of terms is empty, we 
+treat that as the canonical representation of the zero polynomial. This is different from how we 
+represent the zero polynomial in the class rsPolynomial for dense polynomials. There, the coeff 
+array of the zero polynomial has a single element whose value is zero. But because we want to avoid
+(near) zero coeffs here, this representation would not be a good fit because then we would have to 
+make a special rule for the zeroth coeff which may not even exist in certain nonzero sparse 
+polynomials like p(x) = 3*x^100.
 
 For many purposes, it is convenient to assume a canonical representation and many setters will 
 maintain such a representation - but not all of them. Sometimes, one needs to - at least 
@@ -122,26 +127,10 @@ functions are prefixed with an underscore _ to indicate at the call site that no
 stuff is going on and special care should be taken. When using the potentially decanonicalizing 
 setup methods (prefixed by an underscore), there are 2 options: (1) You know exactly what you are 
 doing and that this is in fact ok, i.e. doesn't actually decanonicalize. (2) You re-canonicalize 
-after you have finished with your operations by calling e.g. canonicalize().
-
-
-ToDo:
-
-- Implement all the needed copy- and move constructors and assignement operators (rule of 5). Or
-  maybe we can rely on implicit definitions (rule of 0)? Yes - I think so.
-
-- Document clearly under which circumstances the user can assume the polynomial to be in a 
-  canonical representation (and what that even means). I'm still not quite sure myself, whether or 
-  not the API should always enforce a canonical representation as class invariant. Maintaining that
-  at all times - in particluar when adding or modifying terms - is costly. On the other hand, 
-  certain other operations (like extracting the leading term) are cheaper when we can assume a 
-  canonical representation. At the moment a canonical representation is not enforced. ...TBC...
-  ..OK..Update: As long as the user sticks to the high-level API, i.e. the regular member functions
-  without an underscore prefix, a canonical representation is maintained. As soon as the user 
-  reaches for the low level API indicated by an underscore, more care is needed at the client side
-  to maintain a canoncial representation themselves.
-
-*/
+after you have finished with your operations by calling e.g. canonicalize(). As long as you don't
+use the underscore-methods, you don't need to worry about this. But maybe in such cases you should
+worry about performance if you exclusively stick to the high-level API - especially if you call 
+setup functions in loops over terms. */
 
 template<class T, class TTol = rsEmptyType>
 class rsSparsePolynomial

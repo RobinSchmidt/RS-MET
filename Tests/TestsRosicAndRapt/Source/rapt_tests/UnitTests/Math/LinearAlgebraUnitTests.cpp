@@ -1026,8 +1026,8 @@ bool testLinAlgSparseTransFunc()
 
   using Real = double;
   using Mon  = RAPT::rsMonomial<Real>;
-  using SP   = RAPT::rsSparsePolynomial<Real>;
-  using TF   = RAPT::rsSparseDigitalTransferFunction<Real>;
+  using SP   = RAPT::rsSparsePolynomial<Real, Real>;
+  using TF   = RAPT::rsSparseDigitalTransferFunction<Real, Real>;
   using LA   = RAPT::rsLinearAlgebraNew;
   using Mat  = RAPT::rsMatrix<TF>;
 

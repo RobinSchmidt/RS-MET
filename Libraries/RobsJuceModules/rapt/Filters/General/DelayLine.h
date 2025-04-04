@@ -73,7 +73,9 @@ public:
   }
   // Needs unit tests!
   
-  void getTransferFunction(rsSparseDigitalTransferFunction<T>* tf) const
+
+  template<class TTol>
+  void getTransferFunction(rsSparseDigitalTransferFunction<T, TTol>* tf) const
   {
     int M = getDelayInSamples();
 

@@ -689,7 +689,7 @@ void dampedCombFilter()
   // rsDampedCombAllpass
 
   using Real = double;
-  using Comb = rsDampedCombFilter<Real, Real, Real>;
+  using Comb = rsDampedCombFilter<Real, Real, Real, Real>;
 
 
 
@@ -999,7 +999,7 @@ void dampedCombAllpassClass()
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Allpass = rsDampedCombAllpass<Real, Real, Real>;
+  using Allpass = rsDampedCombAllpass<Real, Real, Real, Real>;
 
   // User parameters:
   int  delay      =   100;     // Main delay roundtrip length in samples. Is M-1 in the algo
@@ -1206,7 +1206,7 @@ void dampedCombAllpassResponses()
   // Define types to be used:
   using Real     = double;
   using Vec      = std::vector<Real>;
-  using Allpass  = rsDampedCombAllpass<Real, Real, Real>;
+  using Allpass  = rsDampedCombAllpass<Real, Real, Real, Real>;
   using PlotType = rsFrequencyResponsePlotSettings::Type;
 
   // User parameters:
@@ -1299,7 +1299,7 @@ void dampedCombAllpassChainOf4()
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Allpass = rsDampedCombAllpass<Real, Real, Real>;
+  using Allpass = rsDampedCombAllpass<Real, Real, Real, Real>;
 
   // User parameters:
   int  delay1     =    53;     // 1st main delay roundtrip length in samples. Is M-1 in the algo
@@ -1425,7 +1425,7 @@ void dampedCombAllpassFeedbackBiquad()
   using Real    = double;
   using Vec     = std::vector<Real>;
   using Complex = rsComplex<Real>;
-  using Allpass = rsDampedCombAllpass<Real, Real, Real>;
+  using Allpass = rsDampedCombAllpass<Real, Real, Real, Real>;
 
   // User parameters:
   int  N        = 8192;
@@ -1466,7 +1466,7 @@ void dampedCombAllpassFreqDependentRT60()
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Allpass = rsDampedCombAllpass<Real, Real, Real>;
+  using Allpass = rsDampedCombAllpass<Real, Real, Real, Real>;
 
   // User parameters:
   Real sampleRate = 48000;     // Sampling rate.
@@ -1723,7 +1723,7 @@ void dampedCombAllpassFractional1()
   // Define types to be used:
   using Real      = double;
   using Vec       = std::vector<Real>;
-  using Allpass   = rsDampedCombAllpass<Real, Real, Real>;
+  using Allpass   = rsDampedCombAllpass<Real, Real, Real, Real>;
 
   int  numSamples = 5000;     // Number of samples to render.
   Real delay      =  100.3;   // Delay in samples - not necessarily integer, though 
@@ -1770,9 +1770,9 @@ void dampedCombAllpassFractional2()
   // Define types to be used:
   using Real         = double;
   using Vec          = std::vector<Real>;
-  using Allpass      = rsDampedCombAllpass<Real, Real, Real>;
-  using CombSettings = rsDampedCombSettings<Real, Real>;
-  using TransFunc    = rsSparseDigitalTransferFunction<Real>;
+  using Allpass      = rsDampedCombAllpass<Real, Real, Real, Real>;
+  using CombSettings = rsDampedCombSettings<Real, Real, Real>;
+  using TransFunc    = rsSparseDigitalTransferFunction<Real, Real>;
 
 
   // User parameters:
@@ -1853,9 +1853,9 @@ void dampedMultiCombAllpassIdea()
   using Real      = double;
   using Complex   = rsComplex<Real>;
   using Vec       = std::vector<Real>;
-  using Allpass   = rsDampedCombAllpass<Real, Real, Real>;
-  using TransFunc = rsSparseDigitalTransferFunction<Real>;
-  using SparseFlt = rsSparseFilter<Real, Real>;
+  using Allpass   = rsDampedCombAllpass<Real, Real, Real, Real>;
+  using TransFunc = rsSparseDigitalTransferFunction<Real, Real>;
+  using SparseFlt = rsSparseFilter<Real, Real, Real>;
 
   // User parameters:
   Real sampleRate = 48000;     // Sampling rate.
@@ -1907,9 +1907,10 @@ void dampedMultiCombAllpassIdea()
     ap3, delay3, decaySamples, lowOmega, lowScale, highOmega, highScale, false);
 
   // Retrieve the comb transfer functions:
-  TransFunc U1 = ap1.getCombTransferFunction();
-  TransFunc U2 = ap2.getCombTransferFunction();
-  TransFunc U3 = ap3.getCombTransferFunction();
+  Real tol = 1.e-13;
+  TransFunc U1 = ap1.getCombTransferFunction(tol);
+  TransFunc U2 = ap2.getCombTransferFunction(tol);
+  TransFunc U3 = ap3.getCombTransferFunction(tol);
 
   // Combine the comb transfer functions into one, set up a sparse filter that realizes that sum
   // of combs and retrieve its impulse response:
@@ -2031,7 +2032,7 @@ void dampedMultiCombAllpassClass()
 {
   using Real     = double;
   using Vec      = std::vector<Real>;
-  using Filter   = rsDampedMultiCombAllpass<Real, Real>;
+  using Filter   = rsDampedMultiCombAllpass<Real, Real, Real>;
   using PlotType = rsFrequencyResponsePlotSettings::Type;
 
 
@@ -2113,8 +2114,8 @@ void dampedMultiCombAllpassClass()
 
 // This is needed for the case when we want ot have a complex TPar. It's a bit dirty to use 
 // the explicit type double. Maybe it should be a third template parameter TReal or something.
-template<class TSig, class TPar, class TDly>
-void rsSetupHighDampComplex(rsDampedCombAllpass<TSig, TPar, TDly>& flt,
+template<class TSig, class TPar, class TDly, class TTol>
+void rsSetupHighDampComplex(rsDampedCombAllpass<TSig, TPar, TDly, TTol>& flt,
   int delay, TPar feedback, double dampOmega, double dampGain, bool predelay)
 {
   double a[2], b[2]; a[0] = 1;
@@ -2158,7 +2159,7 @@ void dampedCombAllpassComplex()
   //using Complex = std::complex<Real>;
   using VecR    = std::vector<Real>;
   using VecC    = std::vector<Complex>;
-  using Allpass = rsDampedCombAllpass<Complex, Complex, Real>;
+  using Allpass = rsDampedCombAllpass<Complex, Complex, Real, Real>;
 
   // User parameters:
   int  delay      =   100;
@@ -2249,7 +2250,7 @@ void dampedCombAllpassNonLin()
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Allpass = rsDampedCombAllpassNonLin<Real, Real, Real>;
+  using Allpass = rsDampedCombAllpassNonLin<Real, Real, Real, Real>;
 
   // User parameters:
   int  delay      =   100;     // Main delay roundtrip length in samples. Is M-1 in the algo
@@ -2295,7 +2296,7 @@ void dampedAllpassDelayContent()
   // Define types to be used:
   using Real    = double;
   using Vec     = std::vector<Real>;
-  using Allpass = rsDampedCombAllpass<Real, Real, Real>;
+  using Allpass = rsDampedCombAllpass<Real, Real, Real, Real>;
 
   // User parameters:
   int  delay      =    10;
@@ -2453,8 +2454,8 @@ void dampedAllpassBiComb_1p()
   using Real         = double;
   using Complex      = rsComplex<Real>;
   using Vec          = std::vector<Real>;
-  using Allpass      = rsDampedAllpassBiComb_1p<Real, Real>;
-  using SparseFilter = rsSparseFilter<Real, Real>;
+  using Allpass      = rsDampedAllpassBiComb_1p<Real, Real, Real>;
+  using SparseFilter = rsSparseFilter<Real, Real, Real>;
 
 
   int  N      = 2048;    // Number of samples to render
@@ -2905,7 +2906,7 @@ void protoFDN1()
   using VecR    = std::vector<Real>;
   using MatC    = rsMatrix<Complex>;
   using FDN     = rsProtoFDN<Real, Real>;
-  using TF      = rsSparseDigitalTransferFunction<Real>;
+  using TF      = rsSparseDigitalTransferFunction<Real, Real>;
 
   int numSamples = 1000;
   int numChans   = 3;
@@ -2982,7 +2983,7 @@ void protoFDN1()
   ok &= rsIsCloseTo(H(0,0), Hn, 1.e-13);
 
 
-  rsMatrix<TF> tf = fdn.getTransferFunction();
+  rsMatrix<TF> tf = fdn.getTransferFunction(1.e-13);
 
 
 

@@ -726,6 +726,20 @@ https://www.carvetoy.online/
 ----------------------------------------------------------------------------------------------------
 Unsorted:
 
+
+https://github.com/jariseon/amame
+
+https://github.com/jpcima/ADLplug
+
+https://github.com/mamedev/mame/tree/master
+https://www.mamedev.org/
+
+
+https://github.com/Lyve1981/dsp56300
+https://www.kvraudio.com/forum/viewtopic.php?t=559359
+- This was the GitHub porject for the vintage DSP synth emulator. But it's gone :'-(
+
+
 https://github.com/chmaha/RCverb
 https://github.com/SpotlightKid/dfzitarev1
 

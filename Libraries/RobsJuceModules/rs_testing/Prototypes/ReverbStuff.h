@@ -73,7 +73,8 @@ public:
   }
   // Maybe use a template parameter TArg for input and output. See rsDelay
 
-  void getTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const
+  template<class TTol>
+  void getTransferFunction(rsSparseDigitalTransferFunction<TPar, TTol>* tf) const
   {
     tf->num.setNumTerms(1); tf->num.setTerm(0, TPar(1), dl.getDelayInSamples());
     tf->den.setNumTerms(1); tf->den.setTerm(0, TPar(1), 0);
@@ -423,7 +424,8 @@ public:
 
   /** Assigns the passed tf pointer to our transfer function. We don't use a return value for the
   result to enable pre-allocation of the function object which is important in realtime contexts.*/
-  void getTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const
+  template<class TTol>
+  void getTransferFunction(rsSparseDigitalTransferFunction<TPar, TTol>* tf) const
   {
     int M = getDelayInSamples();
     tf->initToZero();
@@ -1574,7 +1576,7 @@ works out, try to templatize it. We may need one template parameter for the sign
 rsFloat32x4) and one for the vector index (e.g. rsInt32x4). Maybe we need one for the scalar 
 index, too - but maybe we can get away without it.  */
 
-template<class TCoef, class TDly>
+template<class TCoef, class TDly, class TTol>
 class rsDampedCombSettings                // Maybe rename to rsDampedCombParams
 {
 
@@ -1712,7 +1714,7 @@ public:
   consists of a factor z^-M for the integer delay of M samples and a factor resulting from the 
   interpolator, for example b0 + b1*z^-1 with b0 = 1-f, b1 = f for the linear interpolator with f 
   being the fractional part of the delay, i.e. delay = M+f. */
-  void mulByDelayTransFunc(rsSparseDigitalTransferFunction<TCoef>* tf) const
+  void mulByDelayTransFunc(rsSparseDigitalTransferFunction<TCoef, TTol>* tf) const
   {
     tf->multiplyByDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1, TCoef(0));  // Interpolator factor
     tf->addPreDelay((int)delay);                                            // Integer delay factor
@@ -1724,7 +1726,7 @@ public:
   // extenal use, too? Implement also mulByDampTransFunc
 
 
-  void getCombTransferFunction(rsSparseDigitalTransferFunction<TCoef>* tf) const
+  void getCombTransferFunction(rsSparseDigitalTransferFunction<TCoef, TTol>* tf) const
   {
     using Mon = rsMonomial<TCoef>;
     getDamperTransferFunction(tf);        // tf = F, F(z) is transfer function in feedback path
@@ -1744,7 +1746,7 @@ public:
   // Rename to getTransferFunction
 
 
-  void getDamperTransferFunction(rsSparseDigitalTransferFunction<TCoef>* tf) const
+  void getDamperTransferFunction(rsSparseDigitalTransferFunction<TCoef, TTol>* tf) const
   {
     tf->setupFromDenseCoeffs(bD, dmpOrd+1, aD, dmpOrd+1, TCoef(0));
 
@@ -1756,7 +1758,7 @@ public:
   }
 
 
-  void getDelayTransferFunction(rsSparseDigitalTransferFunction<TCoef>* tf) const
+  void getDelayTransferFunction(rsSparseDigitalTransferFunction<TCoef, TTol>* tf) const
   {
     tf->setupFromDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1, TCoef(0));
     tf->addPreDelay((int)delay);  // VERIFY!
@@ -1997,9 +1999,9 @@ protected:
 
 
 // Maybe make that a member of rsDampedCombSettings:
-template<class TCoef, class TDly>
+template<class TCoef, class TDly, class TTol>
 void rsSetupDecayTimes_LinViaDly(
-  rsDampedCombSettings<TCoef, TDly>& combSettings, 
+  rsDampedCombSettings<TCoef, TDly, TTol>& combSettings, 
   TDly delay, TCoef decay, TCoef loOmega, TCoef loScale, TCoef hiOmega, TCoef hiScale, 
   bool preDelay)
 {
@@ -2008,7 +2010,7 @@ void rsSetupDecayTimes_LinViaDly(
   TCoef kM = rsMakeDampBiShelf(delay, decay, loOmega, loScale, hiOmega, hiScale, b, a);
 
   // Set up the rsDampedCombSettings objects:
-  using IM = rsDampedCombSettings<TCoef, TDly>::InterpolationMode;
+  using IM = rsDampedCombSettings<TCoef, TDly, TTol>::InterpolationMode;
   combSettings.setup(delay, IM::linear, kM, 2, b, a, preDelay);
 
   // ToDo:
@@ -2029,8 +2031,8 @@ void rsSetupDecayTimes_LinViaDly(
 // questionable if it should be done this way. But we implement it here to verify that it can be 
 // done. Well - maybe an IIR interpolator could also be baked into the damping filter when the
 // damping filters sits *before* the delay in the topology?
-template<class TCoef, class TDly>
-void rsSetupDecayTimes_LinViaFb(rsDampedCombSettings<TCoef, TDly>& combSettings, 
+template<class TCoef, class TDly, class TTol>
+void rsSetupDecayTimes_LinViaFb(rsDampedCombSettings<TCoef, TDly, TTol>& combSettings, 
   TDly delay, TCoef decay, TCoef loOmega, TCoef loScale, TCoef hiOmega, TCoef hiScale, 
   bool predelay)
 {
@@ -2040,7 +2042,7 @@ void rsSetupDecayTimes_LinViaFb(rsDampedCombSettings<TCoef, TDly>& combSettings,
 
   // Possibly also bake an interpolation filter into the feedback filter to achieve fractional 
   // delay times:
-  using IM = rsDampedCombSettings<TCoef, TDly>::InterpolationMode;
+  using IM = rsDampedCombSettings<TCoef, TDly, TTol>::InterpolationMode;
   TDly delayInt  = rsFloor(delay);
   TDly delayFrac = delay - delayInt;
 
@@ -2099,7 +2101,7 @@ object of that class as member. */
 
 
 
-template<class TSig, class TPar, class TDly>
+template<class TSig, class TPar, class TDly, class TTol>
 class rsDampedCombFilter
 {
 
@@ -2157,11 +2159,11 @@ protected:
 
   void updateDelay();
 
-  using Settings = rsDampedCombSettings<TPar, TDly>;
+  using Settings = rsDampedCombSettings<TPar, TDly, TTol>;
 
 
   // Maximum order of feedback damping filter:
-  static const int maxDmpOrd = rsDampedCombSettings<TPar, TDly>::getMaxDampingOrder(); 
+  static const int maxDmpOrd = rsDampedCombSettings<TPar, TDly, TTol>::getMaxDampingOrder(); 
 
   // Embedded DSP objects:
   rsDelay<TSig> mainDelay;                // Main delayline for the comb filter
@@ -2188,15 +2190,15 @@ protected:
 };
 
 
-template<class TSig, class TPar, class TDly>
-void rsDampedCombFilter<TSig, TPar, TDly>::initSettings() 
+template<class TSig, class TPar, class TDly, class TTol>
+void rsDampedCombFilter<TSig, TPar, TDly, TTol>::initSettings() 
 { 
   s.init();
   updateDelay();
 }
 
-template<class TSig, class TPar, class TDly>
-void rsDampedCombFilter<TSig, TPar, TDly>::setMaxIntDelayInSamples(int newMaxDelay)
+template<class TSig, class TPar, class TDly, class TTol>
+void rsDampedCombFilter<TSig, TPar, TDly, TTol>::setMaxIntDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
   mainDelay.setMaxDelayInSamples(maxM);
@@ -2204,8 +2206,8 @@ void rsDampedCombFilter<TSig, TPar, TDly>::setMaxIntDelayInSamples(int newMaxDel
 }
 
 
-template<class TSig, class TPar, class TDly>
-void rsDampedCombFilter<TSig, TPar, TDly>::setup(TDly delay, TPar feedback, int dampOrder,
+template<class TSig, class TPar, class TDly, class TTol>
+void rsDampedCombFilter<TSig, TPar, TDly, TTol>::setup(TDly delay, TPar feedback, int dampOrder,
   const TPar* dampCoeffsB, const TPar* dampCoeffsA, bool predelayMode)
 {
   s.setup(delay, Settings::InterpolationMode::nearest, 
@@ -2215,8 +2217,8 @@ void rsDampedCombFilter<TSig, TPar, TDly>::setup(TDly delay, TPar feedback, int 
   updateDelay();
 }
 
-template<class TSig, class TPar, class TDly>
-void rsDampedCombFilter<TSig, TPar, TDly>::reset()
+template<class TSig, class TPar, class TDly, class TTol>
+void rsDampedCombFilter<TSig, TPar, TDly, TTol>::reset()
 {
   mainDelay.reset();
   combOut = TSig(0);
@@ -2229,8 +2231,8 @@ void rsDampedCombFilter<TSig, TPar, TDly>::reset()
 }
 
 
-template<class TSig, class TPar, class TDly>
-void rsDampedCombFilter<TSig, TPar, TDly>::updateDelay()
+template<class TSig, class TPar, class TDly, class TTol>
+void rsDampedCombFilter<TSig, TPar, TDly, TTol>::updateDelay()
 {
   M = s.getIntDelay();
   mainDelay.setDelayInSamples(M);
@@ -2305,7 +2307,7 @@ or with shelving or peak/bell filters with negative dB gains.
 
 */
 
-template<class TSig, class TPar, class TDly>
+template<class TSig, class TPar, class TDly, class TTol>
 class rsDampedCombAllpass // ToDo: derive from rsDampedCombFilter ..or use it as member
 {
 
@@ -2393,14 +2395,16 @@ public:
   // capacity pre-allocated. Doing so is the responsibility of the caller. They are much less 
   // convenient to use but it's sometimes necessary when one needs to compute these transfer 
   // function in a realtime thread.
-  void getCorrectorTransferFunction(rsSparseDigitalTransferFunction<TPar>* tf) const
+  template<class TTol>
+  void getCorrectorTransferFunction(rsSparseDigitalTransferFunction<TPar, TTol>* tf) const
   {
     getCombTransferFunction(tf);
     tf->invert();
     tf->reflectZeros();
   }
 
-  void getCombTransferFunction(     rsSparseDigitalTransferFunction<TPar>* tf) const
+  //template<class TTol>
+  void getCombTransferFunction(rsSparseDigitalTransferFunction<TPar, TTol>* tf) const
   {
     s.getCombTransferFunction(tf);
   }
@@ -2411,7 +2415,8 @@ public:
   //}
   //// This may not be needed
 
-  void getDelayTransferFunction(    rsSparseDigitalTransferFunction<TPar>* tf) const
+  //template<class TTol>
+  void getDelayTransferFunction(rsSparseDigitalTransferFunction<TPar, TTol>* tf) const
   {
     tf->num._setNumTerms(1); tf->num._setTerm(0, TPar(1), M);
     tf->den._setNumTerms(1); tf->den._setTerm(0, TPar(1), 0);
@@ -2422,10 +2427,55 @@ public:
   // Maybe get rid of them - they are merely more convenient versions of the ones above (but they 
   // allocate)...but: the overall getTransferFunction function is missing. I think, to implement 
   // that in a non-allocating way, we would need a temporary transfer function variable:
-  rsSparseDigitalTransferFunction<TPar> getTransferFunction() const;
-  rsSparseDigitalTransferFunction<TPar> getCombTransferFunction() const;
-  rsSparseDigitalTransferFunction<TPar> getCorrectorTransferFunction() const;
-  rsSparseDigitalTransferFunction<TPar> getDamperTransferFunction() const;
+
+  //template<class TTol>
+  rsSparseDigitalTransferFunction<TPar, TTol> getTransferFunction(TTol tol) const
+  {
+    return getCombTransferFunction(tol) * getCorrectorTransferFunction(tol);
+  }
+
+  //template<class TTol>
+  rsSparseDigitalTransferFunction<TPar, TTol> getCombTransferFunction(TTol tol) const
+  {
+    using TF = rsSparseDigitalTransferFunction<TPar, TTol>;
+
+    TF one; one.num._appendTerm(TPar(1), 0);
+    TF z1;  z1.num._appendTerm( TPar(1), 1);
+    TF F = getDamperTransferFunction(tol);    // Feedback filter F(z)
+    TF A; getDelayTransferFunction(&A);       // Delay filter A(z)
+    TPar k = s.getFeedbackGain();
+    if(s.isInPreDelayMode())
+      return A   / (one + k * z1 * F * A);    // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
+    else 
+      return one / (one + k * z1 * F * A);    // U(z) =   1  / (1 + k * z^-1 * F(z) * A(z))
+  }
+
+  //template<class TTol>
+  rsSparseDigitalTransferFunction<TPar, TTol> getCorrectorTransferFunction(TTol tol) const
+  {
+    using TF = rsSparseDigitalTransferFunction<TPar, TTol>;
+
+    TF C = getCombTransferFunction(tol);
+    C.invert();
+    C.reflectZeros();
+
+    return C;
+  }
+
+  //template<class TTol>
+  rsSparseDigitalTransferFunction<TPar, TTol> getDamperTransferFunction(TTol tol) const
+  {
+    rsSparseDigitalTransferFunction<TPar, TTol> H;
+    H.setRoundoffTolerance(tol);
+    H.setupFromDenseCoeffs(s.getDampCoeffsB(), s.getDampingOrder()+1,
+      s.getDampCoeffsA(), s.getDampingOrder()+1, TPar(0));
+    return H;
+
+    // Factor out into s.getDamperTransferFunction();
+  }
+  // Maybe get rid of them. Yes, they make some things more convenient - but they blow up the API
+  // to much for that. Maybe, if needed, implement them as free functions somewhere in the
+  // rs_testing module
 
 
 
@@ -2477,7 +2527,7 @@ protected:
   rsDelay<TSig> corrDelay;                // Delayline for the correction filter
 
   // Maximum order of feedback damping filter:
-  static const int maxDmpOrd = rsDampedCombSettings<TPar, TDly>::getMaxDampingOrder(); 
+  static const int maxDmpOrd = rsDampedCombSettings<TPar, TDly, TTol>::getMaxDampingOrder(); 
   // Maybe replace double with TDly - a 3rd template parameter for this class
 
   // State:
@@ -2487,8 +2537,8 @@ protected:
   TSig yc[maxDmpOrd];                     // State for the poles of the correction filter
 
   // Settings:
-  rsDampedCombSettings<TPar, TDly> s;     // Rename this! ...maybe to settings
-  int M = 0;                              // Delayline length (redundant but convenient)
+  rsDampedCombSettings<TPar, TDly, TTol> s;   // Rename this! ...maybe to settings
+  int M = 0;                                  // Delayline length (redundant but convenient)
 
   // Notes:
   //
@@ -2520,8 +2570,8 @@ protected:
   //   design perspective
 };
 
-template<class TSig, class TPar, class TDly>
-void rsDampedCombAllpass<TSig, TPar, TDly>::setMaxIntDelayInSamples(int newMaxDelay)
+template<class TSig, class TPar, class TDly, class TTol>
+void rsDampedCombAllpass<TSig, TPar, TDly, TTol>::setMaxIntDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
   mainDelay.setMaxDelayInSamples(maxM);
@@ -2532,12 +2582,12 @@ void rsDampedCombAllpass<TSig, TPar, TDly>::setMaxIntDelayInSamples(int newMaxDe
   //   corrDelay.setMaxDelayInSamples(maxM + s.getMaxDampPlusIntOrder() + 1);
 }
 
-template<class TSig, class TPar, class TDly>
-void rsDampedCombAllpass<TSig, TPar, TDly>::setup(int delay, TPar feedback, int dampOrder,
+template<class TSig, class TPar, class TDly, class TTol>
+void rsDampedCombAllpass<TSig, TPar, TDly, TTol>::setup(int delay, TPar feedback, int dampOrder,
   const TPar* dampCoeffsB, const TPar* dampCoeffsA, bool predelayMode)
 {
   M = delay - 1;             // -1 corrects for unit delay in feedback path
-  s.setup(delay, rsDampedCombSettings<TPar, TDly>::InterpolationMode::nearest, 
+  s.setup(delay, rsDampedCombSettings<TPar, TDly, TTol>::InterpolationMode::nearest, 
     feedback, dampOrder, dampCoeffsB, dampCoeffsA, predelayMode);
   updateDelays();
 
@@ -2556,8 +2606,8 @@ void rsDampedCombAllpass<TSig, TPar, TDly>::setup(int delay, TPar feedback, int 
   //   design/setup functions. This class here should then maintain a settings member of this type.
 }
 
-template<class TSig, class TPar, class TDly>
-void rsDampedCombAllpass<TSig, TPar, TDly>::initSettings()
+template<class TSig, class TPar, class TDly, class TTol>
+void rsDampedCombAllpass<TSig, TPar, TDly, TTol>::initSettings()
 {
   mainDelay.setDelayInSamples(0);
   corrDelay.setDelayInSamples(0);
@@ -2565,15 +2615,15 @@ void rsDampedCombAllpass<TSig, TPar, TDly>::initSettings()
   M = 0;
 }
 
-template<class TSig, class TPar, class TDly>
-rsComplex<TPar> rsDampedCombAllpass<TSig, TPar, TDly>::getTransferFunctionAt(
+template<class TSig, class TPar, class TDly, class TTol>
+rsComplex<TPar> rsDampedCombAllpass<TSig, TPar, TDly, TTol>::getTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
   return getCombTransferFunctionAt(z) * getCorrectorTransferFunctionAt(z);
 }
 
-template<class TSig, class TPar, class TDly>
-rsComplex<TPar> rsDampedCombAllpass<TSig, TPar, TDly>::getCombTransferFunctionAt(
+template<class TSig, class TPar, class TDly, class TTol>
+rsComplex<TPar> rsDampedCombAllpass<TSig, TPar, TDly, TTol>::getCombTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
   using Complex = rsComplex<TPar>;
@@ -2614,15 +2664,15 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar, TDly>::getCombTransferFunctionAt
   //   delayInFeedbackDampCompensated...or: feedbackDamped, forwardDamped, forwardDampedCompensated
 }
 
-template<class TSig, class TPar, class TDly>
-rsComplex<TPar> rsDampedCombAllpass<TSig, TPar, TDly>::getDamperTransferFunctionAt(
+template<class TSig, class TPar, class TDly, class TTol>
+rsComplex<TPar> rsDampedCombAllpass<TSig, TPar, TDly, TTol>::getDamperTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
   return s.getDamperTransferFunctionAt(z);
 }
 
-template<class TSig, class TPar, class TDly>
-rsComplex<TPar> rsDampedCombAllpass<TSig, TPar, TDly>::getCorrectorTransferFunctionAt(
+template<class TSig, class TPar, class TDly, class TTol>
+rsComplex<TPar> rsDampedCombAllpass<TSig, TPar, TDly, TTol>::getCorrectorTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
   int dmpOrd = s.getDampingOrder();
@@ -2647,57 +2697,63 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar, TDly>::getCorrectorTransferFunct
   //   computation
 }
 
-template<class TSig, class TPar, class TDly>
-rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar, TDly>
-                                      ::getTransferFunction() const
-{
-  return getCombTransferFunction() * getCorrectorTransferFunction();
-}
+////template<class TTol>
+////template<class TSig, class TPar, class TDly>
+//template<class TSig, class TPar, class TDly, class TTol>
+//rsSparseDigitalTransferFunction<TPar, TTol> rsDampedCombAllpass<TSig, TPar, TDly>
+//                                      ::getTransferFunction(TTol tol) const
+//{
+//  return getCombTransferFunction(tol) * getCorrectorTransferFunction(tol);
+//}
 
-template<class TSig, class TPar, class TDly>
-rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar, TDly>
-                                      ::getCombTransferFunction() const
-{
-  using TF = rsSparseDigitalTransferFunction<TPar>;
+//template<class TTol>
+//template<class TSig, class TPar, class TDly>
+//rsSparseDigitalTransferFunction<TPar, TTol> rsDampedCombAllpass<TSig, TPar, TDly>
+//                                      ::getCombTransferFunction(TTol tol) const
+//{
+//  using TF = rsSparseDigitalTransferFunction<TPar, TTol>;
+//
+//  TF one; one.num._appendTerm(TPar(1), 0);
+//  TF z1;  z1.num._appendTerm( TPar(1), 1);
+//  TF F = getDamperTransferFunction();       // Feedback filter F(z)
+//  TF A; getDelayTransferFunction(&A);       // Delay filter A(z)
+//  TPar k = s.getFeedbackGain();
+//  if(s.isInPreDelayMode())
+//    return A   / (one + k * z1 * F * A);    // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
+//  else 
+//    return one / (one + k * z1 * F * A);    // U(z) =   1  / (1 + k * z^-1 * F(z) * A(z))
+//}
 
-  TF one; one.num._appendTerm(TPar(1), 0);
-  TF z1;  z1.num._appendTerm( TPar(1), 1);
-  TF F = getDamperTransferFunction();       // Feedback filter F(z)
-  TF A; getDelayTransferFunction(&A);       // Delay filter A(z)
-  TPar k = s.getFeedbackGain();
-  if(s.isInPreDelayMode())
-    return A   / (one + k * z1 * F * A);    // U(z) = A(z) / (1 + k * z^-1 * F(z) * A(z))
-  else 
-    return one / (one + k * z1 * F * A);    // U(z) =   1  / (1 + k * z^-1 * F(z) * A(z))
-}
+//template<class TTol>
+//template<class TSig, class TPar, class TDly>
+//rsSparseDigitalTransferFunction<TPar, TTol> rsDampedCombAllpass<TSig, TPar, TDly>
+//                                      ::getCorrectorTransferFunction(TTol tol) const
+//{
+//  using TF = rsSparseDigitalTransferFunction<TPar, TTol>;
+//
+//  TF C = getCombTransferFunction(tol);
+//  C.invert();
+//  C.reflectZeros();
+//
+//  return C;
+//}
 
-template<class TSig, class TPar, class TDly>
-rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar, TDly>
-                                      ::getCorrectorTransferFunction() const
-{
-  using TF = rsSparseDigitalTransferFunction<TPar>;
+//template<class TTol>
+//template<class TSig, class TPar, class TDly>
+//rsSparseDigitalTransferFunction<TPar, TTol> rsDampedCombAllpass<TSig, TPar, TDly>
+//                                      ::getDamperTransferFunction(TTol tol) const
+//{
+//  rsSparseDigitalTransferFunction<TPar, TTol> H;
+//  H.setRoundoffTolerance(tol);
+//  H.setupFromDenseCoeffs(s.getDampCoeffsB(), s.getDampingOrder()+1,
+//                         s.getDampCoeffsA(), s.getDampingOrder()+1, TPar(0));
+//  return H;
+//
+//  // Factor out into s.getDamperTransferFunction();
+//}
 
-  TF C = getCombTransferFunction();
-  C.invert();
-  C.reflectZeros();
-
-  return C;
-}
-
-template<class TSig, class TPar, class TDly>
-rsSparseDigitalTransferFunction<TPar> rsDampedCombAllpass<TSig, TPar, TDly>
-                                      ::getDamperTransferFunction() const
-{
-  rsSparseDigitalTransferFunction<TPar> H;
-  H.setupFromDenseCoeffs(s.getDampCoeffsB(), s.getDampingOrder()+1,
-                         s.getDampCoeffsA(), s.getDampingOrder()+1, TPar(0));
-  return H;
-
-  // Factor out into s.getDamperTransferFunction();
-}
-
-template<class TSig, class TPar, class TDly>
-void rsDampedCombAllpass<TSig, TPar, TDly>::reset()
+template<class TSig, class TPar, class TDly, class TTol>
+void rsDampedCombAllpass<TSig, TPar, TDly, TTol>::reset()
 {
   mainDelay.reset();
   corrDelay.reset();
@@ -2711,8 +2767,8 @@ void rsDampedCombAllpass<TSig, TPar, TDly>::reset()
   AT::clear(yc, maxDmpOrd);
 }
 
-template<class TSig, class TPar, class TDly>
-TSig rsDampedCombAllpass<TSig, TPar, TDly>::getSampleComb(TSig in)
+template<class TSig, class TPar, class TDly, class TTol>
+TSig rsDampedCombAllpass<TSig, TPar, TDly, TTol>::getSampleComb(TSig in)
 {
   TPar k = s.getFeedbackGain();
   if(s.isInPreDelayMode())
@@ -2737,8 +2793,8 @@ TSig rsDampedCombAllpass<TSig, TPar, TDly>::getSampleComb(TSig in)
   //   be useful for something to have predelay built in after all. 
 }
 
-template<class TSig, class TPar, class TDly>
-TSig rsDampedCombAllpass<TSig, TPar, TDly>::applyCorrector(TSig in)
+template<class TSig, class TPar, class TDly, class TTol>
+TSig rsDampedCombAllpass<TSig, TPar, TDly, TTol>::applyCorrector(TSig in)
 {
   // Retrieve feedback gain and damping coeffs:
   TPar k        = s.getFeedbackGain();
@@ -2771,8 +2827,8 @@ TSig rsDampedCombAllpass<TSig, TPar, TDly>::applyCorrector(TSig in)
   // naive prototype, we should do it with the additional filters.
 }
 
-template<class TSig, class TPar, class TDly>
-void rsDampedCombAllpass<TSig, TPar, TDly>::updateDelays()
+template<class TSig, class TPar, class TDly, class TTol>
+void rsDampedCombAllpass<TSig, TPar, TDly, TTol>::updateDelays()
 {
   mainDelay.setDelayInSamples(M);
   corrDelay.setDelayInSamples(M + s.getDampingOrder() + 1); 
@@ -2788,8 +2844,8 @@ void rsDampedCombAllpass<TSig, TPar, TDly>::updateDelays()
 
 
 // A free function to set up the object with a more convenient parametrization:
-template<class TSig, class TPar, class TDly>
-void rsSetupHighDamp(rsDampedCombAllpass<TSig, TPar, TDly>& flt,
+template<class TSig, class TPar, class TDly, class TTol>
+void rsSetupHighDamp(rsDampedCombAllpass<TSig, TPar, TDly, TTol>& flt,
   int delay, TPar feedback, TPar dampOmega, TPar dampGain, bool predelay)
 {
   TPar a[2], b[2]; a[0] = 1;
@@ -2802,8 +2858,8 @@ void rsSetupHighDamp(rsDampedCombAllpass<TSig, TPar, TDly>& flt,
 // filter" ...ToDo: Explain why this works. Does it actually work, though? ..I think it works for
 // FIR interpolation filters but not IIR (like allpass interpolators)
 //template<class TSig, class TPar>
-template<class TSig, class TPar, class TDly>
-void rsSetupFractional_LinViaFb(rsDampedCombAllpass<TSig, TPar, TDly>& flt,
+template<class TSig, class TPar, class TDly, class TTol>
+void rsSetupFractional_LinViaFb(rsDampedCombAllpass<TSig, TPar, TDly, TTol>& flt,
   TPar delay, TPar feedback, bool predelay)
 {
   int  delayInt  = (int) rsFloor(delay);
@@ -2849,8 +2905,8 @@ void rsSetupFractional_LinViaFb(rsDampedCombAllpass<TSig, TPar, TDly>& flt,
 // times for low and high frequencies. The scale factors are given as raw factors for the RT60 and
 // crossover frequencies are given as omega.
 //template<class TSig, class TPar>
-template<class TSig, class TPar, class TDly>
-void rsSetupDecayTimes_LinViaFb(rsDampedCombAllpass<TSig, TPar, TDly>& flt, 
+template<class TSig, class TPar, class TDly, class TTol>
+void rsSetupDecayTimes_LinViaFb(rsDampedCombAllpass<TSig, TPar, TDly, TTol>& flt, 
   TPar delay, TPar decay, TPar loOmega, TPar loScale, TPar hiOmega, TPar hiScale, 
   bool predelay)
 {
@@ -2927,7 +2983,7 @@ A class that creates an allpass filter out of a linear combination of multiple c
 ...TBC... */
 
 
-template<class TSig, class TPar>
+template<class TSig, class TPar, class TTol> // Get rid of TTol - Give member functions that need it their own template param
 class rsDampedMultiCombAllpass   // Maybe rename to rsDampedCombBankAllpass
 {
 
@@ -3051,12 +3107,12 @@ public:
 
 
 
-  rsSparseDigitalTransferFunction<TPar> getTransferFunction() const
+  rsSparseDigitalTransferFunction<TPar, TTol> getTransferFunction() const
   {
     return getCombTransferFunction() * getCorrectorTransferFunction();
   }
 
-  rsSparseDigitalTransferFunction<TPar> getCombTransferFunction() const
+  rsSparseDigitalTransferFunction<TPar, TTol> getCombTransferFunction() const
   {
     return combBank.getTransferFunction();
     //return U;  // Should also work, I think.
@@ -3064,7 +3120,7 @@ public:
   // allocates - creates copy of the transfer function object.
   // Maybe return a const ref?
 
-  rsSparseDigitalTransferFunction<TPar> getCorrectorTransferFunction() const
+  rsSparseDigitalTransferFunction<TPar, TTol> getCorrectorTransferFunction() const
   {
     return corrector.getTransferFunction();
   }
@@ -3105,8 +3161,8 @@ protected:
 
 
   // Embedded DSP objects:
-  rsSparseFilter<TSig, TPar> combBank;
-  rsSparseFilter<TSig, TPar> corrector;
+  rsSparseFilter<TSig, TPar, TTol> combBank;
+  rsSparseFilter<TSig, TPar, TTol> corrector;
 
 
 
@@ -3165,18 +3221,18 @@ protected:
 
   // This object will be used compute the filter coeffs of the prototype combs:
   //rsDampedCombSettings<TPar> protoComb;
-  rsDampedCombSettings<TPar, double> protoComb;
-  // Replace double with TDly
+  rsDampedCombSettings<TPar, double, TTol> protoComb;
+  // TODO: Replace double with TDly
 
   // Transfer function objects used for temporaries in internal computations in our updateFilters()
   // function. They are members rather than locals there to avoid heap allocations in this 
   // function.
-  rsSparseDigitalTransferFunction<TPar> U, Ui;
+  rsSparseDigitalTransferFunction<TPar, TTol> U, Ui;
 };
 
 
-template<class TSig, class TPar>
-void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
+template<class TSig, class TPar, class TTol>
+void rsDampedMultiCombAllpass<TSig, TPar, TTol>::updateFilters()
 {
   // This is still under construction. It still has allocations and it needs to treat the case 
   // numCombs == 0. ...the allocations might be gone now - but verify this! To treat numCombs == 0,
@@ -3186,7 +3242,7 @@ void rsDampedMultiCombAllpass<TSig, TPar>::updateFilters()
   // back to the currently implemented case. Then we wouldn't need a special treatment and would
   // have an even more flexible filter.
 
-  using RatFunc   = rsSparseRationalFunction<TPar>;
+  using RatFunc   = rsSparseRationalFunction<TPar, TTol>;
   //using TransFunc = rsSparseDigitalTransferFunction<TPar>;
 
   TPar decaySamples =      decayTime     * sampleRate;
@@ -3423,7 +3479,7 @@ is applied to that to make the whole filter allpass..
 
 ...TBC... see AllpassStuff.txt in the private repo for more details  */
 
-template<class TSig, class TPar>
+template<class TSig, class TPar, class TTol>
 class rsDampedAllpassBiComb_1p  // rename to rsDampedBiCombAllpass
 {
 
@@ -3457,7 +3513,7 @@ public:
 
   /** Converts the weighted sum of the two comb filters into a (sparse) direct form filter. The
   object is passed as pointer - the passed rsSparseFilter object serves as output variable.  */
-  void convertCombSumToDirectForm(rsSparseFilter<TSig, TPar>* sparseDirectFormFilter);
+  void convertCombSumToDirectForm(rsSparseFilter<TSig, TPar, TTol>* sparseDirectFormFilter);
   // Not true anymore:
   // The function may trigger a memory allocation in the passed filter object if it doesn't 
   // already have enough memory allocated. You probably wan to avoid calling it on a realtime 
@@ -3541,7 +3597,7 @@ protected:
   rsDelay<TSig> mainDelay2;
 
   // Correction filter to turn the whole filter into an allpass:
-  rsSparseFilter<TSig, TPar> corrector;
+  rsSparseFilter<TSig, TPar, TTol> corrector;
 
   // The stored comb outputs for use in feedback loop:
   TSig combOut1 = TSig(0);
@@ -3580,8 +3636,8 @@ protected:
 };
 
 
-template<class TSig, class TPar>
-void rsDampedAllpassBiComb_1p<TSig, TPar>::rsDampedAllpassBiComb_1p<TSig, TPar>::reset()
+template<class TSig, class TPar, class TTol>
+void rsDampedAllpassBiComb_1p<TSig, TPar, TTol>::rsDampedAllpassBiComb_1p<TSig, TPar, TTol>::reset()
 {
   mainDelay1.reset();
   mainDelay2.reset();
@@ -3600,8 +3656,9 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::rsDampedAllpassBiComb_1p<TSig, TPar>:
   y21di = 0;
 }
 
-template<class TSig, class TPar>
-void rsDampedAllpassBiComb_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
+//template<class TSig, class TPar>
+template<class TSig, class TPar, class TTol>
+void rsDampedAllpassBiComb_1p<TSig, TPar, TTol>::setMaxDelayInSamples(int newMaxDelay)
 {
   int maxM = newMaxDelay - 1;
   mainDelay1.setMaxDelayInSamples(maxM);
@@ -3610,8 +3667,9 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
   // See convertCombSumToDirectForm(). The maximum delay that occurs there is: M1+M2+4.
 }
 
-template<class TSig, class TPar>
-void rsDampedAllpassBiComb_1p<TSig, TPar>::setup(
+//template<class TSig, class TPar>
+template<class TSig, class TPar, class TTol>
+void rsDampedAllpassBiComb_1p<TSig, TPar, TTol>::setup(
   int delay1, TPar gain1, TPar feedback1, TPar coeffB10, TPar coeffB11, TPar coeffA11,
   int delay2, TPar gain2, TPar feedback2, TPar coeffB20, TPar coeffB21, TPar coeffA21)
 {
@@ -3636,8 +3694,9 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::setup(
 }
 
 
-template<class TSig, class TPar>
-rsComplex<TPar> rsDampedAllpassBiComb_1p<TSig, TPar>::getCombTransferFunctionAt(
+//template<class TSig, class TPar>
+template<class TSig, class TPar, class TTol>
+rsComplex<TPar> rsDampedAllpassBiComb_1p<TSig, TPar, TTol>::getCombTransferFunctionAt(
   const rsComplex<TPar>& z) const
 {
   rsError("Not yet implemented");
@@ -3649,9 +3708,10 @@ rsComplex<TPar> rsDampedAllpassBiComb_1p<TSig, TPar>::getCombTransferFunctionAt(
   //   combs and forming a weighted sum of them.
 }
 
-template<class TSig, class TPar>
-void rsDampedAllpassBiComb_1p<TSig, TPar>::convertCombSumToDirectForm(
-  rsSparseFilter<TSig, TPar>* sparseFilter)
+//template<class TSig, class TPar>
+template<class TSig, class TPar, class TTol>
+void rsDampedAllpassBiComb_1p<TSig, TPar, TTol>::convertCombSumToDirectForm(
+  rsSparseFilter<TSig, TPar, TTol>* sparseFilter)
 {
   // Set up feedforward coeffs:
   sparseFilter->setNumNumeratorTerms(9);
@@ -3719,8 +3779,9 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::convertCombSumToDirectForm(
 }
 
 
-template<class TSig, class TPar>
-void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
+//template<class TSig, class TPar>
+template<class TSig, class TPar, class TTol>
+void rsDampedAllpassBiComb_1p<TSig, TPar, TTol>::updateDelaysAndCorrectorCoeffs()
 {
   mainDelay1.setDelayInSamples(M1);
   mainDelay2.setDelayInSamples(M2);
@@ -3735,8 +3796,8 @@ void rsDampedAllpassBiComb_1p<TSig, TPar>::updateDelaysAndCorrectorCoeffs()
 
 /** A nonlinear extension of rsDampedCombAllpass. At the moment, it's just an experimental stub. */
 
-template<class TSig, class TPar, class TDly>
-class rsDampedCombAllpassNonLin : public rsDampedCombAllpass<TSig, TPar, TDly>
+template<class TSig, class TPar, class TDly, class TTol>
+class rsDampedCombAllpassNonLin : public rsDampedCombAllpass<TSig, TPar, TDly, TTol>
 {
 
 public:
@@ -4276,8 +4337,8 @@ public:
   // Allocates! Not for realtime use!
   
 
-
-  void getDelayTransferFunction(int n, rsSparseDigitalTransferFunction<TPar>* tf) const
+  template<class TTol>
+  void getDelayTransferFunction(int n, rsSparseDigitalTransferFunction<TPar, TTol>* tf) const
   {
     int M = getDelay(n);
     tf->num._setNumTerms(1); tf->num._setTerm(0, TPar(dampFactors[n]), M+1);
@@ -4287,9 +4348,10 @@ public:
 
 
   // Under construction:
-  rsMatrix<rsSparseDigitalTransferFunction<TPar>> getTransferFunction()
+  template<class TTol>
+  rsMatrix<rsSparseDigitalTransferFunction<TPar, TTol>> getTransferFunction(TTol tol)
   {
-    using TF  = rsSparseDigitalTransferFunction<TPar>;
+    using TF  = rsSparseDigitalTransferFunction<TPar, TTol>;
     using LA  = rsLinearAlgebraNew;
     using Mat = rsMatrix<TF>;
 
@@ -4301,7 +4363,9 @@ public:
     Mat D(numChans, numChans);
     for(int n = 0; n < numChans; n++)
     {
-      getDelayTransferFunction(n, &(D(n,n)));
+      // What about the tolerance? Should we set it here? Like D(n,n).setRoundoffTolerance(tol)?
+
+      getDelayTransferFunction(n, &(D(n,n))); 
       D(n,n).invert();
       // After the loop, the denominators of the diagonal elements of D are almost 1 but not 
       // exactly. Maybe an epsilon below or something? But why? Shouldn't the values be exact? 

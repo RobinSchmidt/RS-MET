@@ -494,3 +494,11 @@ Z-Transform
  an FFT. The index m is the index into the exponential decay rates that we use, i.e. 
  e_m[n] = exp(d[m] * n) where d[m] is the m-th decay rate. To test it, compare the results to what
  we produce with  rsEvaluateTransferFunctionNumerically()  with filter impulse responses
+
+----------------------------------------------------------------------------------------------------
+Arbitrary order filter
+
+- We want to realize an analog transfer function of the form H(s) = 1 / (1 + s)^p  where p is the 
+  order of the filter. For integer p, this can be realized by chaining p first order lowpass 
+  filters. For non-integer p, my idea is to try to approximate it by making an n-th order Taylor 
+  expansion of (1 + s)^p. This should result in a polynomial in s
