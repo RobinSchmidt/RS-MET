@@ -12,8 +12,7 @@ template<class T, class TTol = rsEmptyType>
 class rsSparseRationalFunction
 {
 
-//public:   // old
-protected:  // new
+public:
 
 
   // For convenience:
@@ -22,68 +21,12 @@ protected:  // new
 
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Data */
-
-  /** Numerator and denominator polynomials. These data members are public because it's really more
-  convenient that way. We could do some sort of facade pattern and delegation but it would 
-  literally just be boilerplate - here and in client code - and a lot of it. We would have to 
-  implement functions like:
-
-    void setNumeratorCoeff(int index, T newCoeff) { num.setCoeff(index, newCoeff); }
-
-  and then client code would call things like:
-
-    r.setNumeratorCoeff(...);
-
-  instead of:
-
-    r.num.setCoeff(...);
-
-  We would have to do this basically for all setters and getters of rsSparsePolynomial - twice. 
-  And there are a lot of setters and getters. Nope. Just nope! Let's make num and den public 
-  instead. Yes, I'm fully aware that it goes against OOP encapsulation practices. I know the rules 
-  and break them deliberately here. We do not really have to maintain any class invariants or 
-  anything like that so it's ok to let client code directly access and manipulate the numerator and 
-  denominator. The only donwside may be that the variable names "num" and "den" now become part of
-  the public API of the class and can't be changed later. I can live with that. */
-
-  //rsSparsePolynomial<T> num, den;  
-  // This now breaks the allpass unit test since we use TTol in rsSparsePolynomial. I expect the 
-  // problem to go away when we also introduce TTol here an assign it properly (to double) in the 
-  // unit tests. It's understandable that the tests are now broken because instantiating 
-  // rsSparsePolynomial with the default empty 2nd template parameter will implicitly set the 
-  // tolerances in the tests to zero such that now all float comparisons are exact comparisons and 
-  // therefore fail.
-
-  rsSparsePolynomial<T, TTol> num, den;  
-
-  // ...well...wait: There actually is a class invariant that (maybe) should be maintained: The 
-  // denominator should be nonzero...hmmm...well...or maybe we just take the position that the onus 
-  // is on the client to avoid divisions by zero. That's actually also how it works for int and 
-  // float. Such variables (and also rsFraction) also do not nanny the programmer that way. So why
-  // should we? Or maybe I'm just too lazy to write the boilerplate and trying to rationalize it? 
-  // But it's not just about writing the boilerplate. It's also about readability and bloat - not 
-  // on the binary code side (the delegations would be inlined) but on the source code side. 
-  //
-  // Hmm...but maybe the assumption that we really want expose all the setters and getters for the
-  // two polynomials is wrong? Maybe we actually want to deal with a higher level interface here?
-  // If really access to the full functionality of rsSparsPolynomial is needed, we could provide
-  // getters like getNumerator/DenominatorReference() for that.
-  //
-  // We'll see.....naaah! I think, I should make them protected!
-
-
-public:
-
-
-  //-----------------------------------------------------------------------------------------------
   /** \name Lifetime */
 
-  /** Default constructor. Creates the rational function that is constantly zero. */
-  rsSparseRationalFunction() 
-  {
-    den._appendTerm(T(1), 0);
-  }
+  /** Default constructor. Creates the rational function that is constantly zero. The zero function
+  is canonically represented as the rational function  f(x) = 0 * x^0 / 1 * x^0  where the zero in
+  the numerator is canonically represented as empty coefficient array. */
+  rsSparseRationalFunction() { den._appendTerm(T(1), 0); }
 
   /** Constructor that converts a number c to the constnat function that just produces c for any 
   input. */
@@ -91,7 +34,7 @@ public:
   {
     if(!rsIsZero(c))           // The zero sparse polynomial is canonically represented as empty,
       num._appendTerm(c, 0);   // ..so we append the c*x^0 term only if c is nonzero.
-    den._appendTerm(T(1), 0);
+    den._appendTerm(T(1), 0);  // The denominator is always one.
   }
 
   rsSparseRationalFunction(
@@ -102,9 +45,6 @@ public:
   // i.e. can also accept lvalue references? I think, an rvalue reference parameter can accept 
   // both kinds of arguments: rvalue- and lvalue references but lvalue reference parameters can
   // only accept lvalue reference arguments. Verify!
-
-
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -122,6 +62,7 @@ public:
   }
   // Maybe it should have an underscore? It puts the function itno an invalid state representing
   // the function 0/0 (I think)
+  // Move to low level API!
 
   /** Initializes this rational function to the zero function: f(x) = 0. We represent this as
   f(x) = 0*x^0 / 1*x^0. The array for the numerator will be empty and the array for the 
@@ -373,7 +314,15 @@ public:
   // The first parameter p may alias to the result r.
 
 
+protected:
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Data */
+
+  rsSparsePolynomial<T, TTol> num, den;  // Numerator and denominator polynomials.
+
 };
+
 
 /** Multiplies a coefficient and a sparse rational function. */
 template<class T, class TTol>
