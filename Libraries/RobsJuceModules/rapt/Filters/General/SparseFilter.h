@@ -20,6 +20,8 @@ class rsSparseFilter
 public:
 
 
+  using SparsePoly = rsSparsePolynomial<TPar, TTol>;  // For convenience
+
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
@@ -185,16 +187,19 @@ public:
   {
     rsAssert(isFilterValid());
 
+    const SparsePoly& num = H.getNumeratorConst();
+    const SparsePoly& den = H.getDenominatorConst();
+
     // Apply denominator of H as feedback part:
     TSig tmp = in;
-    for(int i = 1; i < H.den.getNumTerms(); i++)
-      tmp -= H.den.getCoeff(i) * delayLine.readOutputAt(H.den.getPower(i));
+    for(int i = 1; i < den.getNumTerms(); i++)
+      tmp -= den.getCoeff(i) * delayLine.readOutputAt(den.getPower(i));
     delayLine.writeInputNoUpdate(tmp);
 
     // Apply numerator of H as feedforward path:
     tmp = 0;
-    for(int i = 0; i < H.num.getNumTerms(); i++)
-      tmp += H.num.getCoeff(i) * delayLine.readOutputAt(H.num.getPower(i));
+    for(int i = 0; i < num.getNumTerms(); i++)
+      tmp += num.getCoeff(i) * delayLine.readOutputAt(num.getPower(i));
 
     // Update delayline and return result:
     delayLine.incrementTapPointers();
@@ -206,27 +211,32 @@ public:
   TSig getSampleInverse(TSig in)
   {
     rsAssert(isFilterValid());
-    rsAssert(H.num.getPower(0) == 0);
-    rsAssert(H.num.getCoeff(0) != 0);
+
+    const SparsePoly& num = H.getNumeratorConst();
+    const SparsePoly& den = H.getDenominatorConst();
+
+    rsAssert(num.getPower(0) == 0);
+    rsAssert(num.getCoeff(0) != 0);
     // Maybe we can relax this? If we do not expect the power of the 0-th coeff to be 0, we will 
     // just produce an inverted filter up to delay?
 
     // Apply scaled numerator of H as feedback part:
-    TPar s = TPar(1) / H.num.getCoeff(0);
+    TPar s = TPar(1) / num.getCoeff(0);
     TSig tmp = in;
-    for(int i = 1; i < H.num.getNumTerms(); i++)
-      tmp -= s * H.num.getCoeff(i) * delayLine.readOutputAt(H.num.getPower(i));
+    for(int i = 1; i < num.getNumTerms(); i++)
+      tmp -= s * num.getCoeff(i) * delayLine.readOutputAt(num.getPower(i));
     delayLine.writeInputNoUpdate(tmp);
 
     // Apply scaled denominator of H as feedforward path:
     tmp = 0;
-    for(int i = 0; i < H.den.getNumTerms(); i++)
-      tmp += s * H.den.getCoeff(i) * delayLine.readOutputAt(H.den.getPower(i));
+    for(int i = 0; i < den.getNumTerms(); i++)
+      tmp += s * den.getCoeff(i) * delayLine.readOutputAt(den.getPower(i));
 
     // Update delayline and return result:
     delayLine.incrementTapPointers();
     return tmp;
   }
+  // Check, if this has unit tests!
 
 
   /** Computes a sample at a time of a filter that has the numerator transformed from min-phase to
@@ -236,17 +246,20 @@ public:
   {
     rsAssert(isFilterValid());
 
+    const SparsePoly& num = H.getNumeratorConst();
+    const SparsePoly& den = H.getDenominatorConst();
+
     // Apply denominator of H as feedback part:
     TSig tmp = in;
-    for(int i = 1; i < H.den.getNumTerms(); i++)
-      tmp -= H.den.getCoeff(i) * delayLine.readOutputAt(H.den.getPower(i));
+    for(int i = 1; i < den.getNumTerms(); i++)
+      tmp -= den.getCoeff(i) * delayLine.readOutputAt(den.getPower(i));
     delayLine.writeInputNoUpdate(tmp);
 
     // Apply reversed numerator of H as feedforward path:
-    int deg = H.num.getDegree();
+    int deg = num.getDegree();
     tmp = 0;
-    for(int i = 0; i < H.num.getNumTerms(); i++)
-      tmp += H.num.getCoeff(i) * delayLine.readOutputAt(deg - H.num.getPower(i));
+    for(int i = 0; i < num.getNumTerms(); i++)
+      tmp += num.getCoeff(i) * delayLine.readOutputAt(deg - num.getPower(i));
 
     // Update delayline and return result:
     delayLine.incrementTapPointers();

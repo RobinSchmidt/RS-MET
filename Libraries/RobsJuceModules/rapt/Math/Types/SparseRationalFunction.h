@@ -16,8 +16,9 @@ public:   // old
 //protected:  // new
 
 
-  using SparsePoly    = rsSparsePolynomial<T, TTol>;  // For convenience
-  using SparseRatFunc = rsSparseRationalFunction<T, TTol>;  
+  // For convenience:
+  using SparsePoly    = rsSparsePolynomial<T, TTol>; 
+  using SparseRatFunc = rsSparseRationalFunction<T, TTol>;
 
 
   //-----------------------------------------------------------------------------------------------
@@ -292,15 +293,20 @@ public:
   bool isZero() const { return num.isZero(); }
 
 
-  rsSparsePolynomial<T>& getNumerator() { return num; }
+  rsSparsePolynomial<T, TTol>& getNumerator() { return num; }
 
 
-  rsSparsePolynomial<T>& getDenominator() { return den; }
+  rsSparsePolynomial<T, TTol>& getDenominator() { return den; }
 
 
-  const rsSparsePolynomial<T>& getNumeratorConst() { return num; }
+  const rsSparsePolynomial<T, TTol>& getNumeratorConst() const { return num; }
 
-  const rsSparsePolynomial<T>& getDenominatorConst() { return den; }
+  const rsSparsePolynomial<T, TTol>& getDenominatorConst() const { return den; }
+  // Shouldn't they be const? I mean the functions themselves - not only the return values
+
+  int getNumNumeratorTerms()   const { return num.getNumTerms(); }
+
+  int getNumDenominatorTerms() const { return den.getNumTerms(); }
 
 
 
@@ -706,16 +712,16 @@ inline bool rsIsBetterPivot(
     return true;
 
   // An x with simpler denominator is better than a y with more complex denominator:
-  if(x.den.getNumTerms() < y.den.getNumTerms())
+  if(x.getNumDenominatorTerms() < y.getNumDenominatorTerms())
     return true;
 
   // An x with more complex denominator is worse that a y with simpler denominator:
-  if(x.den.getNumTerms() > y.den.getNumTerms())
+  if(x.getNumDenominatorTerms() > y.getNumDenominatorTerms())
     return false;
 
   // When x and y have the same denominator, we compare the numerators. A simpler numerator is
   // better (except when it's zero - but this has already been ruled out):
-  return x.num.getNumTerms() < y.num.getNumTerms();
+  return x.getNumNumeratorTerms() < y.getNumNumeratorTerms();
 }
 
 template<class T, class TTol>
