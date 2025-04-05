@@ -30,10 +30,13 @@ public:
   void setupFromDenseCoeffs(const std::vector<TPar>& numCoeffs, 
     const std::vector<TPar>& denCoeffs, TPar tol)
   {
-    H.num.setRoundoffTolerance(tol);
-    H.den.setRoundoffTolerance(tol);
-    H.num.setupFromDenseCoeffs(numCoeffs);
-    H.den.setupFromDenseCoeffs(denCoeffs);
+    SparsePoly& num = H.getNumerator();
+    SparsePoly& den = H.getDenominator();
+
+    num.setRoundoffTolerance(tol);
+    den.setRoundoffTolerance(tol);
+    num.setupFromDenseCoeffs(numCoeffs);
+    den.setupFromDenseCoeffs(denCoeffs);
     updateDelayLineLength();
   }
   // This may allocate!
@@ -46,15 +49,17 @@ public:
   // The parameter should really be of type rsSparseDigitalTransferFunction
 
 
-  void setNumNumeratorTerms(int newNumTerms) { H.num._setNumTerms(newNumTerms); }
+  void setNumNumeratorTerms(int newNumTerms) { H.getNumerator()._setNumTerms(newNumTerms); }
   // This may allocate!
 
-  void setNumDenominatorTerms(int newNumTerms) { H.den._setNumTerms(newNumTerms); }
+  void setNumDenominatorTerms(int newNumTerms) { H.getDenominator()._setNumTerms(newNumTerms); }
   // This may allocate!
 
-  void setNumeratorTerm(int index, TPar coeff, int delay) { H.num._setTerm(index, coeff, delay); }
+  void setNumeratorTerm(int index, TPar coeff, int delay) 
+  { H.getNumerator()._setTerm(index, coeff, delay); }
 
-  void setDenominatorTerm(int index, TPar coeff, int delay) { H.den._setTerm(index, coeff, delay); }
+  void setDenominatorTerm(int index, TPar coeff, int delay) 
+  { H.getDenominator()._setTerm(index, coeff, delay); }
   // Actually, we really should call updateDelayLineLength() after setting a term because it 
   // potentially requires a change of the length. But: updateDelayLineLength() is expensive and 
   // setting terms is an operation that might be called in a loop or sequence in which case only

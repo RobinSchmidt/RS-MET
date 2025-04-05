@@ -12,8 +12,8 @@ template<class T, class TTol = rsEmptyType>
 class rsSparseRationalFunction
 {
 
-public:   // old
-//protected:  // new
+//public:   // old
+protected:  // new
 
 
   // For convenience:
@@ -140,6 +140,7 @@ public:
     initToZero();              // f(x) = 0/1
     num._appendTerm(T(1), 0);  // f(x) = 1/1
   }
+  // rename to setToOne
 
   /*
   void initToIdentity()

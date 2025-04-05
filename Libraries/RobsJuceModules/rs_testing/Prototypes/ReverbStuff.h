@@ -429,9 +429,12 @@ public:
   {
     int M = getDelayInSamples();
     tf->initToZero();
-    tf->num._appendTerm(bl, 0);
-    tf->num._appendTerm(ff, M);  // Don't use -M because the minus is already baked into the class.
-    tf->den._appendTerm(fb, M);  // It interprets the function as a rational function in z^-1.
+    tf->getNumerator().  _appendTerm(bl, 0);
+    tf->getNumerator().  _appendTerm(ff, M);
+    tf->getDenominator()._appendTerm(fb, M);
+
+    // We don't use -M because the minus is already baked into the class. It interprets the 
+    // function as a rational function in z^-1.
   }
 
 
@@ -2418,8 +2421,8 @@ public:
   //template<class TTol>
   void getDelayTransferFunction(rsSparseDigitalTransferFunction<TPar, TTol>* tf) const
   {
-    tf->num._setNumTerms(1); tf->num._setTerm(0, TPar(1), M);
-    tf->den._setNumTerms(1); tf->den._setTerm(0, TPar(1), 0);
+    tf->getNumerator().  _setNumTerms(1); tf->getNumerator().  _setTerm(0, TPar(1), M);
+    tf->getDenominator()._setNumTerms(1); tf->getDenominator()._setTerm(0, TPar(1), 0);
   }
 
 
@@ -2439,8 +2442,8 @@ public:
   {
     using TF = rsSparseDigitalTransferFunction<TPar, TTol>;
 
-    TF one; one.num._appendTerm(TPar(1), 0);
-    TF z1;  z1.num._appendTerm( TPar(1), 1);
+    TF one; one.getNumerator()._appendTerm(TPar(1), 0); // Use setToOne()       z^-0
+    TF z1;  z1.getNumerator()._appendTerm( TPar(1), 1); // Use setToIdentity()  z^-1
     TF F = getDamperTransferFunction(tol);    // Feedback filter F(z)
     TF A; getDelayTransferFunction(&A);       // Delay filter A(z)
     TPar k = s.getFeedbackGain();
@@ -4341,8 +4344,11 @@ public:
   void getDelayTransferFunction(int n, rsSparseDigitalTransferFunction<TPar, TTol>* tf) const
   {
     int M = getDelay(n);
-    tf->num._setNumTerms(1); tf->num._setTerm(0, TPar(dampFactors[n]), M+1);
-    tf->den._setNumTerms(1); tf->den._setTerm(0, TPar(1),              0);
+    tf->getNumerator()._setNumTerms(1); 
+    tf->getNumerator()._setTerm(0, TPar(dampFactors[n]), M+1);
+    tf->getDenominator()._setNumTerms(1); 
+    tf->getDenominator()._setTerm(0, TPar(1), 0);
+    // Maybe simplify this by introducing a function tf->setToPower(dampFactors[n], M+1)
   }
   // Needs tests
 
