@@ -501,4 +501,12 @@ Arbitrary order filter
 - We want to realize an analog transfer function of the form H(s) = 1 / (1 + s)^p  where p is the 
   order of the filter. For integer p, this can be realized by chaining p first order lowpass 
   filters. For non-integer p, my idea is to try to approximate it by making an n-th order Taylor 
-  expansion of (1 + s)^p. This should result in a polynomial in s
+  expansion of (1 + s)^p. This should result in a polynomial in s or maybe in 1+s. I think, both 
+  options are possible. Formulating it as polynomial in 1+s my make the result usable in the ladder
+  filter (whose stages produce powers of 1+s). Maybe in tests try to realize it for p = 2.5. This
+  should approximate a 15 dB/oct filter - halfway in between 12 and 18. One question may be where
+  the expansion point of the typalo series should be. Should it be zero? Or maybe one, i.e. the 
+  cutoff freq? Or maybe some frequency near the cutoff frequency? Maybe the frequency where the most
+  interesting features happen to be, i.e. not in the flat zone? Maybe where the curvature is 
+  maximal? Or maybe it actually is the flat zone after the cutoff that is of greatest interest? 
+  After all, we want to approximate the *slope* of the desired fractional order filter.
