@@ -25,6 +25,14 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  /** Sets up the numerical tolerance that is used to determine if a coefficient should be 
+  considered zero, i.e. with in the numerical roundoff noise. */
+  void setRoundoffTolerance(TTol newTolerance)
+  {
+    getNumerator().setRoundoffTolerance(tol);
+    getDenominator().setRoundoffTolerance(tol);
+  }
+
   /** Sets up the filter from dense arrays of numerator and denominator coeffs. When a coefficient
   in the dense representation is zero, we not create a term for that. */
   void setupFromDenseCoeffs(const std::vector<TPar>& numCoeffs, 
@@ -34,18 +42,20 @@ public:
     SparsePoly& den = H.getDenominator();
 
     num.setRoundoffTolerance(tol);
-    den.setRoundoffTolerance(tol);
+    den.setRoundoffTolerance(tol);  // get rid
+
     num.setupFromDenseCoeffs(numCoeffs);
     den.setupFromDenseCoeffs(denCoeffs);
     updateDelayLineLength();
   }
+  // Get rid of tol. Provide a dedicated setter for it
   // This may allocate!
   // ToDo: use num.setupFromDenseCoeffs(&numCoeffs[0], (int) numCoeffs.size(), tol)
   // use  H.setupFromDenseCoeffs(numCoeffs, denCoeffs, tol)
 
 
   void setup(const rsSparseRationalFunction<TPar, TTol>& newTransferFunction)
-  { H.copyDataFrom(newTransferFunction); updateDelayLineLength(); }
+  { H._copyDataFrom(newTransferFunction); updateDelayLineLength(); }
   // The parameter should really be of type rsSparseDigitalTransferFunction
 
 
@@ -136,7 +146,7 @@ public:
   /** Copies the settings (i.e. the coefficients) from the given other filter into this object and
   possibly adjusts the delayline length, if necessary. */
   void copySettingsFrom(const rsSparseFilter<TSig, TPar, TTol>& other)
-  { H.copyDataFrom(other.H); updateDelayLineLength(); }
+  { H._copyDataFrom(other.H); updateDelayLineLength(); }
 
   // Maybe also provide a copyStateFrom() method which would also copy the content of the 
   // delayline. We could then also have a function copyDataFrom that calls both. Maybe the 

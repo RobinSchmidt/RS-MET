@@ -66,7 +66,6 @@ public:
     _clear();                  // f(x) = 0/0. That's indeterminate!
     den._appendTerm(T(1), 0);  // f(x) = 0/1. That's much better.
   }
-  // Maybe rename to setToZero()
 
   /** Initializes this rational function that is constantly one: f(x) = 1. We represent this as
   f(x) = 1*x^0 / 1*x^0. */
@@ -75,15 +74,12 @@ public:
     setToZero();               // f(x) = 0/1
     num._appendTerm(T(1), 0);  // f(x) = 1/1
   }
-  // rename to setToOne
 
-  /*
   void setToIdentity()
   {
     setToZero();               // f(x) = 0/1
     num._appendTerm(T(1), 1);  // f(x) = x/1
   }
-  */
 
   void setupFromDenseCoeffs(
     const std::vector<T>& newNumeratorCoeffs,
@@ -110,13 +106,6 @@ public:
   // Remove tol param!
 
 
-
-  void copyDataFrom(const SparseRatFunc& q)
-  {
-    num = q.num;
-    den = q.den;
-  }
-  // Use underscore - maybe ..or get rid of it and use (default) assignment operator instead.
 
 
   /** Applies a scaling factor to this rational function. This basically means to scale all 
@@ -273,6 +262,10 @@ public:
   // Maybe it should have an underscore? It puts the function itno an invalid state representing
   // the function 0/0 (I think)
   // Move to low level API!
+
+  void _copyDataFrom(const SparseRatFunc& q) { num = q.num; den = q.den; }
+  // Use underscore - maybe ..or get rid of it and use (default) assignment operator instead.
+
 
   void _setNumTerms(int newNumNumeratorTerms, int newNumDenominatorTerms)
   { num._setNumTerms(newNumNumeratorTerms); den._setNumTerms(newNumDenominatorTerms); }
