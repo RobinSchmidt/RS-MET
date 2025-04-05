@@ -166,17 +166,10 @@ public:
 
 
 
-
-
-  void addConstant(T constant)
-  {
-    num.addScaled(den, constant);
-  }
-  // ToDo: Document why this formula is right:
-  //
-  // N(x) / D(x) + k = N(x) / D(x) + k * D(x) / D(x) = (N(x) + k*D(x)) / D(x)
-  //
-  // Document, if this works in place (I think so)
+  /** Adds the given constant c to the rational function. This has the effect of adding a scaled
+  version of the denominator to the numerator because N/D + c = N/D + c*D/D = (N + c*D)/D. */
+  void addConstant(T c) { num.addScaled(den, c); }
+  // ToDo: Document, if this works in place (I think so)
 
 
   //void canonicalize();
@@ -186,41 +179,23 @@ public:
   // But maybe it could also make sense to define a canonical representation as one with monic
   // numerator? But no! This can't represent the zero function.
 
-  /*
-  void setRoundoffTolerance(TTol newTolerance)
-  {
-    num.setRoundoffTolerance(newTolerance);
-    den.setRoundoffTolerance(newTolerance);
-  }
-  */
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   bool isCloseTo(const SparseRatFunc& q, T tol) const
-  {
-    return q.num.isCloseTo(num, tol) && q.den.isCloseTo(den, tol);
-  }
-
-
-  // isCanonical()
-  // A canonical representation has canonical numerator and denominator with no common factors
-  // and the denominator is monic
+  { return q.num.isCloseTo(num, tol) && q.den.isCloseTo(den, tol); }
 
 
   bool isZero() const { return num.isZero(); }
 
-
   rsSparsePolynomial<T, TTol>& getNumerator() { return num; }
 
-
   rsSparsePolynomial<T, TTol>& getDenominator() { return den; }
-
 
   const rsSparsePolynomial<T, TTol>& getNumeratorConst() const { return num; }
 
   const rsSparsePolynomial<T, TTol>& getDenominatorConst() const { return den; }
-  // Shouldn't they be const? I mean the functions themselves - not only the return values
 
   int getNumNumeratorTerms()   const { return num.getNumTerms(); }
 
@@ -240,12 +215,8 @@ public:
   template<class TArg>
   TArg operator()(TArg z) const { return num(z) / den(z); }
 
-
-  SparseRatFunc operator-() const
-  {
-    return SparseRatFunc(-num, den);
-  }
-
+  /** Negates this rational function. */
+  SparseRatFunc operator-() const { return SparseRatFunc(-num, den); }
 
   /** Adds two rational functions. */
   SparseRatFunc operator+(const SparseRatFunc& q) const 
@@ -282,11 +253,13 @@ public:
     const SparseRatFunc& p, T wp,
     const SparseRatFunc& q, T wq,
     SparseRatFunc* r, T tol);
+  // Get rid of tol.
 
   static void weightedSumDestructive(
     SparseRatFunc* p, T wp,
     SparseRatFunc* q, T wq,
     SparseRatFunc* r, T tol);
+  // Get rid of tol.
   // The first parameter p may alias to the result r.
 
 
@@ -294,34 +267,26 @@ public:
   /** Clears numerator and denominator. Note that this puts the object into an invalid state. It 
   would formally represent the indeterminate expression 0/0. So, this function should be used with
   great care and perhaps only internally in low level code. That's why it's marked with an 
-  underscore. In higher level code, consider using initToZero() instead which sets the function to
+  underscore. In higher level code, consider using setToZero() instead which sets the function to
   the zero function f(x) = 0 which is quite probably what you actually want to achieve anyway. */
-  void _clear()
-  {
-    num.clear();
-    den.clear();
-  }
+  void _clear() { num.clear(); den.clear(); }
   // Maybe it should have an underscore? It puts the function itno an invalid state representing
   // the function 0/0 (I think)
   // Move to low level API!
 
   void _setNumTerms(int newNumNumeratorTerms, int newNumDenominatorTerms)
-  {
-    num._setNumTerms(newNumNumeratorTerms);
-    den._setNumTerms(newNumDenominatorTerms);
-  }
-  // Maybe it should have an underscore! It's a low level method. It may put the object into an
-  // undefined state
+  { num._setNumTerms(newNumNumeratorTerms); den._setNumTerms(newNumDenominatorTerms); }
 
   void _setNumeratorTerm(int index, const T& newCoeff, int power)
-  {
-    num._setTerm(index, newCoeff, power);
-  }
+  { num._setTerm(index, newCoeff, power); }
 
   void _setDenominatorTerm(int index, const T& newCoeff, int power)
-  {
-    den._setTerm(index, newCoeff, power);
-  }
+  { den._setTerm(index, newCoeff, power); }
+
+
+  // _isCanonical()
+  // A canonical representation has canonical numerator and denominator with no common factors
+  // and the denominator is monic. But maybe it should be a low level method.
 
 
 
