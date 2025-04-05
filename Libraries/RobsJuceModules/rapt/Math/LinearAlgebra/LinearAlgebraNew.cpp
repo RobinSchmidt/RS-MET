@@ -470,6 +470,15 @@ matrix "division" is an arithmetic operation - we'll see
 -Implement QR-decomp, Jordan Normal Form
 
 
+-Linear algebra libraries:
+ -Blaze:
+  https://bitbucket.org/blaze-lib/blaze/src/master/
+  https://www.youtube.com/watch?v=w-Y22KrMgFE
+ -Eigen
+  https://eigen.tuxfamily.org/
+  https://gitlab.com/libeigen/eigen
+  https://www.youtube.com/watch?v=99G-APJkMc0
+
 
  Interesting reads:
  https://nhigham.com/2021/02/02/what-is-a-unitarily-invariant-norm/
@@ -479,6 +488,9 @@ matrix "division" is an arithmetic operation - we'll see
 
 
  https://blogs.mathworks.com/cleve/2020/10/23/gil-strang-and-the-cr-matrix-factorization/
+
+
+
 
 
 

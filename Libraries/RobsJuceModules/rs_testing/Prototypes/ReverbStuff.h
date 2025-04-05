@@ -3106,7 +3106,7 @@ public:
 
 
 
-
+  // Maybe let them take a tol param
   rsSparseDigitalTransferFunction<TPar, TTol> getTransferFunction() const
   {
     return getCombTransferFunction() * getCorrectorTransferFunction();
