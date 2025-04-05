@@ -428,7 +428,7 @@ public:
   void getTransferFunction(rsSparseDigitalTransferFunction<TPar, TTol>* tf) const
   {
     int M = getDelayInSamples();
-    tf->initToZero();
+    tf->setToZero();
     tf->getNumerator().  _appendTerm(bl, 0);
     tf->getNumerator().  _appendTerm(ff, M);
     tf->getDenominator()._appendTerm(fb, M);
@@ -3258,9 +3258,9 @@ void rsDampedMultiCombAllpass<TSig, TPar, TTol>::updateFilters()
 
   // Init transfer function U:
   if(serialCombs == false)
-    U.initToZero();            // Init to U(z) = 0 for additive accumulation
+    U.setToZero();             // Init to U(z) = 0 for additive accumulation
   else
-    U.initToOne();             // Init to U(z) = 1 for multiplicative accumulation
+    U.setToOne();              // Init to U(z) = 1 for multiplicative accumulation
   
   // Accumulate the transfer function of the comb bank or chain:
   for(int i = 0; i < numCombs; i++)

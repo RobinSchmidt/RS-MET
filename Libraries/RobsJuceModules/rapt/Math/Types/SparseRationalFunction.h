@@ -50,24 +50,18 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  /** Clears numerator and denominator. Note that this puts the object into an invalid state. It 
-  would formally represent the indeterminate expression 0/0. So, this function should be used with
-  great care and perhaps only internally in low level code. That's why it's marked with an 
-  underscore. In higher level code, consider using initToZero() instead which sets the function to
-  the zero function f(x) = 0 which is quite probably what you actually want to achieve anyway. */
-  void _clear()
+  /** Sets up the numerical tolerance that is used to determine if a coefficient should be 
+  considered zero, i.e. with in the numerical roundoff noise. */
+  void setRoundoffTolerance(TTol newTolerance) 
   {
-    num.clear();
-    den.clear();
+    num.setRoundoffTolerance(newTolerance);
+    den.setRoundoffTolerance(newTolerance);
   }
-  // Maybe it should have an underscore? It puts the function itno an invalid state representing
-  // the function 0/0 (I think)
-  // Move to low level API!
 
   /** Initializes this rational function to the zero function: f(x) = 0. We represent this as
   f(x) = 0*x^0 / 1*x^0. The array for the numerator will be empty and the array for the 
   denominator will have a single coefficient of 1 for the monomial x^0. */
-  void initToZero()
+  void setToZero()
   {
     _clear();                  // f(x) = 0/0. That's indeterminate!
     den._appendTerm(T(1), 0);  // f(x) = 0/1. That's much better.
@@ -76,41 +70,20 @@ public:
 
   /** Initializes this rational function that is constantly one: f(x) = 1. We represent this as
   f(x) = 1*x^0 / 1*x^0. */
-  void initToOne()
+  void setToOne()
   {
-    initToZero();              // f(x) = 0/1
+    setToZero();               // f(x) = 0/1
     num._appendTerm(T(1), 0);  // f(x) = 1/1
   }
   // rename to setToOne
 
   /*
-  void initToIdentity()
+  void setToIdentity()
   {
-    initToZero();              // f(x) = 0/1
+    setToZero();               // f(x) = 0/1
     num._appendTerm(T(1), 1);  // f(x) = x/1
   }
   */
-
-
-  void _setNumTerms(int newNumNumeratorTerms, int newNumDenominatorTerms)
-  {
-    num._setNumTerms(newNumNumeratorTerms);
-    den._setNumTerms(newNumDenominatorTerms);
-  }
-  // Maybe it should have an underscore! It's a low level method. It may put the object into an
-  // undefined state
-
-  void _setNumeratorTerm(int index, const T& newCoeff, int power)
-  {
-    num._setTerm(index, newCoeff, power);
-  }
-
-  void _setDenominatorTerm(int index, const T& newCoeff, int power)
-  {
-    den._setTerm(index, newCoeff, power);
-  }
-
-
 
   void setupFromDenseCoeffs(
     const std::vector<T>& newNumeratorCoeffs,
@@ -134,6 +107,8 @@ public:
     num.setupFromDenseCoeffs(newNumeratorCoeffs,   newNumNumeratorTerms);
     den.setupFromDenseCoeffs(newDenominatorCoeffs, newNumDenominatorTerms);
   }
+  // Remove tol param!
+
 
 
   void copyDataFrom(const SparseRatFunc& q)
@@ -211,12 +186,13 @@ public:
   // But maybe it could also make sense to define a canonical representation as one with monic
   // numerator? But no! This can't represent the zero function.
 
-
+  /*
   void setRoundoffTolerance(TTol newTolerance)
   {
     num.setRoundoffTolerance(newTolerance);
     den.setRoundoffTolerance(newTolerance);
   }
+  */
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -312,6 +288,44 @@ public:
     SparseRatFunc* q, T wq,
     SparseRatFunc* r, T tol);
   // The first parameter p may alias to the result r.
+
+
+
+  /** Clears numerator and denominator. Note that this puts the object into an invalid state. It 
+  would formally represent the indeterminate expression 0/0. So, this function should be used with
+  great care and perhaps only internally in low level code. That's why it's marked with an 
+  underscore. In higher level code, consider using initToZero() instead which sets the function to
+  the zero function f(x) = 0 which is quite probably what you actually want to achieve anyway. */
+  void _clear()
+  {
+    num.clear();
+    den.clear();
+  }
+  // Maybe it should have an underscore? It puts the function itno an invalid state representing
+  // the function 0/0 (I think)
+  // Move to low level API!
+
+  void _setNumTerms(int newNumNumeratorTerms, int newNumDenominatorTerms)
+  {
+    num._setNumTerms(newNumNumeratorTerms);
+    den._setNumTerms(newNumDenominatorTerms);
+  }
+  // Maybe it should have an underscore! It's a low level method. It may put the object into an
+  // undefined state
+
+  void _setNumeratorTerm(int index, const T& newCoeff, int power)
+  {
+    num._setTerm(index, newCoeff, power);
+  }
+
+  void _setDenominatorTerm(int index, const T& newCoeff, int power)
+  {
+    den._setTerm(index, newCoeff, power);
+  }
+
+
+
+
 
 
 protected:

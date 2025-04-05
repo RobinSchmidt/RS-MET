@@ -1034,8 +1034,8 @@ bool testLinAlgSparseTransFunc()
 
   // Set up some transfer functions that we can use as matrix elements:
 
-  TF one;  one.initToOne();
-  TF zero; zero.initToZero();
+  TF one;  one.setToOne();
+  TF zero; zero.setToZero();
   Real tol(1.e-13);                           // Maybe use something based on epsilon later
 
   TF h11(SP({Mon( 2, 0), Mon(-4, 2)}, tol),   // h11(z) = (2 - 4 z^-2) / 
