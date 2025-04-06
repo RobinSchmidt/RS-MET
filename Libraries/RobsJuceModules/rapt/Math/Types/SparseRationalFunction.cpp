@@ -40,6 +40,8 @@ void rsSparseRationalFunction<T, TTol>::weightedSum(
   r->den = p.den * q.den;
   r->num = wp * p.num * q.den  +  wq * q.num * p.den;
 
+  //r->_canonicalize();  // Uncomment this!
+
   // This can probably be optimized with respect to avoid unnecessary temporary objects and heap
   // allocations. We may also use the gcd instead of just cross-mutiplying the denominators.
 }
@@ -72,6 +74,8 @@ void rsSparseRationalFunction<T, TTol>::weightedSumDestructive(
   SP::multiply(   q->num,     p->den,     &q->num);  // Replace q->num by q->num * p->den
   SP::weightedSum(p->num, wp, q->num, wq, &r->num);  // Establish r->num
   SP::multiply(   p->den,     q->den,     &r->den);  // Establish r->den
+
+  //r->_canonicalize();  // Uncomment this!
 
   // ToDo:
   //

@@ -265,6 +265,11 @@ public:
   and the rhs's tol member. */
   bool isCloseTo(const SparsePoly& rhs) const { return isCloseTo(rhs, rsMax(tol, rhs.tol)); }
 
+
+  //bool isCoprimeTo(const SparsePoly& rhs) const;
+  // ToDo: implement such a function. It should return true of the gcd of this and rhs is 1
+
+
   /** Return true, iff the given index is valid, i.e. the object has a term with given index. */
   bool isValidIndex(int i) const { return i >= 0 && i < getNumTerms(); }
 

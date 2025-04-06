@@ -493,7 +493,7 @@ ToDo:
   coefficients of numerator and denominator have the same sign. So, what we would have to do to 
   implement the < relation of two rational functions R,S is  (1) compute D = S - R,  (2) check if 
   leading coeffs of numerator and denominator of D have the same sign. Beware of roundoff error 
-  issues, though. Also, the idea works only for rational functions with the integer, rational or 
+  issues, though. Also, the idea works only for rational functions with integer, rational or 
   real coefficients but not for rational functions with complex coefficients, for example. I think,
   the arguments may still be complex though - but the coeffs must be real (verify!). Maybe the 
   underlying set of coefficients (which can be a field or ring, I guess?) must itself be ordered 
@@ -506,6 +506,8 @@ ToDo:
   Gaussian elemination need these operations. And we do indeed need matrix inversion of matrices of
   rational functions when we want to compute the transfer function of a state space filter 
   symbolically - so this stuff may actually be relevant in practice and not just an academic 
-  excercise.
+  excercise. ...well - I don't think, pivot selection should be based on that definition of an
+  absolute value. Instead, we should use an appropriate rsIsBetterPivot() function. This is 
+  currently in the works anyway.
 
 */

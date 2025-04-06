@@ -1736,10 +1736,10 @@ public:
   {
     using Mon = rsMonomial<TCoef>;
     getDamperTransferFunction(tf);        // tf = F, F(z) is transfer function in feedback path
-    tf->multiplyBy(Mon(k, 1));            // tf = F * k * z^-1
+    tf->_multiplyBy(Mon(k, 1));            // tf = F * k * z^-1
     mulByDelayTransFunc(tf);              // tf = F * k * z^-1 * A
     //tf->addConstant(TCoef(1), TCoef(0));  // tf = 1 + F * k * z^-1 * A   old - with tol param
-    tf->addConstant(TCoef(1));            // tf = 1 + F * k * z^-1 * A
+    tf->_addConstant(TCoef(1));            // tf = 1 + F * k * z^-1 * A
     tf->invert();                         // tf = 1 / (1 + F * k * z^-1 * A)
     if(preDelay)
       mulByDelayTransFunc(tf);            // tf = A / (1 + F * k * z^-1 * A)
@@ -1756,11 +1756,17 @@ public:
   {
     tf->setupFromDenseCoeffs(bD, dmpOrd+1, aD, dmpOrd+1);
 
-    // ToDo: here and elsewhere in similar calls, do not pass TCoeff(0) for the roundoff error
-    // tolerance. Try to come up with a sensible value. Maybe implement a (protected) member 
-    // function getExpectedTransFuncRoundoffError() or something like that. It may take into 
-    // account the complexity of the filter - or at least provide the infrastructure for doing that
-    // later.
+    // ToDo: 
+    //
+    // - Here and elsewhere in similar calls, do not pass TCoeff(0) for the roundoff error
+    //   tolerance. Try to come up with a sensible value. Maybe implement a (protected) member 
+    //   function getExpectedTransFuncRoundoffError() or something like that. It may take into 
+    //   account the complexity of the filter - or at least provide the infrastructure for doing 
+    //   that later.
+    //
+    // - Figure out and document if and why the calls to the low level functions tf->_add, tf->_mul
+    //   are ok. I think, they may always be ok because we can safely assume that the denominator 
+    //   of tf has a nonzero constant term (usually normalized to 1)? ...not sure...figure out!
   }
 
 
@@ -3288,7 +3294,7 @@ void rsDampedMultiCombAllpass<TSig, TPar, TTol>::updateFilters()
     if(serialCombs == false)
       RatFunc::weightedSumDestructive(&U, TPar(1), &Ui, TPar(s.gain), &U, TPar(0));
     else
-      U.multiplyBy(Ui);   // Verify if this works in place!
+      U._multiplyBy(Ui);   // Verify if this works in place!
 
   }
 
@@ -3308,6 +3314,8 @@ void rsDampedMultiCombAllpass<TSig, TPar, TTol>::updateFilters()
   //
   // - Have a member serial (defaulting to false). If true, do a serial connection accumulation 
   //   loop. Init U(z) to 1 instead of 0 and accumulate multiplicatively instead of additively.
+  //
+  // - Maybe try to avoid calling low level methods such as u._multiplyBy()
 }
 
 

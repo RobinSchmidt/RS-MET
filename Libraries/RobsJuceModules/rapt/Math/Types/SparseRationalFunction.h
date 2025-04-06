@@ -99,13 +99,15 @@ public:
 
   /** Applies a scaling factor to this rational function. This basically means to scale all 
   numerator coeffs by that factor. */
-  void scale(T scaler) { num._scaleCoeffs(scaler); }
+  void _scale(T scaler) { num._scaleCoeffs(scaler); }
+  // May decanonicalize when scaler is zero
 
   /** Adds the given constant c to the rational function. This has the effect of adding a scaled
   version of the denominator to the numerator because N/D + c = N/D + c*D/D = (N + c*D)/D. */
-  void addConstant(T c) { num.addScaled(den, c); }
+  void _addConstant(T c) { num.addScaled(den, c); }
   // ToDo: Document, if this works in place (I think so)
-  // Maybe it needs an underscore? Could it destroy the "reduced" property?
+  // Maybe it needs an underscore? Could it destroy the "reduced" property? I think so - but figure
+  // out hwo and document this!
 
 
   void multiplyBy(rsMonomial<T> factor) 
@@ -132,7 +134,7 @@ public:
   // x = 0. This is equivalent to den not having a constant term. 
 
 
-  void multiplyBy(const SparseRatFunc& factor) 
+  void _multiplyBy(const SparseRatFunc& factor) 
   { 
     num.multiplyBy(factor.num);
     den.multiplyBy(factor.den);
@@ -318,7 +320,7 @@ inline rsSparseRationalFunction<T, TTol> operator*(
   const T& s, const rsSparseRationalFunction<T, TTol>& p)
 {
   rsSparseRationalFunction<T, TTol> r(p);
-  r.scale(s);
+  r._scale(s);
   return r;
 }
 
@@ -402,9 +404,9 @@ public:
     // Swap numerator and denominator while maintaining the a0 = 0 normalization condition by 
     // appropriately scaling the numerator before and after the swap:
     T s = T(1) / num.getCoeff(0);  // Desired scaler s is 1/b0
-    scale(s);                      // Scale old numerator to achieve b0 = 1 before swap
+    _scale(s);                     // Scale old numerator to achieve b0 = 1 before swap
     std::swap(num, den);           // Swap numerator and denominator. b0 is now 1 because a0 was.
-    scale(s);                      // Scale new numerator to achieve desired overall gain
+    _scale(s);                     // Scale new numerator to achieve desired overall gain
 
     // I'm pretty sure it doesnt' allocate. The swap of the underyling std::vectors should use move 
     // semantics. Verify and document this. We need to be able to call this function on a realtime 
@@ -571,7 +573,7 @@ inline rsSparseDigitalTransferFunction<T, TTol> operator*(
   const T& s, const rsSparseDigitalTransferFunction<T, TTol>& p)
 {
   rsSparseDigitalTransferFunction<T, TTol> r(p);
-  r.scale(s);
+  r._scale(s);
   return r;
 }
 

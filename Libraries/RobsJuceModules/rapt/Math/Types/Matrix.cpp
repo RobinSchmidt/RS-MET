@@ -9,7 +9,11 @@ ToDo:
   zero padding the rows and columns of the arguments as needed. The shape of the product C = A*B 
   should be: #rows(C) = max(#rows(A), #cols(B)), #cols(C) = max(#cols(A), #rows(B)), I think. We 
   first need to zero-pad A,B to the shape #rows(C) x #cols(C) and then we can do the 
-  multiplication of two square matrices as usual.
+  multiplication of two square matrices as usual. Then verify if (A*B)^T = B^T * A^T still holds
+  with this extended definition. What about associativity and distributivity over addition? Maybe
+  we need to extend the definition of matrix addition, too. Just pad the matrices with zeros. In 
+  the case of addition, we need: #rows(C) = max(#rows(A), #rows(B)), 
+  #cols(C) = max(#cols(A), #cols(B)), I think.
 
 - Implement a class to represent triangular matrices which may be used with minor modifictions for
   symmetric matrices, too: just instead of returning 0 when j > i, return A(j,i). Maybe 
