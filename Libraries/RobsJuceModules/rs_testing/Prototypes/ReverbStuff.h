@@ -1735,14 +1735,13 @@ public:
   void getCombTransferFunction(rsSparseDigitalTransferFunction<TCoef, TTol>* tf) const
   {
     using Mon = rsMonomial<TCoef>;
-    getDamperTransferFunction(tf);        // tf = F, F(z) is transfer function in feedback path
-    tf->_multiplyBy(Mon(k, 1));            // tf = F * k * z^-1
-    mulByDelayTransFunc(tf);              // tf = F * k * z^-1 * A
-    //tf->addConstant(TCoef(1), TCoef(0));  // tf = 1 + F * k * z^-1 * A   old - with tol param
-    tf->_addConstant(TCoef(1));            // tf = 1 + F * k * z^-1 * A
-    tf->invert();                         // tf = 1 / (1 + F * k * z^-1 * A)
+    getDamperTransferFunction(tf);    // tf = F, F(z) is transfer function in feedback path
+    tf->_multiplyBy(Mon(k, 1));       // tf = F * k * z^-1
+    mulByDelayTransFunc(tf);          // tf = F * k * z^-1 * A
+    tf->_addConstant(TCoef(1));       // tf = 1 + F * k * z^-1 * A
+    tf->invert();                     // tf = 1 / (1 + F * k * z^-1 * A)
     if(preDelay)
-      mulByDelayTransFunc(tf);            // tf = A / (1 + F * k * z^-1 * A)
+      mulByDelayTransFunc(tf);        // tf = A / (1 + F * k * z^-1 * A)
 
     // ToDo:
     //
@@ -1754,7 +1753,7 @@ public:
 
   void getDamperTransferFunction(rsSparseDigitalTransferFunction<TCoef, TTol>* tf) const
   {
-    tf->setupFromDenseCoeffs(bD, dmpOrd+1, aD, dmpOrd+1);
+    tf->_setupFromDenseCoeffs(bD, dmpOrd+1, aD, dmpOrd+1);
 
     // ToDo: 
     //
@@ -1772,7 +1771,7 @@ public:
 
   void getDelayTransferFunction(rsSparseDigitalTransferFunction<TCoef, TTol>* tf) const
   {
-    tf->setupFromDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1, TCoef(0));
+    tf->setupFromDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1, TCoef(0)); // Is passing TCoef(0) obsolete? I think so.
     tf->addPreDelay((int)delay);  // VERIFY!
   }
   // Needs more tests with all the different interpolation modes
@@ -2479,8 +2478,8 @@ public:
   {
     rsSparseDigitalTransferFunction<TPar, TTol> H;
     H.setRoundoffTolerance(tol);
-    H.setupFromDenseCoeffs(s.getDampCoeffsB(), s.getDampingOrder()+1,
-                           s.getDampCoeffsA(), s.getDampingOrder()+1);
+    H._setupFromDenseCoeffs(s.getDampCoeffsB(), s.getDampingOrder()+1,
+                            s.getDampCoeffsA(), s.getDampingOrder()+1);
     return H;
 
     // Factor out into s.getDamperTransferFunction();

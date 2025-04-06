@@ -78,99 +78,25 @@ public:
     num._appendTerm(T(1), 1);  // f(x) = x/1
   }
 
-  void setupFromDenseCoeffs(
-    const std::vector<T>& newNumeratorCoeffs,
-    const std::vector<T>& newDenominatorCoeffs)
-  {
-    num.setupFromDenseCoeffs(newNumeratorCoeffs);
-    den.setupFromDenseCoeffs(newDenominatorCoeffs);
-  }
-
-  void setupFromDenseCoeffs(
-    const T* newNumeratorCoeffs,   int newNumNumeratorTerms, 
-    const T* newDenominatorCoeffs, int newNumDenominatorTerms)
-  {
-    num.setupFromDenseCoeffs(newNumeratorCoeffs,   newNumNumeratorTerms);
-    den.setupFromDenseCoeffs(newDenominatorCoeffs, newNumDenominatorTerms);
-  }
 
 
 
 
-  /** Applies a scaling factor to this rational function. This basically means to scale all 
-  numerator coeffs by that factor. */
-  void _scale(T scaler) { num._scaleCoeffs(scaler); }
-  // May decanonicalize when scaler is zero
-
-  /** Adds the given constant c to the rational function. This has the effect of adding a scaled
-  version of the denominator to the numerator because N/D + c = N/D + c*D/D = (N + c*D)/D. */
-  void _addConstant(T c) { num.addScaled(den, c); }
-  // ToDo: Document, if this works in place (I think so)
-  // Maybe it needs an underscore? Could it destroy the "reduced" property? I think so - but figure
-  // out hwo and document this!
-
-
+  /*
   void multiplyBy(rsMonomial<T> factor) 
   { 
     _multiplyBy(factor);
-
-    //_canonicalize();
+    _canonicalize();
     // Calling this always may be overkill! I think, we need it only when the denominator has no
     // constant term. Also, we may not need all steps of the canonicalization
     //
     // This now triggers an assert!
   }
+  */
 
 
 
-  void _multiplyBy(rsMonomial<T> factor) { num._multiplyBy(factor); }
-  // Give it an underscore - why? could it possibly destroy canonicalness? I guess, it could 
-  // destroy the no-common-factors (aka irreducibility) property. Maybe we should call a reduce()
-  // function
-  // Yes - it can destroy the reduced property. Consider R(x) = ((x+1)*(x+2)) / ((x+3)*x). It's
-  // canonical. Num and den have no common factors. But if we multiply the numerator by the 
-  // monomial x, they will have the common factor x. I think, this occurs whenever the denominator
-  // has a monomial as factor, i.e. a factor of x^p, i.e. a root (possibly with multiplicity) at 
-  // x = 0. This is equivalent to den not having a constant term. 
 
-
-  void _multiplyBy(const SparseRatFunc& factor) 
-  { 
-    num.multiplyBy(factor.num);
-    den.multiplyBy(factor.den);
-
-    // I think, num and den may now have a common factor, so we potentially need to divide that
-    // out:
-    //canonicalize();
-    // But maybe we should not automatically reduce the result by default because doing so may 
-    // require memory allocations (because the GCD algo needs temporaries) and we really need this
-    // function to be realtime safe (it's used in rsDampedCombAllpass::getCombTransferFunction(), 
-    // for example - and that is used in rsDampedMultiCombAllpass::updateFilters() which could 
-    // potentially be called on an audio thread). Maybe we should have a boolean parameter 
-    // "reduce"? that deafults to true but that we set to false in a realtime context?)
-
-    // Consider 14/15 * 3/4 = 42/60 = 7/10. Although both factors are in lowest terms, their 
-    // product is not. The same thing could happen with rational functions.
-  }
-  // Get rid of tol, give it an underscore
-  // I think, it will destroy the reduced feature if den and factor have a common factor, i.e.
-  // theri gcd isn't 1. ...Verify this!
-
-  void _multiplyByDenseCoeffs(const T* numeratorCoeffs,   int numNumeratorTerms,
-                              const T* denominatorCoeffs, int numDenominatorTerms)
-  {
-    num.multiplyByDenseCoeffs(numeratorCoeffs,   numNumeratorTerms);
-    den.multiplyByDenseCoeffs(denominatorCoeffs, numDenominatorTerms);
-  }
-  // Needs test, get rid of tol param, give it an underscore
-
-
-  // Maybe also make a divideByDenseCoeffs function by just calling multiplyByDenseCoeffs with
-  // swapped arguments...or maybe not - client code can do that itself - no need to increase the
-  // API surface area
-
-
-  
 
 
 
@@ -245,7 +171,12 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Low level API.  */
+  /** \name Low level API.  
+  ToDo: Maybe for some of these functions, provide versions without underscore. They should call
+  the underscore version and then take appropriate action to ensure a canonical representation.
+  In the simplest case, this may mean to just call canonicalize(). But this is expensive and in 
+  certain cases, it may be possible to get away with a cheaper method so we need to figure out 
+  what is strictly necessarry in each case and then do only that. */
 
   static void weightedSum(const SparseRatFunc& p, T wp, const SparseRatFunc& q, T wq, 
     SparseRatFunc* r, T tol);
@@ -266,6 +197,21 @@ public:
   void _copyDataFrom(const SparseRatFunc& q) { num = q.num; den = q.den; }
   // Maybe get rid of it and use (default) assignment operator instead.
 
+  void _setupFromDenseCoeffs(
+    const std::vector<T>& newNumeratorCoeffs,
+    const std::vector<T>& newDenominatorCoeffs)
+  {
+    num.setupFromDenseCoeffs(newNumeratorCoeffs);
+    den.setupFromDenseCoeffs(newDenominatorCoeffs);
+  }
+
+  void _setupFromDenseCoeffs(
+    const T* newNumeratorCoeffs,   int newNumNumeratorTerms, 
+    const T* newDenominatorCoeffs, int newNumDenominatorTerms)
+  {
+    num.setupFromDenseCoeffs(newNumeratorCoeffs,   newNumNumeratorTerms);
+    den.setupFromDenseCoeffs(newDenominatorCoeffs, newNumDenominatorTerms);
+  }
 
   void _setNumTerms(int newNumNumeratorTerms, int newNumDenominatorTerms)
   { num._setNumTerms(newNumNumeratorTerms); den._setNumTerms(newNumDenominatorTerms); }
@@ -275,6 +221,71 @@ public:
 
   void _setDenominatorTerm(int index, const T& newCoeff, int power)
   { den._setTerm(index, newCoeff, power); }
+
+
+  /** Applies a scaling factor to this rational function. This basically means to scale all 
+  numerator coeffs by that factor. */
+  void _scale(T scaler) { num._scaleCoeffs(scaler); }
+  // May decanonicalize when scaler is zero
+
+  /** Adds the given constant c to the rational function. This has the effect of adding a scaled
+  version of the denominator to the numerator because N/D + c = N/D + c*D/D = (N + c*D)/D. */
+  void _addConstant(T c) { num.addScaled(den, c); }
+  // ToDo: Document, if this works in place (I think so)
+  // Maybe it needs an underscore? Could it destroy the "reduced" property? I think so - but figure
+  // out hwo and document this!
+
+
+
+  void _multiplyBy(rsMonomial<T> factor) { num._multiplyBy(factor); }
+  // Give it an underscore - why? could it possibly destroy canonicalness? I guess, it could 
+  // destroy the no-common-factors (aka irreducibility) property. Maybe we should call a reduce()
+  // function
+  // Yes - it can destroy the reduced property. Consider R(x) = ((x+1)*(x+2)) / ((x+3)*x). It's
+  // canonical. Num and den have no common factors. But if we multiply the numerator by the 
+  // monomial x, they will have the common factor x. I think, this occurs whenever the denominator
+  // has a monomial as factor, i.e. a factor of x^p, i.e. a root (possibly with multiplicity) at 
+  // x = 0. This is equivalent to den not having a constant term. 
+
+
+  void _multiplyBy(const SparseRatFunc& factor) 
+  { 
+    num.multiplyBy(factor.num);
+    den.multiplyBy(factor.den);
+
+    // I think, num and den may now have a common factor, so we potentially need to divide that
+    // out:
+    //canonicalize();
+    // But maybe we should not automatically reduce the result by default because doing so may 
+    // require memory allocations (because the GCD algo needs temporaries) and we really need this
+    // function to be realtime safe (it's used in rsDampedCombAllpass::getCombTransferFunction(), 
+    // for example - and that is used in rsDampedMultiCombAllpass::updateFilters() which could 
+    // potentially be called on an audio thread). Maybe we should have a boolean parameter 
+    // "reduce"? that deafults to true but that we set to false in a realtime context?)
+
+    // Consider 14/15 * 3/4 = 42/60 = 7/10. Although both factors are in lowest terms, their 
+    // product is not. The same thing could happen with rational functions.
+  }
+  // Get rid of tol, give it an underscore
+  // I think, it will destroy the reduced feature if den and factor have a common factor, i.e.
+  // theri gcd isn't 1. ...Verify this!
+
+  void _multiplyByDenseCoeffs(const T* numeratorCoeffs,   int numNumeratorTerms,
+    const T* denominatorCoeffs, int numDenominatorTerms)
+  {
+    num.multiplyByDenseCoeffs(numeratorCoeffs,   numNumeratorTerms);
+    den.multiplyByDenseCoeffs(denominatorCoeffs, numDenominatorTerms);
+  }
+  // Needs test, get rid of tol param, give it an underscore
+
+
+  // Maybe also make a divideByDenseCoeffs function by just calling multiplyByDenseCoeffs with
+  // swapped arguments...or maybe not - client code can do that itself - no need to increase the
+  // API surface area
+
+
+
+
 
 
   /** Reduces this rational function to lowest terms. That means, it divides out the greatest 
