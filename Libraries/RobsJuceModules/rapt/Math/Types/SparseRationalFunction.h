@@ -131,10 +131,10 @@ public:
   // x = 0. This is equivalent to den not having a constant term. 
 
 
-  void multiplyBy(const SparseRatFunc& factor, T tol) 
+  void multiplyBy(const SparseRatFunc& factor) 
   { 
-    num.multiplyBy(factor.num, tol);
-    den.multiplyBy(factor.den, tol);
+    num.multiplyBy(factor.num);
+    den.multiplyBy(factor.den);
 
     // I think, num and den may now have a common factor, so we potentially need to divide that
     // out:

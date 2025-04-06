@@ -215,9 +215,7 @@ public:
 
   /** Multiplies this polynomial by the given other polynomial factor. Works in place and 
   re-allocates only when the capacity is too low (VERIFY!). */
-  void multiplyBy(const SparsePoly& factor, TTol tol) { multiply(*this, factor, this); }
-  // Why does this still have a tol param? It actually doesn't even do anything with it. Must be
-  // a remnant. Get rid!
+  void multiplyBy(const SparsePoly& factor) { multiply(*this, factor, this); }
 
   /** Multiplies this polynomial by a desne polynomial represented by the given array of 
   coefficients. Works in place and re-allocates only when the capacity is too low. */

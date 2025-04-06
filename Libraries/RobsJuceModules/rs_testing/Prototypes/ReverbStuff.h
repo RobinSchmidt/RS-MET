@@ -3285,7 +3285,7 @@ void rsDampedMultiCombAllpass<TSig, TPar, TTol>::updateFilters()
     if(serialCombs == false)
       RatFunc::weightedSumDestructive(&U, TPar(1), &Ui, TPar(s.gain), &U, TPar(0));
     else
-      U.multiplyBy(Ui, TPar(0));  // Verify if this works in place!
+      U.multiplyBy(Ui);   // Verify if this works in place!
 
   }
 
