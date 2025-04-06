@@ -155,12 +155,6 @@ public:
 
 
 
-  //void canonicalize();
-  // Should: (1) Divide out the GCD of num and den. (2) Canonicalize num and den. 
-  // (3) Divide num and den by the leading coeff of den (i.e. make den monic)
-  //
-  // But maybe it could also make sense to define a canonical representation as one with monic
-  // numerator? But no! This can't represent the zero function.
 
 
   //-----------------------------------------------------------------------------------------------
@@ -271,6 +265,31 @@ public:
   { den._setTerm(index, newCoeff, power); }
 
 
+  void _reduce();  // Just a stub at the moment
+
+  void _canonicalizeNumAndDen() { num._canonicalize(); den._canonicalize(); }
+
+  void _makeDenominatorMonic()
+  { T s = T(1) / den.getLeadingCoeff(); num._scaleCoeffs(scl); den._scaleCoeffs(scl); }
+
+
+  void _canonicalize()
+  {
+    _reduce();
+    _canonicalizeNumAndDen();
+    _makeDenominatorMonic();
+  }
+
+
+  // Should: (1) Divide out the GCD of num and den, i.e. reduce to lowest terms. (2) Canonicalize
+  // num and den. (3) Divide num and den by the leading coeff of den (i.e. make den monic)
+  //
+  // But maybe it could also make sense to define a canonical representation as one with monic
+  // numerator? But no! This can't represent the zero function.
+
+
+
+
   // _isCanonical()
   // A canonical representation has canonical numerator and denominator with no common factors
   // and the denominator is monic. But maybe it should be a low level method.
@@ -299,6 +318,9 @@ inline rsSparseRationalFunction<T, TTol> operator*(
   r.scale(s);
   return r;
 }
+
+
+// Maybe move to .cpp file:
 
 template<class T, class TTol>
 void rsSparseRationalFunction<T, TTol>::weightedSum(
