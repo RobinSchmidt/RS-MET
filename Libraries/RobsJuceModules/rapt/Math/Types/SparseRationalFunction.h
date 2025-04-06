@@ -105,6 +105,7 @@ public:
   version of the denominator to the numerator because N/D + c = N/D + c*D/D = (N + c*D)/D. */
   void addConstant(T c) { num.addScaled(den, c); }
   // ToDo: Document, if this works in place (I think so)
+  // Maybe it needs an underscore? Could it destroy the "reduced" property?
 
 
   void multiplyBy(rsMonomial<T> factor) 
@@ -153,8 +154,8 @@ public:
   // I think, it will destroy the reduced feature if den and factor have a common factor, i.e.
   // theri gcd isn't 1. ...Verify this!
 
-  void multiplyByDenseCoeffs(const T* numeratorCoeffs,   int numNumeratorTerms,
-                             const T* denominatorCoeffs, int numDenominatorTerms, T tol)
+  void _multiplyByDenseCoeffs(const T* numeratorCoeffs,   int numNumeratorTerms,
+                              const T* denominatorCoeffs, int numDenominatorTerms)
   {
     num.multiplyByDenseCoeffs(numeratorCoeffs,   numNumeratorTerms);
     den.multiplyByDenseCoeffs(denominatorCoeffs, numDenominatorTerms);

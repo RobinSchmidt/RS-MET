@@ -1719,11 +1719,14 @@ public:
   being the fractional part of the delay, i.e. delay = M+f. */
   void mulByDelayTransFunc(rsSparseDigitalTransferFunction<TCoef, TTol>* tf) const
   {
-    tf->multiplyByDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1, TCoef(0));  // Interpolator factor
-    tf->addPreDelay((int)delay);                                            // Integer delay factor
+    tf->_multiplyByDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1);  // Interpolator factor
+    tf->addPreDelay((int)delay);                                   // Integer delay factor
 
     // VERIFY if this is correct! Check and document also, if the order of the calls matters. I 
-    // think, it shouldn't. Test it with all the available interpolators.
+    // think, it shouldn't. Test it with all the available interpolators. Maybe try avoid using
+    // the potentially decanonicalizing _mul... function. But maybe it's ok in this context here 
+    // because we know that it doesn't *actually* decanonicalize? ...but I guess, that depends on
+    // what tf is before the call
   }
   // Maybe make protected - it's currently used only internally. But maybe it could be useful for 
   // extenal use, too? Implement also mulByDampTransFunc
