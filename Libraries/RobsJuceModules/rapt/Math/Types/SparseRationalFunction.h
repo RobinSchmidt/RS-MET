@@ -265,28 +265,25 @@ public:
   { den._setTerm(index, newCoeff, power); }
 
 
-  void _reduce();  // Just a stub at the moment
+  /** Reduces this rational function to lowest terms. That means, it divides out the greatest 
+  common divisor of numerator and denominator from both. This doesn't change the represented 
+  rational function mathematically.*/
+  void _reduce();
 
+  /** Canonicalizes numerator and denominator. This doesn't change the represented rational 
+  function mathematically. */
   void _canonicalizeNumAndDen() { num._canonicalize(); den._canonicalize(); }
 
+  /** Makes our denominator monic by dividing out the leading coefficient of the denominator from
+  both, numerator and denominator. This doesn't change the represented rational function 
+  mathematically. */
   void _makeDenominatorMonic()
   { T s = T(1) / den.getLeadingCoeff(); num._scaleCoeffs(scl); den._scaleCoeffs(scl); }
 
-
-  void _canonicalize()
-  {
-    _reduce();
-    _canonicalizeNumAndDen();
-    _makeDenominatorMonic();
-  }
-
-
-  // Should: (1) Divide out the GCD of num and den, i.e. reduce to lowest terms. (2) Canonicalize
-  // num and den. (3) Divide num and den by the leading coeff of den (i.e. make den monic)
-  //
-  // But maybe it could also make sense to define a canonical representation as one with monic
-  // numerator? But no! This can't represent the zero function.
-
+  /** Puts this rational function into its canonical representation. That means it will be reduced
+  to lowest terms, numerator and denominator will be in canonical representation and the 
+  denominator will be monic. */
+  void _canonicalize() { _reduce(); _canonicalizeNumAndDen(); _makeDenominatorMonic(); }
 
 
 
