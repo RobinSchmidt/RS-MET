@@ -107,11 +107,28 @@ public:
   // ToDo: Document, if this works in place (I think so)
 
 
+  void multiplyBy(rsMonomial<T> factor) 
+  { 
+    _multiplyBy(factor);
 
-  void multiplyBy(rsMonomial<T> factor) { num._multiplyBy(factor); }
+    //_canonicalize();
+    // Calling this always may be overkill! I think, we need it only when the denominator has no
+    // constant term. Also, we may not need all steps of the canonicalization
+    //
+    // This now triggers an assert!
+  }
+
+
+
+  void _multiplyBy(rsMonomial<T> factor) { num._multiplyBy(factor); }
   // Give it an underscore - why? could it possibly destroy canonicalness? I guess, it could 
   // destroy the no-common-factors (aka irreducibility) property. Maybe we should call a reduce()
   // function
+  // Yes - it can destroy the reduced property. Consider R(x) = ((x+1)*(x+2)) / ((x+3)*x). It's
+  // canonical. Num and den have no common factors. But if we multiply the numerator by the 
+  // monomial x, they will have the common factor x. I think, this occurs whenever the denominator
+  // has a monomial as factor, i.e. a factor of x^p, i.e. a root (possibly with multiplicity) at 
+  // x = 0. This is equivalent to den not having a constant term. 
 
 
   void multiplyBy(const SparseRatFunc& factor, T tol) 
@@ -132,7 +149,9 @@ public:
     // Consider 14/15 * 3/4 = 42/60 = 7/10. Although both factors are in lowest terms, their 
     // product is not. The same thing could happen with rational functions.
   }
-
+  // Get rid of tol, give it an underscore
+  // I think, it will destroy the reduced feature if den and factor have a common factor, i.e.
+  // theri gcd isn't 1. ...Verify this!
 
   void multiplyByDenseCoeffs(const T* numeratorCoeffs,   int numNumeratorTerms,
                              const T* denominatorCoeffs, int numDenominatorTerms, T tol)
@@ -140,7 +159,7 @@ public:
     num.multiplyByDenseCoeffs(numeratorCoeffs,   numNumeratorTerms);
     den.multiplyByDenseCoeffs(denominatorCoeffs, numDenominatorTerms);
   }
-  // Needs test, get rid of tol param
+  // Needs test, get rid of tol param, give it an underscore
 
 
   // Maybe also make a divideByDenseCoeffs function by just calling multiplyByDenseCoeffs with
@@ -225,21 +244,14 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Low level API.  */
 
-
-  static void weightedSum(
-    const SparseRatFunc& p, T wp,
-    const SparseRatFunc& q, T wq,
+  static void weightedSum(const SparseRatFunc& p, T wp, const SparseRatFunc& q, T wq, 
     SparseRatFunc* r, T tol);
   // Get rid of tol.
 
-  static void weightedSumDestructive(
-    SparseRatFunc* p, T wp,
-    SparseRatFunc* q, T wq,
+  static void weightedSumDestructive(SparseRatFunc* p, T wp, SparseRatFunc* q, T wq,
     SparseRatFunc* r, T tol);
   // Get rid of tol.
-  // The first parameter p may alias to the result r.
-
-
+  // Document that The first parameter p may alias to the result r.
 
   /** Clears numerator and denominator. Note that this puts the object into an invalid state. It 
   would formally represent the indeterminate expression 0/0. So, this function should be used with
@@ -247,12 +259,9 @@ public:
   underscore. In higher level code, consider using setToZero() instead which sets the function to
   the zero function f(x) = 0 which is quite probably what you actually want to achieve anyway. */
   void _clear() { num.clear(); den.clear(); }
-  // Maybe it should have an underscore? It puts the function itno an invalid state representing
-  // the function 0/0 (I think)
-  // Move to low level API!
 
   void _copyDataFrom(const SparseRatFunc& q) { num = q.num; den = q.den; }
-  // Use underscore - maybe ..or get rid of it and use (default) assignment operator instead.
+  // Maybe get rid of it and use (default) assignment operator instead.
 
 
   void _setNumTerms(int newNumNumeratorTerms, int newNumDenominatorTerms)
@@ -278,7 +287,7 @@ public:
   both, numerator and denominator. This doesn't change the represented rational function 
   mathematically. */
   void _makeDenominatorMonic()
-  { T s = T(1) / den.getLeadingCoeff(); num._scaleCoeffs(scl); den._scaleCoeffs(scl); }
+  { T s = T(1) / den.getLeadingCoeff(); num._scaleCoeffs(s); den._scaleCoeffs(s); }
 
   /** Puts this rational function into its canonical representation. That means it will be reduced
   to lowest terms, numerator and denominator will be in canonical representation and the 
@@ -286,17 +295,13 @@ public:
   void _canonicalize() { _reduce(); _canonicalizeNumAndDen(); _makeDenominatorMonic(); }
 
 
-
   // _isCanonical()
   // A canonical representation has canonical numerator and denominator with no common factors
   // and the denominator is monic. But maybe it should be a low level method.
 
 
-
-
-
-
 protected:
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
@@ -315,62 +320,6 @@ inline rsSparseRationalFunction<T, TTol> operator*(
   r.scale(s);
   return r;
 }
-
-
-// Maybe move to .cpp file:
-
-template<class T, class TTol>
-void rsSparseRationalFunction<T, TTol>::weightedSum(
-  const rsSparseRationalFunction<T, TTol>& p, T wp,
-  const rsSparseRationalFunction<T, TTol>& q, T wq,
-  rsSparseRationalFunction<T, TTol>* r, T tol)
-{
-  r->den = p.den * q.den;
-  r->num = wp * p.num * q.den  +  wq * q.num * p.den;
-
-  // This can probably be optimized with respect to avoid unnecessary temporary objects and heap
-  // allocations. We may also use the gcd instead of just cross-mutiplying the denominators.
-}
-
-template<class T, class TTol>
-void rsSparseRationalFunction<T, TTol>::weightedSumDestructive(
-  rsSparseRationalFunction<T, TTol>* p, T wp,
-  rsSparseRationalFunction<T, TTol>* q, T wq,
-  rsSparseRationalFunction<T, TTol>* r, T tol)  // Get rid of tol param!
-
-{
-  rsAssert(rsAreAddressesDistinct(*p, *q));
-  //rsAssert(rsAreAddressesDistinct(*r, *p));  // We may actually allow this!
-  rsAssert(rsAreAddressesDistinct(*r, *q));
-  // Maybe we can relax this? It would be really nice if r could be equal to at least one of p or
-  // q. Requiring p and q to be distinct is not such a big problem. I think, we can allow this, if
-  // SP::weightedSum can work in place. But at the moment. I think, it can't. But maybe it can be
-  // made so. Looking at the code, it seems like it could work when the result aliases to the 1st 
-  // argument. Test and document this! A test indicates that this may indeed work out. Investigate
-  // this further and document! We could perhaps make it work to also allow r == q by swapping p 
-  // and q (and wp and wq) in this case. But what if r == p == q? ...well...in that case, we could 
-  // leave the denominator of r (and p and q) alone and just multiply the numerator by the scaler 
-  // (wp+wq), I think. I think, the p == q != r case could possibly also be handled - just copy p
-  // or q into r and then scale by (wp+wq)
-
-  using SP = rsSparsePolynomial<T, TTol>;
-
-  //              arg1        arg2        result
-  SP::multiply(   p->num,     q->den,     &p->num);  // Replace p->num by p->num * q->den
-  SP::multiply(   q->num,     p->den,     &q->num);  // Replace q->num by q->num * p->den
-  SP::weightedSum(p->num, wp, q->num, wq, &r->num);  // Establish r->num
-  SP::multiply(   p->den,     q->den,     &r->den);  // Establish r->den
-
-  // ToDo:
-  //
-  // - Document exactly, how it can be used with respect to which pointers must be distinct and 
-  //   which one may alias (and to what). Document why it's called "destructive". It is because
-  //   it may destroy the input parameters in the process of computing the output. It's meant to
-  //   be used in place when memory usage should be optimized and the inputs become irrelevant
-  //   after the computation.
-}
-// Needs tests
-
 
 
 //=================================================================================================

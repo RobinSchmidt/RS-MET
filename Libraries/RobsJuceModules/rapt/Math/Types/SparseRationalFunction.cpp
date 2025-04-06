@@ -1,11 +1,13 @@
 
-
 template<class T, class TTol>
 void rsSparseRationalFunction<T, TTol>::_reduce()
 {
   SparsePoly gcd = SparsePoly::greatestCommonDivisor(num, den, false);
-  num._divideBy(gcd);
-  den._divideBy(gcd);
+  //num._divideBy(gcd); // Oh! This works only if gcd would be a momomial!
+  //den._divideBy(gcd);
+  // We need to call a more general division function
+
+  rsError("Not yet correctly implemented!");
 
   // ToDo:
   //
@@ -29,4 +31,54 @@ void rsSparseRationalFunction<T, TTol>::_reduce()
   //   capacity.
 }
 
+template<class T, class TTol>
+void rsSparseRationalFunction<T, TTol>::weightedSum(
+  const rsSparseRationalFunction<T, TTol>& p, T wp,
+  const rsSparseRationalFunction<T, TTol>& q, T wq,
+  rsSparseRationalFunction<T, TTol>* r, T tol)
+{
+  r->den = p.den * q.den;
+  r->num = wp * p.num * q.den  +  wq * q.num * p.den;
 
+  // This can probably be optimized with respect to avoid unnecessary temporary objects and heap
+  // allocations. We may also use the gcd instead of just cross-mutiplying the denominators.
+}
+
+template<class T, class TTol>
+void rsSparseRationalFunction<T, TTol>::weightedSumDestructive(
+  rsSparseRationalFunction<T, TTol>* p, T wp,
+  rsSparseRationalFunction<T, TTol>* q, T wq,
+  rsSparseRationalFunction<T, TTol>* r, T tol)  // Get rid of tol param!
+
+{
+  rsAssert(rsAreAddressesDistinct(*p, *q));
+  //rsAssert(rsAreAddressesDistinct(*r, *p));  // We may actually allow this!
+  rsAssert(rsAreAddressesDistinct(*r, *q));
+  // Maybe we can relax this? It would be really nice if r could be equal to at least one of p or
+  // q. Requiring p and q to be distinct is not such a big problem. I think, we can allow this, if
+  // SP::weightedSum can work in place. But at the moment. I think, it can't. But maybe it can be
+  // made so. Looking at the code, it seems like it could work when the result aliases to the 1st 
+  // argument. Test and document this! A test indicates that this may indeed work out. Investigate
+  // this further and document! We could perhaps make it work to also allow r == q by swapping p 
+  // and q (and wp and wq) in this case. But what if r == p == q? ...well...in that case, we could 
+  // leave the denominator of r (and p and q) alone and just multiply the numerator by the scaler 
+  // (wp+wq), I think. I think, the p == q != r case could possibly also be handled - just copy p
+  // or q into r and then scale by (wp+wq)
+
+  using SP = rsSparsePolynomial<T, TTol>;
+
+  //              arg1        arg2        result
+  SP::multiply(   p->num,     q->den,     &p->num);  // Replace p->num by p->num * q->den
+  SP::multiply(   q->num,     p->den,     &q->num);  // Replace q->num by q->num * p->den
+  SP::weightedSum(p->num, wp, q->num, wq, &r->num);  // Establish r->num
+  SP::multiply(   p->den,     q->den,     &r->den);  // Establish r->den
+
+  // ToDo:
+  //
+  // - Document exactly, how it can be used with respect to which pointers must be distinct and 
+  //   which one may alias (and to what). Document why it's called "destructive". It is because
+  //   it may destroy the input parameters in the process of computing the output. It's meant to
+  //   be used in place when memory usage should be optimized and the inputs become irrelevant
+  //   after the computation.
+}
+// Needs tests
