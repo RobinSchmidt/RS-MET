@@ -130,6 +130,7 @@ void rsSparsePolynomial<T, TTol>::_canonicalize()
 
   // Remove terms with coefficient zero:
   rsRemoveIf(terms, [this](const Mon& term){ return rsIsNegligible(term.getCoeff(), tol); });
+  // Factor out inot function so we can call it from setRoundoffTolerance(), too
 
   // Check postcondition:
   rsAssert(_isCanonical(), "Canonicalization failed");

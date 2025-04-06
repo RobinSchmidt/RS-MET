@@ -173,6 +173,7 @@ public:
   /** Sets up the numerical tolerance that is used to determine if a coefficient should be 
   considered zero, i.e. with in the numerical roundoff noise. */
   void setRoundoffTolerance(TTol newTolerance) { tol = newTolerance; }
+  // ToDo: Call a removeZeros() function such that the new tolerance becomes immediately effective.
 
   /** Sets up the polynomial from a dense arrays of polynomial coeffs. When a coefficient in the 
   dense representation is zero, we will not create a term for that. The comparison to zero is to be

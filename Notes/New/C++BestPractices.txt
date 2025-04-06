@@ -19,8 +19,8 @@ https://www.youtube.com/watch?v=SuubuqI4gVA   at 57:15 is a slide with a summary
   latter case, the members would be initialized twice. First default initialized and then again in
   the constructor.
 
--  Use structs when there are no invariants or constraints between the members and the client code 
-   may just get and set them.
+- Use structs when there are no invariants or constraints between the members and the client code 
+  may just get and set them.
 
 - Avoid default arguments for parameters in virtual member functions or if you use them, make sure 
   they have the same values in all derived classes. Otherwise, member functions called on baseclass 
@@ -33,5 +33,29 @@ https://www.youtube.com/watch?v=SuubuqI4gVA   at 57:15 is a slide with a summary
 
 
 
+Back to Basics: Lifetime Management in Cpp - Phil Nash - CppCon 2024
+https://www.youtube.com/watch?v=aMvIv6blzBs
 
+- Rule of 3: When you implement any of: (1) copy constructor, (2) copy assignment operator, 
+  (3) destructor yourself (i.e. don't rely on the compiler generated functions), then you probably 
+  need to implement the other two yourself as well. This is: you typically need to implement either 
+  none of them (sometimes called the rule of zero) or all three of them. This is typically the case 
+  when the class manages a resource (e.g. has a pointer member and owns the object pointed to). 
 
+- Rule of 5: From C++11 onwards, we additionally may have to think about the: (4) move constructor,
+  (5) move assignment operator. We may still get away with the rule of 3 but then we may leave some
+  performance optimization on the table because possible moves will have to fall back to using 
+  copies.
+
+- Move constructors and assigment operators should typically not throw exceptions and be marked as 
+  noexcept.
+
+- Rule of 0: Always try to have the compiler generated special member functions do the right thing.
+  In case of a managed resource such a s a pointer, this may be achieved by using smart pointers 
+  rather than raw pointers. Classes should try to only use value types and managers as members and 
+  avoid doing any manual resource management. Managers in this context are types that manage a 
+  resource like smart pointers, owning STL containers like std::vector, non-owning views like 
+  std::string_view, etc..
+
+- Polymorphic baseclass probably should follow the rule of 5 with disabled (by using delete) copy 
+  and move.

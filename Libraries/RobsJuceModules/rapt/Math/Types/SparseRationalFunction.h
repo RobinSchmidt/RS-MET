@@ -53,10 +53,7 @@ public:
   /** Sets up the numerical tolerance that is used to determine if a coefficient should be 
   considered zero, i.e. with in the numerical roundoff noise. */
   void setRoundoffTolerance(TTol newTolerance) 
-  {
-    num.setRoundoffTolerance(newTolerance);
-    den.setRoundoffTolerance(newTolerance);
-  }
+  { num.setRoundoffTolerance(newTolerance); den.setRoundoffTolerance(newTolerance); }
 
   /** Initializes this rational function to the zero function: f(x) = 0. We represent this as
   f(x) = 0*x^0 / 1*x^0. The array for the numerator will be empty and the array for the 
@@ -112,9 +109,17 @@ public:
   numerator coeffs by that factor. */
   void scale(T scaler) { num._scaleCoeffs(scaler); }
 
+  /** Adds the given constant c to the rational function. This has the effect of adding a scaled
+  version of the denominator to the numerator because N/D + c = N/D + c*D/D = (N + c*D)/D. */
+  void addConstant(T c) { num.addScaled(den, c); }
+  // ToDo: Document, if this works in place (I think so)
+
+
 
   void multiplyBy(rsMonomial<T> factor) { num._multiplyBy(factor); }
-  // Give it an underscore
+  // Give it an underscore - why? could it possibly destroy canonicalness? I guess, it could 
+  // destroy the no-common-factors (aka irreducibility) property. Maybe we should call a reduce()
+  // function
 
 
   void multiplyBy(const SparseRatFunc& factor, T tol) 
@@ -155,10 +160,7 @@ public:
 
 
 
-  /** Adds the given constant c to the rational function. This has the effect of adding a scaled
-  version of the denominator to the numerator because N/D + c = N/D + c*D/D = (N + c*D)/D. */
-  void addConstant(T c) { num.addScaled(den, c); }
-  // ToDo: Document, if this works in place (I think so)
+
 
 
   //void canonicalize();
