@@ -80,27 +80,19 @@ public:
 
   void setupFromDenseCoeffs(
     const std::vector<T>& newNumeratorCoeffs,
-    const std::vector<T>& newDenominatorCoeffs,
-    T tol)
+    const std::vector<T>& newDenominatorCoeffs)
   {
-    num.setRoundoffTolerance(tol);
-    den.setRoundoffTolerance(tol);
     num.setupFromDenseCoeffs(newNumeratorCoeffs);
     den.setupFromDenseCoeffs(newDenominatorCoeffs);
   }
-  // Remove tol param!
 
   void setupFromDenseCoeffs(
     const T* newNumeratorCoeffs,   int newNumNumeratorTerms, 
-    const T* newDenominatorCoeffs, int newNumDenominatorTerms,
-    T tol)
+    const T* newDenominatorCoeffs, int newNumDenominatorTerms)
   {
-    num.setRoundoffTolerance(tol);
-    den.setRoundoffTolerance(tol);
     num.setupFromDenseCoeffs(newNumeratorCoeffs,   newNumNumeratorTerms);
     den.setupFromDenseCoeffs(newDenominatorCoeffs, newNumDenominatorTerms);
   }
-  // Remove tol param!
 
 
 

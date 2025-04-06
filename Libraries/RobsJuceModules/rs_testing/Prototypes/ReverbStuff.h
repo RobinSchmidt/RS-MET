@@ -1751,7 +1751,7 @@ public:
 
   void getDamperTransferFunction(rsSparseDigitalTransferFunction<TCoef, TTol>* tf) const
   {
-    tf->setupFromDenseCoeffs(bD, dmpOrd+1, aD, dmpOrd+1, TCoef(0));
+    tf->setupFromDenseCoeffs(bD, dmpOrd+1, aD, dmpOrd+1);
 
     // ToDo: here and elsewhere in similar calls, do not pass TCoeff(0) for the roundoff error
     // tolerance. Try to come up with a sensible value. Maybe implement a (protected) member 
@@ -2471,7 +2471,7 @@ public:
     rsSparseDigitalTransferFunction<TPar, TTol> H;
     H.setRoundoffTolerance(tol);
     H.setupFromDenseCoeffs(s.getDampCoeffsB(), s.getDampingOrder()+1,
-      s.getDampCoeffsA(), s.getDampingOrder()+1, TPar(0));
+                           s.getDampCoeffsA(), s.getDampingOrder()+1);
     return H;
 
     // Factor out into s.getDamperTransferFunction();

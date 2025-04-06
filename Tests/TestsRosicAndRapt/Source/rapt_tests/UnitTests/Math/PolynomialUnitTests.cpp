@@ -2995,8 +2995,10 @@ bool testSparseRationalFunction()
   sd = RatD({ 5,6 }, { 5, 7, 11 });
 
   RatS rs, ss, ts, us;
-  rs.setupFromDenseCoeffs(rd.getNumerator(), rd.getDenominator(), tol);
-  ss.setupFromDenseCoeffs(sd.getNumerator(), sd.getDenominator(), tol);
+  rs.setRoundoffTolerance(tol);
+  ss.setRoundoffTolerance(tol);
+  rs.setupFromDenseCoeffs(rd.getNumerator(), rd.getDenominator());
+  ss.setupFromDenseCoeffs(sd.getNumerator(), sd.getDenominator());
 
   // Test evaluation for real and complex argument:
   y1 = rd(x); y2 = rs(x);  ok &= rsIsCloseTo(y1, y2, tol);
@@ -3014,14 +3016,14 @@ bool testSparseRationalFunction()
   ok &= us.isCloseTo(ts, 0.0);
 
   // Restore rs, ss and try it with the 1st arg aliasing to the result:
-  rs.setupFromDenseCoeffs(rd.getNumerator(), rd.getDenominator(), tol);
-  ss.setupFromDenseCoeffs(sd.getNumerator(), sd.getDenominator(), tol);
+  rs.setupFromDenseCoeffs(rd.getNumerator(), rd.getDenominator());
+  ss.setupFromDenseCoeffs(sd.getNumerator(), sd.getDenominator());
   RatS::weightedSumDestructive(&rs, 0.75, &ss, 1.5, &rs, tol);
   ok &= rs.isCloseTo(ts, 0.0);
 
   // Restore rs, ss and try it with the 2nd arg aliasing to the result:
-  rs.setupFromDenseCoeffs(rd.getNumerator(), rd.getDenominator(), tol);
-  ss.setupFromDenseCoeffs(sd.getNumerator(), sd.getDenominator(), tol);
+  rs.setupFromDenseCoeffs(rd.getNumerator(), rd.getDenominator());
+  ss.setupFromDenseCoeffs(sd.getNumerator(), sd.getDenominator());
   //RatS::weightedSumDestructive(&rs, 0.75, &ss, 1.5, &ss, tol);
   //ok &= ss.isCloseTo(ts, 0.0);
   // Nope! This doesn't work! It's not so surprising though. It's not something that could be
