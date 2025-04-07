@@ -85,16 +85,6 @@ public:
   */
 
 
-
-
-
-
-
-
-
-
-
-
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
@@ -107,7 +97,6 @@ public:
   bool isCloseTo(const SparseRatFunc& q) const
   { return isCloseTo(q, rsMax(getRoundoffTolerance(), q.getRoundoffTolerance())); }
   // Needs tests
-
 
   bool isZero() const { return num.isZero(); }
 
@@ -122,7 +111,6 @@ public:
   int getNumNumeratorTerms()   const { return num.getNumTerms(); }
 
   int getNumDenominatorTerms() const { return den.getNumTerms(); }
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -161,9 +149,6 @@ public:
   /** \name Boilerplate */
 
   SparseRatFunc& operator+=(const SparseRatFunc& b) { return *this = (*this) + b; }
-
-
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -229,8 +214,6 @@ public:
   // Maybe it needs an underscore? Could it destroy the "reduced" property? I think so - but figure
   // out hwo and document this!
 
-
-
   void _multiplyBy(rsMonomial<T> factor) { num._multiplyBy(factor); }
   // Give it an underscore - why? could it possibly destroy canonicalness? I guess, it could 
   // destroy the no-common-factors (aka irreducibility) property. Maybe we should call a reduce()
@@ -240,7 +223,6 @@ public:
   // monomial x, they will have the common factor x. I think, this occurs whenever the denominator
   // has a monomial as factor, i.e. a factor of x^p, i.e. a root (possibly with multiplicity) at 
   // x = 0. This is equivalent to den not having a constant term. 
-
 
   void _multiplyBy(const SparseRatFunc& factor) 
   { 
@@ -278,10 +260,6 @@ public:
   // API surface area
 
 
-
-
-
-
   /** Reduces this rational function to lowest terms. That means, it divides out the greatest 
   common divisor of numerator and denominator from both. This doesn't change the represented 
   rational function mathematically.*/
@@ -302,22 +280,12 @@ public:
   denominator will be monic. It will also make sure that the roundoff tolerances of numerator and
   denominator match (if they don't match already, it will pick the maximum of both). */
   void _canonicalize();
-  /*
-  { 
-    _reduce(); 
-    _canonicalizeNumAndDen();
-    _makeDenominatorMonic();
-    tol = rsMax(num.getRoundoffTolerance(), den.getRoundoffTolerance());
-    setRoundoffTolerance(tol);
-  }
-  */
 
   /** Returns true iff this rational function is in canonical representation. A canonical 
   representation has canonical numerator and denominator with no common factors (i.e. they are 
   coprime) and the denominator is monic (i.e. has leading coeff 1). */
   bool _isCanonical() const;
   // Needs tests.
-
 
 
 protected:
@@ -360,10 +328,7 @@ invert the transfer function (basically, swapping numerator and denominator but 
 a0 = 1 condition by appropriate pre- and post scaling), reflecting the zeros about the unit circle 
 (turning minimum phase filters into maximum phase ones), etc. ...TBC... 
 
-ToDo: Move this class into its own dedicated pair of .h/.cpp files in Filters/General
-
-*/
-
+ToDo: Move this class into its own dedicated pair of .h/.cpp files in Filters/General  */
 
 template<class T, class TTol>  // ToDo: Let TTol default to rsEmptyType
 class rsSparseDigitalTransferFunction : public rsSparseRationalFunction<T, TTol>
@@ -373,7 +338,6 @@ public:
 
   using Base = rsSparseRationalFunction<T, TTol>;  // For convenience
   using Base::Base;                                // Inherit constructors
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -517,8 +481,6 @@ inline rsSparseDigitalTransferFunction<T, TTol> operator*(
   r._scale(s);
   return r;
 }
-
-
 
 
 // Under construction:
