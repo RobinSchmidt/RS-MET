@@ -4,7 +4,30 @@
 - Review dampedMultiCombAllpassUnitTest(). I had to modify it after removing the tol param from
   rsSparseRationalFunction::setupFromDenseCoeffs() to make it pass again.
 
+- Clean up all the different implementations/specializations of rsIsCloseTo. Ideally, we want to 
+  have only one version in Basics/BasicFunctions.h and its implementation should probably look 
+  something like:
 
+  template<class T, class TTol>
+  bool rsIsCloseTo(const T& x, const T& y, const TTol& tol)
+  {
+     return rsIsNegligible(x-y, tol);
+  }
+
+  Then, try to delete all other implementations. Maybe keep some explicit specializations where it
+  really makes sense.
+
+- Clean up the rsPow/rsPowInt/rsPowI problems. rsPow should take two args of type T and return a T.
+  rsPowInt should take a T and an int and return a T. It should use the fast exponentiation algo.
+  Maybe as an intermediate step, rename the current rsPowInt(int, int) that accepts only two 
+  integers as input to rsPowIntInt. That's ugly but it doesn't matter because eventually, it should
+  go away anyway. The case for int,int should eventually be covered by the rsPowInt(T, int) 
+  template as well. But at intermediate stages, we may need this. Maybe there's also an rsPow lying 
+  around that accepts two ints. Check that. I have this recurring bug that when just invoking 
+  rsPow, it implicitly converts its arguments to int and invokes an integer version. We really 
+  should not rely on overload resolution to let the compiler select between rsPow(T,T) and 
+  rsPow(T,int) or rsPow(int, int). It's too easy to get wrong. When the 2nd arg is int, we should 
+  should be forced to invoke rsPowInt to make that clear at the call site.
 
 - figure out, why rsSinusoidalAnalyzer may produce negative values for the amplitude of the DC 
   component (and fix it)

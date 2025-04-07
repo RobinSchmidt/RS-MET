@@ -47,6 +47,7 @@ inline T rsExpToLinWithOffset(T in, T inMin, T inMax, T outMin, T outMax, T offs
 template<class T>
 //inline bool rsIsCloseTo(T x, T targetValue, double tolerance);
 inline bool rsIsCloseTo(T x, T targetValue, T tolerance);
+// Try to get rid of that! We already have a definition of rsIsCloseTo in Basics/BasicFunctions.h
 
 /** Checks, if x is a power of 2. t should be some unsigned integer type.  */
 template<class T>

@@ -248,6 +248,8 @@ bool rsIsCloseTo(const std::complex<T>& a, const std::complex<T>& b, const T& to
   T m2 = rsAbsSquared(d);   // magnitude squared of difference
   return m2 <= tol*tol;
 }
+// There are some different implementations/specializations in 
+// Math/Functions/BasicMatFunctions.h/cpp which makes it confusing. Try to get rid of them!
 
 template <class T>
 bool rsLessOrEqual(const T& left, const T& right)
