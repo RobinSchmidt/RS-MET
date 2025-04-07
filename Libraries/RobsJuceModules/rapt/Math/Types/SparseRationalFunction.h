@@ -132,7 +132,7 @@ public:
   /** \name Operators */
 
   /** Evaluates the function at the given input x. */
-  T operator()(T x) const { return num(x) / den(x); }
+  //T operator()(T x) const { return num(x) / den(x); }
 
   /** Evaluates the function at the given input z whose type may be different from the 
   coefficient type, for example, for evaluating functions with real coeffs at complex arguments.
@@ -471,26 +471,6 @@ public:
   baseclass method, i.e. provides compile time polymorphism for the _isCanonical() member 
   function. There is no runtime polymorphism, though - so take care! */
   bool _isCanonical() const;
-  /*
-  {
-    bool ok = true;
-
-    // Numerator and denominator polynomials should not be empty:
-    ok &= num.getNumTerms() > 0 && den.getNumTerms() > 0;
-    // But is that right? Maybe an empty numerator is admissible to represent the zero function? 
-    // It's not very useful as a transfer function, but still...
-
-    // We assume the filter polynomials to be in canonical shape:
-    ok &= num._isCanonical();
-    ok &= den._isCanonical();
-
-    // Filter should satisfy the a0 == 1 normalization property:
-    ok &= den.getPower(0) == 0 && den.getCoeff(0) == T(1);
-
-    return ok;
-  }
-  // Move to .cpp file  ...done
-  */
 
   /** Computes the density of the numerator defined as the number of actual nonzero coeffs divided
   by the number of potentially nonzero coeffs given the degree of the numerator. */
@@ -543,12 +523,13 @@ public:
 
 
 
-
+  /*
   T operator()(T x) const 
   { 
     T xr = T(1) / x;
     return num(xr) / den(xr); 
   }
+  */
   // Do we really need this when we already have the variant with TArg below? Maybe we need it only
   // because the baseclass also has it and we need to override that? If so, maybe delete it here 
   // *and* in the baseclass and keep only the variant with TArg in both

@@ -15,7 +15,8 @@
   }
 
   Then, try to delete all other implementations. Maybe keep some explicit specializations where it
-  really makes sense.
+  really makes sense. OK - we now have this implementation in place. But the other ones are still 
+  floating around. Get rid of them!
 
 - Clean up the rsPow/rsPowInt/rsPowI problems. rsPow should take two args of type T and return a T.
   rsPowInt should take a T and an int and return a T. It should use the fast exponentiation algo.
