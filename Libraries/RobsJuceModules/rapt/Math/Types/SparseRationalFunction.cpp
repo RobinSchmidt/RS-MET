@@ -15,9 +15,9 @@ void rsSparseRationalFunction<T, TTol>::_reduce()
   //   canonical representation of num and den? ...Figure out!
   //
   // - Does it make sense to pass false to greatestCommonDivisor as last argument? This avoids the
-  //   make-it-monic step. Could it be advantageous to use a monic gcd? Maybe it would 
-  //   automatically ensure that our den is again monic when it was monic before? In this case, I 
-  //   think, we should pass true instead.
+  //   make-it-monic step in the gcd algo. Could it be advantageous to use a monic gcd? Maybe it 
+  //   would automatically ensure that our den is again monic when it was monic before? In this 
+  //   case, I think, we should pass true instead.
   //
   // - In rsFraction, the implementation of reduce() looks like this:
   //
@@ -32,6 +32,17 @@ void rsSparseRationalFunction<T, TTol>::_reduce()
 }
 
 template<class T, class TTol>
+bool rsSparseRationalFunction<T, TTol>::_isCanonical()
+{
+  bool can = true;
+  can &= num.isCoprimeTo(den);
+  can &= num._isCanonical();
+  can &= den._isCanonical();
+  can &= den.isMonic();
+  return can;
+}
+
+template<class T, class TTol>
 void rsSparseRationalFunction<T, TTol>::weightedSum(
   const rsSparseRationalFunction<T, TTol>& p, T wp,
   const rsSparseRationalFunction<T, TTol>& q, T wq,
@@ -43,7 +54,9 @@ void rsSparseRationalFunction<T, TTol>::weightedSum(
   //r->_canonicalize();  // Uncomment this!
 
   // This can probably be optimized with respect to avoid unnecessary temporary objects and heap
-  // allocations. We may also use the gcd instead of just cross-mutiplying the denominators.
+  // allocations. We may also use the gcd instead of just cross-mutiplying the denominators. But 
+  // whether that will be an optimization or a pessimization....well - it may depend on the inputs
+  // but I guess that most of the time, it will be a pessimization.
 }
 
 template<class T, class TTol>
@@ -80,9 +93,11 @@ void rsSparseRationalFunction<T, TTol>::weightedSumDestructive(
   // ToDo:
   //
   // - Document exactly, how it can be used with respect to which pointers must be distinct and 
-  //   which one may alias (and to what). Document why it's called "destructive". It is because
+  //   which ones may alias (and to what). Document why it's called "destructive". It is because
   //   it may destroy the input parameters in the process of computing the output. It's meant to
   //   be used in place when memory usage should be optimized and the inputs become irrelevant
-  //   after the computation.
+  //   after the computation. The regular weightedSum function allocates temporary memory due to 
+  //   usage of the =,*,+ operators. This function should not allocate iff all paremeters have 
+  //   allocated enough capacity to hold the (intermediate) results.
 }
 // Needs tests

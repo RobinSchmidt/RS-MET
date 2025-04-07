@@ -163,8 +163,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Boilerplate */
 
-  SparseRatFunc& operator+=(const SparseRatFunc& b) 
-  { return *this = (*this) + b; }
+  SparseRatFunc& operator+=(const SparseRatFunc& b) { return *this = (*this) + b; }
 
 
 
@@ -308,10 +307,12 @@ public:
   denominator will be monic. */
   void _canonicalize() { _reduce(); _canonicalizeNumAndDen(); _makeDenominatorMonic(); }
 
+  /** Returns true iff this rational function is in canonical representation. A canonical 
+  representation has canonical numerator and denominator with no common factors (i.e. they are 
+  coprime) and the denominator is monic (i.e. has leading coeff 1). */
+  bool _isCanonical();
+  // Needs tests.
 
-  // _isCanonical()
-  // A canonical representation has canonical numerator and denominator with no common factors
-  // and the denominator is monic. But maybe it should be a low level method.
 
 
 protected:
