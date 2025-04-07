@@ -270,12 +270,12 @@ public:
   // theri gcd isn't 1. ...Verify this!
 
   void _multiplyByDenseCoeffs(const T* numeratorCoeffs,   int numNumeratorTerms,
-    const T* denominatorCoeffs, int numDenominatorTerms)
+                              const T* denominatorCoeffs, int numDenominatorTerms)
   {
     num.multiplyByDenseCoeffs(numeratorCoeffs,   numNumeratorTerms);
     den.multiplyByDenseCoeffs(denominatorCoeffs, numDenominatorTerms);
   }
-  // Needs test, get rid of tol param, give it an underscore
+  // Needs test
 
 
   // Maybe also make a divideByDenseCoeffs function by just calling multiplyByDenseCoeffs with
@@ -457,7 +457,19 @@ public:
   transfer function. */
   int getFilterOrder() const { return rsMax(num.getDegree(), den.getDegree()); }
 
-  /** Performs some sanity checks. Is meant for debug assertions. */
+  /** Checks if this transfer function is in canonical representation. A transfer function for a 
+  digital filter in canonical representation has canonical numerator and denominator and the 
+  constant term of the denominator is 1. Note how these criteria are different from a canoncial
+  representation of general (sparse) rational functions which require the denominator to be monic,
+  i.e. the leading coeff rather than the constant coeff must be 1. Also, we do not require the 
+  numerator and denominator to be coprime here. That means we allow pole-zero cancellations in the
+  transfer function and still consider it canonical. The rationale is that such pole-zero 
+  cancellations may indeed occur in practice for certain perfectly valid parameter settings of user
+  adjustable filters. Not having to check for coprimality has the nice side effect that we can 
+  perform the test for canonicalness without the need to allocate temporary heap memory (which the
+  coprimality test needs for computing the gcd). The function here overrides a non-virtual(!) 
+  baseclass method, i.e. provides compile time polymorphism for the _isCanonical() member 
+  function. There is no runtime polymorphism, though - so take care! */
   bool _isCanonical() const
   {
     bool ok = true;
@@ -476,9 +488,7 @@ public:
 
     return ok;
   }
-  // This is actually an override - but only at compile time because the basclass method isn't
-  // virtual. Should we makr it as override anyway?
-
+  // Move to .cpp file
 
   /** Computes the density of the numerator defined as the number of actual nonzero coeffs divided
   by the number of potentially nonzero coeffs given the degree of the numerator. */
