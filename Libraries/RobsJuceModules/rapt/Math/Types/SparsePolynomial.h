@@ -235,9 +235,6 @@ public:
   considered zero, i.e. with in the numerical roundoff noise. */
   TTol getRoundoffTolerance() const { return tol; }
 
-  /** Returns true iff this polynomial is the zero polynomial. */
-  bool isZero() const { rsAssert(_isCanonical()); return terms.empty(); }
-
   /** Returns the leading term in this polynomial, i.e. the monomial  a_n * x^p[n]  that has the 
   highest exponent p[n]. */
   rsMonomial<T> getLeadingTerm() const
@@ -258,6 +255,13 @@ public:
   occurs. */
   int getDegree() const { return getLeadingTerm().getPower(); }
 
+  /** Returns true iff this polynomial is the zero polynomial. */
+  bool isZero() const { rsAssert(_isCanonical()); return terms.empty(); }
+
+  /** Returns true iff this polynomial is a constant polynomial, i.e. has a degree of zero. */
+  bool isConstant() const { return getDegree() == 0; }
+  // Needs test
+
   /** Returns true, iff the rhs polynomial equals this polynomial up to the given tolerance. */
   bool isCloseTo(const SparsePoly& rhs, TTol tol) const;
 
@@ -265,10 +269,13 @@ public:
   and the rhs's tol member. */
   bool isCloseTo(const SparsePoly& rhs) const { return isCloseTo(rhs, rsMax(tol, rhs.tol)); }
 
-
-  //bool isCoprimeTo(const SparsePoly& rhs) const;
-  // ToDo: implement such a function. It should return true of the gcd of this and rhs is 1
-
+  /** Returns true, iff the greatest common divisor of this polynomial and the other one is just
+  a constant. If this is the case, the two polynomials are said to be "mutually prime" or 
+  "coprime". This is analoguous to the notion of coprimality of integer numbers. */
+  bool isCoprimeTo(const SparsePoly& other) const
+  { SparsePoly gcd = greatestCommonDivisor(*this, other); return gcd.isConstant(); }
+  // Needs tests. ToDo: Maybe the criterion is stricter and requires the constant to be one? But
+  // no - I don't think so. Verify!
 
   /** Return true, iff the given index is valid, i.e. the object has a term with given index. */
   bool isValidIndex(int i) const { return i >= 0 && i < getNumTerms(); }

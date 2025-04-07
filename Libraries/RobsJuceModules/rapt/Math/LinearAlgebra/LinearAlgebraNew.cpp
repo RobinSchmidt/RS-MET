@@ -267,6 +267,13 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B, i
   // this case the i-th column is already zero from i downward - this is ok - or wait - no - this
   // check is already included in the for(int j=i ...loop
 
+  // Maybe factor out the pivot search into a free function like:
+  //   p = rsFindPivotRow(A, i);
+  //   best = A(p, i)
+  // The idea is that client code may want to drop in a more advanced pivot search algorithm. 
+  // ...Hmm - but then, the choice of algorithm would depend only on the type T. Maybe to make it 
+  // really useful, we should let the client pass a function pointer or a std::function.
+
   // Maybe allow the function to be called without an rhs B. It may make sense to use it with a 
   // single input in order to compute determinants - when the function returns, the determinant is
   // the product of diagonal elements - up to a sign flip, which occurs when we had an odd number 
