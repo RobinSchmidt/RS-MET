@@ -55,32 +55,19 @@ public:
   void setRoundoffTolerance(TTol newTolerance) 
   { num.setRoundoffTolerance(newTolerance); den.setRoundoffTolerance(newTolerance); }
 
-  /** Initializes this rational function to the zero function: f(x) = 0. We represent this as
+  /** Sets this rational function to the zero function: f(x) = 0. We represent this as
   f(x) = 0*x^0 / 1*x^0. The array for the numerator will be empty and the array for the 
   denominator will have a single coefficient of 1 for the monomial x^0. */
-  void setToZero()
-  {
-    _clear();                  // f(x) = 0/0. That's indeterminate!
-    den._appendTerm(T(1), 0);  // f(x) = 0/1. That's much better.
-  }
+  void setToZero() { _clear(); den._appendTerm(T(1), 0); }
 
-  /** Initializes this rational function that is constantly one: f(x) = 1. We represent this as
-  f(x) = 1*x^0 / 1*x^0. */
-  void setToOne()
-  {
-    setToZero();               // f(x) = 0/1
-    num._appendTerm(T(1), 0);  // f(x) = 1/1
-  }
+  /** Sets this rational function to the function that is constantly one: f(x) = 1. We represent 
+  this as f(x) = 1*x^0 / 1*x^0. */
+  void setToOne() { setToZero(); num._appendTerm(T(1), 0); }
 
-  void setToIdentity()
-  {
-    setToZero();               // f(x) = 0/1
-    num._appendTerm(T(1), 1);  // f(x) = x/1
-  }
-
-
-
-
+  /** Sets this rational function the identity function: f(x) = x. We represent this as
+  f(x) = 1*x^1 / 1*x^0. */
+  void setToIdentity() { setToZero(); num._appendTerm(T(1), 1); }
+  // Needs test
 
   /*
   void multiplyBy(rsMonomial<T> factor) 
@@ -88,7 +75,10 @@ public:
     _multiplyBy(factor);
     _canonicalize();
     // Calling this always may be overkill! I think, we need it only when the denominator has no
-    // constant term. Also, we may not need all steps of the canonicalization
+    // constant term. Only then we may factor out an x from the denominator (which is also a factor
+    // of "factor"). Also, even in this case, we may not need all steps of the canonicalization. We
+    // May actually use a custom optimized algorithm that just determines the lowest power of x in
+    // num and den and reduces all powers by that number, I think.
     //
     // This now triggers an assert!
   }
@@ -108,8 +98,15 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  bool isCloseTo(const SparseRatFunc& q, T tol) const
+  TTol getRoundoffTolerance() const
+  { return rsMax(num.getRoundoffTolerance(), den.getRoundoffTolerance()); }
+
+  bool isCloseTo(const SparseRatFunc& q, TTol tol) const
   { return q.num.isCloseTo(num, tol) && q.den.isCloseTo(den, tol); }
+
+  bool isCloseTo(const SparseRatFunc& q) const
+  { return isCloseTo(q, rsMax(getRoundoffTolerance(), q.getRoundoffTolerance())); }
+  // Needs tests
 
 
   bool isZero() const { return num.isZero(); }
@@ -196,17 +193,15 @@ public:
   void _copyDataFrom(const SparseRatFunc& q) { num = q.num; den = q.den; }
   // Maybe get rid of it and use (default) assignment operator instead.
 
-  void _setupFromDenseCoeffs(
-    const std::vector<T>& newNumeratorCoeffs,
-    const std::vector<T>& newDenominatorCoeffs)
+  void _setupFromDenseCoeffs(const std::vector<T>& newNumeratorCoeffs,
+                             const std::vector<T>& newDenominatorCoeffs)
   {
     num.setupFromDenseCoeffs(newNumeratorCoeffs);
     den.setupFromDenseCoeffs(newDenominatorCoeffs);
   }
 
-  void _setupFromDenseCoeffs(
-    const T* newNumeratorCoeffs,   int newNumNumeratorTerms, 
-    const T* newDenominatorCoeffs, int newNumDenominatorTerms)
+  void _setupFromDenseCoeffs(const T* newNumeratorCoeffs,   int newNumNumeratorTerms, 
+                             const T* newDenominatorCoeffs, int newNumDenominatorTerms)
   {
     num.setupFromDenseCoeffs(newNumeratorCoeffs,   newNumNumeratorTerms);
     den.setupFromDenseCoeffs(newDenominatorCoeffs, newNumDenominatorTerms);
@@ -304,8 +299,18 @@ public:
 
   /** Puts this rational function into its canonical representation. That means it will be reduced
   to lowest terms, numerator and denominator will be in canonical representation and the 
-  denominator will be monic. */
-  void _canonicalize() { _reduce(); _canonicalizeNumAndDen(); _makeDenominatorMonic(); }
+  denominator will be monic. It will also make sure that the roundoff tolerances of numerator and
+  denominator match (if they don't match already, it will pick the maximum of both). */
+  void _canonicalize();
+  /*
+  { 
+    _reduce(); 
+    _canonicalizeNumAndDen();
+    _makeDenominatorMonic();
+    tol = rsMax(num.getRoundoffTolerance(), den.getRoundoffTolerance());
+    setRoundoffTolerance(tol);
+  }
+  */
 
   /** Returns true iff this rational function is in canonical representation. A canonical 
   representation has canonical numerator and denominator with no common factors (i.e. they are 
@@ -375,25 +380,8 @@ public:
   /** \name Setup */
 
   /** Adds an overall predelay to the whole filter by shifting all exponents of z^-1 by the given
-  amount. */
-  void addPreDelay(int amountInSamples)
-  {
-    if(amountInSamples < 0)
-    {
-      rsError("Negative predelay is not allowed");
-      return;
-      // We could allow it if we already have some predelay and the given amount would just 
-      // reduce it. Maybe we can relax the restriction to amountInSamples >= -num.getMinPower() or
-      // something. If the minimum power is 3, we could allow a predelay amount of -3. This would 
-      // then just reduce the predelay to zero.
-    }
-
-    num.shiftPowers(amountInSamples);
-
-
-    // Maybe do num.shiftPowers(rsMax(amountInSamples, -getPreDelay()) ); and write unit tests for
-    // this
-  }
+  amount which must be a nonnegative integer. */
+  void addPreDelay(int amountInSamples);
 
   /** Removes the predelay from this filter, if any is present. This makes sure that the lowest
   exponent of z^-1 in the numerator is zero. see getPreDelay(), addPreDelay()  */
@@ -401,47 +389,12 @@ public:
 
   /** Turns the filter into its inverse. This basically amounts to swapping numerator and
   denominator and possibly applying some scaling of the coefficients if b0 != 1. */
-  void invert()
-  {
-    rsAssert(_isCanonical());
-
-    // A filter with predelay cannot be inverted (at least not if it operates in realtime). The 
-    // best thing we can do in this case is to invert the filter up to the predelay. Removing the
-    // predelay ensures that the 0-th term in the numerator has power of 0, i.e. it's a  b0 * z^-0  
-    // term:
-    removePreDelay();
-    rsAssert(num.getPower(0) == 0); // Numerator is already asserted to be non-empty in isCanoncial
-    rsAssert(num.getCoeff(0) != 0); // ..so we can access the 0-th element without risk here
-
-    // Swap numerator and denominator while maintaining the a0 = 0 normalization condition by 
-    // appropriately scaling the numerator before and after the swap:
-    T s = T(1) / num.getCoeff(0);  // Desired scaler s is 1/b0
-    _scale(s);                     // Scale old numerator to achieve b0 = 1 before swap
-    std::swap(num, den);           // Swap numerator and denominator. b0 is now 1 because a0 was.
-    _scale(s);                     // Scale new numerator to achieve desired overall gain
-
-    // I'm pretty sure it doesnt' allocate. The swap of the underyling std::vectors should use move 
-    // semantics. Verify and document this. We need to be able to call this function on a realtime 
-    // thread in some damped comb allpass filters, so it is important that this function is 
-    // non-allocating.
-  }
+  void invert();
 
   /** Reflects the zeros of the filter about the unit circle. This will turn a minimum phase
   filter into a maximum phase one and vice versa. For mixed phase filters, it inverts the mix.
   It doesn't affect stability or filter order. */
-  void reflectZeros()
-  {
-    int deg = num.getDegree();                   // ToDo: use canonical getDegree
-    for(int i = 0; i < num.getNumTerms(); i++)
-      num._setPower(i, deg - num.getPower(i));
-    num._reverse();                               // Order array by ascending powers again
-
-    // How about a reflectPoles() function? But that would turn stable filters into unstable ones,
-    // so it's usefulness is questionable. For the time being, we can do without. Maybe we should 
-    // also apply complex conjugation of the coeffs in case of complex coeffs? If so, maybe
-    // do it in a function num.conjugateCoeffs() which just calls rsConj() on each coeff (which is
-    // an empty function for real types)
-  }
+  void reflectZeros();
 
 
   //-----------------------------------------------------------------------------------------------
@@ -521,30 +474,14 @@ public:
   // ToDo: Document use cases for these getDensity() functions.
 
 
-
-
-  /*
-  T operator()(T x) const 
-  { 
-    T xr = T(1) / x;
-    return num(xr) / den(xr); 
-  }
-  */
-  // Do we really need this when we already have the variant with TArg below? Maybe we need it only
-  // because the baseclass also has it and we need to override that? If so, maybe delete it here 
-  // *and* in the baseclass and keep only the variant with TArg in both
-
-
+  /** Overrides the function evaluattion operator in order to reciprocate the input z before 
+  applying the rational function to it. This is needed because we store the coeffs of H(z^-1) 
+  rather than of H(z). That means the numerator and denominator polynomials have coeffs that 
+  multiply powers of z^-1 such as z^-1, z^-2, z^-3, etc. and not z^1, z^2, z^3, etc.. Note that 
+  the override works only at compile time. We don't support runtime polymorphism here. */
   template<class TArg>
-  TArg operator()(TArg z) const 
-  { 
-    TArg zr = TArg(1) / z;
-    return num(zr) / den(zr);
-  }
-  // Reciprocation of z needed because we store the coeffs of H(z^-1)
+  TArg operator()(TArg z) const { TArg zr = TArg(1) / z; return num(zr) / den(zr); }
 
-  // We also need to override the evaluateAt functions...or maybe get rid of them in the baseclass.
-  // Oh - looks like, we don't have such functions there. OK - good.
 
   // This boilerplate is needed to have the desired arithmetic operators available also for the 
   // derived class. They can not be inherited from the baseclass because their parameter and
@@ -552,10 +489,7 @@ public:
 
 
   rsSparseDigitalTransferFunction<T, TTol> operator-() const
-  {
-    return rsSparseDigitalTransferFunction<T, TTol>(-num, den);
-  }
-
+  { return rsSparseDigitalTransferFunction<T, TTol>(-num, den); }
 
   rsSparseDigitalTransferFunction<T, TTol> operator+(const rsSparseDigitalTransferFunction<T, TTol>& q) const 
   { rsSparseDigitalTransferFunction<T, TTol> r; weightedSum(*this, T(1), q, T(1), &r, T(0)); return r; }
