@@ -271,21 +271,7 @@ public:
 
   /** Returns true, iff this polynomial is monic, i.e. if its leading coefficient is 1 (up to the
   numeric roundoff tolerance). */
-  bool isMonic() const 
-  { 
-    //return rsIsCloseTo(getLeadingCoeff(), T(1), tol);     // Doesnt' compile
-    //return rsMaxNorm(getLeadingCoeff() - T(1)) <= tol;    // Dito
-    return rsIsNegligible(getLeadingCoeff() - T(1), tol);   // Preliminary - use rsIsCloseTo later
-
-    // ToDo:
-    //
-    // - Change implementation of rsIsCloseTo in such a way that it accepts a different type for
-    //   the tolerance. Currently, all 3 inputs must have the same type. Maybe the new 
-    //   implementation should be based on the new rsMaxNorm function. It should basically do what
-    //   we do here by hand in the preliminary implementation:  return rsIsNegligible(x-y, tol); 
-    //   ...I think. Then reactivate the commented code.
-  }
-
+  bool isMonic() const { return rsIsCloseTo(getLeadingCoeff(), T(1), tol); }
 
   /** Returns true, iff the greatest common divisor of this polynomial and the other one is just
   a constant. If this is the case, the two polynomials are said to be "mutually prime" or 

@@ -618,6 +618,18 @@ inline bool rsIsNegligible(TVal val, rsEmptyType tol)
   // only when it is exactly equal to zero.
 }
 
+template<class TVal, class TTol>
+bool rsIsCloseTo(const TVal& x, const TVal& y, const TTol& tol)
+{
+  return rsIsNegligible(x-y, tol);
+
+  // ToDo: 
+  //
+  // - Try to get rid of all the other (older) implementations/specializations of rsIsCloseTo(). 
+  //   I think, they should now be considered obsolete/deprecated. This implementation here is now 
+  //   the only right way to do it, I think. Maybe for certain types TVal, it will require an 
+  //   explicit specialization of rsIsNegligible(TVal x, TTol tol). We'll see.
+}
 
 
 
