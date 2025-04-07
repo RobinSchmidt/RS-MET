@@ -306,10 +306,22 @@ template class RAPT::rsSparsePolynomial<int>;
 template class RAPT::rsSparsePolynomial<rsFraction<int>>;
 
 
-
 template class RAPT::rsSparseRationalFunction<double>;  // Uses default rsEmptyType for 2nd param
 template class RAPT::rsSparseRationalFunction<double, double>;
 
+
+template class RAPT::rsSparseDigitalTransferFunction<double, rsEmptyType>;
+template class RAPT::rsSparseDigitalTransferFunction<double, double>;
+
+// It seems, it's not enough to instantiate the outermost class (in the sense of composition or
+// inheritance). Instatiating rsSparseDigitalTransferFunction does not automatically instantiate
+// the baseclass rsSparseRationalFunction. And instantiating rsSparseRationalFunction does not 
+// automatically instantiate rsSparsePolynomial which is the type of the members of 
+// rsSparseRationalFunction. We apparently need to also explicitly instantiate all the inner 
+// classes. That's rather annyoing! On the other hand, it may be quite similar to what we may have
+// to do with the exports when we eventually use C++20 modules, so maybe it's not that bad when we
+// already need to do that now - it may facilitate the transition later (but I'm not sure about 
+// that).
 
 
 

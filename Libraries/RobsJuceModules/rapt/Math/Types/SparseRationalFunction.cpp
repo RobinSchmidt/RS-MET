@@ -101,3 +101,36 @@ void rsSparseRationalFunction<T, TTol>::weightedSumDestructive(
   //   allocated enough capacity to hold the (intermediate) results.
 }
 // Needs tests
+
+
+//-------------------------------------------------------------------------------------------------
+
+template<class T, class TTol>
+bool rsSparseDigitalTransferFunction<T, TTol>::_isCanonical() const
+{
+  bool ok = true;
+
+  // Numerator and denominator polynomials should not be empty:
+  ok &= num.getNumTerms() > 0;    // Maybe empty numerator is admissible to represent H(z) = 0? 
+  ok &= den.getNumTerms() > 0;
+
+  // We assume the num, den polynomials to be in canonical representation:
+  ok &= num._isCanonical();
+  ok &= den._isCanonical();
+
+  // Filter should satisfy the a0 == 1 normalization property:
+  ok &= den.getPower(0) == 0;
+  ok &= den.getCoeff(0) == T(1);  // Should we use a tolerance? ...but maybe not.
+
+  return ok;
+
+
+  // ToDo:
+  //
+  // - Maybe we are too strict here. Maybe we should allow for empty numerators. I'm also not sure
+  //   if an exact comparison to 1 is appropriate the const coeff of the denominator. Maybe we 
+  //   should use an inexact comparison, i.e. use some tolerance. We'll see...
+  //
+  // - Maybe put the tests that access getPower(0), getCoeff(0) into a conditional to avoid access
+  //   violations when the den actually is empty.
+}

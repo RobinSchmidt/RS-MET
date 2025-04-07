@@ -470,7 +470,8 @@ public:
   coprimality test needs for computing the gcd). The function here overrides a non-virtual(!) 
   baseclass method, i.e. provides compile time polymorphism for the _isCanonical() member 
   function. There is no runtime polymorphism, though - so take care! */
-  bool _isCanonical() const
+  bool _isCanonical() const;
+  /*
   {
     bool ok = true;
 
@@ -488,7 +489,8 @@ public:
 
     return ok;
   }
-  // Move to .cpp file
+  // Move to .cpp file  ...done
+  */
 
   /** Computes the density of the numerator defined as the number of actual nonzero coeffs divided
   by the number of potentially nonzero coeffs given the degree of the numerator. */
