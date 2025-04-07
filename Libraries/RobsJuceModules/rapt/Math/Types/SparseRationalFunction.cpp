@@ -32,7 +32,7 @@ void rsSparseRationalFunction<T, TTol>::_reduce()
 }
 
 template<class T, class TTol>
-bool rsSparseRationalFunction<T, TTol>::_isCanonical()
+bool rsSparseRationalFunction<T, TTol>::_isCanonical() const
 {
   bool can = true;
   can &= num.isCoprimeTo(den);

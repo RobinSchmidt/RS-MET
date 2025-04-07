@@ -310,7 +310,7 @@ public:
   /** Returns true iff this rational function is in canonical representation. A canonical 
   representation has canonical numerator and denominator with no common factors (i.e. they are 
   coprime) and the denominator is monic (i.e. has leading coeff 1). */
-  bool _isCanonical();
+  bool _isCanonical() const;
   // Needs tests.
 
 
@@ -403,7 +403,7 @@ public:
   denominator and possibly applying some scaling of the coefficients if b0 != 1. */
   void invert()
   {
-    rsAssert(isCanonical());
+    rsAssert(_isCanonical());
 
     // A filter with predelay cannot be inverted (at least not if it operates in realtime). The 
     // best thing we can do in this case is to invert the filter up to the predelay. Removing the
@@ -458,7 +458,7 @@ public:
   int getFilterOrder() const { return rsMax(num.getDegree(), den.getDegree()); }
 
   /** Performs some sanity checks. Is meant for debug assertions. */
-  bool isCanonical() const
+  bool _isCanonical() const
   {
     bool ok = true;
 
@@ -476,6 +476,8 @@ public:
 
     return ok;
   }
+  // This is actually an override - but only at compile time because the basclass method isn't
+  // virtual. Should we makr it as override anyway?
 
 
   /** Computes the density of the numerator defined as the number of actual nonzero coeffs divided

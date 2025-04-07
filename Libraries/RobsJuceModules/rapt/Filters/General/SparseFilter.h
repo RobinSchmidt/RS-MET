@@ -90,9 +90,12 @@ public:
   void ensureEnoughDelayMemory()
   { setMaxDelayInSamples(rsMax(getMaxDelayInSamples(), getFilterOrder())); }
 
-  void setMaxDelayInSamples(int newMaxDelay)
-  { delayLine.setMaxDelayInSamples(newMaxDelay); }
-
+  /** Sets up the maximum delay that this filter supports which is equal to the maximum filter 
+  order. If the delayline doesn't already have enough capacity allocated, this will trigger a
+  heap allocation, so calling this function is something you may want to do at setup time. */
+  void setMaxDelayInSamples(int newMaxDelay) { delayLine.setMaxDelayInSamples(newMaxDelay); }
+  // Maybe give the method an underscore to indicate that this is a low level method and should be
+  // used with extra care.
 
   /** Updates the length of the delayline according to the maximum power of z^-1 that occurs in
   numerator and denominator polynomial. */
@@ -159,43 +162,28 @@ public:
 
   /** Returns the order of the filter. This is the maximum amount of delay needed to implement 
   the filter. */
-  int getFilterOrder() const 
-  { 
-    return H.getFilterOrder();
-    //return rsMax(H.num.getDegree(), H.den.getDegree()); 
-  }
+  int getFilterOrder() const { return H.getFilterOrder(); }
 
+  /** Returns the maximum possible delay that this filter currently supports which is also equal to
+  the maximum filter order. You can increase this at runtime by calling setMaxDelayInSamples() but
+  be aware that this may trigger a heap (re-)allocation. */
   int getMaxDelayInSamples() const { return delayLine.getMaxDelayInSamples(); }
-  // Maybe rename to getMaxFilterOrder
 
-
-  /** Performs some sanity checks. Is meant for debug assertions. */
-  bool isFilterValid() const { return H.isCanonical() && areDelaysConsistent(); }
-  // ToDo: Elaborate documentation. Give some details about what it checks.
-
-
-
-
+  /** Performs some sanity checks. Is meant for debug assertions. It verifies that the transfer 
+  function H is in canonical representation and that the delayline length matches the filter 
+  order (as dictated by H). */
+  bool isFilterValid() const { return H._isCanonical() && areDelaysConsistent(); }
 
   /** Computes the transfer function H(z) of this filter at the given complex value z. */
   rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z) const { return H(z); }
   // Yes - that's right! "return H(z)" is the whole implementation. Isn't that elegant? :-D
 
-
-  // Reciprocation of z needed because H actually stores the coeffs of H(z^-1)
-  // ToDo: factor the reciprocation out into the () operator of
-  // rsSparseDigitalTransferFunction ...done!
-
-
   /** Returns a const reference to our transfer function object H(z). */
   const rsSparseDigitalTransferFunction<TPar, TTol>& getTransferFunction() const { return H; }
 
 
-
-
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
-
 
   /** Computes one output sample at a time using a direct form 2 implementation. */
   TSig getSample(TSig in)
