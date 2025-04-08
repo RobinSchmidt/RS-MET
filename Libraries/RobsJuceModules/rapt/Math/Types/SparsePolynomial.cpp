@@ -29,7 +29,7 @@ void rsSparsePolynomial<T, TTol>::addTerm(T coeff, int power)
         rsRemove(terms, (size_t) i);
       rsAssert(_isCanonical());               // Make sure we didn't mess up canonicalness
       return;
-      // Check, if this has test coverage!
+      // Check, if this branch has test coverage!
     }
     else if(getPower(i) < power)
     {
@@ -105,7 +105,7 @@ void rsSparsePolynomial<T, TTol>::_canonicalize()
   std::sort(terms.begin(), terms.end(), 
             [](const Mon& lhs, const Mon& rhs){ return lhs.getPower() < rhs.getPower(); });
 
-  // Combine multiple terms with equal power/exponent into single term: 
+  // Combine multiple terms with equal power/exponent into single terms: 
   int numTerms = getNumTerms();
   int p = getPower(0);              // Current power
   int r = 1;                        // Read index
@@ -127,10 +127,8 @@ void rsSparsePolynomial<T, TTol>::_canonicalize()
   // sense to factor it out into a function in its own right. Doing so could invite calling it on 
   // unsorted term arrays in which case we would have a bug.
 
-  // Remove terms with coefficient zero:
+  // Remove terms with coefficient zero (up to roundoff tolerance):
   _removeTermsWithZeroCoeff();
-  //rsRemoveIf(terms, [this](const Mon& term){ return rsIsNegligible(term.getCoeff(), tol); });
-  // Factor out int9 function so we can call it from setRoundoffTolerance(), too
 
   // Check postcondition:
   rsAssert(_isCanonical(), "Canonicalization failed");
@@ -163,7 +161,8 @@ void rsSparsePolynomial<T, TTol>::_canonicalize()
   //   BUT: do NOT introduce a removeNegativePowers() function or something like that. Such a thing
   //   will tend to mask bugs on a higher level. It's the higher level's responsibility that such 
   //   terms don't occurr in the first place - and we shall not sanitize any failure to do so here.
-  //   If it happens, we want to see it.
+  //   If it happens, we want to see it. Also - maybe at some point in the future, we actually want
+  //   to allow for negative exponents.
 }
 
 template<class T, class TTol>
@@ -195,10 +194,6 @@ bool rsSparsePolynomial<T, TTol>::isCloseTo(const rsSparsePolynomial<T, TTol>& q
   }
 
   return true;
-
-  // Maybe assert that *this and q are canonical. Maybe we should add such assertion everywhere 
-  // where we assume a canonical representation. That's quite an overhead because the test is 
-  // (moderately) costly - but only in debug versions.
 }
 
 template<class T, class TTol>
