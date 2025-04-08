@@ -186,6 +186,17 @@ bool rsSparsePolynomial<T, TTol>::isCloseTo(const rsSparsePolynomial<T, TTol>& q
 template<class T, class TTol>
 bool rsSparsePolynomial<T, TTol>::_isCanonical() const
 {
+  // New implementation:
+  bool ok = true;
+  ok &=  _areTermsStrictlySorted();
+  ok &= !_hasZeroCoeffs();
+  ok &= !_hasNegativePowers();
+  return ok;
+
+
+  /*
+  // Old implementation (will eventually be deleted):
+
   // An empty polynomial is the canonical representation of the zero polynomial:
   if(terms.empty())
     return true;
@@ -216,6 +227,7 @@ bool rsSparsePolynomial<T, TTol>::_isCanonical() const
       return false;
 
   return true;
+  */
 
   // ToDo:
   //
@@ -241,6 +253,16 @@ bool rsSparsePolynomial<T, TTol>::_areTermsStrictlySorted() const
   }
 
   return true;
+}
+
+template<class T, class TTol>
+bool rsSparsePolynomial<T, TTol>::_hasZeroCoeffs() const
+{
+  for(auto& t : terms)
+    if( rsIsNegligible(t.getCoeff(), tol) )
+      return true;
+
+  return false;
 }
 
 template<class T, class TTol>

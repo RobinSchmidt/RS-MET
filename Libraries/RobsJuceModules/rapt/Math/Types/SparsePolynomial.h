@@ -499,6 +499,11 @@ public:
   bool _areTermsStrictlySorted() const;
   // Needs test
 
+  /** Returns true iff any of our terms has a coefficient of zero (up to the roundoff 
+  tolerance). In a canonical representation, this is forbidden. */
+  bool _hasZeroCoeffs() const;
+  // Needs test
+
   /** Returns true iff any of our terms has a negative power. */
   bool _hasNegativePowers() const;
   // Needs test
