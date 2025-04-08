@@ -6,11 +6,12 @@
 
 /** A class for representing (univariate) monomials, i.e. expressions of the form  c * x^p  for
 some coefficient c and integer power (or exponent) p. Strictly speaking, we should require p to be
-nonnegative, but we don't really enforce this here.
+nonnegative, but we don't really enforce this here. So, it can later be used to represent more 
+general terms of this form with possibly negative integer powers.
 
 See: https://en.wikipedia.org/wiki/Monomial   */
 
-template<class T> 
+template<class T>  // Maybe rename to TCoef 
 class rsMonomial
 {
 
@@ -22,6 +23,7 @@ public:
 
   explicit rsMonomial(T newCoeff = T(0), int newPower = 0) : coeff(newCoeff), power(newPower) { }
   // Marked as explicit because we want to avoid hidden automatic conversions from type T
+  // Maybe pass newCoeff by const ref
 
 
   //-----------------------------------------------------------------------------------------------
@@ -46,7 +48,7 @@ public:
 
   /** Returns the coefficient c in the expression c * x^p. */
   T getCoeff() const { return coeff; }
-  // Maybe return by const ref?
+  // Maybe return by const ref? ...not sure if this is a good idea, though.
 
   /** Returns the power (aka exponent) p in the expression c * x^p. */
   int getPower() const { return power; }
@@ -56,8 +58,8 @@ public:
   /** \name Operators */
 
   /** Evaluates the expression c * x^p at the given x. The data type of the argument x may be 
-  different from the type T with which the class is instantiated. Can be used, for example, to 
-  evaluate monomials with real coefficients at complex arguments. */
+  different from the coefficient type T with which the class is instantiated. Can be used, for 
+  example, to evaluate monomials with real coefficients at complex arguments. */
   template<class TArg>
   TArg operator()(TArg x) const { return TArg(coeff) * rsPow(x, TArg(power)); }
   // Preliminary. We may want to use rsPowInt for integer exponents. That may be more efficient.
@@ -88,6 +90,12 @@ public:
   // If q.power > this->power, this will lead to a negative power in the result. Should we do 
   // something about this like triggering an rsAssert? And what if q.getCoeff() returns zero?
 
+  // Addition and subtraction cannot be generally defined. These operations would only make sense
+  // when both operands have the same power which is more an exceptional case rather than the rule
+  // so it's better to not define these operators at all. At least, for the moment. But maybe we 
+  // can define multiplication and division by constants for convenience. Maybe we should also 
+  // define *= and /= in terms of setup(). It might avoid allocations for complicated types T such
+  // as matrices.
 
 protected:
 
@@ -127,10 +135,13 @@ functions are prefixed with an underscore _ to indicate at the call site that no
 stuff is going on and special care should be taken. When using the potentially decanonicalizing 
 setup methods (prefixed by an underscore), there are 2 options: (1) You know exactly what you are 
 doing and that this is in fact ok, i.e. doesn't actually decanonicalize. (2) You re-canonicalize 
-after you have finished with your operations by calling e.g. canonicalize(). As long as you don't
-use the underscore-methods, you don't need to worry about this. But maybe in such cases you should
-worry about performance if you exclusively stick to the high-level API - especially if you call 
-setup functions in loops over terms. */
+after you have finished with your operations by calling e.g. canonicalize(). Option (2) is quite 
+expensive, though. If you opt for option (1), it might be good practice to put something like
+rsAssert(p._isCanonical()) after your operations on a polynomial p such that, if you inadvertently 
+mess up the canonical representation of p, you will fail fast. As long as you don't use the 
+underscore methods, you don't need to worry about this. But maybe in such cases you should worry 
+about performance if you exclusively stick to the high-level API - especially if you call setup 
+functions in loops over terms. */
 
 template<class T, class TTol = rsEmptyType>
 class rsSparsePolynomial
@@ -157,6 +168,7 @@ public:
   for a dense polynomial. */
   rsSparsePolynomial(const std::vector<T>& coefficients, TTol tolerance) 
   { tol = tolerance; setupFromDenseCoeffs(coefficients);  }
+  // Maybe replace this by a static factory function fromDenseCoeffs()
 
 
   //-----------------------------------------------------------------------------------------------
@@ -171,7 +183,7 @@ public:
   void clear() { terms.clear(); }
 
   /** Sets up the numerical tolerance that is used to determine if a coefficient should be 
-  considered zero, i.e. with in the numerical roundoff noise. The new setting will immediately take
+  considered zero, i.e. within the numerical roundoff error. The new setting will immediately take
   effect. That is: If the polynomial currently contains any terms that fall below the new 
   threshold, they will be removed. */
   void setRoundoffTolerance(TTol newTolerance) { tol = newTolerance; _removeTermsWithZeroCoeff(); }
@@ -210,7 +222,7 @@ public:
   the polynomial by a monomial factor with unit coefficient, i.e. by x^p. */
   void shiftPowers(int amount) { for(auto& t : terms) t.shiftPower(amount); }
   // ToDo: Maybe assert that the amount is <= the power of our smallest terms because otherwise,
-  // we'll produce negative powers. It may at some point make sense to allow negative coeffs, 
+  // we'll produce negative powers. It may at some point make sense to allow negative powers, 
   // though (for example, to represent truncated Laurent series), but at the moment, we assume to
   // deal with just normal polynomials.
 
@@ -218,7 +230,7 @@ public:
   re-allocates only when the capacity is too low (VERIFY!). */
   void multiplyBy(const SparsePoly& factor) { multiply(*this, factor, this); }
 
-  /** Multiplies this polynomial by a desne polynomial represented by the given array of 
+  /** Multiplies this polynomial by a dense polynomial represented by the given array of 
   coefficients. Works in place and re-allocates only when the capacity is too low. */
   void multiplyByDenseCoeffs(const T* coeffs, int numTerms);
 
@@ -233,7 +245,7 @@ public:
   /** \name Inquiry */
 
   /** Returns the numerical tolerance that is used to determine if a coefficient should be 
-  considered zero, i.e. with in the numerical roundoff noise. */
+  considered zero, i.e. within the numerical roundoff error. */
   TTol getRoundoffTolerance() const { return tol; }
 
   /** Returns the leading term in this polynomial, i.e. the monomial  a_n * x^p[n]  that has the 
@@ -245,6 +257,7 @@ public:
       return rsMonomial<T>(T(0), 0);
     return terms[terms.size()-1];
   }
+  // Maybe move to .cpp file
 
   /** Returns the leading coefficient of this polynomial, i.e. the coefficient in front of the 
   highest power of x. */
@@ -255,6 +268,8 @@ public:
   /** Returns the degree of the polynomial, i.e. the exponent of the highest power of x that 
   occurs. */
   int getDegree() const { return getLeadingTerm().getPower(); }
+  // Verify if this has unit tests that cover the edge cases (zero polynomial, constant polynomial,
+  // polynomial with single term, ...)
 
   /** Returns true iff this polynomial is the zero polynomial. */
   bool isZero() const { rsAssert(_isCanonical()); return terms.empty(); }
@@ -306,7 +321,7 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Operators */
+  /** \name Operators. The arithmetic operators all allocate. */
 
   /** Evaluates the function at the given input z whose type may be different from the 
   coefficient type T. This may be used, for example, for evaluating polynomials with real coeffs at
@@ -412,10 +427,10 @@ public:
 
 
   /** Turns the representation of the polynomial into a canonical one. A canonical representation 
-  has the following properties: (1) The powers are strictly increasing as function of index. 
+  has the following properties: (1) The powers are strictly increasing as function of array index.
   (2) No power appears more than once. (3) No zero coefficients appear. We achieve this by 
-  first sorting the terms, then consolidating multiple terms with equal exponents into single
-  terms and finally deleting all terms that have a coefficient zero (up to the given tolerance). */
+  first sorting the terms, then combining multiple terms with equal exponents into single terms 
+  and finally deleting all terms that have a coefficient zero (up to the roundoff tolerance). */
   void _canonicalize();
 
   /** Removes all the terms that have a coefficient of zero (up to the roundofff tolerance). */
@@ -466,7 +481,8 @@ public:
   void _shiftCoeff(int index, T amount) { _setCoeff(index, amount + getCoeff(index)); }
 
   /** Shifts the power at the given index by the given amount. It may decanonicalize the 
-  representation by introducing two terms with equal power. */
+  representation by introducing two terms with equal power and/or destroying the increasing order
+  of terms. */
   void _shiftPower(int index, int amount) { _setPower(index, amount + getPower(index)); }
 
   /** Multiplies this polynomial by the given monomial factor. This results in all coeffs being 
@@ -474,7 +490,17 @@ public:
   monomial. */
   void _multiplyBy(const rsMonomial<T>& factor)
   { _scaleCoeffs(factor.getCoeff()); shiftPowers(factor.getPower()); }
+  // How could it possibly decanonicalize the representation? I think, it can't. Maybe it's a safe
+  // method and should be moved up into the high level API and lose its underscore. Ah - wait!
+  // With the current implementation, it can indeed decanonicalize. However - it would be easy to 
+  // implement it in a safe way. Just check, if factor.getCoeff() is zero. If it is, set "this"
+  // canoncially to zero. If it isn't, the function will not decanonicalize. ...I think....
 
+  /** Divides this polynomial by the given monomial factor. This results in all coeffs being 
+  multiplied by reciprocal of the coeff of the monomial and all powers being decreased by the 
+  power of the monomial. If you are not careful, this may result in polynomials that contain 
+  negative powers. Currently, this would be seen as a bug (and may trigger an rsAssert at some 
+  point later) - but if needed, we can easily lift this restriction at some point. */
   void _divideBy(const rsMonomial<T>& divisor)
   { _scaleCoeffs(T(1) / divisor.getCoeff()); shiftPowers(-divisor.getPower()); }
   // Needs tests. 
@@ -489,8 +515,8 @@ public:
   void _reverse() { rsReverse(terms); }
 
   /** Checks if this sparse polynomial is in canonical representation. A representation is 
-  canonical if it has no zero coefficients (up to a given tolerance) and if the powers are strictly
-  increasing (as function of term-index) and if no power occurrs more than once. The empty 
+  canonical if it has no zero coefficients (up to the roundoff tolerance) and if the powers are 
+  strictly increasing (as function of array index) and if no power occurs more than once. The empty
   polynomial is also accepted as a canonical epresentation. It represents the zero polynomial. */
   bool _isCanonical() const;
 
@@ -502,20 +528,20 @@ public:
   bool _areTermsStrictlySorted() const;
   // Needs test
 
-  /** Returns true iff any of our terms has a coefficient of zero (up to the roundoff 
+  /** Returns true iff any of our terms array has a coefficient of zero (up to the roundoff 
   tolerance). In a canonical representation, this is forbidden. */
   bool _hasZeroCoeffs() const;
   // Needs test
 
-  /** Returns true iff any of our terms has a negative power. */
+  /** Returns true iff any of our terms has a negative power. We currently consider this as not
+  allowed, i.e. a bug - but this restriction can be lifted later, if needed. */
   bool _hasNegativePowers() const;
   // Needs test
 
 
-
 protected:
 
-  std::vector<rsMonomial<T>> terms;  // Terms of the form a_i * x^p[i]
+  std::vector<rsMonomial<T>> terms;  // Terms of the form c_i * x^p[i]
   TTol tol = TTol(0);                // Roundoff error tolerance (relevant for e.g. T = float)
 
 };
