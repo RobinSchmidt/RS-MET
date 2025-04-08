@@ -171,10 +171,10 @@ public:
   void clear() { terms.clear(); }
 
   /** Sets up the numerical tolerance that is used to determine if a coefficient should be 
-  considered zero, i.e. with in the numerical roundoff noise. */
-  void setRoundoffTolerance(TTol newTolerance) { tol = newTolerance; }
-  // ToDo: Call a removeZeros()/removeNegligibleTerms()/removeTermsWithZeroCoeff() function such 
-  // that the new tolerance becomes immediately effective.
+  considered zero, i.e. with in the numerical roundoff noise. The new setting will immediately take
+  effect. That is: If the polynomial currently contains any terms that fall below the new 
+  threshold, they will be removed. */
+  void setRoundoffTolerance(TTol newTolerance) { tol = newTolerance; _removeTermsWithZeroCoeff(); }
 
   /** Sets up the polynomial from a dense arrays of polynomial coeffs. When a coefficient in the 
   dense representation is zero, we will not create a term for that. The comparison to zero is to be
@@ -417,6 +417,9 @@ public:
   first sorting the terms, then consolidating multiple terms with equal exponents into single
   terms and finally deleting all terms that have a coefficient zero (up to the given tolerance). */
   void _canonicalize();
+
+  /** Removes all the terms that have a coefficient of zero (up to the roundofff tolerance). */
+  void _removeTermsWithZeroCoeff();
 
   /** Appends a term with given coeff and power to the end of our terms array. This may 
   decanonicalize the representation by appending a term of a power lower than the current degree

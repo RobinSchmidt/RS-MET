@@ -128,7 +128,8 @@ void rsSparsePolynomial<T, TTol>::_canonicalize()
   // unsorted term arrays in which case we would have a bug.
 
   // Remove terms with coefficient zero:
-  rsRemoveIf(terms, [this](const Mon& term){ return rsIsNegligible(term.getCoeff(), tol); });
+  _removeTermsWithZeroCoeff();
+  //rsRemoveIf(terms, [this](const Mon& term){ return rsIsNegligible(term.getCoeff(), tol); });
   // Factor out int9 function so we can call it from setRoundoffTolerance(), too
 
   // Check postcondition:
@@ -163,6 +164,18 @@ void rsSparsePolynomial<T, TTol>::_canonicalize()
   //   will tend to mask bugs on a higher level. It's the higher level's responsibility that such 
   //   terms don't occurr in the first place - and we shall not sanitize any failure to do so here.
   //   If it happens, we want to see it.
+}
+
+template<class T, class TTol>
+void rsSparsePolynomial<T, TTol>::_removeTermsWithZeroCoeff()
+{
+  rsRemoveIf
+  (terms, 
+    [this](const rsMonomial<T>& term)
+    { 
+      return rsIsNegligible(term.getCoeff(), tol);
+    }
+  );
 }
 
 template<class T, class TTol>
