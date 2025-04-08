@@ -105,7 +105,7 @@ void rsSparsePolynomial<T, TTol>::_canonicalize()
   std::sort(terms.begin(), terms.end(), 
             [](const Mon& lhs, const Mon& rhs){ return lhs.getPower() < rhs.getPower(); });
 
-  // Consolidate multiple terms with equal power/exponent into single term: 
+  // Combine multiple terms with equal power/exponent into single term: 
   int numTerms = getNumTerms();
   int p = getPower(0);              // Current power
   int r = 1;                        // Read index
@@ -125,12 +125,11 @@ void rsSparsePolynomial<T, TTol>::_canonicalize()
   _setNumTerms(w+1);                // Possibly shorten the terms array
   // This algorithm works only when the terms are sorted by exponent so it doesn't really make 
   // sense to factor it out into a function in its own right. Doing so could invite calling it on 
-  // unsorted term arrays in which case we would have a bug. Or maybe if we split it out, we should
-  // assert that the terms are sorted.
+  // unsorted term arrays in which case we would have a bug.
 
   // Remove terms with coefficient zero:
   rsRemoveIf(terms, [this](const Mon& term){ return rsIsNegligible(term.getCoeff(), tol); });
-  // Factor out inot function so we can call it from setRoundoffTolerance(), too
+  // Factor out int9 function so we can call it from setRoundoffTolerance(), too
 
   // Check postcondition:
   rsAssert(_isCanonical(), "Canonicalization failed");
@@ -153,7 +152,13 @@ void rsSparsePolynomial<T, TTol>::_canonicalize()
   // - Maybe we should split the canonicalize function into sortTermsByPower(), 
   //   combineTermsWithSamePower(), removeTermsWithZeroCoeff() (or removeNegligibleTerms())
   //   The combineTermsWithSamePower() should assert that the terms array is sorted. Maybe we 
-  //   should have a function areTermsSorted or arePowersAscending/arePowersStrictlyAscending
+  //   should have a function areTermsSorted or arePowersAscending/arePowersStrictlyAscending.
+  //   But we cannot use our _areTermsStrictlySorted function for this because at this stage, 
+  //   duplicate powers are still to be expected. Should we introduce a function _areTermsSorted
+  //   for this? But that would lead to code duplication and it would really only be needed for the
+  //   assertion. Maybe don't split out sorting and combination into two functions. Make it a 
+  //   single function: sortAndCombineTermsByPower. Or maybe just split out the 
+  //   removeTermsWithZeroCoeff() and leave the rest of the code here as is.
   //   BUT: do NOT introduce a removeNegativePowers() function or something like that. Such a thing
   //   will tend to mask bugs on a higher level. It's the higher level's responsibility that such 
   //   terms don't occurr in the first place - and we shall not sanitize any failure to do so here.
@@ -188,9 +193,9 @@ bool rsSparsePolynomial<T, TTol>::_isCanonical() const
 {
   // New implementation:
   bool ok = true;
-  ok &=  _areTermsStrictlySorted();
-  ok &= !_hasZeroCoeffs();
-  ok &= !_hasNegativePowers();
+  ok &=  _areTermsStrictlySorted();  // Powers increase and don't appear more than once.
+  ok &= !_hasZeroCoeffs();           // Any zero coeffs are cleaned up.
+  ok &= !_hasNegativePowers();       // No negative powers allowed. May be relaxed later if needed.
   return ok;
 
 
@@ -242,10 +247,10 @@ bool rsSparsePolynomial<T, TTol>::_areTermsStrictlySorted() const
   if(terms.empty())
     return true;
 
+  // Powers should be strictly increasing:
   int prevPow = getPower(0);                     // Previous power
   for(int i = 1; i < getNumTerms(); i++)
   {
-    // Powers should be strictly increasing:
     int curPow = getPower(i);                    // Current power..
     if(curPow <= prevPow)
       return false;
