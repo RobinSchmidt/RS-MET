@@ -151,9 +151,13 @@ void rsSparsePolynomial<T, TTol>::_canonicalize()
   //   have. Or maybe it doesn't matter. We'll see.....
   //
   // - Maybe we should split the canonicalize function into sortTermsByPower(), 
-  //   combineTermsWithSamePower(), removeTermsWithZeroCoeff(). The combineTermsWithSamePower 
-  //   should assert that the terms array is sorted. Maybe we should have a function 
-  //   areTermsSorted or arePowersAscending/arePowersStrictlyAscending
+  //   combineTermsWithSamePower(), removeTermsWithZeroCoeff() (or removeNegligibleTerms())
+  //   The combineTermsWithSamePower() should assert that the terms array is sorted. Maybe we 
+  //   should have a function areTermsSorted or arePowersAscending/arePowersStrictlyAscending
+  //   BUT: do NOT introduce a removeNegativePowers() function or something like that. Such a thing
+  //   will tend to mask bugs on a higher level. It's the higher level's responsibility that such 
+  //   terms don't occurr in the first place - and we shall not sanitize any failure to do so here.
+  //   If it happens, we want to see it.
 }
 
 template<class T, class TTol>
@@ -212,6 +216,41 @@ bool rsSparsePolynomial<T, TTol>::_isCanonical() const
       return false;
 
   return true;
+
+  // ToDo:
+  //
+  // - Refactor this. Factor out methods: _hasNegligibleCoeffs(), _hasNegativePowers(), 
+  //   _areTermsStrictlySorted() and then implement it as:
+  //     return !_hasNegativePowers() && !_hasNegligibleCoeffs() && _areTermsStrictlySorted();
+}
+
+template<class T, class TTol>
+bool rsSparsePolynomial<T, TTol>::_areTermsStrictlySorted() const
+{
+  if(terms.empty())
+    return true;
+
+  int prevPow = getPower(0);                     // Previous power
+  for(int i = 1; i < getNumTerms(); i++)
+  {
+    // Powers should be strictly increasing:
+    int curPow = getPower(i);                    // Current power..
+    if(curPow <= prevPow)
+      return false;
+    prevPow = curPow;                            // ..becomes previous power for next iteration.
+  }
+
+  return true;
+}
+
+template<class T, class TTol>
+bool rsSparsePolynomial<T, TTol>::_hasNegativePowers() const
+{
+  for(auto& t : terms)
+    if(t.getPower() < 0)
+      return true;
+
+  return false;
 }
 
 template<class T, class TTol>

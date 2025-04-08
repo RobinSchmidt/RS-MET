@@ -173,7 +173,8 @@ public:
   /** Sets up the numerical tolerance that is used to determine if a coefficient should be 
   considered zero, i.e. with in the numerical roundoff noise. */
   void setRoundoffTolerance(TTol newTolerance) { tol = newTolerance; }
-  // ToDo: Call a removeZeros() function such that the new tolerance becomes immediately effective.
+  // ToDo: Call a removeZeros()/removeNegligibleTerms()/removeTermsWithZeroCoeff() function such 
+  // that the new tolerance becomes immediately effective.
 
   /** Sets up the polynomial from a dense arrays of polynomial coeffs. When a coefficient in the 
   dense representation is zero, we will not create a term for that. The comparison to zero is to be
@@ -489,6 +490,19 @@ public:
   increasing (as function of term-index) and if no power occurrs more than once. The empty 
   polynomial is also accepted as a canonical epresentation. It represents the zero polynomial. */
   bool _isCanonical() const;
+
+  /** Returns true iff the powers of our terms are strictly increasing as function of array index.
+  This strict monotonicity also entails uniqueness of the powers. That means that this function 
+  serves two purposes at the same time: making sure that the terms are sorted by power and that no
+  power appears more than once. These are two of the requirements for a canonical 
+  representation. */
+  bool _areTermsStrictlySorted() const;
+  // Needs test
+
+  /** Returns true iff any of our terms has a negative power. */
+  bool _hasNegativePowers() const;
+  // Needs test
+
 
 
 protected:
