@@ -202,7 +202,7 @@ bool rsSparsePolynomial<T, TTol>::_isCanonical() const
   // New implementation:
   bool ok = true;
   ok &=  _areTermsStrictlySorted();  // Powers increase and don't appear more than once.
-  ok &= !_hasZeroCoeffs();           // Any zero coeffs are cleaned up.
+  ok &= !_hasZeroCoeffs();           // Any zero coeffs (up to roundoff) are cleaned up.
   ok &= !_hasNegativePowers();       // No negative powers allowed. May be relaxed later if needed.
   return ok;
 
@@ -309,6 +309,10 @@ void rsSparsePolynomial<T, TTol>::add(
     r->_setTerm(Np + i, q.getCoeff(i), q.getPower(i));
 
   r->_canonicalize();
+
+  // The idea here is basically to just "concatenate" the two sparse polynomials and then let the
+  // _canonicalize() call take care of combining terms with like powers and clean up terms whose
+  // coeffs cancel to zero.
 }
 
 template<class T, class TTol>
@@ -355,6 +359,12 @@ void rsSparsePolynomial<T, TTol>::weightedSum(
     r->_setTerm(Np + i, wq * q.getCoeff(i), q.getPower(i));
 
   r->_canonicalize();
+
+  // From a "clean code" perspective, it may be cleaner to avoid the code duplication between 
+  // add(), subtract() and weightedSum() by just keeping the implementation of weightedSum() and
+  // implementing add() and subtract() by calling the weightedSum() function with weights 1,1 and
+  // 1,-1 respectively. However, from a performance perspective, that seems to be not such a good
+  // idea which is why I accept this code duplication here.
 }
 
 template<class T, class TTol>
@@ -532,10 +542,11 @@ void rsSparsePolynomial<T, TTol>::greatestCommonDivisorInPlace(
   // - Algorithm implementation has been adapted from rsRationalFunction<T>::polyGCD. I'm not sure,
   //   if we strictly require a,b to be canonical, but let's err to the conservative side. 
   //
-  // - I think, the significance of the leading coeff of the result of the gcd algo may be: Assume 
-  //   p and q have been produced via  p = g*a, q = g*b  where polynomials a,b have no common 
-  //   divisors such that g is the gcd of p and q. If g happens to be non-monic, then calling 
-  //   gcd(p, q, false) will restore g correctly including its leading coeff. ...I think. Verify! 
+  // - I think, the significance of the leading coeff of the result of the gcd algo before forcing 
+  //   it to be monic may be: Assume p and q have been produced via  p = g*a, q = g*b  where 
+  //   polynomials a,b have no common divisors such that g is the gcd of p and q. If g happens to 
+  //   be non-monic, then calling  gcd(p, q, false)  will restore g correctly including its leading
+  //   coeff. ...I think. Verify this and try to figure out if this could be useful for something!
 }
 
 
@@ -620,8 +631,8 @@ ToDo:
 
 - Maybe make the tolerance parameter for the constructors optional. I'm not sure about that, 
   though. It may invite forgetting to set it when it's really needed. But on the other hand, some
-  types T don't need any tolerance at all. Maybe keep it mandatory for a while and make it optional
-  later.
+  types T don't need any tolerance at all. For these, passing a mandatory tolerance parameter would
+  be a nuisance. Maybe keep it mandatory for a while and make it optional later.
 
 
 Notes:
