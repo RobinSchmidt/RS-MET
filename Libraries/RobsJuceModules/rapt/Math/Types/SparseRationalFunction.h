@@ -264,22 +264,26 @@ public:
   common divisor of numerator and denominator from both. This doesn't change the represented 
   rational function mathematically.*/
   void _reduce();
+  // Needs tests
 
   /** Canonicalizes numerator and denominator. This doesn't change the represented rational 
   function mathematically. */
   void _canonicalizeNumAndDen() { num._canonicalize(); den._canonicalize(); }
+  // Needs tests
 
   /** Makes our denominator monic by dividing out the leading coefficient of the denominator from
   both, numerator and denominator. This doesn't change the represented rational function 
   mathematically. */
   void _makeDenominatorMonic()
   { T s = T(1) / den.getLeadingCoeff(); num._scaleCoeffs(s); den._scaleCoeffs(s); }
+  // Needs tests
 
   /** Puts this rational function into its canonical representation. That means it will be reduced
   to lowest terms, numerator and denominator will be in canonical representation and the 
   denominator will be monic. It will also make sure that the roundoff tolerances of numerator and
   denominator match (if they don't match already, it will pick the maximum of both). */
   void _canonicalize();
+  // Needs tests
 
   /** Returns true iff this rational function is in canonical representation. A canonical 
   representation has canonical numerator and denominator with no common factors (i.e. they are 

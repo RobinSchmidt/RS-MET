@@ -3,11 +3,10 @@ template<class T, class TTol>
 void rsSparseRationalFunction<T, TTol>::_reduce()
 {
   SparsePoly gcd = SparsePoly::greatestCommonDivisor(num, den, false);
-  //num._divideBy(gcd); // Oh! This works only if gcd would be a momomial!
-  //den._divideBy(gcd);
-  // We need to call a more general division function
+  num = num / gcd;
+  den = den / gcd;
 
-  rsError("Not yet correctly implemented!");
+  //rsError("Not yet correctly implemented!");
 
   // ToDo:
   //
