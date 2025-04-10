@@ -3,9 +3,15 @@
 
 //=================================================================================================
 
-/** Implements a sparse rational function, i.e. a quotient of two sparse polynomials. ...TBC... */
+/** Implements a sparse rational function, i.e. a quotient of two sparse polynomials. To represent
+these, this class has two members of type rsSparsePolynomial. Just like rsSparsePolynomial, the 
+class rsSparserationalFunction maintains the representation in a canonical form as long as you use
+only the high level interface. The low level interface is again signaled by method names that start
+with an underscore. In a canonical representation, we require that the two constituting polynomials
+are themselves in canonical representation and moreover, we require that numerator and denominator 
+have no common factors (i.e. they are coprime) and the denominator is monic (i.e. has leading 
+coefficient of 1).  ...TBC...   */
 
-//template<class T>
 template<class T, class TTol = rsEmptyType>
 class rsSparseRationalFunction
 {
@@ -98,9 +104,8 @@ public:
 
   bool isZero() const { return num.isZero(); }
 
-  rsSparsePolynomial<T, TTol>& getNumerator() { return num; }
 
-  rsSparsePolynomial<T, TTol>& getDenominator() { return den; }
+
 
   const rsSparsePolynomial<T, TTol>& getNumeratorConst() const { return num; }
 
@@ -198,6 +203,16 @@ public:
 
   void _setDenominatorTerm(int index, const T& newCoeff, int power)
   { den._setTerm(index, newCoeff, power); }
+
+
+
+  // Prefix by underscore:
+  rsSparsePolynomial<T, TTol>& getNumerator() { return num; }
+
+  rsSparsePolynomial<T, TTol>& getDenominator() { return den; }
+
+
+
 
 
   /** Applies a scaling factor to this rational function. This basically means to scale all 
