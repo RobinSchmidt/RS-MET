@@ -2318,7 +2318,7 @@ or with shelving or peak/bell filters with negative dB gains.
 
 */
 
-template<class TSig, class TPar, class TDly, class TTol>
+template<class TSig, class TPar, class TDly, class TTol> // Try to get rid of TTol
 class rsDampedCombAllpass // ToDo: derive from rsDampedCombFilter ..or use it as member
 {
 
