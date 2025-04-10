@@ -332,7 +332,17 @@ invert the transfer function (basically, swapping numerator and denominator but 
 a0 = 1 condition by appropriate pre- and post scaling), reflecting the zeros about the unit circle 
 (turning minimum phase filters into maximum phase ones), etc. ...TBC... 
 
-ToDo: Move this class into its own dedicated pair of .h/.cpp files in Filters/General  */
+ToDo: 
+
+- Move this class into its own dedicated pair of .h/.cpp files in Filters/General
+
+- Maybe rename class to rsSparseTransferFunction. The current name is too long. That it's digital 
+  may go without saying. Although analog transfer function do pop up in DSP as well (for example as
+  prototype transfer functions) but maybe only they should be explicitly marked as 
+  rsSparseAnalogTransferFunction. But actually, for analog transfer functions, we can just use 
+  rsSparseRationalFunction as is.
+
+*/
 
 template<class T, class TTol>  // ToDo: Let TTol default to rsEmptyType
 class rsSparseDigitalTransferFunction : public rsSparseRationalFunction<T, TTol>
@@ -524,10 +534,12 @@ inline bool rsIsInvalidDivisor(
   const rsSparseDigitalTransferFunction<T, TTol>& tol)
 {
   return x.isZero(); 
-  // Maybe we should pass in a tolerance into this function? But then this tolerance should 
+  // Maybe we should pass in a tolerance into x.isZero()? But then this tolerance should 
   // probably be just passed on from our second parameter. But for this, we need to make the 2nd
-  // parameter of type T rather than rsSparseDigitalTransferFunction. I think, we generally need to
-  // change the API to admit different types for x and tol
+  // parameter of type T (or more likely TTol) rather than 
+  // rsSparseDigitalTransferFunction<T, TTol>. I think, we generally need to change the API to 
+  // admit different types for x and tol - perhaps even the API auf the Gaussian eliminatio algo.
+  // Maybe it also needs to take a tolerance parameter of type TTol.
 }
 
 template<class T, class TTol>
@@ -535,6 +547,7 @@ inline rsSparseDigitalTransferFunction<T, TTol> rsGetPivotingTolerance(
   const rsMatrixView<rsSparseDigitalTransferFunction<T, TTol>>& A)
 {
   return rsSparseDigitalTransferFunction<T, TTol>();
+  // I think, this should return a TTol. Maybe the return type should be set to "auto"
 }
 
 
