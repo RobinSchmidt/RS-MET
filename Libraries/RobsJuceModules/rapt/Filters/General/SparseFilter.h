@@ -1,11 +1,6 @@
 #ifndef RAPT_SPARSEFILTER_H
 #define RAPT_SPARSEFILTER_H
 
-
-
-
-
-
 //=================================================================================================
 
 /** A class for representing sparse filters in direct form. We represent them using an object of
@@ -118,7 +113,7 @@ public:
   //
   // ToDo: Figure out and document what happens, when we ignore this error. I think, the delay
   // time will be wrapped around / bitmasked by the actual maxDelay in rsDelay member.
-  // I say "actual" because the vaue you set up via setMaxDelayInSamples() may be "rounded up"
+  // I say "actual" because the value you set up via setMaxDelayInSamples() may be "rounded up"
   // to the next power of two minus one...or something. See implementation of 
   // rsDelay::readOutputAt(). So if the actual maxDelay is 15, all delays will be 
   // interpreted modulo 16, so readOutputAt(20) would actually amount to a delay of 
@@ -268,12 +263,13 @@ public:
     delayLine.incrementTapPointers();
     return tmp;
   }
-  // Needs test! This is perhaps not great for realtime use because the H.num.getDegree() call must
+  // Needs test! This is perhaps not great for realtime use because the num.getDegree() call must
   // iterate through the whole numerator. Maybe that value could be cached. Not sure. Although,
   // If we assume H.num to be in canonical representation (which it is, I think), then getDegree()
   // can be replaced by  H.getCoeff(H.getNumTerms()-1)  which avoids the iteration. Maybe such a 
   // call could even be encapsulated into something like H.getLastPower(). Maybe add an
-  // H.isCanonical() check to isFilterValid().
+  // H.isCanonical() check to isFilterValid(). ...this comment is outdated! We now enforce a 
+  // canonical representation such that a call to getDegree() is cheaper.
   //
   // Maybe factor out the getSample() functions into free functions like 
   //
@@ -285,18 +281,11 @@ public:
   // coeffs of H once and use them with different delaylines. As is currently is, we would have to
   // create a sparse filter object for each of the filters and therfore store the coeffs 
   // redundantly. This might become a general pattern for implementing filters: separate coeffs and
-  // state and provide free functions that take a const ref to the coeffs and (mutable) a pointer
+  // state and provide free functions that take a const ref to the coeffs and a (mutable) pointer
   // to the state.
-
-
-
-
-
-
 
   /** Resets the filter's state. This clears the delayline. */
   void reset() { delayLine.reset(); }
-
 
 
 protected:
