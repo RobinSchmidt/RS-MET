@@ -73,6 +73,22 @@ public:
   void setToIdentity() { setToZero(); num._appendTerm(T(1), 1); }
   // Needs test
 
+  /** Sets this rational function the power function: f(x) = x^p. We represent this as
+  f(x) = 1*x^p / 1*x^0. */
+  void setToPower(int p) 
+  { 
+    //rsAssert(p >= 0);
+    setToZero(); 
+    if(p < 0)
+      den._appendTerm(T(1), -p);
+    else
+      num._appendTerm(T(1),  p); 
+  }
+  // Needs test. 
+
+
+
+
   /*
   void multiplyBy(rsMonomial<T> factor) 
   { 
@@ -207,9 +223,9 @@ public:
 
 
   // Prefix by underscore:
-  rsSparsePolynomial<T, TTol>& getNumerator() { return num; }
+  rsSparsePolynomial<T, TTol>& _getNumerator() { return num; }
 
-  rsSparsePolynomial<T, TTol>& getDenominator() { return den; }
+  rsSparsePolynomial<T, TTol>& _getDenominator() { return den; }
 
 
 

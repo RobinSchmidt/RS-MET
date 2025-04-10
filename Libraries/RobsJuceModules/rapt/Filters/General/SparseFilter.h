@@ -33,8 +33,8 @@ public:
   void setupFromDenseCoeffs(const std::vector<TPar>& numCoeffs, 
     const std::vector<TPar>& denCoeffs, TPar tol)
   {
-    SparsePoly& num = H.getNumerator();
-    SparsePoly& den = H.getDenominator();
+    SparsePoly& num = H._getNumerator();
+    SparsePoly& den = H._getDenominator();
 
     num.setRoundoffTolerance(tol);
     den.setRoundoffTolerance(tol);  // get rid
@@ -51,20 +51,25 @@ public:
 
   void setup(const rsSparseRationalFunction<TPar, TTol>& newTransferFunction)
   { H._copyDataFrom(newTransferFunction); updateDelayLineLength(); }
-  // The parameter should really be of type rsSparseTransferFunction
+  // The parameter should really be of type rsSparseTransferFunction. Change that! ...or maybe it's
+  // actually be desirable to allow also for the baseclass as argument? That may make it more
+  // flexible to use. One doesn't need to use the more specialized subclass. On the other hand, not
+  // using the more specialized class may indicate a bug. It's not necessarily a bug, though. Hmmm
 
 
-  void setNumNumeratorTerms(int newNumTerms) { H.getNumerator()._setNumTerms(newNumTerms); }
+
+
+  void setNumNumeratorTerms(int newNumTerms) { H._getNumerator()._setNumTerms(newNumTerms); }
   // This may allocate!
 
-  void setNumDenominatorTerms(int newNumTerms) { H.getDenominator()._setNumTerms(newNumTerms); }
+  void setNumDenominatorTerms(int newNumTerms) { H._getDenominator()._setNumTerms(newNumTerms); }
   // This may allocate!
 
   void setNumeratorTerm(int index, TPar coeff, int delay) 
-  { H.getNumerator()._setTerm(index, coeff, delay); }
+  { H._getNumerator()._setTerm(index, coeff, delay); }
 
   void setDenominatorTerm(int index, TPar coeff, int delay) 
-  { H.getDenominator()._setTerm(index, coeff, delay); }
+  { H._getDenominator()._setTerm(index, coeff, delay); }
   // Actually, we really should call updateDelayLineLength() after setting a term because it 
   // potentially requires a change of the length. But: updateDelayLineLength() is expensive and 
   // setting terms is an operation that might be called in a loop or sequence in which case only
@@ -75,7 +80,9 @@ public:
   // Maybe call them setNumeratorTermNoUpdate(). ...or maybe get rid of these function entirely and
   // instead give the user functions like
   // rsSparsePolynomial<TPar>& getNumeratorRef() for low level access. That breaks encapsulation
-  // though. Maybe move them into some extra section "Low level API"
+  // though. Maybe move them into some extra section "Low level API". But even if these functions 
+  // are retained, they should go into a low level section (and probably be prefixed by 
+  // underscores)
 
 
 

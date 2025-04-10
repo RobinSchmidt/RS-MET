@@ -429,9 +429,9 @@ public:
   {
     int M = getDelayInSamples();
     tf->setToZero();
-    tf->getNumerator().  _appendTerm(bl, 0);
-    tf->getNumerator().  _appendTerm(ff, M);
-    tf->getDenominator()._appendTerm(fb, M);
+    tf->_getNumerator().  _appendTerm(bl, 0);
+    tf->_getNumerator().  _appendTerm(ff, M);
+    tf->_getDenominator()._appendTerm(fb, M);
 
     // We don't use -M because the minus is already baked into the class. It interprets the 
     // function as a rational function in z^-1.
@@ -2429,8 +2429,12 @@ public:
   //template<class TTol>
   void getDelayTransferFunction(rsSparseTransferFunction<TPar, TTol>* tf) const
   {
-    tf->getNumerator().  _setNumTerms(1); tf->getNumerator().  _setTerm(0, TPar(1), M);
-    tf->getDenominator()._setNumTerms(1); tf->getDenominator()._setTerm(0, TPar(1), 0);
+    // Old:
+    //tf->_getNumerator().  _setNumTerms(1); tf->getNumerator().  _setTerm(0, TPar(1), M);
+    //tf->_getDenominator()._setNumTerms(1); tf->getDenominator()._setTerm(0, TPar(1), 0);
+
+    // New:
+    tf->setToPower(M);
   }
 
 
@@ -2450,8 +2454,12 @@ public:
   {
     using TF = rsSparseTransferFunction<TPar, TTol>;
 
-    TF one; one.getNumerator()._appendTerm(TPar(1), 0); // Use setToOne()       z^-0
-    TF z1;  z1.getNumerator()._appendTerm( TPar(1), 1); // Use setToIdentity()  z^-1
+    // Old:
+    //TF one; one._getNumerator()._appendTerm(TPar(1), 0); // Use setToOne()       z^-0
+    //TF z1;  z1._getNumerator()._appendTerm( TPar(1), 1); // Use setToIdentity()  z^-1
+
+    TF one; one.setToOne();                   // z^-0 = 1
+    TF z1;  z1.setToIdentity();               // z^-1
     TF F = getDamperTransferFunction(tol);    // Feedback filter F(z)
     TF A; getDelayTransferFunction(&A);       // Delay filter A(z)
     TPar k = s.getFeedbackGain();
@@ -4354,11 +4362,14 @@ public:
   void getDelayTransferFunction(int n, rsSparseTransferFunction<TPar, TTol>* tf) const
   {
     int M = getDelay(n);
-    tf->getNumerator()._setNumTerms(1); 
-    tf->getNumerator()._setTerm(0, TPar(dampFactors[n]), M+1);
-    tf->getDenominator()._setNumTerms(1); 
-    tf->getDenominator()._setTerm(0, TPar(1), 0);
-    // Maybe simplify this by introducing a function tf->setToPower(dampFactors[n], M+1)
+
+    tf->_getNumerator()._setNumTerms(1); 
+    tf->_getNumerator()._setTerm(0, TPar(dampFactors[n]), M+1);
+    tf->_getDenominator()._setNumTerms(1); 
+    tf->_getDenominator()._setTerm(0, TPar(1), 0);
+
+    // ToDo: Use that instead:
+    //tf->setToPower(dampFactors[n], M+1); // H(z) = dampFactors[n] * z^(-(M+1))
   }
   // Needs tests
 
