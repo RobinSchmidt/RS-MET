@@ -419,8 +419,8 @@ inline bool rsTestGetTransferFunction(TFlt& filter, rsComplex<T> z, int N, T tol
 
   // Let the filter produce its transfer function object via getTransferFunction() and evaluate the
   // returned function object at z:
-  //rsSparseDigitalTransferFunction<T> H;   // Old - when the class had only one template parameter
-  rsSparseDigitalTransferFunction<T, T> H;  // New - not sure if using T for TTol is always appropriate
+  //rsSparseTransferFunction<T> H;   // Old - when the class had only one template parameter
+  rsSparseTransferFunction<T, T> H;  // New - not sure if using T for TTol is always appropriate
   filter.getTransferFunction(&H);
   rsComplex<T> Hz = H(z);
 

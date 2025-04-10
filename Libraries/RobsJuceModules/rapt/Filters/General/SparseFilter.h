@@ -51,7 +51,7 @@ public:
 
   void setup(const rsSparseRationalFunction<TPar, TTol>& newTransferFunction)
   { H._copyDataFrom(newTransferFunction); updateDelayLineLength(); }
-  // The parameter should really be of type rsSparseDigitalTransferFunction
+  // The parameter should really be of type rsSparseTransferFunction
 
 
   void setNumNumeratorTerms(int newNumTerms) { H.getNumerator()._setNumTerms(newNumTerms); }
@@ -174,7 +174,7 @@ public:
   // Yes - that's right! "return H(z)" is the whole implementation. Isn't that elegant? :-D
 
   /** Returns a const reference to our transfer function object H(z). */
-  const rsSparseDigitalTransferFunction<TPar, TTol>& getTransferFunction() const { return H; }
+  const rsSparseTransferFunction<TPar, TTol>& getTransferFunction() const { return H; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -274,7 +274,7 @@ public:
   // Maybe factor out the getSample() functions into free functions like 
   //
   // TSig rsGetSample(TSig in,
-  //        const rsSparseDigitalTransferFunction<TPar>& H, rsDelay<TSig>* delay);
+  //        const rsSparseTransferFunction<TPar>& H, rsDelay<TSig>* delay);
   //
   // This facilitates memory optimizations in situations where we have multiple filters with the
   // same set of coeffs but independent states, i.e. independent delaylines. We can store the
@@ -309,7 +309,7 @@ protected:
   /** \name Data */
 
   rsDelay<TSig> delayLine;                        // Delayline for direct form 2 implementation.
-  rsSparseDigitalTransferFunction<TPar, TTol> H;  // Transfer function H(z). Has filter coeffs.
+  rsSparseTransferFunction<TPar, TTol> H;  // Transfer function H(z). Has filter coeffs.
 
 };
 

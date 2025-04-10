@@ -74,7 +74,7 @@ public:
   // Maybe use a template parameter TArg for input and output. See rsDelay
 
   template<class TTol>
-  void getTransferFunction(rsSparseDigitalTransferFunction<TPar, TTol>* tf) const
+  void getTransferFunction(rsSparseTransferFunction<TPar, TTol>* tf) const
   {
     tf->num.setNumTerms(1); tf->num.setTerm(0, TPar(1), dl.getDelayInSamples());
     tf->den.setNumTerms(1); tf->den.setTerm(0, TPar(1), 0);
@@ -425,7 +425,7 @@ public:
   /** Assigns the passed tf pointer to our transfer function. We don't use a return value for the
   result to enable pre-allocation of the function object which is important in realtime contexts.*/
   template<class TTol>
-  void getTransferFunction(rsSparseDigitalTransferFunction<TPar, TTol>* tf) const
+  void getTransferFunction(rsSparseTransferFunction<TPar, TTol>* tf) const
   {
     int M = getDelayInSamples();
     tf->setToZero();
@@ -1717,7 +1717,7 @@ public:
   consists of a factor z^-M for the integer delay of M samples and a factor resulting from the 
   interpolator, for example b0 + b1*z^-1 with b0 = 1-f, b1 = f for the linear interpolator with f 
   being the fractional part of the delay, i.e. delay = M+f. */
-  void mulByDelayTransFunc(rsSparseDigitalTransferFunction<TCoef, TTol>* tf) const
+  void mulByDelayTransFunc(rsSparseTransferFunction<TCoef, TTol>* tf) const
   {
     tf->_multiplyByDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1);  // Interpolator factor
     tf->addPreDelay((int)delay);                                   // Integer delay factor
@@ -1732,7 +1732,7 @@ public:
   // extenal use, too? Implement also mulByDampTransFunc
 
 
-  void getCombTransferFunction(rsSparseDigitalTransferFunction<TCoef, TTol>* tf) const
+  void getCombTransferFunction(rsSparseTransferFunction<TCoef, TTol>* tf) const
   {
     using Mon = rsMonomial<TCoef>;
     getDamperTransferFunction(tf);    // tf = F, F(z) is transfer function in feedback path
@@ -1751,7 +1751,7 @@ public:
   // Rename to getTransferFunction
 
 
-  void getDamperTransferFunction(rsSparseDigitalTransferFunction<TCoef, TTol>* tf) const
+  void getDamperTransferFunction(rsSparseTransferFunction<TCoef, TTol>* tf) const
   {
     tf->_setupFromDenseCoeffs(bD, dmpOrd+1, aD, dmpOrd+1);
 
@@ -1769,7 +1769,7 @@ public:
   }
 
 
-  void getDelayTransferFunction(rsSparseDigitalTransferFunction<TCoef, TTol>* tf) const
+  void getDelayTransferFunction(rsSparseTransferFunction<TCoef, TTol>* tf) const
   {
     tf->setupFromDenseCoeffs(bI, intNumOrd+1, aI, intDenOrd+1, TCoef(0)); // Is passing TCoef(0) obsolete? I think so.
     tf->addPreDelay((int)delay);  // VERIFY!
@@ -2407,7 +2407,7 @@ public:
   // convenient to use but it's sometimes necessary when one needs to compute these transfer 
   // function in a realtime thread.
   template<class TTol>
-  void getCorrectorTransferFunction(rsSparseDigitalTransferFunction<TPar, TTol>* tf) const
+  void getCorrectorTransferFunction(rsSparseTransferFunction<TPar, TTol>* tf) const
   {
     getCombTransferFunction(tf);
     tf->invert();
@@ -2415,19 +2415,19 @@ public:
   }
 
   //template<class TTol>
-  void getCombTransferFunction(rsSparseDigitalTransferFunction<TPar, TTol>* tf) const
+  void getCombTransferFunction(rsSparseTransferFunction<TPar, TTol>* tf) const
   {
     s.getCombTransferFunction(tf);
   }
 
-  //void getDamperTransferFunction(   rsSparseDigitalTransferFunction<TPar>* tf) const
+  //void getDamperTransferFunction(   rsSparseTransferFunction<TPar>* tf) const
   //{
   //  tf->setupFromDenseCoeffs(b, dmpOrd+1, a, dmpOrd+1, TPar(0));
   //}
   //// This may not be needed
 
   //template<class TTol>
-  void getDelayTransferFunction(rsSparseDigitalTransferFunction<TPar, TTol>* tf) const
+  void getDelayTransferFunction(rsSparseTransferFunction<TPar, TTol>* tf) const
   {
     tf->getNumerator().  _setNumTerms(1); tf->getNumerator().  _setTerm(0, TPar(1), M);
     tf->getDenominator()._setNumTerms(1); tf->getDenominator()._setTerm(0, TPar(1), 0);
@@ -2440,15 +2440,15 @@ public:
   // that in a non-allocating way, we would need a temporary transfer function variable:
 
   //template<class TTol>
-  rsSparseDigitalTransferFunction<TPar, TTol> getTransferFunction(TTol tol) const
+  rsSparseTransferFunction<TPar, TTol> getTransferFunction(TTol tol) const
   {
     return getCombTransferFunction(tol) * getCorrectorTransferFunction(tol);
   }
 
   //template<class TTol>
-  rsSparseDigitalTransferFunction<TPar, TTol> getCombTransferFunction(TTol tol) const
+  rsSparseTransferFunction<TPar, TTol> getCombTransferFunction(TTol tol) const
   {
-    using TF = rsSparseDigitalTransferFunction<TPar, TTol>;
+    using TF = rsSparseTransferFunction<TPar, TTol>;
 
     TF one; one.getNumerator()._appendTerm(TPar(1), 0); // Use setToOne()       z^-0
     TF z1;  z1.getNumerator()._appendTerm( TPar(1), 1); // Use setToIdentity()  z^-1
@@ -2462,9 +2462,9 @@ public:
   }
 
   //template<class TTol>
-  rsSparseDigitalTransferFunction<TPar, TTol> getCorrectorTransferFunction(TTol tol) const
+  rsSparseTransferFunction<TPar, TTol> getCorrectorTransferFunction(TTol tol) const
   {
-    using TF = rsSparseDigitalTransferFunction<TPar, TTol>;
+    using TF = rsSparseTransferFunction<TPar, TTol>;
 
     TF C = getCombTransferFunction(tol);
     C.invert();
@@ -2474,9 +2474,9 @@ public:
   }
 
   //template<class TTol>
-  rsSparseDigitalTransferFunction<TPar, TTol> getDamperTransferFunction(TTol tol) const
+  rsSparseTransferFunction<TPar, TTol> getDamperTransferFunction(TTol tol) const
   {
-    rsSparseDigitalTransferFunction<TPar, TTol> H;
+    rsSparseTransferFunction<TPar, TTol> H;
     H.setRoundoffTolerance(tol);
     H._setupFromDenseCoeffs(s.getDampCoeffsB(), s.getDampingOrder()+1,
                             s.getDampCoeffsA(), s.getDampingOrder()+1);
@@ -2711,7 +2711,7 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar, TDly, TTol>::getCorrectorTransfe
 ////template<class TTol>
 ////template<class TSig, class TPar, class TDly>
 //template<class TSig, class TPar, class TDly, class TTol>
-//rsSparseDigitalTransferFunction<TPar, TTol> rsDampedCombAllpass<TSig, TPar, TDly>
+//rsSparseTransferFunction<TPar, TTol> rsDampedCombAllpass<TSig, TPar, TDly>
 //                                      ::getTransferFunction(TTol tol) const
 //{
 //  return getCombTransferFunction(tol) * getCorrectorTransferFunction(tol);
@@ -2719,10 +2719,10 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar, TDly, TTol>::getCorrectorTransfe
 
 //template<class TTol>
 //template<class TSig, class TPar, class TDly>
-//rsSparseDigitalTransferFunction<TPar, TTol> rsDampedCombAllpass<TSig, TPar, TDly>
+//rsSparseTransferFunction<TPar, TTol> rsDampedCombAllpass<TSig, TPar, TDly>
 //                                      ::getCombTransferFunction(TTol tol) const
 //{
-//  using TF = rsSparseDigitalTransferFunction<TPar, TTol>;
+//  using TF = rsSparseTransferFunction<TPar, TTol>;
 //
 //  TF one; one.num._appendTerm(TPar(1), 0);
 //  TF z1;  z1.num._appendTerm( TPar(1), 1);
@@ -2737,10 +2737,10 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar, TDly, TTol>::getCorrectorTransfe
 
 //template<class TTol>
 //template<class TSig, class TPar, class TDly>
-//rsSparseDigitalTransferFunction<TPar, TTol> rsDampedCombAllpass<TSig, TPar, TDly>
+//rsSparseTransferFunction<TPar, TTol> rsDampedCombAllpass<TSig, TPar, TDly>
 //                                      ::getCorrectorTransferFunction(TTol tol) const
 //{
-//  using TF = rsSparseDigitalTransferFunction<TPar, TTol>;
+//  using TF = rsSparseTransferFunction<TPar, TTol>;
 //
 //  TF C = getCombTransferFunction(tol);
 //  C.invert();
@@ -2751,10 +2751,10 @@ rsComplex<TPar> rsDampedCombAllpass<TSig, TPar, TDly, TTol>::getCorrectorTransfe
 
 //template<class TTol>
 //template<class TSig, class TPar, class TDly>
-//rsSparseDigitalTransferFunction<TPar, TTol> rsDampedCombAllpass<TSig, TPar, TDly>
+//rsSparseTransferFunction<TPar, TTol> rsDampedCombAllpass<TSig, TPar, TDly>
 //                                      ::getDamperTransferFunction(TTol tol) const
 //{
-//  rsSparseDigitalTransferFunction<TPar, TTol> H;
+//  rsSparseTransferFunction<TPar, TTol> H;
 //  H.setRoundoffTolerance(tol);
 //  H.setupFromDenseCoeffs(s.getDampCoeffsB(), s.getDampingOrder()+1,
 //                         s.getDampCoeffsA(), s.getDampingOrder()+1, TPar(0));
@@ -3118,12 +3118,12 @@ public:
 
 
   // Maybe let them take a tol param
-  rsSparseDigitalTransferFunction<TPar, TTol> getTransferFunction() const
+  rsSparseTransferFunction<TPar, TTol> getTransferFunction() const
   {
     return getCombTransferFunction() * getCorrectorTransferFunction();
   }
 
-  rsSparseDigitalTransferFunction<TPar, TTol> getCombTransferFunction() const
+  rsSparseTransferFunction<TPar, TTol> getCombTransferFunction() const
   {
     return combBank.getTransferFunction();
     //return U;  // Should also work, I think.
@@ -3131,7 +3131,7 @@ public:
   // allocates - creates copy of the transfer function object.
   // Maybe return a const ref?
 
-  rsSparseDigitalTransferFunction<TPar, TTol> getCorrectorTransferFunction() const
+  rsSparseTransferFunction<TPar, TTol> getCorrectorTransferFunction() const
   {
     return corrector.getTransferFunction();
   }
@@ -3238,7 +3238,7 @@ protected:
   // Transfer function objects used for temporaries in internal computations in our updateFilters()
   // function. They are members rather than locals there to avoid heap allocations in this 
   // function.
-  rsSparseDigitalTransferFunction<TPar, TTol> U, Ui;
+  rsSparseTransferFunction<TPar, TTol> U, Ui;
 };
 
 
@@ -3254,7 +3254,7 @@ void rsDampedMultiCombAllpass<TSig, TPar, TTol>::updateFilters()
   // have an even more flexible filter.
 
   using RatFunc   = rsSparseRationalFunction<TPar, TTol>;
-  //using TransFunc = rsSparseDigitalTransferFunction<TPar>;
+  //using TransFunc = rsSparseTransferFunction<TPar>;
 
   TPar decaySamples =      decayTime     * sampleRate;
   TPar lowOmega     = 2*PI*lowCrossFreq  / sampleRate;
@@ -4351,7 +4351,7 @@ public:
   
 
   template<class TTol>
-  void getDelayTransferFunction(int n, rsSparseDigitalTransferFunction<TPar, TTol>* tf) const
+  void getDelayTransferFunction(int n, rsSparseTransferFunction<TPar, TTol>* tf) const
   {
     int M = getDelay(n);
     tf->getNumerator()._setNumTerms(1); 
@@ -4365,9 +4365,9 @@ public:
 
   // Under construction:
   template<class TTol>
-  rsMatrix<rsSparseDigitalTransferFunction<TPar, TTol>> getTransferFunction(TTol tol)
+  rsMatrix<rsSparseTransferFunction<TPar, TTol>> getTransferFunction(TTol tol)
   {
-    using TF  = rsSparseDigitalTransferFunction<TPar, TTol>;
+    using TF  = rsSparseTransferFunction<TPar, TTol>;
     using LA  = rsLinearAlgebraNew;
     using Mat = rsMatrix<TF>;
 
@@ -4434,7 +4434,7 @@ public:
     //
     // - We do not need to explicitly initialize the D matrix by all zeros (even though the 
     //   constructor of rsMatrix does no zero-initialization) because the default 
-    //   constructor of class rsSparseDigitalTransferFunction class initializes with zero.
+    //   constructor of class rsSparseTransferFunction class initializes with zero.
   }
 
 

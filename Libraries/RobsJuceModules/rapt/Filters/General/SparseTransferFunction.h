@@ -31,7 +31,7 @@ ToDo:
 */
 
 template<class T, class TTol>  // ToDo: Let TTol default to rsEmptyType
-class rsSparseDigitalTransferFunction : public rsSparseRationalFunction<T, TTol>
+class rsSparseTransferFunction : public rsSparseRationalFunction<T, TTol>
 {
 
 public:
@@ -152,20 +152,20 @@ public:
   // return types are different. It may work with pointer-types but not with value-types (I guess):
 
 
-  rsSparseDigitalTransferFunction<T, TTol> operator-() const
-  { return rsSparseDigitalTransferFunction<T, TTol>(-num, den); }
+  rsSparseTransferFunction<T, TTol> operator-() const
+  { return rsSparseTransferFunction<T, TTol>(-num, den); }
 
-  rsSparseDigitalTransferFunction<T, TTol> operator+(const rsSparseDigitalTransferFunction<T, TTol>& q) const 
-  { rsSparseDigitalTransferFunction<T, TTol> r; weightedSum(*this, T(1), q, T(1), &r, T(0)); return r; }
+  rsSparseTransferFunction<T, TTol> operator+(const rsSparseTransferFunction<T, TTol>& q) const 
+  { rsSparseTransferFunction<T, TTol> r; weightedSum(*this, T(1), q, T(1), &r, T(0)); return r; }
 
-  rsSparseDigitalTransferFunction<T, TTol> operator-(const rsSparseDigitalTransferFunction<T, TTol>& q) const 
-  { rsSparseDigitalTransferFunction<T, TTol> r; weightedSum(*this, T(1), q, T(-1), &r, T(0)); return r; }
+  rsSparseTransferFunction<T, TTol> operator-(const rsSparseTransferFunction<T, TTol>& q) const 
+  { rsSparseTransferFunction<T, TTol> r; weightedSum(*this, T(1), q, T(-1), &r, T(0)); return r; }
 
-  rsSparseDigitalTransferFunction<T, TTol> operator*(const rsSparseDigitalTransferFunction<T, TTol>& q) const 
-  { return rsSparseDigitalTransferFunction(num * q.num, den * q.den); }
+  rsSparseTransferFunction<T, TTol> operator*(const rsSparseTransferFunction<T, TTol>& q) const 
+  { return rsSparseTransferFunction(num * q.num, den * q.den); }
 
-  rsSparseDigitalTransferFunction<T, TTol> operator/(const rsSparseDigitalTransferFunction<T, TTol>& q) const 
-  { return rsSparseDigitalTransferFunction(num * q.den, den * q.num); }
+  rsSparseTransferFunction<T, TTol> operator/(const rsSparseTransferFunction<T, TTol>& q) const 
+  { return rsSparseTransferFunction(num * q.den, den * q.num); }
 
   // ToDo: Check if we need to reduce the results to lowest terms or maybe to "canonicalize".
 
@@ -174,10 +174,10 @@ public:
 
 /** Multiplies a coefficient and a sparse digital transfer function. */
 template<class T, class TTol>
-inline rsSparseDigitalTransferFunction<T, TTol> operator*(
-  const T& s, const rsSparseDigitalTransferFunction<T, TTol>& p)
+inline rsSparseTransferFunction<T, TTol> operator*(
+  const T& s, const rsSparseTransferFunction<T, TTol>& p)
 {
-  rsSparseDigitalTransferFunction<T, TTol> r(p);
+  rsSparseTransferFunction<T, TTol> r(p);
   r._scale(s);
   return r;
 }
@@ -190,8 +190,8 @@ inline rsSparseDigitalTransferFunction<T, TTol> operator*(
 
 template<class T, class TTol>
 inline bool rsIsBetterPivot(
-  const rsSparseDigitalTransferFunction<T, TTol>& x,
-  const rsSparseDigitalTransferFunction<T, TTol>& y)
+  const rsSparseTransferFunction<T, TTol>& x,
+  const rsSparseTransferFunction<T, TTol>& y)
 { 
   // A zero x is never a better pivot than any y:
   if(x.isZero())
@@ -216,23 +216,23 @@ inline bool rsIsBetterPivot(
 
 template<class T, class TTol>
 inline bool rsIsInvalidDivisor(
-  const rsSparseDigitalTransferFunction<T, TTol>& x,
-  const rsSparseDigitalTransferFunction<T, TTol>& tol)
+  const rsSparseTransferFunction<T, TTol>& x,
+  const rsSparseTransferFunction<T, TTol>& tol)
 {
   return x.isZero(); 
   // Maybe we should pass in a tolerance into x.isZero()? But then this tolerance should 
   // probably be just passed on from our second parameter. But for this, we need to make the 2nd
   // parameter of type T (or more likely TTol) rather than 
-  // rsSparseDigitalTransferFunction<T, TTol>. I think, we generally need to change the API to 
+  // rsSparseTransferFunction<T, TTol>. I think, we generally need to change the API to 
   // admit different types for x and tol - perhaps even the API auf the Gaussian eliminatio algo.
   // Maybe it also needs to take a tolerance parameter of type TTol.
 }
 
 template<class T, class TTol>
-inline rsSparseDigitalTransferFunction<T, TTol> rsGetPivotingTolerance(
-  const rsMatrixView<rsSparseDigitalTransferFunction<T, TTol>>& A)
+inline rsSparseTransferFunction<T, TTol> rsGetPivotingTolerance(
+  const rsMatrixView<rsSparseTransferFunction<T, TTol>>& A)
 {
-  return rsSparseDigitalTransferFunction<T, TTol>();
+  return rsSparseTransferFunction<T, TTol>();
   // I think, this should return a TTol. Maybe the return type should be set to "auto"
 }
 

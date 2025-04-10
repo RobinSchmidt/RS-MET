@@ -310,11 +310,11 @@ template class RAPT::rsSparseRationalFunction<double>;  // Uses default rsEmptyT
 template class RAPT::rsSparseRationalFunction<double, double>;
 
 
-template class RAPT::rsSparseDigitalTransferFunction<double, rsEmptyType>;
-template class RAPT::rsSparseDigitalTransferFunction<double, double>;
+template class RAPT::rsSparseTransferFunction<double, rsEmptyType>;
+template class RAPT::rsSparseTransferFunction<double, double>;
 
 // It seems, it's not enough to instantiate the outermost class (in the sense of composition or
-// inheritance). Instatiating rsSparseDigitalTransferFunction does not automatically instantiate
+// inheritance). Instatiating rsSparseTransferFunction does not automatically instantiate
 // the baseclass rsSparseRationalFunction. And instantiating rsSparseRationalFunction does not 
 // automatically instantiate rsSparsePolynomial which is the type of the members of 
 // rsSparseRationalFunction. We apparently need to also explicitly instantiate all the inner 
@@ -385,9 +385,9 @@ template RAPT::rsMatrix<rsComplex<double>> RAPT::rsLinearAlgebraNew::inverse(
 template RAPT::rsMatrix<RAPT::rsFraction<int>> RAPT::rsLinearAlgebraNew::inverse(
   const RAPT::rsMatrixView<RAPT::rsFraction<int>>& A);
 
-template RAPT::rsMatrix<RAPT::rsSparseDigitalTransferFunction<double, double>> 
+template RAPT::rsMatrix<RAPT::rsSparseTransferFunction<double, double>> 
 RAPT::rsLinearAlgebraNew::inverse(
-  const RAPT::rsMatrixView<RAPT::rsSparseDigitalTransferFunction<double, double>>& A);
+  const RAPT::rsMatrixView<RAPT::rsSparseTransferFunction<double, double>>& A);
 
 
 

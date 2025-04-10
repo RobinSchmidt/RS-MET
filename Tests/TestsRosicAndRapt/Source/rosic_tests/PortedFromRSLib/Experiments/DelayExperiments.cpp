@@ -1772,7 +1772,7 @@ void dampedCombAllpassFractional2()
   using Vec          = std::vector<Real>;
   using Allpass      = rsDampedCombAllpass<Real, Real, Real, Real>;
   using CombSettings = rsDampedCombSettings<Real, Real, Real>;
-  using TransFunc    = rsSparseDigitalTransferFunction<Real, Real>;
+  using TransFunc    = rsSparseTransferFunction<Real, Real>;
 
 
   // User parameters:
@@ -1854,7 +1854,7 @@ void dampedMultiCombAllpassIdea()
   using Complex   = rsComplex<Real>;
   using Vec       = std::vector<Real>;
   using Allpass   = rsDampedCombAllpass<Real, Real, Real, Real>;
-  using TransFunc = rsSparseDigitalTransferFunction<Real, Real>;
+  using TransFunc = rsSparseTransferFunction<Real, Real>;
   using SparseFlt = rsSparseFilter<Real, Real, Real>;
 
   // User parameters:
@@ -2906,7 +2906,7 @@ void protoFDN1()
   using VecR    = std::vector<Real>;
   using MatC    = rsMatrix<Complex>;
   using FDN     = rsProtoFDN<Real, Real>;
-  using TF      = rsSparseDigitalTransferFunction<Real, Real>;
+  using TF      = rsSparseTransferFunction<Real, Real>;
 
   int numSamples = 1000;
   int numChans   = 3;

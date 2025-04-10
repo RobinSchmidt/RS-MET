@@ -75,7 +75,7 @@ public:
   
 
   template<class TTol>
-  void getTransferFunction(rsSparseDigitalTransferFunction<T, TTol>* tf) const
+  void getTransferFunction(rsSparseTransferFunction<T, TTol>* tf) const
   {
     int M = getDelayInSamples();
 

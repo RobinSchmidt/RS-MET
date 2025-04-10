@@ -1027,7 +1027,7 @@ bool testLinAlgSparseTransFunc()
   using Real = double;
   using Mon  = RAPT::rsMonomial<Real>;
   using SP   = RAPT::rsSparsePolynomial<Real, Real>;
-  using TF   = RAPT::rsSparseDigitalTransferFunction<Real, Real>;
+  using TF   = RAPT::rsSparseTransferFunction<Real, Real>;
   using LA   = RAPT::rsLinearAlgebraNew;
   using Mat  = RAPT::rsMatrix<TF>;
 
@@ -1143,7 +1143,7 @@ bool testLinearAlgebra()
   ok &= testLinAlgStdComplex();       // T = std::complex
   ok &= testLinAlgRsComplex();        // T = RAPT::rsComplex
   ok &= testLinAlgRational();         // T = RAPT::rsFraction
-  ok &= testLinAlgSparseTransFunc();  // T = RAPT::rsSparseDigitalTransferFunction, stub
+  ok &= testLinAlgSparseTransFunc();  // T = RAPT::rsSparseTransferFunction, stub
 
   return ok;
 

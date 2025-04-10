@@ -1,6 +1,6 @@
 
 template<class T, class TTol>
-void rsSparseDigitalTransferFunction<T, TTol>::addPreDelay(int amountInSamples)
+void rsSparseTransferFunction<T, TTol>::addPreDelay(int amountInSamples)
 {
   if(amountInSamples < 0)
   {
@@ -19,7 +19,7 @@ void rsSparseDigitalTransferFunction<T, TTol>::addPreDelay(int amountInSamples)
 }
 
 template<class T, class TTol>
-bool rsSparseDigitalTransferFunction<T, TTol>::_isCanonical() const
+bool rsSparseTransferFunction<T, TTol>::_isCanonical() const
 {
   bool ok = true;
 
@@ -52,7 +52,7 @@ bool rsSparseDigitalTransferFunction<T, TTol>::_isCanonical() const
 }
 
 template<class T, class TTol>
-void rsSparseDigitalTransferFunction<T, TTol>::invert()
+void rsSparseTransferFunction<T, TTol>::invert()
 {
   rsAssert(_isCanonical());
 
@@ -78,7 +78,7 @@ void rsSparseDigitalTransferFunction<T, TTol>::invert()
 }
 
 template<class T, class TTol>
-void rsSparseDigitalTransferFunction<T, TTol>::reflectZeros()
+void rsSparseTransferFunction<T, TTol>::reflectZeros()
 {
   int deg = num.getDegree();
   for(int i = 0; i < num.getNumTerms(); i++)

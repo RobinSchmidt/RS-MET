@@ -2978,8 +2978,7 @@ bool testSparseRationalFunction()
   using Real    = double;
   using Complex = rsComplex<Real>;
   using Vec     = std::vector<Real>;
-  using RatD    = rsRationalFunction<Real>;        // Dense rational functions
-  //using RatS    = rsSparseRationalFunction<Real>;  // Sparse rational functions
+  using RatD    = rsRationalFunction<Real>;              // Dense rational functions
   using RatS    = rsSparseRationalFunction<Real, Real>;  // Sparse rational functions
 
 

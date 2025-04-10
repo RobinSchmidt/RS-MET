@@ -2069,7 +2069,7 @@ bool universalCombUnitTest()
   using Real    = double;
   using Complex = rsComplex<Real>;
   using Comb    = rsUniversalCombFilter<Real, Real>;
-  using TF      = rsSparseDigitalTransferFunction<Real, Real>;
+  using TF      = rsSparseTransferFunction<Real, Real>;
 
   // Test parameters:
   int  delay =   3;     // A short delay of just 3 samples allows to use ...
@@ -2765,7 +2765,7 @@ bool dampedCombAllpassUnitTest3(bool withPreDelay)
   ok &= rsTestGetTransferFunctionAt(ap, z, N, 1.e-8);
 
   // Test retrieving and evaluating the full transfer functions:
-  rsSparseDigitalTransferFunction<Real, Real> U, C, H;
+  rsSparseTransferFunction<Real, Real> U, C, H;
   Real tol = 1.e-13;
   U = ap.getCombTransferFunction(tol);
   C = ap.getCorrectorTransferFunction(tol);
@@ -2775,7 +2775,7 @@ bool dampedCombAllpassUnitTest3(bool withPreDelay)
   ok &= rsIsCloseTo(Hz, H(z), 1.e-13);
 
   // Try retrieving the transfer functions with the non-allocation methods:
-  rsSparseDigitalTransferFunction<Real, Real> Un, Cn, Hn;
+  rsSparseTransferFunction<Real, Real> Un, Cn, Hn;
   ap.getCombTransferFunction(&Un);
   ap.getCorrectorTransferFunction(&Cn);
   // ap.getTransferFunction(&Hn);          // This function is yet to be written
@@ -2814,7 +2814,7 @@ bool dampedMultiCombAllpassUnitTest()
   using Vec              = std::vector<Real>;
   using CombAllpass      = rsDampedCombAllpass<Real, Real, Real, Real>;
   using MultiCombAllpass = rsDampedMultiCombAllpass<Real, Real, Real>;
-  using TransFunc        = rsSparseDigitalTransferFunction<Real, Real>;
+  using TransFunc        = rsSparseTransferFunction<Real, Real>;
   using SparseFlt        = rsSparseFilter<Real, Real, Real>;
 
   // User parameters:
