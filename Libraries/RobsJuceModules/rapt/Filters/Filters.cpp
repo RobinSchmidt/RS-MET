@@ -6,7 +6,8 @@ namespace RAPT
 #include "General/MovingWindowFilters.cpp"
 #include "General/OnePoleFilter.cpp"
 #include "General/SmoothingFilter.cpp"
-#include "General/Interpolator.cpp" 
+#include "General/Interpolator.cpp"
+#include "General/SparseTransferFunction.cpp" 
 #include "General/DelayLine.cpp"
 #include "General/SparseFilter.cpp" 
 
