@@ -91,3 +91,17 @@ void rsSparseTransferFunction<T, TTol>::reflectZeros()
   // do it in a function num.conjugateCoeffs() which just calls rsConj() on each coeff (which is
   // an empty function for real types)
 }
+
+//=================================================================================================
+/*
+
+Notes:
+
+- The class was initially named rsSparseDigitalTransferFunction because we may possibly also
+  have situations where we need to deal with analog transfer functions. But the name was too long
+  and in a DSP library, we may just treat the "digital" qualifier as some default thing that goes 
+  without saying. When we need a class for analog transfer functions, then maybe only that should
+  have a a qualifier like rsSparseAnalogTransferFunction. But actually, for these, we can just use
+  the raw class rsSparseRationalFunction so we don't even need a dedicated class for these.
+
+*/

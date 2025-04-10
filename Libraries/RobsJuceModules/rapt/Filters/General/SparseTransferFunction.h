@@ -17,27 +17,17 @@ example, digital filter transfer functions are usually normalized to a0 = 1, as 
 implement a check for that condition (and a few others) isCanonical(). We also provide functions to
 invert the transfer function (basically, swapping numerator and denominator but maintaining the 
 a0 = 1 condition by appropriate pre- and post scaling), reflecting the zeros about the unit circle 
-(turning minimum phase filters into maximum phase ones), etc. ...TBC... 
+(turning minimum phase filters into maximum phase ones), etc. ...TBC...   */
 
-
-ToDo: 
-
-- Maybe rename class to rsSparseTransferFunction. The current name is too long. That it's digital 
-  may go without saying. Although analog transfer function do pop up in DSP as well (for example as
-  prototype transfer functions) but maybe only they should be explicitly marked as 
-  rsSparseAnalogTransferFunction. But actually, for analog transfer functions, we can just use 
-  rsSparseRationalFunction as is.
-
-*/
-
-template<class T, class TTol>  // ToDo: Let TTol default to rsEmptyType
+template<class T, class TTol = rsEmptyType> // Maybe rename T to TCoef
 class rsSparseTransferFunction : public rsSparseRationalFunction<T, TTol>
 {
 
 public:
 
-  using Base = rsSparseRationalFunction<T, TTol>;  // For convenience
-  using Base::Base;                                // Inherit constructors
+  using SparseTransFunc = rsSparseTransferFunction<T, TTol>;
+  using Base            = rsSparseRationalFunction<T, TTol>;
+  using Base::Base;                                             // Inherit constructors
 
 
   //-----------------------------------------------------------------------------------------------
@@ -152,22 +142,24 @@ public:
   // return types are different. It may work with pointer-types but not with value-types (I guess):
 
 
-  rsSparseTransferFunction<T, TTol> operator-() const
-  { return rsSparseTransferFunction<T, TTol>(-num, den); }
+  SparseTransFunc operator-() const { return SparseTransFunc(-num, den); }
 
-  rsSparseTransferFunction<T, TTol> operator+(const rsSparseTransferFunction<T, TTol>& q) const 
-  { rsSparseTransferFunction<T, TTol> r; weightedSum(*this, T(1), q, T(1), &r, T(0)); return r; }
+  SparseTransFunc operator+(const SparseTransFunc& q) const 
+  { SparseTransFunc r; weightedSum(*this, T(1), q, T(1), &r, T(0)); return r; }
 
-  rsSparseTransferFunction<T, TTol> operator-(const rsSparseTransferFunction<T, TTol>& q) const 
-  { rsSparseTransferFunction<T, TTol> r; weightedSum(*this, T(1), q, T(-1), &r, T(0)); return r; }
+  SparseTransFunc operator-(const SparseTransFunc& q) const 
+  { SparseTransFunc r; weightedSum(*this, T(1), q, T(-1), &r, T(0)); return r; }
 
-  rsSparseTransferFunction<T, TTol> operator*(const rsSparseTransferFunction<T, TTol>& q) const 
-  { return rsSparseTransferFunction(num * q.num, den * q.den); }
+  SparseTransFunc operator*(const SparseTransFunc& q) const 
+  { return SparseTransFunc(num * q.num, den * q.den); }
 
-  rsSparseTransferFunction<T, TTol> operator/(const rsSparseTransferFunction<T, TTol>& q) const 
-  { return rsSparseTransferFunction(num * q.den, den * q.num); }
+  SparseTransFunc operator/(const SparseTransFunc& q) const 
+  { return SparseTransFunc(num * q.den, den * q.num); }
 
-  // ToDo: Check if we need to reduce the results to lowest terms or maybe to "canonicalize".
+  // ToDo: Check if we need to reduce the results to lowest terms or maybe to "canonicalize" ..but
+  // we should not use the baseclass implementation of canonicalize here. I think, we should leave
+  // out the reduce step and use a modified normaliation step. Also: implement +=, -=, *=, /=. The
+  // implementations should avoid allocations of temporary objects.
 
 
 };

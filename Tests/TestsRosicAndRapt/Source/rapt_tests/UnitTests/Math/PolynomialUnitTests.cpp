@@ -3043,6 +3043,16 @@ bool testSparseRationalFunction()
   //
   // - Implement and test evaluation at complex arguments when the type T is a real number
   //   type (try it with rsComplex and std::complex), arithmetic operators, ...
+  //
+  // - Test canonicalization and related methods.
+  //
+  // - Make a unit test that does some linear algebra on matrices of rational functions. Maybe 
+  //   create some random matrices, compute some products A*x = b and try to solve for x adn/or
+  //   compute the inverse of A. For this, we may want to create a function 
+  //   randomize(rsSparseRationalFunction<T,TTol>* A, int minNumDeg, int maxNumDeg, 
+  //   int minDenDeg, int maxDenDeg, T minElemVal, T maxElemVal, int seed)
+  //   ...or maybe put the ...Deg params for the degree last and make them optional defaulting
+  //   to -1 which is used as code for: leave degree as is.
 }
 
 
