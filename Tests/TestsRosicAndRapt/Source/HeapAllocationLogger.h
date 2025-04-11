@@ -11,6 +11,15 @@ This is an attempt to track the memory allocations. Unfortunatly, this doesn't w
 redefine malloc etc. to do addtional logging but unfortunately, my redefined functiond never get 
 called. ...this needs more research....
 
+ToDo:
+
+- Move this code somewhere else. Maybe into the research repo into the Projects/CppExperiments
+  folder. Maybe if it's ready to use, it needs to be included as the very first thing in RAPT. 
+  Maybe it should go into a folder DevTools where we collect all the stuff for debugging - like the
+  allocation logging, memory leak detection, plotting, etc. The stuff there should be conditionally
+  compiled only in debug builds.
+
+
 */
 
 

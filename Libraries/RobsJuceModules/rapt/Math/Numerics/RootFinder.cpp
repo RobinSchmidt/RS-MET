@@ -159,6 +159,14 @@ T rsRootFinder<T>::newton(const std::function<void(T, T*, T*)>& func, T x, T y)
   //   either. It may still diverge. For a truly robust method, we should have an algorithm that
   //   combines Newton steps with bisection steps where the latter are used when a Newton step 
   //   would "go wrong". Detecting that is another can of worms.
+  //
+  // - Maybe provide a variation that lets the user pass a multiplicity m for the root. I think, 
+  //   this should affect the update equation such that it becomes  x += m*dx  rather than the 
+  //   current  x += dx. Maybe also have a variant where this multiplicity m is estimated. Maybe
+  //   this can be done by taking th update equation x[n+1] = x[n] + m * f(x[n]) / f'(x[n]) and 
+  //   solving that for m = (x[n+1] - x[n]) * f'(x[n]) / f(x[n]). We would always use the m  that 
+  //   was computed in the previous iteration (initialized with m = 1 for this 1st iteration). Some
+  //   experimentation is needed. This is just an idea.
 }
 // Needs tests
 
