@@ -4404,9 +4404,9 @@ public:
 
 
     // Compute and return the transfer function matrix:
-    // Mat dmA = D-A;  // This is fine
-
-    Mat M = LA::inverse(D-A);  // (D-A)^-1
+    Mat DmA = D-A;               // Dee minus ey!
+    Mat M = LA::inverse(DmA);    // (D-A)^-1
+    //Mat M = LA::inverse(D-A);  // (D-A)^-1
     // Triggers rsAssert. It occurs when searching for the pivot in the inversion algorithm. 
     // Apparently, one of the matrix elements isn't in canonical representation when we expect it
     // to be. Figure out why and fix this! Maybe implement a unit test that tests linear algebra

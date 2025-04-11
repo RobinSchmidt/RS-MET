@@ -4787,6 +4787,11 @@ void numberTheoreticTrafoModuli()
   // the sum of two two squares and the hypothenuse of a Pythagorean triple. Is that a coincidence 
   // or are these features so common that we should expect them? Or do these features have anything 
   // to do with the suitability for NTT? If so, what?
+
+  // See also: 
+  // https://www.youtube.com/watch?v=u24AjKinHNU  What does BLAZINGLY FAST even mean??
+  // -At 6:11 - he uses p = 15564440312192434177
+
 }
 
 

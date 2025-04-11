@@ -2975,15 +2975,22 @@ void protoFDN1()
   VecR err = y2 - y;
   ok &= y2 == y;
 
-  // Compute transfer function:
+  // Compute transfer function numerically:
   Complex z(0.9, 0.8);
   Complex Hn = rsEvaluateTransferFunctionNumerically(fdn, z, 5000);
+
+  // Evaluate transfer function via getTransferFunctionAt:
   MatC    H  = fdn.getTransferFunctionAt(z);
   Complex errH = H(0,0) - Hn;
-  ok &= rsIsCloseTo(H(0,0), Hn, 1.e-13);
+  ok &= rsIsNegligible(errH, 1.e-13);        // new
+  //ok &= rsIsCloseTo(H(0,0), Hn, 1.e-13);   // old
 
-
-  rsMatrix<TF> tf = fdn.getTransferFunction(1.e-13);
+  // Create symbolic transfer function and evaluate that at z:
+  //rsMatrix<TF> tf = fdn.getTransferFunction(1.e-13);
+  rsMatrix<TF> tf = fdn.getTransferFunction(0.0);
+  Complex H2 = tf(0,0)(z);
+  errH = H2 - Hn;
+  ok &= rsIsNegligible(errH, 1.e-13);  // FAILS!!!
 
 
 
