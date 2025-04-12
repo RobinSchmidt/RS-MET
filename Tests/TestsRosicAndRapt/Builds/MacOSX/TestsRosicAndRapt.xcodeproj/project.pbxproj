@@ -182,7 +182,6 @@
 		C92CD42BF5442F411A6687E4 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Range.h */ /* Range.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Range.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Range.h; sourceTree = SOURCE_ROOT; };
 		CB4928CF77E3F82E024D6C4E /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Definitions/ConstantDefinitions.h */ /* ConstantDefinitions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ConstantDefinitions.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Definitions/ConstantDefinitions.h; sourceTree = SOURCE_ROOT; };
 		CBB26BA50373CADB8EA0AFB2 /* ../../Source/rosic_tests/PortedFromRSLib/UnUsedTestsRSLib.h */ /* UnUsedTestsRSLib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UnUsedTestsRSLib.h; path = ../../Source/rosic_tests/PortedFromRSLib/UnUsedTestsRSLib.h; sourceTree = SOURCE_ROOT; };
-		CC647231785C19D835E42150 /* ../../Source/HeapAllocationLogger.h */ /* HeapAllocationLogger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HeapAllocationLogger.h; path = ../../Source/HeapAllocationLogger.h; sourceTree = SOURCE_ROOT; };
 		CDAA11E393BE76471688DAD2 /* ../../Source/rapt_tests/UnitTests/MiscUnitTests.cpp */ /* MiscUnitTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MiscUnitTests.cpp; path = ../../Source/rapt_tests/UnitTests/MiscUnitTests.cpp; sourceTree = SOURCE_ROOT; };
 		D2236B4549A72DF34A03F258 /* ../../JuceLibraryCode/include_rapt.cpp */ /* include_rapt.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_rapt.cpp; path = ../../JuceLibraryCode/include_rapt.cpp; sourceTree = SOURCE_ROOT; };
 		D2D4A05C60820DCAB6C16486 /* ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/MiscAudioTests.h */ /* MiscAudioTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MiscAudioTests.h; path = ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/MiscAudioTests.h; sourceTree = SOURCE_ROOT; };
@@ -513,7 +512,6 @@
 		8B733865DD5BE84460F15693 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				CC647231785C19D835E42150,
 				7A4AEC915A393CE8BDEA3AF5,
 				B112FBD07BE0E2AD39D7B1B5,
 				64EFC8BFCD889C05A9321982,

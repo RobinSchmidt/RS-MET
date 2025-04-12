@@ -2,10 +2,6 @@
 // in rapt.h - that's bad - figure out a better solution - maybe define it in the jucer-file
 // when nothing else helps
 
-//#include "HeapAllocationLogger.h" // Must be included before everything else
-// This is under construction - it doesn't work yet. Maybe We should let the user pass allocator
-// objects that can be passed on to the underlying std::vectors
-
 
 #include "../JuceLibraryCode/JuceHeader.h"
 

@@ -2769,9 +2769,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\HeapAllocationLogger.h">
-      <Filter>TestsRosicAndRapt\Source</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Misc\Misc.h">
       <Filter>TestsRosicAndRapt\Source\Misc</Filter>
     </ClInclude>
