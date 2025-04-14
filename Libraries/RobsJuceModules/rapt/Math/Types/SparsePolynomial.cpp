@@ -572,7 +572,9 @@ ToDo:
   function name like rsMaxNorm<TNorm>(TArg x) that returns the maximum norm of the given x, e.g.
   for complex type, it would return max(abs(re), abs(im)) ...but maybe instead of invoking abs, it 
   should actually invoke a single argument variant rsMaxNorm<TNorm>(TArg x) that we may specialize
-  for float, double, complex, etc explicitly
+  for float, double, complex, etc explicitly. Or maybe that's too complicated. Maybe we should just
+  interpret the tolerance as absolute and leave it to client code to set it appropriately, i.e. 
+  relatively to the size of the coeffs.
 
 - Figure out what happens if client code uses negative powers. Currently, there's nothing that
   prevents this and maybe it could even make sense to allow it. But then the notion of degree
@@ -640,5 +642,13 @@ Notes:
 - It might be tempting to write a constructor and/or setup function that takes a dense 
   polynomial, i.e. an object of type rsPolynomial<T>. But I think, that's not a good idea 
   because it would introduce unnecessary coupling.
+
+- I initially considered to add a tolerance to class rsPolynomial, too. But after some further 
+  thought, I now think, it's fine without. Such a tolerance and automatic removal of values below
+  it is a beahvaior that should be resevred to sparse numeric data structures. It may make sense in
+  rsSparseMatrix as well but not so much in dense matrices or dense polynomials. We may sometimes
+  want to clean up a dense polynomial from trailing zero coeffs but in such cases, it's more 
+  appropriate to just pass the tolerance as function parameter to the clean up function. We don't 
+  need it as member variable.
 
 */

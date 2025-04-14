@@ -1,11 +1,14 @@
 #pragma once
 
-// move to somewhere else:
+// A simple
 template<class T>
 bool doNothing(T x)
 {
   return x == x;
 }
+// Maybe move to somewhere else...and maybe rename to something like rsEqualsItself. If the 
+// operator == of type T has any side effects, then this may actually not be 
+
 
 inline void rsPrintLine(const std::string& message)
 {
@@ -74,6 +77,8 @@ inline void rsStaticAssert(bool expression, const char* errorMessage = nullptr)
 #endif
 }
 
+// Sanitization:
+
 /** Checks if the memory addresses of the two given objects are distinct. Can be used to catch 
 erroneous attempts to do some in-place processing where in-place operation is not supported. */
 template<class T1, class T2>
@@ -86,6 +91,16 @@ bool rsAreAddressesDistinct(const T1& x, const T2& y)
 // Maybe rename to rsAreDistinct...but no - that's ambiguous. It could be interpreted as having
 // distict values.
 
+// Maybe move the functions rsIsNaN(), rsIsFiniteNumber(), etc. from BasicFunctions.h to here. Or
+// maybe move all these "sanitization" functions into a file Sanitization.h
+
+// Also interesting:
+// https://stackoverflow.com/questions/1576300/checking-if-a-pointer-is-allocated-memory-or-not
+// https://www.quora.com/Is-there-any-way-to-know-if-a-variable-has-been-allocated-using-new-in-C
+// https://en.wikipedia.org/wiki/PurifyPlus
+// https://en.wikipedia.org/wiki/Valgrind
+// https://www.osc.edu/resources/getting_started/howto/howto_use_address_sanitizer
+// https://learn.microsoft.com/en-us/cpp/sanitizers/asan?view=msvc-170
 
 /*
 Some Notes on hard to catch bugs
