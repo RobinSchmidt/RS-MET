@@ -560,7 +560,8 @@ auto rsMaxNorm(const std::vector<T>& v)
 // needed.
 
 template<class TVal, class TTol> 
-inline bool rsIsNegligible(TVal val, TTol tol)
+//inline bool rsIsNegligible(TVal val, TTol tol)
+inline bool rsIsNegligible(const TVal& val, TTol tol)  // Maybe pass tol via const ref, too
 {
   return rsLessOrEqual(rsMaxNorm(val), tol);
 
