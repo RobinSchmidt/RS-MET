@@ -53,8 +53,9 @@ the prototype value is used to copy the modulus from the prototype into the resu
 template<class T> inline T rsIntValue(int value, T targetTemplate) { return T(value); }
 
 
-template<class T> inline T rsIdentity(  T value) { return value; }
-// identity function
+template<class T> inline T rsIdentity(T value) { return value; }
+// Identity function - todo: take arg by const ref (we want to apply it to "big" types like 
+// rsMatrix, too - so that optimization makes sense).
 
 
 /** Returns true, iff x is equal to zero. */

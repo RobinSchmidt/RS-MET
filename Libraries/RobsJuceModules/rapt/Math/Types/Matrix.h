@@ -1402,7 +1402,7 @@ public:
   bool operator!=(const rsMatrix<T, V>& rhs) const { return !(*this == rhs); }
 
   /** Returns the negative of this matrix. */
-  rsMatrix<T, V> operator-()
+  rsMatrix<T, V> operator-() const
   {
     rsMatrix<T, V> C(this->numRows, this->numCols);
     for(int i = 0; i < this->getSize(); i++)
