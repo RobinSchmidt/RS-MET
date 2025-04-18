@@ -73,24 +73,27 @@ void sampleTailExtenderTest()
 
 
 
-// From: RS-MET\Libraries\RobsJuceModules\rapt\Unfinished\Math\Matrix.cpp
-/*
+
+
+
 template<class T>
-void rsMatrixOld<T>::print()
+void rsPrint(const RAPT::rsMatrixView<T> A)
 {
-  printf("%s %d %s %d %s", "rsMatrixOld - rows: ", data->numRows, " columns:", data->numColumns, "\n");
-  for(int r = 0; r < data->numRows; r++)
+  int M = A.getNumRows();
+  int N = A.getNumColumns();
+
+  printf("%s %d %s %d %s", "rsMatrix - rows: ", M, " columns:", N, "\n");
+  for(int r = 0; r < M; r++)
   {
-    for(int c = 0; c < data->numColumns; c++)
-      printf("%.4f %s", data->m[r][c], "  ");
+    for(int c = 0; c < N; c++)
+      printf("%.4f %s", A(r,c), "  ");
     printf("%s", "\n");
   }
+
+  // ToDo:
+  //
+  // - There isn't any sensible formatting at the moment. We want aligned columns!
 }
-// ToDo: comvert code to work with new rsMatrix
-*/
-
-
-
 
 template<class T>
 void rsPrint(const RAPT::rsComplex<T> z)
@@ -104,6 +107,13 @@ void rsPrint(const RAPT::rsComplex<T> z)
   // - Factor out a function that produces a std::string - maybe call it rsToString()
   //
   // - Give the user some parameters to control the format (precision, etc.)
+  //
+  // - We someday actually want to not directly invoke printf here but intead call another, 
+  //   overloaded rsPrint() function on z.re, r.im to make it it universally useful. For example,
+  //   re,im could be of type rsFraction. There should be all kinds of different overloads of 
+  //   rsPrint (or bette rsToString()) for all sorts of types. The overload resolution should just
+  //   keep invoking overloads until it hits one of the base cases, i.e. an implementation for a
+  //   primitive data type such as int, float, double, etc.
 }
 
 void printTestComplex()
@@ -116,13 +126,18 @@ void printTestComplex()
 
   // ToDo:
   //
-  // - Try it also with float
+  // - Try it also with float. Make the function a template and call it like 
+  //   printTestComplex<float>(), printTestComplex<double>()
 }
 
 void printTestMatrix()
 {
+  using Elem = double;
+  using Mat  = rsMatrix<Elem>;
 
-  int dummy = 0;
+  Mat A(3, 4, {1,2,3, 4,5,6, 7,8,9, 10,11,12});
+
+  rsPrint(A);
 }
 
 void printTests()
@@ -130,6 +145,9 @@ void printTests()
   printTestComplex();
   printTestMatrix();
 }
+
+
+
 
 
 //MemLeakTest memLeakTest;
