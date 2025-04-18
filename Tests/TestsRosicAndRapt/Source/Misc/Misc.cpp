@@ -7,7 +7,7 @@ using namespace rosic;
 #include "../rosic_tests/PortedFromRSLib/Examples/ModalExamples.cpp"
 #include "../rosic_tests/PortedFromRSLib/Examples/SampleMapGenerator.cpp"
 
-// move to testInputCreation
+// Move to TestInputCreation.h/.cpp in rs_testing/TestTools/Utilities:
 std::vector<double> createPluckedString(int numSamples, double frequency, double sampleRate)
 {
   std::vector<double> x(numSamples);
@@ -61,8 +61,74 @@ void sampleTailExtenderTest()
   //ste.setCutoffThresholdInDecibels(-70);
   std::vector<double> y = ste.extendSample(x, fs, 9);
   rosic::writeToMonoWaveFile("TestPluckExtended.wav", &y[0], (int)y.size(), (int)fs, 16);
+}
+
+
+
+
+
+
+
+
+
+
+
+// From: RS-MET\Libraries\RobsJuceModules\rapt\Unfinished\Math\Matrix.cpp
+/*
+template<class T>
+void rsMatrixOld<T>::print()
+{
+  printf("%s %d %s %d %s", "rsMatrixOld - rows: ", data->numRows, " columns:", data->numColumns, "\n");
+  for(int r = 0; r < data->numRows; r++)
+  {
+    for(int c = 0; c < data->numColumns; c++)
+      printf("%.4f %s", data->m[r][c], "  ");
+    printf("%s", "\n");
+  }
+}
+// ToDo: comvert code to work with new rsMatrix
+*/
+
+
+
+
+template<class T>
+void rsPrint(const RAPT::rsComplex<T> z)
+{
+  printf("%s %.5f %s %.5f %s", "z = ", z.re, " + ", z.im, "j\n");
+  // Should eventually go into TestUtilities.h. But currently, we get compilation errors when we 
+  // put it there. Something needs to be changed about the include structure.
+
+  // ToDo:
+  //
+  // - Factor out a function that produces a std::string - maybe call it rsToString()
+  //
+  // - Give the user some parameters to control the format (precision, etc.)
+}
+
+void printTestComplex()
+{
+  using Complex = rsComplex<double>;
+
+  Complex z(3, 2);
+
+  rsPrint(z);
+
+  // ToDo:
+  //
+  // - Try it also with float
+}
+
+void printTestMatrix()
+{
 
   int dummy = 0;
+}
+
+void printTests()
+{
+  printTestComplex();
+  printTestMatrix();
 }
 
 

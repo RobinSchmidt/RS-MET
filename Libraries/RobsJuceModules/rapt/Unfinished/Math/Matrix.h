@@ -1,6 +1,9 @@
 #ifndef RAPT_MATRIX_H_INCLUDED
 #define RAPT_MATRIX_H_INCLUDED
 
+// ToDo: move this file to _Deprecated
+
+
   /** This is a class for representing matrices and doing mathematical operations with them. To 
   make the class fast, no consistency checking is done in the mathematical operators. You must 
   ensure yourself that the input arguments are compatible - for example don't try to add two 
@@ -32,7 +35,7 @@
   */
 
 template<class T>
-class rsMatrixOld  // rename to rsMatrixOld
+class rsMatrixOld
 {
 
 public:

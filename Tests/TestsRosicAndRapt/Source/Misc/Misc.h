@@ -6,6 +6,9 @@
 void sampleTailExtenderTest();
 
 
+void printTests();
+
+
 
 class MemLeakTest
 {

@@ -2,6 +2,8 @@
 #define RAPT_MATRIX_H
 
 // the new version that supports row- and column-major storage
+//
+// ToDo: move this to the unused code folder.
 
 
 /** A class for representing 2x2 matrices. They are treated as a special case because a lot of

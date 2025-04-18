@@ -18,17 +18,17 @@
 
 
 #include "rosic_tests/UnitTestsRosic.h"
-using namespace rotes;  // get rid of this
+using namespace rotes;  // Get rid of this !
 
 
 #include "PerformanceTests/PerformanceTests.h"
+
+
 #include "Misc/Misc.h"  // demos, examples, rendering, ... // todo: make unity build cpp file
 // todo: move all the code into rs_testing module such that it can be compiled as a single 
 // compilation unit -> faster build times for testing
 
 #include "../../../Libraries/RobsJuceModules/romos/TestSuite/TestsMain.h"
-
-//#include "TemplateInstantiations.h" // nope! we do this in rs_testing
 
 
 // crash (access violation) if runAllUnitTests and envelopeDeBeating are run one after another
@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
   // routines for the unit tests here.
 
 
-  // tempoarary throw-away-code:
+  // temporary throw-away-code:
   //testCrossoverNewVsOld();
 
   // todo: 
@@ -62,8 +62,12 @@ int main(int argc, char* argv[])
   //  explained here https://www.youtube.com/watch?v=RoVD6zlftF0 this will help to detect bugs 
   //  related to uninitialized memory
 
-  //-----------------------------------------------------------------------------------------------
-  // Unit tests:
+
+
+
+  //===============================================================================================
+  // Unit Tests:
+
   bool ok = true;
   //ok &= runUnitTestsRapt();
   //ok &= runUnitTestsRosic();
@@ -92,8 +96,17 @@ int main(int argc, char* argv[])
   //filterUnitTests();  // dito (?)
 
 
+
   //===============================================================================================
-  // RAPT tests:
+  // Tests for the test infrastructure:
+
+  printTests();   // Prints numbers, matrices, etc.
+
+
+
+
+  //===============================================================================================
+  // RAPT Experiments
 
   //-----------------------------------------------------------------------------------------------
   // Performance tests:
@@ -306,13 +319,16 @@ int main(int argc, char* argv[])
   // Image processing:
   //imageScaling();
 
-
-
-  // just for fun (todo: move to research repo):
+  // Just for fun (TODO: move to research repo):
   //groupString();
   //primeAlternatingSums();
   //divisibility();
   //arithmeticDerivative();
+
+
+
+
+
 
   // third party code:
   //sampleTailExtenderTest();
