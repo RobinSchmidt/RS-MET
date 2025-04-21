@@ -16,7 +16,8 @@ RAPT::rsMatrix<T> rsLinearAlgebraNew::inverse(const RAPT::rsMatrixView<T>& A)
   int N = A.getNumRows();
   RAPT::rsMatrix<T> tmp(N, N, A.getDataPointerConst()), E(N, N);
   E.setToIdentity(A(0,0));
-  solve(tmp, E, E);
+  bool ok = solve(tmp, E, E);
+  rsAssert(ok, "Matrix is singular and can't be inverted.");
   return E; 
 }
 
