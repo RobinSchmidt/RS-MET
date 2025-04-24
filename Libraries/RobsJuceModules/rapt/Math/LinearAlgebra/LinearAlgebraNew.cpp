@@ -61,7 +61,7 @@ void rsLinearAlgebraNew::solveTridiagonal(int N, const T* L, T* D, const T* U, T
   //    https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm
 
   // ToDo:
-  // -Can x and b be the same? I think so. -> document
+  // -Can x and b be the same? I think so. If so, we can use the algo in place. -> Document that.
   // -Make a version that solves the system for two (or maybe M?) right-hand-sides simultaneously. 
   //  This is needed for the Sherman-Morrison-Woodbury formula (for cubic splines with periodic 
   //  boundary conditions)
@@ -92,7 +92,9 @@ template<class T>
 void rsLinearAlgebraNew::solveWrappedTridiagonal(int N, const T* L, T* D, const T* U, T* x, T* b)
 {
   rsAssert(x != b, "Does not work in place: x and b must be distinct.");
-  // actually, we need some sort of rsArrayTools::noOverlap(x, N, b, N) function
+  // Actually, we need some sort of rsArrayTools::noOverlap(const T* x, int Nx, const T* y, int Ny)
+  // function that we can call as rsArrayTools::noOverlap(x, N, b, N) here. Or maybe it should be
+  // !rsArrayTools::hasOverlap(x, N, b, N) or ..areOverlapping()
 
   // Modify the diagonal of the matrix:
   D[0]   -= U[N-1];

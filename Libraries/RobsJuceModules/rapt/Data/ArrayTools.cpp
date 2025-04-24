@@ -1520,23 +1520,28 @@ void rsArrayTools::weightedSum(const T *buffer1, const T *buffer2, T *result, in
 
 /*
 
-todo:
-isFreeOf - like contains but inverse
-containsOnce - finds element like contains and then uses isFreeOf on rest of array
-isPermutationOf - uses containsOnce on the first array for each element of a second array
+ToDo:
 
-maybe make a class rsVectorTools that just contains convenience functions for the functions from
-rsArrayTools, such that we don't need the ugly &b[0] syntax and maybe can get rid of the length
-parameters (because vectors know their lengths)...but maybe it should also include
+- isFreeOf - like contains but inverse
 
+- containsOnce - finds element like contains and then uses isFreeOf on rest of array
 
-maybe for more ideas what could be useful, see:
+- isPermutationOf - uses containsOnce on the first array for each element of a second array
 
+- maybe make a class rsVectorTools that just contains convenience functions for the functions from
+  rsArrayTools, such that we don't need the ugly &b[0] syntax and maybe can get rid of the length
+  parameters (because vectors know their lengths)...but maybe it should also include
 
-https://www.youtube.com/watch?v=h4Jl1fk3MkQ
+- Maybe use the restrict keyword for array parameters to functions where possible. This can help 
+  the compiler to optimize the code better. See:
+  https://en.cppreference.com/w/c/language/restrict
+  mystran recommends this here:
+  https://www.kvraudio.com/forum/viewtopic.php?p=8030402#p8030402
 
-https://www.youtube.com/watch?v=2olsGf6JIkU
-https://www.youtube.com/watch?v=pUEnO6SvAMo
+- Maybe for more ideas what could be useful, see:
+  https://www.youtube.com/watch?v=h4Jl1fk3MkQ
+  https://www.youtube.com/watch?v=2olsGf6JIkU
+  https://www.youtube.com/watch?v=pUEnO6SvAMo
 
 
 

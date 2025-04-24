@@ -185,7 +185,10 @@ Ideas:
 - How about negative moduli?
 
 - Currently, the arithmetic operations make sense only when the two operands have the same modulus
-  -Generalize this to a sort of "multi-modular" or "mixed-modular" arithmetic
+  -Generalize this to a sort of "multi-modular" or "mixed-modular" arithmetic. Ah - the term 
+   "multi-modular" is already taken, see:
+   https://en.wikipedia.org/wiki/Residue_number_system
+   https://en.wikipedia.org/wiki/Modular_arithmetic#Residue_systems
   -Define for two moduli m1, m2: they are k-compatible if any value in modulus m1 or m2 can also be 
    interpreted as an unreduced value in modulus k. That means that m1, m2 must be divisible by k. 
    The highest compatibility number k for m1,m2 is kMax: gcd(m1, m2) ...verify
@@ -272,7 +275,17 @@ ToDo:
   ...maybe run correlation filters with various patterns over it...especially the 
   [[0,1,0],[1,0,1],[0,1,0]] pattern seems to occur a lot
 
-
+- Maybe implement a residue number system based on class rsModularInteger. See: 
+  https://www.youtube.com/watch?v=NpAJLWEnSmM
+  In such number systems, multiplications can be fast because we don't need carries or addition of
+  partial results. We just need to multiply digit-wise. Adding is equally simple. Just add digit 
+  wise. I'm not sure about division, though (i.e. finding inverse elements). It might be 
+  interesting to explore, if we can do an FFT like algorithm on such numbers. I think, we would 
+  need to find roots of unity of various orders. Figure out!
+  See also:
+  https://en.wikipedia.org/wiki/Residue_number_system
+  https://en.wikipedia.org/wiki/Covering_system
+  https://en.wikipedia.org/wiki/Reduced_residue_system
 
 
 Finding n-th roots of unity:

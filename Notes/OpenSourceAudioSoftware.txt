@@ -321,6 +321,12 @@ https://github.com/apmastering/Saturation
 https://github.com/apmastering/CompView
 -Plugins for mastering by Alain Paul
 
+Signalizer:
+https://bitbucket.org/Mayae/signalizer/src/master/
+-Signal analyzer plugin
+
+
+
 
 ----------------------------------------------------------------------------------------------------
 Frameworks
@@ -540,6 +546,13 @@ https://github.com/HackAudio/PointToPoint_LT
  ..BUT: I don't really see any source code in the repo. There are some precompiled library files, 
   though - so maybe it's not really open source?
 
+cpl
+https://bitbucket.org/Mayae/cpl/src/master/
+-cross platform library (temporary name). The scope of this library is dsp-oriented cross platform 
+ programs / audio plugins, with built in support for most generic GUI along with a couple of other 
+ related classes (presets, etc.).
+-by Janus Thorborg (author of APE)
+
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:
 
@@ -600,7 +613,7 @@ https://github.com/ghaerr/agg-2.6
 -Rasterization based 2D graphics rendering library.
 
 ----------------------------------------------------------------------------------------------------
-Misc
+Audio Scripting
 
 Audio Programming Environment:
 https://www.jthorborg.com/ape.html
@@ -608,6 +621,7 @@ https://bitbucket.org/Mayae/ape/src/master/
 -An audio plugin, that allows to directly program C++ DSP in real time.
 -https://www.kvraudio.com/forum/viewtopic.php?t=402054
  https://www.kvraudio.com/forum/viewtopic.php?f=33&t=560622
+ https://bitbucket.org/Mayae/ape-snippets/src/master/
 
 Cmajor:
 https://github.com/cmajor-lang
@@ -626,6 +640,18 @@ https://github.com/supercollider/supercollider
 CSound:
 https://csound.com/
 -sound and music computing system
+
+Pure Data (PD):
+https://puredata.info/downloads
+https://msp.ucsd.edu/software.html
+-Visual audio programming environment (like max/msp)
+
+Camomile:
+https://github.com/pierreguillot/Camomile
+-Plugin for using PD patches in a DAW
+
+----------------------------------------------------------------------------------------------------
+Misc
 
 Tracktion Engine
 https://www.tracktion.com/develop/tracktion-engine
@@ -725,6 +751,7 @@ https://www.carvetoy.online/
 
 ----------------------------------------------------------------------------------------------------
 Unsorted:
+
 
 
 https://github.com/jariseon/amame
