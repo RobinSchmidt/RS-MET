@@ -428,7 +428,7 @@ int main(int argc, char* argv[])
   //delayLines();
   //twoPoleAllpassDelays();
   //dampedCombAllpasses();
-  //feedbackDelayNetworks();
+  feedbackDelayNetworks();
   //allpassFDN();                  // Under construction
 
   // Filter:

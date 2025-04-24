@@ -2968,11 +2968,8 @@ bool testSparsePolynomial()
   //   rsFraction<int>.
 }
 
-
 bool testSparseRationalFunction()
 {
-  // Under construction...
-
   bool ok = true;
 
   using Real    = double;
@@ -3031,11 +3028,10 @@ bool testSparseRationalFunction()
 
   rs = RatS(0); ok &= rs.isZero(); 
   // Did formerly trigger an rsAssert in rs.isZero() due to a bug in the RatS(0) constructor that 
-  // takes a constant c of type T. We did not special case the situation when the constant c is 
+  // takes a constant c of type T. I did not special case the situation when the constant c is 
   // zero - but this is needed because a zero sparse polynomial is canonically represented as empty
   // and not as explicit, single 0 * x^0 term. That bug is fixed now and this test here shall 
   // henceforth assure that this remains so.
-
 
   return ok;
 
@@ -3054,6 +3050,38 @@ bool testSparseRationalFunction()
   //   ...or maybe put the ...Deg params for the degree last and make them optional defaulting
   //   to -1 which is used as code for: leave degree as is.
 }
+
+
+
+bool testSparseRatFuncLinAlg()
+{
+  // Under construction. 
+  
+  // We test linear algebra with matrices of sparse rational functions.
+
+  bool ok = true;
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  using Func = rsSparseRationalFunction<Real, Real>;  // Sparse rational functions
+
+  Real tol = 1.e-14;
+
+
+
+  return ok;
+
+
+
+  // ToDo:
+  //
+  // - Create matrix A and vector x of functions and do a matrix-vector multiply to form b = A*x.
+  //   then retrieve A via a linear solver. Do this for different dimensionalities
+  //
+  // - Create 1x1 and 2x2 matrices of rational functions, invert and verify that matrix * inverse
+  //   gives the idenity matrix
+}
+
 
 
 
@@ -3100,6 +3128,7 @@ bool testPolynomial()
 
   ok &= testSparsePolynomial();
   ok &= testSparseRationalFunction();
+  ok &= testSparseRatFuncLinAlg();
 
 
   ok &= testBivariatePolynomial();
