@@ -114,7 +114,7 @@ https://github.com/BespokeSynth/BespokeSynth
 PlugData:
 https://plugdata.org/
 https://github.com/plugdata-team/plugdata
--Plugin for the "Pure Data" graphic audio programming languange
+-Plugin for the "Pure Data" (PD) graphic audio programming languange
 
 ZynAddSubFX / Zyn-Fusion:
 https://zynaddsubfx.sourceforge.io/
@@ -192,7 +192,10 @@ HISE:
 https://hise.dev/
 https://github.com/christophhart/HISE/
 -Mostly a sampler but has also synthesizer features. Well, actually it's more like a framework to 
- build one's own (sample-based) instruments. Dual licensed (GPL + commercial)
+ build one's own (sample-based) instruments. 
+-Dual licensed (GPL + commercial)
+-Has javascript based scripting engine with facilities to import/export C++, so it could 
+ also be listed in the "Audio Scripting" category
 
 JC-303
 https://github.com/midilab/jc303
@@ -205,6 +208,13 @@ https://github.com/Archie3d/aeolus_plugin
 Hydrogen:
 https://github.com/hydrogen-music/hydrogen
 -Drum machine (sequencer and sampler/synth)
+
+Actuate:
+https://github.com/ardura/Actuate
+https://github.com/ardura/actuate_presets
+-Hybrid synthesizer (subtractive, additive, granular, sample-based)
+-written in Rust
+
 
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
@@ -321,11 +331,69 @@ https://github.com/apmastering/Saturation
 https://github.com/apmastering/CompView
 -Plugins for mastering by Alain Paul
 
+Ardura Effect plugins:
+https://github.com/ardura/Subhoofer         Bass enhancer
+https://github.com/ardura/Interleaf         Equalizer
+https://github.com/ardura/Canopy-Reverb     Reverb
+https://github.com/ardura/Duro-Console      Emulation of mixing console processing
+
+
+----------------------------------------------------------------------------------------------------
+Analysis plugins
+
 Signalizer:
 https://bitbucket.org/Mayae/signalizer/src/master/
 -Signal analyzer plugin
 
+Scrollscope:
+https://github.com/ardura/Scrollscope
+-Scrolling oscilloscope in rust
 
+
+----------------------------------------------------------------------------------------------------
+MIDI plugins
+
+B-Step
+https://github.com/surge-synthesizer/b-step
+
+
+----------------------------------------------------------------------------------------------------
+Audio Scripting
+
+Audio Programming Environment:
+https://www.jthorborg.com/ape.html
+https://bitbucket.org/Mayae/ape/src/master/
+-An audio plugin, that allows to directly program C++ DSP in real time.
+-https://www.kvraudio.com/forum/viewtopic.php?t=402054
+ https://www.kvraudio.com/forum/viewtopic.php?f=33&t=560622
+ https://bitbucket.org/Mayae/ape-snippets/src/master/
+
+Cmajor:
+https://github.com/cmajor-lang
+-A C/C++ like domain specific language (DSL) for audio DSP.
+
+Faust: 
+https://github.com/grame-cncm/faust
+https://faust.grame.fr/
+-Faust (Functional Audio Stream) is a functional programming language for sound synthesis and audio 
+ processing with a strong focus on the design of synthesizers, musical instruments, audio effects
+
+SuperCollider:
+https://github.com/supercollider/supercollider
+-platform for audio synthesis and algorithmic composition
+
+CSound:
+https://csound.com/
+-sound and music computing system
+
+Pure Data (PD):
+https://puredata.info/downloads
+https://msp.ucsd.edu/software.html
+-Visual audio programming environment (like max/msp)
+
+Camomile:
+https://github.com/pierreguillot/Camomile
+-Plugin for using PD patches in a DAW
 
 
 ----------------------------------------------------------------------------------------------------
@@ -612,43 +680,6 @@ Anti Grain Geometry
 https://github.com/ghaerr/agg-2.6
 -Rasterization based 2D graphics rendering library.
 
-----------------------------------------------------------------------------------------------------
-Audio Scripting
-
-Audio Programming Environment:
-https://www.jthorborg.com/ape.html
-https://bitbucket.org/Mayae/ape/src/master/
--An audio plugin, that allows to directly program C++ DSP in real time.
--https://www.kvraudio.com/forum/viewtopic.php?t=402054
- https://www.kvraudio.com/forum/viewtopic.php?f=33&t=560622
- https://bitbucket.org/Mayae/ape-snippets/src/master/
-
-Cmajor:
-https://github.com/cmajor-lang
--A C/C++ like domain specific language (DSL) for audio DSP.
-
-Faust: 
-https://github.com/grame-cncm/faust
-https://faust.grame.fr/
--Faust (Functional Audio Stream) is a functional programming language for sound synthesis and audio 
- processing with a strong focus on the design of synthesizers, musical instruments, audio effects
-
-SuperCollider:
-https://github.com/supercollider/supercollider
--platform for audio synthesis and algorithmic composition
-
-CSound:
-https://csound.com/
--sound and music computing system
-
-Pure Data (PD):
-https://puredata.info/downloads
-https://msp.ucsd.edu/software.html
--Visual audio programming environment (like max/msp)
-
-Camomile:
-https://github.com/pierreguillot/Camomile
--Plugin for using PD patches in a DAW
 
 ----------------------------------------------------------------------------------------------------
 Misc
@@ -752,6 +783,11 @@ https://www.carvetoy.online/
 ----------------------------------------------------------------------------------------------------
 Unsorted:
 
+https://github.com/stevefolta/SFZero
+https://github.com/stevefolta/sfzq
+https://github.com/stevefolta/sf2dump
+https://github.com/stevefolta/ardour2reaper     Converter Ardour -> Reaper
+https://github.com/stevefolta/gig2sfz           Converter gigasampler -> sfz
 
 
 https://github.com/jariseon/amame
@@ -859,6 +895,9 @@ https://librosa.org/
 
 ----------------------------------------------------------------------------------------------------
 Resources
+
+https://clapdb.tech/
+-Database of CLAP plugins
 
 https://en.wikipedia.org/wiki/Comparison_of_free_software_for_audio
 -List of free and open source audio software

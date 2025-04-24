@@ -390,6 +390,16 @@ RAPT::rsLinearAlgebraNew::inverse(
   const RAPT::rsMatrixView<RAPT::rsSparseTransferFunction<double, double>>& A);
 
 
+//template RAPT::rsMatrix<RAPT::rsSparseRationalFunction<double, double>> 
+//RAPT::rsLinearAlgebraNew::inverse(
+//  const RAPT::rsMatrixView<RAPT::rsSparseRationalFunction<double, double>>& A);
+// Doesn't compile yet. I think, we need to define rsIsBetterPivot, etc. for 
+// rsSparseRationalFunction just like for rsSparseTransferFunction. Maybe we can then remove the
+// definitions for rsSparseTransferFunction because the baseclass versions can be used?
+
+// The verbosity of this boilerplate for the instantiations is getting abit out of hand here. Can
+// we do better?
+
 
 
 template double RAPT::rsLinearAlgebraNew::determinant(const RAPT::rsMatrixView<double>& A);

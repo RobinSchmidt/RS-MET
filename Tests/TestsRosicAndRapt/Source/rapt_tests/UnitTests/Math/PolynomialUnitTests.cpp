@@ -3104,6 +3104,8 @@ bool testSparseRatFuncLinAlg()
   //LA::solve(A, y, b); // Doesn't compile
 
 
+  //Mat Ai = LA::inverse(A);
+
 
 
 
