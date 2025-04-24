@@ -43,12 +43,26 @@ public:
 
   rsSparseRationalFunction(
     const SparsePoly& numerator, const SparsePoly& denominator) 
-    : num(numerator), den(denominator)  {}
+    : num(numerator), den(denominator)  
+  {
+  
+  }
+  // Maybe it should take an (optional?) tolerance parameter and call canonicalize()
+
 
   // Maybe implement it for const rsSparsePolynomial<T>&&, too. Or maybe that one is then enough, 
   // i.e. can also accept lvalue references? I think, an rvalue reference parameter can accept 
   // both kinds of arguments: rvalue- and lvalue references but lvalue reference parameters can
   // only accept lvalue reference arguments. Verify!
+
+  rsSparseRationalFunction(
+    const std::vector<T>& numeratorCoeffs,
+    const std::vector<T>& denominatorCoeffs,
+    const TTol& tolerance)
+    : num(numeratorCoeffs, tolerance), den(denominatorCoeffs, tolerance)
+  {
+
+  }
 
 
   //-----------------------------------------------------------------------------------------------

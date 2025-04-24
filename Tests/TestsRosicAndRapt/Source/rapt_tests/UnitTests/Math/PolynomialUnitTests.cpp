@@ -3052,6 +3052,19 @@ bool testSparseRationalFunction()
 }
 
 
+/*
+template<class T, class TTol>
+void rsRandomizeCoeffs(rsSparseRationalFunction<T, TTol>* A, T minVal, T maxVal, int seed)
+{
+  rsNoiseGenerator<T> prng;
+  prng.setRange(minVal, maxVal);
+  prng.setSeed(seed);
+
+  //rsSparsePolynomial<T, TTol> num = A.get
+
+}
+*/
+
 
 bool testSparseRatFuncLinAlg()
 {
@@ -3066,6 +3079,11 @@ bool testSparseRatFuncLinAlg()
   using Func = rsSparseRationalFunction<Real, Real>;  // Sparse rational functions
 
   Real tol = 1.e-14;
+
+  // Create some rational function objects that we can use a matrix elements:
+  Func a11( { 1,-3,2 }, { -5,4,3,-2 }, tol);
+
+
 
 
 
