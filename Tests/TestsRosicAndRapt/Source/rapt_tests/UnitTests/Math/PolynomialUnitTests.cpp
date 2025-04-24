@@ -3069,19 +3069,39 @@ void rsRandomizeCoeffs(rsSparseRationalFunction<T, TTol>* A, T minVal, T maxVal,
 bool testSparseRatFuncLinAlg()
 {
   // Under construction. 
-  
+
   // We test linear algebra with matrices of sparse rational functions.
 
   bool ok = true;
 
   using Real = double;
-  using Vec  = std::vector<Real>;
+  //using Vec  = std::vector<Real>;
   using Func = rsSparseRationalFunction<Real, Real>;  // Sparse rational functions
+  using Mat  = rsMatrix<Func>;
+  using LA   = rsLinearAlgebraNew;
+  //using Vec  = std::vector<Func>;
 
   Real tol = 1.e-14;
 
   // Create some rational function objects that we can use a matrix elements:
-  Func a11( { 1,-3,2 }, { -5,4,3,-2 }, tol);
+  Func a11({ +1,-3,+2    }, { -5,+4,+3,-2 }, tol);
+  Func a12({ +2,+4,-5,+3 }, { -3,-4,+4,+5 }, tol);
+  Func a21({ +4,+3,-2    }, { +5,-5,+2,+2 }, tol);
+  Func a22({ -2,+3       }, { +2,+2,-3 },    tol);
+
+  Func x1({ +1,-2 }, {-2,+3   }, tol);
+  Func x2({ +1,-3 }, {+5,+4,-1}, tol);
+
+  // Establish matrix and vector:
+  Mat A(2, 2, { a11,a12, a21,a22 });
+  Mat x(2, 1, { x1, x2 });
+
+  // Compute the right hand side:
+  Mat b = A*x;
+
+  // Try to reconstruct x (and call that result y):
+  Mat y(2, 1);
+  //LA::solve(A, y, b); // Doesn't compile
 
 
 
