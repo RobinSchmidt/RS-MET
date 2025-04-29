@@ -1097,18 +1097,26 @@ void MultiAnalyzerModuleEditor::updateSubEditorVisibilitiesAndTabButtonStates()
 }
 
 
-
+//=================================================================================================
 /*
 
-ToDo:
+Ideas:
 
--Provide better window functions: 
- -flat-top window, i.e. spectrally flat top - to get more accurate peak amplitudes even when the input 
-  freq is away from the bin center
- -Gaussian
- -Use spectral peak estimation (fit a quadratic) - should wokr best with Gaussina window, i guess.
+- Provide better window functions: 
 
--Implement views for cross-sprctrum and coherence (see MDFT pg. 188, 193) for showing stereo-width as
- function of frequency.
+  - Flat-top window, i.e. spectrally flat top - to get more accurate peak amplitudes even when the 
+    input freq is away from the bin center
+
+  - Gaussian
+
+- Use spectral peak estimation (fit a quadratic) - should work best with Gaussian window, I guess.
+
+- Implement views for cross-spectrum and coherence (see MDFT pg. 188, 193) for showing stereo-width
+  as function of frequency.
+
+- Maybe add left and right spectrum in the complex domain and take the magnitude of that. Then 
+  divide by the average of the magintudes of left and right channel for normalization. This should
+  give a sort of cross-correlation value between left and right channel.
+
 
 */
