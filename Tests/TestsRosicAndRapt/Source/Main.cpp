@@ -208,9 +208,9 @@ int main(int argc, char* argv[])
   //biquadStability();
   //biquadTail();
   //biquadModulation();            // compares modulation properties of various biquad structures
-  //brickwallAndAllpass();         // stub
+  brickwallDeRinging();         // stub
   //complementaryFiltersIIR();
-  engineersFilterRingResp();         // ringing response (experimental idea)
+  ringingResponses();
   //engineersFilterFreqResps();
   //engineersFilterFreqRespsMeasured();  // Measured freq responses - the computated ones may lie!
   //engineersFilterMethodsComparison();

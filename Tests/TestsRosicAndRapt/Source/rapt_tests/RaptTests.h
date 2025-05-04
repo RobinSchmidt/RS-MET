@@ -16,7 +16,7 @@ void bandSplittingTreeAlgo();
 void bandSplitFreqResponses();
 void complementaryFiltersIIR();
 void firstOrderFilters();
-void engineersFilterRingResp();
+void ringingResponses();
 void engineersFilterFreqResps();
 void engineersFilterFreqRespsMeasured();
 void engineersFilterMethodsComparison();

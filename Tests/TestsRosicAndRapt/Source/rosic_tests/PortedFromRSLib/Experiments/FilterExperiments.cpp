@@ -1235,12 +1235,10 @@ void biquadModulation()
   // - Integrate the filter into the sampler. It seems to be the best default choice
 }
 
-void brickwallAndAllpass()
+void brickwallThenAllpass()
 {
-  // Under construction - not yet very far - just a stub, actually
-
-  // We try to combine a brickwall lowpass filter (uses for anti-aliasing) with an allpass with the
-  // goal of reducing the ripple.
+  // We try to combine a brickwall lowpass filter (uses for anti-aliasing) with an allpass in 
+  // seriers with the goal of reducing the ringing. It doesn't seem to work, though. 
 
   double sampleRate   = 44100;
   double oversampling = 10.0;  // Oversampling factor
@@ -1385,6 +1383,59 @@ void brickwallAndAllpass()
   //  audible range - but in downsampling, it will be close to the target Nyquist freq anyway. The
   //  maximum overshoot might be more important for downstream DSP processes like peak limiters.
   //  
+}
+
+void brickwallPlusBandpass()
+{
+  // Here, we try a parallel connection of f brickwall lowpass filter with an allpass filter tuned
+  // to the ringing frequency but phase adjusted such that it cancels the ringing of the lowpass.
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  using EF   = RAPT::rsEngineersFilter<Real, Real>;
+  using PTD  = rsPrototypeDesigner<Real>;
+  using IIRD = rsInfiniteImpulseResponseDesigner<Real>;
+
+  Real sampleRate = 48000;
+  Real cutoff     =   500;
+  int  order      =     8;
+  int  N          =  5000;   // Number of samplese
+
+  // Create the lowpass:
+  EF lpf;
+  lpf.setApproximationMethod(PTD::ELLIPTIC);
+  //flt.setApproximationMethod(PTD::INVERSE_CHEBYCHEV);
+  lpf.setSampleRate(sampleRate);
+  lpf.setFrequency(cutoff);
+  lpf.setMode(IIRD::LOWPASS);
+  lpf.setRipple(1.0);
+  lpf.setStopbandRejection(80.0); 
+  lpf.setPrototypeOrder(order);
+
+  Vec hL = impulseResponse(lpf, N, 1.0);
+
+
+  rsPlotVectors(hL);
+
+
+  int dummy = 0;
+
+  // ToDo:
+  //
+  // - Adjust the phase of the mixed in bandpass signal by a mix of using the phase parameter of a
+  //   resonator and a delayline. Maybe use some zeros around the bandpass freq to limit the 
+  //   frequency range further
+}
+
+void brickwallDeRinging()
+{
+  // We try various ways of removing or reducing the time domain ringing of steep brickwall 
+  // lowpass filters.
+
+  //brickwallThenAllpass();  // Doesn't really work well
+  brickwallPlusBandpass();
+
+
 }
 
 

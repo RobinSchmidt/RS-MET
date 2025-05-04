@@ -1201,10 +1201,10 @@ void engineersFilterRingResp3()
   //  an idea and I'm not sure, if it's a good one).
 }
 
-void engineersFilterRingResp()  // Rename to ringingResponses
+void ringingResponses()
 {
   engineersFilterRingResp1(); 
-  engineersFilterRingResp2();  // maybe rename to BiShelfRingResp
+  engineersFilterRingResp2();    // maybe rename to BiShelfRingResp
   engineersFilterRingResp3();
 
 
