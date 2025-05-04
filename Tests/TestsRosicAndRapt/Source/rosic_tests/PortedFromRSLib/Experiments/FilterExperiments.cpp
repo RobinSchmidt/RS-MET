@@ -1430,18 +1430,29 @@ void brickwallPlusBandpass()
   Vec hL1 = impulseResponse(lpf, N, 1.0);
   Vec hB1 = impulseResponse(bpf, N, 1.0);
   Vec h1  = hL1 + hB1;                          // ToDo: maybe scale hB by a factor
-  rsPlotVectors(hL1, hB1);                      // LP and BP response
-  rsPlotVectors(hL1, hB1, h1);                  // LP, BP and sum
+  //rsPlotVectors(hL1, hB1);                      // LP and BP response
+  //rsPlotVectors(hL1, hB1, h1);                  // LP, BP and sum
   //rsPlotVectors(h1);                            // Sum only
-  rsPlotVectors(hL1, h1);                       // LP and sum
+  //rsPlotVectors(hL1, h1);                       // LP and sum
   // BP needs a bit of delay. Try using an actual delay or some additional filter. Maybe allpass,
   // maybe another bandpass, maybe a lowpass, maybe a highpass. Some experimentation is needed.
+
+  // Apply the bandpass to the impulse response of the bandpass to create a 4th order bandpass 
+  // (series of two equal bandpasses):
+  bpf.setupBandpassPeak(wc, 0.125*Q);
+  Vec hB2 = filterResponse(bpf, N, hB1);
+  Vec h2  = hL1 + hB2; 
+  rsPlotVectors(hL1, hB1, hB2);
+  rsPlotVectors(hL1, h2);
+  // The bandpass needs a lower Q when we use two of them in series. But maybe it's enough when 
+  // one of them has lower Q? ...yeah...done - It looks OK.
+
 
 
   // Observations:
   //
   // - With an elliptic lowpass at 500 Hz, 8th order, ripple = 1.0, rejection = 80, a 2nd order 
-  //   bandpass with Q = 24 seems to work well. There's no delay yet - but using some could further
+  //   bandpass with Q = 25 seems to work well. There's no delay yet - but using some could further
   //   improve the result. The bandpass phase is always a bit too early.
   //
   //
@@ -1462,6 +1473,9 @@ void brickwallPlusBandpass()
   // - Figure out if using a parallel bandpass is equivalent to using a notch in series. Rationale:
   //   A notch is just a bandpass plus a direct path, I think. At least, that's true for a 2nd 
   //   order bandpass/notch.
+  //
+  // - Maybe when tweaking the parameters, focus not on supressing the late ringing but the early
+  //   ringing where the ringing is still loud.
 }
 
 void brickwallDeRinging()
