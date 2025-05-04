@@ -1399,7 +1399,7 @@ void brickwallPlusBandpass()
 
   Real sampleRate = 48000;
   Real cutoff     =   500;
-  Real Q          =    24.0;   // Quality factor for the bandpass
+  Real Q          =    25.0;   // Quality factor for the bandpass
   int  order      =     8;
   int  N          =  5000;     // Number of samples
 
@@ -1431,7 +1431,7 @@ void brickwallPlusBandpass()
   Vec hB1 = impulseResponse(bpf, N, 1.0);
   Vec h1  = hL1 + hB1;                          // ToDo: maybe scale hB by a factor
   rsPlotVectors(hL1, hB1);                      // LP and BP response
-  //rsPlotVectors(hL1, hB1, h1);                  // LP, BP and sum
+  rsPlotVectors(hL1, hB1, h1);                  // LP, BP and sum
   //rsPlotVectors(h1);                            // Sum only
   rsPlotVectors(hL1, h1);                       // LP and sum
   // BP needs a bit of delay. Try using an actual delay or some additional filter. Maybe allpass,
