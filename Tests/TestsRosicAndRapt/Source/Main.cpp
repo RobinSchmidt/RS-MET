@@ -210,7 +210,7 @@ int main(int argc, char* argv[])
   //biquadModulation();            // compares modulation properties of various biquad structures
   brickwallDeRinging();         // stub
   //complementaryFiltersIIR();
-  ringingResponses();
+  //ringingResponses();
   //engineersFilterFreqResps();
   //engineersFilterFreqRespsMeasured();  // Measured freq responses - the computated ones may lie!
   //engineersFilterMethodsComparison();

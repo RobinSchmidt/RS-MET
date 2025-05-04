@@ -1399,7 +1399,7 @@ void brickwallPlusBandpass()
 
   Real sampleRate = 48000;
   Real cutoff     =   500;
-  Real Q          =    20.0;   // Quality factor for the bandpass
+  Real Q          =    24.0;   // Quality factor for the bandpass
   int  order      =     8;
   int  N          =  5000;     // Number of samples
 
@@ -1413,11 +1413,12 @@ void brickwallPlusBandpass()
   // Create the lowpass:
   EF lpf;
   lpf.setApproximationMethod(PTD::ELLIPTIC);
-  //flt.setApproximationMethod(PTD::INVERSE_CHEBYCHEV);
+  //lpf.setApproximationMethod(PTD::INVERSE_CHEBYCHEV);
   lpf.setSampleRate(sampleRate);
   lpf.setFrequency(cutoff);
   lpf.setMode(IIRD::LOWPASS);
   lpf.setRipple(1.0);
+  //lpf.setRipple(0.1);
   lpf.setStopbandRejection(80.0); 
   lpf.setPrototypeOrder(order);
 
@@ -1426,13 +1427,24 @@ void brickwallPlusBandpass()
   bpf.setupBandpassPeak(wc, Q);
 
   // Create and plot the impulse responses:
-  Vec hL = impulseResponse(lpf, N, 1.0);
-  Vec hB = impulseResponse(bpf, N, 1.0);
-  Vec h  = hL + hB;                          // ToDo: maybe scale hB by a factor
-  rsPlotVectors(hL, hB, h);
-  rsPlotVectors(h);
+  Vec hL1 = impulseResponse(lpf, N, 1.0);
+  Vec hB1 = impulseResponse(bpf, N, 1.0);
+  Vec h1  = hL1 + hB1;                          // ToDo: maybe scale hB by a factor
+  rsPlotVectors(hL1, hB1);                      // LP and BP response
+  //rsPlotVectors(hL1, hB1, h1);                  // LP, BP and sum
+  //rsPlotVectors(h1);                            // Sum only
+  rsPlotVectors(hL1, h1);                       // LP and sum
+  // BP needs a bit of delay. Try using an actual delay or some additional filter. Maybe allpass,
+  // maybe another bandpass, maybe a lowpass, maybe a highpass. Some experimentation is needed.
 
 
+  // Observations:
+  //
+  // - With an elliptic lowpass at 500 Hz, 8th order, ripple = 1.0, rejection = 80, a 2nd order 
+  //   bandpass with Q = 24 seems to work well. There's no delay yet - but using some could further
+  //   improve the result. The bandpass phase is always a bit too early.
+  //
+  //
   // ToDo:
   //
   // - Adjust the phase of the mixed in bandpass signal by a mix of using the phase parameter of a
@@ -1442,6 +1454,14 @@ void brickwallPlusBandpass()
   // - Maybe use some zeros around the bandpass freq to limit the  frequency range further. 
   //
   // - Try using a 4th order bandpass to get a smoother attack
+  //
+  // - Plot frequency responses of lowpass, bandpass and resulting filter.
+  //
+  // - Try different lowpasses (Cheby2, Butterworth)
+  //
+  // - Figure out if using a parallel bandpass is equivalent to using a notch in series. Rationale:
+  //   A notch is just a bandpass plus a direct path, I think. At least, that's true for a 2nd 
+  //   order bandpass/notch.
 }
 
 void brickwallDeRinging()
