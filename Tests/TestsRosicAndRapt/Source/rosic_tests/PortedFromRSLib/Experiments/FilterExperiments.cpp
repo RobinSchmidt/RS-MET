@@ -1399,7 +1399,7 @@ void brickwallPlusBandpass()
 
   Real sampleRate = 48000;
   Real cutoff     =   500;
-  Real Q          =    16.0;   // Quality factor for the bandpass
+  Real Q          =    20.0;   // Quality factor for the bandpass
   int  order      =     8;
   int  N          =  5000;     // Number of samples
 
@@ -1428,7 +1428,9 @@ void brickwallPlusBandpass()
   // Create and plot the impulse responses:
   Vec hL = impulseResponse(lpf, N, 1.0);
   Vec hB = impulseResponse(bpf, N, 1.0);
-  rsPlotVectors(hL, hB);
+  Vec h  = hL + hB;                          // ToDo: maybe scale hB by a factor
+  rsPlotVectors(hL, hB, h);
+  rsPlotVectors(h);
 
 
   // ToDo:
@@ -1438,6 +1440,8 @@ void brickwallPlusBandpass()
   //   frequency (or wc).
   //
   // - Maybe use some zeros around the bandpass freq to limit the  frequency range further. 
+  //
+  // - Try using a 4th order bandpass to get a smoother attack
 }
 
 void brickwallDeRinging()
