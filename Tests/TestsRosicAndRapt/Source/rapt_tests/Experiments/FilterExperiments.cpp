@@ -1201,19 +1201,42 @@ void engineersFilterRingResp3()
   //  an idea and I'm not sure, if it's a good one).
 }
 
-void engineersFilterRingResp()
+void engineersFilterRingResp()  // Rename to ringingResponses
 {
-  //engineersFilterRingResp1(); 
-  //engineersFilterRingResp2();  // maybe rename to BiShelfRingResp
+  engineersFilterRingResp1(); 
+  engineersFilterRingResp2();  // maybe rename to BiShelfRingResp
   engineersFilterRingResp3();
 
 
   // ToDo:
-  // -Figure out, if we can reduce the ringing time of a steep (e.g. elliptic) lowpass filter by
-  //  placing a notch filter at the ringing frequency. Or maybe two notches around the ringing 
-  //  frequency. The notch will itself ring at the notch frequency but maybe we can somehow adjust 
-  //  it in such a way as to cancel the ringing of the lowpass? If so, that could be useful for
-  //  anti-aliasing filters in downsampling.
+  //
+  // - Figure out, if we can reduce the ringing time of a steep (e.g. elliptic) lowpass filter by
+  //   placing a notch filter at the ringing frequency. Or maybe two notches around the ringing 
+  //   frequency. The notch will itself ring at the notch frequency but maybe we can somehow adjust
+  //   it in such a way as to cancel the ringing of the lowpass? If so, that could be useful for
+  //   anti-aliasing filters in downsampling. Maybe we could also place a ringing bandpass filter 
+  //   in parallel with our original (elliptic lowpass) filter and adjust the ringing in such a way
+  //   as to cancel the ringing of the original filter.
+  //
+  // - Compare also a 2nd order bandpass to a higher order (maybe 4th) bandpass. I think, the decay
+  //   will be the same but the higher order BP will have a softer attack?
+  //
+  // - We want to describe "what happens" at any particular frequency. For this, we want to find 
+  //   interesting, relevant features/quantities that correlate well with perceptible features such
+  //   as: amplitude, delay, phase, decay, attack.
+  //
+  // - Show that neither the magnitude nor the phase response alone can teel us much about the 
+  //   decay/ringing time at a given frequency. For the phase response, use an allpass as example 
+  //   for long ringing even though we have a flat magnitude. For the magnitude response, compare
+  //   bandpasses with different phase responses (minimum, linear, maximum)
+  //
+  // - Compare ringing responses of 2 bandpasses with same center frequency fc but different 
+  //   bandwidths. Compare also the magnitude and phase responses. I guess, at the center freq, the
+  //   values of the mag- and phase responses of both filters will be the same which shows that the
+  //   value of the freq-response *at* a given frequency does not tell the full story about what a
+  //   filter does at that frequency? It doesn't tell us much about the attack and decay time, for
+  //   example. At the very least, we would need to consider a local neighborhood of fc.
+
 }
 
 

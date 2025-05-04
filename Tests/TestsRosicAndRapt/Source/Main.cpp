@@ -69,8 +69,8 @@ int main(int argc, char* argv[])
   // Unit Tests:
 
   bool ok = true;
-  ok &= runUnitTestsRapt();
-  ok &= runUnitTestsRosic();
+  //ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
 
   // The allpass unit test currently fails because I changed the implementation of 
@@ -210,7 +210,7 @@ int main(int argc, char* argv[])
   //biquadModulation();            // compares modulation properties of various biquad structures
   //brickwallAndAllpass();         // stub
   //complementaryFiltersIIR();
-  //engineersFilterRingResp();         // ringing response (experimental idea)
+  engineersFilterRingResp();         // ringing response (experimental idea)
   //engineersFilterFreqResps();
   //engineersFilterFreqRespsMeasured();  // Measured freq responses - the computated ones may lie!
   //engineersFilterMethodsComparison();

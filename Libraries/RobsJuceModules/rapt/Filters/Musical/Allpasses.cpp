@@ -16,7 +16,8 @@ ToDo:
 
 - Try putting multiple dispersers in a chain.
 
-- Maybe implement Thiran allpass interpolators.
+- Maybe implement Thiran allpass interpolators. See:
+  https://github.com/bmc0/dsp/blob/master/allpass.h
 
 - See also rosic::AllpassChain. IIRC, this was my first implementation that I used in my early
   phasers. It uses a DF1 biquad - which sucks! A state of art implementation should wap that out 
@@ -86,6 +87,8 @@ Interesting Resources:
 
   ENERGY-PRESERVING TIME-VARYING SCHROEDER ALLPASS FILTERS (Kurt James Werner)
   https://dafx2020.mdw.ac.at/proceedings/papers/DAFx2020_paper_59.pdf
+
+
 
 
 

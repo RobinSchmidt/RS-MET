@@ -893,6 +893,16 @@ https://github.com/abluenautilus/AcidusVersio
 https://librosa.org/
 -audio and music processing in Python
 
+
+
+Infos about system wide EQs for Linux:
+https://github.com/bmc0/dsp/wiki/System-Wide-DSP-Guide
+https://github.com/jaakkopasanen/AutoEq
+https://github.com/bmc0/dsp
+https://t-5.eu/hp/Software/Pulseaudio%20Parametric%20Equalizer/
+
+
+
 ----------------------------------------------------------------------------------------------------
 Resources
 
