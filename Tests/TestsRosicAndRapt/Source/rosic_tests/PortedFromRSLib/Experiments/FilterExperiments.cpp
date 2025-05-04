@@ -1395,11 +1395,20 @@ void brickwallPlusBandpass()
   using EF   = RAPT::rsEngineersFilter<Real, Real>;
   using PTD  = rsPrototypeDesigner<Real>;
   using IIRD = rsInfiniteImpulseResponseDesigner<Real>;
+  using SVF  = rsStateVariableFilter<Real, Real>;
 
   Real sampleRate = 48000;
   Real cutoff     =   500;
+  Real Q          =    16.0;   // Quality factor for the bandpass
   int  order      =     8;
-  int  N          =  5000;   // Number of samplese
+  int  N          =  5000;     // Number of samples
+
+  int  delay      =   260;     // Delay for the bandpass filter
+
+
+  Real wc = 2*PI*cutoff/sampleRate;
+
+
 
   // Create the lowpass:
   EF lpf;
@@ -1412,19 +1421,23 @@ void brickwallPlusBandpass()
   lpf.setStopbandRejection(80.0); 
   lpf.setPrototypeOrder(order);
 
+  // Create the bandpass:
+  SVF bpf;
+  bpf.setupBandpassPeak(wc, Q);
+
+  // Create and plot the impulse responses:
   Vec hL = impulseResponse(lpf, N, 1.0);
+  Vec hB = impulseResponse(bpf, N, 1.0);
+  rsPlotVectors(hL, hB);
 
-
-  rsPlotVectors(hL);
-
-
-  int dummy = 0;
 
   // ToDo:
   //
   // - Adjust the phase of the mixed in bandpass signal by a mix of using the phase parameter of a
-  //   resonator and a delayline. Maybe use some zeros around the bandpass freq to limit the 
-  //   frequency range further
+  //   resonator and a delayline. The delay should probably be inverse proportional to the cutoff
+  //   frequency (or wc).
+  //
+  // - Maybe use some zeros around the bandpass freq to limit the  frequency range further. 
 }
 
 void brickwallDeRinging()
