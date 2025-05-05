@@ -1430,22 +1430,33 @@ void brickwallPlusBandpass()
   Vec hL1 = impulseResponse(lpf, N, 1.0);
   Vec hB1 = impulseResponse(bpf, N, 1.0);
   Vec h1  = hL1 + hB1;                          // ToDo: maybe scale hB by a factor
-  //rsPlotVectors(hL1, hB1);                      // LP and BP response
+  rsPlotVectors(hL1, hB1);                      // LP and BP response
   //rsPlotVectors(hL1, hB1, h1);                  // LP, BP and sum
   //rsPlotVectors(h1);                            // Sum only
-  //rsPlotVectors(hL1, h1);                       // LP and sum
+  rsPlotVectors(hL1, h1);                       // LP and sum
   // BP needs a bit of delay. Try using an actual delay or some additional filter. Maybe allpass,
   // maybe another bandpass, maybe a lowpass, maybe a highpass. Some experimentation is needed.
+
+  // Try to reduce the initial bump/spike:
+  //Vec h2  = hL1 - 5.0 * hB1;
+  //rsPlotVectors(hL1, h2); 
+  // Nope - doesn't look good. The initial spike in the LP response is wider than one cycle at fc.
+  // Maybe we can reduce it by subtracting a bandpass signal with lower fc. But that would then 
+  // mess up the freq response of the combined filter. Maybe we could use an attack/decay lowpass
+  // shape. But then the resulting overall filter would be a bandpass rather than a lowpass. It's
+  // a mess! 
 
   // Apply the bandpass to the impulse response of the bandpass to create a 4th order bandpass 
   // (series of two equal bandpasses):
   bpf.setupBandpassPeak(wc, 0.125*Q);
   Vec hB2 = filterResponse(bpf, N, hB1);
-  Vec h2  = hL1 + hB2; 
+  Vec h3  = hL1 + hB2; 
   rsPlotVectors(hL1, hB1, hB2);
-  rsPlotVectors(hL1, h2);
+  rsPlotVectors(hL1, h3);
   // The bandpass needs a lower Q when we use two of them in series. But maybe it's enough when 
   // one of them has lower Q? ...yeah...done - It looks OK.
+
+
 
 
 
@@ -1476,6 +1487,10 @@ void brickwallPlusBandpass()
   //
   // - Maybe when tweaking the parameters, focus not on supressing the late ringing but the early
   //   ringing where the ringing is still loud.
+  //
+  // - Maybe try subtracting the BP output to lessen the initial bump in the impulse response. This
+  //   will help to reduce overshoot at the cost of louder ringing later. Or wait - no - it's not 
+  //   the initial bump that's responsible for the overshoot but the one immediately thereafter.
 }
 
 void brickwallDeRinging()
