@@ -3433,6 +3433,9 @@ int rsSparseMatrix<T>::solveSOR(const rsSparseMatrix<T>& D, const rsSparseMatrix
   return numIts;
 }
 
+// See also:
+// https://en.wikipedia.org/wiki/Modified_Richardson_iteration
+
 // Resources for sparse matrix formats:
 // https://en.wikipedia.org/wiki/Sparse_matrix#Storage
 // https://phys.libretexts.org/Bookshelves/Mathematical_Physics_and_Pedagogy/Computational_Physics_(Chong)/08%3A_Sparse_Matrices/8.02%3A_Sparse_Matrix_Formats
