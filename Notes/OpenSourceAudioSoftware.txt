@@ -740,6 +740,16 @@ Vestige:
 https://github.com/LMMS/lmms/blob/master/plugins/Vestige/Vestige.h
 -Vestige.h - replacement for VST2
 
+ARA Audio Random Access:
+https://github.com/Celemony/ARA_SDK
+-Audio Plugin interface for offline processing
+
+JUCE_ARA:
+https://github.com/Celemony/JUCE_ARA
+-enabled JUCE to generate ARA plug-ins in the VST3 or AudioUnit format
+-With JUCE 7, these additions have been integrated into JUCE main line.
+ -> Obsolete with JUCE 7
+
 Libsndfile:
 https://libsndfile.github.io/libsndfile/
 https://github.com/libsndfile/libsndfile

@@ -179,6 +179,10 @@ http://www.kvraudio.com/forum/viewtopic.php?f=33&t=441669 Looking for DSP Develo
 http://www.kvraudio.com/forum/viewtopic.php?f=33&t=429568 Job - Audio Programmer
 
 
+Setup Stuff:
+https://www.kvraudio.com/forum/viewtopic.php?t=595690  44.1 kHz or 48 kHz?
+
+
 Other forums:
 
 Math:
