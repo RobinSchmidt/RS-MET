@@ -632,6 +632,13 @@ https://bitbucket.org/Mayae/cpl/src/master/
  related classes (presets, etc.).
 -by Janus Thorborg (author of APE)
 
+KFR:
+https://www.kfrlib.com/
+https://github.com/kfrlib/kfr
+https://www.kvraudio.com/forum/viewtopic.php?t=466547
+-DSP framework that contains high performance building blocks
+-GPLv2/v3 and commercial license.
+
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:
 
@@ -691,6 +698,9 @@ Anti Grain Geometry
 https://github.com/ghaerr/agg-2.6
 -Rasterization based 2D graphics rendering library.
 
+SIMD Everywhere
+https://github.com/simd-everywhere/simde
+-SIMD abstraction layer
 
 ----------------------------------------------------------------------------------------------------
 Misc
