@@ -102,6 +102,12 @@ TUInt rsGcd(TUInt m, TUInt n)
 // numbers by their gcd which is another two divisions. Could the algo directly output
 // g = gcd(m, n) and m/g, n/g to avoid having to compute m/g, n/g by two extra divisions? Note that
 // this is *not* what the extended Euclidean algo produces.
+//
+// For large numbers, we may want to use Lehmer's gcd algorithm explained here:
+// https://mathresearch.utsa.edu/wiki/index.php?title=LCM_%26_GCD
+// "... one extracts initial digits, typically forming one or two computer words, and runs Euclid's 
+// algorithms on these smaller numbers, as long as it is guaranteed that the quotients are the same 
+// with those that would be obtained with the original numbers."
 
 template<class TInt>
 TInt rsGeneralizedDelta(TInt superscripts[], TInt subscripts[], TInt N)
