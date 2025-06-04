@@ -1942,6 +1942,10 @@ ToDo:
   into quadratic factors. But it's also possible to directly obtain the quadratic factors. I think
   there's an algo for that in Numerical Recipies in C, if I remember correctly. 
 
+- Maybe implement a class rsFactoredPolynomial that stores the roots and an overall scale factor 
+  rather than the coefficients. Provide an API that is similar to rsPolynomial, where it makes 
+  sense like for example with regard to evaluation. Maybe also have rsFactoredRationalFunction and
+  rsPartialFractionExpansion.
 
 
  Other methods for root finding (here, we use the Laguerre method:)
