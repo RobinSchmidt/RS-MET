@@ -13,7 +13,7 @@ https://github.com/Ardour/ardour
 LMMS:
 https://lmms.io/
 https://github.com/LMMS/lmms
--Another DAW, similar to FL.
+-Another DAW, visually similar to FL.
 
 Qtractor:
 https://qtractor.org/qtractor-index.html#Intro
@@ -33,8 +33,6 @@ https://github.com/stargatedaw/stargate
 https://gitlab.com/stargatedaw
 https://codeberg.org/stargatedaw
 -DAW. Main repo is on github. The ones on gitlab and codeberg are mirrors.
-
-
 
 Audacity:
 https://www.audacityteam.org/
@@ -170,8 +168,6 @@ Odin:
 https://github.com/TheWaveWarden/odin2
 -Subtractive Synthesizer
 
-
-
 Terrain:
 https://github.com/aaronaanderson/Terrain
 https://www.youtube.com/watch?v=xtvo_RxdEsY
@@ -226,6 +222,10 @@ https://github.com/probonopd/MiniDexed
 https://github.com/giulioz/mini-jv880
 https://github.com/nukeykt/Nuked-SC55
 
+CompuFart:
+https://github.com/alexmfink/compufart
+-Fart sound synthesizer written in Cmajor 
+-"Based on physically modeling wind passing through an asshole"
 
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
@@ -406,6 +406,16 @@ Camomile:
 https://github.com/pierreguillot/Camomile
 -Plugin for using PD patches in a DAW
 
+JSFX:
+https://github.com/justinfrankel/jsfx
+https://www.cockos.com/jsfx/
+https://forum.cockos.com/showthread.php?t=301147
+https://www.kvraudio.com/forum/viewtopic.php?t=621583
+-Reaper's FX scripting language
+
+SAPF - Sound As Pure Form:
+https://github.com/lfnoise/sapf
+-"Forth-like language for audio synthesis using lazy lists and APL-like auto-mapping"
 
 ----------------------------------------------------------------------------------------------------
 Frameworks
@@ -413,7 +423,8 @@ Frameworks
 JUCE
 https://juce.com/
 https://github.com/juce-framework/JUCE
--Framework for building audio software and plugins. Very comprehensive and widely used
+-Framework for building audio software and plugins. Very comprehensive and widely used. The top dog
+ of these kinds of frameworks.
 
 IPlug2
 https://iplug2.github.io/
@@ -423,6 +434,12 @@ https://github.com/iPlug2/iPlug2
 WDL
 https://www.cockos.com/wdl/
 -GUI-library plus some audio related stuff
+
+YUP:
+https://github.com/kunitoki/yup
+https://www.kvraudio.com/forum/viewtopic.php?t=621635
+-Framework for GUI and audio plugins built on the ISC-licensed modules forked from JUCE 7
+-GUI stuff is based on Rive: https://github.com/rive-app/rive-runtime
 
 Choc
 https://github.com/Tracktion/choc/
@@ -435,7 +452,7 @@ https://github.com/willpirkleaudio/ASPiK
 
 Distrho:
 https://github.com/DISTRHO/DISTRHO-Ports
--open source project with the goal of making cross-platform audio plugins and GNU/Linux + LV2 ports.
+-Open source project with the goal of making cross-platform audio plugins and GNU/Linux + LV2 ports.
 -Includes Vitalium: https://github.com/DISTRHO/DISTRHO-Ports/tree/master/ports-juce6.0/vitalium
 
 Dplug:
@@ -462,7 +479,7 @@ https://github.com/cycfi/elements
 
 ikiGUI:
 https://github.com/logos-maker/ikiGUI
--"The smallest cross platform GUI library for applications and audio plugins availible. "
+-"The smallest cross platform GUI library for applications and audio plugins availible."
 
 SFML (Simple and Fast Multimedia Library)
 https://github.com/SFML/SFML
@@ -703,31 +720,7 @@ https://github.com/simd-everywhere/simde
 -SIMD abstraction layer
 
 ----------------------------------------------------------------------------------------------------
-Misc
-
-Tracktion Engine
-https://www.tracktion.com/develop/tracktion-engine
-https://github.com/Tracktion/tracktion_engine/
--Audio engine of the Tracktion DAW
-
-EqualizerAPO:
-https://equalizerapo.com/
-https://sourceforge.net/projects/equalizerapo/
--System wide equalizer for Windows. Allows hosting of VST plugins, too.
-
-Avendish:
-https://github.com/celtera/avendish/
--Solution to the quadratic glue MxN problem: With M plugin formats and N plugins we need to write 
- and maintain(!) an amount of O(M*N) boilerplate glue code. Avendish claims to solve this 
- maintenance nightmare (I don't know how, though).
-
-Open NSynth Super:
-https://github.com/googlecreativelab/open-nsynth-super
--Experimental physical interface for NSynth, a machine learning algorithm developed by Google
-
-StudioRack:
-https://github.com/studiorack
--Audio project manager for handling DAW VST plugin dependencies
+Plugin- and file formats
 
 CLAP-SDK and related stuff:
 https://github.com/free-audio
@@ -760,10 +753,60 @@ https://github.com/Celemony/JUCE_ARA
 -With JUCE 7, these additions have been integrated into JUCE main line.
  -> Obsolete with JUCE 7
 
+DAWProject:
+https://github.com/bitwig/dawproject
+-Open standard format for DAW project files.
+-Created by Bitwig (and Presonus?) and supported by: ...tbc..
+-Converter tools are available for the following other formats: Reaper ...tbc...
+
+OpenTimelineIO:
+https://github.com/AcademySoftwareFoundation/OpenTimelineIO
+-Open standard file format for (audio and video?) timeline information (clips, tracks, etc.)
+
+ConvertWithMoss:
+Converter tool for sampler files (sfz, sfz2, nki, etc.)
+https://github.com/git-moss/ConvertWithMoss
+
 Libsndfile:
 https://libsndfile.github.io/libsndfile/
 https://github.com/libsndfile/libsndfile
 -C library for reading and writing audio files in various formats
+
+TinyWav:
+https://github.com/mhroth/tinywav
+-Minimal C library for reading and writing (32-bit float or 16-bit int) WAV audio files
+
+----------------------------------------------------------------------------------------------------
+Misc
+
+Tracktion Engine
+https://www.tracktion.com/develop/tracktion-engine
+https://github.com/Tracktion/tracktion_engine/
+-Audio engine of the Tracktion DAW
+
+EqualizerAPO:
+https://equalizerapo.com/
+https://sourceforge.net/projects/equalizerapo/
+-System wide equalizer for Windows. Allows hosting of VST plugins, too.
+
+Avendish:
+https://github.com/celtera/avendish/
+-Solution to the quadratic glue MxN problem: With M plugin formats and N plugins we need to write 
+ and maintain(!) an amount of O(M*N) boilerplate glue code. Avendish claims to solve this 
+ maintenance nightmare (I don't know how, though).
+
+Open NSynth Super:
+https://github.com/googlecreativelab/open-nsynth-super
+-Experimental physical interface for NSynth, a machine learning algorithm developed by Google
+
+StudioRack:
+https://github.com/studiorack
+-Audio project manager for handling DAW VST plugin dependencies
+
+
+
+
+
 
 ----------------------------------------------------------------------------------------------------
 Audio AI projects and related stuff
@@ -849,7 +892,7 @@ https://github.com/jameshball/osci-render
 https://osci-render.com/
 
 
-https://github.com/bitwig/dawproject
+
 
 
 https://ldesoras.fr/prod.html#src
@@ -876,6 +919,11 @@ https://www.elk.audio/
 https://elk-audio.github.io/elk-docs/html/intro/how_elk_works.html
 https://github.com/elk-audio
 -A variant of Linux to be used as OS for Audio Hardware
+
+ReactOS
+https://github.com/reactos/reactos
+-Open source windows-compatible operating system
+
 
 WaveSurfer
 https://sourceforge.net/projects/wavesurfer/
