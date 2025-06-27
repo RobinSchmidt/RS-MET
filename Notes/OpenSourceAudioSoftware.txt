@@ -376,7 +376,8 @@ https://www.jthorborg.com/ape.html
 https://bitbucket.org/Mayae/ape/src/master/
 -An audio plugin, that allows to directly program C++ DSP in real time.
 -https://www.kvraudio.com/forum/viewtopic.php?t=402054
- https://www.kvraudio.com/forum/viewtopic.php?f=33&t=560622
+ https://www.kvraudio.com/forum/viewtopic.php?t=560622
+ https://www.kvraudio.com/forum/viewtopic.php?t=620258
  https://bitbucket.org/Mayae/ape-snippets/src/master/
 
 Cmajor:
