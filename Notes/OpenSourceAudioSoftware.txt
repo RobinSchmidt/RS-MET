@@ -758,14 +758,21 @@ https://github.com/bitwig/dawproject
 -Open standard format for DAW project files.
 -Created by Bitwig (and Presonus?) and supported by: ...tbc..
 -Converter tools are available for the following other formats: Reaper ...tbc...
+-Ardour seems to be evaluating it: 
+ https://discourse.ardour.org/t/dawproject-in-ardour/109230/11
+-See also:
+ https://www.aatranslator.com.au/
+ https://www.amazona.de/feature-das-dawproject-file-format-daw-uebergreifende-projekte/
 
 OpenTimelineIO:
 https://github.com/AcademySoftwareFoundation/OpenTimelineIO
 -Open standard file format for (audio and video?) timeline information (clips, tracks, etc.)
 
 ConvertWithMoss:
-Converter tool for sampler files (sfz, sfz2, nki, etc.)
 https://github.com/git-moss/ConvertWithMoss
+https://www.mossgrabers.de/Software/ConvertWithMoss/ConvertWithMoss.html
+https://www.kvraudio.com/forum/viewtopic.php?f=42&t=575352
+-Converter tool for sampler files (sfz, sfz2, nki, etc.)
 
 Libsndfile:
 https://libsndfile.github.io/libsndfile/
