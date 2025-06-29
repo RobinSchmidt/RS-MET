@@ -754,6 +754,15 @@ https://github.com/Celemony/JUCE_ARA
 -With JUCE 7, these additions have been integrated into JUCE main line.
  -> Obsolete with JUCE 7
 
+Gig Performer SDK:
+https://github.com/gigperformer/gp-sdk
+-Gig Performer is an audio plugin host (AU, VST3 and VST host) for live performance and session
+ musicians. It exposes an plugin API that allows to control GP and to respond to events
+
+Reaper SDK:
+https://github.com/justinfrankel/reaper-sdk
+-SDK for writing Reaper extensions.
+
 DAWProject:
 https://github.com/bitwig/dawproject
 -Open standard format for DAW project files.
