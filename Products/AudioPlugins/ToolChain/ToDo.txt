@@ -1,3 +1,4 @@
+
 Maybe make separate ToDo - files: ToDo-Bugs.txt, ToDo-Features.txt, ToDo-CodeQuality.txt, etc.
 
 ToDo for the next release:
@@ -308,6 +309,9 @@ Modules
 ---------------------------------------------------------------------------------------------------
 Improvements
 
+- AcidDevil: The cutoff frequency needs an extended range - especially the lower limit needs to be
+  extended. Maybe use the standard range of 20 Hz to 20 kHz. The upper limit is currently 10 kHz.
+
 - Quadrifex: the patches always contain for each slot a patch for every possible effect that 
   *could be* in the slot, regardless whether ot not it actually *is* in the slot. That's wasteful.
   Most of the time, the patch is in default state anyway, i.e. conatins no settings. Maybe make a 
@@ -322,6 +326,9 @@ Code Quality
 - Use an enum class for listing the different effect algos in rosic::Quadrifex::effectAlgorithms.
   We should generally use enum classes for such options.
 
+- We should not use User/AppData/Roaming/RS-MET as the default location for storing data. Instead,
+  we should do it like Surge XT and use Documents/RS-MET. Maybe we can use 
+  JUCE::File::getSpecialLocation? Look into the Surge codebase for how they do it.
 
 ---------------------------------------------------------------------------------------------------
 Cosmetic GUI issues (layout, appearance, etc.):

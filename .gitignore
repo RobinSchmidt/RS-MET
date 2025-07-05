@@ -90,3 +90,4 @@ Products/AudioPlugins/ToolChain/Builds/VisualStudio2022/x64/Debug/Standalone Plu
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2022/x64/Debug/Standalone Plugin/ToolChain_StandalonePlugin.vcxproj.FileListAbsolute.txt
 /Products/AudioPlugins/ToolChain/Builds/VisualStudio2022/.vs
 /Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/.vs
+/Products/AudioPlugins/ToolChain/Builds/VisualStudio2022/x64

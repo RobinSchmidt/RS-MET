@@ -55,7 +55,7 @@ Path to JUCE:      C:\Users\rob\Data\GitRepos\RS-MET\Libraries\JUCE
 JUCE Modules:      C:\Users\rob\Data\GitRepos\RS-MET\Libraries\JUCE\modules
 User Modules:      C:\Users\rob\Data\GitRepos\RS-MET\Libraries\RobsJuceModules
 
-VST (Legacy SDK):  ...not yet set up....
+VST (Legacy SDK):  C:\Users\rob\Data\GitRepos\RS-Private\Libaries\VST\vstsdk2.4
 
 
 Compiling the VST 3 version didn't work. I get the error:
