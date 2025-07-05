@@ -10,9 +10,8 @@
               pluginRTASCategory="" aaxIdentifier="com.RS-MET.ToolChain" pluginAAXCategory="2"
               companyName="RS-MET" companyWebsite="www.rs-met.com" companyEmail="robin@rs-met.com"
               displaySplashScreen="1" reportAppUsage="1" splashScreenColour="Dark"
-              buildStandalone="1" enableIAA="0" cppLanguageStandard="11" companyCopyright="RS-MET"
-              pluginFormats="buildAU,buildStandalone,buildVST,buildVST3" pluginCharacteristicsValue="pluginWantsMidiIn"
-              headerPath="../../../../../../RS-Private/Libaries/VST/vstsdk2.4"
+              buildStandalone="1" enableIAA="0" companyCopyright="RS-MET" pluginFormats="buildAU,buildStandalone,buildVST,buildVST3"
+              pluginCharacteristicsValue="pluginWantsMidiIn" headerPath="../../../../../../RS-Private/Libaries/VST/vstsdk2.4"
               jucerFormatVersion="1">
   <MAINGROUP id="J7WzKP" name="ToolChain">
     <GROUP id="{5348A3D7-BFCF-B722-2C65-2A345253A7EB}" name="Source">
@@ -23,38 +22,6 @@
     <FILE id="cXUD5t" name="ToDo.txt" compile="0" resource="0" file="ToDo.txt"/>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <VS2015 targetFolder="Builds/VisualStudio2015" windowsTargetPlatformVersion="8.1">
-      <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" winWarningLevel="3" generateManifest="1" winArchitecture="x64"
-                       isDebug="1" optimisation="1" targetName="ToolChain" debugInformationFormat="ProgramDatabase"
-                       enablePluginBinaryCopyStep="0"/>
-        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="ToolChain" debugInformationFormat="ProgramDatabase"
-                       enablePluginBinaryCopyStep="0" linkTimeOptimisation="1"/>
-        <CONFIGURATION name="Debug Win32" winWarningLevel="3" generateManifest="1" winArchitecture="Win32"
-                       isDebug="1" optimisation="1" targetName="ToolChain" debugInformationFormat="ProgramDatabase"
-                       enablePluginBinaryCopyStep="0"/>
-      </CONFIGURATIONS>
-      <MODULEPATHS>
-        <MODULEPATH id="juce_core" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="jura_framework" path="../../../Libraries/RobsJuceModules"/>
-        <MODULEPATH id="jura_processors" path="../../../Libraries/RobsJuceModules"/>
-        <MODULEPATH id="rosic" path="../../../Libraries/RobsJuceModules"/>
-        <MODULEPATH id="romos" path="../../../Libraries/RobsJuceModules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="rapt" path="../../../Libraries/RobsJuceModules"/>
-      </MODULEPATHS>
-    </VS2015>
     <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows" extraCompilerFlags="-fpermissive&#10;-msse2">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="ToolChain"
@@ -144,10 +111,11 @@
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="ToolChain"
-                       osxArchitecture="Native" enablePluginBinaryCopyStep="1" osxCompatibility="10.9 SDK"/>
+                       osxArchitecture="Native" enablePluginBinaryCopyStep="1" osxCompatibility="10.9 SDK"
+                       macOSDeploymentTarget="10.9"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="ToolChain"
                        osxCompatibility="10.9 SDK" osxArchitecture="Native" linkTimeOptimisation="1"
-                       enablePluginBinaryCopyStep="1"/>
+                       enablePluginBinaryCopyStep="1" macOSDeploymentTarget="10.9"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="rosic" path="../../../Libraries/RobsJuceModules"/>
@@ -194,6 +162,31 @@
         <MODULEPATH id="juce_audio_basics" path="../../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </VS2019>
+    <VS2022 targetFolder="Builds/VisualStudio2022">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="ToolChain_Debug"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="jura_framework" path="../../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="jura_processors" path="../../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="rapt" path="../../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="romos" path="../../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="rosic" path="../../../Libraries/RobsJuceModules"/>
+      </MODULEPATHS>
+    </VS2022>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
