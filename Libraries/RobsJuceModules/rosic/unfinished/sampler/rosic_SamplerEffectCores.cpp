@@ -64,14 +64,14 @@ void EnvGenCore::setup(float _start, float _delay, float _attack, float _peak, f
   // Helper function to convert user-parameters for shapes to corresponding algo parameters:
   auto convertShape = [](float p)
   {
-    return p;  
+    return p;
     // We currently just use the raw value without any conversion formula. That seems somwhat 
     // plausible, see: https://www.kvraudio.com/forum/viewtopic.php?t=582201
 
     
-    // My old formula, currently not used:
-    float c = 0.5f * (p + 1.f);       // -1...+1  ->  0...1
-    return 2.f * logf((1.f-c)/c);
+    //// My old formula, currently not used:
+    //float c = 0.5f * (p + 1.f);       // -1...+1  ->  0...1
+    //return 2.f * logf((1.f-c)/c);
   };
 
 

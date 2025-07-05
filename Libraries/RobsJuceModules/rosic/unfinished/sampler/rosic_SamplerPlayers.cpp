@@ -604,7 +604,7 @@ bool RegionPlayer::hasFinished()
   //  appropriate condition. Or maybe, we should allow more general time-warping envelopes. 
   //  We'll see
 
-  return false;
+  // return false;  // Unreachable - old remnant?
 }
 
 bool RegionPlayer::assembleProcessors(bool busMode)

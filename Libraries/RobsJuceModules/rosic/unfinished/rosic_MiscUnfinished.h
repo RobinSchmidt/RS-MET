@@ -486,6 +486,7 @@ public:
 
       }
     }
+    default: return 0.0; // Should never happen but the compiler warns about missing return
 
     }
   }

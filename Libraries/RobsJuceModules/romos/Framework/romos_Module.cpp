@@ -230,12 +230,12 @@ bool romos::Module::setState(const std::map<std::string, std::string>& state)
 
 int romos::Module::getNumVoices() const
 {
-  return voiceAllocator.getNumVoices();  // preliminary - to always allocate for polyphonic output
+  return voiceAllocator.getNumVoices();  // Preliminary - to always allocate for polyphonic output
 
-  if( isPolyphonic() )
-    return voiceAllocator.getNumVoices();
-  else
-    return 1;
+  //if( isPolyphonic() )
+  //  return voiceAllocator.getNumVoices();
+  //else
+  //  return 1;
 }
 
 std::map<std::string, std::string> romos::Module::getState() const

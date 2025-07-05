@@ -165,15 +165,15 @@ public:
 template <class SampleType>
 INLINE void TopLevelModule::getSampleFrameStereo(SampleType *inOutL, SampleType *inOutR)
 {
-  // for debug:
-  int offset1 = processingStatus.getBufferSize();
-  int offset2 = getRequiredOutputBufferSizePerPin();
+  // For debug:
+  //int offset1 = processingStatus.getBufferSize();
+  //int offset2 = getRequiredOutputBufferSizePerPin();
 
   *inL = (double)*inOutL;
   *inR = (double)*inOutR;
   double *doublePointerL = audioOutputs;
-    //doublePointerR = audioOutputs + processingStatus.getBufferSize();  // later    
-  double *doublePointerR = audioOutputs + getRequiredOutputBufferSizePerPin();
+    //doublePointerR = audioOutputs + processingStatus.getBufferSize();  // later
+    // double *doublePointerR = audioOutputs + getRequiredOutputBufferSizePerPin();
 
 
   processSampleFrame();
