@@ -3,7 +3,17 @@
 
 class RTextField;
 
-/** This class ...  */
+/** This class is used as baseclass for items that have a description text. This applies mainly to 
+GUI elements. It enables tooltips and description text in a status line. 
+
+
+ToDo:
+
+- Maybe this class is now obsolete because juce::Component itself has now also a setDescription
+  function. Maybe it's intention is the same so we could potentially just use that. Maybe I'm
+  now just replicating functionality that is now included in JUCE itself. Figure out!
+
+*/
 
 class JUCE_API DescribedItem 
 {
@@ -28,6 +38,7 @@ public:
 
   /** Sets the juce::Label in which the description will appear. */
   virtual void setDescriptionField(RTextField* newDescriptionField);
+  // Maybe rename to setItemDescriptionField
 
   //-----------------------------------------------------------------------------------------------
   // inquiry:
@@ -41,7 +52,7 @@ public:
 protected:
 
   /** A description of the parameter. */
-  juce::String description;
+  juce::String description;  // Maybe rename to itemDescription
 
   /** A label where the description will appear when the mouse is over the parameter. */
   RTextField* descriptionField;
