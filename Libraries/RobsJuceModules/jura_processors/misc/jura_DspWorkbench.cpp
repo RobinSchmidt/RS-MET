@@ -245,10 +245,10 @@ DspWorkbenchModuleEditor::DspWorkbenchModuleEditor(CriticalSection *newPlugInLoc
   {
     addAndMakeVisible( parameterLabels[p] = new RTextEntryField(
       juce::String("Par")+juce::String(p)+juce::String(":")) );
-    parameterLabels[p]->setDescription(juce::String("User parameter ") + juce::String("p"));
+    parameterLabels[p]->setItemDescription(juce::String("User parameter ") + juce::String("p"));
 
     addAndMakeVisible( parameterExpButtons[p] = new RButton(juce::String("Exp")) );
-    parameterExpButtons[p]->setDescription(juce::String("Use exponential scaling for this parameter."));
+    parameterExpButtons[p]->setItemDescription(juce::String("Use exponential scaling for this parameter."));
     parameterExpButtons[p]->addRButtonListener(this);
 
     addAndMakeVisible( parameterSliders[p] = new RSlider("parameterSlider") );
@@ -256,27 +256,27 @@ DspWorkbenchModuleEditor::DspWorkbenchModuleEditor(CriticalSection *newPlugInLoc
     parameterSliders[p]->setRange(0.0, 1.0, 0.0, 0.5);
     parameterSliders[p]->assignParameter(dspWorkbenchAudioModule->getParameterByIndex(p));
     parameterSliders[p]->setSliderName(juce::String());
-    parameterSliders[p]->setDescription(juce::String("Adjusts the value of the parameter"));
+    parameterSliders[p]->setItemDescription(juce::String("Adjusts the value of the parameter"));
     parameterSliders[p]->setStringConversionFunction(&valueToString3);
 
     addAndMakeVisible( parameterMinFields[p] = new RTextEntryField( juce::String("0.0")) );
     parameterMinFields[p]->registerTextEntryFieldObserver(this);
-    parameterMinFields[p]->setDescription("Enter minimum value for the parameter");
+    parameterMinFields[p]->setItemDescription("Enter minimum value for the parameter");
     parameterMinFields[p]->setDescriptionField(infoField);
 
     addAndMakeVisible( parameterMaxFields[p] = new RTextEntryField( juce::String("1.0")) );
     parameterMaxFields[p]->registerTextEntryFieldObserver(this);
-    parameterMaxFields[p]->setDescription("Enter maximum value for the parameter");
+    parameterMaxFields[p]->setItemDescription("Enter maximum value for the parameter");
     parameterMaxFields[p]->setDescriptionField(infoField);
 
     addAndMakeVisible( parameterDefaultFields[p] = new RTextEntryField( juce::String("0.5")) );
     parameterDefaultFields[p]->registerTextEntryFieldObserver(this);
-    parameterDefaultFields[p]->setDescription("Enter default value for the parameter");
+    parameterDefaultFields[p]->setItemDescription("Enter default value for the parameter");
     parameterDefaultFields[p]->setDescriptionField(infoField);
 
     addAndMakeVisible( parameterNameFields[p] = new RTextEntryField( juce::String("Par01")) );
     parameterNameFields[p]->registerTextEntryFieldObserver(this);
-    parameterNameFields[p]->setDescription("Enter name value for the parameter");
+    parameterNameFields[p]->setItemDescription("Enter name value for the parameter");
     parameterNameFields[p]->setDescriptionField(infoField);
   }
 
@@ -285,7 +285,7 @@ DspWorkbenchModuleEditor::DspWorkbenchModuleEditor(CriticalSection *newPlugInLoc
   codeEditor->setMultiLine(true, false);
   codeEditor->setReturnKeyStartsNewLine(true);
   //codeEditor->setFont(Font(Font::getDefaultMonospacedFontName(), 14, Font::plain) );
-  //codeEditor->setDescription(T("This is the editor for the DSP code."));
+  //codeEditor->setItemDescription(T("This is the editor for the DSP code."));
   //codeEditor->setDescriptionField(infoField);
 
   // create the BreakpointModulatorEditor:

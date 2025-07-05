@@ -110,7 +110,7 @@ SimpleSamplerModuleEditor::SimpleSamplerModuleEditor(CriticalSection *newPlugInL
 
   pitchEnvEditor = new BreakpointModulatorEditor(lock, simpleSamplerAudioModule->pitchEnvModule);
   pitchEnvEditor->setHeadlineText(juce::String("Pitch Env"));
-  pitchEnvEditor->setDescription(juce::String("This is the modulation generator for the pitch"));
+  pitchEnvEditor->setItemDescription(juce::String("This is the modulation generator for the pitch"));
   addAndMakeVisible( pitchEnvEditor );
   pitchEnvEditor->addChangeListener(this);
   /*
@@ -121,7 +121,7 @@ SimpleSamplerModuleEditor::SimpleSamplerModuleEditor(CriticalSection *newPlugInL
 
   ampEnvEditor = new BreakpointModulatorEditor(lock, simpleSamplerAudioModule->ampEnvModule);
   ampEnvEditor->setHeadlineText(juce::String("Amp Env"));
-  ampEnvEditor->setDescription(juce::String("This is the modulation generator for the amplitude"));
+  ampEnvEditor->setItemDescription(juce::String("This is the modulation generator for the amplitude"));
   addAndMakeVisible( ampEnvEditor );
   ampEnvEditor->addChangeListener(this);
   /*
@@ -132,7 +132,7 @@ SimpleSamplerModuleEditor::SimpleSamplerModuleEditor(CriticalSection *newPlugInL
 
   filterEnvEditor = new BreakpointModulatorEditor(lock, simpleSamplerAudioModule->filterEnvModule);
   filterEnvEditor->setHeadlineText(juce::String("Filter Env"));
-  filterEnvEditor->setDescription(juce::String("This is the modulation generator for the filter frequency"));
+  filterEnvEditor->setItemDescription(juce::String("This is the modulation generator for the filter frequency"));
   addAndMakeVisible( filterEnvEditor );
   filterEnvEditor->addChangeListener(this);
   /*

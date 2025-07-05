@@ -25,52 +25,52 @@ CoordinateSystemZoomer::CoordinateSystemZoomer()
   // create the horizontal zoom-buttons and ScrollBar:
   addWidget( zoomInButtonX = new RButton(RButton::PLUS) );
   zoomInButtonX->addRButtonListener(this);
-  zoomInButtonX->setDescription("Zoom in horizontally");
+  zoomInButtonX->setItemDescription("Zoom in horizontally");
   zoomInButtonX->setClickingTogglesState(false);
 
   addWidget( zoomToAllButtonX = new RButton(String("h")) );
   zoomToAllButtonX->addRButtonListener(this);
-  zoomToAllButtonX->setDescription(String("Zoom maximally out horizontally"));
+  zoomToAllButtonX->setItemDescription(String("Zoom maximally out horizontally"));
   zoomToAllButtonX->setClickingTogglesState(false);
 
   addWidget( zoomOutButtonX = new RButton(RButton::MINUS) );
   zoomOutButtonX->addRButtonListener(this);
-  zoomOutButtonX->setDescription(String("Zoom out horizontally"));
+  zoomOutButtonX->setItemDescription(String("Zoom out horizontally"));
   zoomOutButtonX->setClickingTogglesState(false);
   //zoomOutButtonX->setConnectedEdges(15);
 
   scrollBarX = new RScrollBar(false);
   scrollBarX->setRangeLimits(0.0, 1.0);
   scrollBarX->addListener(this);
-  //scrollBarX->setDescription(String(T("scroll horizontally")));
+  //scrollBarX->setItemDescription(String(T("scroll horizontally")));
   addWidget(scrollBarX);
 
   // create the vertical zoom-buttons and ScrollBar:
   addWidget( zoomInButtonY = new RButton(RButton::PLUS) );
   zoomInButtonY->addRButtonListener(this);
-  zoomInButtonY->setDescription(String("Zoom in vertically"));
+  zoomInButtonY->setItemDescription(String("Zoom in vertically"));
   zoomInButtonY->setClickingTogglesState(false);
 
   addWidget( zoomToAllButtonY = new RButton(String("v")) );
   zoomToAllButtonY->addRButtonListener(this);
-  zoomToAllButtonY->setDescription(String("Zoom maximally out vertically"));
+  zoomToAllButtonY->setItemDescription(String("Zoom maximally out vertically"));
   zoomToAllButtonY->setClickingTogglesState(false);
 
   addWidget( zoomOutButtonY = new RButton(RButton::MINUS) );
   zoomOutButtonY->addRButtonListener(this);
-  zoomOutButtonY->setDescription(String("Zoom out vertically"));
+  zoomOutButtonY->setItemDescription(String("Zoom out vertically"));
   zoomOutButtonY->setClickingTogglesState(false);
 
   scrollBarY = new RScrollBar(true);
   scrollBarY->setRangeLimits(0.0, 1.0);
   scrollBarY->addListener(this);
-  //scrollBarY->setDescription(String(T("scroll vertically")));
+  //scrollBarY->setItemDescription(String(T("scroll vertically")));
   addWidget(scrollBarY);
 
   // create the zoom-to-all button for X- and Y:
   addWidget( zoomToAllButtonXY = new RButton(String("a")) );
   zoomToAllButtonXY->addRButtonListener(this);
-  zoomToAllButtonXY->setDescription(String("Zoom maximally out both axes"));
+  zoomToAllButtonXY->setItemDescription(String("Zoom maximally out both axes"));
   zoomToAllButtonXY->setClickingTogglesState(false);
 }
 

@@ -88,7 +88,7 @@ void VectorMixerAudioModule::initializeAutomatableParameters()
 VectorMixerPad::VectorMixerPad(rosic::VectorMixer* newVectorMixerToEdit, const juce::String& name) 
   : rsPlot(name)
 {
-  setDescription("Drag around the dot to adjust the mix between the 4 signals");
+  setItemDescription("Drag around the dot to adjust the mix between the 4 signals");
 
   // indicate that this ParameterObserver is a GUI element:
   ParameterObserver::setIsGuiElement(true);

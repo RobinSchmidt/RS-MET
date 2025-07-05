@@ -200,14 +200,14 @@ PitchShifterModuleEditor::PitchShifterModuleEditor(CriticalSection *newPlugInLoc
   addWidget( coarseSlider = new RSlider("CoarseSlider") );
   coarseSlider->assignParameter( pitchShifterModuleToEdit->getParameterByName("DetuneCoarse") );
   coarseSlider->setSliderName(juce::String("Coarse"));
-  coarseSlider->setDescription(juce::String("Coarse pitch shifting factor in semitones"));
+  coarseSlider->setItemDescription(juce::String("Coarse pitch shifting factor in semitones"));
   coarseSlider->setDescriptionField(infoField);
   coarseSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
 
   addWidget( fineSlider = new RSlider("FineSlider") );
   fineSlider->assignParameter( pitchShifterModuleToEdit->getParameterByName("DetuneFine") );
   fineSlider->setSliderName(juce::String("Fine"));
-  fineSlider->setDescription(juce::String("Fine pitch shifting factor in cents"));
+  fineSlider->setItemDescription(juce::String("Fine pitch shifting factor in cents"));
   fineSlider->setDescriptionField(infoField);
   fineSlider->setStringConversionFunction(&centsToStringWithUnit2);
 
@@ -215,7 +215,7 @@ PitchShifterModuleEditor::PitchShifterModuleEditor(CriticalSection *newPlugInLoc
   grainLengthInMillisecondsSlider->assignParameter(
     pitchShifterModuleToEdit->getParameterByName("GrainLengthInMilliseconds") );
   grainLengthInMillisecondsSlider->setSliderName(juce::String("Grain Length"));
-  grainLengthInMillisecondsSlider->setDescription(juce::String("Length of the grains in milliseconds"));
+  grainLengthInMillisecondsSlider->setItemDescription(juce::String("Length of the grains in milliseconds"));
   grainLengthInMillisecondsSlider->setDescriptionField(infoField);
   grainLengthInMillisecondsSlider->setStringConversionFunction(&valueToStringTotal5);
 
@@ -223,7 +223,7 @@ PitchShifterModuleEditor::PitchShifterModuleEditor(CriticalSection *newPlugInLoc
   grainLengthInCyclesSlider->assignParameter(
     pitchShifterModuleToEdit->getParameterByName("GrainLengthInPitchCycles") );
   grainLengthInCyclesSlider->setSliderName(juce::String("Grain Length"));
-  grainLengthInCyclesSlider->setDescription(juce::String("Length of the grains in pitch cylces"));
+  grainLengthInCyclesSlider->setItemDescription(juce::String("Length of the grains in pitch cylces"));
   grainLengthInCyclesSlider->setDescriptionField(infoField);
   grainLengthInCyclesSlider->setStringConversionFunction(&valueToStringTotal5);
 
@@ -231,46 +231,46 @@ PitchShifterModuleEditor::PitchShifterModuleEditor(CriticalSection *newPlugInLoc
   grainLengthInBeatsSlider->assignParameter(
     pitchShifterModuleToEdit->getParameterByName("GrainLengthInBeats"));
   grainLengthInBeatsSlider->setSliderName(juce::String("Grain Length"));
-  grainLengthInBeatsSlider->setDescription(juce::String("Length of the grains in beats"));
+  grainLengthInBeatsSlider->setItemDescription(juce::String("Length of the grains in beats"));
   grainLengthInBeatsSlider->setDescriptionField(infoField);
   grainLengthInBeatsSlider->setStringConversionFunction(&valueToStringTotal5);
 
   addWidget( grainLengthUnitComboBox = new RComboBox(juce::String("GrainLengthUnitComboBox")));
   grainLengthUnitComboBox->assignParameter(
     pitchShifterModuleToEdit->getParameterByName("GrainLengthUnit"));
-  grainLengthUnitComboBox->setDescription("Choose the unit for the grain length");
+  grainLengthUnitComboBox->setItemDescription("Choose the unit for the grain length");
   grainLengthUnitComboBox->setDescriptionField(infoField);
   grainLengthUnitComboBox->registerComboBoxObserver(this); // to update visibility of the sliders
 
   addWidget( feedbackSlider = new RSlider("FeedbackSlider"));
   feedbackSlider->assignParameter( pitchShifterModuleToEdit->getParameterByName("Feedback"));
   feedbackSlider->setSliderName(juce::String("Feedback"));
-  feedbackSlider->setDescription(juce::String("Feeds the pitch-shifted output back to the input"));
+  feedbackSlider->setItemDescription(juce::String("Feeds the pitch-shifted output back to the input"));
   feedbackSlider->setDescriptionField(infoField);
   feedbackSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( dryWetSlider = new RSlider("DryWet"));
   dryWetSlider->assignParameter( pitchShifterModuleToEdit->getParameterByName("DryWet"));
   dryWetSlider->setSliderName(juce::String("Dry/Wet"));
-  dryWetSlider->setDescription(juce::String("Ratio between dry and wet signal (in % wet)"));
+  dryWetSlider->setItemDescription(juce::String("Ratio between dry and wet signal (in % wet)"));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( antiAliasButton = new RButton(juce::String("Anti-Alias")));
   antiAliasButton->assignParameter( pitchShifterModuleToEdit->getParameterByName("AntiAlias"));
-  antiAliasButton->setDescription(juce::String("Switch anti-alias filter (for up-shifting) on/off"));
+  antiAliasButton->setItemDescription(juce::String("Switch anti-alias filter (for up-shifting) on/off"));
   antiAliasButton->setDescriptionField(infoField);
   antiAliasButton->setClickingTogglesState(true);
 
   addWidget( reverseButton = new RButton(juce::String("Reverse")));
   reverseButton->assignParameter( pitchShifterModuleToEdit->getParameterByName("Reverse"));
-  reverseButton->setDescription(juce::String("Reverse playback of the grains"));
+  reverseButton->setItemDescription(juce::String("Reverse playback of the grains"));
   reverseButton->setDescriptionField(infoField);
   reverseButton->setClickingTogglesState(true);
 
   addWidget( invertButton = new RButton(juce::String("Invert")));
   invertButton->assignParameter( pitchShifterModuleToEdit->getParameterByName("Invert"));
-  invertButton->setDescription(juce::String("Invert polarity of wet (shifted) signal"));
+  invertButton->setItemDescription(juce::String("Invert polarity of wet (shifted) signal"));
   invertButton->setDescriptionField(infoField);
   invertButton->setClickingTogglesState(true);
 
@@ -278,14 +278,14 @@ PitchShifterModuleEditor::PitchShifterModuleEditor(CriticalSection *newPlugInLoc
   addWidget( formantPreserveButton = new RButton(juce::String(T("Formant"))) );
   formantPreserveButton->assignParameter(
   pitchShifterModuleToEdit->getParameterByName(T("FormantPreserve")) );
-  formantPreserveButton->setDescription(juce::String(T("Preserve formants")));
+  formantPreserveButton->setItemDescription(juce::String(T("Preserve formants")));
   formantPreserveButton->setDescriptionField(infoField);
   formantPreserveButton->setClickingTogglesState(true);
 
   addWidget( monoButton = new RButton(juce::String(T("Mono"))) );
   monoButton->assignParameter( pitchShifterModuleToEdit->getParameterByName(T("Mono")) );
   //monoButton->addRButtonListener(this);
-  monoButton->setDescription(juce::String(T("Save CPU for mono signals")));
+  monoButton->setItemDescription(juce::String(T("Save CPU for mono signals")));
   monoButton->setDescriptionField(infoField);
   monoButton->setClickingTogglesState(true);
   */

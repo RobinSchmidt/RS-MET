@@ -57,36 +57,36 @@ QuadrigaModuleEditor::QuadrigaModuleEditor(CriticalSection *newPlugInLock,
   // \todo: make radio-button work again
 
   quadrigenEditor = new QuadrigenModuleEditor(lock, quadrigaAudioModule->quadrigenModule);
-  quadrigenEditor->setDescription(juce::String(("Settings for the sources/generators section")));
+  quadrigenEditor->setItemDescription(juce::String(("Settings for the sources/generators section")));
   addChildEditor(quadrigenEditor, true, false);
 
   quadrifexEditor = new QuadrifexModuleEditor(lock, quadrigaAudioModule->quadrifexModule);
-  quadrifexEditor->setDescription(juce::String(("Settings for the effects section")));
+  quadrifexEditor->setItemDescription(juce::String(("Settings for the effects section")));
   addChildEditor(quadrifexEditor, true, false);
 
   addWidget( performanceButton = new RButton(juce::String(("Performance"))) );
-  performanceButton->setDescription(juce::String(("Switch to the performance page")));
+  performanceButton->setItemDescription(juce::String(("Switch to the performance page")));
   performanceButton->setDescriptionField(infoField);
   //performanceButton->setRadioGroupId(1);
   performanceButton->addRButtonListener(this);
 
   addWidget( generatorsButton = new RButton(juce::String(("Generators"))) );
-  generatorsButton->setDescription(juce::String(("Switch to the sound-generators page")));
+  generatorsButton->setItemDescription(juce::String(("Switch to the sound-generators page")));
   //generatorsButton->setRadioGroupId(1);
   generatorsButton->addRButtonListener(this);
 
   addWidget( filtersButton = new RButton(juce::String(("Filters"))) );
-  filtersButton->setDescription(juce::String(("Switch to the filters page")));
+  filtersButton->setItemDescription(juce::String(("Switch to the filters page")));
   //filtersButton->setRadioGroupId(1);
   filtersButton->addRButtonListener(this);
 
   addWidget( modulatorsButton = new RButton(juce::String(("Modulators"))) );
-  modulatorsButton->setDescription(juce::String(("Switch to the modulators page")));
+  modulatorsButton->setItemDescription(juce::String(("Switch to the modulators page")));
   //modulatorsButton->setRadioGroupId(1);
   modulatorsButton->addRButtonListener(this);
 
   addWidget( effectsButton = new RButton(juce::String(("Effects"))) );
-  effectsButton->setDescription(juce::String(("Switch to the effects page")));
+  effectsButton->setItemDescription(juce::String(("Switch to the effects page")));
   //effectsButton->setRadioGroupId(1);
   effectsButton->addRButtonListener(this);
 

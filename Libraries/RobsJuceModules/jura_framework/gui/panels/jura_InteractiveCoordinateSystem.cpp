@@ -16,7 +16,7 @@ InteractiveCoordinateSystem::InteractiveCoordinateSystem(const String& name)
   matchedLoopConnectorColour   = Colour(0x0000ff00);
   unmatchedLoopConnectorColour = Colour(0xffff0000);
 
-  setDescription("Some coordinate system widget.");
+  setItemDescription("Some coordinate system widget.");
 }
 
 InteractiveCoordinateSystem::~InteractiveCoordinateSystem()

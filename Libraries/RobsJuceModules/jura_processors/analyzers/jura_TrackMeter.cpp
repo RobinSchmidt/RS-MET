@@ -92,37 +92,37 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   addWidget( riseSlider = new RSlider("RiseSlider") );
   riseSlider->assignParameter( trackMeterModuleToEdit->getParameterByName("RiseTime") );
   riseSlider->setSliderName(juce::String("Rise"));
-  riseSlider->setDescription(juce::String("Rise/Attack time-constant"));
+  riseSlider->setItemDescription(juce::String("Rise/Attack time-constant"));
   riseSlider->setDescriptionField(infoField);
   riseSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( fallSlider = new RSlider ("FallSlider") );
   fallSlider->assignParameter( trackMeterModuleToEdit->getParameterByName("FallTime") );
   fallSlider->setSliderName(juce::String("Fall"));
-  fallSlider->setDescription(juce::String("Fall/Release time-constant"));
+  fallSlider->setItemDescription(juce::String("Fall/Release time-constant"));
   fallSlider->setDescriptionField(infoField);
   fallSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( vuButton = new RButton("VU") );
   //vuButton->assignParameter( trackMeterModuleToEdit->getParameterByName(("VU")) );
-  vuButton->setDescription(juce::String("Set ballistics to VU mode"));
+  vuButton->setItemDescription(juce::String("Set ballistics to VU mode"));
   vuButton->setDescriptionField(infoField);
   vuButton->setClickingTogglesState(false);
   vuButton->addRButtonListener(this);
 
   addWidget( ppmButton = new RButton("PPM") );
   //ppmButton->assignParameter( trackMeterModuleToEdit->getParameterByName(("PPM")) );
-  ppmButton->setDescription(juce::String("Set ballistics to PPM mode"));
+  ppmButton->setItemDescription(juce::String("Set ballistics to PPM mode"));
   ppmButton->setDescriptionField(infoField);
   ppmButton->setClickingTogglesState(false);
   ppmButton->addRButtonListener(this);
 
   addWidget( leftLevelLabel = new RTextField(juce::String(("L"))) );
-  leftLevelLabel->setDescription(juce::String(("Level of left channel")));
+  leftLevelLabel->setItemDescription(juce::String(("Level of left channel")));
   leftLevelLabel->setDescriptionField(infoField);
 
   addWidget( leftLevelMeter = new MeteringDisplay() );
-  leftLevelMeter->setDescription(leftLevelLabel->getDescription());
+  leftLevelMeter->setItemDescription(leftLevelLabel->getItemDescription());
   leftLevelMeter->setDescriptionField(infoField);
   leftLevelMeter->setMeterStyle(MeteringDisplay::levelMeterStyle);
   leftLevelMeter->setRange(rangeMin, rangeMax);
@@ -130,11 +130,11 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   leftLevelMeter->setCurrentValue(0.0);
 
   addWidget( rightLevelLabel = new RTextField(juce::String(("R"))) );
-  rightLevelLabel->setDescription(juce::String(("Level of right channel")));
+  rightLevelLabel->setItemDescription(juce::String(("Level of right channel")));
   rightLevelLabel->setDescriptionField(infoField);
 
   addWidget( rightLevelMeter = new MeteringDisplay() );
-  rightLevelMeter->setDescription(rightLevelLabel->getDescription());
+  rightLevelMeter->setItemDescription(rightLevelLabel->getItemDescription());
   rightLevelMeter->setDescriptionField(infoField);
   rightLevelMeter->setMeterStyle(MeteringDisplay::levelMeterStyle);
   rightLevelMeter->setRange(rangeMin, rangeMax);
@@ -142,11 +142,11 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   rightLevelMeter->setCurrentValue(0.0);
 
   addWidget( midLevelLabel = new RTextField(juce::String(("M"))) );
-  midLevelLabel->setDescription(juce::String(("Level of mid channel")));
+  midLevelLabel->setItemDescription(juce::String(("Level of mid channel")));
   midLevelLabel->setDescriptionField(infoField);
 
   midLevelMeter = new MeteringDisplay();
-  midLevelMeter->setDescription(midLevelLabel->getDescription());
+  midLevelMeter->setItemDescription(midLevelLabel->getItemDescription());
   midLevelMeter->setDescriptionField(infoField);
   midLevelMeter->setMeterStyle(MeteringDisplay::levelMeterStyle);
   midLevelMeter->setRange(rangeMin, rangeMax);
@@ -155,12 +155,12 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   addWidget(midLevelMeter);
 
   sideLevelLabel = new RTextField(juce::String(("S")) );
-  sideLevelLabel->setDescription(juce::String(("Level of side channel")));
+  sideLevelLabel->setItemDescription(juce::String(("Level of side channel")));
   sideLevelLabel->setDescriptionField(infoField);
   addWidget(sideLevelLabel);
 
   sideLevelMeter = new MeteringDisplay();
-  sideLevelMeter->setDescription(sideLevelLabel->getDescription());
+  sideLevelMeter->setItemDescription(sideLevelLabel->getItemDescription());
   sideLevelMeter->setDescriptionField(infoField);
   sideLevelMeter->setMeterStyle(MeteringDisplay::levelMeterStyle);
   sideLevelMeter->setRange(rangeMin, rangeMax);
@@ -169,12 +169,12 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   addWidget(sideLevelMeter);
 
   correlationLabel = new RTextField(juce::String(("C")) );
-  correlationLabel->setDescription(juce::String(("L/R cross-correlation")));
+  correlationLabel->setItemDescription(juce::String(("L/R cross-correlation")));
   correlationLabel->setDescriptionField(infoField);
   addWidget(correlationLabel);
 
   correlationMeter = new MeteringDisplay();
-  correlationMeter->setDescription(correlationLabel->getDescription());
+  correlationMeter->setItemDescription(correlationLabel->getItemDescription());
   correlationMeter->setDescriptionField(infoField);
   correlationMeter->setMeterStyle(MeteringDisplay::triangularPointerStyle);
   correlationMeter->setRange(-1.0, 1.0);

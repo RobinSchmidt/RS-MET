@@ -144,7 +144,7 @@ rsAutomationSetup::rsAutomationSetup(rsAutomatableWidget* widgetToAutomate,
   MetaParameterManager* metaManagerToUse)
   : rsParameterSetupBase(widgetToAutomate, metaManagerToUse)
 {
-  closeButton->setDescription("Closes the automation setup window");
+  closeButton->setItemDescription("Closes the automation setup window");
   createWidgets();
   setAlwaysOnTop(true); // should be stay on top, if parameter slider is moved
   metaMapEditor->registerObserver(this);
@@ -258,7 +258,7 @@ void rsAutomationSetup::assignNodeParameterWidgets(int i)
 void rsAutomationSetup::createWidgets()
 {
   addWidget(metaMapEditor = new rsMetaMapEditor(metaManager));
-  metaMapEditor->setDescription("Mapping between meta-parameter and parameter");
+  metaMapEditor->setItemDescription("Mapping between meta-parameter and parameter");
   metaMapEditor->setValueRange(0, 1, 0, 1);
   metaMapEditor->setClipCoordinatesToRange(true);
 
@@ -271,24 +271,24 @@ void rsAutomationSetup::createWidgets()
   }
 
   addWidget(boxMetaAttach = new RNamedComboBox("", "Meta:"));
-  boxMetaAttach->setDescription("Select meta parameter to attach");
+  boxMetaAttach->setItemDescription("Select meta parameter to attach");
   // todo: fill the box
 
   addWidget(sliderSmoothing = new RSlider("Smoothing"));
-  sliderSmoothing->setDescription("Smoothing time in milliseconds");
+  sliderSmoothing->setItemDescription("Smoothing time in milliseconds");
 
   addWidget(sliderNodeX = new RSlider("X"));
-  sliderNodeX->setDescription("X-coordinate of selected node");
+  sliderNodeX->setItemDescription("X-coordinate of selected node");
 
   addWidget(sliderNodeY = new RSlider("Y"));
-  sliderNodeY->setDescription("Y-coordinate of selected node");
+  sliderNodeY->setItemDescription("Y-coordinate of selected node");
 
   addWidget(boxShapeType = new RNamedComboBox("", "Shape:"));
-  boxShapeType->setDescription("Shape of segment approaching selected node");
+  boxShapeType->setItemDescription("Shape of segment approaching selected node");
   // fill the box: left/right/nearest neighbour, linear, cubic, etc.
 
   addWidget(sliderShapeParam = new RSlider("Shape Parameter"));
-  sliderShapeParam->setDescription("Parameter of curve shape");
+  sliderShapeParam->setItemDescription("Parameter of curve shape");
 
   updateWidgetVisibility();
 }
@@ -307,32 +307,32 @@ rsModulationSetup::rsModulationSetup(rsAutomatableWidget* widgetToModulate,
   MetaParameterManager* metaManagerToUse)
   : rsParameterSetupBase(widgetToModulate, metaManagerToUse)
 {
-  closeButton->setDescription("Closes the modulation setup window");
+  closeButton->setItemDescription("Closes the modulation setup window");
 
   addWidget( modulationsLabel = 
     new RTextField(widgetToModulate->getParameterName() + " Modulations") );
   modulationsLabel->setNoBackgroundAndOutline(true);
-  modulationsLabel->setDescription("Modulation setup");
+  modulationsLabel->setItemDescription("Modulation setup");
 
   addWidget( addButton = new RButton("Add") );
-  addButton->setDescription(juce::String("Adds a new modulation connection"));
+  addButton->setItemDescription(juce::String("Adds a new modulation connection"));
   addButton->setClickingTogglesState(false);
   addButton->addRButtonListener(this);
 
   addWidget( removeButton = new RButton("Remove") );
-  removeButton->setDescription(juce::String("Removes an existing modulation connection"));
+  removeButton->setItemDescription(juce::String("Removes an existing modulation connection"));
   removeButton->setClickingTogglesState(false);
   removeButton->addRButtonListener(this);
 
   addWidget( clipMinField = new RLabeledTextEntryField("Min:") );
   clipMinField->setEntryFieldText(String(getClipMin()));
-  clipMinField->setDescription(juce::String("Range minimum for modulated value"));
+  clipMinField->setItemDescription(juce::String("Range minimum for modulated value"));
   clipMinField->setLabelWidth(36);
   clipMinField->getTextEntryField()->registerTextEntryFieldObserver(this);
 
   addWidget( clipMaxField = new RLabeledTextEntryField("Max:") );
   clipMaxField->setEntryFieldText(String(getClipMax()));
-  clipMaxField->setDescription(juce::String("Range maximum for modulated value"));
+  clipMaxField->setItemDescription(juce::String("Range maximum for modulated value"));
   clipMaxField->setLabelWidth(36);
   clipMaxField->getTextEntryField()->registerTextEntryFieldObserver(this);
 

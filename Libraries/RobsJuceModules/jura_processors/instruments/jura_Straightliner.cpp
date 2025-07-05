@@ -120,7 +120,7 @@ StraightlinerModuleEditor::StraightlinerModuleEditor(CriticalSection *newPlugInL
   envelopeEditor->selectModulatorToEdit(2); // select amp envelope for editing
   addChildEditor( envelopeEditor );
   envelopeEditor->setHeadlineText(juce::String("Envelopes"));
-  envelopeEditor->setDescription(
+  envelopeEditor->setItemDescription(
     juce::String("This is the editor for the 3 modulation generators"));
   envelopeEditor->addChangeListener(this);
   envelopeEditor->setDescriptionField(infoField, true);

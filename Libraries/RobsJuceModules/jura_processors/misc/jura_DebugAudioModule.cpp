@@ -145,7 +145,7 @@ void DebugModuleEditor::createWidgets()
   s->assignParameter( p = debugModule->getParameterByName("Left") );
   xyPad->assignParameterX(p);
   s->setSliderName("Left");
-  s->setDescription("Left channel output value");
+  s->setItemDescription("Left channel output value");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToStringTotal5);
 
@@ -153,21 +153,21 @@ void DebugModuleEditor::createWidgets()
   s->assignParameter( p = debugModule->getParameterByName("Right") );
   xyPad->assignParameterY(p);
   s->setSliderName("Right");
-  s->setDescription("Right channel output value");
+  s->setItemDescription("Right channel output value");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToStringTotal5);
 
   addWidget( smoothSlider = s = new Sld );
   s->assignParameter( p = debugModule->getParameterByName("Smoothing") );
   s->setSliderName("Smoothing");
-  s->setDescription("Parameter smoothing in milliseconds");
+  s->setItemDescription("Parameter smoothing in milliseconds");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToStringTotal5);
 
   addWidget( testSlider = s = new Sld );
   s->assignParameter( p = debugModule->getParameterByName("Test") );
   s->setSliderName("Test");
-  s->setDescription("Test Parameter");
+  s->setItemDescription("Test Parameter");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToStringTotal5);
 
@@ -176,7 +176,7 @@ void DebugModuleEditor::createWidgets()
 
   addWidget( popupButton1 = new RButton("Popup 1") );
   popupButton1->addRButtonListener(this);
-  popupButton1->setDescription("Open a stack-allocated juce::PopupMenu");
+  popupButton1->setItemDescription("Open a stack-allocated juce::PopupMenu");
   popupButton1->setClickingTogglesState(false);
 
 
@@ -188,7 +188,7 @@ void DebugModuleEditor::createWidgets()
 
   addWidget( popupButton2 = new RButton("Popup 2") );
   popupButton2->addRButtonListener(this);
-  popupButton2->setDescription("Open/close an owned jura::RectangleComponent");
+  popupButton2->setItemDescription("Open/close an owned jura::RectangleComponent");
   popupButton2->setClickingTogglesState(true);
 
 
@@ -211,7 +211,7 @@ void DebugModuleEditor::createWidgets()
 
   addWidget( popupButton3 = new RButton("Popup 3") );
   popupButton3->addRButtonListener(this);
-  popupButton3->setDescription("Open/close an owned jura::RPopUpComponent");
+  popupButton3->setItemDescription("Open/close an owned jura::RPopUpComponent");
   popupButton3->setClickingTogglesState(true);
 
 

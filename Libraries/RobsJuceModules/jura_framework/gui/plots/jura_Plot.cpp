@@ -48,14 +48,14 @@ void rsPlot::mouseDown(const MouseEvent &e)
 void rsPlot::mouseEnter(const MouseEvent &e)
 {
   if( showPositionAsDescription == true )
-    setDescription( getInfoLineForPixelPosition(e.x, e.y) );
+    setItemDescription( getInfoLineForPixelPosition(e.x, e.y) );
   DescribedComponent::mouseEnter(e);
 }
 
 void rsPlot::mouseMove(const MouseEvent &e)
 {
   if( showPositionAsDescription == true )
-    setDescription( getInfoLineForPixelPosition(e.x, e.y) );
+    setItemDescription( getInfoLineForPixelPosition(e.x, e.y) );
   DescribedComponent::mouseMove(e);
 }
 

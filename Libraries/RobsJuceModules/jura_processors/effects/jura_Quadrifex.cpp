@@ -1715,11 +1715,11 @@ QuadrifexModuleEditor::QuadrifexModuleEditor(CriticalSection *newPlugInLock,
   }
 
   addWidget( routingLabel = new RTextField( juce::String(("Routing:"))) );
-  routingLabel->setDescription(juce::String(("Choose the routing of the 4 effect slots")));
+  routingLabel->setItemDescription(juce::String(("Choose the routing of the 4 effect slots")));
   routingLabel->setDescriptionField(infoField);
 
   addWidget( routingComboBox = new RComboBox(juce::String(("RoutingComboBox"))) );
-  routingComboBox->setDescription(routingLabel->getDescription());
+  routingComboBox->setItemDescription(routingLabel->getItemDescription());
   routingComboBox->setDescriptionField(infoField);
   routingComboBox->registerComboBoxObserver(this);
   routingComboBox->addItem(Quadrifex::R_BYPASS,           ("Bypass")      );
@@ -1748,14 +1748,14 @@ QuadrifexModuleEditor::QuadrifexModuleEditor(CriticalSection *newPlugInLock,
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
   dryWetSlider->assignParameter( quadrifexModuleToEdit->getParameterByName("DryWet") );
   dryWetSlider->setDefaultValue(0.5);
-  dryWetSlider->setDescription( juce::String(("Ratio between dry and wet signal")) );
+  dryWetSlider->setItemDescription( juce::String(("Ratio between dry and wet signal")) );
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( wetLevelSlider = new RSlider (("WetLevelSlider")) );
   wetLevelSlider->setSliderName(juce::String(("Wet Level")));
   wetLevelSlider->assignParameter( quadrifexModuleToEdit->getParameterByName("WetLevel") );
-  wetLevelSlider->setDescription( juce::String(("Level of the wet signal in dB")) );
+  wetLevelSlider->setItemDescription( juce::String(("Level of the wet signal in dB")) );
   wetLevelSlider->setDescriptionField(infoField);
   wetLevelSlider->setStringConversionFunction(&jura::decibelsToStringWithUnit2);
 

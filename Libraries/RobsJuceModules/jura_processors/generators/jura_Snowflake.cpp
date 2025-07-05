@@ -265,17 +265,17 @@ void SnowflakeEditor::createWidgets()
   Parameter* p;
 
   addWidget( axiomLabel = l = new Lbl("Axiom:") );
-  l->setDescription("L-system axiom (aka initiator, seed)");
+  l->setItemDescription("L-system axiom (aka initiator, seed)");
   l->setDescriptionField(infoField);
 
   addWidget( axiomEditor = new RTextEditor );
   axiomEditor->setText(snowflakeModule->getAxiom(), false);
   axiomEditor->addListener(this);
-  axiomEditor->setDescription(axiomLabel->getDescription());
+  axiomEditor->setItemDescription(axiomLabel->getItemDescription());
   axiomEditor->setDescriptionField(infoField);
 
   addWidget( rulesLabel = l = new Lbl("Rules:") );
-  l->setDescription("L-system rules (aka generator(s), productions, semicolon separated)");
+  l->setItemDescription("L-system rules (aka generator(s), productions, semicolon separated)");
   l->setDescriptionField(infoField);
 
   addWidget( rulesEditor = new RTextEditor );
@@ -283,48 +283,48 @@ void SnowflakeEditor::createWidgets()
   rulesEditor->setText(snowflakeModule->getRules(), false);
   rulesEditor->setReturnKeyStartsNewLine(true);
   rulesEditor->addListener(this);
-  rulesEditor->setDescription(rulesLabel->getDescription());
+  rulesEditor->setItemDescription(rulesLabel->getItemDescription());
   rulesEditor->setDescriptionField(infoField);
 
   addWidget( sliderIterations = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("Iterations") );
-  s->setDescription("Number of L-system iterations");
+  s->setItemDescription("Number of L-system iterations");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString0);
   s->addListener(this); // to update the numLines field
 
   addWidget( numLinesLabel = l = new Lbl("") );
-  l->setDescription("Number of turtle graphic lines for current settings");
+  l->setItemDescription("Number of turtle graphic lines for current settings");
   l->setDescriptionField(infoField);
 
   addWidget( sliderAngle = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("TurningAngle") );
-  s->setDescription("Turn angle of turtle graphics");
+  s->setItemDescription("Turn angle of turtle graphics");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString2);
 
   addWidget( sliderPhase = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("Phase") );
-  s->setDescription("Phase offset in cycle");
+  s->setItemDescription("Phase offset in cycle");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString2);
 
   //addWidget( sliderSkew = s = new Sld );
   //s->assignParameter( p = snowflakeModule->getParameterByName("Skew") );
-  //s->setDescription("Offset between left and right turn angle");
+  //s->setItemDescription("Offset between left and right turn angle");
   //s->setDescriptionField(infoField);
   //s->setStringConversionFunction(&valueToString2);
 
 
   addWidget( sliderAmplitude = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("Amplitude") );
-  s->setDescription("Amplitude of output signal");
+  s->setItemDescription("Amplitude of output signal");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString2);
 
   addWidget( sliderRotation = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("Rotation") );
-  s->setDescription("Rotation applied to xy coordinates");
+  s->setItemDescription("Rotation applied to xy coordinates");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString2);
 
@@ -335,25 +335,25 @@ void SnowflakeEditor::createWidgets()
 
   addWidget( sliderResetRatio1 = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("ResetRatio1") );
-  s->setDescription("Frequency for resetting the turtle as factor for note-frequency");
+  s->setItemDescription("Frequency for resetting the turtle as factor for note-frequency");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   addWidget( sliderResetOffset1 = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("ResetOffset1") );
-  s->setDescription("Frequency dependent offset for ResetRatio1");
+  s->setItemDescription("Frequency dependent offset for ResetRatio1");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   addWidget( sliderResetRatio2 = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("ResetRatio2") );
-  s->setDescription("Frequency for resetting the turtle as factor for note-frequency");
+  s->setItemDescription("Frequency for resetting the turtle as factor for note-frequency");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   addWidget( sliderResetOffset2 = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("ResetOffset2") );
-  s->setDescription("Frequency dependent offset for ResetRatio1");
+  s->setItemDescription("Frequency dependent offset for ResetRatio1");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
@@ -361,13 +361,13 @@ void SnowflakeEditor::createWidgets()
 
   addWidget( sliderReverseRatio1 = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("ReverseRatio1") );
-  s->setDescription("Frequency for reseversing direction as factor for note-frequency");
+  s->setItemDescription("Frequency for reseversing direction as factor for note-frequency");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   addWidget( sliderReverseOffset1 = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("ReverseOffset1") );
-  s->setDescription("Frequency dependent offset for ReverseRatio1");
+  s->setItemDescription("Frequency dependent offset for ReverseRatio1");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
@@ -376,19 +376,19 @@ void SnowflakeEditor::createWidgets()
 
   addWidget( sliderFreqScaler = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("FreqScaler") );
-  s->setDescription("Scale factor for frequency");
+  s->setItemDescription("Scale factor for frequency");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   addWidget( buttonAntiAlias = b = new Btn("AntiAlias") );
   b->assignParameter(snowflakeModule->getParameterByName("AntiAlias"));
-  b->setDescription("Simple experimental anti-aliasing");
+  b->setItemDescription("Simple experimental anti-aliasing");
   b->setDescriptionField(infoField);
   b->setClickingTogglesState(true);
 
   addWidget( buttonUseTable = b = new Btn("UseTable") );
   b->assignParameter(snowflakeModule->getParameterByName("UseTable"));
-  b->setDescription("Use pre-rendered wavetable");
+  b->setItemDescription("Use pre-rendered wavetable");
   b->setDescriptionField(infoField);
   b->setClickingTogglesState(true);
 }

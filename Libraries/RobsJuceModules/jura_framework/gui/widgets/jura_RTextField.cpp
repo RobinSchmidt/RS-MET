@@ -465,10 +465,10 @@ RLabeledTextEntryField::~RLabeledTextEntryField()
   deleteAllChildren();  //necessary?
 }
 
-void RLabeledTextEntryField::setDescription(const juce::String &newDescription)
+void RLabeledTextEntryField::setItemDescription(const juce::String &newDescription)
 {
-  labelField->setDescription(newDescription);
-  entryField->setDescription(newDescription);
+  labelField->setItemDescription(newDescription);
+  entryField->setItemDescription(newDescription);
 }
 
 void RLabeledTextEntryField::setLabelWidth(int newWidth)

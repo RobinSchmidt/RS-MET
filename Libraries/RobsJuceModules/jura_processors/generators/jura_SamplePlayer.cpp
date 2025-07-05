@@ -873,130 +873,130 @@ SamplePlayerEditorContextMenu::SamplePlayerEditorContextMenu(
   samplePlayerModuleToEdit = newSamplePlayerModuleToEdit;
 
   addWidget( ampHeadline = new RTextField( "Amplitude:") );
-  ampHeadline->setDescription(juce::String("Manipulations of the amplitude"));
+  ampHeadline->setItemDescription(juce::String("Manipulations of the amplitude"));
 
   addWidget( levelSlider = new RSlider("LevelSlider") );
   levelSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("Level") );
-  levelSlider->setDescription(juce::String("Output level of the samplePlayer"));
+  levelSlider->setItemDescription(juce::String("Output level of the samplePlayer"));
   levelSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
 
   addWidget( levelByKeySlider = new RSlider("LevelByKeySlider") );
   levelByKeySlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("LevelByKey") );
   levelByKeySlider->setSliderName(juce::String("K"));
-  levelByKeySlider->setDescription(juce::String("Key dependence of samplePlayer's output level"));
+  levelByKeySlider->setItemDescription(juce::String("Key dependence of samplePlayer's output level"));
   levelByKeySlider->setStringConversionFunction(&decibelsToStringWithUnit2);
 
   addWidget( levelByVelSlider = new RSlider("LevelVelSlider") );
   levelByVelSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("LevelByVel") );
   levelByVelSlider->setSliderName(juce::String("V"));
-  levelByVelSlider->setDescription(juce::String("Velocity dependence of samplePlayer's output level"));
+  levelByVelSlider->setItemDescription(juce::String("Velocity dependence of samplePlayer's output level"));
   levelByVelSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
 
   addWidget( midSideSlider = new RSlider("MidSideSlider") );
   midSideSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("MidSide") );
   midSideSlider->setSliderName(juce::String("Mid/Side"));
-  midSideSlider->setDescription("Mid/side adjustment for stereo samples");
+  midSideSlider->setItemDescription("Mid/side adjustment for stereo samples");
   midSideSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( panSlider = new RSlider("PanSlider") );
   panSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("Pan") );
-  panSlider->setDescription("Panorama position of the samplePlayer");
+  panSlider->setItemDescription("Panorama position of the samplePlayer");
   panSlider->setStringConversionFunction(&valueToString3);
 
   addWidget( tuningHeadline = new RTextField( "Tuning:") );
-  tuningHeadline->setDescription(juce::String("Manipulations of the tuning/detuning of the samplePlayer"));
+  tuningHeadline->setItemDescription(juce::String("Manipulations of the tuning/detuning of the samplePlayer"));
 
   addWidget( tuneSlider = new TuningSlider("TuneSlider") );
   tuneSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("Tune") );
-  tuneSlider->setDescription(juce::String("Tuning of the samplePlayer in semitones"));
+  tuneSlider->setItemDescription(juce::String("Tuning of the samplePlayer in semitones"));
   tuneSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
 
   addWidget( tuneByKeySlider = new RSlider("TuneByKeySlider") );
   tuneByKeySlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("TuneByKey") );
   tuneByKeySlider->setSliderName(juce::String("K"));
-  tuneByKeySlider->setDescription(juce::String("Key dependence of the tuning"));
+  tuneByKeySlider->setItemDescription(juce::String("Key dependence of the tuning"));
   tuneByKeySlider->setStringConversionFunction(&percentToStringWithUnit2);
 
   addWidget( tuneByVelSlider = new RSlider("TuneVelSlider") );
   tuneByVelSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("TuneByVel") );
   tuneByVelSlider->setSliderName("V");
-  tuneByVelSlider->setDescription("Velocity dependence of the tuning");
+  tuneByVelSlider->setItemDescription("Velocity dependence of the tuning");
   tuneByVelSlider->setStringConversionFunction(&percentToStringWithUnit2);
   tuneByVelSlider->setVisible(false);
 
   addWidget( rootKeySlider = new TuningSlider("RootKeySlider") );
   rootKeySlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("RootKey") );
-  rootKeySlider->setDescription("Rootkey of the sample");
+  rootKeySlider->setItemDescription("Rootkey of the sample");
   rootKeySlider->setStringConversionFunction(&semitonesToStringWithUnit2);
 
   // todo: add a second slider with the fundamental frequency in Hz and a button for auto detecting it (auto)
 
   addWidget( timeHeadline = new RTextField( "Time:") );
-  timeHeadline->setDescription(juce::String("Time related parameters"));
+  timeHeadline->setItemDescription(juce::String("Time related parameters"));
 
   addWidget( startSlider = new TuningSlider("StartSlider") ); // TuningSlider?! surely a bug
   //startSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("Start") );
-  //startSlider->setDescription(juce::String("Start point of playback within the sample"));
-  startSlider->setDescription(juce::String("Not yet implemented"));
+  //startSlider->setItemDescription(juce::String("Start point of playback within the sample"));
+  startSlider->setItemDescription(juce::String("Not yet implemented"));
   startSlider->setStringConversionFunction(&valueToString0);
   //startSlider->addListener(this);
 
   addWidget( startByVelSlider = new RSlider("StartByVelSlider") );
   //startByVelSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("StartByVel") );
   startByVelSlider->setSliderName("V");
-  //startByVelSlider->setDescription(juce::String("Velocity dependence of the start time"));
-  startByVelSlider->setDescription("Not yet implemented");
+  //startByVelSlider->setItemDescription(juce::String("Velocity dependence of the start time"));
+  startByVelSlider->setItemDescription("Not yet implemented");
   startByVelSlider->setStringConversionFunction(&valueToString0);
 
   addWidget( loopButton = new RButton("Loop") );
   loopButton->assignParameter( samplePlayerModuleToEdit->getParameterByName("Loop") );
-  loopButton->setDescription("Switch loop on/off");
+  loopButton->setItemDescription("Switch loop on/off");
   //loopButton->setClickingTogglesState(true);
   //loopButton->addRButtonListener(this);
 
   addWidget( loopStartSlider = new TuningSlider("LoopStartSlider") );
   loopStartSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("LoopStart") );
-  loopStartSlider->setDescription("Start point of the loop within the sample");
+  loopStartSlider->setItemDescription("Start point of the loop within the sample");
   loopStartSlider->setStringConversionFunction(&valueToString0);
   //loopStartSlider->addListener(this);
 
   addWidget( loopLengthSlider = new TuningSlider("LoopLengthSlider") );
   loopLengthSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("LoopLength") );
-  loopLengthSlider->setDescription("Length of the loop");
+  loopLengthSlider->setItemDescription("Length of the loop");
   loopLengthSlider->setStringConversionFunction(&valueToString0);
   //loopLengthSlider->addListener(this);
 
   addWidget( filterHeadline = new RTextField( "Filter:") );
-  filterHeadline->setDescription("Basic filtering of the sample");
+  filterHeadline->setItemDescription("Basic filtering of the sample");
 
   addWidget( lowpassSlider = new TuningSlider("LowpassSlider") );
   lowpassSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("Lowpass") );
-  lowpassSlider->setDescription("Lowpass cutoff frequency");
+  lowpassSlider->setItemDescription("Lowpass cutoff frequency");
   lowpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( highpassSlider = new TuningSlider("HighpassSlider") );
   highpassSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("Highpass") );
-  highpassSlider->setDescription("Highpass cutoff frequency");
+  highpassSlider->setItemDescription("Highpass cutoff frequency");
   highpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( miscHeadline = new RTextField( "Misc:") );
-  miscHeadline->setDescription("Miscellaneous sample manipulations");
+  miscHeadline->setItemDescription("Miscellaneous sample manipulations");
 
   addWidget( phaseRandomizeButton = new RButton("PhaseRandomize") );
   phaseRandomizeButton->assignParameter( samplePlayerModuleToEdit->getParameterByName("PhaseRandomize") );
-  phaseRandomizeButton->setDescription("Switch phase-randomization on/off");
+  phaseRandomizeButton->setItemDescription("Switch phase-randomization on/off");
   //phaseRandomizeButton->addRButtonListener(this);
 
   addWidget( phaseSeedSlider = new TuningSlider("PhaseRandomizeSeedSlider") );
   //phaseSeedSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("PhaseSeed") );
-  //phaseSeedSlider->setDescription(juce::String("Seed for the random phases"));
-  phaseSeedSlider->setDescription("Not yet implemented");
+  //phaseSeedSlider->setItemDescription(juce::String("Seed for the random phases"));
+  phaseSeedSlider->setItemDescription("Not yet implemented");
   phaseSeedSlider->setStringConversionFunction(&valueToString0);
   //phaseSeedSlider->addListener(this);
 
 
   addWidget( closeButton = new RButton(RButton::CLOSE) );
-  closeButton->setDescription("Closes the samplePlayer context menu");
+  closeButton->setItemDescription("Closes the samplePlayer context menu");
   closeButton->setClickingTogglesState(false);
   // we don't listen to this button ourselves - this is the job of the outlying editor object
 
@@ -1162,7 +1162,7 @@ SamplePlayerModuleEditor::SamplePlayerModuleEditor(CriticalSection *newPlugInLoc
   addPlot( sampleDisplay = new SamplePlayerEditorDisplay() );
   //addAndMakeVisible( sampleDisplay = new SamplePlayerEditorDisplay() );
   sampleDisplay->setSamplePlayerToEdit(samplePlayerModuleToEdit->wrappedSamplePlayer);
-  sampleDisplay->setDescription("Shows the sample waveform data");
+  sampleDisplay->setItemDescription("Shows the sample waveform data");
   sampleDisplay->addChangeListener(this); // to receive modifications of loop-settings, etc.
   sampleDisplay->setVerticalCoarseGrid(1.0,   false);
   sampleDisplay->setVerticalFineGrid(0.1,     false);
@@ -1188,154 +1188,154 @@ SamplePlayerModuleEditor::SamplePlayerModuleEditor(CriticalSection *newPlugInLoc
   addChildColourSchemeComponent(contextMenu, false, false);
 
   addWidget( fileLabel = new RTextField( "File:") );
-  fileLabel->setDescription("The currently loaded sample file.");
+  fileLabel->setItemDescription("The currently loaded sample file.");
   fileLabel->setJustification(Justification::centredLeft);
 
   addWidget( formatLabel = new RTextField( "Format:") );
-  formatLabel->setDescription("Data format of currently loaded sample file.");
+  formatLabel->setItemDescription("Data format of currently loaded sample file.");
 
   addWidget( formatInfoLabel = new RTextField( juce::String()) );
-  formatInfoLabel->setDescription(formatLabel->getDescription());
+  formatInfoLabel->setItemDescription(formatLabel->getItemDescription());
 
   addWidget( levelSlider = new RSlider("Level") );
   levelSlider->assignParameter( moduleToEdit->getParameterByName("Level") );
-  levelSlider->setDescription("Playback level");
+  levelSlider->setItemDescription("Playback level");
   levelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( tuneSlider = new RSlider("Tune") );
   tuneSlider->assignParameter( moduleToEdit->getParameterByName("Tune") );
-  tuneSlider->setDescription("Tuning");
+  tuneSlider->setItemDescription("Tuning");
   tuneSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
 
   addWidget( lowpassSlider = new RSlider("Lowpass") );
   lowpassSlider->assignParameter( moduleToEdit->getParameterByName("Lowpass") );
   lowpassSlider->setSliderName("LPF");
-  lowpassSlider->setDescription("Cutoff of the lowpass filter");
+  lowpassSlider->setItemDescription("Cutoff of the lowpass filter");
   lowpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( highpassSlider = new RSlider("Highpass") );
   highpassSlider->assignParameter( moduleToEdit->getParameterByName("Highpass") );
   highpassSlider->setSliderName("HPF");
-  highpassSlider->setDescription("Cutoff of the highpass filter");
+  highpassSlider->setItemDescription("Cutoff of the highpass filter");
   highpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( muteButton = new RButton(juce::String("Mute")) );
   muteButton->assignParameter( moduleToEdit->getParameterByName("Mute") );
-  muteButton->setDescription("Mute sample player");
+  muteButton->setItemDescription("Mute sample player");
 
   addWidget( soloButton = new RButton("Solo") );
   soloButton->assignParameter( moduleToEdit->getParameterByName("Solo") );
-  soloButton->setDescription("Switch sample player to solo mode");
+  soloButton->setItemDescription("Switch sample player to solo mode");
 
   addWidget( phaseRandomizeButton = new RButton(juce::String("PhaseRandomize")) );
   phaseRandomizeButton->assignParameter( moduleToEdit->getParameterByName("PhaseRandomize") );
   phaseRandomizeButton->setButtonText( "PhRnd" );
-  phaseRandomizeButton->setDescription("Turn phase randomization on/off");
+  phaseRandomizeButton->setItemDescription("Turn phase randomization on/off");
 
   addWidget( loopButton = new RButton("Loop") );
   loopButton->assignParameter( moduleToEdit->getParameterByName("Loop") );
-  loopButton->setDescription(juce::String("Switch loop on/off"));
+  loopButton->setItemDescription(juce::String("Switch loop on/off"));
   //loopButton->setClickingTogglesState(true);
   //loopButton->addRButtonListener(this);
 
   addWidget( moreButton = new RButton(juce::String("More")) );
-  moreButton->setDescription("Show context menu with more settings");
+  moreButton->setItemDescription("Show context menu with more settings");
   moreButton->setClickingTogglesState(true);
   moreButton->addRButtonListener(this);
 
   addWidget( fromLoopButton = new RButton("From Loop") );
   fromLoopButton->addRButtonListener(this);
-  fromLoopButton->setDescription(
+  fromLoopButton->setItemDescription(
     "Infer root key and detuning from loop-length and number of cycles in loop.");
   fromLoopButton->setClickingTogglesState(true);
 
   addWidget( loopSnapButton = new RButton("Snap To 0") );
   loopSnapButton->addRButtonListener(this);
-  loopSnapButton->setDescription("Snap loop-start and -end to upward zero crossings.");
+  loopSnapButton->setItemDescription("Snap loop-start and -end to upward zero crossings.");
   loopSnapButton->setClickingTogglesState(true);
 
   //addWidget( loopEndSnapButton = new RButton(juce::String(T("Snap"))) );
   //loopEndSnapButton->addRButtonListener(this);
-  //loopEndSnapButton->setDescription(juce::String(T("Snap loop end to next zero crossing.")));
+  //loopEndSnapButton->setItemDescription(juce::String(T("Snap loop end to next zero crossing.")));
   //loopEndSnapButton->setClickingTogglesState(false);
 
   addWidget( loopLengthLockButton = new RButton("Lock Length") );
   loopLengthLockButton->addRButtonListener(this);
-  loopLengthLockButton->setDescription("Lock loop length.");
+  loopLengthLockButton->setItemDescription("Lock loop length.");
   loopLengthLockButton->setClickingTogglesState(true);
 
   addWidget( autoNumCyclesButton = new RButton("Auto") );
   autoNumCyclesButton->addRButtonListener(this);
-  autoNumCyclesButton->setDescription("Auto-detect the number of pitch cycles in the loop.");
+  autoNumCyclesButton->setItemDescription("Auto-detect the number of pitch cycles in the loop.");
   autoNumCyclesButton->setClickingTogglesState(true);
 
   addWidget( rootKeySlider = new RSlider("Root") );
   rootKeySlider->addListener(this);
   rootKeySlider->setSliderName("Root:");
-  rootKeySlider->setDescription("Root key of the sample.");
+  rootKeySlider->setItemDescription("Root key of the sample.");
   rootKeySlider->setStringConversionFunction(&midiNoteToString);
   rootKeySlider->setRange(0.0, 127.0, 1.0, 64.0);
 
   addWidget( rootDetuneSlider = new RSlider("Detune") );
   rootDetuneSlider->addListener(this);
   rootDetuneSlider->setSliderName("Detune:");
-  rootDetuneSlider->setDescription("Detuning of the fundamental frequency from root key in cents.");
+  rootDetuneSlider->setItemDescription("Detuning of the fundamental frequency from root key in cents.");
   rootDetuneSlider->setStringConversionFunction(&centsToStringWithUnit2);
   rootDetuneSlider->setRange(-50.0, 50.0, 0.01, 0.0);
 
   addWidget( startSlider = new RSlider("StartSlider") );
   startSlider->addListener(this);
   startSlider->setSliderName("Play Start:");
-  startSlider->setDescription("Playback start point in the sample.");
+  startSlider->setItemDescription("Playback start point in the sample.");
   startSlider->setStringConversionFunction(&valueToString3);
   startSlider->setRange(0.0, 1.0, 1.0, 0.0);
 
   addWidget( startByVelSlider = new RSlider("StartByVelSlider"));
   startByVelSlider->addListener(this);
   startByVelSlider->setSliderName("V:");
-  startByVelSlider->setDescription("Velocity dependence of playback start point.");
+  startByVelSlider->setItemDescription("Velocity dependence of playback start point.");
   startByVelSlider->setStringConversionFunction(&valueToString3);
   startByVelSlider->setRange(0.0, 1.0, 1.0, 0.0);
 
   addWidget( endSlider = new RSlider("EndSlider") );
   endSlider->addListener(this);
   endSlider->setSliderName("Play End:");
-  endSlider->setDescription("Playback end point in the sample.");
+  endSlider->setItemDescription("Playback end point in the sample.");
   endSlider->setStringConversionFunction(&valueToString3);
   endSlider->setRange(0.0, 1.0, 1.0, 0.0);
 
   addWidget( loopLengthSlider = new RSlider("LoopLengthSlider") );
   loopLengthSlider->addListener(this);
   loopLengthSlider->setSliderName("Length");
-  loopLengthSlider->setDescription("Loop length (in samples).");
+  loopLengthSlider->setItemDescription("Loop length (in samples).");
   loopLengthSlider->setStringConversionFunction(&valueToString3);
   loopLengthSlider->setRange(0.0, 1.0, 1.0, 0.0);
 
   addWidget( loopStartSlider = new RSlider("LoopStartSlider") );
   loopStartSlider->addListener(this);
   loopStartSlider->setSliderName("Loop Start:");
-  loopStartSlider->setDescription("Loop start point (in samples).");
+  loopStartSlider->setItemDescription("Loop start point (in samples).");
   loopStartSlider->setStringConversionFunction(&valueToString3);
   loopStartSlider->setRange(0.0, 1.0, 1.0, 0.0);
 
   addWidget( loopEndSlider = new RSlider("LoopEndSlider") );
   loopEndSlider->addListener(this);
   loopEndSlider->setSliderName("Loop End:");
-  loopEndSlider->setDescription("Loop end point (in samples).");
+  loopEndSlider->setItemDescription("Loop end point (in samples).");
   loopEndSlider->setStringConversionFunction(&valueToString3);
   loopEndSlider->setRange(0.0, 1.0, 1.0, 0.0);
 
   addWidget( loopCrossfadeTimeSlider = new RSlider("LoopCrossfadeTimeSlider") );
   loopCrossfadeTimeSlider->addListener(this);
   loopCrossfadeTimeSlider->setSliderName("X-Fade");
-  loopCrossfadeTimeSlider->setDescription("Loop crossfade time (in samples).");
+  loopCrossfadeTimeSlider->setItemDescription("Loop crossfade time (in samples).");
   loopCrossfadeTimeSlider->setStringConversionFunction(&valueToString3);
   loopCrossfadeTimeSlider->setRange(0.0, 1.0, 1.0, 0.0);
 
   addWidget( loopCrossfadeShapeSlider = new RSlider("LoopCrossfadeShapeSlider") );
   loopCrossfadeShapeSlider->addListener(this);
   loopCrossfadeShapeSlider->setSliderName("Shape");
-  loopCrossfadeShapeSlider->setDescription(
+  loopCrossfadeShapeSlider->setItemDescription(
     juce::String("Loop crossfade shape (1: constant sum, 2: constant power)."));
   loopCrossfadeShapeSlider->setStringConversionFunction(&valueToString2);
   loopCrossfadeShapeSlider->setRange(1.0, 2.0, 0.01, 0.0);
@@ -1343,15 +1343,15 @@ SamplePlayerModuleEditor::SamplePlayerModuleEditor(CriticalSection *newPlugInLoc
   addWidget( loopNumCyclesSlider = new RSlider("LoopNumCyclesSlider") );
   loopNumCyclesSlider->addListener(this);
   loopNumCyclesSlider->setSliderName("Cycles:");
-  loopNumCyclesSlider->setDescription("Number of pitch cycles in the loop.");
+  loopNumCyclesSlider->setItemDescription("Number of pitch cycles in the loop.");
   loopNumCyclesSlider->setStringConversionFunction(&valueToString0);
   loopNumCyclesSlider->setRange(1.0, 100.0, 1.0, 1.0);
 
   // customize the descriptions for the load/save buttons:
-  stateWidgetSet->stateLoadButton->setDescription("Load sample playback settings from file");
-  stateWidgetSet->stateSaveButton->setDescription("Save sample playback settings to file");
-  stateWidgetSet->statePlusButton->setDescription("Skip to next playback settings file in current directory");
-  stateWidgetSet->stateMinusButton->setDescription("Skip to previous playback settings file in current directory");
+  stateWidgetSet->stateLoadButton->setItemDescription("Load sample playback settings from file");
+  stateWidgetSet->stateSaveButton->setItemDescription("Save sample playback settings to file");
+  stateWidgetSet->statePlusButton->setItemDescription("Skip to next playback settings file in current directory");
+  stateWidgetSet->stateMinusButton->setItemDescription("Skip to previous playback settings file in current directory");
 
 
   // preliminary, for development

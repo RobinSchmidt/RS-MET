@@ -972,11 +972,11 @@ void SfzOpcodeEditor::createWidgets()
   // The widgets that are always present:
   addWidget(opcodeField = new jura::RTextField());
   opcodeField->setText("Opcode"); // preliminary...maybe get rid
-  opcodeField->setDescription("Name of currently active opcode");
+  opcodeField->setItemDescription("Name of currently active opcode");
 
   addWidget(helpField = new jura::RTextField());
   helpField->setText("ToDo: Opcode description goes here");   // also preliminary
-  helpField->setDescription("Short description of the opcode");
+  helpField->setItemDescription("Short description of the opcode");
 
   addChildColourSchemeComponent(opcodeWidgets = new SfzOpcodeWidgetSet());
   // Maybe add descriptions to these widgets, too - but maybe these descriptions should also 
@@ -1484,19 +1484,19 @@ void SamplerEditor::createWidgets()
   /*
   addWidget(instrumentLabel = new RTextField);
   instrumentLabel->setText("Instrument:");
-  instrumentLabel->setDescription("Currently loaded sfz instrument");
+  instrumentLabel->setItemDescription("Currently loaded sfz instrument");
   instrumentLabel->setDescriptionField(infoField);
   */
 
 
   addWidget(playButton = new jura::RRadioButton("Play"));
-  playButton->setDescription("Switch GUI to play/perform mode");
+  playButton->setItemDescription("Switch GUI to play/perform mode");
   playButton->addToRadioButtonGroup(&guiPageButtonGroup);
   playButton->setToggleState(true, false);
   playButton->addRButtonListener(this);
 
   addWidget(editButton = new jura::RRadioButton("Edit"));
-  editButton->setDescription("Switch GUI to SFZ editing mode");
+  editButton->setItemDescription("Switch GUI to SFZ editing mode");
   editButton->addToRadioButtonGroup(&guiPageButtonGroup);
   editButton->addRButtonListener(this);
 
@@ -1508,7 +1508,7 @@ void SamplerEditor::createWidgets()
 
   layersMeter = new MeteringDisplayWithText();
   layersMeter->setMeasurementName("Layers");
-  layersMeter->setDescription("Number of currently playing layers");
+  layersMeter->setItemDescription("Number of currently playing layers");
   layersMeter->setDescriptionField(infoField);
   //layersMeter->setMeterStyle(MeteringDisplay::horizontalRatio);  // is the default anyway
   layersMeter->setRange(0, 16);  // should change dynamically on xml load
@@ -1524,7 +1524,7 @@ void SamplerEditor::createWidgets()
   addWidget(maxNumLayersSlider = new RDraggableNumber);
   //maxNumLayersSlider->assignParameter( samplerModule->getParameterByName("MaxNumLayers") );
   maxNumLayersSlider->setValue(16);  // preliminary
-  maxNumLayersSlider->setDescription("Number of available layers. Drag up/down to adjust.");
+  maxNumLayersSlider->setItemDescription("Number of available layers. Drag up/down to adjust.");
   maxNumLayersSlider->setDescriptionField(infoField);
   */
 
@@ -1555,16 +1555,16 @@ void SamplerEditor::createWidgets()
   // SFZ file loading widgets:
   sfzFileLoader = new jura::FileSelectionBox("", &samplerModule->sfzPlayer);
   addWidgetSet(sfzFileLoader);
-  //sfzFileLoader->setDescription("Code of Current SFZ instrument");  // ??? Do better!
+  //sfzFileLoader->setItemDescription("Code of Current SFZ instrument");  // ??? Do better!
   //sfzFileLoader->addFileManagerListener(this); 
 
 
   // The SFZ TreeView and adjacent widgets:
   juce::String desc = "Structure of current SFZ patch";
   addWidget(structureField = new RTextField("Patch Structure"));
-  structureField->setDescription(desc);
+  structureField->setItemDescription(desc);
   addWidget(sfzTree = new SfzTreeView);
-  sfzTree->setDescription(desc);
+  sfzTree->setItemDescription(desc);
   sfzTree->registerTreeViewObserver(this);
 
 
@@ -1580,13 +1580,13 @@ void SamplerEditor::createWidgets()
   // maybe we can make a subclass of juce::CodeEditorComponent and jura::DescribedItem
 
   addWidget(parseButton = new jura::RClickButton("Parse"));  // Maybe use a right-arrow ("Play")
-  parseButton->setDescription("Parse the current content of the code editor as sfz");
+  parseButton->setItemDescription("Parse the current content of the code editor as sfz");
   //parseButton->addRButtonListener(this); // Needed? It initially worked without that. ...but why?
   // ToDo: Ctrl-P should also trigger parsing. Write that into the description when it's 
   // implemented.
  
   addChildEditor(opcodeEditor = new jura::SfzOpcodeEditor);
-  opcodeEditor->setDescription("Editor for the currently selected opcode in the tree");
+  opcodeEditor->setItemDescription("Editor for the currently selected opcode in the tree");
 
   // The sliders for the MIDI controllers:
   for(int i = 0; i < 128; i++){

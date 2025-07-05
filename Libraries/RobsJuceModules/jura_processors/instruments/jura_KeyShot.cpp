@@ -93,7 +93,7 @@ KeyShotModuleEditor::KeyShotModuleEditor(CriticalSection *newPlugInLock,
 
   //ampEnvEditor = new BreakpointModulatorEditor(keyShotAudioModule->ampEnvModule);
   //ampEnvEditor->setHeadlineText(juce::String(T("Amp Env")));
-  //ampEnvEditor->setDescription(juce::String(T("This is the modulation generator for the amplitude")));
+  //ampEnvEditor->setItemDescription(juce::String(T("This is the modulation generator for the amplitude")));
   //addAndMakeVisible( ampEnvEditor );
   //ampEnvEditor->addChangeListener(this);
   //ampEnvEditor->setDescriptionField(infoField, true);

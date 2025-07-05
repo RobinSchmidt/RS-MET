@@ -911,14 +911,14 @@ void MultiBandEffectEditor::createWidgets()
   addChildColourSchemeComponent(plotEditor);
 
   addWidget( c = effectSelectBox = new RComboBox() );
-  c->setDescription("Effect type to be applied to each band");
+  c->setItemDescription("Effect type to be applied to each band");
   c->setDescriptionField(infoField);
   // populate box with available effect types
   //c->addListener(this);
 
   addWidget( c = splitModeBox = new RComboBox() );
   c->assignParameter( effectToEdit->getParameterByName("SplitMode") );
-  c->setDescription("Mode of the band-splitting");
+  c->setItemDescription("Mode of the band-splitting");
   c->setDescriptionField(infoField);
 
   updateSplitSliders();

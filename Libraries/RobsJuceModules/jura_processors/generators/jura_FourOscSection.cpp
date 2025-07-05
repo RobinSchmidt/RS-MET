@@ -38,18 +38,18 @@ FourOscSectionModuleEditor::FourOscSectionModuleEditor(CriticalSection *newPlugI
   infoField->setVisible(false);
 
   setHeadlineText("Oscillators");
-  setDescription("This is the oscillator section");
+  setItemDescription("This is the oscillator section");
 
   addChildEditor( osc1Editor = new WaveOscEditor(lock, newFourOscSectionToEdit->osc1Module));
   addChildEditor( osc2Editor = new WaveOscEditor(lock, newFourOscSectionToEdit->osc2Module) );
   addChildEditor( osc3Editor = new WaveOscEditor(lock, newFourOscSectionToEdit->osc3Module) );
   addChildEditor( osc4Editor = new WaveOscEditor(lock, newFourOscSectionToEdit->osc4Module) );
 
-  stateWidgetSet->stateLoadButton->setDescription(   "Load oscillator section setting from file");
-  stateWidgetSet->stateSaveButton->setDescription(   "Save oscillator section setting to file");
-  stateWidgetSet->statePlusButton->setDescription(   "Skip to next oscillator section setting in current directory");
-  stateWidgetSet->stateMinusButton->setDescription(  "Skip to previous oscillator section setting in current directory");
-  stateWidgetSet->stateFileNameLabel->setDescription("Name of current preset for the oscillator section (if any)");
+  stateWidgetSet->stateLoadButton->setItemDescription(   "Load oscillator section setting from file");
+  stateWidgetSet->stateSaveButton->setItemDescription(   "Save oscillator section setting to file");
+  stateWidgetSet->statePlusButton->setItemDescription(   "Skip to next oscillator section setting in current directory");
+  stateWidgetSet->stateMinusButton->setItemDescription(  "Skip to previous oscillator section setting in current directory");
+  stateWidgetSet->stateFileNameLabel->setItemDescription("Name of current preset for the oscillator section (if any)");
 
   isTopLevelEditor = false;
 

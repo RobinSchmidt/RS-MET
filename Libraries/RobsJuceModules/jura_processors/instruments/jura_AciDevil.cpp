@@ -188,183 +188,183 @@ void AciDevilModuleEditor::createWidgets()
 
   addWidget( globalLabel = l = new Lbl("Global"));
   //l->setJustificationType(Justification::centred);
-  l->setDescription("Global parameters");
+  l->setItemDescription("Global parameters");
   l->setDescriptionField(infoField);
 
   addWidget( masterLevelSlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("MasterLevel") );
   s->setSliderName("Level");
-  s->setDescription("Master level in decibels");
+  s->setItemDescription("Master level in decibels");
   s->setStringConversionFunction(decibelsToStringWithUnit1);
   s->setDescriptionField(infoField);
 
   addWidget( accentSlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("Accent") );
-  s->setDescription("Accent in percent");
+  s->setItemDescription("Accent in percent");
   s->setStringConversionFunction(percentToStringWithUnit1);
   s->setDescriptionField(infoField);
 
   addWidget( slideTimeSlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("SlideTime") );
   s->setSliderName("Slide");
-  s->setDescription("Slide time in milliseconds");
+  s->setItemDescription("Slide time in milliseconds");
   s->setStringConversionFunction(millisecondsToStringWithUnit2);
   s->setDescriptionField(infoField);
 
   addWidget( oscLabel = new Lbl("Oscillator") );
   oscLabel->setJustification(Justification::centred);
-  oscLabel->setDescription("Oscillator parameters");
+  oscLabel->setItemDescription("Oscillator parameters");
   oscLabel->setDescriptionField(infoField);
 
   addWidget( waveformSlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("Waveform") );
   s->setSliderName("Saw/Pulse");
-  s->setDescription("Mix between saw- and pulse-wave for main oscillator");
+  s->setItemDescription("Mix between saw- and pulse-wave for main oscillator");
   s->setStringConversionFunction(ratioToString0);
   s->setDescriptionField(infoField);
 
   addWidget( pulseWidthSlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("PulseWidth") );
   s->setSliderName("PulseWidth");
-  s->setDescription("Width of high section of the rectangular pulse waveform");
+  s->setItemDescription("Width of high section of the rectangular pulse waveform");
   s->setStringConversionFunction(percentToStringWithUnit1);
   s->setDescriptionField(infoField);
 
   addWidget( subOscLabel = new Lbl("SubOsc:") );
   subOscLabel->setJustification(Justification::centredLeft);
-  subOscLabel->setDescription("Sub-oscillator settings");
+  subOscLabel->setItemDescription("Sub-oscillator settings");
   subOscLabel->setDescriptionField(infoField);
 
   addWidget( subOscLevelSlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("SubOscLevel") );
   s->setSliderName("Level");
-  s->setDescription("Sub-oscillator level in decibels");
+  s->setItemDescription("Sub-oscillator level in decibels");
   s->setStringConversionFunction(decibelsToStringWithUnit1);
   s->setDescriptionField(infoField);
 
   addWidget( subOscWaveformSlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("SubOscWaveform") );
   s->setSliderName("Saw/Pulse");
-  s->setDescription("Mix between saw- and pulse-wave for suboscillator");
+  s->setItemDescription("Mix between saw- and pulse-wave for suboscillator");
   s->setStringConversionFunction(ratioToString0);
   s->setDescriptionField(infoField);
 
 
   addWidget( filterLabel = new Lbl("Filter") );
   filterLabel->setJustification(Justification::centred);
-  filterLabel->setDescription("Filter");
+  filterLabel->setItemDescription("Filter");
   filterLabel->setDescriptionField(infoField);
 
   addWidget( cutoffSlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("Cutoff") );
-  s->setDescription("Filter cutoff frequency in Hz");
+  s->setItemDescription("Filter cutoff frequency in Hz");
   s->setStringConversionFunction(hertzToStringWithUnitTotal5);
   s->setDescriptionField(infoField);
 
   addWidget( resonanceSlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("Resonance") );
-  s->setDescription("Resonance in percent");
+  s->setItemDescription("Resonance in percent");
   s->setStringConversionFunction(percentToStringWithUnit1);
   s->setDescriptionField(infoField);
 
   addWidget( filterModeLabel = new Lbl("Mode:") );
   filterModeLabel->setJustification(Justification::centredLeft);
-  filterModeLabel->setDescription("Choose the filter mode");
-  filterModeLabel->setDescription("Mode:");
+  filterModeLabel->setItemDescription("Choose the filter mode");
+  filterModeLabel->setItemDescription("Mode:");
   filterModeLabel->setDescriptionField(infoField);
 
   addWidget( filterModeBox = c = new Box );
   c->assignParameter( moduleToEdit->getParameterByName("FilterMode") );
-  c->setDescription(filterModeLabel->getDescription());
+  c->setItemDescription(filterModeLabel->getItemDescription());
   c->setDescriptionField(infoField);
 
   addWidget( envModSlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("EnvMod") );
-  s->setDescription("Amount of modulation of cutoff frequency in semitones");
+  s->setItemDescription("Amount of modulation of cutoff frequency in semitones");
   s->setStringConversionFunction(semitonesToStringWithUnit1);
   s->setDescriptionField(infoField);
 
 
   addWidget( filterEnvLabel = new Lbl("Filter Envelope") );
   filterEnvLabel->setJustification(Justification::centred);
-  filterEnvLabel->setDescription("Filter envelope parameters");
+  filterEnvLabel->setItemDescription("Filter envelope parameters");
   filterEnvLabel->setDescriptionField(infoField);
 
   addWidget( normalLabel = new Lbl("Normal:") );
   normalLabel->setJustification(Justification::centredLeft);
-  normalLabel->setDescription("Time values for normal (un-accented) notes");
+  normalLabel->setItemDescription("Time values for normal (un-accented) notes");
   normalLabel->setDescriptionField(infoField);
 
   addWidget( normalDecaySlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("NormalDecay") );
   s->setSliderName("Decay");
-  s->setDescription("Decay time for normal (un-accented) notes in milliseconds");
+  s->setItemDescription("Decay time for normal (un-accented) notes in milliseconds");
   s->setStringConversionFunction(millisecondsToStringWithUnit2);
   s->setDescriptionField(infoField);
 
   addWidget( normalAttackSlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("NormalAttack") );
   s->setSliderName("Attack");
-  s->setDescription("Attack time for normal (un-accented) notes in milliseconds");
+  s->setItemDescription("Attack time for normal (un-accented) notes in milliseconds");
   s->setStringConversionFunction(millisecondsToStringWithUnit2);
   s->setDescriptionField(infoField);
 
 
   addWidget( accentLabel = new Lbl("Accent:") );
   accentLabel->setJustification(Justification::centredLeft);
-  accentLabel->setDescription("Time values for accented notes");
+  accentLabel->setItemDescription("Time values for accented notes");
   accentLabel->setDescriptionField(infoField);
 
   addWidget( accentDecaySlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("AccentDecay") );
   s->setSliderName("Decay");
-  s->setDescription("Decay time for accented notes in milliseconds");
+  s->setItemDescription("Decay time for accented notes in milliseconds");
   s->setStringConversionFunction(millisecondsToStringWithUnit2);
   s->setDescriptionField(infoField);
 
   addWidget( accentAttackSlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("AccentAttack") );
   s->setSliderName("Attack");
-  s->setDescription("Attack time for accented notes in milliseconds");
+  s->setItemDescription("Attack time for accented notes in milliseconds");
   s->setStringConversionFunction(millisecondsToStringWithUnit2);
   s->setDescriptionField(infoField);
 
   addWidget( ampLabel = new Lbl("Amp Envelope") );
   ampLabel->setJustification(Justification::centred);
-  ampLabel->setDescription("Amplide envelope and distortion parameters");
+  ampLabel->setItemDescription("Amplide envelope and distortion parameters");
   ampLabel->setDescriptionField(infoField);
 
   addWidget( ampDecaySlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("AmpDecay") );
   s->setSliderName("Decay");
-  s->setDescription("Decay time for amplitude envelope in milliseconds");
+  s->setItemDescription("Decay time for amplitude envelope in milliseconds");
   s->setStringConversionFunction(millisecondsToStringWithUnit2);
   s->setDescriptionField(infoField);
 
   addWidget( ampSustainSlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("AmpSustain") );
   s->setSliderName("Sustain");
-  s->setDescription("Sustain level for amplitude envelope in decibels");
+  s->setItemDescription("Sustain level for amplitude envelope in decibels");
   s->setStringConversionFunction(decibelsToStringWithUnit1);
   s->setDescriptionField(infoField);
 
   addWidget( ampReleaseSlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("AmpRelease") );
   s->setSliderName("Release");
-  s->setDescription("Release time for amplitude envelope in milliseconds");
+  s->setItemDescription("Release time for amplitude envelope in milliseconds");
   s->setStringConversionFunction(millisecondsToStringWithUnit2);
   s->setDescriptionField(infoField);
 
 
   addWidget( distLabel = new Lbl("Distortion") );
   distLabel->setJustification(Justification::centred);
-  distLabel->setDescription("Distortion Settings");
+  distLabel->setItemDescription("Distortion Settings");
   distLabel->setDescriptionField(infoField);
 
   addWidget( distortionDriveSlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("DistortionDrive") );
   s->setSliderName("Drive");
-  s->setDescription("Drive for distortion unit in decibels");
+  s->setItemDescription("Drive for distortion unit in decibels");
   s->setStringConversionFunction(decibelsToStringWithUnit1);
   s->setDescriptionField(infoField);
 

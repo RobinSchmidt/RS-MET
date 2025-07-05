@@ -312,7 +312,7 @@ void RayBouncerAudioModule::autoResetIfDesired()
 //  addWidget( cutoffSlider = new rsAutomatableSlider() );
 //  cutoffSlider->assignParameter( ladderToEdit->getParameterByName("Cutoff") );
 //  cutoffSlider->setSliderName("Cutoff");
-//  cutoffSlider->setDescription("Cutoff frequency in Hz");
+//  cutoffSlider->setItemDescription("Cutoff frequency in Hz");
 //  cutoffSlider->setDescriptionField(infoField);
 //  cutoffSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 //}

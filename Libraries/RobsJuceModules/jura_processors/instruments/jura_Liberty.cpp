@@ -379,16 +379,16 @@ ModulePropertiesEditor::ModulePropertiesEditor(LibertyAudioModule *newLiberty, r
   setHeadlineText(rosicToJuce(moduleToEdit->getName()));
 
   moduleTypeLabel = new RTextField(juce::String("Type:"));
-  moduleTypeLabel->setDescription(juce::String("Type of the module"));
+  moduleTypeLabel->setItemDescription(juce::String("Type of the module"));
   addWidget(moduleTypeLabel, true, true);
 
   moduleTypeField = new RTextField(rosicToJuce(moduleToEdit->getTypeName()));
   moduleTypeField->setJustification(Justification::centredLeft);
-  moduleTypeField->setDescription(moduleTypeLabel->getDescription());
+  moduleTypeField->setItemDescription(moduleTypeLabel->getItemDescription());
   addWidget(moduleTypeField, true, true);
 
   polyButton = new RButton(juce::String("Poly"));
-  polyButton->setDescription(juce::String("Switch between polyphonic/monophonic mode"));
+  polyButton->setItemDescription(juce::String("Switch between polyphonic/monophonic mode"));
   polyButton->setToggleState(moduleToEdit->isPolyphonic(), false);
   addWidget(polyButton, true, true);
 }
@@ -2652,17 +2652,17 @@ LibertyEditor::LibertyEditor(CriticalSection *newPlugInLock, LibertyAudioModule*
 
   structureTreeView = new ModularStructureTreeView(interfaceMediator);
   structureTreeView->setOpenOrCloseNodesOnClick(true);
-  structureTreeView->setDescription(("Patch structure represented as tree"));
+  structureTreeView->setItemDescription(("Patch structure represented as tree"));
   structureTreeView->setDescriptionField(descriptionField);
   addWidget(structureTreeView);
 
   moduleEditorHolder = new ModulePropertiesEditorHolder(interfaceMediator);
-  moduleEditorHolder->setDescription(("Editor for currently selected module"));
+  moduleEditorHolder->setItemDescription(("Editor for currently selected module"));
   moduleEditorHolder->setDescriptionField(descriptionField, true);
   addChildColourSchemeComponent(moduleEditorHolder);
 
   blockDiagramPanel = new ModularBlockDiagramPanel(interfaceMediator);
-  blockDiagramPanel->setDescription(("Block diagram representation of selected container"));
+  blockDiagramPanel->setItemDescription(("Block diagram representation of selected container"));
   blockDiagramPanel->setDescriptionField(descriptionField, true);
   diagramScrollContainer = new ComponentScrollContainer(blockDiagramPanel);
   addChildColourSchemeComponent(diagramScrollContainer);

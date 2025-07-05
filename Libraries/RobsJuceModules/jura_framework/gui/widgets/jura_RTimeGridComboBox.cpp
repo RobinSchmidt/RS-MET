@@ -3,7 +3,7 @@
 
 RTimeGridComboBox::RTimeGridComboBox(const String& componentName) : RComboBox(componentName)
 {
-  setDescription(String("Set time grid resolution (in seconds or beats)."));
+  setItemDescription(String("Set time grid resolution (in seconds or beats)."));
   addItem(0, "1/2"  );
   addItem(1, "1/4"  );
   addItem(2, "1/8"  );

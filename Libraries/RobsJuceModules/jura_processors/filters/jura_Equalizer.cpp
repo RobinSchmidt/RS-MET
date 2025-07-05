@@ -471,7 +471,7 @@ void EqualizerAudioModule::assignCallbacksForDynamicParameters()
 EqualizerPlotEditor::EqualizerPlotEditor(CriticalSection *newPlugInLock, EqualizerAudioModule* newEqualizerModuleToEdit)
   : rsSpectrumPlot(juce::String("EqualizerEditor"))
 {
-  setDescription("Left: insert or grab band-handle, right: remove band");
+  setItemDescription("Left: insert or grab band-handle, right: remove band");
 
   ParameterObserver::setIsGuiElement(true);
 
@@ -723,10 +723,10 @@ void EqualizerPlotEditor::mouseMove(const MouseEvent &e)
     if( equalizerModuleToEdit->wrappedEqualizerStereo->doesModeSupportBandwidth(equalizerModuleToEdit->selectedChannel, index) )
       description += bStr;
 
-    setDescription(description);
+    setItemDescription(description);
   }
   else
-    setDescription(juce::String("Left: insert or grab band-handle, right: remove band"));
+    setItemDescription(juce::String("Left: insert or grab band-handle, right: remove band"));
 
   int dragHandle = getDragHandleAt(e.x, e.y);
   if( dragHandle == NONE )
@@ -1592,12 +1592,12 @@ void EqualizerModuleEditor::createWidgets()
   Btn* b;
 
   addWidget( bypassButton = b = new Btn("Bypass") );
-  b->setDescription("Bypass the whole equalizer");
+  b->setItemDescription("Bypass the whole equalizer");
   b->setDescriptionField(infoField);
   b->setClickingTogglesState(true);  //...? do we need this ? ...set this active by default in RButton
 
   addWidget( channelSelectButton1 = new RRadioButton("L") );
-  channelSelectButton1->setDescription("Edit left channel curve");
+  channelSelectButton1->setItemDescription("Edit left channel curve");
   channelSelectButton1->setDescriptionField(infoField);
   channelSelectButton1->setClickingTogglesState(true);
   channelSelectButton1->addRButtonListener(this);
@@ -1606,7 +1606,7 @@ void EqualizerModuleEditor::createWidgets()
   channelSelectButton1->setToggleState(true, false);
 
   addWidget( channelSelectButton2 = new RRadioButton("R") );
-  channelSelectButton2->setDescription("Edit right channel curve");
+  channelSelectButton2->setItemDescription("Edit right channel curve");
   channelSelectButton2->setDescriptionField(infoField);
   channelSelectButton2->setClickingTogglesState(true);
   channelSelectButton2->addRButtonListener(this);
@@ -1616,48 +1616,48 @@ void EqualizerModuleEditor::createWidgets()
 
   addWidget( stereoModeComboBox = new RNamedComboBox(juce::String("StereoModeComboBox"),
     juce::String("Stereo Mode:")) );
-  stereoModeComboBox->setDescription("Select mode for processing stereo signals");
+  stereoModeComboBox->setItemDescription("Select mode for processing stereo signals");
   stereoModeComboBox->setDescriptionField(infoField);
   stereoModeComboBox->registerComboBoxObserver(this);
 
   addWidget( gainRangeComboBox = new RNamedComboBox(juce::String("RangeComboBox"),
     juce::String("Range:")) );
-  gainRangeComboBox->setDescription("Select the range for the plot");
+  gainRangeComboBox->setItemDescription("Select the range for the plot");
   gainRangeComboBox->setDescriptionField(infoField);
   gainRangeComboBox->registerComboBoxObserver(this);
 
   addWidget( globalGainSlider = s = new Sld );
-  s->setDescription("Global gain to compensate for loudness change");
+  s->setItemDescription("Global gain to compensate for loudness change");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( bandParametersLabel = new RTextField("Band Parameters") );
-  bandParametersLabel->setDescription("Parameters for th selected band");
+  bandParametersLabel->setItemDescription("Parameters for th selected band");
   bandParametersLabel->setDescriptionField(infoField);
   bandParametersLabel->setJustification(Justification::centred);
   bandParametersLabel->setNoBackgroundAndOutline(true);
 
   addWidget( filterModeComboBox = new RNamedComboBox(juce::String("FilterModeComboBox"),
     juce::String("Mode:")) );
-  filterModeComboBox->setDescription("Filter mode of selected band");
+  filterModeComboBox->setItemDescription("Filter mode of selected band");
   filterModeComboBox->setDescriptionField(infoField);
   filterModeComboBox->registerComboBoxObserver(this);
 
   addWidget( frequencySlider = new Sld );
   frequencySlider->setSliderName(juce::String("Frequency"));
-  frequencySlider->setDescription(juce::String("Frequency of selected band"));
+  frequencySlider->setItemDescription(juce::String("Frequency of selected band"));
   frequencySlider->setDescriptionField(infoField);
   frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( gainSlider = new Sld );
   gainSlider->setSliderName(juce::String("Gain"));
-  gainSlider->setDescription(juce::String("Gain of selected band"));
+  gainSlider->setItemDescription(juce::String("Gain of selected band"));
   gainSlider->setDescriptionField(infoField);
   gainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( bandwidthSlider = new Sld );
   bandwidthSlider->setSliderName(juce::String("Bandwidth"));
-  bandwidthSlider->setDescription(juce::String("Bandwidth of selected band"));
+  bandwidthSlider->setItemDescription(juce::String("Bandwidth of selected band"));
   bandwidthSlider->setDescriptionField(infoField);
   bandwidthSlider->setStringConversionFunction(&octavesToStringWithUnit2);
 
@@ -1715,8 +1715,8 @@ void EqualizerModuleEditor::updateWidgetAppearance()
     channelSelectButton2->setVisible(true);
     channelSelectButton1->setButtonText("L");
     channelSelectButton2->setButtonText("R");
-    channelSelectButton1->setDescription(juce::String("Edit curve for left channel"));
-    channelSelectButton2->setDescription(juce::String("Edit curve for right channel"));
+    channelSelectButton1->setItemDescription(juce::String("Edit curve for left channel"));
+    channelSelectButton2->setItemDescription(juce::String("Edit curve for right channel"));
   }
   else if( plotEditor->equalizerModuleToEdit->wrappedEqualizerStereo->getStereoMode() == rosic::EqualizerStereo::MID_SIDE )
   {
@@ -1724,8 +1724,8 @@ void EqualizerModuleEditor::updateWidgetAppearance()
     channelSelectButton2->setVisible(true);
     channelSelectButton1->setButtonText("M");
     channelSelectButton2->setButtonText("S");
-    channelSelectButton1->setDescription(juce::String("Edit curve for mid channel"));
-    channelSelectButton2->setDescription(juce::String("Edit curve for side channel"));
+    channelSelectButton1->setItemDescription(juce::String("Edit curve for mid channel"));
+    channelSelectButton2->setItemDescription(juce::String("Edit curve for side channel"));
   }
 
   if( useShortSliderNames == true )

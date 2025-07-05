@@ -24,7 +24,7 @@ public:
 
   /** Sets a description for this widget - this should be short enough to fit into the Label which 
   is assigned to the descriptionField member. @see setDescriptionField() */
-  virtual void setDescription(const juce::String &newDescription);
+  virtual void setItemDescription(const juce::String &newDescription);
 
   /** Sets the juce::Label in which the description will appear. */
   virtual void setDescriptionField(RTextField* newDescriptionField);
@@ -33,7 +33,7 @@ public:
   // inquiry:
 
   /** Returns the description for this widget. */
-  virtual juce::String getDescription() const;
+  virtual juce::String getItemDescription() const;
 
   /** Returns the description field for this item (or NULL if none). */
   virtual RTextField* getDescriptionField() const;

@@ -404,11 +404,11 @@ VectorSamplePlayerEditor::VectorSamplePlayerEditor(CriticalSection *newPlugInLoc
 
   xLfoEditor = new VectorSamplePlayerLfoEditor(lock, vectorSamplePlayerAudioModule->xLfoModule);
   xLfoEditor->setHeadlineStyle(Editor::SUB_HEADLINE);
-  xLfoEditor->setDescription(juce::String("Low frequency oscillator (LFO) for the x-coordinate"));
+  xLfoEditor->setItemDescription(juce::String("Low frequency oscillator (LFO) for the x-coordinate"));
   addChildEditor( xLfoEditor );
 
   yLfoEditor = new VectorSamplePlayerLfoEditor(lock, vectorSamplePlayerAudioModule->yLfoModule);
-  yLfoEditor->setDescription(juce::String("Low frequency oscillator (LFO) for the y-coordinate"));
+  yLfoEditor->setItemDescription(juce::String("Low frequency oscillator (LFO) for the y-coordinate"));
   yLfoEditor->setHeadlineStyle(Editor::SUB_HEADLINE);
   yLfoEditor->setLayout(VectorSamplePlayerLfoEditor::RIGHT);
   addChildEditor( yLfoEditor );

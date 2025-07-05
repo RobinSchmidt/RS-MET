@@ -88,38 +88,38 @@ ChannelMatrix2x2ModuleEditor::ChannelMatrix2x2ModuleEditor(CriticalSection *newP
   channelMatrix2x2AudioModule = newChannelMatrix2x2AudioModule;
 
   addWidget( labelLeftToLeft = new RTextField(juce::String("gLL=")) );
-  labelLeftToLeft->setDescription("Amount by which left input goes to left output.");
+  labelLeftToLeft->setItemDescription("Amount by which left input goes to left output.");
   labelLeftToLeft->setDescriptionField(infoField);
 
   addWidget( editLabelLeftToLeft = new RTextEntryField(juce::String("1.0")) );
-  editLabelLeftToLeft->setDescription(labelLeftToLeft->getDescription());
+  editLabelLeftToLeft->setItemDescription(labelLeftToLeft->getItemDescription());
   editLabelLeftToLeft->setDescriptionField(infoField);
   editLabelLeftToLeft->registerTextEntryFieldObserver(this);
 
   addWidget( labelRightToLeft = new RTextField(juce::String("gRL=")) );
-  labelRightToLeft->setDescription("Amount by which right input goes to left output.");
+  labelRightToLeft->setItemDescription("Amount by which right input goes to left output.");
   labelRightToLeft->setDescriptionField(infoField);
 
   addWidget( editLabelRightToLeft = new RTextEntryField(juce::String("1.0")) );
-  editLabelRightToLeft->setDescription(labelRightToLeft->getDescription());
+  editLabelRightToLeft->setItemDescription(labelRightToLeft->getItemDescription());
   editLabelRightToLeft->setDescriptionField(infoField);
   editLabelRightToLeft->registerTextEntryFieldObserver(this);
 
   addWidget( labelLeftToRight = new RTextField(juce::String("gLR=")) );
-  labelLeftToRight->setDescription("Amount by which left input goes to right output.");
+  labelLeftToRight->setItemDescription("Amount by which left input goes to right output.");
   labelLeftToRight->setDescriptionField(infoField);
 
   addWidget( editLabelLeftToRight = new RTextEntryField(juce::String("1.0")) );
-  editLabelLeftToRight->setDescription(labelLeftToRight->getDescription());
+  editLabelLeftToRight->setItemDescription(labelLeftToRight->getItemDescription());
   editLabelLeftToRight->setDescriptionField(infoField);
   editLabelLeftToRight->registerTextEntryFieldObserver(this);
 
   addWidget( labelRightToRight = new RTextField(juce::String("gRR=")) );
-  labelRightToRight->setDescription("Amount by which right input goes to right output.");
+  labelRightToRight->setItemDescription("Amount by which right input goes to right output.");
   labelRightToRight->setDescriptionField(infoField);
 
   addWidget( editLabelRightToRight = new RTextEntryField(juce::String("1.0")) );
-  editLabelRightToRight->setDescription(labelRightToRight->getDescription());
+  editLabelRightToRight->setItemDescription(labelRightToRight->getItemDescription());
   editLabelRightToRight->setDescriptionField(infoField);
   editLabelRightToRight->registerTextEntryFieldObserver(this);
 

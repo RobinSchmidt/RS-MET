@@ -92,7 +92,7 @@ CrossOverPlotEditor::CrossOverPlotEditor(CriticalSection *newPlugInLock, CrossOv
   ScopedLock scopedLock(*plugInLock);
 
 
-  setDescription("Vertical lines: adjust frequency, triangles: turn on/off");
+  setItemDescription("Vertical lines: adjust frequency, triangles: turn on/off");
 
   ParameterObserver::setIsGuiElement(true);
 
@@ -686,14 +686,14 @@ CrossOverModuleEditor::CrossOverModuleEditor(CriticalSection *newPlugInLock, Cro
   addWidget( frequency11Slider = new RSlider("Frequency11Slider") );
   frequency11Slider->assignParameter( crossOverModuleToEdit->getParameterByName("Frequency_1_1") );
   frequency11Slider->setSliderName(juce::String("Frequency"));
-  frequency11Slider->setDescription(juce::String("Crossover frequency"));
+  frequency11Slider->setItemDescription(juce::String("Crossover frequency"));
   frequency11Slider->setDescriptionField(infoField);
   frequency11Slider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( slope11Slider = new RSlider("Slope11Slider") );
   slope11Slider->assignParameter( crossOverModuleToEdit->getParameterByName("Slope_1_1") );
   slope11Slider->setSliderName(juce::String("Slope"));
-  slope11Slider->setDescription(juce::String("Slope for the separation filters"));
+  slope11Slider->setItemDescription(juce::String("Slope for the separation filters"));
   slope11Slider->setDescriptionField(infoField);
   slope11Slider->setStringConversionFunction(&decibelsPerOctaveToString);
 
@@ -701,14 +701,14 @@ CrossOverModuleEditor::CrossOverModuleEditor(CriticalSection *newPlugInLock, Cro
   addWidget( frequency21Slider = new RSlider("Frequency21Slider") );
   frequency21Slider->assignParameter( crossOverModuleToEdit->getParameterByName("Frequency_2_1") );
   frequency21Slider->setSliderName(juce::String("Frequency"));
-  frequency21Slider->setDescription(juce::String("Crossover frequency"));
+  frequency21Slider->setItemDescription(juce::String("Crossover frequency"));
   frequency21Slider->setDescriptionField(infoField);
   frequency21Slider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( slope21Slider = new RSlider("Slope21Slider") );
   slope21Slider->assignParameter( crossOverModuleToEdit->getParameterByName("Slope_2_1") );
   slope21Slider->setSliderName(juce::String("Slope"));
-  slope21Slider->setDescription(juce::String("Slope for the separation filters"));
+  slope21Slider->setItemDescription(juce::String("Slope for the separation filters"));
   slope21Slider->setDescriptionField(infoField);
   slope21Slider->setStringConversionFunction(&decibelsPerOctaveToString);
 
@@ -716,28 +716,28 @@ CrossOverModuleEditor::CrossOverModuleEditor(CriticalSection *newPlugInLock, Cro
   addWidget( frequency22Slider = new RSlider("Frequency22Slider") );
   frequency22Slider->assignParameter( crossOverModuleToEdit->getParameterByName("Frequency_2_2") );
   frequency22Slider->setSliderName(juce::String("Frequency"));
-  frequency22Slider->setDescription(juce::String("Crossover frequency"));
+  frequency22Slider->setItemDescription(juce::String("Crossover frequency"));
   frequency22Slider->setDescriptionField(infoField);
   frequency22Slider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( slope22Slider = new RSlider("Slope22Slider") );
   slope22Slider->assignParameter( crossOverModuleToEdit->getParameterByName("Slope_2_2") );
   slope22Slider->setSliderName(juce::String("Slope"));
-  slope22Slider->setDescription(juce::String("Slope for the separation filters"));
+  slope22Slider->setItemDescription(juce::String("Slope for the separation filters"));
   slope22Slider->setDescriptionField(infoField);
   slope22Slider->setStringConversionFunction(&decibelsPerOctaveToString);
 
 
   //addWidget( monoButton = new RButton(juce::String("Mono")) );
   //monoButton->assignParameter( crossOverModuleToEdit->getParameterByName("Mono") );
-  //monoButton->setDescription(juce::String("Switch into mono-mode (saves CPU)"));
+  //monoButton->setItemDescription(juce::String("Switch into mono-mode (saves CPU)"));
   //monoButton->setDescriptionField(infoField);
   //monoButton->setClickingTogglesState(true);
 
   plotColourScheme.setCurveColouringStrategy(PlotColourScheme::UNIFORM);
   //plotEditor = new CrossOverPlotEditor(juce::String(T("SpectrumEditor")));
   plotEditor = new CrossOverPlotEditor(lock, crossOverModuleToEdit);
-  //plotEditor->setDescription(juce::String(T("Drag vertical line to adjust crossover frequency")));
+  //plotEditor->setItemDescription(juce::String(T("Drag vertical line to adjust crossover frequency")));
   plotEditor->setDescriptionField(infoField);
   plotEditor->addChangeListener(this);
   plotEditor->assignParameterOnOff( 1, 0, moduleToEdit->getParameterByName("OnOff_2_1"));

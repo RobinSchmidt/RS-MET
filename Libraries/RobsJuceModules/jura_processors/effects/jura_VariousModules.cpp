@@ -44,19 +44,19 @@ BitCrusherModuleEditor::BitCrusherModuleEditor(CriticalSection *newPlugInLock, B
 
   addWidget( decimationSlider = new rsModulatableSlider );
   decimationSlider->assignParameter( moduleToEdit->getParameterByName("Decimation") );
-  decimationSlider->setDescription(juce::String(("Decimation factor for the sample-rate")));
+  decimationSlider->setItemDescription(juce::String(("Decimation factor for the sample-rate")));
   decimationSlider->setDescriptionField(infoField);
   decimationSlider->setStringConversionFunction(&valueToString0);
 
   addWidget( quantizationSlider = new rsModulatableSlider );
   quantizationSlider->assignParameter( moduleToEdit->getParameterByName("Quantization") );
-  quantizationSlider->setDescription(juce::String(("Quantization interval for the amplitude")));
+  quantizationSlider->setItemDescription(juce::String(("Quantization interval for the amplitude")));
   quantizationSlider->setDescriptionField(infoField);
   quantizationSlider->setStringConversionFunction(&valueToString4);
 
   addWidget( amountSlider = new rsModulatableSlider );
   amountSlider->assignParameter( moduleToEdit->getParameterByName("Amount") );
-  amountSlider->setDescription(juce::String(("Amount of the effect in percent")));
+  amountSlider->setItemDescription(juce::String(("Amount of the effect in percent")));
   amountSlider->setDescriptionField(infoField);
   amountSlider->setStringConversionFunction(&percentToStringWithUnit0);
 }
@@ -118,13 +118,13 @@ ModulatedAllpassModuleEditor::ModulatedAllpassModuleEditor(CriticalSection *newP
 
   addWidget( factorSlider = new rsModulatableSlider );
   factorSlider->assignParameter( moduleToEdit->getParameterByName("Factor") );
-  factorSlider->setDescription(juce::String(("Factor for the modulating signal")));
+  factorSlider->setItemDescription(juce::String(("Factor for the modulating signal")));
   factorSlider->setDescriptionField(infoField);
   factorSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( offsetSlider = new rsModulatableSlider );
   offsetSlider->assignParameter( moduleToEdit->getParameterByName("Offset") );
-  offsetSlider->setDescription(juce::String(("Offset for the modulating signal")));
+  offsetSlider->setItemDescription(juce::String(("Offset for the modulating signal")));
   offsetSlider->setDescriptionField(infoField);
   offsetSlider->setStringConversionFunction(&valueToString2);
 }
@@ -185,13 +185,13 @@ SlewRateLimiterModuleEditor::SlewRateLimiterModuleEditor(CriticalSection *newPlu
 
   addWidget( attackSlider = new rsModulatableSlider );
   attackSlider->assignParameter( moduleToEdit->getParameterByName("Attack") );
-  attackSlider->setDescription(juce::String(("Slew rate for upward jumps")));
+  attackSlider->setItemDescription(juce::String(("Slew rate for upward jumps")));
   attackSlider->setDescriptionField(infoField);
   attackSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( releaseSlider = new rsModulatableSlider );
   releaseSlider->assignParameter( moduleToEdit->getParameterByName("Release") );
-  releaseSlider->setDescription(juce::String(("Slew rate for dwonward jumps")));
+  releaseSlider->setItemDescription(juce::String(("Slew rate for dwonward jumps")));
   releaseSlider->setDescriptionField(infoField);
   releaseSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 }
@@ -330,34 +330,34 @@ HarmonicsModuleEditor::HarmonicsModuleEditor(CriticalSection *newPlugInLock, Har
 
   addWidget( globalLabel = new RTextField( juce::String(("Global"))) );
   globalLabel->setJustification(Justification::centred);
-  globalLabel->setDescription(("Global parameters"));
+  globalLabel->setItemDescription(("Global parameters"));
   globalLabel->setDescriptionField(infoField);
 
   addWidget( harmonicsLabel = new RTextField( juce::String(("Harmonics"))) );
   harmonicsLabel->setJustification(Justification::centred);
-  harmonicsLabel->setDescription(("Gains for the individual harmonics"));
+  harmonicsLabel->setItemDescription(("Gains for the individual harmonics"));
   harmonicsLabel->setDescriptionField(infoField);
 
   addWidget( inFilterLabel = new RTextField( juce::String(("Input Filter:"))) );
   inFilterLabel->setJustification(Justification::centredLeft);
-  inFilterLabel->setDescription(("Parameters of the filter at the input stage"));
+  inFilterLabel->setItemDescription(("Parameters of the filter at the input stage"));
   inFilterLabel->setDescriptionField(infoField);
 
   addWidget( outFilterLabel = new RTextField( juce::String(("Output Filter:"))) );
   outFilterLabel->setJustification(Justification::centredLeft);
-  outFilterLabel->setDescription(("Parameters of the filter at the output stage"));
+  outFilterLabel->setItemDescription(("Parameters of the filter at the output stage"));
   outFilterLabel->setDescriptionField(infoField);
 
   addWidget( driveSlider = new rsModulatableSlider );
   driveSlider->assignParameter( moduleToEdit->getParameterByName("Drive") );
-  driveSlider->setDescription(juce::String(("Gain for the input signal (pre waveshaper)")));
+  driveSlider->setItemDescription(juce::String(("Gain for the input signal (pre waveshaper)")));
   driveSlider->setDescriptionField(infoField);
   driveSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( dryWetSlider = new rsModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
-  dryWetSlider->setDescription(juce::String(("Ratio between dry and wet signal")));
+  dryWetSlider->setItemDescription(juce::String(("Ratio between dry and wet signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
@@ -365,94 +365,94 @@ HarmonicsModuleEditor::HarmonicsModuleEditor(CriticalSection *newPlugInLock, Har
   addWidget( inHighpassSlider = new rsModulatableSlider );
   inHighpassSlider->assignParameter( moduleToEdit->getParameterByName("InputHighpass") );
   inHighpassSlider->setSliderName(juce::String(("Highpass")));
-  inHighpassSlider->setDescription(juce::String(("Cutoff frequency of the input highpass filter")));
+  inHighpassSlider->setItemDescription(juce::String(("Cutoff frequency of the input highpass filter")));
   inHighpassSlider->setDescriptionField(infoField);
   inHighpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( inLowpassSlider = new rsModulatableSlider );
   inLowpassSlider->assignParameter( moduleToEdit->getParameterByName("InputLowpass") );
   inLowpassSlider->setSliderName(juce::String(("Lowpass")));
-  inLowpassSlider->setDescription(juce::String(("Cutoff frequency of the input lowpass filter")));
+  inLowpassSlider->setItemDescription(juce::String(("Cutoff frequency of the input lowpass filter")));
   inLowpassSlider->setDescriptionField(infoField);
   inLowpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( outHighpassSlider = new rsModulatableSlider );
   outHighpassSlider->assignParameter( moduleToEdit->getParameterByName("OutputHighpass") );
   outHighpassSlider->setSliderName(juce::String(("Highpass")));
-  outHighpassSlider->setDescription(juce::String(("Cutoff frequency of the output highpass filter")));
+  outHighpassSlider->setItemDescription(juce::String(("Cutoff frequency of the output highpass filter")));
   outHighpassSlider->setDescriptionField(infoField);
   outHighpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( outLowpassSlider = new rsModulatableSlider );
   outLowpassSlider->assignParameter( moduleToEdit->getParameterByName("OutputLowpass") );
   outLowpassSlider->setSliderName(juce::String(("Lowpass")));
-  outLowpassSlider->setDescription(juce::String(("Cutoff frequency of the output lowpass filter")));
+  outLowpassSlider->setItemDescription(juce::String(("Cutoff frequency of the output lowpass filter")));
   outLowpassSlider->setDescriptionField(infoField);
   outLowpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( h02Slider = new RSlider (("H02Slider")) );
   h02Slider->assignParameter( moduleToEdit->getParameterByName("H02") );
-  h02Slider->setDescription(juce::String(("Gain (in percent) for the 2nd harmonic")));
+  h02Slider->setItemDescription(juce::String(("Gain (in percent) for the 2nd harmonic")));
   h02Slider->setDescriptionField(infoField);
   h02Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h03Slider = new RSlider (("H03Slider")) );
   h03Slider->assignParameter( moduleToEdit->getParameterByName("H03") );
-  h03Slider->setDescription(juce::String(("Gain (in percent) for the 3rd harmonic")));
+  h03Slider->setItemDescription(juce::String(("Gain (in percent) for the 3rd harmonic")));
   h03Slider->setDescriptionField(infoField);
   h03Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h04Slider = new RSlider (("H04Slider")) );
   h04Slider->assignParameter( moduleToEdit->getParameterByName("H04") );
-  h04Slider->setDescription(juce::String(("Gain (in percent) for the 4th harmonic")));
+  h04Slider->setItemDescription(juce::String(("Gain (in percent) for the 4th harmonic")));
   h04Slider->setDescriptionField(infoField);
   h04Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h05Slider = new RSlider (("H05Slider")) );
   h05Slider->assignParameter( moduleToEdit->getParameterByName("H05") );
-  h05Slider->setDescription(juce::String(("Gain (in percent) for the 5th harmonic")));
+  h05Slider->setItemDescription(juce::String(("Gain (in percent) for the 5th harmonic")));
   h05Slider->setDescriptionField(infoField);
   h05Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h06Slider = new RSlider (("H06Slider")) );
   h06Slider->assignParameter( moduleToEdit->getParameterByName("H06") );
-  h06Slider->setDescription(juce::String(("Gain (in percent) for the 6th harmonic")));
+  h06Slider->setItemDescription(juce::String(("Gain (in percent) for the 6th harmonic")));
   h06Slider->setDescriptionField(infoField);
   h06Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h07Slider = new RSlider (("H07Slider")) );
   h07Slider->assignParameter( moduleToEdit->getParameterByName("H07") );
-  h07Slider->setDescription(juce::String(("Gain (in percent) for the 7th harmonic")));
+  h07Slider->setItemDescription(juce::String(("Gain (in percent) for the 7th harmonic")));
   h07Slider->setDescriptionField(infoField);
   h07Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h08Slider = new RSlider (("H08Slider")) );
   h08Slider->assignParameter( moduleToEdit->getParameterByName("H08") );
-  h08Slider->setDescription(juce::String(("Gain (in percent) for the 8th harmonic")));
+  h08Slider->setItemDescription(juce::String(("Gain (in percent) for the 8th harmonic")));
   h08Slider->setDescriptionField(infoField);
   h08Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h09Slider = new RSlider (("H09Slider")) );
   h09Slider->assignParameter( moduleToEdit->getParameterByName("H09") );
-  h09Slider->setDescription(juce::String(("Gain (in percent) for the 9th harmonic")));
+  h09Slider->setItemDescription(juce::String(("Gain (in percent) for the 9th harmonic")));
   h09Slider->setDescriptionField(infoField);
   h09Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h10Slider = new RSlider (("H10Slider")) );
   h10Slider->assignParameter( moduleToEdit->getParameterByName("H10") );
-  h10Slider->setDescription(juce::String(("Gain (in percent) for the 10th harmonic")));
+  h10Slider->setItemDescription(juce::String(("Gain (in percent) for the 10th harmonic")));
   h10Slider->setDescriptionField(infoField);
   h10Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h11Slider = new RSlider (("H11Slider")) );
   h11Slider->assignParameter( moduleToEdit->getParameterByName("H11") );
-  h11Slider->setDescription(juce::String(("Gain (in percent) for the 11th harmonic")));
+  h11Slider->setItemDescription(juce::String(("Gain (in percent) for the 11th harmonic")));
   h11Slider->setDescriptionField(infoField);
   h11Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h12Slider = new RSlider (("H12Slider")) );
   h12Slider->assignParameter( moduleToEdit->getParameterByName("H12") );
-  h12Slider->setDescription(juce::String(("Gain (in percent) for the 12th harmonic")));
+  h12Slider->setItemDescription(juce::String(("Gain (in percent) for the 12th harmonic")));
   h12Slider->setDescriptionField(infoField);
   h12Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
@@ -603,27 +603,27 @@ WaveShaperModuleEditor::WaveShaperModuleEditor(CriticalSection *newPlugInLock, W
 
   addWidget( curveComboBox = new RComboBox(juce::String(("CurveComboBox"))) );
   curveComboBox->assignParameter( moduleToEdit->getParameterByName(("CurveType")) );
-  curveComboBox->setDescription(("Choose the curve-shape of the transfer function"));
+  curveComboBox->setItemDescription(("Choose the curve-shape of the transfer function"));
   curveComboBox->setDescriptionField(infoField);
   curveComboBox->registerComboBoxObserver(this); // to update enablement of the sliders
 
   addWidget( driveSlider = new rsModulatableSlider );
   driveSlider->assignParameter( moduleToEdit->getParameterByName("Drive") );
-  driveSlider->setDescription(juce::String(("Gain of the input signal before the waveshaper")));
+  driveSlider->setItemDescription(juce::String(("Gain of the input signal before the waveshaper")));
   driveSlider->setDescriptionField(infoField);
   driveSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
   driveSlider->addListener(this); // to update the plot
 
   addWidget( dcSlider = new rsModulatableSlider );
   dcSlider->assignParameter( moduleToEdit->getParameterByName("DC") );
-  dcSlider->setDescription(juce::String(("DC offset for the input signal (after drive, before waveshaper)")));
+  dcSlider->setItemDescription(juce::String(("DC offset for the input signal (after drive, before waveshaper)")));
   dcSlider->setDescriptionField(infoField);
   dcSlider->setStringConversionFunction(&valueToString2);
   dcSlider->addListener(this); // to update the plot
 
   addWidget( amountSlider = new rsModulatableSlider );
   amountSlider->assignParameter( moduleToEdit->getParameterByName("Amount") );
-  amountSlider->setDescription(juce::String(("Amount of the effect in percent")));
+  amountSlider->setItemDescription(juce::String(("Amount of the effect in percent")));
   amountSlider->setDescriptionField(infoField);
   amountSlider->setStringConversionFunction(&percentToStringWithUnit0);
   amountSlider->addListener(this); // to update the plot
@@ -631,19 +631,19 @@ WaveShaperModuleEditor::WaveShaperModuleEditor(CriticalSection *newPlugInLock, W
   addWidget( outputLevelSlider = new rsModulatableSlider );
   outputLevelSlider->assignParameter( moduleToEdit->getParameterByName("OutputLevel") );
   outputLevelSlider->setSliderName(juce::String(("Level")));
-  outputLevelSlider->setDescription(juce::String(("Overall level of the output signal")));
+  outputLevelSlider->setItemDescription(juce::String(("Overall level of the output signal")));
   outputLevelSlider->setDescriptionField(infoField);
   outputLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( oversamplingSlider = new RSlider (("OversamplingSlider")) );
   oversamplingSlider->assignParameter( moduleToEdit->getParameterByName("Oversampling") );
-  oversamplingSlider->setDescription(juce::String(("Oversampling factor (to avoid aliasing)")));
+  oversamplingSlider->setItemDescription(juce::String(("Oversampling factor (to avoid aliasing)")));
   oversamplingSlider->setDescriptionField(infoField);
   oversamplingSlider->setStringConversionFunction(&valueToString0);
 
   addWidget( slopeSlider = new RSlider (("SlopeSlider")) );
   slopeSlider->assignParameter( moduleToEdit->getParameterByName("Slope") );
-  slopeSlider->setDescription(juce::String(("Slope of the transfer function at point x=0")));
+  slopeSlider->setItemDescription(juce::String(("Slope of the transfer function at point x=0")));
   slopeSlider->setDescriptionField(infoField);
   slopeSlider->setStringConversionFunction(&valueToString2);
   slopeSlider->addListener(this); // to update the plot
@@ -651,7 +651,7 @@ WaveShaperModuleEditor::WaveShaperModuleEditor(CriticalSection *newPlugInLock, W
   addWidget( interceptSlider = new RSlider (("InterceptSlider")) );
   interceptSlider->assignParameter( moduleToEdit->getParameterByName("InterceptY") );
   interceptSlider->setSliderName(juce::String(("y-Intercept")));
-  interceptSlider->setDescription(juce::String(("Interception of the y-axis (function value at x=0)")));
+  interceptSlider->setItemDescription(juce::String(("Interception of the y-axis (function value at x=0)")));
   interceptSlider->setDescriptionField(infoField);
   interceptSlider->setStringConversionFunction(&valueToString2);
   interceptSlider->addListener(this); // to update the plot
@@ -660,7 +660,7 @@ WaveShaperModuleEditor::WaveShaperModuleEditor(CriticalSection *newPlugInLock, W
   xValues   = NULL;
   yValues   = NULL;
   plot = new rsDataPlot(juce::String(("Plot")));
-  plot->setDescription(juce::String(("Shows the input-output transfer function")));
+  plot->setItemDescription(juce::String(("Shows the input-output transfer function")));
   plot->setAxisLabels(juce::String(("")), juce::String(("")));
   plot->setCurrentRange(-1.3, 1.3, -1.3, 1.3);
   plot->setVerticalCoarseGrid(1.0, true);
@@ -820,52 +820,52 @@ CompShaperModuleEditor::CompShaperModuleEditor(CriticalSection *newPlugInLock, C
 
   addWidget( curveLabel = new RTextField( juce::String(("Transfer Curve"))) );
   curveLabel->setJustification(Justification::centred);
-  curveLabel->setDescription(("Parameters for the static transfer curve"));
+  curveLabel->setItemDescription(("Parameters for the static transfer curve"));
   curveLabel->setDescriptionField(infoField);
 
   addWidget( timeLabel = new RTextField( juce::String(("Level Detection"))) );
   timeLabel->setJustification(Justification::centred);
-  timeLabel->setDescription(("Parameters for the level detector"));
+  timeLabel->setItemDescription(("Parameters for the level detector"));
   timeLabel->setDescriptionField(infoField);
 
   addWidget( othersLabel = new RTextField( juce::String(("Gain And Mix"))) );
   othersLabel->setJustification(Justification::centred);
-  othersLabel->setDescription(("Parameters for input-/output-gain and dry/wet mix"));
+  othersLabel->setItemDescription(("Parameters for input-/output-gain and dry/wet mix"));
   othersLabel->setDescriptionField(infoField);
 
   addWidget( thresholdSlider = new rsModulatableSlider );
   thresholdSlider->assignParameter( moduleToEdit->getParameterByName("Threshold") );
-  thresholdSlider->setDescription(juce::String(("Threshold above which the signal will be attenuated")));
+  thresholdSlider->setItemDescription(juce::String(("Threshold above which the signal will be attenuated")));
   thresholdSlider->setDescriptionField(infoField);
   thresholdSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( ratioSlider = new rsModulatableSlider );
   ratioSlider->assignParameter( moduleToEdit->getParameterByName("Ratio") );
-  ratioSlider->setDescription(juce::String(("Ratio .....find a good short explanation")));
+  ratioSlider->setItemDescription(juce::String(("Ratio .....find a good short explanation")));
   ratioSlider->setDescriptionField(infoField);
   ratioSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( kneeSlider = new rsModulatableSlider );
   kneeSlider->assignParameter( moduleToEdit->getParameterByName("KneeWidth") );
-  kneeSlider->setDescription(juce::String(("Transition width between the two slopes")));
+  kneeSlider->setItemDescription(juce::String(("Transition width between the two slopes")));
   kneeSlider->setDescriptionField(infoField);
   kneeSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( clipButton = new RButton(juce::String(("Clip"))) );
   clipButton->assignParameter( moduleToEdit->getParameterByName(("Clip")) );
-  clipButton->setDescription(juce::String(("Clip signal at the threshold (infinite ratio)")));
+  clipButton->setItemDescription(juce::String(("Clip signal at the threshold (infinite ratio)")));
   clipButton->setDescriptionField(infoField);
   clipButton->setClickingTogglesState(true);
 
   addWidget( driveSlider = new rsModulatableSlider );
   driveSlider->assignParameter( moduleToEdit->getParameterByName("Drive") );
-  driveSlider->setDescription(juce::String(("Gain for the input signal (pre waveshaper)")));
+  driveSlider->setItemDescription(juce::String(("Gain for the input signal (pre waveshaper)")));
   driveSlider->setDescriptionField(infoField);
   driveSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( outLevelSlider = new rsModulatableSlider );
   outLevelSlider->assignParameter( moduleToEdit->getParameterByName("OutLevel") );
-  outLevelSlider->setDescription(juce::String(("Gain for the output signal (post waveshaper)")));
+  outLevelSlider->setItemDescription(juce::String(("Gain for the output signal (post waveshaper)")));
   outLevelSlider->setDescriptionField(infoField);
   outLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 }
@@ -1049,91 +1049,91 @@ CompressorModuleEditor::CompressorModuleEditor(CriticalSection *newPlugInLock, C
 
   addWidget( curveLabel = new RTextField( juce::String(("Transfer Curve"))) );
   curveLabel->setJustification(Justification::centred);
-  curveLabel->setDescription(("Parameters for the static transfer curve"));
+  curveLabel->setItemDescription(("Parameters for the static transfer curve"));
   curveLabel->setDescriptionField(infoField);
 
   addWidget( timeLabel = new RTextField( juce::String(("Time Response"))) );
   timeLabel->setJustification(Justification::centred);
-  timeLabel->setDescription(("Parameters for the level detector"));
+  timeLabel->setItemDescription(("Parameters for the level detector"));
   timeLabel->setDescriptionField(infoField);
 
   addWidget( othersLabel = new RTextField( juce::String(("Gain And Mix"))) );
   othersLabel->setJustification(Justification::centred);
-  othersLabel->setDescription(("Parameters for input-/output-gain and dry/wet mix"));
+  othersLabel->setItemDescription(("Parameters for input-/output-gain and dry/wet mix"));
   othersLabel->setDescriptionField(infoField);
 
   addWidget( attackSlider = new rsModulatableSlider );
   attackSlider->assignParameter( moduleToEdit->getParameterByName("Attack") );
-  attackSlider->setDescription(juce::String(("Attack time for the envelope detector")));
+  attackSlider->setItemDescription(juce::String(("Attack time for the envelope detector")));
   attackSlider->setDescriptionField(infoField);
   attackSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( releaseSlider = new rsModulatableSlider );
   releaseSlider->assignParameter( moduleToEdit->getParameterByName("Release") );
-  releaseSlider->setDescription(juce::String(("Release time for the envelope detector")));
+  releaseSlider->setItemDescription(juce::String(("Release time for the envelope detector")));
   releaseSlider->setDescriptionField(infoField);
   releaseSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( lookAheadSlider = new rsModulatableSlider );
   lookAheadSlider->assignParameter( moduleToEdit->getParameterByName("LookAhead") );
-  lookAheadSlider->setDescription(juce::String(("LookAhead time for the envelope detector")));
+  lookAheadSlider->setItemDescription(juce::String(("LookAhead time for the envelope detector")));
   lookAheadSlider->setDescriptionField(infoField);
   lookAheadSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( inLevelSlider = new rsModulatableSlider );
   inLevelSlider->assignParameter( moduleToEdit->getParameterByName("InLevel") );
-  inLevelSlider->setDescription(juce::String(("Gain for the input signal (pre compression)")));
+  inLevelSlider->setItemDescription(juce::String(("Gain for the input signal (pre compression)")));
   inLevelSlider->setDescriptionField(infoField);
   inLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( outLevelSlider = new rsModulatableSlider );
   outLevelSlider->assignParameter( moduleToEdit->getParameterByName("OutLevel") );
-  outLevelSlider->setDescription(juce::String(("Gain for the output signal (post compression)")));
+  outLevelSlider->setItemDescription(juce::String(("Gain for the output signal (post compression)")));
   outLevelSlider->setDescriptionField(infoField);
   outLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( dryWetSlider = new rsModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
-  dryWetSlider->setDescription(juce::String(("Mix ratio between original and compressed signal")));
+  dryWetSlider->setItemDescription(juce::String(("Mix ratio between original and compressed signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( thresholdSlider = new rsModulatableSlider );
   thresholdSlider->assignParameter( moduleToEdit->getParameterByName("Threshold") );
-  thresholdSlider->setDescription(juce::String(("Threshold above which the signal will be attenuated")));
+  thresholdSlider->setItemDescription(juce::String(("Threshold above which the signal will be attenuated")));
   thresholdSlider->setDescriptionField(infoField);
   thresholdSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( ratioSlider = new rsModulatableSlider );
   ratioSlider->assignParameter( moduleToEdit->getParameterByName("Ratio") );
-  ratioSlider->setDescription(juce::String(("Ratio .....find a good short explanation")));
+  ratioSlider->setItemDescription(juce::String(("Ratio .....find a good short explanation")));
   ratioSlider->setDescriptionField(infoField);
   ratioSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( kneeSlider = new rsModulatableSlider );
   kneeSlider->assignParameter( moduleToEdit->getParameterByName("KneeWidth") );
   kneeSlider->setSliderName(juce::String(("Knee")));
-  kneeSlider->setDescription(juce::String(("Transition width between the two slopes")));
+  kneeSlider->setItemDescription(juce::String(("Transition width between the two slopes")));
   kneeSlider->setDescriptionField(infoField);
   kneeSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( autoGainButton = new RButton(juce::String(("AutoGain"))) );
   autoGainButton->assignParameter( moduleToEdit->getParameterByName(("AutoGain")) );
-  autoGainButton->setDescription(juce::String(("Automatic gain compensation")));
+  autoGainButton->setItemDescription(juce::String(("Automatic gain compensation")));
   autoGainButton->setDescriptionField(infoField);
   autoGainButton->setClickingTogglesState(true);
 
   addWidget( limitButton = new RButton(juce::String(("Limit"))) );
   limitButton->assignParameter( moduleToEdit->getParameterByName(("Limit")) );
-  limitButton->setDescription(juce::String(("Limit signal at the threshold (infinite ratio)")));
+  limitButton->setItemDescription(juce::String(("Limit signal at the threshold (infinite ratio)")));
   limitButton->setDescriptionField(infoField);
   limitButton->setClickingTogglesState(true);
 
   /*
   addWidget( antiAliasButton = new RButton(juce::String(("AntiAlias"))) );
   antiAliasButton->assignParameter( moduleToEdit->getParameterByName(("AntiAlias")) );
-  antiAliasButton->setDescription(juce::String(("AntiAliasing")));
+  antiAliasButton->setItemDescription(juce::String(("AntiAliasing")));
   antiAliasButton->setDescriptionField(infoField);
   antiAliasButton->setClickingTogglesState(true);
   */
@@ -1270,78 +1270,78 @@ ExpanderModuleEditor::ExpanderModuleEditor(CriticalSection *newPlugInLock, Expan
 
   addWidget( curveLabel = new RTextField( juce::String(("Transfer Curve"))) );
   curveLabel->setJustification(Justification::centred);
-  curveLabel->setDescription(("Parameters for the static transfer curve"));
+  curveLabel->setItemDescription(("Parameters for the static transfer curve"));
   curveLabel->setDescriptionField(infoField);
 
   addWidget( timeLabel = new RTextField( juce::String(("Time Response"))) );
   timeLabel->setJustification(Justification::centred);
-  timeLabel->setDescription(("Parameters for the level detector"));
+  timeLabel->setItemDescription(("Parameters for the level detector"));
   timeLabel->setDescriptionField(infoField);
 
   addWidget( othersLabel = new RTextField( juce::String(("Gain And Mix"))) );
   othersLabel->setJustification(Justification::centred);
-  othersLabel->setDescription(("Parameters for input-/output-gain and dry/wet mix"));
+  othersLabel->setItemDescription(("Parameters for input-/output-gain and dry/wet mix"));
   othersLabel->setDescriptionField(infoField);
 
   addWidget( attackSlider = new rsModulatableSlider );
   attackSlider->assignParameter( moduleToEdit->getParameterByName("Attack") );
-  attackSlider->setDescription(juce::String(("Attack time for the envelope detector")));
+  attackSlider->setItemDescription(juce::String(("Attack time for the envelope detector")));
   attackSlider->setDescriptionField(infoField);
   attackSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( releaseSlider = new rsModulatableSlider );
   releaseSlider->assignParameter( moduleToEdit->getParameterByName("Release") );
-  releaseSlider->setDescription(juce::String(("Release time for the envelope detector")));
+  releaseSlider->setItemDescription(juce::String(("Release time for the envelope detector")));
   releaseSlider->setDescriptionField(infoField);
   releaseSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( lookAheadSlider = new rsModulatableSlider );
   lookAheadSlider->assignParameter( moduleToEdit->getParameterByName("LookAhead") );
-  lookAheadSlider->setDescription(juce::String(("LookAhead time for the envelope detector")));
+  lookAheadSlider->setItemDescription(juce::String(("LookAhead time for the envelope detector")));
   lookAheadSlider->setDescriptionField(infoField);
   lookAheadSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( inLevelSlider = new rsModulatableSlider );
   inLevelSlider->assignParameter( moduleToEdit->getParameterByName("InLevel") );
-  inLevelSlider->setDescription(juce::String(("Gain for the input signal (pre compression)")));
+  inLevelSlider->setItemDescription(juce::String(("Gain for the input signal (pre compression)")));
   inLevelSlider->setDescriptionField(infoField);
   inLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( outLevelSlider = new rsModulatableSlider );
   outLevelSlider->assignParameter( moduleToEdit->getParameterByName("OutLevel") );
-  outLevelSlider->setDescription(juce::String(("Gain for the output signal (post compression)")));
+  outLevelSlider->setItemDescription(juce::String(("Gain for the output signal (post compression)")));
   outLevelSlider->setDescriptionField(infoField);
   outLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( dryWetSlider = new rsModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
-  dryWetSlider->setDescription(juce::String(("Mix ratio between original and compressed signal")));
+  dryWetSlider->setItemDescription(juce::String(("Mix ratio between original and compressed signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( thresholdSlider = new rsModulatableSlider );
   thresholdSlider->assignParameter( moduleToEdit->getParameterByName("Threshold") );
-  thresholdSlider->setDescription(juce::String(("Threshold above which the signal will be attenuated")));
+  thresholdSlider->setItemDescription(juce::String(("Threshold above which the signal will be attenuated")));
   thresholdSlider->setDescriptionField(infoField);
   thresholdSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( ratioSlider = new rsModulatableSlider );
   ratioSlider->assignParameter( moduleToEdit->getParameterByName("Ratio") );
-  ratioSlider->setDescription(juce::String(("Ratio .....find a good short explanation")));
+  ratioSlider->setItemDescription(juce::String(("Ratio .....find a good short explanation")));
   ratioSlider->setDescriptionField(infoField);
   ratioSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( kneeSlider = new rsModulatableSlider );
   kneeSlider->assignParameter( moduleToEdit->getParameterByName("KneeWidth") );
   kneeSlider->setSliderName(juce::String(("Knee")));
-  kneeSlider->setDescription(juce::String(("Transition width between the two slopes")));
+  kneeSlider->setItemDescription(juce::String(("Transition width between the two slopes")));
   kneeSlider->setDescriptionField(infoField);
   kneeSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( gateButton = new RButton(juce::String(("Gate"))), true, false); // not used
   gateButton->assignParameter( moduleToEdit->getParameterByName(("Gate")) );
-  gateButton->setDescription(juce::String(("Gate signal at the threshold (infinite ratio)")));
+  gateButton->setItemDescription(juce::String(("Gate signal at the threshold (infinite ratio)")));
   gateButton->setDescriptionField(infoField);
   gateButton->setClickingTogglesState(true);
 }
@@ -1526,59 +1526,59 @@ void LimiterModuleEditor::createWidgets()
 {
   addWidget( curveLabel = new RTextField("Transfer Curve") );
   curveLabel->setJustification(Justification::centred);
-  curveLabel->setDescription("Parameters for the static transfer curve");
+  curveLabel->setItemDescription("Parameters for the static transfer curve");
   curveLabel->setDescriptionField(infoField);
 
   addWidget( timeLabel = new RTextField("Time Response") );
   timeLabel->setJustification(Justification::centred);
-  timeLabel->setDescription("Parameters for the level detector");
+  timeLabel->setItemDescription("Parameters for the level detector");
   timeLabel->setDescriptionField(infoField);
 
   addWidget( othersLabel = new RTextField("Gain And Mix") );
   othersLabel->setJustification(Justification::centred);
-  othersLabel->setDescription("Parameters for input-/output-gain and dry/wet mix");
+  othersLabel->setItemDescription("Parameters for input-/output-gain and dry/wet mix");
   othersLabel->setDescriptionField(infoField);
 
   addWidget( attackSlider = new rsModulatableSlider );
   attackSlider->assignParameter( moduleToEdit->getParameterByName(("Attack")) );
-  attackSlider->setDescription(juce::String(("Attack time for the envelope detector")));
+  attackSlider->setItemDescription(juce::String(("Attack time for the envelope detector")));
   attackSlider->setDescriptionField(infoField);
   attackSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( releaseSlider = new rsModulatableSlider );
   releaseSlider->assignParameter( moduleToEdit->getParameterByName(("Release")) );
-  releaseSlider->setDescription(juce::String(("Release time for the envelope detector")));
+  releaseSlider->setItemDescription(juce::String(("Release time for the envelope detector")));
   releaseSlider->setDescriptionField(infoField);
   releaseSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( lookAheadSlider = new rsModulatableSlider );
   lookAheadSlider->assignParameter( moduleToEdit->getParameterByName(("LookAhead")) );
-  lookAheadSlider->setDescription(juce::String(("LookAhead time for the envelope detector")));
+  lookAheadSlider->setItemDescription(juce::String(("LookAhead time for the envelope detector")));
   lookAheadSlider->setDescriptionField(infoField);
   lookAheadSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( inLevelSlider = new rsModulatableSlider );
   inLevelSlider->assignParameter( moduleToEdit->getParameterByName(("InLevel")) );
-  inLevelSlider->setDescription(juce::String(("Gain for the input signal (pre compression)")));
+  inLevelSlider->setItemDescription(juce::String(("Gain for the input signal (pre compression)")));
   inLevelSlider->setDescriptionField(infoField);
   inLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( outLevelSlider = new rsModulatableSlider );
   outLevelSlider->assignParameter( moduleToEdit->getParameterByName(("OutLevel")) );
-  outLevelSlider->setDescription(juce::String(("Gain for the output signal (post compression)")));
+  outLevelSlider->setItemDescription(juce::String(("Gain for the output signal (post compression)")));
   outLevelSlider->setDescriptionField(infoField);
   outLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( dryWetSlider = new rsModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName(("DryWetRatio")) );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
-  dryWetSlider->setDescription(juce::String(("Mix ratio between original and compressed signal")));
+  dryWetSlider->setItemDescription(juce::String(("Mix ratio between original and compressed signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( limitSlider = new rsModulatableSlider );
   limitSlider->assignParameter( moduleToEdit->getParameterByName(("Limit")) );
-  limitSlider->setDescription(juce::String(("Limit above which the signal will be attenuated")));
+  limitSlider->setItemDescription(juce::String(("Limit above which the signal will be attenuated")));
   limitSlider->setDescriptionField(infoField);
   limitSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
@@ -1652,71 +1652,71 @@ NoiseGateModuleEditor::NoiseGateModuleEditor(CriticalSection *newPlugInLock, Noi
 
   addWidget( curveLabel = new RTextField( juce::String(("Transfer Curve"))) );
   curveLabel->setJustification(Justification::centred);
-  curveLabel->setDescription(("Parameters for the static transfer curve"));
+  curveLabel->setItemDescription(("Parameters for the static transfer curve"));
   curveLabel->setDescriptionField(infoField);
 
   addWidget( timeLabel = new RTextField( juce::String(("Time Response"))) );
   timeLabel->setJustification(Justification::centred);
-  timeLabel->setDescription(("Parameters for the level detector"));
+  timeLabel->setItemDescription(("Parameters for the level detector"));
   timeLabel->setDescriptionField(infoField);
 
   addWidget( othersLabel = new RTextField( juce::String(("Gain And Mix"))) );
   othersLabel->setJustification(Justification::centred);
-  othersLabel->setDescription(("Parameters for input-/output-gain and dry/wet mix"));
+  othersLabel->setItemDescription(("Parameters for input-/output-gain and dry/wet mix"));
   othersLabel->setDescriptionField(infoField);
 
   addWidget( attackSlider = new rsModulatableSlider );
   attackSlider->assignParameter( moduleToEdit->getParameterByName("Attack") );
-  attackSlider->setDescription(juce::String(("Time for the gate to open")));
+  attackSlider->setItemDescription(juce::String(("Time for the gate to open")));
   attackSlider->setDescriptionField(infoField);
   attackSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( holdSlider = new rsModulatableSlider );
   holdSlider->assignParameter( moduleToEdit->getParameterByName("Hold") );
-  holdSlider->setDescription(juce::String(("Time for the gate to stay open after close threshold was undercut")));
+  holdSlider->setItemDescription(juce::String(("Time for the gate to stay open after close threshold was undercut")));
   holdSlider->setDescriptionField(infoField);
   holdSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( releaseSlider = new rsModulatableSlider );
   releaseSlider->assignParameter( moduleToEdit->getParameterByName("Release") );
-  releaseSlider->setDescription(juce::String(("Release time for the envelope detector")));
+  releaseSlider->setItemDescription(juce::String(("Release time for the envelope detector")));
   releaseSlider->setDescriptionField(infoField);
   releaseSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( lookAheadSlider = new rsModulatableSlider );
   lookAheadSlider->assignParameter( moduleToEdit->getParameterByName("LookAhead") );
-  lookAheadSlider->setDescription(juce::String(("LookAhead time for the envelope detector")));
+  lookAheadSlider->setItemDescription(juce::String(("LookAhead time for the envelope detector")));
   lookAheadSlider->setDescriptionField(infoField);
   lookAheadSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( inLevelSlider = new rsModulatableSlider );
   inLevelSlider->assignParameter( moduleToEdit->getParameterByName("InLevel") );
-  inLevelSlider->setDescription(juce::String(("Gain for the input signal (pre compression)")));
+  inLevelSlider->setItemDescription(juce::String(("Gain for the input signal (pre compression)")));
   inLevelSlider->setDescriptionField(infoField);
   inLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( outLevelSlider = new rsModulatableSlider );
   outLevelSlider->assignParameter( moduleToEdit->getParameterByName("OutLevel") );
-  outLevelSlider->setDescription(juce::String(("Gain for the output signal (post compression)")));
+  outLevelSlider->setItemDescription(juce::String(("Gain for the output signal (post compression)")));
   outLevelSlider->setDescriptionField(infoField);
   outLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( dryWetSlider = new rsModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
-  dryWetSlider->setDescription(juce::String(("Mix ratio between original and compressed signal")));
+  dryWetSlider->setItemDescription(juce::String(("Mix ratio between original and compressed signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( thresholdSlider = new rsModulatableSlider );
   thresholdSlider->assignParameter( moduleToEdit->getParameterByName("Threshold") );
-  thresholdSlider->setDescription(juce::String(("Threshold for the gate to open")));
+  thresholdSlider->setItemDescription(juce::String(("Threshold for the gate to open")));
   thresholdSlider->setDescriptionField(infoField);
   thresholdSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( hysteresisSlider = new rsModulatableSlider );
   hysteresisSlider->assignParameter( moduleToEdit->getParameterByName("Hysteresis") );
-  hysteresisSlider->setDescription(juce::String(("Difference between opening and closing threshold")));
+  hysteresisSlider->setItemDescription(juce::String(("Difference between opening and closing threshold")));
   hysteresisSlider->setDescriptionField(infoField);
   hysteresisSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 }
@@ -1859,79 +1859,79 @@ CombBankModuleEditor::CombBankModuleEditor(CriticalSection *newPlugInLock, CombB
 
   addWidget( toneLabel = new RTextField( juce::String(("Tone"))) );
   toneLabel->setJustification(Justification::centred);
-  toneLabel->setDescription(("Parameters for the tone/timbre of the comb"));
+  toneLabel->setItemDescription(("Parameters for the tone/timbre of the comb"));
   toneLabel->setDescriptionField(infoField);
 
   addWidget( decayLabel = new RTextField( juce::String(("Decay"))) );
   decayLabel->setJustification(Justification::centred);
-  decayLabel->setDescription(("Parameters controlling the frequency dependent decay"));
+  decayLabel->setItemDescription(("Parameters controlling the frequency dependent decay"));
   decayLabel->setDescriptionField(infoField);
 
   /*
   addWidget( othersLabel = new RTextField(juce::String(("OthersLabel")), juce::String(("Gain And Mix"))) );
   othersLabel->setJustification(Justification::centred);
-  othersLabel->setDescription(("Parameters for input-/output-gain and dry/wet mix"));
+  othersLabel->setItemDescription(("Parameters for input-/output-gain and dry/wet mix"));
   othersLabel->setDescriptionField(infoField);
   */
 
   addWidget( dryWetSlider = new rsModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
-  dryWetSlider->setDescription(juce::String(("Ratio between dry and wet signal")));
+  dryWetSlider->setItemDescription(juce::String(("Ratio between dry and wet signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( frequencySlider = new rsModulatableSlider );
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
-  frequencySlider->setDescription(juce::String(("Fundamental frequency of the resonator")));
+  frequencySlider->setItemDescription(juce::String(("Fundamental frequency of the resonator")));
   frequencySlider->setDescriptionField(infoField);
   frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( levelSlider = new rsModulatableSlider );
   levelSlider->assignParameter( moduleToEdit->getParameterByName("Level") );
-  levelSlider->setDescription(juce::String(("Overall output level")));
+  levelSlider->setItemDescription(juce::String(("Overall output level")));
   levelSlider->setDescriptionField(infoField);
   levelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( detuneSlider = new rsModulatableSlider );
   detuneSlider->assignParameter( moduleToEdit->getParameterByName("Detune") );
-  detuneSlider->setDescription(juce::String(("Detuning between the two resonators")));
+  detuneSlider->setItemDescription(juce::String(("Detuning between the two resonators")));
   detuneSlider->setDescriptionField(infoField);
   detuneSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
 
   addWidget( pan1Slider = new rsModulatableSlider );
   pan1Slider->assignParameter( moduleToEdit->getParameterByName("Pan1") );
-  pan1Slider->setDescription(juce::String(("Panorama position of resonator 1")));
+  pan1Slider->setItemDescription(juce::String(("Panorama position of resonator 1")));
   pan1Slider->setDescriptionField(infoField);
   pan1Slider->setStringConversionFunction(&valueToString2);
 
   addWidget( pan2Slider = new rsModulatableSlider );
   pan2Slider->assignParameter( moduleToEdit->getParameterByName("Pan2") );
-  pan2Slider->setDescription(juce::String(("Panorama position of resonator 2")));
+  pan2Slider->setItemDescription(juce::String(("Panorama position of resonator 2")));
   pan2Slider->setDescriptionField(infoField);
   pan2Slider->setStringConversionFunction(&valueToString2);
 
   addWidget( decayTimeSlider = new rsModulatableSlider );
   decayTimeSlider->assignParameter( moduleToEdit->getParameterByName("DecayTime") );
-  decayTimeSlider->setDescription(juce::String(("Time for the tail to decay to -60 dB")));
+  decayTimeSlider->setItemDescription(juce::String(("Time for the tail to decay to -60 dB")));
   decayTimeSlider->setDescriptionField(infoField);
   decayTimeSlider->setStringConversionFunction(&secondsToStringWithUnit3);
 
   addWidget( highDecayScaleSlider = new rsModulatableSlider );
   highDecayScaleSlider->assignParameter( moduleToEdit->getParameterByName("HighDecayScale") );
-  highDecayScaleSlider->setDescription(juce::String(("Scaler for the decay-time at high frequencies")));
+  highDecayScaleSlider->setItemDescription(juce::String(("Scaler for the decay-time at high frequencies")));
   highDecayScaleSlider->setDescriptionField(infoField);
   highDecayScaleSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( lowDecayScaleSlider = new rsModulatableSlider );
   lowDecayScaleSlider->assignParameter( moduleToEdit->getParameterByName("LowDecayScale") );
-  lowDecayScaleSlider->setDescription(juce::String(("Scaler for the decay-time at low frequencies")));
+  lowDecayScaleSlider->setItemDescription(juce::String(("Scaler for the decay-time at low frequencies")));
   lowDecayScaleSlider->setDescriptionField(infoField);
   lowDecayScaleSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( highFreqSlider = new rsModulatableSlider );
   highFreqSlider->assignParameter( moduleToEdit->getParameterByName("HighCrossoverFrequency") );
-  highFreqSlider->setDescription(juce::String(("Crossover frequency between mid and high frequencies")));
+  highFreqSlider->setItemDescription(juce::String(("Crossover frequency between mid and high frequencies")));
   highFreqSlider->setSliderName(juce::String(("HighFreq")));
   highFreqSlider->setDescriptionField(infoField);
   highFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
@@ -1939,13 +1939,13 @@ CombBankModuleEditor::CombBankModuleEditor(CriticalSection *newPlugInLock, CombB
   addWidget( lowFreqSlider = new rsModulatableSlider );
   lowFreqSlider->assignParameter( moduleToEdit->getParameterByName("LowCrossoverFrequency") );
   lowFreqSlider->setSliderName(juce::String(("LowFreq")));
-  lowFreqSlider->setDescription(juce::String(("Crossover frequency between low and mid frequencies")));
+  lowFreqSlider->setItemDescription(juce::String(("Crossover frequency between low and mid frequencies")));
   lowFreqSlider->setDescriptionField(infoField);
   lowFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( oddOnlyButton = new RButton(juce::String(("OddOnly"))) );
   oddOnlyButton->assignParameter( moduleToEdit->getParameterByName(("OddOnly")) );
-  oddOnlyButton->setDescription(juce::String(("Lets the comb create only odd harmonics.")));
+  oddOnlyButton->setItemDescription(juce::String(("Lets the comb create only odd harmonics.")));
   oddOnlyButton->setDescriptionField(infoField);
   oddOnlyButton->setClickingTogglesState(true);
 }
@@ -2083,79 +2083,79 @@ CombResonatorModuleEditor::CombResonatorModuleEditor(CriticalSection *newPlugInL
 
   addWidget( toneLabel = new RTextField( juce::String(("Tone"))) );
   toneLabel->setJustification(Justification::centred);
-  toneLabel->setDescription(("Parameters for the tone/timbre of the comb"));
+  toneLabel->setItemDescription(("Parameters for the tone/timbre of the comb"));
   toneLabel->setDescriptionField(infoField);
 
   addWidget( decayLabel = new RTextField( juce::String(("Decay"))) );
   decayLabel->setJustification(Justification::centred);
-  decayLabel->setDescription(("Parameters controlling the frequency dependent decay"));
+  decayLabel->setItemDescription(("Parameters controlling the frequency dependent decay"));
   decayLabel->setDescriptionField(infoField);
 
   /*
   addWidget( othersLabel = new RTextField(juce::String(("OthersLabel")), juce::String(("Gain And Mix"))) );
   othersLabel->setJustification(Justification::centred);
-  othersLabel->setDescription(("Parameters for input-/output-gain and dry/wet mix"));
+  othersLabel->setItemDescription(("Parameters for input-/output-gain and dry/wet mix"));
   othersLabel->setDescriptionField(infoField);
   */
 
   addWidget( dryWetSlider = new rsModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
-  dryWetSlider->setDescription(juce::String(("Ratio between dry and wet signal")));
+  dryWetSlider->setItemDescription(juce::String(("Ratio between dry and wet signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( frequencySlider = new rsModulatableSlider );
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
-  frequencySlider->setDescription(juce::String(("Fundamental frequency of the resonator")));
+  frequencySlider->setItemDescription(juce::String(("Fundamental frequency of the resonator")));
   frequencySlider->setDescriptionField(infoField);
   frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( levelSlider = new rsModulatableSlider );
   levelSlider->assignParameter( moduleToEdit->getParameterByName("Level") );
-  levelSlider->setDescription(juce::String(("Overall output level")));
+  levelSlider->setItemDescription(juce::String(("Overall output level")));
   levelSlider->setDescriptionField(infoField);
   levelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( detuneSlider = new rsModulatableSlider );
   detuneSlider->assignParameter( moduleToEdit->getParameterByName("Detune") );
-  detuneSlider->setDescription(juce::String(("Detuning between the two resonators")));
+  detuneSlider->setItemDescription(juce::String(("Detuning between the two resonators")));
   detuneSlider->setDescriptionField(infoField);
   detuneSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
 
   addWidget( pan1Slider = new rsModulatableSlider );
   pan1Slider->assignParameter( moduleToEdit->getParameterByName("Pan1") );
-  pan1Slider->setDescription(juce::String(("Panorama position of resonator 1")));
+  pan1Slider->setItemDescription(juce::String(("Panorama position of resonator 1")));
   pan1Slider->setDescriptionField(infoField);
   pan1Slider->setStringConversionFunction(&valueToString2);
 
   addWidget( pan2Slider = new rsModulatableSlider );
   pan2Slider->assignParameter( moduleToEdit->getParameterByName("Pan2") );
-  pan2Slider->setDescription(juce::String(("Panorama position of resonator 2")));
+  pan2Slider->setItemDescription(juce::String(("Panorama position of resonator 2")));
   pan2Slider->setDescriptionField(infoField);
   pan2Slider->setStringConversionFunction(&valueToString2);
 
   addWidget( decayTimeSlider = new rsModulatableSlider );
   decayTimeSlider->assignParameter( moduleToEdit->getParameterByName("DecayTime") );
-  decayTimeSlider->setDescription(juce::String(("Time for the tail to decay to -60 dB")));
+  decayTimeSlider->setItemDescription(juce::String(("Time for the tail to decay to -60 dB")));
   decayTimeSlider->setDescriptionField(infoField);
   decayTimeSlider->setStringConversionFunction(&secondsToStringWithUnit3);
 
   addWidget( highDecayScaleSlider = new rsModulatableSlider );
   highDecayScaleSlider->assignParameter( moduleToEdit->getParameterByName("HighDecayScale") );
-  highDecayScaleSlider->setDescription(juce::String(("Scaler for the decay-time at high frequencies")));
+  highDecayScaleSlider->setItemDescription(juce::String(("Scaler for the decay-time at high frequencies")));
   highDecayScaleSlider->setDescriptionField(infoField);
   highDecayScaleSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( lowDecayScaleSlider = new rsModulatableSlider );
   lowDecayScaleSlider->assignParameter( moduleToEdit->getParameterByName("LowDecayScale") );
-  lowDecayScaleSlider->setDescription(juce::String(("Scaler for the decay-time at low frequencies")));
+  lowDecayScaleSlider->setItemDescription(juce::String(("Scaler for the decay-time at low frequencies")));
   lowDecayScaleSlider->setDescriptionField(infoField);
   lowDecayScaleSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( highFreqSlider = new rsModulatableSlider );
   highFreqSlider->assignParameter( moduleToEdit->getParameterByName("HighCrossoverFrequency") );
-  highFreqSlider->setDescription(juce::String(("Crossover frequency between mid and high frequencies")));
+  highFreqSlider->setItemDescription(juce::String(("Crossover frequency between mid and high frequencies")));
   highFreqSlider->setSliderName(juce::String(("HighFreq")));
   highFreqSlider->setDescriptionField(infoField);
   highFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
@@ -2163,13 +2163,13 @@ CombResonatorModuleEditor::CombResonatorModuleEditor(CriticalSection *newPlugInL
   addWidget( lowFreqSlider = new rsModulatableSlider );
   lowFreqSlider->assignParameter( moduleToEdit->getParameterByName("LowCrossoverFrequency") );
   lowFreqSlider->setSliderName(juce::String(("LowFreq")));
-  lowFreqSlider->setDescription(juce::String(("Crossover frequency between low and mid frequencies")));
+  lowFreqSlider->setItemDescription(juce::String(("Crossover frequency between low and mid frequencies")));
   lowFreqSlider->setDescriptionField(infoField);
   lowFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( oddOnlyButton = new RButton(juce::String(("OddOnly"))) );
   oddOnlyButton->assignParameter( moduleToEdit->getParameterByName(("OddOnly")) );
-  oddOnlyButton->setDescription(juce::String(("Lets the comb create only odd harmonics.")));
+  oddOnlyButton->setItemDescription(juce::String(("Lets the comb create only odd harmonics.")));
   oddOnlyButton->setDescriptionField(infoField);
   oddOnlyButton->setClickingTogglesState(true);
 }
@@ -2310,91 +2310,91 @@ DualTwoPoleFilterModuleEditor::DualTwoPoleFilterModuleEditor(CriticalSection *ne
 
   addWidget( globalLabel = new RTextField( juce::String(("Global"))) );
   globalLabel->setJustification(Justification::centredLeft);
-  globalLabel->setDescription(("Global parameters, affecting both filters"));
+  globalLabel->setItemDescription(("Global parameters, affecting both filters"));
   globalLabel->setDescriptionField(infoField);
 
   addWidget( filter1Label = new RTextField( juce::String(("Filter 1"))) );
   filter1Label->setJustification(Justification::centred);
-  filter1Label->setDescription(("Parameters for the first filter"));
+  filter1Label->setItemDescription(("Parameters for the first filter"));
   filter1Label->setDescriptionField(infoField);
 
   addWidget( filter2Label = new RTextField( juce::String(("Filter 2"))) );
   filter2Label->setJustification(Justification::centred);
-  filter2Label->setDescription(("Parameters for the second filter"));
+  filter2Label->setItemDescription(("Parameters for the second filter"));
   filter2Label->setDescriptionField(infoField);
 
   addWidget( modeComboBox1 = new RComboBox(juce::String(("ModeComboBox1"))) );
   modeComboBox1->assignParameter( moduleToEdit->getParameterByName(("Mode1")) );
-  modeComboBox1->setDescription(("Choose the mode of the first filter"));
+  modeComboBox1->setItemDescription(("Choose the mode of the first filter"));
   modeComboBox1->setDescriptionField(infoField);
   modeComboBox1->registerComboBoxObserver(this); // to update enablement of the sliders
 
   addWidget( frequencySlider1 = new rsModulatableSlider );
   frequencySlider1->assignParameter( moduleToEdit->getParameterByName("Frequency1") );
-  frequencySlider1->setDescription(juce::String(("Characteristic frequency of the first filter")));
+  frequencySlider1->setItemDescription(juce::String(("Characteristic frequency of the first filter")));
   frequencySlider1->setDescriptionField(infoField);
   frequencySlider1->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( gainSlider1 = new rsModulatableSlider );
   gainSlider1->assignParameter( moduleToEdit->getParameterByName("Gain1") );
-  gainSlider1->setDescription(juce::String(("Gain of the first filter")));
+  gainSlider1->setItemDescription(juce::String(("Gain of the first filter")));
   gainSlider1->setDescriptionField(infoField);
   gainSlider1->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( bandwidthSlider1 = new rsModulatableSlider );
   bandwidthSlider1->assignParameter( moduleToEdit->getParameterByName("Bandwidth1") );
-  bandwidthSlider1->setDescription(juce::String(("Bandwidth of the first filter")));
+  bandwidthSlider1->setItemDescription(juce::String(("Bandwidth of the first filter")));
   bandwidthSlider1->setDescriptionField(infoField);
   bandwidthSlider1->setStringConversionFunction(&octavesToStringWithUnit2);
 
   addWidget( modeComboBox2 = new RComboBox(juce::String(("ModeComboBox2"))) );
   modeComboBox2->assignParameter( moduleToEdit->getParameterByName(("Mode2")) );
-  modeComboBox2->setDescription(("Choose the mode of the second filter"));
+  modeComboBox2->setItemDescription(("Choose the mode of the second filter"));
   modeComboBox2->setDescriptionField(infoField);
   modeComboBox2->registerComboBoxObserver(this); // to update enablement of the sliders
 
   addWidget( frequencySlider2 = new rsModulatableSlider );
   frequencySlider2->assignParameter( moduleToEdit->getParameterByName("Frequency2") );
-  frequencySlider2->setDescription(juce::String(("Characteristic frequency of the second filter")));
+  frequencySlider2->setItemDescription(juce::String(("Characteristic frequency of the second filter")));
   frequencySlider2->setDescriptionField(infoField);
   frequencySlider2->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( gainSlider2 = new rsModulatableSlider );
   gainSlider2->assignParameter( moduleToEdit->getParameterByName("Gain2") );
-  gainSlider2->setDescription(juce::String(("Gain of the second filter")));
+  gainSlider2->setItemDescription(juce::String(("Gain of the second filter")));
   gainSlider2->setDescriptionField(infoField);
   gainSlider2->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( bandwidthSlider2 = new rsModulatableSlider );
   bandwidthSlider2->assignParameter( moduleToEdit->getParameterByName("Bandwidth2") );
-  bandwidthSlider2->setDescription(juce::String(("Bandwidth of the second filter")));
+  bandwidthSlider2->setItemDescription(juce::String(("Bandwidth of the second filter")));
   bandwidthSlider2->setDescriptionField(infoField);
   bandwidthSlider2->setStringConversionFunction(&octavesToStringWithUnit2);
 
   addWidget( serialParallelBlendSlider = new rsModulatableSlider );
   serialParallelBlendSlider->assignParameter( moduleToEdit->getParameterByName("SerialParallelBlend") );
   serialParallelBlendSlider->setSliderName(juce::String(("S/P")));
-  serialParallelBlendSlider->setDescription(juce::String(("Varies smoothly between serial and parallel connection")));
+  serialParallelBlendSlider->setItemDescription(juce::String(("Varies smoothly between serial and parallel connection")));
   serialParallelBlendSlider->setDescriptionField(infoField);
   serialParallelBlendSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( frequencyScaleSlider = new rsModulatableSlider );
   frequencyScaleSlider->assignParameter( moduleToEdit->getParameterByName("FrequencyScale") );
-  frequencyScaleSlider->setDescription(juce::String(("Scales the frequency of both filters")));
+  frequencyScaleSlider->setItemDescription(juce::String(("Scales the frequency of both filters")));
   frequencyScaleSlider->setDescriptionField(infoField);
   frequencyScaleSlider->setStringConversionFunction(&valueToString3);
 
   addWidget( gainScaleSlider = new rsModulatableSlider );
   gainScaleSlider->assignParameter( moduleToEdit->getParameterByName("GainScale") );
   gainScaleSlider->setSliderName(juce::String(("GnScl")));
-  gainScaleSlider->setDescription(juce::String(("Scales the gain of both filters")));
+  gainScaleSlider->setItemDescription(juce::String(("Scales the gain of both filters")));
   gainScaleSlider->setDescriptionField(infoField);
   gainScaleSlider->setStringConversionFunction(&valueToString3);
 
   addWidget( bandwidthScaleSlider = new rsModulatableSlider );
   bandwidthScaleSlider->assignParameter( moduleToEdit->getParameterByName("BandwidthScale") );
   bandwidthScaleSlider->setSliderName(juce::String(("BwScl")));
-  bandwidthScaleSlider->setDescription(juce::String(("Scales the bandwidth of both filters")));
+  bandwidthScaleSlider->setItemDescription(juce::String(("Scales the bandwidth of both filters")));
   bandwidthScaleSlider->setDescriptionField(infoField);
   bandwidthScaleSlider->setStringConversionFunction(&valueToString3);
 
@@ -2539,26 +2539,26 @@ FourPoleFilterModuleEditor::FourPoleFilterModuleEditor(CriticalSection *newPlugI
 
   addWidget( modeComboBox = new FourPoleFilterModeComboBox(juce::String(("ModeComboBox"))) );
   modeComboBox->assignParameter( moduleToEdit->getParameterByName(("Mode")) );
-  modeComboBox->setDescription(("Choose the mode of the filter"));
+  modeComboBox->setItemDescription(("Choose the mode of the filter"));
   modeComboBox->setDescriptionField(infoField);
   modeComboBox->registerComboBoxObserver(this); // to update enablement of the sliders
 
   addWidget( frequencySlider = new rsModulatableSlider );
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
-  frequencySlider->setDescription(juce::String(("Characteristic frequency of the filter")));
+  frequencySlider->setItemDescription(juce::String(("Characteristic frequency of the filter")));
   frequencySlider->setDescriptionField(infoField);
   frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( gainSlider = new rsModulatableSlider );
   gainSlider->assignParameter( moduleToEdit->getParameterByName("Gain") );
-  gainSlider->setDescription(juce::String(("Gain of the filter")));
+  gainSlider->setItemDescription(juce::String(("Gain of the filter")));
   gainSlider->setDescriptionField(infoField);
   gainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( bandwidthSlider = new rsModulatableSlider );
   //bandwidthSlider->assignParameter( moduleToEdit->getParameterByName("Bandwidth") );
-  //bandwidthSlider->setDescription(juce::String(("Bandwidth of the filter")));
-  bandwidthSlider->setDescription(juce::String(("Not yet implemented")));
+  //bandwidthSlider->setItemDescription(juce::String(("Bandwidth of the filter")));
+  bandwidthSlider->setItemDescription(juce::String(("Not yet implemented")));
   bandwidthSlider->setDescriptionField(infoField);
   bandwidthSlider->setStringConversionFunction(&octavesToStringWithUnit2);
 
@@ -2680,51 +2680,51 @@ LadderFilterModuleEditor::LadderFilterModuleEditor(CriticalSection *newPlugInLoc
 
   addWidget( modeComboBox = new RComboBox(juce::String(("ModeComboBox"))) );
   modeComboBox->assignParameter( moduleToEdit->getParameterByName(("Mode")) );
-  modeComboBox->setDescription(("Choose the mode of the filter"));
+  modeComboBox->setItemDescription(("Choose the mode of the filter"));
   modeComboBox->setDescriptionField(infoField);
   modeComboBox->registerComboBoxObserver(this); // to update enablement of the sliders
 
   addWidget( frequencySlider = new rsModulatableSlider );
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
-  frequencySlider->setDescription(juce::String(("Characteristic frequency of the filter")));
+  frequencySlider->setItemDescription(juce::String(("Characteristic frequency of the filter")));
   frequencySlider->setDescriptionField(infoField);
   frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( resonanceSlider = new rsModulatableSlider );
   resonanceSlider->assignParameter( moduleToEdit->getParameterByName("Resonance") );
-  resonanceSlider->setDescription(juce::String(("Resonance of the filter")));
+  resonanceSlider->setItemDescription(juce::String(("Resonance of the filter")));
   resonanceSlider->setDescriptionField(infoField);
   resonanceSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( makeUpSlider = new rsModulatableSlider );
   makeUpSlider->assignParameter( moduleToEdit->getParameterByName("MakeUp") );
-  makeUpSlider->setDescription(juce::String(("Make-up gain to compensate low frequency loss at high resonance")));
+  makeUpSlider->setItemDescription(juce::String(("Make-up gain to compensate low frequency loss at high resonance")));
   makeUpSlider->setDescriptionField(infoField);
   makeUpSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( driveSlider = new rsModulatableSlider );
   driveSlider->assignParameter( moduleToEdit->getParameterByName("Drive") );
-  driveSlider->setDescription(juce::String(("Drive the filter into distortion")));
+  driveSlider->setItemDescription(juce::String(("Drive the filter into distortion")));
   driveSlider->setDescriptionField(infoField);
   driveSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( orderSlider = new rsModulatableSlider );
   orderSlider->assignParameter( moduleToEdit->getParameterByName("Order") );
-  orderSlider->setDescription(juce::String(("Order of the filter")));
+  orderSlider->setItemDescription(juce::String(("Order of the filter")));
   orderSlider->setDescriptionField(infoField);
   orderSlider->setStringConversionFunction(&valueToString0);
 
 
   addWidget( morphSlider = new rsModulatableSlider );
   morphSlider->assignParameter( moduleToEdit->getParameterByName("Morph") );
-  morphSlider->setDescription(juce::String(("Morph between highpass through bandpass to lowpass")));
+  morphSlider->setItemDescription(juce::String(("Morph between highpass through bandpass to lowpass")));
   morphSlider->setDescriptionField(infoField);
   morphSlider->setStringConversionFunction(&valueToString2);
 
   /*
   addWidget( bandwidthSlider = new RSlider (("BandwidthSlider")) );
   bandwidthSlider->assignParameter( moduleToEdit->getParameterByName("Bandwidth") );
-  bandwidthSlider->setDescription(juce::String(("Bandwidth of the filter")));
+  bandwidthSlider->setItemDescription(juce::String(("Bandwidth of the filter")));
   bandwidthSlider->setDescriptionField(infoField);
   bandwidthSlider->setStringConversionFunction(&octavesToStringWithUnit2);
   */
@@ -2813,7 +2813,7 @@ SlopeFilterModuleEditor::SlopeFilterModuleEditor(CriticalSection *newPlugInLock,
 
   addWidget( slopeSlider = new rsModulatableSlider );
   slopeSlider->assignParameter( moduleToEdit->getParameterByName("Slope") );
-  slopeSlider->setDescription(juce::String(("Slope of the filter")));
+  slopeSlider->setItemDescription(juce::String(("Slope of the filter")));
   slopeSlider->setDescriptionField(infoField);
   slopeSlider->setStringConversionFunction(&decibelsPerOctaveToString2);
 
@@ -2884,31 +2884,31 @@ TwoPoleFilterModuleEditor::TwoPoleFilterModuleEditor(CriticalSection *newPlugInL
 
   addWidget( modeComboBox = new RComboBox(juce::String(("ModeComboBox"))) );
   modeComboBox->assignParameter( moduleToEdit->getParameterByName(("Mode")) );
-  modeComboBox->setDescription(("Choose the mode of the filter"));
+  modeComboBox->setItemDescription(("Choose the mode of the filter"));
   modeComboBox->setDescriptionField(infoField);
   modeComboBox->registerComboBoxObserver(this); // to update enablement of the sliders
 
   addWidget( frequencySlider = new rsModulatableSlider );
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
-  frequencySlider->setDescription(juce::String(("Characteristic frequency of the filter")));
+  frequencySlider->setItemDescription(juce::String(("Characteristic frequency of the filter")));
   frequencySlider->setDescriptionField(infoField);
   frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( gainSlider = new rsModulatableSlider );
   gainSlider->assignParameter( moduleToEdit->getParameterByName("Gain") );
-  gainSlider->setDescription(juce::String(("Gain of the filter")));
+  gainSlider->setItemDescription(juce::String(("Gain of the filter")));
   gainSlider->setDescriptionField(infoField);
   gainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( bandwidthSlider = new rsModulatableSlider );
   bandwidthSlider->assignParameter( moduleToEdit->getParameterByName("Bandwidth") );
-  bandwidthSlider->setDescription(juce::String(("Bandwidth of the filter")));
+  bandwidthSlider->setItemDescription(juce::String(("Bandwidth of the filter")));
   bandwidthSlider->setDescriptionField(infoField);
   bandwidthSlider->setStringConversionFunction(&octavesToStringWithUnit2);
 
   addWidget( radiusSlider = new rsModulatableSlider );
   radiusSlider->assignParameter( moduleToEdit->getParameterByName("Radius") );
-  radiusSlider->setDescription(juce::String(("Radius of the pole or zero")));
+  radiusSlider->setItemDescription(juce::String(("Radius of the pole or zero")));
   radiusSlider->setDescriptionField(infoField);
   radiusSlider->setStringConversionFunction(&valueToString5);
   radiusSlider->setVisible(false);
@@ -3040,57 +3040,57 @@ PingPongEchoModuleEditor::PingPongEchoModuleEditor(CriticalSection *newPlugInLoc
 
   addWidget( delayTimeSlider = new rsModulatableSlider );
   delayTimeSlider->assignParameter( moduleToEdit->getParameterByName("DelayTime") );
-  delayTimeSlider->setDescription(juce::String(("Delay time in beats")));
+  delayTimeSlider->setItemDescription(juce::String(("Delay time in beats")));
   delayTimeSlider->setDescriptionField(infoField);
   delayTimeSlider->setStringConversionFunction(&beatsToStringWithUnit4);
 
   addWidget( dryWetSlider = new rsModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
-  dryWetSlider->setDescription(juce::String(("Ratio between dry and wet signal")));
+  dryWetSlider->setItemDescription(juce::String(("Ratio between dry and wet signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( feedbackSlider = new rsModulatableSlider );
   feedbackSlider->assignParameter( moduleToEdit->getParameterByName("Feedback") );
-  feedbackSlider->setDescription(juce::String(("Amount of feedback in percent")));
+  feedbackSlider->setItemDescription(juce::String(("Amount of feedback in percent")));
   feedbackSlider->setDescriptionField(infoField);
   feedbackSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( panSlider = new rsModulatableSlider );
   panSlider->assignParameter( moduleToEdit->getParameterByName("Pan") );
-  panSlider->setDescription(juce::String(("Panorama position of the first echo")));
+  panSlider->setItemDescription(juce::String(("Panorama position of the first echo")));
   panSlider->setDescriptionField(infoField);
   panSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( highDampSlider = new rsModulatableSlider );
   highDampSlider->assignParameter( moduleToEdit->getParameterByName("HighDamp") );
-  highDampSlider->setDescription(juce::String(("Cutoff frequency for the high damping (lowpass) filter")));
+  highDampSlider->setItemDescription(juce::String(("Cutoff frequency for the high damping (lowpass) filter")));
   highDampSlider->setDescriptionField(infoField);
   highDampSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( lowDampSlider = new rsModulatableSlider );
   lowDampSlider->assignParameter( moduleToEdit->getParameterByName("LowDamp") );
-  lowDampSlider->setDescription(juce::String(("Cutoff frequency for the low damping (highpass) filter")));
+  lowDampSlider->setItemDescription(juce::String(("Cutoff frequency for the low damping (highpass) filter")));
   lowDampSlider->setDescriptionField(infoField);
   lowDampSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( pingPongButton = new RButton(juce::String(("PingPong"))) );
   pingPongButton->assignParameter( moduleToEdit->getParameterByName(("PingPong")) );
-  pingPongButton->setDescription(juce::String(("Toggle ping-pong mode (alternating pan-positions) on/off")));
+  pingPongButton->setItemDescription(juce::String(("Toggle ping-pong mode (alternating pan-positions) on/off")));
   pingPongButton->setDescriptionField(infoField);
   pingPongButton->setClickingTogglesState(true);
 
   addWidget( trueStereoButton = new RButton(juce::String(("TrueStereo"))) );
   trueStereoButton->assignParameter( moduleToEdit->getParameterByName(("TrueStereo")) );
-  trueStereoButton->setDescription(juce::String(("Toggle true-stereo mode on/off")));
+  trueStereoButton->setItemDescription(juce::String(("Toggle true-stereo mode on/off")));
   trueStereoButton->setDescriptionField(infoField);
   trueStereoButton->setClickingTogglesState(true);
 
   addWidget( tempoSyncButton = new RButton(juce::String(("TempoSync"))) );
   tempoSyncButton->assignParameter( moduleToEdit->getParameterByName(("TempoSync")) );
   tempoSyncButton->setButtonText(juce::String(("Sync")));
-  tempoSyncButton->setDescription(juce::String(("Toggle tempo synchronization on/off")));
+  tempoSyncButton->setItemDescription(juce::String(("Toggle tempo synchronization on/off")));
   tempoSyncButton->setDescriptionField(infoField);
   tempoSyncButton->setClickingTogglesState(true);
   tempoSyncButton->addRButtonListener(this);
@@ -3208,43 +3208,43 @@ ReverbModuleEditor::ReverbModuleEditor(CriticalSection *newPlugInLock, ReverbAud
   addWidget( dryWetSlider = new rsModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
-  dryWetSlider->setDescription(juce::String(("Ratio between dry and wet signal")));
+  dryWetSlider->setItemDescription(juce::String(("Ratio between dry and wet signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( firstEchoSlider = new rsModulatableSlider );
   firstEchoSlider->assignParameter( moduleToEdit->getParameterByName("FirstEcho") );
-  firstEchoSlider->setDescription(juce::String(("Arrival time of the first reflection in seconds")));
+  firstEchoSlider->setItemDescription(juce::String(("Arrival time of the first reflection in seconds")));
   firstEchoSlider->setDescriptionField(infoField);
   firstEchoSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( preDelaySlider = new rsModulatableSlider );
   preDelaySlider->assignParameter( moduleToEdit->getParameterByName("PreDelay") );
-  preDelaySlider->setDescription(juce::String(("Initial delay for the reverberation.")));
+  preDelaySlider->setItemDescription(juce::String(("Initial delay for the reverberation.")));
   preDelaySlider->setDescriptionField(infoField);
   preDelaySlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( decayTimeSlider = new rsModulatableSlider );
   decayTimeSlider->assignParameter( moduleToEdit->getParameterByName("DecayTime") );
-  decayTimeSlider->setDescription(juce::String(("Time for the tail to decay to -60 dB")));
+  decayTimeSlider->setItemDescription(juce::String(("Time for the tail to decay to -60 dB")));
   decayTimeSlider->setDescriptionField(infoField);
   decayTimeSlider->setStringConversionFunction(&secondsToStringWithUnit2);
 
   addWidget( highDecayScaleSlider = new rsModulatableSlider );
   highDecayScaleSlider->assignParameter( moduleToEdit->getParameterByName("HighDecayScale") );
-  highDecayScaleSlider->setDescription(juce::String(("Scaler for the decay-time at high frequencies")));
+  highDecayScaleSlider->setItemDescription(juce::String(("Scaler for the decay-time at high frequencies")));
   highDecayScaleSlider->setDescriptionField(infoField);
   highDecayScaleSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( lowDecayScaleSlider = new rsModulatableSlider );
   lowDecayScaleSlider->assignParameter( moduleToEdit->getParameterByName("LowDecayScale") );
-  lowDecayScaleSlider->setDescription(juce::String(("Scaler for the decay-time at low frequencies")));
+  lowDecayScaleSlider->setItemDescription(juce::String(("Scaler for the decay-time at low frequencies")));
   lowDecayScaleSlider->setDescriptionField(infoField);
   lowDecayScaleSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( highFreqSlider = new rsModulatableSlider );
   highFreqSlider->assignParameter( moduleToEdit->getParameterByName("HighCrossoverFrequency") );
-  highFreqSlider->setDescription(juce::String(("Crossover frequency between mid and high frequencies")));
+  highFreqSlider->setItemDescription(juce::String(("Crossover frequency between mid and high frequencies")));
   highFreqSlider->setSliderName(juce::String(("HighFreq")));
   highFreqSlider->setDescriptionField(infoField);
   highFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
@@ -3252,19 +3252,19 @@ ReverbModuleEditor::ReverbModuleEditor(CriticalSection *newPlugInLock, ReverbAud
   addWidget( lowFreqSlider = new rsModulatableSlider );
   lowFreqSlider->assignParameter( moduleToEdit->getParameterByName("LowCrossoverFrequency") );
   lowFreqSlider->setSliderName(juce::String(("LowFreq")));
-  lowFreqSlider->setDescription(juce::String(("Crossover frequency between low and mid frequencies")));
+  lowFreqSlider->setItemDescription(juce::String(("Crossover frequency between low and mid frequencies")));
   lowFreqSlider->setDescriptionField(infoField);
   lowFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( pinkButton = new RButton(juce::String(("Pink"))) );
   pinkButton->assignParameter( moduleToEdit->getParameterByName(("Pinking")) );
-  pinkButton->setDescription(juce::String(("Toggle pinking filter (3 dB/oct lowpass) for wet signal on/off")));
+  pinkButton->setItemDescription(juce::String(("Toggle pinking filter (3 dB/oct lowpass) for wet signal on/off")));
   pinkButton->setDescriptionField(infoField);
   pinkButton->setClickingTogglesState(true);
 
   addWidget( stereoSwapButton = new RButton(juce::String(("StereoSwap"))) );
   stereoSwapButton->assignParameter( moduleToEdit->getParameterByName(("StereoSwap")) );
-  stereoSwapButton->setDescription(juce::String(("Swap stereo channels (for wet signal) left for right")));
+  stereoSwapButton->setItemDescription(juce::String(("Swap stereo channels (for wet signal) left for right")));
   stereoSwapButton->setButtonText(juce::String(("Swap")));
   stereoSwapButton->setDescriptionField(infoField);
   stereoSwapButton->setClickingTogglesState(true);
@@ -3340,7 +3340,7 @@ SimpleDelayModuleEditor::SimpleDelayModuleEditor(CriticalSection *newPlugInLock,
 
   addWidget( delaySlider = new rsModulatableSlider );
   delaySlider->assignParameter( moduleToEdit->getParameterByName("DelayTime") );
-  delaySlider->setDescription(juce::String(("Delay in milliseconds")));
+  delaySlider->setItemDescription(juce::String(("Delay in milliseconds")));
   delaySlider->setDescriptionField(infoField);
   delaySlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
@@ -3396,12 +3396,12 @@ ModulationEffectModuleEditor::ModulationEffectModuleEditor(CriticalSection *newP
 
   addWidget( lfoLabel = new RTextField( juce::String(("LFO"))) );
   lfoLabel->setJustification(Justification::centred);
-  lfoLabel->setDescription(("Parameters for the low frequency oscillator"));
+  lfoLabel->setItemDescription(("Parameters for the low frequency oscillator"));
   lfoLabel->setDescriptionField(infoField);
 
   addWidget( effectLabel = new RTextField( juce::String(("Effect"))) );
   effectLabel->setJustification(Justification::centred);
-  effectLabel->setDescription(("Parameters for the actual effect"));
+  effectLabel->setItemDescription(("Parameters for the actual effect"));
   effectLabel->setDescriptionField(infoField);
 
   //updateWidgetsAccordingToState();
@@ -3504,32 +3504,32 @@ FlangerModuleEditor::FlangerModuleEditor(CriticalSection *newPlugInLock, Flanger
 
   addWidget( depthSlider = new rsModulatableSlider );
   depthSlider->assignParameter( moduleToEdit->getParameterByName("Depth") );
-  depthSlider->setDescription(juce::String(("Modulation depth in semitones")));
+  depthSlider->setItemDescription(juce::String(("Modulation depth in semitones")));
   depthSlider->setDescriptionField(infoField);
   depthSlider->setStringConversionFunction(&semitonesToStringWithUnit1);
 
   addWidget( dryWetSlider = new rsModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
-  dryWetSlider->setDescription(juce::String(("Ratio between dry and wet (filtered) signal")));
+  dryWetSlider->setItemDescription(juce::String(("Ratio between dry and wet (filtered) signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( frequencySlider = new rsModulatableSlider );
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
-  frequencySlider->setDescription(juce::String(("Frequency of first notch or peak in the comb-filter")));
+  frequencySlider->setItemDescription(juce::String(("Frequency of first notch or peak in the comb-filter")));
   frequencySlider->setDescriptionField(infoField);
   frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( feedbackSlider = new rsModulatableSlider );
   feedbackSlider->assignParameter( moduleToEdit->getParameterByName("Feedback") );
-  feedbackSlider->setDescription(juce::String(("Feedback around the delayline")));
+  feedbackSlider->setItemDescription(juce::String(("Feedback around the delayline")));
   feedbackSlider->setDescriptionField(infoField);
   feedbackSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( invertButton = new RButton(juce::String(("Invert"))) );
   invertButton->assignParameter( moduleToEdit->getParameterByName(("Invert")) );
-  invertButton->setDescription(juce::String(("Invert polarity of wet signal")));
+  invertButton->setItemDescription(juce::String(("Invert polarity of wet signal")));
   invertButton->setDescriptionField(infoField);
   invertButton->setClickingTogglesState(true);
 
@@ -3627,50 +3627,50 @@ PhaserModuleEditor::PhaserModuleEditor(CriticalSection *newPlugInLock, PhaserAud
   phaserModuleToEdit = newPhaserAudioModule;
 
   addWidget( filterLabel = new RTextField( juce::String(("Filter:"))) );
-  filterLabel->setDescription(("Parameters for the filter"));
+  filterLabel->setItemDescription(("Parameters for the filter"));
   filterLabel->setDescriptionField(infoField);
 
   addWidget( depthSlider = new rsModulatableSlider );
   depthSlider->assignParameter( moduleToEdit->getParameterByName("Depth") );
-  depthSlider->setDescription(juce::String(("Modulation depth in semitones")));
+  depthSlider->setItemDescription(juce::String(("Modulation depth in semitones")));
   depthSlider->setDescriptionField(infoField);
   depthSlider->setStringConversionFunction(&semitonesToStringWithUnit1);
 
   addWidget( dryWetSlider = new rsModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
-  dryWetSlider->setDescription(juce::String(("Ratio between dry and wet(filtered) signal")));
+  dryWetSlider->setItemDescription(juce::String(("Ratio between dry and wet(filtered) signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( modeComboBox = new RComboBox(juce::String(("ModeComboBox"))) );
   modeComboBox->assignParameter( moduleToEdit->getParameterByName(("FilterMode")) );
-  modeComboBox->setDescription(("Choose the mode of the filter"));
+  modeComboBox->setItemDescription(("Choose the mode of the filter"));
   modeComboBox->setDescriptionField(infoField);
   modeComboBox->registerComboBoxObserver(this); // to update enablement of the sliders
 
   addWidget( frequencySlider = new rsModulatableSlider );
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
-  frequencySlider->setDescription(juce::String(("Characteristic frequency of the filter")));
+  frequencySlider->setItemDescription(juce::String(("Characteristic frequency of the filter")));
   frequencySlider->setDescriptionField(infoField);
   frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( qSlider = new rsModulatableSlider );
   qSlider->assignParameter( moduleToEdit->getParameterByName("Q") );
-  qSlider->setDescription(juce::String(("Q of the filter")));
+  qSlider->setItemDescription(juce::String(("Q of the filter")));
   qSlider->setDescriptionField(infoField);
   qSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( feedbackSlider = new rsModulatableSlider );
   feedbackSlider->assignParameter( moduleToEdit->getParameterByName("Feedback") );
-  feedbackSlider->setDescription(juce::String(("Feedback around the allpass chain")));
+  feedbackSlider->setItemDescription(juce::String(("Feedback around the allpass chain")));
   feedbackSlider->setDescriptionField(infoField);
   feedbackSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( stagesSlider = new rsModulatableSlider );
   stagesSlider->assignParameter( moduleToEdit->getParameterByName("NumStages") );
   stagesSlider->setName(juce::String(("Stages")));
-  stagesSlider->setDescription(juce::String(("Number of allpass stages in the chain")));
+  stagesSlider->setItemDescription(juce::String(("Number of allpass stages in the chain")));
   stagesSlider->setDescriptionField(infoField);
   stagesSlider->setStringConversionFunction(&valueToString0);
 
@@ -3761,7 +3761,7 @@ TremoloModuleEditor::TremoloModuleEditor(CriticalSection *newPlugInLock, Tremolo
 
   addWidget( depthSlider = new rsModulatableSlider );
   depthSlider->assignParameter( moduleToEdit->getParameterByName("Depth") );
-  depthSlider->setDescription(juce::String(("Modulation depth in percent")));
+  depthSlider->setItemDescription(juce::String(("Modulation depth in percent")));
   depthSlider->setDescriptionField(infoField);
   depthSlider->setStringConversionFunction(&percentToStringWithUnit0);
 }
@@ -3817,13 +3817,13 @@ VibratoModuleEditor::VibratoModuleEditor(CriticalSection *newPlugInLock, Vibrato
 
   addWidget( depthSlider = new rsModulatableSlider );
   depthSlider->assignParameter( moduleToEdit->getParameterByName("Depth") );
-  depthSlider->setDescription(juce::String(("Modulation depth in semitones")));
+  depthSlider->setItemDescription(juce::String(("Modulation depth in semitones")));
   depthSlider->setDescriptionField(infoField);
   depthSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
 
   addWidget( dryWetSlider = new rsModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWet") );
-  dryWetSlider->setDescription(juce::String(("Mix ratio between original and vibrato'ed signal")));
+  dryWetSlider->setItemDescription(juce::String(("Mix ratio between original and vibrato'ed signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
@@ -3904,43 +3904,43 @@ WahWahModuleEditor::WahWahModuleEditor(CriticalSection *newPlugInLock, WahWahAud
   wahWahModuleToEdit = newWahWahAudioModule;
 
   addWidget( filterLabel = new RTextField( juce::String(("Filter:"))) );
-  filterLabel->setDescription(("Parameters for the filter"));
+  filterLabel->setItemDescription(("Parameters for the filter"));
   filterLabel->setDescriptionField(infoField);
 
   addWidget( depthSlider = new rsModulatableSlider );
   depthSlider->assignParameter( moduleToEdit->getParameterByName("Depth") );
-  depthSlider->setDescription(juce::String(("Modulation depth in semitones")));
+  depthSlider->setItemDescription(juce::String(("Modulation depth in semitones")));
   depthSlider->setDescriptionField(infoField);
   depthSlider->setStringConversionFunction(&semitonesToStringWithUnit1);
 
   addWidget( dryWetSlider = new rsModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
-  dryWetSlider->setDescription(juce::String(("Ratio between dry and wet(filtered) signal")));
+  dryWetSlider->setItemDescription(juce::String(("Ratio between dry and wet(filtered) signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( modeComboBox = new RComboBox(juce::String(("ModeComboBox"))) );
   modeComboBox->assignParameter( moduleToEdit->getParameterByName(("Mode")) );
-  modeComboBox->setDescription(("Choose the mode of the filter"));
+  modeComboBox->setItemDescription(("Choose the mode of the filter"));
   modeComboBox->setDescriptionField(infoField);
   modeComboBox->registerComboBoxObserver(this); // to update enablement of the sliders
 
   addWidget( frequencySlider = new rsModulatableSlider );
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
-  frequencySlider->setDescription(juce::String(("Characteristic frequency of the filter")));
+  frequencySlider->setItemDescription(juce::String(("Characteristic frequency of the filter")));
   frequencySlider->setDescriptionField(infoField);
   frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( gainSlider = new rsModulatableSlider );
   gainSlider->assignParameter( moduleToEdit->getParameterByName("Gain") );
-  gainSlider->setDescription(juce::String(("Gain of the filter")));
+  gainSlider->setItemDescription(juce::String(("Gain of the filter")));
   gainSlider->setDescriptionField(infoField);
   gainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( bandwidthSlider = new rsModulatableSlider );
   bandwidthSlider->assignParameter( moduleToEdit->getParameterByName("Bandwidth") );
-  bandwidthSlider->setDescription(juce::String(("Bandwidth of the filter")));
+  bandwidthSlider->setItemDescription(juce::String(("Bandwidth of the filter")));
   bandwidthSlider->setDescriptionField(infoField);
   bandwidthSlider->setStringConversionFunction(&octavesToStringWithUnit2);
 
@@ -4048,27 +4048,27 @@ FormantShifterModuleEditor::FormantShifterModuleEditor(CriticalSection *newPlugI
 
   addWidget( formantScaleSlider = new rsModulatableSlider );
   formantScaleSlider->assignParameter( moduleToEdit->getParameterByName(("FormantScale")) );
-  formantScaleSlider->setDescription(juce::String(("Formant scale factor")));
+  formantScaleSlider->setItemDescription(juce::String(("Formant scale factor")));
   formantScaleSlider->setDescriptionField(infoField);
   formantScaleSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( formantOffsetSlider = new rsModulatableSlider );
   formantOffsetSlider->assignParameter( moduleToEdit->getParameterByName(("FormantOffset")) );
-  formantOffsetSlider->setDescription(juce::String(("Formant offset in Hz")));
+  formantOffsetSlider->setItemDescription(juce::String(("Formant offset in Hz")));
   formantOffsetSlider->setDescriptionField(infoField);
   formantOffsetSlider->setStringConversionFunction(&hertzToStringWithUnit1);
 
   addWidget( dryWetSlider = new rsModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName(("DryWetRatio")) );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
-  dryWetSlider->setDescription(juce::String(("Ratio between dry (original) and wet (ringmodulated) signal")));
+  dryWetSlider->setItemDescription(juce::String(("Ratio between dry (original) and wet (ringmodulated) signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   /*
   addWidget( monoButton = new RButton(juce::String(("Mono"))) );
   monoButton->assignParameter( moduleToEdit->getParameterByName(("Mono")) );
-  monoButton->setDescription(juce::String(("Toggle mono-mode (saves CPU power)")));
+  monoButton->setItemDescription(juce::String(("Toggle mono-mode (saves CPU power)")));
   monoButton->setDescriptionField(infoField);
   monoButton->setClickingTogglesState(true);
   */
@@ -4229,168 +4229,168 @@ ChorusModuleEditor::ChorusModuleEditor(CriticalSection *newPlugInLock, ChorusAud
 
   addWidget( globalLabel = new RTextField( juce::String(("Global"))) );
   globalLabel->setJustification(Justification::centred);
-  globalLabel->setDescription(("Global parameters for the chorus effect"));
+  globalLabel->setItemDescription(("Global parameters for the chorus effect"));
   globalLabel->setDescriptionField(infoField);
 
   addWidget( delaySlider = new rsModulatableSlider );
   delaySlider->assignParameter( moduleToEdit->getParameterByName("Delay") );
-  delaySlider->setDescription(juce::String(("Average delay in the delaylines")));
+  delaySlider->setItemDescription(juce::String(("Average delay in the delaylines")));
   delaySlider->setDescriptionField(infoField);
   delaySlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( cycleLengthSlider = new rsModulatableSlider );
   cycleLengthSlider->assignParameter( moduleToEdit->getParameterByName("CycleLength") );
   cycleLengthSlider->setSliderName(juce::String(("Cycle")));
-  cycleLengthSlider->setDescription(juce::String(("Length of one cycle (in beats)")));
+  cycleLengthSlider->setItemDescription(juce::String(("Length of one cycle (in beats)")));
   cycleLengthSlider->setDescriptionField(infoField);
   cycleLengthSlider->setStringConversionFunction(&beatsToStringWithUnit4);
 
   addWidget( depthSlider = new rsModulatableSlider );
   depthSlider->assignParameter( moduleToEdit->getParameterByName("Depth") );
-  depthSlider->setDescription(juce::String(("Depth of the modulation")));
+  depthSlider->setItemDescription(juce::String(("Depth of the modulation")));
   depthSlider->setDescriptionField(infoField);
   depthSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
 
   addWidget( globalFeedbackSlider = new rsModulatableSlider );
   globalFeedbackSlider->assignParameter( moduleToEdit->getParameterByName("GlobalFeedback") );
   globalFeedbackSlider->setSliderName(juce::String(("Feedback")));
-  globalFeedbackSlider->setDescription(juce::String(("Feedback around the chorus effect")));
+  globalFeedbackSlider->setItemDescription(juce::String(("Feedback around the chorus effect")));
   globalFeedbackSlider->setDescriptionField(infoField);
   globalFeedbackSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( crossMixSlider = new rsModulatableSlider );
   crossMixSlider->assignParameter( moduleToEdit->getParameterByName("CrossMix") );
-  crossMixSlider->setDescription(juce::String(("Amount by which left wet signal goes to right channel and vice versa")));
+  crossMixSlider->setItemDescription(juce::String(("Amount by which left wet signal goes to right channel and vice versa")));
   crossMixSlider->setDescriptionField(infoField);
   crossMixSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( feedback2Slider = new rsModulatableSlider );
   feedback2Slider->assignParameter( moduleToEdit->getParameterByName("FeedbackPostCrossMix") );
-  feedback2Slider->setDescription(juce::String(("Feedback around the chorus effect after channel cross-mix")));
+  feedback2Slider->setItemDescription(juce::String(("Feedback around the chorus effect after channel cross-mix")));
   feedback2Slider->setDescriptionField(infoField);
   feedback2Slider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( stereoPhaseSlider = new rsModulatableSlider );
   stereoPhaseSlider->assignParameter( moduleToEdit->getParameterByName("StereoPhase") );
-  stereoPhaseSlider->setDescription(juce::String(("Phase offset between LFOs for left and right channel")));
+  stereoPhaseSlider->setItemDescription(juce::String(("Phase offset between LFOs for left and right channel")));
   stereoPhaseSlider->setDescriptionField(infoField);
   stereoPhaseSlider->setStringConversionFunction(&degreesToStringWithUnit0);
 
   addWidget( dryWetSlider = new rsModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
-  dryWetSlider->setDescription(juce::String(("Ratio between dry (original) and wet (chorused) signal")));
+  dryWetSlider->setItemDescription(juce::String(("Ratio between dry (original) and wet (chorused) signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
 
   addWidget( voice1Button = new RButton(juce::String(("Voice 1"))) );
   voice1Button->assignParameter( moduleToEdit->getParameterByName(("OnOffVoice1")) );
-  voice1Button->setDescription(juce::String(("Switch voice 1 on/off")));
+  voice1Button->setItemDescription(juce::String(("Switch voice 1 on/off")));
   voice1Button->setDescriptionField(infoField);
   voice1Button->setClickingTogglesState(true);
 
   addWidget( voice1DelaySlider = new RSlider (("Voice1DelaySlider")) );
   voice1DelaySlider->assignParameter( moduleToEdit->getParameterByName("DelayScaleVoice1") );
   voice1DelaySlider->setSliderName(juce::String(("Dly")));
-  voice1DelaySlider->setDescription(juce::String(("Scales the delay-time for voice 1")));
+  voice1DelaySlider->setItemDescription(juce::String(("Scales the delay-time for voice 1")));
   voice1DelaySlider->setDescriptionField(infoField);
   voice1DelaySlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( voice1DepthSlider = new RSlider (("Voice1DepthSlider")) );
   voice1DepthSlider->assignParameter( moduleToEdit->getParameterByName("DepthScaleVoice1") );
   voice1DepthSlider->setSliderName(juce::String(("Dpt")));
-  voice1DepthSlider->setDescription(juce::String(("Scales the modulation depth for voice 1")));
+  voice1DepthSlider->setItemDescription(juce::String(("Scales the modulation depth for voice 1")));
   voice1DepthSlider->setDescriptionField(infoField);
   voice1DepthSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( voice1AmpSlider = new RSlider (("Voice1AmpSlider")) );
   voice1AmpSlider->assignParameter( moduleToEdit->getParameterByName("AmpScaleVoice1") );
   voice1AmpSlider->setSliderName(juce::String(("Amp")));
-  voice1AmpSlider->setDescription(juce::String(("Scales the amplitude for voice 1")));
+  voice1AmpSlider->setItemDescription(juce::String(("Scales the amplitude for voice 1")));
   voice1AmpSlider->setDescriptionField(infoField);
   voice1AmpSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
 
   addWidget( voice2Button = new RButton(juce::String(("Voice 2"))) );
   voice2Button->assignParameter( moduleToEdit->getParameterByName(("OnOffVoice2")) );
-  voice2Button->setDescription(juce::String(("Switch voice 2 on/off")));
+  voice2Button->setItemDescription(juce::String(("Switch voice 2 on/off")));
   voice2Button->setDescriptionField(infoField);
   voice2Button->setClickingTogglesState(true);
 
   addWidget( voice2DelaySlider = new RSlider (("Voice2DelaySlider")) );
   voice2DelaySlider->assignParameter( moduleToEdit->getParameterByName("DelayScaleVoice2") );
   voice2DelaySlider->setSliderName(juce::String(("Dly")));
-  voice2DelaySlider->setDescription(juce::String(("Scales the delay-time for voice 2")));
+  voice2DelaySlider->setItemDescription(juce::String(("Scales the delay-time for voice 2")));
   voice2DelaySlider->setDescriptionField(infoField);
   voice2DelaySlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( voice2DepthSlider = new RSlider (("Voice2DepthSlider")) );
   voice2DepthSlider->assignParameter( moduleToEdit->getParameterByName("DepthScaleVoice2") );
   voice2DepthSlider->setSliderName(juce::String(("Dpt")));
-  voice2DepthSlider->setDescription(juce::String(("Scales the modulation depth for voice 2")));
+  voice2DepthSlider->setItemDescription(juce::String(("Scales the modulation depth for voice 2")));
   voice2DepthSlider->setDescriptionField(infoField);
   voice2DepthSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( voice2AmpSlider = new RSlider (("Voice2AmpSlider")) );
   voice2AmpSlider->assignParameter( moduleToEdit->getParameterByName("AmpScaleVoice2") );
   voice2AmpSlider->setSliderName(juce::String(("Amp")));
-  voice2AmpSlider->setDescription(juce::String(("Scales the amplitude for voice 2")));
+  voice2AmpSlider->setItemDescription(juce::String(("Scales the amplitude for voice 2")));
   voice2AmpSlider->setDescriptionField(infoField);
   voice2AmpSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
 
   addWidget( voice3Button = new RButton(juce::String(("Voice 3"))) );
   voice3Button->assignParameter( moduleToEdit->getParameterByName(("OnOffVoice3")) );
-  voice3Button->setDescription(juce::String(("Switch voice 3 on/off")));
+  voice3Button->setItemDescription(juce::String(("Switch voice 3 on/off")));
   voice3Button->setDescriptionField(infoField);
   voice3Button->setClickingTogglesState(true);
 
   addWidget( voice3DelaySlider = new RSlider (("Voice3DelaySlider")) );
   voice3DelaySlider->assignParameter( moduleToEdit->getParameterByName("DelayScaleVoice3") );
   voice3DelaySlider->setSliderName(juce::String(("Dly")));
-  voice3DelaySlider->setDescription(juce::String(("Scales the delay-time for voice 3")));
+  voice3DelaySlider->setItemDescription(juce::String(("Scales the delay-time for voice 3")));
   voice3DelaySlider->setDescriptionField(infoField);
   voice3DelaySlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( voice3DepthSlider = new RSlider (("Voice3DepthSlider")) );
   voice3DepthSlider->assignParameter( moduleToEdit->getParameterByName("DepthScaleVoice3") );
   voice3DepthSlider->setSliderName(juce::String(("Dpt")));
-  voice3DepthSlider->setDescription(juce::String(("Scales the modulation depth for voice 3")));
+  voice3DepthSlider->setItemDescription(juce::String(("Scales the modulation depth for voice 3")));
   voice3DepthSlider->setDescriptionField(infoField);
   voice3DepthSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( voice3AmpSlider = new RSlider (("Voice3AmpSlider")) );
   voice3AmpSlider->assignParameter( moduleToEdit->getParameterByName("AmpScaleVoice3") );
   voice3AmpSlider->setSliderName(juce::String(("Amp")));
-  voice3AmpSlider->setDescription(juce::String(("Scales the amplitude for voice 3")));
+  voice3AmpSlider->setItemDescription(juce::String(("Scales the amplitude for voice 3")));
   voice3AmpSlider->setDescriptionField(infoField);
   voice3AmpSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
 
   addWidget( voice4Button = new RButton(juce::String(("Voice 4"))) );
   voice4Button->assignParameter( moduleToEdit->getParameterByName(("OnOffVoice4")) );
-  voice4Button->setDescription(juce::String(("Switch voice 4 on/off")));
+  voice4Button->setItemDescription(juce::String(("Switch voice 4 on/off")));
   voice4Button->setDescriptionField(infoField);
   voice4Button->setClickingTogglesState(true);
 
   addWidget( voice4DelaySlider = new RSlider (("Voice4DelaySlider")) );
   voice4DelaySlider->assignParameter( moduleToEdit->getParameterByName("DelayScaleVoice4") );
   voice4DelaySlider->setSliderName(juce::String(("Dly")));
-  voice4DelaySlider->setDescription(juce::String(("Scales the delay-time for voice 4")));
+  voice4DelaySlider->setItemDescription(juce::String(("Scales the delay-time for voice 4")));
   voice4DelaySlider->setDescriptionField(infoField);
   voice4DelaySlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( voice4DepthSlider = new RSlider (("Voice4DepthSlider")) );
   voice4DepthSlider->assignParameter( moduleToEdit->getParameterByName("DepthScaleVoice4") );
   voice4DepthSlider->setSliderName(juce::String(("Dpt")));
-  voice4DepthSlider->setDescription(juce::String(("Scales the modulation depth for voice 4")));
+  voice4DepthSlider->setItemDescription(juce::String(("Scales the modulation depth for voice 4")));
   voice4DepthSlider->setDescriptionField(infoField);
   voice4DepthSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( voice4AmpSlider = new RSlider (("Voice4AmpSlider")) );
   voice4AmpSlider->assignParameter( moduleToEdit->getParameterByName("AmpScaleVoice4") );
   voice4AmpSlider->setSliderName(juce::String(("Amp")));
-  voice4AmpSlider->setDescription(juce::String(("Scales the amplitude for voice 4")));
+  voice4AmpSlider->setItemDescription(juce::String(("Scales the amplitude for voice 4")));
   voice4AmpSlider->setDescriptionField(infoField);
   voice4AmpSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
@@ -4545,26 +4545,26 @@ FrequencyShifterModuleEditor::FrequencyShifterModuleEditor(CriticalSection *newP
 
   addWidget( shiftSlider = new rsModulatableSlider );
   shiftSlider->assignParameter( moduleToEdit->getParameterByName("FrequencyShift") );
-  shiftSlider->setDescription(juce::String(("Frequency shift in Hz")));
+  shiftSlider->setItemDescription(juce::String(("Frequency shift in Hz")));
   shiftSlider->setDescriptionField(infoField);
   shiftSlider->setStringConversionFunction(&hertzToStringWithUnit1);
 
   addWidget( feedbackSlider = new rsModulatableSlider );
   feedbackSlider->assignParameter( moduleToEdit->getParameterByName("Feedback") );
-  feedbackSlider->setDescription(juce::String(("Feedback around the shifter")));
+  feedbackSlider->setItemDescription(juce::String(("Feedback around the shifter")));
   feedbackSlider->setDescriptionField(infoField);
   feedbackSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( stereoOffsetSlider = new rsModulatableSlider );
   stereoOffsetSlider->assignParameter( moduleToEdit->getParameterByName("StereoOffset") );
-  stereoOffsetSlider->setDescription(juce::String(("Stereo offset of the shift between left and right in Hz")));
+  stereoOffsetSlider->setItemDescription(juce::String(("Stereo offset of the shift between left and right in Hz")));
   stereoOffsetSlider->setDescriptionField(infoField);
   stereoOffsetSlider->setStringConversionFunction(&hertzToStringWithUnit1);
 
   addWidget( dryWetSlider = new rsModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
-  dryWetSlider->setDescription(juce::String(("Ratio between dry (original) and wet (frequency shifted) signal")));
+  dryWetSlider->setItemDescription(juce::String(("Ratio between dry (original) and wet (frequency shifted) signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
@@ -4572,7 +4572,7 @@ FrequencyShifterModuleEditor::FrequencyShifterModuleEditor(CriticalSection *newP
   addWidget( midSideSlider = new RSlider (("MidSideSlider")) );
   midSideSlider->assignParameter( moduleToEdit->getParameterByName("MidSideRatio") );
   midSideSlider->setSliderName(juce::String(("Mid/Side")));
-  midSideSlider->setDescription(juce::String(("Ratio between mid and side wet signal")));
+  midSideSlider->setItemDescription(juce::String(("Ratio between mid and side wet signal")));
   midSideSlider->setDescriptionField(infoField);
   midSideSlider->setStringConversionFunction(&ratioToString0);
   */
@@ -4652,42 +4652,42 @@ PhaseStereoizerModuleEditor::PhaseStereoizerModuleEditor(CriticalSection *newPlu
   addWidget( phaseOffsetSlider = new rsModulatableSlider );
   phaseOffsetSlider->assignParameter( moduleToEdit->getParameterByName("StereoPhaseOffset") );
   phaseOffsetSlider->setSliderName("StereoOffset");
-  phaseOffsetSlider->setDescription("Phase offset between left and right (wet) signal in degrees");
+  phaseOffsetSlider->setItemDescription("Phase offset between left and right (wet) signal in degrees");
   phaseOffsetSlider->setDescriptionField(infoField);
   phaseOffsetSlider->setStringConversionFunction(&degreesToStringWithUnit0);
 
   addWidget( dryWetRatioSlider = new rsModulatableSlider );
   dryWetRatioSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetRatioSlider->setSliderName("Dry/Wet");
-  dryWetRatioSlider->setDescription("Ratio between dry (original) and wet (phase-shifted) signal");
+  dryWetRatioSlider->setItemDescription("Ratio between dry (original) and wet (phase-shifted) signal");
   dryWetRatioSlider->setDescriptionField(infoField);
   dryWetRatioSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( sideLowpassSlider = new rsModulatableSlider );
   sideLowpassSlider->assignParameter( moduleToEdit->getParameterByName("Lowpass") );
   //sideLowpassSlider->setSliderName("Lowpass"); // superfluous
-  sideLowpassSlider->setDescription("Cutoff frequency of the lowpass filter for the wet side signal");
+  sideLowpassSlider->setItemDescription("Cutoff frequency of the lowpass filter for the wet side signal");
   sideLowpassSlider->setDescriptionField(infoField);
   sideLowpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( sideHighpassSlider = new rsModulatableSlider );
   sideHighpassSlider->assignParameter( moduleToEdit->getParameterByName("Highpass") );
   //sideHighpassSlider->setSliderName("Highpass");  // superfluous
-  sideHighpassSlider->setDescription("Cutoff frequency of the highpass filter for the wet side signal");
+  sideHighpassSlider->setItemDescription("Cutoff frequency of the highpass filter for the wet side signal");
   sideHighpassSlider->setDescriptionField(infoField);
   sideHighpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( midSideRatioSlider = new rsModulatableSlider );
   midSideRatioSlider->assignParameter( moduleToEdit->getParameterByName("MidSideRatio") );
   midSideRatioSlider->setSliderName("Mid/Side");
-  midSideRatioSlider->setDescription("Ratio between mid and side signal (stereo-width)");
+  midSideRatioSlider->setItemDescription("Ratio between mid and side signal (stereo-width)");
   midSideRatioSlider->setDescriptionField(infoField);
   midSideRatioSlider->setStringConversionFunction(&ratioToString0);
 
   /*
   addWidget( gainSlider = new RSlider (("GainSlider")) );
   gainSlider->assignParameter( moduleToEdit->getParameterByName("Gain") );
-  gainSlider->setDescription(juce::String(("Global gain for compensation of gain changes")));
+  gainSlider->setItemDescription(juce::String(("Global gain for compensation of gain changes")));
   gainSlider->setDescriptionField(infoField);
   gainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
   */
@@ -4769,32 +4769,32 @@ RingModulatorModuleEditor::RingModulatorModuleEditor(CriticalSection *newPlugInL
 
   addWidget( frequencySlider = new rsModulatableSlider );
   frequencySlider->assignParameter( moduleToEdit->getParameterByName(("Frequency")) );
-  frequencySlider->setDescription(juce::String(("Frequency in Hz")));
+  frequencySlider->setItemDescription(juce::String(("Frequency in Hz")));
   frequencySlider->setDescriptionField(infoField);
   frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( feedbackSlider = new rsModulatableSlider );
   feedbackSlider->assignParameter( moduleToEdit->getParameterByName(("Feedback")) );
-  feedbackSlider->setDescription(juce::String(("Feedback around the ringmodulator")));
+  feedbackSlider->setItemDescription(juce::String(("Feedback around the ringmodulator")));
   feedbackSlider->setDescriptionField(infoField);
   feedbackSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( stereoOffsetSlider = new rsModulatableSlider );
   stereoOffsetSlider->assignParameter( moduleToEdit->getParameterByName(("StereoOffset")) );
-  stereoOffsetSlider->setDescription(juce::String(("Stereo offset of the frequency between left and right in Hz")));
+  stereoOffsetSlider->setItemDescription(juce::String(("Stereo offset of the frequency between left and right in Hz")));
   stereoOffsetSlider->setDescriptionField(infoField);
   stereoOffsetSlider->setStringConversionFunction(&hertzToStringWithUnit1);
 
   addWidget( dryWetSlider = new rsModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName(("DryWetRatio")) );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
-  dryWetSlider->setDescription(juce::String(("Ratio between dry (original) and wet (ringmodulated) signal")));
+  dryWetSlider->setItemDescription(juce::String(("Ratio between dry (original) and wet (ringmodulated) signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( antiAliasButton = new RButton(juce::String(("AntiAlias"))) );
   antiAliasButton->assignParameter( moduleToEdit->getParameterByName(("AntiAlias")) );
-  antiAliasButton->setDescription(juce::String(("Toggle anti-aliasing by oversampling on/off")));
+  antiAliasButton->setItemDescription(juce::String(("Toggle anti-aliasing by oversampling on/off")));
   antiAliasButton->setDescriptionField(infoField);
   antiAliasButton->setClickingTogglesState(true);
 
@@ -4884,44 +4884,44 @@ SingleSidebandModulatorModuleEditor::SingleSidebandModulatorModuleEditor(Critica
 
   addWidget( frequencySlider = new rsModulatableSlider );
   frequencySlider->assignParameter( moduleToEdit->getParameterByName(("Frequency")) );
-  frequencySlider->setDescription(juce::String(("Frequency in Hz")));
+  frequencySlider->setItemDescription(juce::String(("Frequency in Hz")));
   frequencySlider->setDescriptionField(infoField);
   frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( upperSidebandLevelSlider = new rsModulatableSlider );
   upperSidebandLevelSlider->assignParameter( moduleToEdit->getParameterByName(("UpperSidebandLevel")) );
-  upperSidebandLevelSlider->setDescription(juce::String(("Upper sideband level in dB")));
+  upperSidebandLevelSlider->setItemDescription(juce::String(("Upper sideband level in dB")));
   upperSidebandLevelSlider->setDescriptionField(infoField);
   upperSidebandLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( lowerSidebandLevelSlider = new rsModulatableSlider );
   lowerSidebandLevelSlider->assignParameter( moduleToEdit->getParameterByName(("LowerSidebandLevel")) );
-  lowerSidebandLevelSlider->setDescription(juce::String(("Lower sideband level in dB")));
+  lowerSidebandLevelSlider->setItemDescription(juce::String(("Lower sideband level in dB")));
   lowerSidebandLevelSlider->setDescriptionField(infoField);
   lowerSidebandLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( feedbackSlider = new rsModulatableSlider );
   feedbackSlider->assignParameter( moduleToEdit->getParameterByName(("Feedback")) );
-  feedbackSlider->setDescription(juce::String(("Feedback around the SSB-modulator")));
+  feedbackSlider->setItemDescription(juce::String(("Feedback around the SSB-modulator")));
   feedbackSlider->setDescriptionField(infoField);
   feedbackSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( stereoOffsetSlider = new rsModulatableSlider );
   stereoOffsetSlider->assignParameter( moduleToEdit->getParameterByName(("StereoOffset")) );
-  stereoOffsetSlider->setDescription(juce::String(("Stereo offset of the frequency between left and right in Hz")));
+  stereoOffsetSlider->setItemDescription(juce::String(("Stereo offset of the frequency between left and right in Hz")));
   stereoOffsetSlider->setDescriptionField(infoField);
   stereoOffsetSlider->setStringConversionFunction(&hertzToStringWithUnit1);
 
   addWidget( dryWetSlider = new rsModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName(("DryWetRatio")) );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
-  dryWetSlider->setDescription(juce::String(("Ratio between dry (original) and wet (modulated) signal")));
+  dryWetSlider->setItemDescription(juce::String(("Ratio between dry (original) and wet (modulated) signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( antiAliasButton = new RButton(juce::String(("AntiAlias"))) );
   antiAliasButton->assignParameter( moduleToEdit->getParameterByName(("AntiAlias")) );
-  antiAliasButton->setDescription(juce::String(("Toggle anti-aliasing by oversampling on/off")));
+  antiAliasButton->setItemDescription(juce::String(("Toggle anti-aliasing by oversampling on/off")));
   antiAliasButton->setDescriptionField(infoField);
   antiAliasButton->setClickingTogglesState(true);
 
@@ -5008,25 +5008,25 @@ StereoPanModuleEditor::StereoPanModuleEditor(CriticalSection *newPlugInLock, Ste
   stereoPanModuleToEdit = newStereoPanAudioModule;
 
   addWidget( panLawLabel = new RTextField( juce::String(("Pan Law:"))) );
-  panLawLabel->setDescription(("Select the pan-law"));
+  panLawLabel->setItemDescription(("Select the pan-law"));
   panLawLabel->setDescriptionField(infoField);
 
   addWidget( panLawComboBox = new RComboBox(juce::String(("PanLawComboBox"))) );
   panLawComboBox->assignParameter( moduleToEdit->getParameterByName(("PanLaw")) );
-  panLawComboBox->setDescription(panLawLabel->getDescription());
+  panLawComboBox->setItemDescription(panLawLabel->getItemDescription());
   panLawComboBox->setDescriptionField(infoField);
   //panLawComboBox->addListener(this); // to update the plot
 
   addWidget( panSlider = new rsModulatableSlider );
   panSlider->assignParameter( moduleToEdit->getParameterByName("Pan") );
-  panSlider->setDescription(juce::String(("Panorama position")));
+  panSlider->setItemDescription(juce::String(("Panorama position")));
   panSlider->setDescriptionField(infoField);
   panSlider->setStringConversionFunction(&valueToString2);
   //panSlider->addListener(this); // to update the plot
 
   addWidget( gainSlider = new rsModulatableSlider );
   gainSlider->assignParameter( moduleToEdit->getParameterByName("Gain") );
-  gainSlider->setDescription(juce::String(("Gain")));
+  gainSlider->setItemDescription(juce::String(("Gain")));
   gainSlider->setDescriptionField(infoField);
   gainSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
 
@@ -5130,19 +5130,19 @@ StereoWidthModuleEditor::StereoWidthModuleEditor(CriticalSection *newPlugInLock,
 
   addWidget( midSideRatioSlider = new rsModulatableSlider );
   midSideRatioSlider->assignParameter( moduleToEdit->getParameterByName("MidSideRatio") );
-  midSideRatioSlider->setDescription("Ratio between mid and side signal (stereo-width)");
+  midSideRatioSlider->setItemDescription("Ratio between mid and side signal (stereo-width)");
   midSideRatioSlider->setDescriptionField(infoField);
   midSideRatioSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( gainSlider = new rsModulatableSlider );
   gainSlider->assignParameter( moduleToEdit->getParameterByName("Gain") );
-  gainSlider->setDescription("Global gain for compensation of gain changes");
+  gainSlider->setItemDescription("Global gain for compensation of gain changes");
   gainSlider->setDescriptionField(infoField);
   gainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( monoButton = new RButton("Mono") );
   monoButton->assignParameter( moduleToEdit->getParameterByName("Mono") );
-  monoButton->setDescription("Mix output to mono");
+  monoButton->setItemDescription("Mix output to mono");
   monoButton->setDescriptionField(infoField);
   monoButton->setClickingTogglesState(true);
 
@@ -5209,7 +5209,7 @@ SineOscillatorModuleEditor::SineOscillatorModuleEditor(CriticalSection *newPlugI
 
   addWidget( frequencySlider = new rsModulatableSlider );
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
-  frequencySlider->setDescription(juce::String(("Frequency of the sinusoid")));
+  frequencySlider->setItemDescription(juce::String(("Frequency of the sinusoid")));
   frequencySlider->setDescriptionField(infoField);
   frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
@@ -5280,31 +5280,31 @@ NoisifierModuleEditor::NoisifierModuleEditor(CriticalSection *newPlugInLock, Noi
 
   addWidget( passLevelSlider = new rsModulatableSlider );
   passLevelSlider->assignParameter( moduleToEdit->getParameterByName("PassLevel") );
-  passLevelSlider->setDescription(juce::String(("Level with which the input signal is passed through")));
+  passLevelSlider->setItemDescription(juce::String(("Level with which the input signal is passed through")));
   passLevelSlider->setDescriptionField(infoField);
   passLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( noiseLevelSlider = new rsModulatableSlider );
   noiseLevelSlider->assignParameter( moduleToEdit->getParameterByName("NoiseLevel") );
-  noiseLevelSlider->setDescription(juce::String(("Level with which the generated noise is mixed in")));
+  noiseLevelSlider->setItemDescription(juce::String(("Level with which the generated noise is mixed in")));
   noiseLevelSlider->setDescriptionField(infoField);
   noiseLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( spectralSlopeSlider = new rsModulatableSlider );
   spectralSlopeSlider->assignParameter( moduleToEdit->getParameterByName("SpectralSlope") );
-  spectralSlopeSlider->setDescription(juce::String(("Spectral slope of the generated noise")));
+  spectralSlopeSlider->setItemDescription(juce::String(("Spectral slope of the generated noise")));
   spectralSlopeSlider->setDescriptionField(infoField);
   spectralSlopeSlider->setStringConversionFunction(&decibelsPerOctaveToString2);
 
   addWidget( lowestFreqSlider = new rsModulatableSlider );
   lowestFreqSlider->assignParameter( moduleToEdit->getParameterByName("LowestFrequency") );
-  lowestFreqSlider->setDescription(juce::String(("Lowest frequency present in the noise")));
+  lowestFreqSlider->setItemDescription(juce::String(("Lowest frequency present in the noise")));
   lowestFreqSlider->setDescriptionField(infoField);
   lowestFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( highestFreqSlider = new rsModulatableSlider );
   highestFreqSlider->assignParameter( moduleToEdit->getParameterByName("HighestFrequency") );
-  highestFreqSlider->setDescription(juce::String(("Highest frequency present in the noise")));
+  highestFreqSlider->setItemDescription(juce::String(("Highest frequency present in the noise")));
   highestFreqSlider->setDescriptionField(infoField);
   highestFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 }

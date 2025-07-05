@@ -61,7 +61,7 @@ ColorMapLoader::ColorMapLoader(LoadableColorMap *mapToUpdate)
   layout = LABEL_AND_BUTTONS_ABOVE;
 
   stateLabel->setText("ColorMap");
-  stateLabel->setDescription("Map from values to colors");
+  stateLabel->setItemDescription("Map from values to colors");
 
   stateSaveButton->setVisible(false);  // later, we may want to edit and save the maps, too
 

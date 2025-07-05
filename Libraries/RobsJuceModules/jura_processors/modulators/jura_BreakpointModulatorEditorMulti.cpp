@@ -15,7 +15,7 @@ BreakpointModulatorEditorMulti::BreakpointModulatorEditorMulti(CriticalSection *
   // change the headline from the default "Sub-Editor" to "Modulator-Editor":
   //headline->setText(juce::String(T("Modulator")), false);
   setHeadlineText("Modulators");
-  setDescription("This is an editor for multi-breakpoint modulation generators");
+  setItemDescription("This is an editor for multi-breakpoint modulation generators");
 
   // create the breakpoint-editor for multiple modulators, make the inherited single-modulator
   // editor invisible and re-assign the zoomer:

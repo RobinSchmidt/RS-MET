@@ -4,7 +4,7 @@
 ModulatorCurveEditor::ModulatorCurveEditor(const juce::String& name) 
 : rsDataPlot(name), rsPlotEditor(name)
 {
-  setDescription("Left-click: insert, right-click: remove, shift-drag: time-shifts subsequent breakpoints");
+  setItemDescription("Left-click: insert, right-click: remove, shift-drag: time-shifts subsequent breakpoints");
 
   modulatorToEdit            = NULL;
   selectedBreakpoint         = -1;

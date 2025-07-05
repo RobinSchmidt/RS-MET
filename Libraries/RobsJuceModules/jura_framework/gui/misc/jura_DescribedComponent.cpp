@@ -13,7 +13,7 @@ DescribedItem::~DescribedItem()
 
 // setup:
 
-void DescribedItem::setDescription(const String &newDescription)
+void DescribedItem::setItemDescription(const String &newDescription)
 {
   description = newDescription;
   if( descriptionField != NULL )
@@ -29,7 +29,7 @@ void DescribedItem::setDescriptionField(RTextField *newDescriptionField)
 
 // inquiry:
 
-String DescribedItem::getDescription() const
+String DescribedItem::getItemDescription() const
 {
   return description;
 }

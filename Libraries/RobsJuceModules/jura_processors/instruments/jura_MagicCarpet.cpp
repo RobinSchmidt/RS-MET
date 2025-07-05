@@ -119,27 +119,27 @@ MagicCarpetFilterEditor::MagicCarpetFilterEditor(CriticalSection *newPlugInLock,
 
   addWidget( frequencyByKeySlider = new RSlider("FrequencyByKeySlider") );
   //frequencyByKeySlider->assignParameter( moduleToEdit->getParameterByName("FrequencyByKey") );
-  //frequencyByKeySlider->setDescription(juce::String("Key dependency of the characteristic frequency"));
-  frequencyByKeySlider->setDescription(juce::String("Not yet implemented"));
+  //frequencyByKeySlider->setItemDescription(juce::String("Key dependency of the characteristic frequency"));
+  frequencyByKeySlider->setItemDescription(juce::String("Not yet implemented"));
   frequencyByKeySlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( frequencyByVelSlider = new RSlider(("FrequencyByVelSlider")));
   //frequencyByVelSlider->assignParameter( moduleToEdit->getParameterByName("FrequencyByVel") );
-  //frequencyByVelSlider->setDescription(juce::String(("Velocity dependency of the characteristic frequency")));
-  frequencyByVelSlider->setDescription(juce::String(("Not yet implemented")));
+  //frequencyByVelSlider->setItemDescription(juce::String(("Velocity dependency of the characteristic frequency")));
+  frequencyByVelSlider->setItemDescription(juce::String(("Not yet implemented")));
   frequencyByVelSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( gainByKeySlider = new RSlider (("GainByKeySlider")) );
   //gainByKeySlider->assignParameter( moduleToEdit->getParameterByName("GainByKey") );
-  //gainByKeySlider->setDescription(juce::String(("Key dependency of the gain")));
-  gainByKeySlider->setDescription(juce::String(("Not yet implemented")));
+  //gainByKeySlider->setItemDescription(juce::String(("Key dependency of the gain")));
+  gainByKeySlider->setItemDescription(juce::String(("Not yet implemented")));
   gainByKeySlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
 
   addWidget( gainByVelSlider = new RSlider (("GainByVelSlider")) );
   //gainByVelSlider->assignParameter( moduleToEdit->getParameterByName("GainByVel") );
-  //gainByVelSlider->setDescription(juce::String(("Velocity dependency of the gain")));
-  gainByVelSlider->setDescription(juce::String(("Not yet implemented")));
+  //gainByVelSlider->setItemDescription(juce::String(("Velocity dependency of the gain")));
+  gainByVelSlider->setItemDescription(juce::String(("Not yet implemented")));
   gainByVelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   bandwidthSlider->setSliderName(juce::String(("BW")));
@@ -192,13 +192,13 @@ PhaserModuleEditorCompact::PhaserModuleEditorCompact(CriticalSection *newPlugInL
 
   addWidget( onOffButton = new RButton(juce::String(("OnOffButton"))) );
   //onOffButton->assignParameter( moduleToEdit->getParameterByName(("Activated")) );
-  onOffButton->setDescription(juce::String(("Not yet implemented")));
+  onOffButton->setItemDescription(juce::String(("Not yet implemented")));
   onOffButton->updateWidgetFromAssignedParameter(false); // shouldn't this happen automatically?
 
   addWidget( secondOrderButton = new RButton(juce::String(("SecondOrderButton"))) );
   secondOrderButton->assignParameter( moduleToEdit->getParameterByName(("FilterMode")) );
   secondOrderButton->setButtonText(juce::String(("2nd")));
-  secondOrderButton->setDescription(juce::String(("Switch allpass chain to 2nd order allpasses")));
+  secondOrderButton->setItemDescription(juce::String(("Switch allpass chain to 2nd order allpasses")));
   secondOrderButton->addRButtonListener(this); // to en/disable q-slider  (still to do)
 }
 
@@ -251,7 +251,7 @@ PingPongEchoModuleEditorCompact::PingPongEchoModuleEditorCompact(CriticalSection
   addWidget( onOffButton = new RButton(juce::String(("OnOffButton"))) );
   onOffButton->assignParameter( moduleToEdit->getParameterByName(("Activated")) );
   onOffButton->setButtonText(juce::String(("Delay")));
-  onOffButton->setDescription(juce::String(("Switch delay/echo effect on/off")));
+  onOffButton->setItemDescription(juce::String(("Switch delay/echo effect on/off")));
   onOffButton->updateWidgetFromAssignedParameter(false); // shouldn't this happen automatically?
 }
 
@@ -292,50 +292,50 @@ DelayPhaserModuleEditor::DelayPhaserModuleEditor(CriticalSection *newPlugInLock,
   addWidget( dryWetSlider = new RSlider (("DryWetRatioSlider")) );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
-  dryWetSlider->setDescription(juce::String(("Ratio between dry and wet signal")));
+  dryWetSlider->setItemDescription(juce::String(("Ratio between dry and wet signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( feedbackLabel = new RTextField( juce::String(("Feedback"))) );
   feedbackLabel->setJustification(Justification::centred);
-  feedbackLabel->setDescription(("Feedback around various parts of the phaser->delay->phaser chain"));
+  feedbackLabel->setItemDescription(("Feedback around various parts of the phaser->delay->phaser chain"));
   feedbackLabel->setDescriptionField(infoField);
 
   addWidget( feedback1Slider = new RSlider (("Feedback1Slider")) );
   feedback1Slider->assignParameter( moduleToEdit->getParameterByName("FeedbackPhaser1Delay") );
   feedback1Slider->setSliderName(juce::String(("Ph1->Dl")));
-  feedback1Slider->setDescription(juce::String(("Feedback around first phaser and delay")));
+  feedback1Slider->setItemDescription(juce::String(("Feedback around first phaser and delay")));
   feedback1Slider->setDescriptionField(infoField);
   feedback1Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( feedback2Slider = new RSlider (("Feedback2Slider")) );
   feedback2Slider->assignParameter( moduleToEdit->getParameterByName("FeedbackDelayPhaser2") );
   feedback2Slider->setSliderName(juce::String(("Dl->Ph2")));
-  feedback2Slider->setDescription(juce::String(("Feedback around delay and second phaser")));
+  feedback2Slider->setItemDescription(juce::String(("Feedback around delay and second phaser")));
   feedback2Slider->setDescriptionField(infoField);
   feedback2Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( feedback3Slider = new RSlider (("Feedback3Slider")) );
   feedback3Slider->assignParameter( moduleToEdit->getParameterByName("FeedbackGlobal") );
   feedback3Slider->setSliderName(juce::String(("Global")));
-  feedback3Slider->setDescription(juce::String(("Feedback around first phaser, delay and second phaser")));
+  feedback3Slider->setItemDescription(juce::String(("Feedback around first phaser, delay and second phaser")));
   feedback3Slider->setDescriptionField(infoField);
   feedback3Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   phaser1Editor = new PhaserModuleEditorCompact(lock, newDelayPhaserAudioModule->phaser1Module);
-  phaser1Editor->setDescription(juce::String(("Settings for the 1st phaser (before the delay)")));
+  phaser1Editor->setItemDescription(juce::String(("Settings for the 1st phaser (before the delay)")));
   phaser1Editor->onOffButton->setButtonText(juce::String(("Phaser 1")));
-  phaser1Editor->onOffButton->setDescription(juce::String(("Switch 1st phaser (before the delay) on/off")));
+  phaser1Editor->onOffButton->setItemDescription(juce::String(("Switch 1st phaser (before the delay) on/off")));
   addChildEditor( phaser1Editor );
 
   delayEditor = new PingPongEchoModuleEditorCompact(lock, newDelayPhaserAudioModule->delayModule);
-  delayEditor->setDescription(juce::String(("Settings for the Delay")));
+  delayEditor->setItemDescription(juce::String(("Settings for the Delay")));
   addChildEditor( delayEditor );
 
   phaser2Editor = new PhaserModuleEditorCompact(lock, newDelayPhaserAudioModule->phaser2Module);
-  phaser2Editor->setDescription(juce::String(("Settings for the 2nd phaser (after the delay)")));
+  phaser2Editor->setItemDescription(juce::String(("Settings for the 2nd phaser (after the delay)")));
   phaser2Editor->onOffButton->setButtonText(juce::String(("Phaser 2")));
-  phaser2Editor->onOffButton->setDescription(juce::String(("Switch 2nd phaser (after the delay) on/off")));
+  phaser2Editor->onOffButton->setItemDescription(juce::String(("Switch 2nd phaser (after the delay) on/off")));
   addChildEditor( phaser2Editor );
 
   updateWidgetsAccordingToState();
@@ -393,18 +393,18 @@ MagicCarpetModuleEditor::MagicCarpetModuleEditor(CriticalSection *newPlugInLock,
   // create and setup the sub-module editors:
 
   oscSectionEditor = new VectorSamplePlayerEditor(lock, magicCarpetAudioModule->oscSectionModule);
-  oscSectionEditor->setDescription(juce::String(("Settings for the oscillator section")));
+  oscSectionEditor->setItemDescription(juce::String(("Settings for the oscillator section")));
   addChildEditor( oscSectionEditor );
 
   filterEditor = new MagicCarpetFilterEditor(lock, magicCarpetAudioModule->filterModule);
-  filterEditor->setDescription(juce::String(("Settings for the filter")));
+  filterEditor->setItemDescription(juce::String(("Settings for the filter")));
   addChildEditor( filterEditor );
 
   filterEnvEditor = new BreakpointModulatorEditorCompact(lock, magicCarpetAudioModule->filterEnvModule);
   filterEnvEditor->setHeadlineText(juce::String(("FilterEnvelope")));
   filterEnvEditor->setPresetSectionPosition(AudioModuleEditor::INVISIBLE);
   filterEnvEditor->setPopUpEditorBounds(-600, -300, 632, 300);
-  filterEnvEditor->setDescription(juce::String(("Envelope generator for the filter frequency")));
+  filterEnvEditor->setItemDescription(juce::String(("Envelope generator for the filter frequency")));
   //filterEnvEditor->setColourScheme(ColourSchemeComponent::PURPLE, true);
   addChildEditor( filterEnvEditor );
 
@@ -412,12 +412,12 @@ MagicCarpetModuleEditor::MagicCarpetModuleEditor(CriticalSection *newPlugInLock,
   ampEnvEditor->setHeadlineText(juce::String(("AmpEnvelope")));
   ampEnvEditor->setPopUpEditorBounds(-600, -300, 632, 300);
   ampEnvEditor->setPresetSectionPosition(AudioModuleEditor::INVISIBLE);
-  ampEnvEditor->setDescription(juce::String(("Envelope generator for the amplitude")));
+  ampEnvEditor->setItemDescription(juce::String(("Envelope generator for the amplitude")));
   //ampEnvEditor->setColourScheme(ColourSchemeComponent::PURPLE, true);
   addChildEditor( ampEnvEditor );
 
   equalizerEditor = new EqualizerModuleEditor(lock, magicCarpetAudioModule->equalizerModule);
-  equalizerEditor->setDescription(juce::String(("Settings for the master equalizer")));
+  equalizerEditor->setItemDescription(juce::String(("Settings for the master equalizer")));
   //equalizerEditor->setLayout(EqualizerModuleEditor::SLIDERS_ABOVE);
   equalizerEditor->setLayout(EqualizerModuleEditor::SLIDERS_BELOW);
   equalizerEditor->setPresetSectionPosition(AudioModuleEditor::BELOW_HEADLINE);
@@ -425,7 +425,7 @@ MagicCarpetModuleEditor::MagicCarpetModuleEditor(CriticalSection *newPlugInLock,
   addChildEditor( equalizerEditor );
 
   delayPhaserEditor = new DelayPhaserModuleEditor(lock, magicCarpetAudioModule->delayPhaserModule);
-  delayPhaserEditor->setDescription(juce::String(("Settings for Phaser/Delay/Phaser effect")));
+  delayPhaserEditor->setItemDescription(juce::String(("Settings for Phaser/Delay/Phaser effect")));
   delayPhaserEditor->setPresetSectionPosition(AudioModuleEditor::BELOW_HEADLINE);
   delayPhaserEditor->setLinkPosition(AudioModuleEditor::INVISIBLE);
   addChildEditor( delayPhaserEditor );

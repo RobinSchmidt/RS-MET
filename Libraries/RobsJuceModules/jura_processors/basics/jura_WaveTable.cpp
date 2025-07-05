@@ -350,7 +350,7 @@ StandardWaveformEditor::StandardWaveformEditor(CriticalSection *newPlugInLock,
   setHeadlineStyle(NO_HEADLINE);
 
   addWidget( shapeComboBox = new RNamedComboBox("ShapeComboBox", "Shape:") );
-  shapeComboBox->setDescription("Select one of the standard waveforms");
+  shapeComboBox->setItemDescription("Select one of the standard waveforms");
   shapeComboBox->assignParameter(moduleToEdit->getParameterByName("Shape"));
   shapeComboBox->registerComboBoxObserver(this);
 
@@ -382,7 +382,7 @@ WaveformBufferEditor::WaveformBufferEditor(CriticalSection *newPlugInLock, Wavef
 
   fileSelectionBox = new FileSelectionBox("FileComboBox", waveformBufferModuleToEdit);
   addWidgetSet(fileSelectionBox);
-  fileSelectionBox->setDescription("Load a custom single-cycle audiofile");
+  fileSelectionBox->setItemDescription("Load a custom single-cycle audiofile");
   fileSelectionBox->setSaveButtonVisible(false);
   fileSelectionBox->setLabelPosition(FileSelectionBox::LABEL_ABOVE);
   fileSelectionBox->setButtonsPosition(FileSelectionBox::BUTTONS_ABOVE);
@@ -419,7 +419,7 @@ WaveformRendererEditor::WaveformRendererEditor(CriticalSection *newPlugInLock,
   setHeadlineStyle(NO_HEADLINE);
 
   addWidget( modeComboBox = new RNamedComboBox("ModeComboBox", "Mode:") );
-  modeComboBox->setDescription("Select the mode for raw waveform creation");
+  modeComboBox->setItemDescription("Select the mode for raw waveform creation");
   modeComboBox->assignParameter(moduleToEdit->getParameterByName("Mode"));
   modeComboBox->registerComboBoxObserver(this);
 
@@ -500,7 +500,7 @@ WaveTableModuleEditorPopUp::WaveTableModuleEditorPopUp(CriticalSection *newPlugI
   yValuesL         = NULL;
   yValuesR         = NULL;
   waveformDisplay = new rsDataPlot(juce::String("Plot"));
-  waveformDisplay->setDescription(juce::String("Waveform"));
+  waveformDisplay->setItemDescription(juce::String("Waveform"));
   waveformDisplay->setAxisLabels(juce::String(""), juce::String(""));
   waveformDisplay->setVerticalCoarseGrid(1.0, false);
   waveformDisplay->setHorizontalCoarseGrid(1.0, false);
@@ -509,7 +509,7 @@ WaveTableModuleEditorPopUp::WaveTableModuleEditorPopUp(CriticalSection *newPlugI
   addPlot(waveformDisplay);
 
   addWidget( closeButton = new RButton(RButton::CLOSE) );
-  closeButton->setDescription(juce::String("Closes the LFO popup editor"));
+  closeButton->setItemDescription(juce::String("Closes the LFO popup editor"));
   closeButton->setClickingTogglesState(false);
   // we don't listen to this button ourselves - this is the job of the outlying editor object
 
@@ -638,7 +638,7 @@ WaveTableModuleEditorCompact::WaveTableModuleEditorCompact(CriticalSection *newP
   yValuesL         = NULL;
   yValuesR         = NULL;
   waveformDisplay = new rsDataPlot(juce::String("Plot"));
-  waveformDisplay->setDescription(juce::String("Waveform"));
+  waveformDisplay->setItemDescription(juce::String("Waveform"));
   waveformDisplay->setAxisLabels(juce::String(""), juce::String(""));
   waveformDisplay->setVerticalCoarseGrid(1.0, false);
   waveformDisplay->setHorizontalCoarseGrid(1.0, false);
@@ -648,7 +648,7 @@ WaveTableModuleEditorCompact::WaveTableModuleEditorCompact(CriticalSection *newP
 
   addWidget( editButton = new RButton(juce::String("Edit")) );
   editButton->addRButtonListener(this);
-  editButton->setDescription(juce::String("Open/close editor for the wavetable"));
+  editButton->setItemDescription(juce::String("Open/close editor for the wavetable"));
   editButton->setClickingTogglesState(true);
 
   updateWidgetsAccordingToState();

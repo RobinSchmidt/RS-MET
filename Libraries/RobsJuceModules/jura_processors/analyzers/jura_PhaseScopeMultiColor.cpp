@@ -272,60 +272,60 @@ void PhaseScopeMultiColorEditor::createWidgets()
   addWidget( sliderBrightness = s = new RSlider("BrightnessSlider") );
   s->assignParameter( scope->getParameterByName("Brightness") );
   s->setSliderName("Brightness");
-  s->setDescription("Brightness");
+  s->setItemDescription("Brightness");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   addWidget( sliderAfterglow = s = new RSlider("GlowSlider") );
   s->assignParameter( scope->getParameterByName("AfterGlow") );
   s->setSliderName("Glow");
-  s->setDescription("Afterglow time in seconds");
+  s->setItemDescription("Afterglow time in seconds");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&secondsToStringWithUnitTotal4);
 
   addWidget( sliderColorPeriod = s = new RSlider("ColorPeriodSlider") );
   s->assignParameter( scope->getParameterByName("ColorPeriod") );
   s->setSliderName("ColorPeriod");
-  s->setDescription("Periodicity of the hue cycling time in seconds");
+  s->setItemDescription("Periodicity of the hue cycling time in seconds");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&secondsToStringWithUnitTotal4);
 
   addWidget( sliderPixelSpread = s = new RSlider("SpreadSlider") );
   s->assignParameter( scope->getParameterByName("PixelSpread") );
   s->setSliderName("Spread");
-  s->setDescription("Pixel spreading");
+  s->setItemDescription("Pixel spreading");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   addWidget( sliderPixelScale = s = new RSlider("ScaleSlider") );
   s->assignParameter( scope->getParameterByName("PixelScale") );
   s->setSliderName("Scale");
-  s->setDescription("Pixel size rescaling");
+  s->setItemDescription("Pixel size rescaling");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   addWidget( sliderLineDensity = s = new RSlider("DensitySlider") );
   s->assignParameter( scope->getParameterByName("LineDensity") );
   s->setSliderName("Density");
-  s->setDescription("Line Density");
+  s->setItemDescription("Line Density");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   addWidget( sliderFrameRate = s = new RSlider("FrameRateSlider") );
   s->assignParameter( scope->getParameterByName("FrameRate") );
   s->setSliderName("FrameRate");
-  s->setDescription("Frame rate for redrawing");
+  s->setItemDescription("Frame rate for redrawing");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   addWidget( buttonAntiAlias = b = new RButton("AntiAlias") );
   b->assignParameter( scope->getParameterByName("AntiAlias") );
-  b->setDescription("Anti aliased drawing (bilinear deinterpolation)");
+  b->setItemDescription("Anti aliased drawing (bilinear deinterpolation)");
   b->setDescriptionField(infoField);
 
   //addWidget( buttonRainbow = b = new RButton("Rainbow") );
   //b->assignParameter( scope->getParameterByName("Rainbow") );
-  //b->setDescription("Rainbow color rotation");
+  //b->setItemDescription("Rainbow color rotation");
   //b->setDescriptionField(infoField);
 }
 

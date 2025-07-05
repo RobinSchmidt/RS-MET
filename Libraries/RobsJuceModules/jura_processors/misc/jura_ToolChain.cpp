@@ -1231,7 +1231,7 @@ void ToolChainEditor::createWidgets()
   // Maybe factor out into a createWidgets method, maybe wrap int compile-time conditional like
   // #ifdef JUCE_DEBUG or RS_DEBUG_WIDGETS ...we'll see... :
   addWidget( screenShotButton = new RClickButton("Shot") );
-  screenShotButton->setDescription("Take screenshot of the active module. Ends up in C:/Temp/Test.png");
+  screenShotButton->setItemDescription("Take screenshot of the active module. Ends up in C:/Temp/Test.png");
   screenShotButton->setDescriptionField(descriptionField);
   screenShotButton->addRButtonListener(this);
   screenShotButton->setVisible(false);  
@@ -1248,12 +1248,12 @@ void ToolChainEditor::createWidgets()
 
 
   addWidget( moveUpButton = new RClickButton(RButton::buttonSymbols::ARROW_UP) );
-  moveUpButton->setDescription("Move active module up");
+  moveUpButton->setItemDescription("Move active module up");
   moveUpButton->setDescriptionField(descriptionField);
   moveUpButton->addRButtonListener(this);
 
   addWidget( moveDownButton = new RClickButton(RButton::buttonSymbols::ARROW_DOWN) );
-  moveDownButton->setDescription("Move active module down");
+  moveDownButton->setItemDescription("Move active module down");
   moveDownButton->setDescriptionField(descriptionField);
   moveDownButton->addRButtonListener(this);
 }

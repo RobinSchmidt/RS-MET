@@ -245,7 +245,7 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   addWidget( dryWetSlider = new RSlider(("DryWetSlider")) );
   dryWetSlider->assignParameter( stereoDelayAudioModule->getParameterByName("DryWet") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
-  dryWetSlider->setDescription(juce::String(("Ratio between dry and wet signal (in % wet)")));
+  dryWetSlider->setItemDescription(juce::String(("Ratio between dry and wet signal (in % wet)")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&percentToStringWithUnit1);
   //automatableSliders.addIfNotAlreadyThere(dryWetSlider);
@@ -253,7 +253,7 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   addWidget( cutoffScaleSlider = new RSlider (("CutoffScaleSlider")) );
   cutoffScaleSlider->assignParameter( stereoDelayAudioModule->getParameterByName("CutoffScale") );
   cutoffScaleSlider->setSliderName(juce::String(("Cutoff Scale")));
-  cutoffScaleSlider->setDescription(juce::String(("Scales the cutoff frequencies of the filters by a factor")));
+  cutoffScaleSlider->setItemDescription(juce::String(("Scales the cutoff frequencies of the filters by a factor")));
   cutoffScaleSlider->setDescriptionField(infoField);
   cutoffScaleSlider->setStringConversionFunction(&valueToString4);
   //automatableSliders.addIfNotAlreadyThere(cutoffScaleSlider);
@@ -261,12 +261,12 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   // left delayline widgets:
 
   addWidget( delayLineLabelL = new RTextField( juce::String(("Left Delay"))) );
-  delayLineLabelL->setDescription(("These are the parameters for the left delayline."));
+  delayLineLabelL->setItemDescription(("These are the parameters for the left delayline."));
   delayLineLabelL->setDescriptionField(infoField);
 
   addWidget( delayComboBoxL = new RSyncIntervalComboBox(juce::String(("DelayComboBoxL"))) );
   delayComboBoxL->registerComboBoxObserver(this);
-  delayComboBoxL->setDescription(("Left delay in beats"));
+  delayComboBoxL->setItemDescription(("Left delay in beats"));
   delayComboBoxL->setDescriptionField(infoField);
 
   addWidget( delayScaleSliderL = new RSlider (("DelayScaleSliderL")) );
@@ -275,13 +275,13 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //delayScaleSliderL->setScaling(Parameter::EXPONENTIAL);
   delayScaleSliderL->assignParameter( stereoDelayAudioModule->getParameterByName("DelayScaleL") );
   delayScaleSliderL->setSliderName(juce::String(("Delay Scale")));
-  delayScaleSliderL->setDescription(juce::String(("Scales the left delay time by a factor")));
+  delayScaleSliderL->setItemDescription(juce::String(("Scales the left delay time by a factor")));
   delayScaleSliderL->setDescriptionField(infoField);
   delayScaleSliderL->setStringConversionFunction(&valueToString4);
   //automatableSliders.addIfNotAlreadyThere(delayScaleSliderL);
 
   addWidget( inputLabelL = new RTextField( juce::String(("Input:"))) );
-  inputLabelL->setDescription(("Injection parameters for the left delayline."));
+  inputLabelL->setItemDescription(("Injection parameters for the left delayline."));
   inputLabelL->setDescriptionField(infoField);
 
   addWidget( inputSliderL2L = new RSlider (("InputSliderL2L")) );
@@ -289,7 +289,7 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //inputSliderL2L->setRange(-100.0, 100.0, 0.1, 100.0);
   inputSliderL2L->assignParameter( stereoDelayAudioModule->getParameterByName("LeftInToLeftDelay") );
   inputSliderL2L->setSliderName(juce::String(("from left")));
-  inputSliderL2L->setDescription(juce::String(("Amount by which the left input goes to the left delayline")));
+  inputSliderL2L->setItemDescription(juce::String(("Amount by which the left input goes to the left delayline")));
   inputSliderL2L->setDescriptionField(infoField);
   inputSliderL2L->setStringConversionFunction(&percentToStringWithUnit1);
   //automatableSliders.addIfNotAlreadyThere(inputSliderL2L);
@@ -299,13 +299,13 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //inputSliderR2L->setRange(-100.0, 100.0, 0.1, 0.0);
   inputSliderR2L->assignParameter( stereoDelayAudioModule->getParameterByName("RightInToLeftDelay") );
   inputSliderR2L->setSliderName(juce::String(("from right")));
-  inputSliderR2L->setDescription(juce::String(("Amount by which the right input goes to the left delayline")));
+  inputSliderR2L->setItemDescription(juce::String(("Amount by which the right input goes to the left delayline")));
   inputSliderR2L->setDescriptionField(infoField);
   inputSliderR2L->setStringConversionFunction(&percentToStringWithUnit1);
   //automatableSliders.addIfNotAlreadyThere(inputSliderR2L);
 
   addWidget( diffusorLabelL = new RTextField( juce::String(("Diffusor:"))) );
-  diffusorLabelL->setDescription(("Diffusion parameters for the left delayline."));
+  diffusorLabelL->setItemDescription(("Diffusion parameters for the left delayline."));
   diffusorLabelL->setDescriptionField(infoField);
 
   addWidget( diffusorTimeSliderL = new RSlider (("DiffusorTimeSliderL")) );
@@ -314,7 +314,7 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //diffusorTimeSliderL->setScaling(Parameter::EXPONENTIAL);
   diffusorTimeSliderL->assignParameter( stereoDelayAudioModule->getParameterByName("DiffusorTimeL") );
   diffusorTimeSliderL->setSliderName(juce::String(("Time")));
-  diffusorTimeSliderL->setDescription(juce::String(("Delay time for the left allpass diffusor")));
+  diffusorTimeSliderL->setItemDescription(juce::String(("Delay time for the left allpass diffusor")));
   diffusorTimeSliderL->setDescriptionField(infoField);
   diffusorTimeSliderL->setStringConversionFunction(&millisecondsToStringWithUnit2);
   //automatableSliders.addIfNotAlreadyThere(diffusorTimeSliderL);
@@ -324,13 +324,13 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //diffusorAmountSliderL->setRange(-100.0, 100.0, 0.1, 0.0);
   diffusorAmountSliderL->assignParameter( stereoDelayAudioModule->getParameterByName("DiffusorAmountL") );
   diffusorAmountSliderL->setSliderName(juce::String(("Amount")));
-  diffusorAmountSliderL->setDescription(juce::String(("Amount for the left allpass diffusor")));
+  diffusorAmountSliderL->setItemDescription(juce::String(("Amount for the left allpass diffusor")));
   diffusorAmountSliderL->setDescriptionField(infoField);
   diffusorAmountSliderL->setStringConversionFunction(&percentToStringWithUnit1);
   //automatableSliders.addIfNotAlreadyThere(diffusorAmountSliderL);
 
   addWidget( filterLabelL = new RTextField( juce::String(("Filter:"))) );
-  filterLabelL->setDescription(("Filter parameters for the left delayline."));
+  filterLabelL->setItemDescription(("Filter parameters for the left delayline."));
   filterLabelL->setDescriptionField(infoField);
 
   addWidget( lowpassSliderL = new RSlider (("LowpassSliderL")) );
@@ -339,7 +339,7 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //lowpassSliderL->setScaling(Parameter::EXPONENTIAL);
   lowpassSliderL->assignParameter( stereoDelayAudioModule->getParameterByName("LowpassCutoffL") );
   lowpassSliderL->setSliderName(juce::String(("Lowpass")));
-  lowpassSliderL->setDescription(juce::String(("Lowpass cutoff for the left delayline")));
+  lowpassSliderL->setItemDescription(juce::String(("Lowpass cutoff for the left delayline")));
   lowpassSliderL->setDescriptionField(infoField);
   lowpassSliderL->setStringConversionFunction(&hertzToStringWithUnitTotal5);
   //automatableSliders.addIfNotAlreadyThere(lowpassSliderL);
@@ -350,13 +350,13 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //highpassSliderL->setScaling(Parameter::EXPONENTIAL);
   highpassSliderL->assignParameter( stereoDelayAudioModule->getParameterByName("HighpassCutoffL") );
   highpassSliderL->setSliderName(juce::String(("Highpass")));
-  highpassSliderL->setDescription(juce::String(("Highpass cutoff for the left delayline")));
+  highpassSliderL->setItemDescription(juce::String(("Highpass cutoff for the left delayline")));
   highpassSliderL->setDescriptionField(infoField);
   highpassSliderL->setStringConversionFunction(&hertzToStringWithUnitTotal5);
   //automatableSliders.addIfNotAlreadyThere(highpassSliderL);
 
   addWidget( feedbackLabelL = new RTextField( juce::String(("Feedback:"))) );
-  feedbackLabelL->setDescription(("Feedback parameters for the left delayline."));
+  feedbackLabelL->setItemDescription(("Feedback parameters for the left delayline."));
   feedbackLabelL->setDescriptionField(infoField);
 
   addWidget( feedbackSliderL = new RSlider (("FeedbackSliderL")) );
@@ -364,7 +364,7 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //feedbackSliderL->setRange(-100.0, 100.0, 0.1, 0.0);
   feedbackSliderL->assignParameter( stereoDelayAudioModule->getParameterByName("FeedbackLeftToLeft") );
   feedbackSliderL->setSliderName(juce::String(("from left")));
-  feedbackSliderL->setDescription(juce::String(("Amount of self-feedback for the left delayline")));
+  feedbackSliderL->setItemDescription(juce::String(("Amount of self-feedback for the left delayline")));
   feedbackSliderL->setDescriptionField(infoField);
   feedbackSliderL->setStringConversionFunction(&percentToStringWithUnit1);
   //automatableSliders.addIfNotAlreadyThere(feedbackSliderL);
@@ -374,13 +374,13 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //crossFeedbackSliderL->setRange(-100.0, 100.0, 0.1, 0.0);
   crossFeedbackSliderL->assignParameter( stereoDelayAudioModule->getParameterByName("FeedbackRightToLeft") );
   crossFeedbackSliderL->setSliderName(juce::String(("from right")));
-  crossFeedbackSliderL->setDescription(juce::String(("Amount of cross-feedback from right to left")));
+  crossFeedbackSliderL->setItemDescription(juce::String(("Amount of cross-feedback from right to left")));
   crossFeedbackSliderL->setDescriptionField(infoField);
   crossFeedbackSliderL->setStringConversionFunction(&percentToStringWithUnit1);
   //automatableSliders.addIfNotAlreadyThere(crossFeedbackSliderL);
 
   addWidget( outputLabelL = new RTextField( juce::String(("Output:"))) );
-  outputLabelL->setDescription(("Output parameters for the left delayline."));
+  outputLabelL->setItemDescription(("Output parameters for the left delayline."));
   outputLabelL->setDescriptionField(infoField);
 
   addWidget( outputSliderL2L = new RSlider (("OutputSliderL2L")) );
@@ -388,7 +388,7 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //outputSliderL2L->setRange(-100.0, 100.0, 0.1, 100.0);
   outputSliderL2L->assignParameter( stereoDelayAudioModule->getParameterByName("LeftDelayToLeftOut") );
   outputSliderL2L->setSliderName(juce::String(("to left")));
-  outputSliderL2L->setDescription(juce::String(("Amount by which the left wet signal goes to the left output")));
+  outputSliderL2L->setItemDescription(juce::String(("Amount by which the left wet signal goes to the left output")));
   outputSliderL2L->setDescriptionField(infoField);
   outputSliderL2L->setStringConversionFunction(&percentToStringWithUnit1);
   //automatableSliders.addIfNotAlreadyThere(outputSliderL2L);
@@ -398,7 +398,7 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //outputSliderL2R->setRange(-100.0, 100.0, 0.1, 0.0);
   outputSliderL2R->assignParameter( stereoDelayAudioModule->getParameterByName("LeftDelayToRightOut") );
   outputSliderL2R->setSliderName(juce::String(("to right")));
-  outputSliderL2R->setDescription(juce::String(("Amount by which the left wet signal goes to the right output")));
+  outputSliderL2R->setItemDescription(juce::String(("Amount by which the left wet signal goes to the right output")));
   outputSliderL2R->setDescriptionField(infoField);
   outputSliderL2R->setStringConversionFunction(&percentToStringWithUnit1);
   //automatableSliders.addIfNotAlreadyThere(outputSliderL2R);
@@ -408,7 +408,7 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //outDelaySliderL->setRange(0.0, 4.0, 0.0, 0.0);
   outDelaySliderL->assignParameter( stereoDelayAudioModule->getParameterByName("WetDelayInBeatsL") );
   outDelaySliderL->setSliderName(juce::String(("Delay")));
-  outDelaySliderL->setDescription(juce::String(("Delay for the left channels wet signal (aka 'Pre-Delay')")));
+  outDelaySliderL->setItemDescription(juce::String(("Delay for the left channels wet signal (aka 'Pre-Delay')")));
   outDelaySliderL->setDescriptionField(infoField);
   outDelaySliderL->setStringConversionFunction(&beatsToStringWithUnit4);
   //automatableSliders.addIfNotAlreadyThere(outDelaySliderL);
@@ -416,12 +416,12 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   // right delayline widgets:
 
   addWidget( delayLineLabelR = new RTextField( juce::String(("Right Delay"))) );
-  delayLineLabelR->setDescription(("These are the parameters for the right delayline"));
+  delayLineLabelR->setItemDescription(("These are the parameters for the right delayline"));
   delayLineLabelR->setDescriptionField(infoField);
 
   addWidget( delayComboBoxR = new RSyncIntervalComboBox(juce::String(("DelayComboBoxR"))) );
   delayComboBoxR->registerComboBoxObserver(this);
-  delayComboBoxR->setDescription(("Right delay in beats"));
+  delayComboBoxR->setItemDescription(("Right delay in beats"));
   delayComboBoxR->setDescriptionField(infoField);
 
   addWidget( delayScaleSliderR = new RSlider (("DelayScaleSliderR")) );
@@ -430,13 +430,13 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //delayScaleSliderR->setScaling(Parameter::EXPONENTIAL);
   delayScaleSliderR->assignParameter( stereoDelayAudioModule->getParameterByName("DelayScaleR") );
   delayScaleSliderR->setSliderName(juce::String(("Delay Scale")));
-  delayScaleSliderR->setDescription(juce::String(("Scales the right delay time by a factor")));
+  delayScaleSliderR->setItemDescription(juce::String(("Scales the right delay time by a factor")));
   delayScaleSliderR->setDescriptionField(infoField);
   delayScaleSliderR->setStringConversionFunction(&valueToString4);
   //automatableSliders.addIfNotAlreadyThere(delayScaleSliderR);
 
   addWidget( inputLabelR = new RTextField( juce::String(("Input:"))) );
-  inputLabelR->setDescription(("Injection parameters for the right delayline."));
+  inputLabelR->setItemDescription(("Injection parameters for the right delayline."));
   inputLabelR->setDescriptionField(infoField);
 
   addWidget( inputSliderL2R = new RSlider (("InputSliderL2R")) );
@@ -444,7 +444,7 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //inputSliderL2R->setRange(-100.0, 100.0, 0.1, 0.0);
   inputSliderL2R->assignParameter( stereoDelayAudioModule->getParameterByName("LeftInToRightDelay") );
   inputSliderL2R->setSliderName(juce::String(("from left")));
-  inputSliderL2R->setDescription(juce::String(("Amount by which the left input goes to the right delayline")));
+  inputSliderL2R->setItemDescription(juce::String(("Amount by which the left input goes to the right delayline")));
   inputSliderL2R->setDescriptionField(infoField);
   inputSliderL2R->setStringConversionFunction(&percentToStringWithUnit1);
   //automatableSliders.addIfNotAlreadyThere(inputSliderL2R);
@@ -454,13 +454,13 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //inputSliderR2R->setRange(-100.0, 100.0, 0.1, 100.0);
   inputSliderR2R->assignParameter( stereoDelayAudioModule->getParameterByName("RightInToRightDelay") );
   inputSliderR2R->setSliderName(juce::String(("from right")));
-  inputSliderR2R->setDescription(juce::String(("Amount by which the right input goes to the right delayline")));
+  inputSliderR2R->setItemDescription(juce::String(("Amount by which the right input goes to the right delayline")));
   inputSliderR2R->setDescriptionField(infoField);
   inputSliderR2R->setStringConversionFunction(&percentToStringWithUnit1);
   //automatableSliders.addIfNotAlreadyThere(inputSliderR2R);
 
   addWidget( diffusorLabelR = new RTextField( juce::String(("Diffusor:"))) );
-  diffusorLabelR->setDescription(("Diffusion parameters for the right delayline."));
+  diffusorLabelR->setItemDescription(("Diffusion parameters for the right delayline."));
   diffusorLabelR->setDescriptionField(infoField);
 
   addWidget( diffusorTimeSliderR = new RSlider (("DiffusorTimeSliderR")) );
@@ -469,7 +469,7 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //diffusorTimeSliderR->setScaling(Parameter::EXPONENTIAL);
   diffusorTimeSliderR->assignParameter( stereoDelayAudioModule->getParameterByName("DiffusorTimeR") );
   diffusorTimeSliderR->setSliderName(juce::String(("Diffusor Time")));
-  diffusorTimeSliderR->setDescription(juce::String(("Delay time for the right allpass diffusor")));
+  diffusorTimeSliderR->setItemDescription(juce::String(("Delay time for the right allpass diffusor")));
   diffusorTimeSliderR->setDescriptionField(infoField);
   diffusorTimeSliderR->setStringConversionFunction(&millisecondsToStringWithUnit2);
   //automatableSliders.addIfNotAlreadyThere(diffusorTimeSliderR);
@@ -479,13 +479,13 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //diffusorAmountSliderR->setRange(-100.0, 100.0, 0.1, 0.0);
   diffusorAmountSliderR->assignParameter( stereoDelayAudioModule->getParameterByName("DiffusorAmountR") );
   diffusorAmountSliderR->setSliderName(juce::String(("Diffusion")));
-  diffusorAmountSliderR->setDescription(juce::String(("Amount for the right allpass diffusor")));
+  diffusorAmountSliderR->setItemDescription(juce::String(("Amount for the right allpass diffusor")));
   diffusorAmountSliderR->setDescriptionField(infoField);
   diffusorAmountSliderR->setStringConversionFunction(&percentToStringWithUnit1);
   //automatableSliders.addIfNotAlreadyThere(diffusorAmountSliderR);
 
   addWidget( filterLabelR = new RTextField( juce::String(("Filter:"))) );
-  filterLabelR->setDescription(("Filter parameters for the right delayline."));
+  filterLabelR->setItemDescription(("Filter parameters for the right delayline."));
   filterLabelR->setDescriptionField(infoField);
 
   addWidget( lowpassSliderR = new RSlider (("LowpassSliderR")) );
@@ -494,7 +494,7 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //lowpassSliderR->setScaling(Parameter::EXPONENTIAL);
   lowpassSliderR->assignParameter( stereoDelayAudioModule->getParameterByName("LowpassCutoffR") );
   lowpassSliderR->setSliderName(juce::String(("Lowpass")));
-  lowpassSliderR->setDescription(juce::String(("Lowpass cutoff for the right delayline")));
+  lowpassSliderR->setItemDescription(juce::String(("Lowpass cutoff for the right delayline")));
   lowpassSliderR->setDescriptionField(infoField);
   lowpassSliderR->setStringConversionFunction(&hertzToStringWithUnitTotal5);
   //automatableSliders.addIfNotAlreadyThere(lowpassSliderR);
@@ -505,13 +505,13 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //highpassSliderR->setScaling(Parameter::EXPONENTIAL);
   highpassSliderR->assignParameter( stereoDelayAudioModule->getParameterByName("HighpassCutoffR") );
   highpassSliderR->setSliderName(juce::String(("Highpass")));
-  highpassSliderR->setDescription(juce::String(("Highpass cutoff for the right delayline")));
+  highpassSliderR->setItemDescription(juce::String(("Highpass cutoff for the right delayline")));
   highpassSliderR->setDescriptionField(infoField);
   highpassSliderR->setStringConversionFunction(&hertzToStringWithUnitTotal5);
   //automatableSliders.addIfNotAlreadyThere(highpassSliderR);
 
   addWidget( feedbackLabelR = new RTextField( juce::String(("Feedback:"))) );
-  feedbackLabelR->setDescription(("Feedback parameters for the right delayline."));
+  feedbackLabelR->setItemDescription(("Feedback parameters for the right delayline."));
   feedbackLabelR->setDescriptionField(infoField);
 
   addWidget( feedbackSliderR = new RSlider (("FeedbackSliderR")) );
@@ -519,7 +519,7 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //feedbackSliderR->setRange(-100.0, 100.0, 0.1, 0.0);
   feedbackSliderR->assignParameter( stereoDelayAudioModule->getParameterByName("FeedbackRightToRight") );
   feedbackSliderR->setSliderName(juce::String(("from right")));
-  feedbackSliderR->setDescription(juce::String(("Amount of self-feedback for the right delayline")));
+  feedbackSliderR->setItemDescription(juce::String(("Amount of self-feedback for the right delayline")));
   feedbackSliderR->setDescriptionField(infoField);
   feedbackSliderR->setStringConversionFunction(&percentToStringWithUnit1);
   //automatableSliders.addIfNotAlreadyThere(feedbackSliderR);
@@ -529,13 +529,13 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //crossFeedbackSliderR->setRange(-100.0, 100.0, 0.1, 0.0);
   crossFeedbackSliderR->assignParameter( stereoDelayAudioModule->getParameterByName("FeedbackLeftToRight") );
   crossFeedbackSliderR->setSliderName(juce::String(("from left")));
-  crossFeedbackSliderR->setDescription(juce::String(("Amount of cross-feedback from left to right")));
+  crossFeedbackSliderR->setItemDescription(juce::String(("Amount of cross-feedback from left to right")));
   crossFeedbackSliderR->setDescriptionField(infoField);
   crossFeedbackSliderR->setStringConversionFunction(&percentToStringWithUnit1);
   //automatableSliders.addIfNotAlreadyThere(crossFeedbackSliderR);
 
   addWidget( outputLabelR = new RTextField( juce::String(("Output:"))) );
-  outputLabelR->setDescription(("Output parameters for the right delayline."));
+  outputLabelR->setItemDescription(("Output parameters for the right delayline."));
   outputLabelR->setDescriptionField(infoField);
 
   addWidget( outputSliderR2L = new RSlider (("OutputSliderR2L")) );
@@ -543,7 +543,7 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //outputSliderR2L->setRange(-100.0, 100.0, 0.1, 0.0);
   outputSliderR2L->assignParameter( stereoDelayAudioModule->getParameterByName("RightDelayToLeftOut") );
   outputSliderR2L->setSliderName(juce::String(("to left")));
-  outputSliderR2L->setDescription(juce::String(("Amount by which the right wet signal goes to the left output")));
+  outputSliderR2L->setItemDescription(juce::String(("Amount by which the right wet signal goes to the left output")));
   outputSliderR2L->setDescriptionField(infoField);
   outputSliderR2L->setStringConversionFunction(&percentToStringWithUnit1);
   //automatableSliders.addIfNotAlreadyThere(outputSliderR2L);
@@ -553,7 +553,7 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //outputSliderR2R->setRange(-100.0, 100.0, 0.1, 100.0);
   outputSliderR2R->assignParameter( stereoDelayAudioModule->getParameterByName("RightDelayToRightOut") );
   outputSliderR2R->setSliderName(juce::String(("to right")));
-  outputSliderR2R->setDescription(juce::String(("Amount by which the right wet signal goes to the right output")));
+  outputSliderR2R->setItemDescription(juce::String(("Amount by which the right wet signal goes to the right output")));
   outputSliderR2R->setDescriptionField(infoField);
   outputSliderR2R->setStringConversionFunction(&percentToStringWithUnit1);
   //automatableSliders.addIfNotAlreadyThere(outputSliderR2R);
@@ -563,7 +563,7 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   //outDelaySliderR->setRange(0.0, 4.0, 0.0, 0.0);
   outDelaySliderR->assignParameter( stereoDelayAudioModule->getParameterByName("WetDelayInBeatsR") );
   outDelaySliderR->setSliderName(juce::String(("Delay")));
-  outDelaySliderR->setDescription(juce::String(("Delay for the right channels wet signal (aka 'Pre-Delay')")));
+  outDelaySliderR->setItemDescription(juce::String(("Delay for the right channels wet signal (aka 'Pre-Delay')")));
   outDelaySliderR->setDescriptionField(infoField);
   outDelaySliderR->setStringConversionFunction(&beatsToStringWithUnit4);
   //automatableSliders.addIfNotAlreadyThere(outDelaySliderR);

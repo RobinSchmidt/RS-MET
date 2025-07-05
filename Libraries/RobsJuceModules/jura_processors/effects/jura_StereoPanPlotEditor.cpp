@@ -3,7 +3,7 @@
 StereoPanPlotEditor::StereoPanPlotEditor(const juce::String& name) 
 : rsDataPlot(name)
 {
-  setDescription("Shows the curves for the pan-law - red: L->L, blue: R->R, green: R->L, brown: L->R");
+  setItemDescription("Shows the curves for the pan-law - red: L->L, blue: R->R, green: R->L, brown: L->R");
 
 
   ParameterObserver::setIsGuiElement(true);
@@ -184,12 +184,12 @@ void StereoPanPlotEditor::updatePlot()
   if( stereoPanToEdit->doesPanLawApplyCrossMix() )
   {
     setFunctionFamilyValues(numValues, 4, p, allGains);  
-    setDescription("Shows the curves for the pan-law - red: gain left, blue: gain right, green: right to left, brown: left to right");
+    setItemDescription("Shows the curves for the pan-law - red: gain left, blue: gain right, green: right to left, brown: left to right");
   }
   else
   {
     setFunctionFamilyValues(numValues, 2, p, allGains);
-    setDescription("Shows the curves for the pan-law - red: gain left, blue: gain right");
+    setItemDescription("Shows the curves for the pan-law - red: gain left, blue: gain right");
   }
 
   int law = stereoPanToEdit->getPanLaw();

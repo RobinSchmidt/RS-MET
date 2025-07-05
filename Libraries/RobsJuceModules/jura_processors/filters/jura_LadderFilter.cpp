@@ -198,27 +198,27 @@ LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(ne
   addWidget( cutoffSlider = new Sld );
   cutoffSlider->assignParameter( ladderToEdit->getParameterByName("Cutoff") );
   cutoffSlider->setSliderName("Cutoff");
-  cutoffSlider->setDescription("Cutoff frequency in Hz");
+  cutoffSlider->setItemDescription("Cutoff frequency in Hz");
   cutoffSlider->setDescriptionField(infoField);
   cutoffSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( resonanceSlider = new Sld );
   resonanceSlider->assignParameter( ladderToEdit->getParameterByName("Resonance") );
   resonanceSlider->setSliderName("Resonance");
-  resonanceSlider->setDescription("Amount of feedback");
+  resonanceSlider->setItemDescription("Amount of feedback");
   resonanceSlider->setDescriptionField(infoField);
   resonanceSlider->setStringConversionFunction(&valueToStringTotal5);
 
   addWidget( spreadSlider = new Sld );
   spreadSlider->assignParameter( ladderToEdit->getParameterByName("StereoSpread") );
   spreadSlider->setSliderName("Spread");
-  spreadSlider->setDescription("Detunes cutoff frequencies of channels");
+  spreadSlider->setItemDescription("Detunes cutoff frequencies of channels");
   spreadSlider->setDescriptionField(infoField);
   spreadSlider->setStringConversionFunction(&valueToStringTotal5);
 
   addWidget( modeComboBox = new rsAutomatableComboBox() );
   modeComboBox->assignParameter( ladderToEdit->getParameterByName("Mode") );
-  modeComboBox->setDescription("Select frequency response type");
+  modeComboBox->setItemDescription("Select frequency response type");
   modeComboBox->setDescriptionField(infoField);
   modeComboBox->registerComboBoxObserver(this); // to update plot when mode is switched
    // todo: pass the mode parameter to the frequency response plot, too - when use does 

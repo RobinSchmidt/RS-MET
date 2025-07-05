@@ -837,13 +837,13 @@ void AudioModuleEditor::init()
 
   addWidget( infoField = new RTextField() );
   infoField->setNoBackgroundAndOutline(true);
-  infoField->setDescription(juce::String("Description of GUI elements will appear here"));
+  infoField->setItemDescription(juce::String("Description of GUI elements will appear here"));
   setDescriptionField(infoField, true);
 
   addWidget( webLink =
     new RHyperlinkButton("www.rs-met.com", URL("http://www.rs-met.com")) );
   webLink->setNoBackgroundAndOutline(true);
-  webLink->setDescription(juce::String("Visit www.rs-met.com in the web"));
+  webLink->setItemDescription(juce::String("Visit www.rs-met.com in the web"));
   webLink->setDescriptionField(infoField);
 
   stateWidgetSet = new StateLoadSaveWidgetSet();
@@ -856,7 +856,7 @@ void AudioModuleEditor::init()
   stateWidgetSet->addChangeListener(this);
 
   addWidget( setupButton = new RClickButton(juce::String("Setup")) );
-  setupButton->setDescription(juce::String("Opens a dialog for the general settings"));
+  setupButton->setItemDescription(juce::String("Opens a dialog for the general settings"));
   setupButton->setDescriptionField(infoField);
   setupButton->setClickingTogglesState(false);
   setupButton->addRButtonListener(this);
@@ -1268,20 +1268,20 @@ void SampleBasedAudioModuleEditor::createWidgets()
   addWidget( sampleFileLabel = new RTextField() );
   sampleFileLabel->setNoBackgroundAndOutline(true);
   sampleFileLabel->setJustification(Justification::centredBottom);
-  sampleFileLabel->setDescription("Name of the currently loaded audio file");
+  sampleFileLabel->setItemDescription("Name of the currently loaded audio file");
 
   addWidget( sampleLoadButton = new RButton("Load") );
   sampleLoadButton->addRButtonListener(this);
-  sampleLoadButton->setDescription("Load audio file");
+  sampleLoadButton->setItemDescription("Load audio file");
   sampleLoadButton->setClickingTogglesState(false);
 
   addWidget( samplePlusButton = new RButton(RButton::ARROW_RIGHT) );
   samplePlusButton->addRButtonListener(this);
-  samplePlusButton->setDescription("Load next audio file in current directory");
+  samplePlusButton->setItemDescription("Load next audio file in current directory");
   samplePlusButton->setClickingTogglesState(false);
 
   addWidget( sampleMinusButton = new RButton(RButton::ARROW_LEFT) );
   sampleMinusButton->addRButtonListener(this);
-  sampleMinusButton->setDescription("Load previous audio file in current directory");
+  sampleMinusButton->setItemDescription("Load previous audio file in current directory");
   sampleMinusButton->setClickingTogglesState(false);
 }

@@ -145,7 +145,7 @@ EchoLabDelayLineModuleEditor::EchoLabDelayLineModuleEditor(CriticalSection *newP
 
   addWidget( timeSlider = new RSlider("TimeSlider") );
   timeSlider->setSliderName(juce::String("Time"));
-  timeSlider->setDescription( juce::String("Delaytime for the selected delayline (in seconds or beats)") );
+  timeSlider->setItemDescription( juce::String("Delaytime for the selected delayline (in seconds or beats)") );
   timeSlider->setRange(0.01, 4.25, 0.01, 0.25);
   timeSlider->setDescriptionField(infoField);
   timeSlider->setStringConversionFunction(secondsToStringWithUnit3);
@@ -153,7 +153,7 @@ EchoLabDelayLineModuleEditor::EchoLabDelayLineModuleEditor(CriticalSection *newP
 
   addWidget( gainSlider = new RSlider("GainSlider") );
   gainSlider->setSliderName(juce::String("Gain"));
-  gainSlider->setDescription( juce::String("Gain for the selected delayline (raw amplitude)") );
+  gainSlider->setItemDescription( juce::String("Gain for the selected delayline (raw amplitude)") );
   gainSlider->setRange(-1.0, 1.0, 0.01, 0.0);
   gainSlider->setScaling(Parameter::LINEAR_BIPOLAR);
   gainSlider->setDescriptionField(infoField);
@@ -162,7 +162,7 @@ EchoLabDelayLineModuleEditor::EchoLabDelayLineModuleEditor(CriticalSection *newP
 
   addWidget( panSlider = new RSlider("PanSlider") );
   panSlider->setSliderName(juce::String("Pan"));
-  panSlider->setDescription( juce::String("Panorama position for the selected delayline (-1...+1)") );
+  panSlider->setItemDescription( juce::String("Panorama position for the selected delayline (-1...+1)") );
   panSlider->setRange(-1.0, 1.0, 0.01, 0.0);
   panSlider->setScaling(Parameter::LINEAR_BIPOLAR);
   panSlider->setDescriptionField(infoField);
@@ -171,7 +171,7 @@ EchoLabDelayLineModuleEditor::EchoLabDelayLineModuleEditor(CriticalSection *newP
 
   addWidget( feedbackSlider = new RSlider("FeedbackSlider") );
   feedbackSlider->setSliderName(juce::String("Feedback"));
-  feedbackSlider->setDescription( juce::String("Feedback for the selected delayline in %") );
+  feedbackSlider->setItemDescription( juce::String("Feedback for the selected delayline in %") );
   feedbackSlider->setRange(-99.0, 99.0, 0.1, 0.0);
   feedbackSlider->setScaling(Parameter::LINEAR_BIPOLAR);
   feedbackSlider->setDescriptionField(infoField);
@@ -180,24 +180,24 @@ EchoLabDelayLineModuleEditor::EchoLabDelayLineModuleEditor(CriticalSection *newP
   //feedbackSlider->addListener(this);
 
   addWidget( pingPongButton = new RButton(juce::String("Ping Pong")) );
-  pingPongButton->setDescription(
+  pingPongButton->setItemDescription(
     juce::String("Switch delayline into ping-pong mode (alternating pan-positions for successive echos)"));
   pingPongButton->setDescriptionField(infoField);
   pingPongButton->addRButtonListener(this);
 
   addWidget( muteButton = new RButton(juce::String("Mute")) );
-  muteButton->setDescription(
+  muteButton->setItemDescription(
     juce::String("Mute the delayline"));
   muteButton->setDescriptionField(infoField);
   muteButton->addRButtonListener(this);
 
   addWidget( soloButton = new RButton(juce::String("Solo")) );
-  soloButton->setDescription(juce::String("Listen to the delayline in solo-mode (mute all others)"));
+  soloButton->setItemDescription(juce::String("Listen to the delayline in solo-mode (mute all others)"));
   soloButton->setDescriptionField(infoField);
   soloButton->addRButtonListener(this);
 
   addWidget( flushButton = new RButton(juce::String("Flush")) );
-  flushButton->setDescription(juce::String("Flush/clear the content of the delaylines"));
+  flushButton->setItemDescription(juce::String("Flush/clear the content of the delaylines"));
   flushButton->setDescriptionField(infoField); 
   flushButton->setClickingTogglesState(false);
   flushButton->addRButtonListener(this);
@@ -575,7 +575,7 @@ EchoLabPlotEditor::EchoLabPlotEditor(CriticalSection *newPlugInLock,
   : rsDataPlot(juce::String("EchoLabPlot"))
   , rsPlotEditor(juce::String("EchoLabPlot"))
 {
-  setDescription("Left: insert or grab band-handle, right: remove band");
+  setItemDescription("Left: insert or grab band-handle, right: remove band");
 
   //ParameterObserver::isGuiElement = true;
 
@@ -768,10 +768,10 @@ void EchoLabPlotEditor::mouseMove(const MouseEvent &e)
 
     juce::String gStr = juce::String("Gain: ") + valueToString3(g);
     // maybe display some more parameters .....
-    setDescription(tStr + gStr);
+    setItemDescription(tStr + gStr);
   }
   else
-    setDescription(juce::String(
+    setItemDescription(juce::String(
       "Left: insert new delayline or grab handle, right: remove delayline"));
 
   int dragHandle = getDragHandleAt(e.x, e.y);
@@ -1135,26 +1135,26 @@ EchoLabModuleEditor::EchoLabModuleEditor(CriticalSection *newPlugInLock,
   dryWetSlider->assignParameter( echoLabModuleToEdit->getParameterByName("DryWet") );
   dryWetSlider->setSliderName(juce::String("Dry/Wet"));
   dryWetSlider->setDefaultValue(0.5);
-  dryWetSlider->setDescription( juce::String("Ratio between dry and wet signal") );
+  dryWetSlider->setItemDescription( juce::String("Ratio between dry and wet signal") );
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( wetLevelSlider = new RSlider("WetLevelSlider") );
   wetLevelSlider->assignParameter( echoLabModuleToEdit->getParameterByName("WetLevel") );
-  wetLevelSlider->setDescription( juce::String("Level of the wet signal in dB") );
+  wetLevelSlider->setItemDescription( juce::String("Level of the wet signal in dB") );
   wetLevelSlider->setSliderName(juce::String("Wet Level"));
   wetLevelSlider->setDescriptionField(infoField);
   wetLevelSlider->setStringConversionFunction(decibelsToStringWithUnit2);
 
   addWidget( delaySyncButton = new RButton(juce::String("Sync")) );
   delaySyncButton->assignParameter( echoLabModuleToEdit->getParameterByName("Sync") );
-  delaySyncButton->setDescription(
+  delaySyncButton->setItemDescription(
     juce::String("Toggle sync for delaytime on/off. Time unit is beats in sync-mode, seconds otherwise"));
   delaySyncButton->setDescriptionField(infoField);
   //delaySyncButton->addRButtonListener(this);
 
   addWidget( snapToTimeGridButton = new RButton(juce::String("Snap:")) );
-  snapToTimeGridButton->setDescription(juce::String("Toggle magnetic time-grid on/off."));
+  snapToTimeGridButton->setItemDescription(juce::String("Toggle magnetic time-grid on/off."));
   snapToTimeGridButton->setDescriptionField(infoField);
   snapToTimeGridButton->addRButtonListener(this);
 

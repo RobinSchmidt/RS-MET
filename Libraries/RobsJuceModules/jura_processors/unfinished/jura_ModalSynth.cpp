@@ -305,21 +305,21 @@ void ModalSynthEditor::createWidgets()
   addWidget( sld = sldLevel = new Sld );
   sld->assignParameter( modalModule->getParameterByName("Level") );
   sld->setSliderName("Level");
-  sld->setDescription("Overall ouput level");
+  sld->setItemDescription("Overall ouput level");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&decibelsToStringWithUnit2);
 
   addWidget( sld = sldLevelByKey = new Sld );
   sld->assignParameter( modalModule->getParameterByName("LevelByKey") );
   sld->setSliderName("K");
-  sld->setDescription("Key tracking of overall ouput level");
+  sld->setItemDescription("Key tracking of overall ouput level");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&decibelsToStringWithUnit2);
 
   addWidget( sld = sldLevelByVel = new Sld );
   sld->assignParameter( modalModule->getParameterByName("LevelByVel") );
   sld->setSliderName("V");
-  sld->setDescription("Velocity tracking of overall ouput level");
+  sld->setItemDescription("Velocity tracking of overall ouput level");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&decibelsToStringWithUnit2);
 
@@ -327,7 +327,7 @@ void ModalSynthEditor::createWidgets()
   addWidget( sld = sldMaxNumModes = new Sld );
   sld->assignParameter( modalModule->getParameterByName("MaxNumModes") );
   sld->setSliderName("MaxNumModes");
-  sld->setDescription("Maximum number of modes to be produced (to control CPU load)");
+  sld->setItemDescription("Maximum number of modes to be produced (to control CPU load)");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&valueToString0);
   */
@@ -335,14 +335,14 @@ void ModalSynthEditor::createWidgets()
   addWidget( sld = sldLowestMode = new Sld );
   sld->assignParameter( modalModule->getParameterByName("LowestMode") );
   sld->setSliderName("Lowest Mode");
-  sld->setDescription("Lowest mode index to produce (brickwall highpass)");
+  sld->setItemDescription("Lowest mode index to produce (brickwall highpass)");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&valueToString0);
 
   addWidget( sld = sldHighestMode = new Sld );
   sld->assignParameter( modalModule->getParameterByName("HighestMode") );
   sld->setSliderName("Highest Mode");
-  sld->setDescription("Highest mode index to produce (brickwall lowpass and CPU load limiter)");
+  sld->setItemDescription("Highest mode index to produce (brickwall lowpass and CPU load limiter)");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&valueToString0);
 
@@ -358,32 +358,32 @@ void ModalSynthEditor::createWidgets()
 
   addWidget( box = boxTopLeftRatios = new Box );
   box->assignParameter( modalModule->getParameterByName("RatiosTopLeft") );
-  box->setDescription("Mode frequency ratios in top left corner");
+  box->setItemDescription("Mode frequency ratios in top left corner");
   box->setDescriptionField(infoField);
   //box->registerComboBoxObserver(this);  // may be needed later
 
   addWidget( box = boxTopRightRatios = new Box );
   box->assignParameter( modalModule->getParameterByName("RatiosTopRight") );
-  box->setDescription("Mode frequency ratios in top right corner");
+  box->setItemDescription("Mode frequency ratios in top right corner");
   box->setDescriptionField(infoField);
   //box->registerComboBoxObserver(this);  // may be needed later
 
   addWidget( box = boxBottomLeftRatios = new Box );
   box->assignParameter( modalModule->getParameterByName("RatiosBottomLeft") );
-  box->setDescription("Mode frequency ratios in bottom left corner");
+  box->setItemDescription("Mode frequency ratios in bottom left corner");
   box->setDescriptionField(infoField);
   //box->registerComboBoxObserver(this);  // may be needed later
 
   addWidget( box = boxBottomRightRatios = new Box );
   box->assignParameter( modalModule->getParameterByName("RatiosBottomRight") );
-  box->setDescription("Mode frequency ratios in bottom right corner");
+  box->setItemDescription("Mode frequency ratios in bottom right corner");
   box->setDescriptionField(infoField);
   //box->registerComboBoxObserver(this);  // may be needed later
 
   addWidget(xyPadRatios = new rsVectorPad);
   xyPadRatios->assignParameterX(modalModule->getParameterByName("FreqRatiosX"));
   xyPadRatios->assignParameterY(modalModule->getParameterByName("FreqRatiosY"));
-  xyPadRatios->setDescription("Vector morph of the frequency ratios in the 4 corners");
+  xyPadRatios->setItemDescription("Vector morph of the frequency ratios in the 4 corners");
   xyPadRatios->setDescriptionField(infoField);
   // it would be nice, if the xy-pad would show a plot of the resulting freq-ratios
   // maybe show the 4 edge freq-ratios in plots next to the middle xy-pad-plot
@@ -391,14 +391,14 @@ void ModalSynthEditor::createWidgets()
   addWidget( sld = sldRatiosX = new Sld );
   sld->assignParameter( modalModule->getParameterByName("FreqRatiosX") );
   sld->setSliderName("RatiosX");
-  sld->setDescription("X-coordinate of the ratio vector morph");
+  sld->setItemDescription("X-coordinate of the ratio vector morph");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&valueToStringTotal5);
 
   addWidget( sld = sldRatiosY = new Sld );
   sld->assignParameter( modalModule->getParameterByName("FreqRatiosY") );
   sld->setSliderName("RatiosY");
-  sld->setDescription("Y-coordinate of the ratio vector morph");
+  sld->setItemDescription("Y-coordinate of the ratio vector morph");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&valueToStringTotal5);
 
@@ -408,21 +408,21 @@ void ModalSynthEditor::createWidgets()
   addWidget( sld = sldAmpSlope = new Sld );
   sld->assignParameter( modalModule->getParameterByName("AmpSlope") );
   sld->setSliderName("AmpSlope");
-  sld->setDescription("Slope of amplitude spectrum");
+  sld->setItemDescription("Slope of amplitude spectrum");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&decibelsPerOctaveToString2);  // use dB/oct
 
   addWidget( sld = sldAmpSlopeByKey = new Sld );
   sld->assignParameter( modalModule->getParameterByName("AmpSlopeByKey") );
   sld->setSliderName("K");
-  sld->setDescription("Key tracking of spectral slope");
+  sld->setItemDescription("Key tracking of spectral slope");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&decibelsPerOctaveToString2);
 
   addWidget( sld = sldAmpSlopeByVel = new Sld );
   sld->assignParameter( modalModule->getParameterByName("AmpSlopeByVel") );
   sld->setSliderName("V");
-  sld->setDescription("Velocity tracking of spectral slope");
+  sld->setItemDescription("Velocity tracking of spectral slope");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&decibelsPerOctaveToString2);
 
@@ -430,28 +430,28 @@ void ModalSynthEditor::createWidgets()
   addWidget( sld = sldAttack = new Sld );
   sld->assignParameter( modalModule->getParameterByName("Attack") );
   sld->setSliderName("Attack");
-  sld->setDescription("Attack time");
+  sld->setItemDescription("Attack time");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( sld = sldAttackByRatio = new Sld );
   sld->assignParameter( modalModule->getParameterByName("AttackByRatio") );
   sld->setSliderName("R");
-  sld->setDescription("Attack dependency on frequency ratio");
+  sld->setItemDescription("Attack dependency on frequency ratio");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&percentToStringWithUnit2);
 
   addWidget( sld = sldAttackByKey = new Sld );
   sld->assignParameter( modalModule->getParameterByName("AttackByKey") );
   sld->setSliderName("K");
-  sld->setDescription("Attack dependency on key");
+  sld->setItemDescription("Attack dependency on key");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&percentToStringWithUnit2);
 
   addWidget( sld = sldAttackByVel = new Sld );
   sld->assignParameter( modalModule->getParameterByName("AttackByVel") );
   sld->setSliderName("V");
-  sld->setDescription("Attack dependency on velocity");
+  sld->setItemDescription("Attack dependency on velocity");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&percentToStringWithUnit2);
 
@@ -459,28 +459,28 @@ void ModalSynthEditor::createWidgets()
   addWidget( sld = sldDecay = new Sld );
   sld->assignParameter( modalModule->getParameterByName("Decay") );
   sld->setSliderName("Decay");
-  sld->setDescription("Decay time");
+  sld->setItemDescription("Decay time");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( sld = sldDecayByRatio = new Sld );
   sld->assignParameter( modalModule->getParameterByName("DecayByRatio") );
   sld->setSliderName("R");
-  sld->setDescription("Decay dependency on frequency ratio");
+  sld->setItemDescription("Decay dependency on frequency ratio");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&percentToStringWithUnit2);
 
   addWidget( sld = sldDecayByKey = new Sld );
   sld->assignParameter( modalModule->getParameterByName("DecayByKey") );
   sld->setSliderName("K");
-  sld->setDescription("Decay dependency on key");
+  sld->setItemDescription("Decay dependency on key");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&percentToStringWithUnit2);
 
   addWidget( sld = sldDecayByVel = new Sld );
   sld->assignParameter( modalModule->getParameterByName("DecayByVel") );
   sld->setSliderName("V");
-  sld->setDescription("Decay dependency on velocity");
+  sld->setItemDescription("Decay dependency on velocity");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&percentToStringWithUnit2);
 
@@ -494,28 +494,28 @@ void ModalSynthEditor::createWidgets()
   addWidget( sld = sldAmp = new Sld );
   sld->assignParameter( modalModule->getParameterByName("Amplitude") );
   sld->setSliderName("Amplitude");
-  sld->setDescription("Overall amplitude");
+  sld->setItemDescription("Overall amplitude");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&valueToStringTotal5);
 
   addWidget( sld = sldAmpByRatio = new Sld );
   sld->assignParameter( modalModule->getParameterByName("AmplitudeByRatio") );
   sld->setSliderName("R");
-  sld->setDescription("Mode amplitude dependency on frequency ratio");
+  sld->setItemDescription("Mode amplitude dependency on frequency ratio");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&percentToStringWithUnit2);
 
   addWidget( sld = sldAmpByKey = new Sld );
   sld->assignParameter( modalModule->getParameterByName("AmplitudeByKey") );
   sld->setSliderName("K");
-  sld->setDescription("Amplitude dependency on key");
+  sld->setItemDescription("Amplitude dependency on key");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&percentToStringWithUnit2);
 
   addWidget( sld = sldAmpByVel = new Sld );
   sld->assignParameter( modalModule->getParameterByName("AmplitudeByVel") );
   sld->setSliderName("V");
-  sld->setDescription("Amplitude dependency on velocity");
+  sld->setItemDescription("Amplitude dependency on velocity");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&percentToStringWithUnit2);
   */

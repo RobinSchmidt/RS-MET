@@ -169,7 +169,7 @@ void MultiModeFilterAudioModule::createParameters()
 MultiModeFreqResponseEditor::MultiModeFreqResponseEditor(const juce::String& name) 
   : rsSpectrumPlot(name)
 {
-  setDescription("Drag around the node to adjust the filter's frequency and resonance, Q or gain");
+  setItemDescription("Drag around the node to adjust the filter's frequency and resonance, Q or gain");
 
   ParameterObserver::setIsGuiElement(true);
   filterToEdit = NULL;
@@ -792,62 +792,62 @@ void MultiModeFilterModuleEditor::createWidgets()
   addWidget( modeComboBox = new RNamedComboBox("ModeComboBox", "Type:") );
   modeComboBox->assignParameter(moduleToEdit->getParameterByName("Mode") );
   modeComboBox->registerComboBoxObserver(this);
-  modeComboBox->setDescription("Type/Mode of the filter.");
+  modeComboBox->setItemDescription("Type/Mode of the filter.");
 
   addWidget( twoStagesButton = b = new Btn("2 Stages") );
   b->assignParameter(moduleToEdit->getParameterByName("TwoStages"));
   b->addRButtonListener(this);
-  b->setDescription("Switch second filter stage on/off");
+  b->setItemDescription("Switch second filter stage on/off");
   b->setClickingTogglesState(true);
 
   addWidget( freqSlider = s = new Sld );
   s->assignParameter(moduleToEdit->getParameterByName("Frequency"));
-  s->setDescription("Characteristic frequency of the filter");
+  s->setItemDescription("Characteristic frequency of the filter");
   s->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( freqByKeySlider = s = new Sld );
   s->assignParameter(moduleToEdit->getParameterByName("FrequencyByKey"));
   s->setSliderName("Key");
-  s->setDescription("Key tracking of the filter's frequency");
+  s->setItemDescription("Key tracking of the filter's frequency");
   s->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( freqByVelSlider = s = new Sld );
   s->assignParameter(moduleToEdit->getParameterByName("FrequencyByVel"));
   s->setSliderName("Vel");
-  s->setDescription("Velocity tracking of the filter's frequency");
+  s->setItemDescription("Velocity tracking of the filter's frequency");
   s->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( resoSlider = s = new Sld );
   s->assignParameter(moduleToEdit->getParameterByName("Resonance"));
-  s->setDescription("Resonance amount of the filter");
+  s->setItemDescription("Resonance amount of the filter");
   s->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( qSlider = s = new Sld );
   s->assignParameter(moduleToEdit->getParameterByName("Q"));
   s->setSliderName("Q");
-  s->setDescription("Quality factor of the filter");
+  s->setItemDescription("Quality factor of the filter");
   s->setStringConversionFunction(&valueToString3);
 
   addWidget( driveSlider = s = new Sld );
   s->assignParameter(moduleToEdit->getParameterByName("Drive"));
-  s->setDescription("Drives the filter into distortion");
+  s->setItemDescription("Drives the filter into distortion");
   s->setStringConversionFunction(&decibelsToStringWithUnit2);
 
   addWidget( orderSlider = s = new Sld );
   s->assignParameter(moduleToEdit->getParameterByName("Order"));
-  s->setDescription("Selects the order of the filter - this affects the slope");
+  s->setItemDescription("Selects the order of the filter - this affects the slope");
   s->setStringConversionFunction(&valueToString0);
   s->addListener(this);
 
   addWidget( gainSlider = s = new Sld );
   s->assignParameter(moduleToEdit->getParameterByName("Gain"));
   s->setSliderName("Gain");
-  s->setDescription("Gain for peak and shelving filter types");
+  s->setItemDescription("Gain for peak and shelving filter types");
   s->setStringConversionFunction(&decibelsToStringWithUnit2);
 
   addWidget( morphSlider = s = new Sld );
   s->assignParameter(moduleToEdit->getParameterByName("Morph") );
-  s->setDescription("Morph between filter types");
+  s->setItemDescription("Morph between filter types");
   s->setStringConversionFunction(&valueToString2);
   //s->setRange(-0.99, 0.99, 0.01, -0.99);
   //s->setScaling(Parameter::LINEAR_BIPOLAR);
@@ -857,18 +857,18 @@ void MultiModeFilterModuleEditor::createWidgets()
   //addWidget( transitionSlider = s = new Sld );
   //s->assignParameter(moduleToEdit->getParameterByName("Transition") );
   //s->setSliderName("Transition");
-  //s->setDescription("Determines the transition when morphing between filter types");
+  //s->setItemDescription("Determines the transition when morphing between filter types");
   //s->setStringConversionFunction(&valueToString3);
 
   addWidget( preAllpassSlider = s = new Sld );
   s->assignParameter(moduleToEdit->getParameterByName("PreAllpass") );
   s->setSliderName("Allpass");
-  s->setDescription("First order allpass before actual filter to pre-shape waveform");
+  s->setItemDescription("First order allpass before actual filter to pre-shape waveform");
   s->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( makeUpSlider = s = new Sld );
   s->assignParameter(moduleToEdit->getParameterByName("MakeUp") );
-  s->setDescription("Compensates low frequency losses at high resonance via gain");
+  s->setItemDescription("Compensates low frequency losses at high resonance via gain");
   s->setStringConversionFunction(&percentToStringWithUnit0);
   s->addListener(this);
 
@@ -883,11 +883,11 @@ void MultiModeFilterModuleEditor::createWidgets()
   addPlot( frequencyResponseDisplay );
 
   // customize the descriptions for the load/save buttons:
-  stateWidgetSet->stateLoadButton->setDescription(   "Load filter settings from file");
-  stateWidgetSet->stateSaveButton->setDescription(   "Save filter settings to file");
-  stateWidgetSet->statePlusButton->setDescription(   "Skip to next filter settings file in current directory");
-  stateWidgetSet->stateMinusButton->setDescription(  "Skip to previous filter settings file in current directory");
-  stateWidgetSet->stateFileNameLabel->setDescription("Name of current preset for the filter section (if any)");
+  stateWidgetSet->stateLoadButton->setItemDescription(   "Load filter settings from file");
+  stateWidgetSet->stateSaveButton->setItemDescription(   "Save filter settings to file");
+  stateWidgetSet->statePlusButton->setItemDescription(   "Skip to next filter settings file in current directory");
+  stateWidgetSet->stateMinusButton->setItemDescription(  "Skip to previous filter settings file in current directory");
+  stateWidgetSet->stateFileNameLabel->setItemDescription("Name of current preset for the filter section (if any)");
 }
 
 void MultiModeFilterModuleEditor::updateWidgetArrangement()

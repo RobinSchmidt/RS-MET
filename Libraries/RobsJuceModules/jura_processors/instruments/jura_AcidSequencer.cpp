@@ -152,7 +152,7 @@ AcidPatternEditor::AcidPatternEditor(rosic::AcidSequencer *sequencerToEdit)
 {
   patternToEdit         = nullptr;
   this->sequencerToEdit = sequencerToEdit;
-  setDescription("Editor for acid patterns");
+  setItemDescription("Editor for acid patterns");
 
   rowHeight     = 12.f;
   columnWidth   = 20.f;
@@ -525,24 +525,24 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
 
 
   addWidget( modeLabel = new RTextField( juce::String("Mode:")) );
-  modeLabel->setDescription("Chooses the sequencer mode");
+  modeLabel->setItemDescription("Chooses the sequencer mode");
   modeLabel->setDescriptionField(infoField);
 
   addWidget( modeBox = new RComboBox(juce::String("ModeComboBox")) );
   modeBox->assignParameter( moduleToEdit->getParameterByName("Mode") );
-  modeBox->setDescription(modeLabel->getDescription());
+  modeBox->setItemDescription(modeLabel->getItemDescription());
   //modeBox->setNoBackgroundAndOutline(true);
   modeBox->setDescriptionField(infoField);
 
   addWidget( stepLengthSlider = new RSlider ("StepLengthSlider") );
   stepLengthSlider->assignParameter( seqModule->getParameterByName("StepLength") );
-  stepLengthSlider->setDescription(juce::String("Length of the steps in 16th notes"));
+  stepLengthSlider->setItemDescription(juce::String("Length of the steps in 16th notes"));
   stepLengthSlider->setStringConversionFunction(valueToString2);
   stepLengthSlider->setDescriptionField(infoField);
   stepLengthSlider->addListener(this);
 
   addWidget( shiftLabel = new RTextField( juce::String("Shift:")) );
-  shiftLabel->setDescription("Shift the whole pattern for left or right (circularly)");
+  shiftLabel->setItemDescription("Shift the whole pattern for left or right (circularly)");
   shiftLabel->setDescriptionField(infoField);
 
   // Helper function to reduce boilerplate for button creation:
@@ -552,7 +552,7 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
     if(name == "L") (*pButton)->setSymbolIndex(jura::RButton::buttonSymbols::ARROW_LEFT);
     if(name == "R") (*pButton)->setSymbolIndex(jura::RButton::buttonSymbols::ARROW_RIGHT);
 
-    (*pButton)->setDescription(description);
+    (*pButton)->setItemDescription(description);
     (*pButton)->setDescriptionField(infoField);
     (*pButton)->setClickingTogglesState(false);
     (*pButton)->addRButtonListener(this);

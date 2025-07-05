@@ -13,57 +13,57 @@ BreakpointModulatorGlobalEditor::BreakpointModulatorGlobalEditor(CriticalSection
 
   addWidget( timeScaleSlider = new rsAutomatableSlider );
   timeScaleSlider->setSliderName("Time Scale");
-  timeScaleSlider->setDescription("Scales overall time duration by a factor");
+  timeScaleSlider->setItemDescription("Scales overall time duration by a factor");
   timeScaleSlider->setStringConversionFunction(&valueToString4);
   timeScaleSlider->setRange(0.0625, 16.0, 0.01, 1.0);
   timeScaleSlider->setScaling(Parameter::EXPONENTIAL);
 
   addWidget( timeScaleByKeySlider = new rsAutomatableSlider );
   timeScaleByKeySlider->setSliderName("Key");
-  timeScaleByKeySlider->setDescription("Key dependence of the the overall time duration");
+  timeScaleByKeySlider->setItemDescription("Key dependence of the the overall time duration");
   timeScaleByKeySlider->setStringConversionFunction(&percentToStringWithUnit0);
   timeScaleByKeySlider->setRange(-150.0, 150.0, 1.0, 0.0);
   timeScaleByKeySlider->setScaling(Parameter::LINEAR_BIPOLAR);
 
   addWidget( timeScaleByVelSlider = new rsAutomatableSlider );
   timeScaleByVelSlider->setSliderName("Vel");
-  timeScaleByVelSlider->setDescription("Velocity dependence of the the overall time duration");
+  timeScaleByVelSlider->setItemDescription("Velocity dependence of the the overall time duration");
   timeScaleByVelSlider->setStringConversionFunction(&percentToStringWithUnit0);
   timeScaleByVelSlider->setRange(-150.0, 150.0, 1.0, 0.0);
   timeScaleByVelSlider->setScaling(Parameter::LINEAR_BIPOLAR);
 
   addWidget( depthSlider = new rsAutomatableSlider );
   depthSlider->setSliderName("Depth");
-  depthSlider->setDescription("Depth of the modulation");
+  depthSlider->setItemDescription("Depth of the modulation");
   depthSlider->setStringConversionFunction(&valueToString2);
   depthSlider->setRange(0.0, 4.0, 0.01, 1.0);
 
   addWidget( depthByKeySlider = new rsAutomatableSlider );
   depthByKeySlider->setSliderName("Key");
-  depthByKeySlider->setDescription("Key dependence of the modulation depth");
+  depthByKeySlider->setItemDescription("Key dependence of the modulation depth");
   depthByKeySlider->setStringConversionFunction(&percentToStringWithUnit0);
   depthByKeySlider->setRange(-150.0, 150.0, 1.0, 0.0);
   depthByKeySlider->setScaling(Parameter::LINEAR_BIPOLAR);
 
   addWidget( depthByVelSlider = new rsAutomatableSlider );
   depthByVelSlider->setSliderName("Vel");
-  depthByVelSlider->setDescription("Velocity dependence of the modulation depth");
+  depthByVelSlider->setItemDescription("Velocity dependence of the modulation depth");
   depthByVelSlider->setStringConversionFunction(&percentToStringWithUnit0);
   depthByVelSlider->setRange(-150.0, 150.0, 1.0, 0.0);
   depthByVelSlider->setScaling(Parameter::LINEAR_BIPOLAR);
 
   addWidget( loopButton = new RButton("Loop") );
-  loopButton->setDescription("Toggle sustain loop on/off");
+  loopButton->setItemDescription("Toggle sustain loop on/off");
   loopButton->setClickingTogglesState(true);
   loopButton->addRButtonListener(this);
 
   addWidget( syncButton = new RButton("Sync") );
-  syncButton->setDescription("Toggle sync on/off. Time unit is beats in sync-mode, seconds otherwise");
+  syncButton->setItemDescription("Toggle sync on/off. Time unit is beats in sync-mode, seconds otherwise");
   syncButton->setClickingTogglesState(true);
   syncButton->addRButtonListener(this);
 
   addWidget( editButton = new RButton("Edit") );
-  editButton->setDescription("Selects the envelope for editing");
+  editButton->setItemDescription("Selects the envelope for editing");
 
   setHeadlineStyle(AudioModuleEditor::NO_HEADLINE);
   webLink->setVisible(false);
@@ -262,19 +262,19 @@ BreakpointParameterEditor::BreakpointParameterEditor(CriticalSection *newPlugInL
   selectedBreakpointIndex = -1;
 
   addWidget( indexLabel = new RTextField("Breakpoint") );
-  indexLabel->setDescription("Index of selected breakpoint");
+  indexLabel->setItemDescription("Index of selected breakpoint");
   indexLabel->setNoBackgroundAndOutline(true);
   indexLabel->setJustification(Justification::centred);
 
   addWidget( indexValueLabel = new RTextField() );
-  indexValueLabel->setDescription("Index of selected breakpoint");
+  indexValueLabel->setItemDescription("Index of selected breakpoint");
   indexValueLabel->setNoBackgroundAndOutline(true);
   indexValueLabel->setJustification(Justification::centred);
 
   addWidget( timeSlider = new RSlider("TimeSlider") );
   timeSlider->addListener(this);
   timeSlider->setSliderName("Time");
-  timeSlider->setDescription("Time stamp of slected breakpoint (in seconds or beats)");
+  timeSlider->setItemDescription("Time stamp of slected breakpoint (in seconds or beats)");
   timeSlider->setStringConversionFunction(&secondsToStringWithUnitTotal4);
   timeSlider->setRange(0.0, 5.0, 0.0001, 0.0);
   timeSlider->setLayout(RSlider::NAME_ABOVE);
@@ -282,7 +282,7 @@ BreakpointParameterEditor::BreakpointParameterEditor(CriticalSection *newPlugInL
   addWidget( levelSlider = new RSlider("LevelSlider") );
   levelSlider->addListener(this);
   levelSlider->setSliderName("Level");
-  levelSlider->setDescription("Level of selected breakpoint");
+  levelSlider->setItemDescription("Level of selected breakpoint");
   levelSlider->setStringConversionFunction(&valueToString3);
   //levelSlider->setRange(-2.0, 2.0, 0.001, 1.0);
   levelSlider->setRange(-4.0, 4.0, 0.001, 0.0);
@@ -301,7 +301,7 @@ BreakpointParameterEditor::BreakpointParameterEditor(CriticalSection *newPlugInL
   levelSlider->setDefaultValues(defaultValues);
 
   addWidget( shapeComboBox = new RNamedComboBox("ShapeComboBox", "Shape") );
-  shapeComboBox->setDescription("Shape of the curve approaching the selected breakpoint");
+  shapeComboBox->setItemDescription("Shape of the curve approaching the selected breakpoint");
   shapeComboBox->setNameLabelPosition(RNamedComboBox::ABOVE_BOX);
   shapeComboBox->registerComboBoxObserver(this);
   shapeComboBox->addItem(0, "Stairstep"  );
@@ -317,13 +317,13 @@ BreakpointParameterEditor::BreakpointParameterEditor(CriticalSection *newPlugInL
   addWidget( shapeSlider = new RSlider("ShapeSlider") );
   shapeSlider->addListener(this);
   shapeSlider->setSliderName(juce::String());
-  shapeSlider->setDescription("Amount of the shape (shapiness)");
+  shapeSlider->setItemDescription("Amount of the shape (shapiness)");
   shapeSlider->setStringConversionFunction(&valueToString2);
   shapeSlider->setRange(0.1, 10.0, 0.01, 1.0);
   shapeSlider->setScaling(Parameter::EXPONENTIAL);
 
   addWidget( shapeToAllButton = new RButton("ToAll") );
-  shapeToAllButton->setDescription("Apply the current shape setting to all breakpoints");
+  shapeToAllButton->setItemDescription("Apply the current shape setting to all breakpoints");
   shapeToAllButton->setClickingTogglesState(true);
   shapeToAllButton->addRButtonListener(this);
 }
@@ -536,7 +536,7 @@ BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInL
 
   // change the headline from the default "Sub-Editor" to "Modulator-Editor":
   setHeadlineText("Modulator");
-  setDescription("This is a multi-breakpoint modulation generator");
+  setItemDescription("This is a multi-breakpoint modulation generator");
 
   // create the breakpoint-editor:
   breakpointEditor = new ModulatorCurveEditor("PlotEditor");
@@ -561,34 +561,34 @@ BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInL
   addChildEditor( breakpointParameterEditor );
 
   addWidget( snapXButton = new RButton("#X:") );
-  snapXButton->setDescription("Toggle time-quantization on/off.");
+  snapXButton->setItemDescription("Toggle time-quantization on/off.");
   snapXButton->setClickingTogglesState(true);
   snapXButton->addRButtonListener(this);
 
   addWidget( gridXComboBox = new RComboBox("GridXComboBox") );
   gridXComboBox->registerComboBoxObserver(this);
-  gridXComboBox->setDescription("Select spacing of the vertical grid lines");
+  gridXComboBox->setItemDescription("Select spacing of the vertical grid lines");
 
   addWidget(snapYButton = new RButton("#Y:"));
-  snapYButton->setDescription("Toggle level-quantization on/off.");
+  snapYButton->setItemDescription("Toggle level-quantization on/off.");
   snapYButton->setClickingTogglesState(true);
   snapYButton->addRButtonListener(this);
 
   addWidget(gridYComboBox = new RComboBox("GridYComboBox"));
   gridYComboBox->registerComboBoxObserver(this);
-  gridYComboBox->setDescription("Select spacing of the horizontal grid lines");
+  gridYComboBox->setItemDescription("Select spacing of the horizontal grid lines");
 
   addWidget(closeButton = new RButton(RButton::CLOSE), true, false); // invisible by default
-  closeButton->setDescription("Closes the modulator editor");
+  closeButton->setItemDescription("Closes the modulator editor");
   closeButton->setClickingTogglesState(false);
   // we don't listen to this button ourselves - this is the job of the outlying editor object
 
   // customize the descriptions for the load/save buttons:
-  stateWidgetSet->stateLoadButton->setDescription("Load modulator settings from file");
-  stateWidgetSet->stateSaveButton->setDescription("Save modulator settings to file");
-  stateWidgetSet->statePlusButton->setDescription("Skip to next modulation curve in current directory");
-  stateWidgetSet->stateMinusButton->setDescription("Skip to previous modulation curve in current directory");
-  stateWidgetSet->stateFileNameLabel->setDescription("Name of current preset for the breakpoint modulator (if any)");
+  stateWidgetSet->stateLoadButton->setItemDescription("Load modulator settings from file");
+  stateWidgetSet->stateSaveButton->setItemDescription("Save modulator settings to file");
+  stateWidgetSet->statePlusButton->setItemDescription("Skip to next modulation curve in current directory");
+  stateWidgetSet->stateMinusButton->setItemDescription("Skip to previous modulation curve in current directory");
+  stateWidgetSet->stateFileNameLabel->setItemDescription("Name of current preset for the breakpoint modulator (if any)");
 
   modulatorModule = newBreakpointModulatorAudioModule;
   //modulatorModule->addChangeListener(this); // crashes Straightliner when loading preset after recall
@@ -985,14 +985,14 @@ BreakpointModulatorEditorCompact::BreakpointModulatorEditorCompact(CriticalSecti
 
   addWidget( editButton = new RButton("Edit") );
   editButton->addRButtonListener(this);
-  editButton->setDescription("Open/close context menu with more options");
+  editButton->setItemDescription("Open/close context menu with more options");
   editButton->setClickingTogglesState(true);
 
   numSamplesInPlot = 0;
   xValues          = NULL;
   yValues          = NULL;
   plot = new rsDataPlot("Plot");
-  plot->setDescription("Envelope");
+  plot->setItemDescription("Envelope");
   plot->setAxisLabels("", "");
   plot->setVerticalCoarseGrid(1.0, false);
   plot->setHorizontalCoarseGrid(1.0, false);

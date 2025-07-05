@@ -423,84 +423,84 @@ void PhaseScopeEditor::createWidgets()
   addWidget( sliderBrightness = s = new RSlider("BrightnessSlider") );
   s->assignParameter( scope->getParameterByName("Brightness") );
   s->setSliderName("Brightness");
-  s->setDescription("Brightness");
+  s->setItemDescription("Brightness");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   addWidget( sliderAfterglow = s = new RSlider("GlowSlider") );
   s->assignParameter( scope->getParameterByName("AfterGlow") );
   s->setSliderName("Glow");
-  s->setDescription("Afterglow time in seconds");
+  s->setItemDescription("Afterglow time in seconds");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&secondsToStringWithUnitTotal4);
 
   addWidget( sliderPixelSpread = s = new RSlider("SpreadSlider") );
   s->assignParameter( scope->getParameterByName("PixelSpread") );
   s->setSliderName("Spread");
-  s->setDescription("Pixel spreading");
+  s->setItemDescription("Pixel spreading");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   addWidget( sliderPixelScale = s = new RSlider("ScaleSlider") );
   s->assignParameter( scope->getParameterByName("PixelScale") );
   s->setSliderName("Scale");
-  s->setDescription("Pixel size rescaling");
+  s->setItemDescription("Pixel size rescaling");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   addWidget( sliderLineDensity = s = new RSlider("DensitySlider") );
   s->assignParameter( scope->getParameterByName("LineDensity") );
   s->setSliderName("Density");
-  s->setDescription("Line Density");
+  s->setItemDescription("Line Density");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   addWidget( sliderDotLimit = s = new RSlider("DotLimitSlider") );
   s->assignParameter( scope->getParameterByName("DotLimit") );
   s->setSliderName("DotLimit");
-  s->setDescription("Limit for number of dots per line");
+  s->setItemDescription("Limit for number of dots per line");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   addWidget( sliderFrameRate = s = new RSlider("FrameRateSlider") );
   s->assignParameter( scope->getParameterByName("FrameRate") );
   s->setSliderName("FrameRate");
-  s->setDescription("Frame rate for redrawing");
+  s->setItemDescription("Frame rate for redrawing");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   addWidget( boxDrawMode = new RComboBox() );
   boxDrawMode->assignParameter( scope->getParameterByName("DrawMode") );
-  boxDrawMode->setDescription("Select drawing mode (interpolation between incoming samples)");
+  boxDrawMode->setItemDescription("Select drawing mode (interpolation between incoming samples)");
   boxDrawMode->setDescriptionField(infoField);
 
   addWidget( buttonAntiAlias = b = new RButton("AntiAlias") );
   b->assignParameter( scope->getParameterByName("AntiAlias") );
-  b->setDescription("Anti aliased drawing (bilinear deinterpolation)");
+  b->setItemDescription("Anti aliased drawing (bilinear deinterpolation)");
   b->setDescriptionField(infoField);
   //b->setButtonPainter(&buttonPainter); // temporary, for test
 
   addWidget( button1D = b = new RButton("1D") );
   b->assignParameter( scope->getParameterByName("OneDimensional") );
-  b->setDescription("Replace x-input with sawtooth screen scanner");
+  b->setItemDescription("Replace x-input with sawtooth screen scanner");
   b->setDescriptionField(infoField);
 
   addWidget( buttonSync = b = new RButton("Sync") );
   b->assignParameter( scope->getParameterByName("Sync") );
-  b->setDescription("Synchronize 1D scanning frequency to input");
+  b->setItemDescription("Synchronize 1D scanning frequency to input");
   b->setDescriptionField(infoField);
 
   addWidget( s = sliderScanFreq = new rsAutomatableSlider );
   s->assignParameter( scope->getParameterByName("ScanFrequency") );
   s->setSliderName("ScanFreq");
-  s->setDescription("Scanning frequency in 1D mode");
+  s->setItemDescription("Scanning frequency in 1D mode");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   addWidget( s = sliderNumCycles = new rsAutomatableSlider );
   s->assignParameter( scope->getParameterByName("NumCycles") );
   s->setSliderName("NumCycles");
-  s->setDescription("Number of cycles in synced 1D mode");
+  s->setItemDescription("Number of cycles in synced 1D mode");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString0);
 
@@ -511,49 +511,49 @@ void PhaseScopeEditor::createWidgets()
   addWidget(s = sliderScaleX = new rsAutomatableSlider);
   s->assignParameter(scope->getParameterByName("ScaleX"));
   s->setSliderName("ScaleX");
-  s->setDescription("Scaling along x-direction");
+  s->setItemDescription("Scaling along x-direction");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   addWidget(s = sliderScaleY = new rsAutomatableSlider);
   s->assignParameter(scope->getParameterByName("ScaleY"));
   s->setSliderName("ScaleY");
-  s->setDescription("Scaling along y-direction");
+  s->setItemDescription("Scaling along y-direction");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
   //addWidget(s = sliderShearX = new rsAutomatableSlider);
   //s->assignParameter(scope->getParameterByName("ShearX"));
   //s->setSliderName("ShearX");
-  //s->setDescription("Shearing along x-direction");
+  //s->setItemDescription("Shearing along x-direction");
   //s->setDescriptionField(infoField);
   //s->setStringConversionFunction(&valueToString3);
 
   //addWidget(s = sliderShearY = new rsAutomatableSlider);
   //s->assignParameter(scope->getParameterByName("ShearY"));
   //s->setSliderName("ShearY");
-  //s->setDescription("Shearing along y-direction");
+  //s->setItemDescription("Shearing along y-direction");
   //s->setDescriptionField(infoField);
   //s->setStringConversionFunction(&valueToString3);
 
   addWidget(s = sliderRotation = new rsAutomatableSlider);
   s->assignParameter(scope->getParameterByName("Rotation"));
   s->setSliderName("Rotation");
-  s->setDescription("Rotation around origin");
+  s->setItemDescription("Rotation around origin");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&degreesToStringWithUnit0);
 
   //addWidget(s = sliderShiftX = new rsAutomatableSlider);
   //s->assignParameter(scope->getParameterByName("ShiftX"));
   //s->setSliderName("ShiftX");
-  //s->setDescription("Shifting along x-direction");
+  //s->setItemDescription("Shifting along x-direction");
   //s->setDescriptionField(infoField);
   //s->setStringConversionFunction(&valueToString3);
 
   //addWidget(s = sliderShiftY = new rsAutomatableSlider);
   //s->assignParameter(scope->getParameterByName("ShiftY"));
   //s->setSliderName("ShiftY");
-  //s->setDescription("Shifting along y-direction");
+  //s->setItemDescription("Shifting along y-direction");
   //s->setDescriptionField(infoField);
   //s->setStringConversionFunction(&valueToString3);
 
@@ -783,38 +783,38 @@ void PhaseScopeEditor::parameterChanged(Parameter* parameterThatHasChanged)
 //  addWidget( sliderDecayByValue = s = new RSlider("DecayByValueSlider") );
 //  s->assignParameter( scope->getParameterByName("DecayByValue") );
 //  s->setSliderName("DecayByValue");
-//  s->setDescription("Dependency of pixel decay time on pixel brightness");
+//  s->setItemDescription("Dependency of pixel decay time on pixel brightness");
 //  s->setDescriptionField(infoField);
 //  s->setStringConversionFunction(&valueToString3);
 //
 //  addWidget( sliderDecayByAverage = s = new RSlider("DecayByAverageSlider") );
 //  s->assignParameter( scope->getParameterByName("DecayByAverage") );
 //  s->setSliderName("DecayByAverage");
-//  s->setDescription("Dependency of pixel decay time on average brightness of screen");
+//  s->setItemDescription("Dependency of pixel decay time on average brightness of screen");
 //  s->setDescriptionField(infoField);
 //  s->setStringConversionFunction(&valueToString3);
 //
 //  addWidget( buttonDrawDots = b = new RButton("Dots") );
 //  b->assignParameter( scope->getParameterByName("DrawDots") );
-//  b->setDescription("Switches dot drawing on/off");
+//  b->setItemDescription("Switches dot drawing on/off");
 //  b->setDescriptionField(infoField);
 //
 //  addWidget( buttonBigDot = b = new RButton("Big Dot") );
 //  b->assignParameter( scope->getParameterByName("UseBigDot") );
-//  b->setDescription("Switches to use the big expensive dot");
+//  b->setItemDescription("Switches to use the big expensive dot");
 //  b->setDescriptionField(infoField);
 //
 //  addWidget( sliderDotSize = s = new RSlider("DotSizeSlider") );
 //  s->assignParameter( scope->getParameterByName("DotSize") );
 //  s->setSliderName("DotSize");
-//  s->setDescription("Dot size in pixels");
+//  s->setItemDescription("Dot size in pixels");
 //  s->setDescriptionField(infoField);
 //  s->setStringConversionFunction(&valueToString3);
 //
 //  addWidget( sliderDotBlur = s = new RSlider("DotBlurSlider") );
 //  s->assignParameter( scope->getParameterByName("DotBlur") );
 //  s->setSliderName("DotBlur");
-//  s->setDescription("Dot blur from 0..1");
+//  s->setItemDescription("Dot blur from 0..1");
 //  s->setDescriptionField(infoField);
 //  s->setStringConversionFunction(&valueToString3);
 //  s->addListener(this);
@@ -822,7 +822,7 @@ void PhaseScopeEditor::parameterChanged(Parameter* parameterThatHasChanged)
 //  addWidget( sliderDotInnerSlope = s = new RSlider("DotInnerSlopeSlider") );
 //  s->assignParameter( scope->getParameterByName("DotInnerSlope") );
 //  s->setSliderName("DotInnerSlope");
-//  s->setDescription("Dot brightness slope at center");
+//  s->setItemDescription("Dot brightness slope at center");
 //  s->setDescriptionField(infoField);
 //  s->setStringConversionFunction(&valueToString3);
 //  s->addListener(this);
@@ -830,7 +830,7 @@ void PhaseScopeEditor::parameterChanged(Parameter* parameterThatHasChanged)
 //  addWidget( sliderDotOuterSlope = s = new RSlider("DotOuterSlopeSlider") );
 //  s->assignParameter( scope->getParameterByName("DotOuterSlope") );
 //  s->setSliderName("DotOuterSlope");
-//  s->setDescription("Dot brightness slope at border");
+//  s->setItemDescription("Dot brightness slope at border");
 //  s->setDescriptionField(infoField);
 //  s->setStringConversionFunction(&valueToString3);
 //  s->addListener(this);
@@ -838,27 +838,27 @@ void PhaseScopeEditor::parameterChanged(Parameter* parameterThatHasChanged)
 //
 //  addWidget( buttonDrawLines = b = new RButton("Lines") );
 //  b->assignParameter( scope->getParameterByName("DrawLines") );
-//  b->setDescription("Switches line drawing on/off");
+//  b->setItemDescription("Switches line drawing on/off");
 //  b->setDescriptionField(infoField);
 //
 //  addWidget( sliderLineBrightness = s = new RSlider("LineBrightnessSlider") );
 //  s->assignParameter( scope->getParameterByName("LineBrightness") );
 //  s->setSliderName("LineBrightness");
-//  s->setDescription("Brightness of lines");
+//  s->setItemDescription("Brightness of lines");
 //  s->setDescriptionField(infoField);
 //  s->setStringConversionFunction(&valueToString3);
 //
 //  addWidget( sliderLineWidth = s = new RSlider("LineWidthSlider") );
 //  s->assignParameter( scope->getParameterByName("LineWidth") );
 //  s->setSliderName("LineWidth");
-//  s->setDescription("Width of lines");
+//  s->setItemDescription("Width of lines");
 //  s->setDescriptionField(infoField);
 //  s->setStringConversionFunction(&valueToString3);
 //  //s->addListener(this);  // may be needed when we have a line preview
 //
 //  addWidget( boxLineProfile = c = new RComboBox("LineProfileBox") );
 //  c->assignParameter( scope->getParameterByName("LineProfile") );
-//  c->setDescription("Select line profile");
+//  c->setItemDescription("Select line profile");
 //  c->setDescriptionField(infoField);
 //}
 //

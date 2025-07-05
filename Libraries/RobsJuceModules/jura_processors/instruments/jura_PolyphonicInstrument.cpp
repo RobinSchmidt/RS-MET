@@ -218,72 +218,72 @@ void PolyphonicInstrumentEditor::createWidgets()
   addWidget( levelSlider = new RSlider("VolumeSlider") );
   levelSlider->assignParameter(moduleToEdit->getParameterByName("MasterLevel") );
   levelSlider->setSliderName("Level");
-  levelSlider->setDescription("Master output level");
+  levelSlider->setItemDescription("Master output level");
   levelSlider->setDescriptionField(infoField);
   levelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( levelByKeySlider = new RSlider("LevelByKeySlider") );
   levelByKeySlider->assignParameter(moduleToEdit->getParameterByName("VoiceLevelByKey") );
   levelByKeySlider->setSliderName("Key");
-  levelByKeySlider->setDescription("Key dependence of level (per voice)");
+  levelByKeySlider->setItemDescription("Key dependence of level (per voice)");
   levelByKeySlider->setDescriptionField(infoField);
   levelByKeySlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( levelByVelSlider = new RSlider("LevelByVelSlider") );
   levelByVelSlider->assignParameter(moduleToEdit->getParameterByName("VoiceLevelByVel") );
   levelByVelSlider->setSliderName("Vel");
-  levelByVelSlider->setDescription("Velocity dependence of level (per voice)");
+  levelByVelSlider->setItemDescription("Velocity dependence of level (per voice)");
   levelByVelSlider->setDescriptionField(infoField);
   levelByVelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( midSideRatioSlider = new RSlider("MidSideSlider") );
   midSideRatioSlider->assignParameter(moduleToEdit->getParameterByName("MidSideRatio") );
   midSideRatioSlider->setSliderName("M/S");
-  midSideRatioSlider->setDescription("Mid/side adjustment");
+  midSideRatioSlider->setItemDescription("Mid/side adjustment");
   midSideRatioSlider->setDescriptionField(infoField);
   midSideRatioSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( numVoicesSlider = new RSlider("NumVoicesSlider") );
   numVoicesSlider->assignParameter(moduleToEdit->getParameterByName("NumVoices") );
   numVoicesSlider->setSliderName("Voices");
-  numVoicesSlider->setDescription("Maximum number of playing voices");
+  numVoicesSlider->setItemDescription("Maximum number of playing voices");
   numVoicesSlider->setDescriptionField(infoField);
   numVoicesSlider->setStringConversionFunction(&valueToString0);
 
   addWidget( compSlider = new RSlider("CompSlider") );
   compSlider->assignParameter(moduleToEdit->getParameterByName("MasterLevelByVoices") );
   compSlider->setSliderName("Comp");
-  compSlider->setDescription("Compensation for cumulative loudness of playing voices");
+  compSlider->setItemDescription("Compensation for cumulative loudness of playing voices");
   compSlider->setDescriptionField(infoField);
   compSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( tuningLabel = new RTextField( "Tuning") );
-  tuningLabel->setDescription("Name of current tuning file (if any)");
+  tuningLabel->setItemDescription("Name of current tuning file (if any)");
   tuningLabel->setDescriptionField(infoField);
   tuningLabel->setNoBackgroundAndOutline(true);
 
   addWidget( tuningFileNameLabel = new RTextField() );
-  tuningFileNameLabel->setDescription("Name of current tuning file (if any)");
+  tuningFileNameLabel->setItemDescription("Name of current tuning file (if any)");
   tuningFileNameLabel->setNoBackgroundAndOutline(false);
   tuningFileNameLabel->setDescriptionField(infoField);
 
   addWidget( tuningLoadButton = new RButton("Load") );
   tuningLoadButton->addRButtonListener(this);
-  tuningLoadButton->setDescription("Load tuning from a file");
+  tuningLoadButton->setItemDescription("Load tuning from a file");
   tuningLoadButton->setDescriptionField(infoField);
   tuningLoadButton->setClickingTogglesState(false);
   tuningLoadButton->setToggleState(false, false);
 
   addWidget( tuningMinusButton = new RButton(RButton::ARROW_LEFT) );
   tuningMinusButton->addRButtonListener(this);
-  tuningMinusButton->setDescription("Skip to previous tuning-file in current directory");
+  tuningMinusButton->setItemDescription("Skip to previous tuning-file in current directory");
   tuningMinusButton->setDescriptionField(infoField);
   tuningMinusButton->setClickingTogglesState(false);
   tuningMinusButton->setToggleState(false, true);
 
   addWidget( tuningPlusButton = new RButton(RButton::ARROW_RIGHT) );
   tuningPlusButton->addRButtonListener(this);
-  tuningPlusButton->setDescription("Skip to next tuning-file in current directory");
+  tuningPlusButton->setItemDescription("Skip to next tuning-file in current directory");
   tuningPlusButton->setDescriptionField(infoField);
   tuningPlusButton->setClickingTogglesState(false);
   tuningPlusButton->setToggleState(false, true);
@@ -291,26 +291,26 @@ void PolyphonicInstrumentEditor::createWidgets()
   addWidget( masterTuneSlider = new RSlider("MasterTuneSlider") );
   masterTuneSlider->assignParameter(moduleToEdit->getParameterByName("MasterTuneA4") );
   masterTuneSlider->setSliderName("A4");
-  masterTuneSlider->setDescription("Master tuning frequency for note A4");
+  masterTuneSlider->setItemDescription("Master tuning frequency for note A4");
   masterTuneSlider->setDescriptionField(infoField);
   masterTuneSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( wheelRangeSlider = new RSlider("WheelRangeSlider") );
   wheelRangeSlider->assignParameter(moduleToEdit->getParameterByName("PitchWheelRange") );
   wheelRangeSlider->setSliderName("Wheel");
-  wheelRangeSlider->setDescription("Range for pitch wheel");
+  wheelRangeSlider->setItemDescription("Range for pitch wheel");
   wheelRangeSlider->setDescriptionField(infoField);
   wheelRangeSlider->setStringConversionFunction(&semitonesToStringWithUnit1);
 
   addWidget( glideButton = new RButton("Glide") );
   glideButton->assignParameter(moduleToEdit->getParameterByName("GlideSwitch"));
-  glideButton->setDescription("Switch glide on/off");
+  glideButton->setItemDescription("Switch glide on/off");
   glideButton->setDescriptionField(infoField);
 
   addWidget( glideTimeSlider = new RSlider("GlideTimeSlider") );
   glideTimeSlider->assignParameter(moduleToEdit->getParameterByName("GlideTime") );
   glideTimeSlider->setSliderName("Glide Time");
-  glideTimeSlider->setDescription("Adjust the glide time");
+  glideTimeSlider->setItemDescription("Adjust the glide time");
   glideTimeSlider->setDescriptionField(infoField);
   glideTimeSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 

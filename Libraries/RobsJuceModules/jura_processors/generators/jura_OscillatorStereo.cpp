@@ -430,55 +430,55 @@ void WaveOscEditorContextMenu::createWidgets()
 
   addWidget( ampHeadline = t = new Txf("Amplitude:") );
   t->setNoBackgroundAndOutline(true);
-  t->setDescription("Manipulations of the amplitude");
+  t->setItemDescription("Manipulations of the amplitude");
 
   addWidget( tuningHeadline = t = new Txf("Tuning:") );
   t->setNoBackgroundAndOutline(true);
-  t->setDescription("Manipulations of the tuning/detuning of the oscillator");
+  t->setItemDescription("Manipulations of the tuning/detuning of the oscillator");
 
   addWidget( timeHeadline = t = new Txf("Time:") );
   t->setNoBackgroundAndOutline(true);
-  t->setDescription("Time domain manipulations of the waveform");
+  t->setItemDescription("Time domain manipulations of the waveform");
 
   addWidget( magSpectrumHeadline = t = new Txf("Magnitude Spectrum:") );
   t->setNoBackgroundAndOutline(true);
-  t->setDescription("Manipulations of the magnitude spectrum");
+  t->setItemDescription("Manipulations of the magnitude spectrum");
 
   addWidget( phaseSpectrumHeadline = t = new Txf("Phase Spectrum:") );
   t->setNoBackgroundAndOutline(true);
-  t->setDescription("Manipulations of the phase spectrum");
+  t->setItemDescription("Manipulations of the phase spectrum");
 
   // sliders for amplitude related parameters:
 
   addWidget( levelSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("Level") );
-  s->setDescription("Output level of the oscillator");
+  s->setItemDescription("Output level of the oscillator");
   s->setStringConversionFunction(&decibelsToStringWithUnit2);
   s->addListener(this); // to send out the change-message for display update
 
   addWidget( levelByKeySlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("LevelByKey") );
   s->setSliderName("Key");
-  s->setDescription("Key dependence of oscillator's output level");
+  s->setItemDescription("Key dependence of oscillator's output level");
   s->setStringConversionFunction(&decibelsToStringWithUnit2);
 
   addWidget( levelByVelSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("LevelByVel") );
   s->setSliderName("Vel");
-  s->setDescription("Velocity dependence of oscillator's output level");
+  s->setItemDescription("Velocity dependence of oscillator's output level");
   s->setStringConversionFunction(&decibelsToStringWithUnit2);
 
   addWidget( midSideSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("MidSide") );
   s->setSliderName("Mid/Side");
-  s->setDescription("Mid/side adjustment for stereo(ized) waveforms");
+  s->setItemDescription("Mid/side adjustment for stereo(ized) waveforms");
   s->setStringConversionFunction(&ratioToString0);
   s->addListener(this);
 
   addWidget( panSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("Pan") );
   s->setSliderName("Pan");
-  s->setDescription("Panorama position of the oscillator");
+  s->setItemDescription("Panorama position of the oscillator");
   s->setStringConversionFunction(&valueToString2);
   s->addListener(this);
 
@@ -486,25 +486,25 @@ void WaveOscEditorContextMenu::createWidgets()
 
   addWidget( tuneSlider = new TuningSlider("TuneSlider") );
   tuneSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("Tune") );
-  tuneSlider->setDescription("Tuning of the oscillator in semitones");
+  tuneSlider->setItemDescription("Tuning of the oscillator in semitones");
   tuneSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
 
   addWidget( detuneHzSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("DetuneHz") );
   s->setSliderName("Detune Hz");
-  s->setDescription("Detuning of the oscillator in Hz");
+  s->setItemDescription("Detuning of the oscillator in Hz");
   s->setStringConversionFunction(&hertzToStringWithUnit2);
 
   addWidget( stereoDetuneSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("StereoDetune") );
   s->setSliderName("Stereo Detune");
-  s->setDescription("Detuning between left and right channel in semitones");
+  s->setItemDescription("Detuning between left and right channel in semitones");
   s->setStringConversionFunction(&semitonesToStringWithUnit2);
 
   addWidget( stereoDetuneHzSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("StereoDetuneHz") );
   s->setSliderName("Stereo Detune Hz");
-  s->setDescription("Detuning between left and right channel in Hz");
+  s->setItemDescription("Detuning between left and right channel in Hz");
   s->setStringConversionFunction(&hertzToStringWithUnit2);
 
   // sliders for time domain related parameters:
@@ -512,28 +512,28 @@ void WaveOscEditorContextMenu::createWidgets()
   addWidget( startPhaseSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("StartPhase") );
   s->setSliderName("Start Phase");
-  s->setDescription("Start phase of the oscillator");
+  s->setItemDescription("Start phase of the oscillator");
   s->setStringConversionFunction(&degreesToStringWithUnit0);
   s->addListener(this);
 
   addWidget( fullWavePhaseWarpSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("FullWaveWarp") );
   s->setSliderName("Full Wave Warp");
-  s->setDescription("Applies phase warping to the entire waveform");
+  s->setItemDescription("Applies phase warping to the entire waveform");
   s->setStringConversionFunction(&degreesToStringWithUnit0);
   s->addListener(this);
 
   addWidget( halfWavePhaseWarpSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("HalfWaveWarp") );
   s->setSliderName("Half Wave Warp");
-  s->setDescription("Applies phase warping both half cycles of the waveform");
+  s->setItemDescription("Applies phase warping both half cycles of the waveform");
   s->setStringConversionFunction(&degreesToStringWithUnit0);
   s->addListener(this);
 
   addWidget( combHarmonicSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("CombHarmonic") );
   s->setSliderName("Comb Harmonic");
-  s->setDescription("Harmonic on which the comb filter acts");
+  s->setItemDescription("Harmonic on which the comb filter acts");
   //s->setStringConversionFunction(&degreesToStringWithUnit0);
   s->setStringConversionFunction(&valueToString2);
   s->addListener(this);
@@ -542,7 +542,7 @@ void WaveOscEditorContextMenu::createWidgets()
   addWidget( combAmountSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("CombAmount") );
   s->setSliderName("Comb Amount");
-  s->setDescription("Amount of comb filtering");
+  s->setItemDescription("Amount of comb filtering");
   s->setStringConversionFunction(percentToStringWithUnit1);
   s->addListener(this);
   //s->setVisible(false); // not yet meaningfully implemented
@@ -550,13 +550,13 @@ void WaveOscEditorContextMenu::createWidgets()
   addWidget( reverseButton = b = new Btn("Reverse") );
   b->assignParameter( oscillatorModuleToEdit->getParameterByName("TimeReverse") );
   b->addRButtonListener(this);
-  b->setDescription("Time reverses the oscillator's waveform");
+  b->setItemDescription("Time reverses the oscillator's waveform");
   b->setClickingTogglesState(true);
 
   addWidget( invertButton = b = new Btn("Invert") );
   b->assignParameter( oscillatorModuleToEdit->getParameterByName("PolarityInvert") );
   b->addRButtonListener(this);
-  b->setDescription("Inverts polarity of the oscillator's ouput");
+  b->setItemDescription("Inverts polarity of the oscillator's ouput");
   b->setClickingTogglesState(true);
 
   // sliders for magnitude spectrum related parameters:
@@ -564,35 +564,35 @@ void WaveOscEditorContextMenu::createWidgets()
   addWidget( spectralContrastSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("SpectralContrast") );
   s->setSliderName("Contrast");
-  s->setDescription("Spectral contrast acting as exponent on the harmonic's magnitude");
+  s->setItemDescription("Spectral contrast acting as exponent on the harmonic's magnitude");
   s->setStringConversionFunction(&valueToString2);
   s->addListener(this);
 
   addWidget( spectralSlopeSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("SpectralSlope") );
   s->setSliderName("Slope");
-  s->setDescription("Spectral slope applied to the waveform in dB/oct");
+  s->setItemDescription("Spectral slope applied to the waveform in dB/oct");
   s->setStringConversionFunction(&decibelsPerOctaveToString2);
   s->addListener(this);
 
   addWidget( highestHarmonicSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("HighestHarmonic") );
   s->setSliderName("Highest Harmonic");
-  s->setDescription("Highest harmonic in the waveform");
+  s->setItemDescription("Highest harmonic in the waveform");
   s->setStringConversionFunction(&valueToString0);
   s->addListener(this);
 
   addWidget( lowestHarmonicSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("LowestHarmonic") );
   s->setSliderName("Lowest Harmonic");
-  s->setDescription("Lowest harmonic in the waveform");
+  s->setItemDescription("Lowest harmonic in the waveform");
   s->setStringConversionFunction(&valueToString0);
   s->addListener(this);
 
   addWidget( evenOddSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("EvenOddRatio") );
   s->setSliderName("Even/Odd");
-  s->setDescription("Ratio of even and odd harmonics");
+  s->setItemDescription("Ratio of even and odd harmonics");
   s->setStringConversionFunction(&ratioBothFullAtCenterToString0);
   s->addListener(this);
 
@@ -601,14 +601,14 @@ void WaveOscEditorContextMenu::createWidgets()
   addWidget( evenOddPhaseShiftSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("EvenOddPhaseShift") );
   s->setSliderName("Even/Odd Shift:");
-  s->setDescription("Applies a phase shift between even and odd harmonics");
+  s->setItemDescription("Applies a phase shift between even and odd harmonics");
   s->setStringConversionFunction(&degreesToStringWithUnit0);
   s->addListener(this);
 
   addWidget( phaseScaleSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("PhaseScale") );
   s->setSliderName("Scale:");
-  s->setDescription("Scales the phase of each harmonic ");
+  s->setItemDescription("Scales the phase of each harmonic ");
   //s->setStringConversionFunction(&degreesToStringWithUnit0);
   s->setStringConversionFunction(&valueToString2);
   s->addListener(this);
@@ -616,14 +616,14 @@ void WaveOscEditorContextMenu::createWidgets()
   addWidget( phaseShiftSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("PhaseShift") );
   s->setSliderName("Shift:");
-  s->setDescription("Shifts the phase of each harmonic by a constant");
+  s->setItemDescription("Shifts the phase of each harmonic by a constant");
   s->setStringConversionFunction(&degreesToStringWithUnit0);
   s->addListener(this);
 
   addWidget( stereoPhaseShiftSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("StereoPhaseShift") );
   s->setSliderName("Stereo Shift:");
-  s->setDescription("Applies stereoization via phase-shifting of harmonics");
+  s->setItemDescription("Applies stereoization via phase-shifting of harmonics");
   s->setStringConversionFunction(&degreesToStringWithUnit0);
   s->addListener(this);
 
@@ -631,12 +631,12 @@ void WaveOscEditorContextMenu::createWidgets()
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("EvenOddStereoPhaseShift") );
   //s->setSliderName("Even/Odd Stereo Shift:");
   s->setSliderName("Ev/Od Ster Shft:");
-  s->setDescription("Phase shift between even/odd harmonics, applied with opposite signs to left/right channels");
+  s->setItemDescription("Phase shift between even/odd harmonics, applied with opposite signs to left/right channels");
   s->setStringConversionFunction(&degreesToStringWithUnit0);
   s->addListener(this);
 
   addWidget( closeButton = new RButton(RButton::CLOSE) );
-  closeButton->setDescription("Closes the oscillator context menu");
+  closeButton->setItemDescription("Closes the oscillator context menu");
   closeButton->setClickingTogglesState(false);
   // we don't listen to this button ourselves - this is the job of the outlying editor object
 }
@@ -720,10 +720,10 @@ WaveOscEditor::WaveOscEditor(CriticalSection *newPlugInLock,
   createWidgets();
 
   // Overwrite the descriptions of the inherited sample-load widgets:
-  sampleFileLabel->setDescription("Name of the currently loaded waveform");
-  sampleLoadButton->setDescription("Load a waveform");
-  samplePlusButton->setDescription("Next waveform in current directory");
-  sampleMinusButton->setDescription("Previous waveform in current directory");
+  sampleFileLabel->setItemDescription("Name of the currently loaded waveform");
+  sampleLoadButton->setItemDescription("Load a waveform");
+  samplePlusButton->setItemDescription("Next waveform in current directory");
+  sampleMinusButton->setItemDescription("Previous waveform in current directory");
 
   // Maybe create this only when needed and init to nullptr as in lazy initialization:
   contextMenu = new WaveOscEditorContextMenu(newWaveOscModule, this);
@@ -983,7 +983,7 @@ void WaveOscEditor::createWidgets()
 {
   addPlot( waveformDisplay = new rsWaveformPlot() );
   waveformDisplay->setAutoReRendering(false);
-  waveformDisplay->setDescription(juce::String("Click on the display to switch oscillator on/off"));
+  waveformDisplay->setItemDescription(juce::String("Click on the display to switch oscillator on/off"));
   waveformDisplay->setAxisPositionX(rsPlotSettings::INVISIBLE);
   waveformDisplay->setAxisPositionY(rsPlotSettings::INVISIBLE);
   waveformDisplay->setCurrentRangeY(-1.2, 1.2);
@@ -993,7 +993,7 @@ void WaveOscEditor::createWidgets()
 
   addPlot( emptyDisplay = new rsPlot() );
   emptyDisplay->setAutoReRendering(false);
-  emptyDisplay->setDescription(waveformDisplay->getDescription());
+  emptyDisplay->setItemDescription(waveformDisplay->getItemDescription());
   emptyDisplay->setAxisPositionX(rsPlotSettings::INVISIBLE);
   emptyDisplay->setAxisPositionY(rsPlotSettings::INVISIBLE);
   emptyDisplay->setCaption(juce::String("Off"), rsPlotSettings::CENTER);
@@ -1010,13 +1010,13 @@ void WaveOscEditor::createWidgets()
 
   addWidget( moreButton = new RButton(juce::String("More")) );
   moreButton->addRButtonListener(this);
-  moreButton->setDescription(juce::String("Open/close context menu with more options"));
+  moreButton->setItemDescription(juce::String("Open/close context menu with more options"));
   moreButton->setClickingTogglesState(true);
 
   addWidget( levelSlider = new RSlider("VolumeSlider") );
   levelSlider->assignParameter( moduleToEdit->getParameterByName("Level") );
   levelSlider->setSliderName(juce::String("Level"));
-  levelSlider->setDescription(juce::String("Output level of the oscillator"));
+  levelSlider->setItemDescription(juce::String("Output level of the oscillator"));
   levelSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
   levelSlider->setLayout(RSlider::NAME_ABOVE);
   levelSlider->addListener(this); // only to update the plot
@@ -1024,14 +1024,14 @@ void WaveOscEditor::createWidgets()
   addWidget( tuneSlider = new TuningSlider("TuneSlider") );
   tuneSlider->assignParameter( moduleToEdit->getParameterByName("Tune") );
   tuneSlider->setSliderName(juce::String("Tune"));
-  tuneSlider->setDescription(juce::String("Tuning of the oscillator in semitones"));
+  tuneSlider->setItemDescription(juce::String("Tuning of the oscillator in semitones"));
   tuneSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
   tuneSlider->setLayout(RSlider::NAME_ABOVE);
 
   addWidget( pitchModulationSlider = new RSlider("PitchModulationSlider") );
   pitchModulationSlider->assignParameter( moduleToEdit->getParameterByName("PitchModulationDepth") );
   pitchModulationSlider->setSliderName(juce::String("Mod"));
-  pitchModulationSlider->setDescription("Modulation depth for the pitch modulator");
+  pitchModulationSlider->setItemDescription("Modulation depth for the pitch modulator");
   pitchModulationSlider->setStringConversionFunction(&valueToString2);
 }
 

@@ -108,7 +108,7 @@ void EngineersFilterAudioModule::createParameters()
 EngineersFilterPlotEditor::EngineersFilterPlotEditor(const juce::String& name) 
   : rsSpectrumPlot(name)
 {
-  //setDescription("Drag vertical lines at the corner frequencies to adjust them.");
+  //setItemDescription("Drag vertical lines at the corner frequencies to adjust them.");
   setIsGuiElement(true);
 
   sciFilterToEdit = NULL;
@@ -432,7 +432,7 @@ void EngineersFilterModuleEditor::createWidgets()
   Parameter* p;
 
   plotEditor = new EngineersFilterPlotEditor("SpectrumEditor");
-  plotEditor->setDescription("Frequency response plot");
+  plotEditor->setItemDescription("Frequency response plot");
   plotEditor->setDescriptionField(infoField);
   plotEditor->addChangeListener(this);
   plotEditor->setEngineersFilterToEdit(sciFilterModuleToEdit->wrappedEngineersFilter);
@@ -447,14 +447,14 @@ void EngineersFilterModuleEditor::createWidgets()
   modeComboBox->assignParameter( p = sciFilterModuleToEdit->getParameterByName("Mode") );
   p->registerParameterObserver(this);
   plotEditor->assignParameterMode(p);
-  modeComboBox->setDescription("Mode or type of the filter");
+  modeComboBox->setItemDescription("Mode or type of the filter");
   modeComboBox->setDescriptionField(infoField);
 
   addWidget( methodComboBox = new RNamedComboBox("methodComboBox", "Method:") );
   methodComboBox->assignParameter( p = sciFilterModuleToEdit->getParameterByName("Method") );
   p->registerParameterObserver(this);
   plotEditor->assignParameterMethod(p);
-  methodComboBox->setDescription("Approximation method for the filter design");
+  methodComboBox->setItemDescription("Approximation method for the filter design");
   methodComboBox->setDescriptionField(infoField);
 
   modeComboBox->setNameLabelWidth(methodComboBox->getNameLabelWidth()); // to align the actual boxes
@@ -463,7 +463,7 @@ void EngineersFilterModuleEditor::createWidgets()
   s->assignParameter( p = sciFilterModuleToEdit->getParameterByName("Frequency") );
   plotEditor->assignParameterFrequency(p);
   s->setSliderName("Frequency");
-  s->setDescription("Characteristic frequency");
+  s->setItemDescription("Characteristic frequency");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
@@ -471,7 +471,7 @@ void EngineersFilterModuleEditor::createWidgets()
   s->assignParameter( p = sciFilterModuleToEdit->getParameterByName("Order") );
   plotEditor->assignParameterOrder(p);
   s->setSliderName("Order");
-  s->setDescription("Order of the prototype filter (peak/band filters have twice this order)");
+  s->setItemDescription("Order of the prototype filter (peak/band filters have twice this order)");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString);
 
@@ -479,7 +479,7 @@ void EngineersFilterModuleEditor::createWidgets()
   s->assignParameter( p = sciFilterModuleToEdit->getParameterByName("Bandwidth") );
   plotEditor->assignParameterBandwidth(p);
   s->setSliderName("Bandwidth");
-  s->setDescription("Bandwidth for bandpass-/bandreject-/peak-filters (in octaves)");
+  s->setItemDescription("Bandwidth for bandpass-/bandreject-/peak-filters (in octaves)");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&octavesToStringWithUnit2);
 
@@ -487,7 +487,7 @@ void EngineersFilterModuleEditor::createWidgets()
   s->assignParameter( p = sciFilterModuleToEdit->getParameterByName("Gain") );
   plotEditor->assignParameterGain(p);
   s->setSliderName("Gain");
-  s->setDescription("Gain for shelving- and peak-filters");
+  s->setItemDescription("Gain for shelving- and peak-filters");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&decibelsToStringWithUnit2);
 
@@ -495,7 +495,7 @@ void EngineersFilterModuleEditor::createWidgets()
   s->assignParameter( p = sciFilterModuleToEdit->getParameterByName("Ripple") );
   plotEditor->assignParameterRipple(p);
   s->setSliderName("Ripple");
-  s->setDescription("Ripple insider the filter's passband");
+  s->setItemDescription("Ripple insider the filter's passband");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&decibelsToStringWithUnit2);
 
@@ -503,7 +503,7 @@ void EngineersFilterModuleEditor::createWidgets()
   s->assignParameter( p = sciFilterModuleToEdit->getParameterByName("Rejection") );
   plotEditor->assignParameterRejection(p);
   s->setSliderName("Rejection");
-  s->setDescription("Rejection level for the filter's stopband");
+  s->setItemDescription("Rejection level for the filter's stopband");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&decibelsToStringWithUnit2);
 }
@@ -523,16 +523,16 @@ void EngineersFilterModuleEditor::updateWidgetVisibility()
   if( sf->hasCurrentModeGainParameter() )
   {
     if( sf->getApproximationMethod() == rsPrototypeDesignerD::CHEBYCHEV )
-      rippleSlider->setDescription("Ripple inside the boost/cut band in percent of dB-peak-gain");
+      rippleSlider->setItemDescription("Ripple inside the boost/cut band in percent of dB-peak-gain");
     if( sf->getApproximationMethod() == rsPrototypeDesignerD::INVERSE_CHEBYCHEV )
-      rippleSlider->setDescription("Ripple outside the boost/cut band in percent of dB-peak-gain");
+      rippleSlider->setItemDescription("Ripple outside the boost/cut band in percent of dB-peak-gain");
     if( sf->getApproximationMethod() == rsPrototypeDesignerD::ELLIPTIC )
-      rippleSlider->setDescription("Ripple in- and outside the boost/cut band in percent of dB-peak-gain");
+      rippleSlider->setItemDescription("Ripple in- and outside the boost/cut band in percent of dB-peak-gain");
     rippleSlider->setStringConversionFunction(&percentToStringWithUnit2);
   }
   else
   {
-    rippleSlider->setDescription("Ripple inside the filter's passband in dB");
+    rippleSlider->setItemDescription("Ripple inside the filter's passband in dB");
     rippleSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
   }
 }

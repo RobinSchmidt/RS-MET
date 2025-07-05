@@ -111,7 +111,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
   pitchEnvEditor = new BreakpointModulatorEditor(lock, 
     workhorseAudioModule->pitchEnvModule);
   pitchEnvEditor->setHeadlineText(juce::String(("Pitch Env")));
-  pitchEnvEditor->setDescription(juce::String(("This is the modulation generator for the pitch")));
+  pitchEnvEditor->setItemDescription(juce::String(("This is the modulation generator for the pitch")));
   addChildComponent( pitchEnvEditor );
   pitchEnvEditor->addChangeListener(this);
   pitchEnvEditor->setDescriptionField(infoField, true);
@@ -119,7 +119,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
   ampEnvEditor = new BreakpointModulatorEditor(lock, 
     workhorseAudioModule->ampEnvModule);
   ampEnvEditor->setHeadlineText(juce::String(("Amp Env")));
-  ampEnvEditor->setDescription(juce::String(("This is the modulation generator for the amplitude")));
+  ampEnvEditor->setItemDescription(juce::String(("This is the modulation generator for the amplitude")));
   addChildComponent( ampEnvEditor );
   ampEnvEditor->addChangeListener(this);
   ampEnvEditor->setDescriptionField(infoField, true);
@@ -127,7 +127,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
   filterEnvEditor = new BreakpointModulatorEditor(lock, 
     workhorseAudioModule->filterEnvModule);
   filterEnvEditor->setHeadlineText(juce::String(("Filter Env")));
-  filterEnvEditor->setDescription(juce::String(("This is the modulation generator for the filter frequency")));
+  filterEnvEditor->setItemDescription(juce::String(("This is the modulation generator for the filter frequency")));
   addChildComponent( filterEnvEditor );
   filterEnvEditor->addChangeListener(this);
   filterEnvEditor->setDescriptionField(infoField, true);
@@ -144,7 +144,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
     juce::String("TopLeftSamplePlayer"), NULL) );
   samplePlayerTopLeftButton->addRButtonListener(this);
   //samplePlayerTopLeftButton->setRadioGroupId(1);
-  samplePlayerTopLeftButton->setDescription(
+  samplePlayerTopLeftButton->setItemDescription(
     juce::String(("Show editor for the top left sample-player")));
   samplePlayerTopLeftButton->setDescriptionField(infoField);
   samplePlayerTopLeftButton->setClickingTogglesState(true);
@@ -154,7 +154,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
     juce::String("TopRightSamplePlayer")) );
   samplePlayerTopRightButton->addRButtonListener(this);
   //samplePlayerTopRightButton->setRadioGroupId(1);
-  samplePlayerTopRightButton->setDescription(
+  samplePlayerTopRightButton->setItemDescription(
     juce::String(("Show editor for the top right sample-player")));
   samplePlayerTopRightButton->setDescriptionField(infoField);
   samplePlayerTopRightButton->setClickingTogglesState(true);
@@ -164,7 +164,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
     juce::String("BottomLeftSamplePlayer")) );
   samplePlayerBottomLeftButton->addRButtonListener(this);
   //samplePlayerBottomLeftButton->setRadioGroupId(1);
-  samplePlayerBottomLeftButton->setDescription(
+  samplePlayerBottomLeftButton->setItemDescription(
     juce::String(("Show editor for the bottom left sample-player")));
   samplePlayerBottomLeftButton->setDescriptionField(infoField);
   samplePlayerBottomLeftButton->setClickingTogglesState(true);
@@ -174,7 +174,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
     juce::String("BottomRightSamplePlayer")) );
   samplePlayerBottomRightButton->addRButtonListener(this);
   //samplePlayerBottomRightButton->setRadioGroupId(1);
-  samplePlayerBottomRightButton->setDescription(
+  samplePlayerBottomRightButton->setItemDescription(
     juce::String(("Show editor for the bottom right sample-player")));
   samplePlayerBottomRightButton->setDescriptionField(infoField);
   samplePlayerBottomRightButton->setClickingTogglesState(true);
@@ -183,7 +183,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
   addAndMakeVisible( lowFreqOscXButton = new PlotPreviewButton(juce::String("X-LFO")) );
   lowFreqOscXButton->addRButtonListener(this);
   //lowFreqOscXButton->setRadioGroupId(1);
-  lowFreqOscXButton->setDescription(
+  lowFreqOscXButton->setItemDescription(
     juce::String(("Show editor for the LFO for the x-coordinate")));
   lowFreqOscXButton->setDescriptionField(infoField);
   lowFreqOscXButton->setClickingTogglesState(true);
@@ -192,7 +192,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
   addAndMakeVisible( lowFreqOscYButton = new PlotPreviewButton(juce::String("Y-LFO")) );
   lowFreqOscYButton->addRButtonListener(this);
   //lowFreqOscYButton->setRadioGroupId(1);
-  lowFreqOscYButton->setDescription(
+  lowFreqOscYButton->setItemDescription(
     juce::String(("Show editor for the LFO for the y-coordinate")));
   lowFreqOscYButton->setDescriptionField(infoField);
   lowFreqOscYButton->setClickingTogglesState(true);
@@ -201,7 +201,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
   addAndMakeVisible( filterButton = new PlotPreviewButton(juce::String("Filter")) );
   filterButton->addRButtonListener(this);
   //filterButton->setRadioGroupId(1);
-  filterButton->setDescription(juce::String(("Show editor for the filter")));
+  filterButton->setItemDescription(juce::String(("Show editor for the filter")));
   filterButton->setDescriptionField(infoField);
   filterButton->setClickingTogglesState(true);
   filterButton->setToggleState(false, false);
@@ -209,7 +209,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
   addAndMakeVisible( pitchEnvButton = new PlotPreviewButton(juce::String("PitchEnv")) );
   pitchEnvButton->addRButtonListener(this);
   //pitchEnvButton->setRadioGroupId(1);
-  pitchEnvButton->setDescription(juce::String(("Show editor for the pitch envelope")));
+  pitchEnvButton->setItemDescription(juce::String(("Show editor for the pitch envelope")));
   pitchEnvButton->setDescriptionField(infoField);
   pitchEnvButton->setClickingTogglesState(true);
   pitchEnvButton->setToggleState(false, false);
@@ -217,7 +217,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
   addAndMakeVisible( filterEnvButton = new PlotPreviewButton(juce::String("FilterEnv")) );
   filterEnvButton->addRButtonListener(this);
   //filterEnvButton->setRadioGroupId(1);
-  filterEnvButton->setDescription(juce::String(("Show editor for the filter envelope")));
+  filterEnvButton->setItemDescription(juce::String(("Show editor for the filter envelope")));
   filterEnvButton->setDescriptionField(infoField);
   filterEnvButton->setClickingTogglesState(true);
   filterEnvButton->setToggleState(false, false);
@@ -225,7 +225,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
   addAndMakeVisible( ampEnvButton = new PlotPreviewButton(juce::String("AmpEnv")) );
   ampEnvButton->addRButtonListener(this);
   //ampEnvButton->setRadioGroupId(1);
-  ampEnvButton->setDescription(juce::String(("Show editor for the amplitude envelope")));
+  ampEnvButton->setItemDescription(juce::String(("Show editor for the amplitude envelope")));
   ampEnvButton->setDescriptionField(infoField);
   ampEnvButton->setClickingTogglesState(true);
   ampEnvButton->setToggleState(false, false);
@@ -233,7 +233,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
   addAndMakeVisible( masterFilterButton = new PlotPreviewButton(juce::String("MasterFilter")) );
   masterFilterButton->addRButtonListener(this);
   //masterFilterButton->setRadioGroupId(1);
-  masterFilterButton->setDescription(juce::String(("Show editor for the master filter")));
+  masterFilterButton->setItemDescription(juce::String(("Show editor for the master filter")));
   masterFilterButton->setDescriptionField(infoField);
   masterFilterButton->setClickingTogglesState(true);
   masterFilterButton->setToggleState(false, false);
@@ -241,7 +241,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
   addAndMakeVisible( masterFilterEnvButton = new PlotPreviewButton(juce::String("MasterFilterEnv")) );
   masterFilterEnvButton->addRButtonListener(this);
   //masterFilterEnvButton->setRadioGroupId(1);
-  masterFilterEnvButton->setDescription(
+  masterFilterEnvButton->setItemDescription(
     juce::String(("Show editor for the master-filters envelope")));
   masterFilterEnvButton->setDescriptionField(infoField);
   masterFilterEnvButton->setClickingTogglesState(true);
@@ -250,7 +250,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
   addAndMakeVisible( masterAmpEnvButton = new PlotPreviewButton(juce::String("MasterAmpEnv")) );
   masterAmpEnvButton->addRButtonListener(this);
   //masterAmpEnvButton->setRadioGroupId(1);
-  masterAmpEnvButton->setDescription(
+  masterAmpEnvButton->setItemDescription(
     juce::String(("Show editor for the master amplitude envelope/gate")));
   masterAmpEnvButton->setDescriptionField(infoField);
   masterAmpEnvButton->setClickingTogglesState(true);
@@ -259,7 +259,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
   addAndMakeVisible( equalizerButton = new PlotPreviewButton(juce::String("Equalizer")) );
   equalizerButton->addRButtonListener(this);
   //equalizerButton->setRadioGroupId(1);
-  equalizerButton->setDescription(juce::String(("Show editor for the equalizer")));
+  equalizerButton->setItemDescription(juce::String(("Show editor for the equalizer")));
   equalizerButton->setDescriptionField(infoField);
   equalizerButton->setClickingTogglesState(true);
   equalizerButton->setToggleState(false, false);
@@ -267,7 +267,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
   addAndMakeVisible( delayButton = new PlotPreviewButton(juce::String("Delay")) );
   delayButton->addRButtonListener(this);
   //delayButton->setRadioGroupId(1);
-  delayButton->setDescription(juce::String(("Show editor for the delay")));
+  delayButton->setItemDescription(juce::String(("Show editor for the delay")));
   delayButton->setDescriptionField(infoField);
   delayButton->setClickingTogglesState(true);
   delayButton->setToggleState(false, false);
@@ -275,7 +275,7 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
   addAndMakeVisible( reverbButton = new PlotPreviewButton(juce::String("Reverb")) );
   reverbButton->addRButtonListener(this);
   //reverbButton->setRadioGroupId(1);
-  reverbButton->setDescription(juce::String(("Show editor for the reverb")));
+  reverbButton->setItemDescription(juce::String(("Show editor for the reverb")));
   reverbButton->setDescriptionField(infoField);
   reverbButton->setClickingTogglesState(true);
   reverbButton->setToggleState(false, false);

@@ -127,49 +127,49 @@ AlgoVerbModuleEditor::AlgoVerbModuleEditor(CriticalSection *newPlugInLock,
 
   addWidget( globalLabel = new RTextField( juce::String("Global")) );
   globalLabel->setJustification(Justification::centredLeft);
-  globalLabel->setDescription("Global Parameters");
+  globalLabel->setItemDescription("Global Parameters");
   globalLabel->setDescriptionField(infoField);
 
   addWidget( dryWetSlider = new RSlider("DryWet") );
   dryWetSlider->assignParameter( algoVerbModuleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String("Dry/Wet"));
-  dryWetSlider->setDescription(juce::String("Ratio between dry and wet signal"));
+  dryWetSlider->setItemDescription(juce::String("Ratio between dry and wet signal"));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( pingButton = new RButton(juce::String("Ping")) );
   //pingButton->assignParameter( algoVerbModuleToEdit->getParameterByName("Ping") ); // there's no "Ping" Parameter
-  pingButton->setDescription(juce::String("Feed an impulse into the reverberator to audition the impulse response"));
+  pingButton->setItemDescription(juce::String("Feed an impulse into the reverberator to audition the impulse response"));
   pingButton->setDescriptionField(infoField);
   pingButton->setClickingTogglesState(true);
 
   addWidget( earlyLabel = new RTextField( juce::String("Early Reflections")) );
   earlyLabel->setJustification(Justification::centredLeft);
-  earlyLabel->setDescription("Parameters for the early reflection module");
+  earlyLabel->setItemDescription("Parameters for the early reflection module");
   earlyLabel->setDescriptionField(infoField);
 
   addWidget( earlyLabel = new RTextField( juce::String("Early Reflections")) );
   earlyLabel->setJustification(Justification::centredLeft);
-  earlyLabel->setDescription("Parameters for the early reflection module");
+  earlyLabel->setItemDescription("Parameters for the early reflection module");
   earlyLabel->setDescriptionField(infoField);
 
   //......
 
   addWidget( lateLabel = new RTextField( juce::String("Late Reverb")) );
   lateLabel->setJustification(Justification::centredLeft);
-  lateLabel->setDescription("Parameters for the late reverberation module");
+  lateLabel->setItemDescription("Parameters for the late reverberation module");
   lateLabel->setDescriptionField(infoField);
 
   addWidget( lateLevelSlider = new RSlider("LateLevelSlider") );
   lateLevelSlider->assignParameter( algoVerbModuleToEdit->getParameterByName("LateLevel") );
   lateLevelSlider->setSliderName(juce::String("Level"));
-  lateLevelSlider->setDescription(juce::String("Overall level of the late reverberation"));
+  lateLevelSlider->setItemDescription(juce::String("Overall level of the late reverberation"));
   lateLevelSlider->setDescriptionField(infoField);
   lateLevelSlider->setStringConversionFunction(decibelsToStringWithUnit1);
 
   addWidget( latePingButton = new RButton(juce::String("Ping")) );
   //latePingButton->assignParameter( algoVerbModuleToEdit->getParameterByName(T("LatePing")) );
-  latePingButton->setDescription(juce::String("Feed an impulse into the late reverb module to audition the impulse response"));
+  latePingButton->setItemDescription(juce::String("Feed an impulse into the late reverb module to audition the impulse response"));
   latePingButton->setDescriptionField(infoField);
   latePingButton->setClickingTogglesState(false);
   latePingButton->addRButtonListener(this);
@@ -178,49 +178,49 @@ AlgoVerbModuleEditor::AlgoVerbModuleEditor(CriticalSection *newPlugInLock,
   addWidget( decayTimeSlider = new RSlider("DecayTimeSlider") );
   decayTimeSlider->assignParameter( algoVerbModuleToEdit->getParameterByName("DecayTime") );
   decayTimeSlider->setSliderName(juce::String("DecayTime"));
-  decayTimeSlider->setDescription(juce::String("Time for the tail to decay to -60 dB"));
+  decayTimeSlider->setItemDescription(juce::String("Time for the tail to decay to -60 dB"));
   decayTimeSlider->setDescriptionField(infoField);
   decayTimeSlider->setStringConversionFunction(secondsToStringWithUnitTotal4);
 
   addWidget( lowDecayScaleSlider = new RSlider("LowDecayScaleSlider") );
   lowDecayScaleSlider->assignParameter( algoVerbModuleToEdit->getParameterByName("LowDecayScale") );
   lowDecayScaleSlider->setSliderName(juce::String("LowDecayScale"));
-  lowDecayScaleSlider->setDescription(juce::String("Scale factor for the decay time at low frequencies"));
+  lowDecayScaleSlider->setItemDescription(juce::String("Scale factor for the decay time at low frequencies"));
   lowDecayScaleSlider->setDescriptionField(infoField);
   lowDecayScaleSlider->setStringConversionFunction(valueToString2);
 
   addWidget( highDecayScaleSlider = new RSlider("HighDecayScaleSlider") );
   highDecayScaleSlider->assignParameter( algoVerbModuleToEdit->getParameterByName("HighDecayScale") );
   highDecayScaleSlider->setSliderName(juce::String("HighDecayScale"));
-  highDecayScaleSlider->setDescription(juce::String("Scale factor for the decay time at high frequencies"));
+  highDecayScaleSlider->setItemDescription(juce::String("Scale factor for the decay time at high frequencies"));
   highDecayScaleSlider->setDescriptionField(infoField);
   highDecayScaleSlider->setStringConversionFunction(valueToString2);
 
   addWidget( lowCrossFreqSlider = new RSlider("LowCrossFreqSlider") );
   lowCrossFreqSlider->assignParameter( algoVerbModuleToEdit->getParameterByName("LowCrossFreq") );
   lowCrossFreqSlider->setSliderName(juce::String("LowCrossFreq"));
-  lowCrossFreqSlider->setDescription(juce::String("Crossover frequency between low and mid frequencies"));
+  lowCrossFreqSlider->setItemDescription(juce::String("Crossover frequency between low and mid frequencies"));
   lowCrossFreqSlider->setDescriptionField(infoField);
   lowCrossFreqSlider->setStringConversionFunction(hertzToStringWithUnitTotal5);
 
   addWidget( highCrossFreqSlider = new RSlider("HighCrossFreqSlider") );
   highCrossFreqSlider->assignParameter( algoVerbModuleToEdit->getParameterByName("HighCrossFreq") );
   highCrossFreqSlider->setSliderName(juce::String("HighCrossFreq"));
-  highCrossFreqSlider->setDescription(juce::String("Crossover frequency between high and mid frequencies"));
+  highCrossFreqSlider->setItemDescription(juce::String("Crossover frequency between high and mid frequencies"));
   highCrossFreqSlider->setDescriptionField(infoField);
   highCrossFreqSlider->setStringConversionFunction(hertzToStringWithUnitTotal5);
 
   addWidget( referenceDelayTimeSlider = new RSlider("ReferenceDelayTimeSlider") );
   referenceDelayTimeSlider->assignParameter( algoVerbModuleToEdit->getParameterByName("ReferenceDelayTime") );
   referenceDelayTimeSlider->setSliderName(juce::String("DelayTime"));
-  referenceDelayTimeSlider->setDescription(juce::String("Arrival time of the first echo/reflection (excluding pre-delay)"));
+  referenceDelayTimeSlider->setItemDescription(juce::String("Arrival time of the first echo/reflection (excluding pre-delay)"));
   referenceDelayTimeSlider->setDescriptionField(infoField);
   referenceDelayTimeSlider->setStringConversionFunction(millisecondsToStringWithUnit2);
 
   addWidget( latePreDelaySlider = new RSlider("LatePreDelaySlider") );
   latePreDelaySlider->assignParameter( algoVerbModuleToEdit->getParameterByName("LatePreDelay") );
   latePreDelaySlider->setSliderName(juce::String("PreDelay"));
-  latePreDelaySlider->setDescription(juce::String("Pre-delay for the late reverberation"));
+  latePreDelaySlider->setItemDescription(juce::String("Pre-delay for the late reverberation"));
   latePreDelaySlider->setDescriptionField(infoField);
   latePreDelaySlider->setStringConversionFunction(secondsToStringWithUnitTotal4);
 
@@ -229,46 +229,46 @@ AlgoVerbModuleEditor::AlgoVerbModuleEditor(CriticalSection *newPlugInLock,
   addWidget( densitySlider = new RSlider (T("DensitySlider")) );
   densitySlider->assignParameter( algoVerbModuleToEdit->getParameterByName(T("Density")) );
   densitySlider->setSliderName(juce::String(T("Density")));
-  densitySlider->setDescription(juce::String(T("Density/packaging of the reflections")));
+  densitySlider->setItemDescription(juce::String(T("Density/packaging of the reflections")));
   densitySlider->setDescriptionField(infoField);
   densitySlider->setStringConversionFunction(percentToStringWithUnit0);
 
   addWidget( diffusionSlider = new RSlider (T("DiffusionSlider")) );
   diffusionSlider->assignParameter( algoVerbModuleToEdit->getParameterByName(T("Diffusion")) );
   diffusionSlider->setSliderName(juce::String(T("Diffusion")));
-  diffusionSlider->setDescription(juce::String(T("Diffusion of the reflections")));
+  diffusionSlider->setItemDescription(juce::String(T("Diffusion of the reflections")));
   diffusionSlider->setDescriptionField(infoField);
   diffusionSlider->setStringConversionFunction(percentToStringWithUnit0);
   */
 
   addWidget( injectionVectorComboBox = new RComboBox(juce::String("InjectionVectorComboBox")) );
   injectionVectorComboBox->assignParameter( algoVerbModuleToEdit->getParameterByName("InjectionVector") );
-  injectionVectorComboBox->setDescription("Choose the injection vector for the FDN");
+  injectionVectorComboBox->setItemDescription("Choose the injection vector for the FDN");
   injectionVectorComboBox->setDescriptionField(infoField);
   injectionVectorComboBox->registerComboBoxObserver(this); // to update the plot
 
   addWidget( feedbackMatrixComboBox = new RComboBox(juce::String("FeedbackMatrixComboBox")) );
   feedbackMatrixComboBox->assignParameter( algoVerbModuleToEdit->getParameterByName("FeedbackMatrix") );
-  feedbackMatrixComboBox->setDescription("Choose the feedback matrix for the FDN");
+  feedbackMatrixComboBox->setItemDescription("Choose the feedback matrix for the FDN");
   feedbackMatrixComboBox->setDescriptionField(infoField);
   feedbackMatrixComboBox->registerComboBoxObserver(this); // to update the plot
 
   addWidget( outputVectorComboBox = new RComboBox(juce::String("OutputVectorComboBox")) );
   outputVectorComboBox->assignParameter( algoVerbModuleToEdit->getParameterByName("OutputVector") );
-  outputVectorComboBox->setDescription("Choose the output vector for the FDN");
+  outputVectorComboBox->setItemDescription("Choose the output vector for the FDN");
   outputVectorComboBox->setDescriptionField(infoField);
   outputVectorComboBox->registerComboBoxObserver(this); // to update the plot
 
   addWidget( allpassModeButton = new RButton(juce::String("AllpassMode")) );
   allpassModeButton->assignParameter( moduleToEdit->getParameterByName("AllpassMode") );
-  allpassModeButton->setDescription(juce::String("Switches delaylines into allpass mode"));
+  allpassModeButton->setItemDescription(juce::String("Switches delaylines into allpass mode"));
   allpassModeButton->setDescriptionField(infoField);
   allpassModeButton->setClickingTogglesState(true);
 
   // graphical RT60 editor....
 
   addAndMakeVisible( impulseResponsePlot = new WaveformDisplay() );  // todo: use addPlot
-  impulseResponsePlot->setDescription(juce::String("Shows the impulse response"));
+  impulseResponsePlot->setItemDescription(juce::String("Shows the impulse response"));
   impulseResponsePlot->setDescriptionField(infoField);
 
   // set up the widgets:

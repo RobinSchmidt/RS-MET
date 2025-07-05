@@ -76,7 +76,7 @@ void rsSpectrumPlot::setSpectra(int newNumBins, int newNumSpectra, double* newBi
 /*
 void rsSpectrumPlot::mouseMove(const MouseEvent &e)
 {
-  setDescription( getCoordinateStringAtPixelPosition(e.x, e.y) );
+  setItemDescription( getCoordinateStringAtPixelPosition(e.x, e.y) );
 }
 */
 

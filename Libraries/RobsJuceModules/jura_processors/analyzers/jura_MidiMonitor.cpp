@@ -157,97 +157,97 @@ MidiMonitorModuleEditor::MidiMonitorModuleEditor(CriticalSection *newPlugInLock,
   addAndMakeVisible( outputDisplay );
 
   addWidget( eventFilterLabel = new RTextField( juce::String(("Event Filter"))) );
-  eventFilterLabel->setDescription(juce::String(("Choose, which types of events you want to see")));
+  eventFilterLabel->setItemDescription(juce::String(("Choose, which types of events you want to see")));
   eventFilterLabel->setDescriptionField(infoField);
   eventFilterLabel->setJustification(Justification::centred);
 
   addWidget( noteButton = new RButton(juce::String(("Notes"))) );
   noteButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("Notes")) );
-  noteButton->setDescription(juce::String(("Show note-on/-off events")));
+  noteButton->setItemDescription(juce::String(("Show note-on/-off events")));
   noteButton->setDescriptionField(infoField);
   noteButton->setClickingTogglesState(true);
 
   addWidget( controllerButton = new RButton(juce::String(("Controllers"))) );
   controllerButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("Controllers")) );
-  controllerButton->setDescription(juce::String(("Show control-change events")));
+  controllerButton->setItemDescription(juce::String(("Show control-change events")));
   controllerButton->setDescriptionField(infoField);
   controllerButton->setClickingTogglesState(true);
 
   addWidget( pitchWheelButton = new RButton(juce::String(("Pitch Wheel"))) );
   pitchWheelButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("PitchWheel")) );
-  pitchWheelButton->setDescription(juce::String(("Show pitch-wheel events")));
+  pitchWheelButton->setItemDescription(juce::String(("Show pitch-wheel events")));
   pitchWheelButton->setDescriptionField(infoField);
   pitchWheelButton->setClickingTogglesState(true);
 
   addWidget( programChangeButton = new RButton(juce::String(("Program Changes"))) );
   programChangeButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("ProgramChange")) );
-  programChangeButton->setDescription(juce::String(("Show program-change events")));
+  programChangeButton->setItemDescription(juce::String(("Show program-change events")));
   programChangeButton->setDescriptionField(infoField);
   programChangeButton->setClickingTogglesState(true);
 
   addWidget( aftertouchButton = new RButton(juce::String(("Aftertouch"))) );
   aftertouchButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("Aftertouch")) );
-  aftertouchButton->setDescription(juce::String(("Show aftertouch events")));
+  aftertouchButton->setItemDescription(juce::String(("Show aftertouch events")));
   aftertouchButton->setDescriptionField(infoField);
   aftertouchButton->setClickingTogglesState(true);
 
   addWidget( channelPressureButton = new RButton(juce::String(("Channel Pressure"))) );
   channelPressureButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("ChannelPressure")) );
-  channelPressureButton->setDescription(juce::String(("Show channel pressure events")));
+  channelPressureButton->setItemDescription(juce::String(("Show channel pressure events")));
   channelPressureButton->setDescriptionField(infoField);
   channelPressureButton->setClickingTogglesState(true);
 
   addWidget( sysExButton = new RButton(juce::String(("System Exclusive"))) );
   sysExButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("SystemExclusive")) );
-  sysExButton->setDescription(juce::String(("Show system exclusive events")));
+  sysExButton->setItemDescription(juce::String(("Show system exclusive events")));
   sysExButton->setDescriptionField(infoField);
   sysExButton->setClickingTogglesState(true);
 
   addWidget( metaEventButton = new RButton(juce::String(("Meta Events"))) );
   metaEventButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("MetaEvents")) );
-  metaEventButton->setDescription(juce::String(("Show meta events")));
+  metaEventButton->setItemDescription(juce::String(("Show meta events")));
   metaEventButton->setDescriptionField(infoField);
   metaEventButton->setClickingTogglesState(true);
 
   addWidget( transportButton = new RButton(juce::String(("Transport"))) );
   transportButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("Transport")) );
-  transportButton->setDescription(juce::String(("Show transport control events")));
+  transportButton->setItemDescription(juce::String(("Show transport control events")));
   transportButton->setDescriptionField(infoField);
   transportButton->setClickingTogglesState(true);
 
   addWidget( songPositionButton = new RButton(juce::String(("Song Position"))) );
   songPositionButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("SongPosition")) );
-  songPositionButton->setDescription(juce::String(("Show song position events")));
+  songPositionButton->setItemDescription(juce::String(("Show song position events")));
   songPositionButton->setDescriptionField(infoField);
   songPositionButton->setClickingTogglesState(true);
 
   addWidget( machineControlButton = new RButton(juce::String(("Machine Control"))) );
   machineControlButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("MachineControl")) );
-  machineControlButton->setDescription(juce::String(("Show machine control events")));
+  machineControlButton->setItemDescription(juce::String(("Show machine control events")));
   machineControlButton->setDescriptionField(infoField);
   machineControlButton->setClickingTogglesState(true);
 
   addWidget( activeSenseButton = new RButton(juce::String(("Active Sense"))) );
   activeSenseButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("ActiveSense")) );
-  activeSenseButton->setDescription(juce::String(("Show active sense events")));
+  activeSenseButton->setItemDescription(juce::String(("Show active sense events")));
   activeSenseButton->setDescriptionField(infoField);
   activeSenseButton->setClickingTogglesState(true);
 
   addWidget( clockButton = new RButton(juce::String(("Clock"))) );
   clockButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("Clock")) );
-  clockButton->setDescription(juce::String(("Show clock events")));
+  clockButton->setItemDescription(juce::String(("Show clock events")));
   clockButton->setDescriptionField(infoField);
   clockButton->setClickingTogglesState(true);
 
   addWidget( otherButton = new RButton(juce::String(("Others"))) );
   otherButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("Others")) );
-  otherButton->setDescription(juce::String(("Show other events")));
+  otherButton->setItemDescription(juce::String(("Show other events")));
   otherButton->setDescriptionField(infoField);
   otherButton->setClickingTogglesState(true);
 
   addWidget( clearButton = new RButton(juce::String(("Clear"))) );
   //clearButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("Clear")) );
-  clearButton->setDescription(juce::String(("Clear screen")));
+  clearButton->setItemDescription(juce::String(("Clear screen")));
   clearButton->setDescriptionField(infoField);
   clearButton->setClickingTogglesState(false);
   clearButton->addRButtonListener(this);

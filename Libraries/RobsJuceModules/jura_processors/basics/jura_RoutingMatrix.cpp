@@ -73,7 +73,7 @@ RoutingMatrixModuleEditor::RoutingMatrixModuleEditor(CriticalSection *newPlugInL
     rowLabels.add(label);
     addWidget(label);
     label->setJustification(juce::Justification::centred);
-    label->setDescription("Input " + juce::String(i+1));
+    label->setItemDescription("Input " + juce::String(i+1));
     label->setDescriptionField(infoField);
   }
   for(int i=0; i<numOutputs; i++)
@@ -82,7 +82,7 @@ RoutingMatrixModuleEditor::RoutingMatrixModuleEditor(CriticalSection *newPlugInL
     columnLabels.add(label);
     addWidget(label);
     label->setJustification(juce::Justification::centred);
-    label->setDescription("Output " + juce::String(i+1));
+    label->setItemDescription("Output " + juce::String(i+1));
     label->setDescriptionField(infoField);
   }
   for(int i=0; i<numInputs; i++)
@@ -95,7 +95,7 @@ RoutingMatrixModuleEditor::RoutingMatrixModuleEditor(CriticalSection *newPlugInL
       entryField->assignParameter( newRoutingMatrixAudioModule->getParameterByName(
         juce::String("M_") + juce::String(i+1) + juce::String("_") + juce::String(o+1) ) );
       entryField->setSliderName(juce::String());
-      entryField->setDescription(  juce::String("Amount by which input ") + juce::String(i+1) 
+      entryField->setItemDescription(  juce::String("Amount by which input ") + juce::String(i+1) 
         + juce::String(" goes to output ") + juce::String(o+1) );
       entryField->setDescriptionField(infoField);
       entryField->setStringConversionFunction(valueToString2);

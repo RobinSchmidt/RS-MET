@@ -601,14 +601,14 @@ AudioModuleEditorAnimated::AudioModuleEditorAnimated(CriticalSection *newPlugInL
   frameRateSlider->assignParameter( moduleToEdit->getParameterByName("FrameRate") );
 
   frameRateSlider->setSliderName(juce::String("FPS"));
-  frameRateSlider->setDescription(juce::String("Number of frames per second"));
+  frameRateSlider->setItemDescription(juce::String("Number of frames per second"));
   frameRateSlider->setDescriptionField(infoField);
   frameRateSlider->addListener(this);
   frameRateSlider->setStringConversionFunction(valueToString0); // \todo: fpsToString
 
   addWidget( freezeButton = new RButton(juce::String("Freeze")) );
   freezeButton->assignParameter( moduleToEdit->getParameterByName("Freeze") );
-  freezeButton->setDescription(juce::String("Freeze the display"));
+  freezeButton->setItemDescription(juce::String("Freeze the display"));
   freezeButton->setDescriptionField(infoField);
   freezeButton->setClickingTogglesState(true);
   freezeButton->addRButtonListener(this);
@@ -687,14 +687,14 @@ OscilloscopeModuleEditor::OscilloscopeModuleEditor(CriticalSection *newPlugInLoc
   oscilloscopeAudioModule = newOscilloscopeAudioModule;
 
   addWidget( midSideButton = new RButton(juce::String("Mid/Side")) );
-  midSideButton->setDescription(juce::String("Switch to Mid/Side mode"));
+  midSideButton->setItemDescription(juce::String("Switch to Mid/Side mode"));
   midSideButton->assignParameter( moduleToEdit->getParameterByName("MidSideMode") );
   midSideButton->setClickingTogglesState(true);
   midSideButton->setToggleState(false, false);
   midSideButton->addRButtonListener(this);
 
   addWidget( syncModeComboBox = new RNamedComboBox(juce::String("SyncModeComboBox"), juce::String("Sync:")) );
-  syncModeComboBox->setDescription(juce::String("Selects the syncronization mode"));
+  syncModeComboBox->setItemDescription(juce::String("Selects the syncronization mode"));
   syncModeComboBox->assignParameter( moduleToEdit->getParameterByName("SyncMode") );
   syncModeComboBox->setDescriptionField(infoField);
   //syncModeComboBox->addListener(this);
@@ -840,19 +840,19 @@ SpectrumAnalyzerModuleEditor::SpectrumAnalyzerModuleEditor(CriticalSection *newP
 
   addWidget( midSideButton = new RButton(juce::String("Mid/Side")) );
   midSideButton->assignParameter( moduleToEdit->getParameterByName("MidSideMode") );
-  midSideButton->setDescription(juce::String("Switch to Mid/Side mode"));
+  midSideButton->setItemDescription(juce::String("Switch to Mid/Side mode"));
   midSideButton->setClickingTogglesState(true);
   midSideButton->setToggleState(false, false);
   midSideButton->addRButtonListener(this);
 
   addWidget( fftSizeComboBox = new RNamedComboBox(juce::String("fftSizeComboBox"), juce::String("Size:")) );
   fftSizeComboBox->assignParameter( moduleToEdit->getParameterByName("FFTSize") );
-  fftSizeComboBox->setDescription(juce::String("Selects the FFT-Size."));
+  fftSizeComboBox->setItemDescription(juce::String("Selects the FFT-Size."));
   fftSizeComboBox->setDescriptionField(infoField);
 
   addWidget( linearFrequencyAxisButton = new RButton(juce::String("Linear")) );
   linearFrequencyAxisButton->assignParameter( moduleToEdit->getParameterByName("LinearFrequency") );
-  linearFrequencyAxisButton->setDescription(juce::String("Toggle linear scaling of the frequency axis"));
+  linearFrequencyAxisButton->setItemDescription(juce::String("Toggle linear scaling of the frequency axis"));
   linearFrequencyAxisButton->setClickingTogglesState(true);
   linearFrequencyAxisButton->setToggleState(true, false);
   linearFrequencyAxisButton->addRButtonListener(this);
@@ -974,14 +974,14 @@ MultiAnalyzerModuleEditor::MultiAnalyzerModuleEditor(CriticalSection *newPlugInL
   addWidget( frameRateSlider = new RSlider (T("FrameRateSlider")) );
   frameRateSlider->assignParameter( moduleToEdit->getParameterByName(T("FrameRate")) );
   frameRateSlider->setSliderName(juce::String(T("FPS")));
-  frameRateSlider->setDescription(juce::String(T("Number of frames per second")));
+  frameRateSlider->setItemDescription(juce::String(T("Number of frames per second")));
   frameRateSlider->setDescriptionField(infoField);
   frameRateSlider->setStringConversionFunction(&rojue::valueToString0); // \todo: fpsToString
 
   // pull Freeze button into this class also...
 
   addWidget( freezeButton = new RButton(juce::String(T("Freeze"))) );
-  freezeButton->setDescription(juce::String(T("Freeze the display")));
+  freezeButton->setItemDescription(juce::String(T("Freeze the display")));
   freezeButton->setDescriptionField(infoField);
   freezeButton->setClickingTogglesState(true);
   freezeButton->addRButtonListener(this);
@@ -1000,12 +1000,12 @@ MultiAnalyzerModuleEditor::MultiAnalyzerModuleEditor(CriticalSection *newPlugInL
 
   // buttons for tabbing between the subeditors:
   addWidget( oscilloscopeButton = new RButton("Wave") );
-  oscilloscopeButton->setDescription("Switch to waveform display mode");
+  oscilloscopeButton->setItemDescription("Switch to waveform display mode");
   oscilloscopeButton->setDescriptionField(infoField);
   oscilloscopeButton->addRButtonListener(this);
 
   addWidget( spectrumAnalyzerButton = new RButton("Spectrum") );
-  spectrumAnalyzerButton->setDescription("Switch to spectrum analyzer mode");
+  spectrumAnalyzerButton->setItemDescription("Switch to spectrum analyzer mode");
   spectrumAnalyzerButton->setDescriptionField(infoField);
   spectrumAnalyzerButton->addRButtonListener(this);
 

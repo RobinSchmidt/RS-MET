@@ -5,12 +5,12 @@ ColourSchemeSetupDialog::ColourSchemeSetupDialog(ColourSchemeComponent *owner, i
 {
   setHeadlineText(String("Color Setup"));
 
-  okButton->setDescription(String("Apply settings and return"));
-  cancelButton->setDescription(String("Return without applying new settings"));
+  okButton->setItemDescription(String("Apply settings and return"));
+  cancelButton->setItemDescription(String("Return without applying new settings"));
 
   addWidget( editorAppearanceComboBox =
     new RNamedComboBox(juce::String("Editors"), juce::String("Editors:")) );
-  editorAppearanceComboBox->setDescription(
+  editorAppearanceComboBox->setItemDescription(
     juce::String("Selects the general appearance of the editors"));
   editorAppearanceComboBox->addItem(ColourScheme::DARK_ON_BRIGHT, "Dark on bright");
   editorAppearanceComboBox->addItem(ColourScheme::BRIGHT_ON_DARK, "Bright on dark");
@@ -19,7 +19,7 @@ ColourSchemeSetupDialog::ColourSchemeSetupDialog(ColourSchemeComponent *owner, i
 
   addWidget( widgetAppearanceComboBox =
     new RNamedComboBox(juce::String("Widgets"), juce::String("Widgets:")) );
-  widgetAppearanceComboBox->setDescription(
+  widgetAppearanceComboBox->setItemDescription(
     juce::String("Selects the general appearance of the widgets"));
   widgetAppearanceComboBox->addItem(ColourScheme::DARK_ON_BRIGHT, "Dark on bright");
   widgetAppearanceComboBox->addItem(ColourScheme::BRIGHT_ON_DARK, "Bright on dark");
@@ -28,7 +28,7 @@ ColourSchemeSetupDialog::ColourSchemeSetupDialog(ColourSchemeComponent *owner, i
 
   addWidget( plotAppearanceComboBox =
     new RNamedComboBox(juce::String("Plots"), juce::String("Plots:")) );
-  plotAppearanceComboBox->setDescription(
+  plotAppearanceComboBox->setItemDescription(
     juce::String("Selects the general appearance of the plots"));
   plotAppearanceComboBox->addItem(ColourScheme::DARK_ON_BRIGHT, "Dark on bright");
   plotAppearanceComboBox->addItem(ColourScheme::BRIGHT_ON_DARK, "Bright on dark");
@@ -37,13 +37,13 @@ ColourSchemeSetupDialog::ColourSchemeSetupDialog(ColourSchemeComponent *owner, i
 
   addWidget( saturationSlider = new RSlider(String("Saturation")) );
   saturationSlider->setSliderName(String("Saturation"));
-  saturationSlider->setDescription(String("Adjusts the overall saturation of the colors"));
+  saturationSlider->setItemDescription(String("Adjusts the overall saturation of the colors"));
   saturationSlider->setRange(0.0, 1.0, 0.01, 0.0);
   saturationSlider->addListener(this);
 
   addWidget( gammaSlider = new RSlider(String("Gamma")) );
   gammaSlider->setSliderName(String("Gamma"));
-  gammaSlider->setDescription(String("Adjusts the gamma for all colors"));
+  gammaSlider->setItemDescription(String("Adjusts the gamma for all colors"));
   gammaSlider->setRange(0.25, 4.0, 0.01, 1.0);
   gammaSlider->setScaling(Parameter::EXPONENTIAL);
   gammaSlider->addListener(this);
@@ -52,12 +52,12 @@ ColourSchemeSetupDialog::ColourSchemeSetupDialog(ColourSchemeComponent *owner, i
   if( numHueOffsets > 0 )
   {
     hueSlider->setSliderName(String("Central Hue"));
-    hueSlider->setDescription(String("Adjusts the central hue"));
+    hueSlider->setItemDescription(String("Adjusts the central hue"));
   }
   else
   {
     hueSlider->setSliderName(String("Hue"));
-    hueSlider->setDescription(String("Adjusts the hue."));
+    hueSlider->setItemDescription(String("Adjusts the hue."));
   }
   hueSlider->setRange(0.0, 1.0, 0.01, 0.0);
   hueSlider->addListener(this);
@@ -69,7 +69,7 @@ ColourSchemeSetupDialog::ColourSchemeSetupDialog(ColourSchemeComponent *owner, i
     String name = String("HueOffset") + String(i+1);
     addWidget( hueOffsetSlider = new RSlider(name) );
     hueOffsetSlider->setSliderName(String("Hue Offset ") + String(i+1));
-    hueOffsetSlider->setDescription(
+    hueOffsetSlider->setItemDescription(
       String("Adjusts the hue offset for a certain part of the GUI"));
     hueOffsetSlider->setRange(0.0, 1.0, 0.01, 0.0);
     hueOffsetSlider->addListener(this);

@@ -125,7 +125,7 @@ CombStereoizerModuleEditor::CombStereoizerModuleEditor(CriticalSection *newPlugI
   //dryWetSlider->setRange(0.0, 100.0, 0.1, 50.0);
   dryWetSlider->assignParameter( stereoizerAudioModule->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String("Dry/Wet"));
-  dryWetSlider->setDescription(juce::String("Ratio between dry and wet signal"));
+  dryWetSlider->setItemDescription(juce::String("Ratio between dry and wet signal"));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(ratioToString0);
   //automatableSliders.addIfNotAlreadyThere(dryWetSlider);
@@ -136,7 +136,7 @@ CombStereoizerModuleEditor::CombStereoizerModuleEditor(CriticalSection *newPlugI
   //delaySlider->setScaling(Parameter::EXPONENTIAL);
   delaySlider->assignParameter( stereoizerAudioModule->getParameterByName("DelayInMilliseconds") );
   delaySlider->setSliderName(juce::String("Delay"));
-  delaySlider->setDescription(juce::String("Delay time for the wet signal"));
+  delaySlider->setItemDescription(juce::String("Delay time for the wet signal"));
   delaySlider->setDescriptionField(infoField);
   delaySlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
   //automatableSliders.addIfNotAlreadyThere(delaySlider);
@@ -147,7 +147,7 @@ CombStereoizerModuleEditor::CombStereoizerModuleEditor(CriticalSection *newPlugI
   //wetLowpassSlider->setScaling(Parameter::EXPONENTIAL);
   wetLowpassSlider->assignParameter( stereoizerAudioModule->getParameterByName("WetLowpass") );
   wetLowpassSlider->setSliderName(juce::String("Lowpass"));
-  wetLowpassSlider->setDescription(juce::String("Lowpass cutoff for the wet signal"));
+  wetLowpassSlider->setItemDescription(juce::String("Lowpass cutoff for the wet signal"));
   wetLowpassSlider->setDescriptionField(infoField);
   wetLowpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
   //automatableSliders.addIfNotAlreadyThere(wetLowpassSlider);
@@ -158,7 +158,7 @@ CombStereoizerModuleEditor::CombStereoizerModuleEditor(CriticalSection *newPlugI
   //wetHighpassSlider->setScaling(Parameter::EXPONENTIAL);
   wetHighpassSlider->assignParameter( stereoizerAudioModule->getParameterByName("WetHighpass") );
   wetHighpassSlider->setSliderName(juce::String("Highpass"));
-  wetHighpassSlider->setDescription(juce::String("Highpass cutoff for the wet signal"));
+  wetHighpassSlider->setItemDescription(juce::String("Highpass cutoff for the wet signal"));
   wetHighpassSlider->setDescriptionField(infoField);
   wetHighpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
   //automatableSliders.addIfNotAlreadyThere(wetHighpassSlider);
@@ -169,14 +169,14 @@ CombStereoizerModuleEditor::CombStereoizerModuleEditor(CriticalSection *newPlugI
   //wetAllpassSlider->setScaling(Parameter::EXPONENTIAL);
   wetAllpassSlider->assignParameter( stereoizerAudioModule->getParameterByName("WetAllpass") );
   wetAllpassSlider->setSliderName(juce::String("Allpass"));
-  wetAllpassSlider->setDescription(juce::String("Allpass cutoff for the wet signal."));
+  wetAllpassSlider->setItemDescription(juce::String("Allpass cutoff for the wet signal."));
   wetAllpassSlider->setDescriptionField(infoField);
   wetAllpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
   //automatableSliders.addIfNotAlreadyThere(wetAllpassSlider);
 
   addWidget( swapChannelsButton = new RButton(juce::String("Swap")));
   swapChannelsButton->addRButtonListener(this);
-  swapChannelsButton->setDescription(juce::String("Swap channels of wet signal left for right"));
+  swapChannelsButton->setItemDescription(juce::String("Swap channels of wet signal left for right"));
   swapChannelsButton->setDescriptionField(infoField);
   swapChannelsButton->setClickingTogglesState(true);
 

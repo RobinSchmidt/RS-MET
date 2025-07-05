@@ -276,7 +276,7 @@ public:
   { entryField->setJustification(newJustification); }
 
   /** Sets the same description for both, label and entry field. */
-  virtual void setDescription(const juce::String &newDescription);
+  virtual void setItemDescription(const juce::String &newDescription);
 
   /** Sets the width of the label. */
   virtual void setLabelWidth(int newWidth);

@@ -15,21 +15,21 @@ ParameterModuleEditor::ParameterModuleEditor(LibertyAudioModule *newLiberty,
   ScopedLock scopedLock(*plugInLock);
 
   minValueLabel = new RTextField("Min");
-  minValueLabel->setDescription("Minimum value of the parameter");
+  minValueLabel->setItemDescription("Minimum value of the parameter");
   addWidget(minValueLabel, true, true);
 
   minValueField = new LibertyTextEntryField("MinValue");
-  minValueField->setDescription(minValueLabel->getDescription());
+  minValueField->setItemDescription(minValueLabel->getItemDescription());
   minValueField->registerTextEntryFieldObserver(this);
   addWidget(minValueField, true, true);
 
 
   maxValueLabel = new RTextField("Max");
-  maxValueLabel->setDescription("Maximum value of the parameter");
+  maxValueLabel->setItemDescription("Maximum value of the parameter");
   addWidget(maxValueLabel, true, true);
 
   maxValueField = new LibertyTextEntryField("MaxValue");
-  maxValueField->setDescription(maxValueLabel->getDescription());
+  maxValueField->setItemDescription(maxValueLabel->getItemDescription());
   maxValueField->registerTextEntryFieldObserver(this);
   addWidget(maxValueField, true, true);
 
@@ -38,47 +38,47 @@ ParameterModuleEditor::ParameterModuleEditor(LibertyAudioModule *newLiberty,
   valueSlider->setSliderName("Value");
   valueSlider->setRange(0.0, 1.0, 0.0, 0.5, true);
   valueSlider->setStringConversionFunction(&valueToString5);
-  valueSlider->setDescription("Current value of the parameter");
+  valueSlider->setItemDescription("Current value of the parameter");
   valueSlider->addListener(this);
   addWidget(valueSlider, true, true);
 
 
   helpTextLabel = new RTextField("Help:");
-  helpTextLabel->setDescription("Help text for the parameter");
+  helpTextLabel->setItemDescription("Help text for the parameter");
   addWidget(helpTextLabel, true, true);
 
   helpTextField = new LibertyTextEntryField("HelpText"); 
-  helpTextField->setDescription(helpTextLabel->getDescription());
+  helpTextField->setItemDescription(helpTextLabel->getItemDescription());
   helpTextField->registerTextEntryFieldObserver(this);
   addWidget(helpTextField, true, true);
 
 
   parameterSetupLabel = new RTextField("Parameter Setup");
-  parameterSetupLabel->setDescription("General setup for the parameter");
+  parameterSetupLabel->setItemDescription("General setup for the parameter");
   parameterSetupLabel->setJustification(juce::Justification::centred);
   addWidget(parameterSetupLabel, true, true);
 
   valueField = new LibertyLabeledTextEntryField("Value"); 
-  valueField->setDescription("Current value of the parameter");
+  valueField->setItemDescription("Current value of the parameter");
   valueField->setLabelText("Value:");
   valueField->getTextEntryField()->registerTextEntryFieldObserver(this);
   addWidget(valueField, true, true);
 
   defaultField = new LibertyLabeledTextEntryField("DefaultValue"); 
-  defaultField->setDescription("Default value of the parameter");
+  defaultField->setItemDescription("Default value of the parameter");
   defaultField->setLabelText("Default:");
   defaultField->getTextEntryField()->registerTextEntryFieldObserver(this);
   addWidget(defaultField, true, true);
 
   unitField = new LibertyLabeledTextEntryField("Unit"); 
-  unitField->setDescription("Physical unit of the parameter");
+  unitField->setItemDescription("Physical unit of the parameter");
   unitField->getTextEntryField()->registerTextEntryFieldObserver(this);
   unitField->setLabelText("Unit:");
   addWidget(unitField, true, true);
 
   scalingComboBox = new LibertyNamedComboBox("Scaling");
   scalingComboBox->setComboBoxName("Scaling:");
-  scalingComboBox->setDescription("Scaling behavior of the parameter");
+  scalingComboBox->setItemDescription("Scaling behavior of the parameter");
   scalingComboBox->addItem(romos::ParameterModule::LINEAR_MAPPING,      "Linear",      true, false);
   scalingComboBox->addItem(romos::ParameterModule::EXPONENTIAL_MAPPING, "Exponential", true, false);
   addWidget(scalingComboBox, true, true);
@@ -86,7 +86,7 @@ ParameterModuleEditor::ParameterModuleEditor(LibertyAudioModule *newLiberty,
 
 
   setToDefaultButton = new RClickButton("Use");
-  setToDefaultButton->setDescription("Set parameter to default value");
+  setToDefaultButton->setItemDescription("Set parameter to default value");
   setToDefaultButton->addRButtonListener(this);
   addWidget(setToDefaultButton, true, true);
 
@@ -97,12 +97,12 @@ ParameterModuleEditor::ParameterModuleEditor(LibertyAudioModule *newLiberty,
 
 
   //setToMinButton = new RClickButton(juce::String(("Use")));
-  //setToMinButton->setDescription(juce::String(("Set parameter to min value")));
+  //setToMinButton->setItemDescription(juce::String(("Set parameter to min value")));
   //setToMinButton->addRButtonListener(this);
   //addWidget(setToMinButton, true, true);
 
   //defaultValueField = new LibertyTextEntryField(juce::String(("DefaultValue")));
-  //defaultValueField->setDescription(juce::String(("Default value of the parameter")));
+  //defaultValueField->setItemDescription(juce::String(("Default value of the parameter")));
   //defaultValueField->registerTextEntryFieldObserver(this);
   //addWidget(defaultValueField, true, true);
 
@@ -111,12 +111,12 @@ ParameterModuleEditor::ParameterModuleEditor(LibertyAudioModule *newLiberty,
 
 
   //setToMaxButton = new RClickButton(juce::String(("Use")));
-  //setToMaxButton->setDescription(juce::String(("Set parameter to max value")));
+  //setToMaxButton->setItemDescription(juce::String(("Set parameter to max value")));
   //setToMaxButton->addRButtonListener(this);
   //addWidget(setToMaxButton, true, true);
 
   //mappingComboBox = new LibertyNamedComboBox(juce::String(("Scaling")));
-  //mappingComboBox->setDescription(juce::String(("Scaling behavior of the parameter")));
+  //mappingComboBox->setItemDescription(juce::String(("Scaling behavior of the parameter")));
   //mappingComboBox->addItem(romos::ParameterModule::LINEAR_MAPPING,      "Linear",      true, false);
   //mappingComboBox->addItem(romos::ParameterModule::EXPONENTIAL_MAPPING, "Exponential", true, false);
   //addWidget(mappingComboBox, true, true);
@@ -309,13 +309,13 @@ VoiceKillerModuleEditor::VoiceKillerModuleEditor(LibertyAudioModule *newLiberty,
 {
   /*
   thresholdField = new RLabeledTextEntryField(juce::String(("Threshold:")), juce::String(("0.0001")));
-  thresholdField->setDescription(juce::String(("Amplitude threshold below which voice gets killed")));
+  thresholdField->setItemDescription(juce::String(("Amplitude threshold below which voice gets killed")));
   //thresholdField->setDescriptionField(descriptionField);
   addWidget(thresholdField, true, true);
 
 
   timeOutField = new RLabeledTextEntryField(juce::String(("TimeOut:")), juce::String(("0.01")));
-  timeOutField->setDescription(juce::String(("Time until voice gets killed after amplitude falls below threshold")));
+  timeOutField->setItemDescription(juce::String(("Time until voice gets killed after amplitude falls below threshold")));
   //timeOutField->setDescriptionField(descriptionField);
   addWidget(timeOutField, true, true);
   */
@@ -326,7 +326,7 @@ VoiceKillerModuleEditor::VoiceKillerModuleEditor(LibertyAudioModule *newLiberty,
   thresholdSlider->setSliderName("Threshold");
   thresholdSlider->setRange(-180.0, -40.0, 1.0, -100.0, true);
   thresholdSlider->setStringConversionFunction(&decibelsToStringWithUnit);
-  thresholdSlider->setDescription("Amplitude threshold below which voice gets killed");
+  thresholdSlider->setItemDescription("Amplitude threshold below which voice gets killed");
   addWidget(thresholdSlider, true, true);
   thresholdSlider->addListener(this);
 
@@ -336,7 +336,7 @@ VoiceKillerModuleEditor::VoiceKillerModuleEditor(LibertyAudioModule *newLiberty,
   timeOutSlider->setRange(0.01, 1.0, 0.01, 0.01, true);
   timeOutSlider->setStringConversionFunction(&valueToString2);
   timeOutSlider->setScaling(Parameter::EXPONENTIAL);
-  timeOutSlider->setDescription("Time until voice gets killed after amplitude falls below threshold");
+  timeOutSlider->setItemDescription("Time until voice gets killed after amplitude falls below threshold");
   addWidget(timeOutSlider, true, true);
   timeOutSlider->addListener(this);
 
@@ -372,7 +372,7 @@ WhiteNoiseModuleEditor::WhiteNoiseModuleEditor(LibertyAudioModule *newLiberty,
   seedSlider->setSliderName("Seed");
   seedSlider->setRange(0.0, 1000.0, 1.0, 0.0, true);
   seedSlider->setStringConversionFunction(&valueToString);
-  seedSlider->setDescription("Seed for the pseudo-random number generator");
+  seedSlider->setItemDescription("Seed for the pseudo-random number generator");
   //seedSlider->setDescriptionField(descriptionField);
   addWidget(seedSlider, true, true);
   seedSlider->addListener(this);
@@ -419,7 +419,7 @@ BiquadDesignerModuleEditor::BiquadDesignerModuleEditor(LibertyAudioModule *newLi
   modeComboBox->addItem(BQD::LOW_SHELF_2_BILINEAR,          "Low Shelf, 2nd order, BLT",   true, false);
   modeComboBox->addItem(BQD::HIGH_SHELF_2_BILINEAR,         "High Shelf, 2nd order, BLT",  true, false);
   modeComboBox->addItem(BQD::ALLPASS_2_BILINEAR,            "Allpass, 2nd order, BLT",     true, false);
-  modeComboBox->setDescription("Mode of the filter to be designed");
+  modeComboBox->setItemDescription("Mode of the filter to be designed");
   modeComboBox->setComboBoxName("Mode:");
   modeComboBox->setNameLabelWidth(44);
   modeComboBox->registerComboBoxObserver(this);
@@ -468,7 +468,7 @@ LibertyLadderFilterModuleEditor::LibertyLadderFilterModuleEditor(LibertyAudioMod
   filterModeComboBox->addItem(LDR::BP_12_6, "Bandpass, 12/6 dB/oct", true, false);
   filterModeComboBox->addItem(LDR::BP_6_18, "Bandpass, 6/18 dB/oct", true, false);
   filterModeComboBox->addItem(LDR::BP_18_6, "Bandpass, 18/6 dB/oct", true, false);
-  filterModeComboBox->setDescription("Mode of the filter");
+  filterModeComboBox->setItemDescription("Mode of the filter");
   filterModeComboBox->setComboBoxName("Mode:");
   filterModeComboBox->setNameLabelWidth(labelWidth);
   filterModeComboBox->registerComboBoxObserver(this);
@@ -479,7 +479,7 @@ LibertyLadderFilterModuleEditor::LibertyLadderFilterModuleEditor(LibertyAudioMod
   saturationModeComboBox->addItem(LDR::LAST_STAGE,    "Last Stage",    true, false);
   saturationModeComboBox->addItem(LDR::FEEDBACK,      "Feedback",      true, false);
   saturationModeComboBox->addItem(LDR::EACH_STAGE,    "Each Stage",    true, false);
-  saturationModeComboBox->setDescription("Point(s) in the filter where saturation is applied");
+  saturationModeComboBox->setItemDescription("Point(s) in the filter where saturation is applied");
   saturationModeComboBox->setComboBoxName("Saturation:");
   saturationModeComboBox->setNameLabelWidth(labelWidth);
   saturationModeComboBox->registerComboBoxObserver(this);
@@ -515,7 +515,7 @@ LibertyFormulaModuleEditor::LibertyFormulaModuleEditor(LibertyAudioModule *newLi
   formula1In1OutModule = dynamic_cast<FormulaModule_1_1*> (newModuleToEdit);
 
   formulaLabel = new RTextField("Formula:");
-  formulaLabel->setDescription("The formula to compute y as function of x");
+  formulaLabel->setItemDescription("The formula to compute y as function of x");
   formulaLabel->setJustification(juce::Justification::centred);
   addWidget(formulaLabel, true, true);
 
@@ -528,7 +528,7 @@ LibertyFormulaModuleEditor::LibertyFormulaModuleEditor(LibertyAudioModule *newLi
 
   formulaEditor = new RTextEditor("y=x");
   formulaEditor->setMultiLine(true);
-  formulaEditor->setDescription(formulaLabel->getDescription());
+  formulaEditor->setItemDescription(formulaLabel->getItemDescription());
   formulaEditor->addListener(this);
   addWidget(formulaEditor, true, true);
 
@@ -586,13 +586,13 @@ LibertyFormula_N_1ModuleEditor::LibertyFormula_N_1ModuleEditor(LibertyAudioModul
   formula_N_1Module = dynamic_cast<FormulaModule_N_1*> (newModuleToEdit);
 
   inputsLabel = new RTextField("Inputs:");
-  inputsLabel->setDescription("Input variable names (comma separated)");
+  inputsLabel->setItemDescription("Input variable names (comma separated)");
   inputsLabel->setJustification(juce::Justification::centred);
   addWidget(inputsLabel, true, true);
 
   inputsField = new LibertyTextEntryField("x");
   inputsField->registerTextEntryFieldObserver(this);
-  inputsLabel->setDescription(inputsLabel->getDescription());
+  inputsLabel->setItemDescription(inputsLabel->getItemDescription());
   addWidget(inputsField, true, true);
 
   updateWidgetsFromModuleState();
@@ -643,13 +643,13 @@ LibertyFormula_N_MModuleEditor::LibertyFormula_N_MModuleEditor(LibertyAudioModul
   formula_N_MModule = dynamic_cast<FormulaModule_N_M*> (newModuleToEdit);
 
   outputsLabel = new RTextField("Outputs:");
-  outputsLabel->setDescription("Output variable names (comma separated)");
+  outputsLabel->setItemDescription("Output variable names (comma separated)");
   outputsLabel->setJustification(juce::Justification::centred);
   addWidget(outputsLabel, true, true);
 
   outputsField = new LibertyTextEntryField("y");
   outputsField->registerTextEntryFieldObserver(this);
-  outputsField->setDescription(outputsField->getDescription());
+  outputsField->setItemDescription(outputsField->getItemDescription());
   addWidget(outputsField, true, true);
 
   updateWidgetsFromModuleState();

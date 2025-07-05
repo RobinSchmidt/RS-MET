@@ -5,36 +5,36 @@
 StateLoadSaveWidgetSet::StateLoadSaveWidgetSet(const String& newStateLoadSaveWidgetSetName) 
 {
   addWidget( stateLabel = new RTextField( String("State:")) );
-  stateLabel->setDescription(String("Name of current file (if any)"));
+  stateLabel->setItemDescription(String("Name of current file (if any)"));
   stateLabel->setNoBackgroundAndOutline(true);
 
   addWidget(stateFileNameLabel = new RTextField(String()) );
-  stateFileNameLabel->setDescription(String("Name of current file (if any)"));
+  stateFileNameLabel->setItemDescription(String("Name of current file (if any)"));
   stateFileNameLabel->setNoBackgroundAndOutline(false);
 
   addWidget( stateLoadButton = new RClickButton(String("Load")) );
   stateLoadButton->addRButtonListener(this);
-  stateLoadButton->setDescription(String("Load setting from file"));
+  stateLoadButton->setItemDescription(String("Load setting from file"));
   stateLoadButton->setClickingTogglesState(false);
   stateLoadButton->setToggleState(false, false);
 
   addWidget( stateSaveButton = new RClickButton(String("Save")) );
   stateSaveButton->addRButtonListener(this);
-  stateSaveButton->setDescription(String("Save current setting to file"));
+  stateSaveButton->setItemDescription(String("Save current setting to file"));
   stateSaveButton->setClickingTogglesState(false);
   stateSaveButton->setToggleState(false, false);
 
   //addWidget( stateMinusButton = new RButton(RButton::MINUS) );
   addWidget( stateMinusButton = new RClickButton(RButton::ARROW_LEFT) );
   stateMinusButton->addRButtonListener(this);
-  stateMinusButton->setDescription(String("Skip to previous file in current directory"));
+  stateMinusButton->setItemDescription(String("Skip to previous file in current directory"));
   stateMinusButton->setClickingTogglesState(false);
   stateMinusButton->setToggleState(false, false);
 
   //addWidget( statePlusButton = new RButton(RButton::PLUS) );
   addWidget( statePlusButton = new RClickButton(RButton::ARROW_RIGHT) );
   statePlusButton->addRButtonListener(this);
-  statePlusButton->setDescription(String("Skip to next file in current directory"));
+  statePlusButton->setItemDescription(String("Skip to next file in current directory"));
   statePlusButton->setClickingTogglesState(false);
   statePlusButton->setToggleState(false, false);
 

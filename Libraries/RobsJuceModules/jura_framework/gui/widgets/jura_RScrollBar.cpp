@@ -20,17 +20,17 @@ RScrollBar::RScrollBar(const bool isVertical)
   {
     addAndMakeVisible( forwardButton  = new RClickButtonWithAutoRepeat(RButton::ARROW_DOWN) ); 
     addAndMakeVisible( backwardButton = new RClickButtonWithAutoRepeat(RButton::ARROW_UP)   ); 
-    setDescription(String("Scroll vertically"));
-    forwardButton->setDescription(String("Scroll down"));
-    backwardButton->setDescription(String("Scroll up"));
+    setItemDescription(String("Scroll vertically"));
+    forwardButton->setItemDescription(String("Scroll down"));
+    backwardButton->setItemDescription(String("Scroll up"));
   }
   else
   {
     addAndMakeVisible( forwardButton  = new RClickButtonWithAutoRepeat(RButton::ARROW_RIGHT) ); 
     addAndMakeVisible( backwardButton = new RClickButtonWithAutoRepeat(RButton::ARROW_LEFT)  ); 
-    setDescription(String("Scroll horizontally"));
-    forwardButton->setDescription(String("Scroll right"));
-    backwardButton->setDescription(String("Scroll left"));
+    setItemDescription(String("Scroll horizontally"));
+    forwardButton->setItemDescription(String("Scroll right"));
+    backwardButton->setItemDescription(String("Scroll left"));
   }
 
   //forwardButton->setClickingTogglesState(false); // re-activate
