@@ -45,3 +45,46 @@ to update to a new version of juce, the following steps are necessary:
 
 -merge the update branch with the master branch
 
+---------------------------------------------------------------------------------------------------
+
+When trying to update from juce 6.0.8 to 8.0.8, I encountered the following problems:
+
+In the new Projucer, I needed to set up the paths under "File -> Global Paths":
+
+Path to JUCE:      C:\Users\rob\Data\GitRepos\RS-MET\Libraries\JUCE
+JUCE Modules:      C:\Users\rob\Data\GitRepos\RS-MET\Libraries\JUCE\modules
+User Modules:      C:\Users\rob\Data\GitRepos\RS-MET\Libraries\RobsJuceModules
+
+VST (Legacy SDK):  ...not yet set up....
+
+
+Compiling the VST 3 version didn't work. I get the error:
+
+Cannot open source file: '..\..\..\..\..\Libraries\JUCE\modules\juce_audio_plugin_client\VST3\juce_VST3ManifestHelper.cpp': No such file or directory
+
+Maybe it is because the new Projucer should not be used together with the old version of the JUCE library?
+OK - let's try to update JUCE itself:
+
+- First, replace the content of the folder RS-MET\Libraries\JUCE\modules with the new version
+
+- Open the RS-MET\Products\AudioPlugins\ToolChain.jucer file and click "File -> Save Project" to
+  trigger regeneration of the IDE project files
+  
+- Open the Visual Studio project and try building it. I get lots of errors.
+
+- First, I need to remove the final declaration from juce::Image
+
+- DescribedItem::setDescription needs to be renamed because juce::Component now has also a method
+  with that name
+  
+  ... I think, I need to do the renaming first before updating the modules folder
+  
+  DescribedItem:: get/setDescription -> get/setItemDescription
+  
+  
+  
+- I need to add a preprocessor definition JUCE_MODAL_LOOPS_PERMITTED because some functions that I 
+  use are conditionally compiled only when the macro is defined. OK - I added the macro to 
+  ToolChain.jucer (it's behind the cog). I should probably really try to get rid of modal dialogs.
+  ...OK - for the moment, I have discarded these changes and stick to version 6.0.8
+
