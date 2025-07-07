@@ -82,10 +82,17 @@ void AciDevilAudioModule::createParameters()
   //p = new Param("Cutoff", 20.0, 10000.0, 300.0, Parameter::EXPONENTIAL, 0.0);
   p->setValueChangeCallback<AD>(ad, &AD::setCutoff);
   addObservedParameter(p);
-  // The cutoff should have a lower minimum setting. Just changing the parameter's minimum from 200 to
-  // 20, for example, doesn't seem to work though. Somewhere below 200, the cutoff stops responding to
-  // further changes as if there's some sort of cutoff = max(cutoff, 180) or something going on. Check 
-  // in the DSP code, if we limit the cutoff range there and try to do something about it.
+  // The cutoff should have a lower minimum setting. Just changing the parameter's minimum from 200
+  // to 20, for example, doesn't seem to work though. Somewhere below 200, the cutoff stops 
+  // responding to further changes as if there's some sort of cutoff = max(cutoff, 180) or 
+  // something going on. Check in the DSP code, if we limit the cutoff range there and try to do 
+  // something about it. When we extend the range in an update, we really need to think about how 
+  // to keep the plugin backward compatible with older automation data. Maybe we could have 
+  // different behavioral modes that can be set up in the global section (like "old behavior" and
+  // new behavior"). Maybe we could also create a general framework that allows the user to modify
+  // parameter ranges. Maybe with a right click on a slider, we could give options like 
+  // setMin/setMax and we store these values in the patch data as e.g. CutoffMin, CutoffMax, etc.
+  // Maybe we should create a subclass of Parameter for that - maybe VariableRangeParameter. 
 
   p = new Param("Resonance", 0.0, 100.0, 50.0, Parameter::LINEAR, 0.1);
   p->setValueChangeCallback<AD>(ad, &AD::setResonance);
