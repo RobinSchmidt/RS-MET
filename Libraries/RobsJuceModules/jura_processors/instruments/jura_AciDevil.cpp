@@ -92,7 +92,14 @@ void AciDevilAudioModule::createParameters()
   // new behavior"). Maybe we could also create a general framework that allows the user to modify
   // parameter ranges. Maybe with a right click on a slider, we could give options like 
   // setMin/setMax and we store these values in the patch data as e.g. CutoffMin, CutoffMax, etc.
-  // Maybe we should create a subclass of Parameter for that - maybe VariableRangeParameter. 
+  // Maybe we should create a subclass of Parameter for that - maybe VariableRangeParameter. It 
+  // should save the min/max values only when they are different from their defaults because 
+  // otherwise we would blow up the patch data too much. It would imply that we can't change these
+  // defaults in later updates but that seems to be a reasonable compromise. Implementing such a 
+  // solution is considerable work but doing it would also solve any similar problems in the 
+  // future. The desire to extend parameter ranges in later updates might be a common enough problem
+  // to warrant for such a solution.
+
 
   p = new Param("Resonance", 0.0, 100.0, 50.0, Parameter::LINEAR, 0.1);
   p->setValueChangeCallback<AD>(ad, &AD::setResonance);
