@@ -67,8 +67,11 @@ void AciDevilAudioModule::createParameters()
   p = new Param("PulseWidth", 1.0, 100.0, 45.0, Parameter::LINEAR, 0.1);
   p->setValueChangeCallback<AD>(ad, &AD::setPulseWidth);
   addObservedParameter(p);
-  // 45 is the default value because that's roughly what i have measured in real 303 samples
-  // ...but the DSP object does not to respond to it...why? is it not yet implemented?
+  // 45 is the default value because that's roughly what I have measured in real 303 samples
+  // But the DSP object does not to respond to it. Why? Is it not yet implemented? Check that. I 
+  // think, we currently do not have a GUI widget for that parameter anyway. It's currently dead 
+  // code but maybe having a pulse-width parameter is a good idea for the future. Maybe comment it
+  // out but check if it's really safe to do so.
 
   p = new Param("SubOscLevel", -60.0, 0.0, -60.0, Parameter::LINEAR, 0.1);
   p->setValueChangeCallback<AD>(ad, &AD::setSubOscLevel);
@@ -174,7 +177,7 @@ AciDevilModuleEditor::AciDevilModuleEditor(CriticalSection *newPlugInLock,
 {
   //setHeadlineStyle(MAIN_HEADLINE);  // old
 
-  setHeadlineStyle(SUB_HEADLINE); // Aletnative - allows the GUI to be smaller - maybe we should do it
+  setHeadlineStyle(SUB_HEADLINE); // Alternative - allows the GUI to be smaller - maybe we should do it
   setPresetSectionPosition(BELOW_HEADLINE);
 
   // Assign the pointer to the rosic::AciDevil object to be used as aduio engine:
