@@ -100,8 +100,9 @@ void AciDevilAudioModule::createParameters()
   // otherwise we would blow up the patch data too much. It would imply that we can't change these
   // defaults in later updates but that seems to be a reasonable compromise. Implementing such a 
   // solution is considerable work but doing it would also solve any similar problems in the 
-  // future. The desire to extend parameter ranges in later updates might be a common enough problem
-  // to warrant for such a solution.
+  // future. The desire to extend parameter ranges in later updates might be a common enough 
+  // problem to warrant for such a solution. It would be a true soltution of the general problem 
+  // rather than an ad hoc hack for this specific case.
 
 
   p = new Param("Resonance", 0.0, 100.0, 50.0, Parameter::LINEAR, 0.1);
