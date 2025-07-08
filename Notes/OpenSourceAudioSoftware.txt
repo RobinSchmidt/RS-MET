@@ -367,6 +367,11 @@ MIDI plugins
 B-Step
 https://github.com/surge-synthesizer/b-step
 
+LibreArp:
+https://github.com/LibreArp/LibreArp
+https://librearp.gitlab.io/
+https://www.youtube.com/watch?v=fzar_v5l_sE
+-Pattern-based arpeggio generator plugin
 
 ----------------------------------------------------------------------------------------------------
 Audio Scripting
