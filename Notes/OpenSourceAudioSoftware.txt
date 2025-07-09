@@ -312,6 +312,7 @@ https://github.com/Chowdhury-DSP/BYOD
 SmartGuitarAmp
 https://github.com/GuitarML/SmartGuitarAmp
 -Neural network model based guitar amp emulation
+-Not sure, if this is a fork: https://github.com/Tracktion/SmartGuitarAmp
 
 NeuralPi
 https://github.com/GuitarML/NeuralPi
@@ -833,6 +834,10 @@ AudioGen
 https://felixkreuk.github.io/audiogen/
 -Textually Guided Audio Generation
 
+whisper.cpp
+https://github.com/Tracktion/whisper.cpp
+-Inference for OpenAI's Whisper speech recognition model
+
 Frechet Audio Distance
 https://github.com/gudgud96/frechet-audio-distance
 -Library to compute the Frechet Audio Distance (FAD) in PyTorch
@@ -1002,6 +1007,11 @@ https://github.com/abluenautilus/AcidusVersio
 https://librosa.org/
 -audio and music processing in Python
 
+pluginval
+https://github.com/Tracktion/pluginval
+https://github.com/Tracktion/pluginval/releases/tag/v1.0.4
+-plugin validator and tester application. 
+
 
 
 Infos about system wide EQs for Linux:
@@ -1069,3 +1079,9 @@ https://github.com/traviscross/expreval
 
 
 https://www.joehagenmusic.com/post/a-comprehensive-guide-to-high-quality-free-plugins-that-you-ll-actually-use
+
+
+Maybe turn this file into a database. Each entry should have the following fields:
+- name, author/vendor, license (GPL, MIT, etc.), type (DAW, audio editor, instrument plugin, effect
+  plugin, educational, library, utility, ...), formats (CLAP, VST, AU, LV2, Standalone, etc.), 
+  Website, Repo(s),

@@ -102,7 +102,9 @@ void AciDevilAudioModule::createParameters()
   // solution is considerable work but doing it would also solve any similar problems in the 
   // future. The desire to extend parameter ranges in later updates might be a common enough 
   // problem to warrant for such a solution. It would be a true soltution of the general problem 
-  // rather than an ad hoc hack for this specific case.
+  // rather than an ad hoc hack for this specific case. Or: Another possibility would be to use the
+  // adjustable curve in the Automation Setup to adapt to the new, extended range. We would have to
+  // narrow down the range of the breakpoints on state recall.
 
 
   p = new Param("Resonance", 0.0, 100.0, 50.0, Parameter::LINEAR, 0.1);
