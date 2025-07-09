@@ -26,6 +26,9 @@ https://traversodaw.com/
 
 OpenDAW
 https://opendaw.org/
+https://github.com/andremichelle/openDAW
+https://github.com/andremichelle/opendaw-studio
+https://github.com/andremichelle/opendaw-lib
 -Web-based DAW. No source code available yet but coming (soon?). 
 
 Stargate DAW:
@@ -138,6 +141,8 @@ https://github.com/dan-german/blocks
 
 Geonkick:
 https://geonkick.org/
+https://codeberg.org/Geonkick-Synthesizer/geonkick
+https://gitlab.com/Geonkick-Synthesizer/geonkick
 https://github.com/Geonkick-Synthesizer/geonkick
 -Drum synthesizer with focus on bassdrums.
 
@@ -1081,7 +1086,10 @@ https://github.com/traviscross/expreval
 https://www.joehagenmusic.com/post/a-comprehensive-guide-to-high-quality-free-plugins-that-you-ll-actually-use
 
 
+
 Maybe turn this file into a database. Each entry should have the following fields:
 - name, author/vendor, license (GPL, MIT, etc.), type (DAW, audio editor, instrument plugin, effect
   plugin, educational, library, utility, ...), formats (CLAP, VST, AU, LV2, Standalone, etc.), 
-  Website, Repo(s),
+  Website(s), Repo(s), maybe have a field for auxiliary links (for example, to forks, mirrors, 
+  support files, etc. - sometimes the main repo or website is not the only relevant thing), maybe 
+  have a field "comments" or "notes" where some free form text can be entered
