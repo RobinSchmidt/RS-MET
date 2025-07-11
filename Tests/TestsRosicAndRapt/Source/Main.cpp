@@ -428,7 +428,7 @@ int main(int argc, char* argv[])
   //delayLines();
   //twoPoleAllpassDelays();
   //dampedCombAllpasses();
-  feedbackDelayNetworks();
+//  feedbackDelayNetworks();
   //allpassFDN();                  // Under construction
 
   // Filter:
@@ -685,15 +685,15 @@ int main(int argc, char* argv[])
   //testInterpolation();
 
   // Reverb:
-  allpassDisperser();                // Rename to allpassDiffusor
-  allpassDelay();
-  allpassDelayChain();
-  allpassDelayChainVsNest();
+  // allpassDisperser();                // Rename to allpassDiffusor
+  // allpassDelay();
+  // allpassDelayChain();
+  // allpassDelayChainVsNest();
   // These 4 are actually experiments but they ended up in file (an namespace) for unit tests. 
   // Move them to a better place. Maybe to DelayExperiments.h/cpp
 
-  feedbackDelayNetwork();            // writes wave file
-  algoVerb();                        // writes wave file
+  // feedbackDelayNetwork();            // writes wave file
+  // algoVerb();                        // writes wave file
 
 
 

@@ -30,16 +30,23 @@ rsString createStringWithAllPrintableCharacters()
 bool testFileText()
 {
   // Tests, if we can write a string into a file and retrieve it again, the string must not 
-  // contain non-printable characters..
+  // contain non-printable characters.
 
   bool ok = true;
+
+  // Create a test string:
+  rsString stringOriginal = createStringWithAllPrintableCharacters();
+
+  // Write the string to a file and read it back again - the two strings must match. We use 
+  // rsFile::appendText and rsFile::readFileAsString for this.
   //rosic::rsFile testTextFile("E:\\TmpData\\testTextFile.txt"); // absolute path
   rosic::rsFile testTextFile("testTextFile.txt"); // path relavtive from current directory
-  rsString stringOriginal = createStringWithAllPrintableCharacters();
   testTextFile.appendText(stringOriginal);
   rsString stringReconstructed = testTextFile.readFileAsString();
   ok &= stringOriginal == stringReconstructed;
 
+  // Write and read the string again. This time we use the convenience functions 
+  // rsWriteStringToFile and rsReadStringFromFile which operate on C-style strings.
   rosic::rsWriteStringToFile("testTextFile2.txt", stringOriginal.getRawString());
   char* stringReconstructed2 = rosic::rsReadStringFromFile("testTextFile2.txt");
   int cmp = strcmp(stringOriginal.getRawString(), stringReconstructed2);
@@ -48,11 +55,21 @@ bool testFileText()
 
   return ok;
 
-  // ToDo: 
-  // -use relative path 
-  // -use paths where subdirectory does and does not exist
-  // -use different path seperators (i.e. forward slash insetad of backslash)
-  // -test rsWriteStringToFile, rsReadStringFromFile
+  // ToDo:
+  // 
+  // 
+  // - Write testTextFile.txt and testTextFile2.txt into a subdirectory TempFiles or something like
+  //   that and then add that directory to the .gitignore file. This is better than directly adding
+  //   the files to .gitignore. BUT: I'm not sure if it works. Check, if we are correctly handling
+  //   the path separators on all platforms.  // 
+  // 
+  // - Use a subdirectory using relative paths
+  // 
+  // - Use paths for which subdirectory does and does not exist beforehand
+  // 
+  // - Use different path seperators (i.e. forward slash insetad of backslash)
+  // 
+  // - Test rsWriteStringToFile, rsReadStringFromFile
 }
 
 bool testFileWave()
