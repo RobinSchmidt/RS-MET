@@ -91,3 +91,4 @@ Products/AudioPlugins/ToolChain/Builds/VisualStudio2022/x64/Debug/Standalone Plu
 /Products/AudioPlugins/ToolChain/Builds/VisualStudio2022/.vs
 /Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/.vs
 /Products/AudioPlugins/ToolChain/Builds/VisualStudio2022/x64
+/Tests/TestsRosicAndRapt/Builds/VisualStudio2022/.vs

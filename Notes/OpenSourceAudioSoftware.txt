@@ -111,6 +111,7 @@ https://github.com/mtytel/vital
 BespokeSynth:
 https://github.com/BespokeSynth/BespokeSynth
 -A Reaktor-style modular synthesizer
+-Can host plugins but is not a plugin itself - runs only standalone
 
 PlugData:
 https://plugdata.org/
