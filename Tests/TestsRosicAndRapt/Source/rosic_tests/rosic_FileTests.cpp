@@ -40,7 +40,7 @@ bool testFileText()
   // Write the string to a file and read it back again - the two strings must match. We use 
   // rsFile::appendText and rsFile::readFileAsString for this.
   //rosic::rsFile testTextFile("E:\\TmpData\\testTextFile.txt"); // absolute path
-  rosic::rsFile testTextFile("testTextFile.txt"); // path relavtive from current directory
+  rosic::rsFile testTextFile("testTextFile.txt"); // path relative from current directory
   testTextFile.appendText(stringOriginal);
   rsString stringReconstructed = testTextFile.readFileAsString();
   ok &= stringOriginal == stringReconstructed;
