@@ -273,6 +273,10 @@ https://github.com/sinshu/freeverb
 https://www.dsprelated.com/freebooks/pasp/Freeverb.html
 -Schroeder/Moorer allpass based reverb (public domain)
 
+mverb
+https://github.com/martineastwood/mverb
+-Demonstration of Dattorro’s figure-of-eight reverb 
+
 Aether:
 https://github.com/Dougal-s/Aether
 -Algorithmic reverb plugin for LV2
@@ -281,6 +285,14 @@ quantumVerb
 https://qvbdev.github.io/quantumVerb/
 https://github.com/QVbDev/quantumVerb
 -Convolution reverb
+
+Dragonfly Reverb
+https://github.com/michaelwillis/dragonfly-reverb
+-Bundle of free audio effects
+
+Nepenthe
+https://amalgamatedsignals.com/nepenthe
+-Reverb based on the concept of velvet noise
 
 KlangFalter
 https://github.com/HiFi-LoFi/KlangFalter
@@ -843,6 +855,12 @@ https://felixkreuk.github.io/audiogen/
 whisper.cpp
 https://github.com/Tracktion/whisper.cpp
 -Inference for OpenAI's Whisper speech recognition model
+
+Reverb
+https://github.com/revdotcom/reverb
+-Inference and evaluation code for Rev's state-of-the-art speech recognition and diarization models.
+ ...so - it's not a reverb, I guess. The only thing that is worse than non descriptive names are
+ false descriptive names
 
 Frechet Audio Distance
 https://github.com/gudgud96/frechet-audio-distance

@@ -6,13 +6,14 @@ obtain a "complementary" signal by subtracting the filter's output from the inpu
 frequency response of the difference-filter is a mirror image of the frequency response of the 
 given filter. */
 bool isComplementary(const RAPT::rsFilterSpecificationBA<double>& specBA);
-// todo: maybe rename the condition...or maybe not
+// ToDo: maybe rename the condition...or maybe not
 // Actually, that condition of being a mirror image only applies to lowpass and highpass filters. 
 // For bandpass filters, the complementary filter will be a bandreject filter and in this case, the
 // condition for complementarity may be a bit more complicated to specify. Maybe this function 
 // should be renamed to reflect that. Maybe isComplementaryLowpass - we usually think of the 
 // lowpass as the actual filter and the highpass is obtained by subtraction although it could be
-// done the other way around as well.
+// done the other way around as well. And I think, we really need to solve the problem only for
+// the lowpass/highpass case. Then bandpass/bandreject case can then probably be derived from that.
 
 /** For a given filter specification, this function returns the specification of the complementary
 filter that is obtained by sutracting the given filter's output from the original signal. */

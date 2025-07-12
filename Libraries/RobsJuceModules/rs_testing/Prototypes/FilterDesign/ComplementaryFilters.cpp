@@ -1,6 +1,8 @@
 //typedef std::complex<double> Complex;
 
-
+// baSpec: filter specification in terms of numerator and denominator coeffs, 
+// w1: weight for the 1, wH: weight for the transfer function H(z) that corresponds to the given
+// baSpec
 rsFilterSpecificationBA<double> weightedSumWithOne(
   const rsFilterSpecificationBA<double>& baSpec, double w1, double wH)
 {
@@ -9,7 +11,7 @@ rsFilterSpecificationBA<double> weightedSumWithOne(
   int Na = (int)ba.a.size()-1;
   int Nb = (int)ba.b.size()-1;
   r.b.resize(rsMax(Na,Nb)+1);
-  r.a = ba.a;                // denominator is the same
+  r.a = ba.a;                   // Denominator is the same
   rsPolynomial<std::complex<double>>::weightedSum(&ba.a[0], Na, w1, &ba.b[0], Nb, wH, &r.b[0]);
   return r;
 }
@@ -20,12 +22,14 @@ rsFilterSpecificationBA<double> complementaryFilter(const rsFilterSpecificationB
 {
   return weightedSumWithOne(baSpec, 1, -1);
 } 
-// -Move to FilterPlotter or rapt rsFilterSpecificationBA
+// -Move to FilterPlotter or RAPT::rsFilterSpecificationBA
 // -Maybe implement an even more general function that adds two arbitrary transfer functions. But 
 //  actually it would make more sense to just use rsRationalFunction for that
 
 bool isComplementary(const rsFilterSpecificationBA<double>& lpfBA)
 {
+  // This seems to be under construction and needs verification and completion.
+
   // Given the filter-prototype specifications for a lowpass filter, this function checks, if the 
   // filter satisfies the conditions for a perfect reconstruction crossover, assuming the highpass
   // signal is obtained by subtracting the lowpass signal from the original input. That in itself 
@@ -35,12 +39,13 @@ bool isComplementary(const rsFilterSpecificationBA<double>& lpfBA)
   using Complex = std::complex<double>; 
 
   bool result = true;
-  rsFilterSpecificationBA<double> hpfBA = complementaryFilter(lpfBA);
+  rsFilterSpecificationBA<double>  hpfBA  = complementaryFilter(lpfBA);
   rsFilterSpecificationZPK<double> lpfZPK = lpfBA.toZPK();
   rsFilterSpecificationZPK<double> hpfZPK = hpfBA.toZPK();
 
   // Check, if the poles are equal:
   // ...
+  // Wait? Do we really need to check that? Isn't that always true by construction?
 
 
   // Check if zeros are mirrored along the imaginary axis:
@@ -190,17 +195,50 @@ bool analyzeComplementaryAllpass(const RAPT::rsFilterSpecificationBA<double>& ap
 // filter output from the input G(z) = 1-H(z) = (A(z)-B(z))/A(z) = C(z)/A(z) leads to a frequency 
 // response G(z) that is a mirror-image of the response of the original filter H(z), i.e.
 // G(z) = H(-z):
-// -(1) odd a-coeffs are zero
-// -(2) even b-coeffs are half of corresponding a-coeffs (even a-coeffs are twice the b-coeffs)
-// -poles are symmetrical with respect to imaginary axis (check this)
-//  ...(implying A(z)=A(-z) - right?) -> G(z) = H(-z) reduces to C(z) = B(-z)
-// -from normalization, we have a0 = 1, so with even-b rule, b0 = 0.5 always
-// -when the number of poles is even, we may have either the same number of poles and zeros or one 
-//  zero more than poles - otherwise constraint (2) is violated
-// -an odd number of poles is not possible (but what about 1st order?) because the odd a-coeffs are
-//  constrained to be zero
+// 
+// - Odd a-coeffs are zero
+// 
+// - Even b-coeffs are half of corresponding a-coeffs (even a-coeffs are twice the b-coeffs)
+// 
+// - Poles are symmetrical with respect to imaginary axis (check this)
+//   ...(implying A(z)=A(-z) - right?) -> G(z) = H(-z) reduces to C(z) = B(-z)
+// 
+// - From normalization, we have a0 = 1, so with even-b rule, b0 = 0.5 always
+// 
+// - When the number of poles is even, we may have either the same number of poles and zeros or one 
+//   zero more than poles - otherwise constraint (2) is violated
+// 
+// - An odd number of poles is not possible (but what about 1st order?) because the odd a-coeffs are
+//   constrained to be zero
+// 
 // After a prototype halfband filter is designed, it can be tuned to any frequency by applying the 
 // Constantinides frequency warping formulas to the poles and zeros.
+// 
+// 
+// ToDo:
+// 
+// - Document where these rules come from and how they can be derived. Verify if they actually
+//   hold true theoretically or if these are only guesses based on experiments. Wouldn't we 
+//   actually need to require that G(z) = H(-conj(z)) or maybe G(z) = conj(H(-z))? The 
+//   negate-and-conjugate operation should correspond to a reflection across the imaginary axis, 
+//   right? And that should be what we want, I think. If we don't need the conjugation, explain why
+//   not.
+//
+// - Instead of giving conditions in the z-domain, give them in the s-domain and derive an analog 
+//   pair of complementary filters from there. I think, we may have to require  1 - H(s) = H(1/s).
+//   Then, we can apply the bilinear transform to obtain the digital filters.
+//
+// - Maybe re-derive the formulas for the coeffiecents (or, alternatively, the poles and zeros) of
+//   a Butterworth filter. The Butterworth filter optimizes the flatness of the magnitude response 
+//   at DC. We may view this as an (unconstrained) optimization problem, where we want to find the
+//   coeffs or for the poles and zeros. The zeros are all at infinity for the (analog) Butterworth
+//   filter. Will that come out as a result of the optimization or was the Butterworth filter 
+//   already constrained to be an allpole filter by construction? Maybe try to get the equations in
+//   the form of a linear system A x = b. Then apply the same derivation but this time with the 
+//   constraints imposed by the symmetry conditions. Maybe use the technique of Lagrange 
+//   multipliers. If all works out well, we should obtain a filter that is maximally flat at DC 
+//   subject to the constraint that the highpass response is a mirror image of the lowpass. Or so
+//   I hope.
 
 
 // the 1-pole,1-zero case is equivalent to a first order Butterworth filter via bilinear transform
@@ -904,9 +942,7 @@ void splitterPrototypeD_4_6(double* k, std::complex<double>* p, std::complex<dou
 }
 
 
-
-
-
+//=================================================================================================
 /*
 
 Notes:
