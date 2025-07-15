@@ -118,7 +118,8 @@ we build up our suite of unit tests along the way.
    rosic::PhaseStereoizer::getSampleFrameStereo. Implement a unit test for it.
 
 - TackMeter:
-  -[2] It shortly freezes on midi note-off events
+  -[2] It shortly freezes on midi note-off events. That makes it completely unusable on instrument
+   tracks in the DAW.
   -[2] It doesn't work at all in EqualizerAPO. The same is true for all analyzers. Seems like GUI 
    animations generally don't work there?
 
@@ -206,7 +207,7 @@ we build up our suite of unit tests along the way.
 - [1] The frequency respons plots have tick makrs at 128, 256, 512, etc. We want the usual marks at
   32, 63, 125, 250, 500, 1000, etc.
 
-- [3] Straightline: pluugin it in freshly in bitwig, it doesn't open with the init patch. Instead
+- [3] Straightliner: plugin it in freshly in bitwig, it doesn't open with the init patch. Instead
   all 4 oscs are active with sinewaves.
 
 - [1] I get CPU load spikes in Bitwig whenn plugging in a module (and smaller spikes when plugging 
@@ -219,6 +220,11 @@ we build up our suite of unit tests along the way.
   Some notes will hang! It doesn't seem to happen with clusters of 8 or less notes. It seems like 
   it's always the oldest note that hangs.
 
+- [1] Limiter: The Release parameter shows 2 digits after the decimal point suggesting 0.01 ms 
+  precision for adjustment but the slider only goes in 0.1 ms steps. We should perhaps only show
+  1 digit after the dot. But: that would make it incosistent with the attack and lookahead which 
+  indeed allow adjustments in 0.01 ms steps. So we should perhaps change the resolution of the
+  release slider to 0.01 ms, too. 
 
 ---------------------------------------------------------------------------------------------------
 Features

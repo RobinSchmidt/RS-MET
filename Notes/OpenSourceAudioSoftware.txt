@@ -288,6 +288,7 @@ https://github.com/QVbDev/quantumVerb
 
 Dragonfly Reverb
 https://github.com/michaelwillis/dragonfly-reverb
+https://michaelwillis.github.io/dragonfly-reverb/
 -Bundle of free audio effects
 
 Nepenthe
@@ -351,10 +352,6 @@ https://git.iem.at/audioplugins/IEMPluginSuite
 SPARTA
 https://leomccormack.github.io/sparta-site/docs/sourcecode/overview/
 
-Dragonfly reverb 
-https://michaelwillis.github.io/dragonfly-reverb/
-https://github.com/michaelwillis/dragonfly-reverb
-
 AP Mastering Plugins:
 https://github.com/apmastering/APComp
 https://github.com/apmastering/Saturation
@@ -371,14 +368,17 @@ https://github.com/ardura/Duro-Console      Emulation of mixing console processi
 ----------------------------------------------------------------------------------------------------
 Analysis plugins
 
-Signalizer:
+Signalizer
 https://bitbucket.org/Mayae/signalizer/src/master/
 -Signal analyzer plugin
 
-Scrollscope:
+Scrollscope
 https://github.com/ardura/Scrollscope
 -Scrolling oscilloscope in rust
 
+PerceptoMap
+https://github.com/hqrrr/PerceptoMap
+-Perceptual spectrogram analyzer (with Mel spectrograms, Mel-frequency cepstral coefficients, etc.)
 
 ----------------------------------------------------------------------------------------------------
 MIDI plugins
@@ -681,6 +681,13 @@ https://www.kvraudio.com/forum/viewtopic.php?t=466547
 -DSP framework that contains high performance building blocks
 -GPLv2/v3 and commercial license.
 
+LUFSMeter
+https://www.klangfreund.com/lufsmeter/
+https://github.com/klangfreund/LUFSMeter
+-Plugin for measuring and adjusting the loudness of audio, according to ITU BS.1770, EBU R128 and 
+ other international loudness standards.
+-It's a commercial plugin but the DSP algorithm is open source (MIT license)
+
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:
 
@@ -861,6 +868,10 @@ https://github.com/revdotcom/reverb
 -Inference and evaluation code for Rev's state-of-the-art speech recognition and diarization models.
  ...so - it's not a reverb, I guess. The only thing that is worse than non descriptive names are
  false descriptive names
+
+Orpheus-FASTAPI
+https://github.com/Lex-au/Orpheus-FastAPI
+-Text-to-Speech server with OpenAI-compatible API,
 
 Frechet Audio Distance
 https://github.com/gudgud96/frechet-audio-distance
