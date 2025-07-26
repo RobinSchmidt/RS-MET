@@ -238,7 +238,10 @@ bool analyzeComplementaryAllpass(const RAPT::rsFilterSpecificationBA<double>& ap
 //   constraints imposed by the symmetry conditions. Maybe use the technique of Lagrange 
 //   multipliers. If all works out well, we should obtain a filter that is maximally flat at DC 
 //   subject to the constraint that the highpass response is a mirror image of the lowpass. Or so
-//   I hope.
+//   I hope. Equations for the constraints may possibly be found by requiring 1 - H(s) = H(1/s)
+//   and then finding a system of equations that the coeffs (or poles and zeros) must satisfy. 
+//   Maybe we should write H(s) = B(s)/A(s). If we don't get enough equations then maybe we should 
+//   assume A(s) to be given - for example, we could use the denominator of a Butterworth filter.
 
 
 // the 1-pole,1-zero case is equivalent to a first order Butterworth filter via bilinear transform

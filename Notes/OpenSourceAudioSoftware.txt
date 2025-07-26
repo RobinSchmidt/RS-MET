@@ -106,12 +106,14 @@ Vital:
 https://github.com/mtytel/vital
 -A spectral warping wavetable synthesizer with very visual GUI.
 -Source code seems to be not get updated anymore since a while.
--Check out also Vitalium: ...
+-Check out also the fork Vitalium: 
+ https://github.com/DISTRHO/DISTRHO-Ports/tree/master/ports-juce6.0/vitalium
+ It seems like the newer updates of the original Vital source code are closed source again?
 
 BespokeSynth:
 https://github.com/BespokeSynth/BespokeSynth
 -A Reaktor-style modular synthesizer
--Can host plugins but is not a plugin itself - runs only standalone
+-Can host plugins but is not a plugin itself - runs only standalone which is very sad :-(
 
 PlugData:
 https://plugdata.org/
@@ -726,6 +728,18 @@ https://eceweb1.rutgers.edu/~orfanidi/hpeq/
 BeatRoot:
 https://code.soundsoftware.ac.uk/projects/beatroot
 -interactive beat tracking and visualisation system
+
+Dissonance - A Journey Through Musical Possibility Space
+https://aatishb.com/dissonance/
+https://gist.github.com/endolith/3066664
+https://github.com/aatishb/dissonance
+https://www.youtube.com/watch?v=tCsl6ZcY9ag  The Physics Of Dissonance
+-Very nice interactive presentation of the dissonance theory laid out in William Sethares' book 
+ "Tuning, Timbre, Spectrum, Scale"
+ 
+Video series on radar: 
+https://github.com/brunerm99/videos 
+ 
 
 ----------------------------------------------------------------------------------------------------
 Other Libraries
