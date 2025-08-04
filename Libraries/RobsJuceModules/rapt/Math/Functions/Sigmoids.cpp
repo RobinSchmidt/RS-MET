@@ -507,6 +507,23 @@ https://www.desmos.com/calculator/v9sc1c1vsi
 atan(x)  ->  2.5*x
 https://www.desmos.com/calculator/d1s53s6efl
 
+f(x) = tanh((x+a*tanh(x)) / (1+a))  with a = -0.5...1
+https://www.desmos.com/calculator/gdoem8ttin
+The inner function x + a*tanh(x) is the identity plus some saturated term. With greater a, we get 
+an amplification of quiet signals and a more or less linear behavior for larger signals. Wrapping
+the whole thing into an outer tanh gives a sort of sigmoid shape. The normalization factor
+(1+a) ensures that the function has unit slope at the origin. For a = -0.5, the function looks 
+nicely linear near the origin and then saturates smoothly. Compared to normal tanh saturation, it's
+more linear around zero. Maybe the function can be iterated to make it even more linear. With 
+iterated, I mean: consider the function f(x) as given as a new sigmoid and then do the same thing 
+with it that f(x) did with the tanh, i.e. do g(x) = f((x+a*f(x)) / (1+a)). With a = 0, the function
+f(x) reduces to tanh(x). Yep - that could be useful. See:
+https://www.desmos.com/calculator/narg0gwxkl
+https://www.desmos.com/calculator/g5hbzqdhbp
+We can use the a parameter as some sort of "hardness" parameter. Going even lower than -0.5, some 
+more crazy things happen. I'm not sure, if they are useful - but maybe for some more extreme harsh
+distortions, they can indeed be useful.
+
 
 Try to find more accurate asymptotic expressions in a systematic way - these were found by trial 
 and error. See: 

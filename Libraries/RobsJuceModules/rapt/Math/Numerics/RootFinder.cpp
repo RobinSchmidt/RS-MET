@@ -325,6 +325,12 @@ ToDo:
  https://cp-algorithms.com/num_methods/ternary_search.html
 -Implement fixed point iteration
 
+-https://www.youtube.com/watch?v=oDTsQpOPfS8 Muller's Blunder #SoME4
+ -Is about a simplification of Muller's method. Muller's original method fits a parabola to 3 
+  points and solves for the root of that parabola. The simplifed method is basically equivalent to
+  applying Newton's method to an quadratic approximation of the original function f. That makes it 
+  much easier to compute but it has the same convergence speed as the original Muller's method.
+
 
 Resources for higher order variants of Newton iteration:
 

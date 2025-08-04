@@ -411,7 +411,7 @@ public:
 
   /** Evaluates the polynomial at the given input x. */
   T evaluate(T x) const { return evaluate(x, &coeffs[0], getDegree()); }
-  // ToDo: rename to evaluateAt for consistency
+  // ToDo: rename to evaluateAt for consistency. Or maybe valueAt for shortness
 
   /** Evaluates the first derivative of this polynomial at the given x. */
   T derivativeAt(const T& x) const
@@ -423,6 +423,18 @@ public:
   { return evaluateDerivative(x, &coeffs[0], getDegree(), order); }
   // todo: maybe make it also work for negative orders (in which case the antiderivative of 
   // given order will be evaluated (setting integration constants to zero))
+
+  /** Evaluates this polynomial and a given number of derivatives at the given input value x. The
+  values are stored as follows: results[0] = p(x), results[1] = p'(x), results[2] = p''(x) and so 
+  on. If numDerivatives is zero, only results[0] will be used. In general, the length of results 
+  needs to be numDerivatives+1. */
+  void evaluateWithDerivatives(const T& x, T* results, int numDerivatives)
+  {
+    evaluateWithDerivatives(x, &coeffs[0], getDegree(), results, numDerivatives);
+  }
+  // Needs tests
+  // Maybe rename to valueAndDerivativesAt or valueAndDerivativesOf or something like that
+
 
   //T integralAt(const T& x, const T c = T(0)) const
   //{ return evaluateIntegral(x, &coeffs[0], getDegree(), c); }

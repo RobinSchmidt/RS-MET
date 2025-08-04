@@ -110,6 +110,9 @@ Visual Studio:
   When debugging, split it vertically, 
   top: Locals, Autos, Watches, ...
   bottom: Call Stack, Threads, Diagnostic Tools, Output, Breakpoints, ...
+ -To customize the layout, see:  
+  https://learn.microsoft.com/en-us/visualstudio/ide/customizing-window-layouts-in-visual-studio?view=vs-2022  
+  It needs to be done after a (re)installation of the IDE
 -Toolbars (in Tools -> Customize): Build, Debug, Standard, Text Editor
 -Options (in Tools): Color Theme: Dark
 

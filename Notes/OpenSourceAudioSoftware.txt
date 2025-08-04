@@ -301,6 +301,10 @@ KlangFalter
 https://github.com/HiFi-LoFi/KlangFalter
 -Convolution reverb
 
+Convolution
+https://github.com/dvub/convolution_plug
+-Convolution plugin written in Rust.
+
 Neural Amp Modeler 
 https://github.com/sdatkinson/neural-amp-modeler
 https://github.com/sdatkinson/NeuralAmpModelerPlugin
@@ -365,6 +369,14 @@ https://github.com/ardura/Subhoofer         Bass enhancer
 https://github.com/ardura/Interleaf         Equalizer
 https://github.com/ardura/Canopy-Reverb     Reverb
 https://github.com/ardura/Duro-Console      Emulation of mixing console processing
+
+
+Linux Studio Plugins
+https://lsp-plug.in/
+https://github.com/lsp-plugins/lsp-plugins
+-Collection of open-source plugins currently compatible with CLAP, LADSPA, LV2, VST2/LinuxVST, VST3 
+ and JACK standalone formats.
+-Linux only?
 
 
 ----------------------------------------------------------------------------------------------------
@@ -739,7 +751,18 @@ https://www.youtube.com/watch?v=tCsl6ZcY9ag  The Physics Of Dissonance
  
 Video series on radar: 
 https://github.com/brunerm99/videos 
- 
+
+----------------------------------------------------------------------------------------------------
+Numerical Math and Algorithms Libraries
+
+ALGLIB
+https://www.alglib.net/ 
+https://github.com/alglib-project/
+-Cross-platform numerical analysis and data processing library
+
+https://github.com/anyoptimization/pymoo
+-Multi-objective Optimization in Python
+
 
 ----------------------------------------------------------------------------------------------------
 Other Libraries
