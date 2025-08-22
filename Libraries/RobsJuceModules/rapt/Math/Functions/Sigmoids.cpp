@@ -519,10 +519,14 @@ iterated, I mean: consider the function f(x) as given as a new sigmoid and then 
 with it that f(x) did with the tanh, i.e. do g(x) = f((x+a*f(x)) / (1+a)). With a = 0, the function
 f(x) reduces to tanh(x). Yep - that could be useful. See:
 https://www.desmos.com/calculator/narg0gwxkl
-https://www.desmos.com/calculator/g5hbzqdhbp
+https://www.desmos.com/calculator/g5hbzqdhbp  has wider range for parameter a
 We can use the a parameter as some sort of "hardness" parameter. Going even lower than -0.5, some 
 more crazy things happen. I'm not sure, if they are useful - but maybe for some more extreme harsh
-distortions, they can indeed be useful.
+distortions, they can indeed be useful. I guess, we can iterate the function once more like 
+h(x) = g((x+a*g(x)) / (1+a)) to make it even more linear around the origin - and the iterate it even
+more time. But the more we iterate, the more evaluations of tanh we will need to do, so it will 
+become more expensive. Maybe implement a general framework for doing this thing with sigmoids. It
+could be a class that keeps the underlying sigmoid as std::function member.
 
 
 Try to find more accurate asymptotic expressions in a systematic way - these were found by trial 

@@ -312,6 +312,7 @@ Modules
 - StereoTool: Gain, Pan, Pos, M/S, Mono-Switch - show 2x2 gain matrix and make it editable, 
   too - i.e. link the parameters  Gain, Pan, Pos M/S  to  L2L, L2R, R2L, R2R
 
+
 ---------------------------------------------------------------------------------------------------
 Improvements
 
@@ -325,6 +326,18 @@ Improvements
   a containsPatchSettings() function that receives an xml patch. It should scan it (recursively) 
   for attributes and ignore the PatchFormat attribute. Save it only, if that function returns true.
 
+- FuncShaper: integrate a soft-quantization function "softQuantToBits(x, bits, hardness)". There is
+  an experiment with such a function somewhere. I think, it was called softQuant or softBitCrsuh or
+  something similar. The required math formula is fully worked out there. It can even support 
+  different underlying sigmoid shapes (e.g. tanh, atan, erf, etc.). Maybe the softQuantToBits could 
+  have an additional "mode" parameter. Maybe it could be a string-type parameter? If that's not 
+  possible, we need to encode the different shapes as integers in an enum style approach.
+
+---------------------------------------------------------------------------------------------------
+Installation
+
+- Using AppData/Roaming/RS-MET for the support files (on Windows) may not be such a good idea. 
+  Maybe use Documents/RS-MET instead? Surge XT does it like that. 
 
 ---------------------------------------------------------------------------------------------------
 Code Quality

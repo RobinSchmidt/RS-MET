@@ -521,7 +521,7 @@ public:
   // -Maybe try to shorten the code. instead of AT::copy(...) we could use something like
   //  x.copyDataFrom(t). But calling AT::copy may be more efficient because it bypasses the
   //  setShape() call in copyDataFrom(). The function names matrixMultiply/Accumulate could be 
-  //  shortened to something like mul/Accum ...the matrix prefix is redundant because we already 
+  //  shortened to something like mul/mulAccum ...the matrix prefix is redundant because we already
   //  are in class rsMatrixView
 
 
@@ -535,12 +535,13 @@ public:
 protected:
 
 
-  int N = 0;  // number of internal states
-  int p = 0;  // number of inputs
-  int q = 0;  // number of outputs
+  int N = 0;  // Number of internal states
+  int p = 0;  // Number of inputs
+  int q = 0;  // Number of outputs
   // These are actually redundant but convenient. They could be inferred from certain row- and 
   // column settings in our matrices below if saving that little amount of extra space seems 
-  // worthwhile. Maybe rename them into numStates, numIns, numOuts.
+  // worthwhile. Maybe rename them into numStates, numIns, numOuts. I think, the current names 
+  // reflect the mathematical notation used in (1).
 
 
   rsMatrix<T> x, t, A, B, C, D;
@@ -563,13 +564,14 @@ protected:
   //  typically sparse, right? But what about the other matrices? Are they also typically sparse?
   //  Maybe only A should be sparse but B,C,D dense? Figure out! Maybe make a class 
   //  rsSparseStateSpaceFilter that uses a sparse matrix implementation. I think, somewhere I have
-  //  a prototype for a class rsSparseMatrix lying around already.
+  //  a prototype for a class rsSparseMatrix lying around already. Or maybe templatize on the 
+  //  matrix type.
   // -Implement a getTransferFunction() function that returns an rsMatrix of type
   //  rsRationalFunction (a sparse filter should return a matrix of type rsSparseRationalFunction,
   //  I think)
   // -Maybe have two template parameter TSig and TPar as usual - but maybe not. The processFrame
   //  function might not work if the type of the matrices does not match the type of the I/O 
-  //  arrays. It may need adaption. Maybe all the matrixmultiply functions need to be made mor 
+  //  arrays. It may need adaption. Maybe all the matrix-multiply functions need to be made more
   //  flexible to allow for different types of matrices for both operands and for the result. I 
   //  think, if we do this, the elements of both operand matrices should be converted to the 
   //  element type of the result. For example, in the inner loop of the matrix multiplication,
@@ -596,7 +598,7 @@ void rsStateSpaceFilter<T>::setDimensions(int numIns, int numOuts, int numStates
   B.setShape(N, p);
   C.setShape(q, N);
   D.setShape(q, p);
-  reset();
+  reset();           // Ensure to not have garbage in our state vector (setShape may reallocate)
 }
 
 template<class T> 
@@ -604,9 +606,9 @@ void rsStateSpaceFilter<T>::setup(const rsMatrixView<T>& newA, const rsMatrixVie
   const rsMatrixView<T>& newC, const rsMatrixView<T>& newD)
 {
   // Retrieve and set up desired dimensions:
-  N = newA.getNumRows();     // number of states
-  p = newB.getNumColumns();  // number of inputs
-  q = newC.getNumRows();     // number of outputs
+  N = newA.getNumRows();     // Number of states
+  p = newB.getNumColumns();  // Number of inputs
+  q = newC.getNumRows();     // Number of outputs
   setDimensions(p, q, N);
   // ToDo: Verify and document that no allocations take place here, when already enough memory was
   // allcoated previously. See rsMatrix::setShape - it calls resize on a std::vector which should
@@ -615,7 +617,7 @@ void rsStateSpaceFilter<T>::setup(const rsMatrixView<T>& newA, const rsMatrixVie
   // Perform some sanity checks on the input matrices:
   rsAssert(newA.isSquare(), "State transition matrices must be square");
   // ...more checks to come: Make sure, that all the desired relations between the shapes of the 
-  // given  matrices are satisfied. Maybe factor these checks out into a function checkSanity()
+  // given matrices are satisfied. Maybe factor these checks out into a function checkSanity()
   // or something.
 
   // Copy the new matrix data into our members:
@@ -625,13 +627,12 @@ void rsStateSpaceFilter<T>::setup(const rsMatrixView<T>& newA, const rsMatrixVie
   D.copyDataFrom(newD);
   // Hmm...copyDataFrom also calls setShape. These calls are redundant with those in setDimensions.
   // Maybe it doesn't matter but perhaps it would be nicer to avoid it...we'll see...
-  // Maybe we should just keep references to some A,B,C,D matrices owned by cleint code anyway.
+  // Maybe we should just keep references to some A,B,C,D matrices owned by client code anyway.
   // That avoids redundancies and makes it easier to implement time-variant operation. Client code
   // could just vary the matrices. Maybe we should have a 2-level API. A lower level that avoids
   // redundancies and a higher level for convenience. Then, one can start with the high-level API
-  // and optimize later.
-
-  //rsError("Not yet implemented");
+  // and optimize later. Maybe rsStateSpaceFilter should have the current API but we should have some
+  // sort of rsStateSpaceFilterView/Core/.. that has the lower-level API and just keeps references.
 }
 
 template<class T> 
@@ -660,7 +661,9 @@ rsMatrix<rsComplex<T>> rsStateSpaceFilter<T>::getTransferFunctionAt(rsComplex<T>
   // allocations. Secondly, maybe we can get away without the inversion and formulate it as a 
   // solution to a linear system? Thirdly, not all matrices need to be complex. We just do it that
   // way because the operators +,* need matrices of the same element type so we just complexify all
-  // our matrices.
+  // our matrices. Generally, this function is not meant to be realtime capable anyway - it returns
+  // a matrix object which implies memory allocations. Maybe a lower level API should take a 
+  // pointer to a pre-existing matrix object and fill it with the result.
 }
 
 

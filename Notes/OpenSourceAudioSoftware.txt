@@ -83,6 +83,11 @@ Carla:
 https://kx.studio/Applications:Carla
 -A modular audio plugin host. Works standalone only, I think (verify!).
 
+MuseScore:
+https://musescore.org/en
+https://github.com/musescore/MuseScore
+-Music notation software
+
 ----------------------------------------------------------------------------------------------------
 Instrument Plugins
 
@@ -702,6 +707,10 @@ https://github.com/klangfreund/LUFSMeter
  other international loudness standards.
 -It's a commercial plugin but the DSP algorithm is open source (MIT license)
 
+SynthLab
+https://github.com/willpirkleaudio/SynthLab
+-DSP library by Will Pirkle (author of ASPiK framework and books on plugin development)
+
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:
 
@@ -762,6 +771,13 @@ https://github.com/alglib-project/
 
 https://github.com/anyoptimization/pymoo
 -Multi-objective Optimization in Python
+
+----------------------------------------------------------------------------------------------------
+Graphics Rendering and Image Processing Libraries
+
+Ray Tracing
+https://github.com/jakubg05/Ray-Tracing
+https://www.youtube.com/watch?v=wzZJzyX0UkI
 
 
 ----------------------------------------------------------------------------------------------------
@@ -888,6 +904,14 @@ StudioRack:
 https://github.com/studiorack
 -Audio project manager for handling DAW VST plugin dependencies
 
+Composers Desktop Project (CDP):
+https://www.composersdesktop.com/
+https://github.com/ComposersDesktop/CDP8
+-A bunch of non-realtime audio processors that can be used via the command line (? ...not sure, tho)
+
+SoundThread:
+https://github.com/j-p-higgins/SoundThread
+-Node based graphical user interface for The Composers Desktop Project
 
 ----------------------------------------------------------------------------------------------------
 Audio AI projects and related stuff

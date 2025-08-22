@@ -184,3 +184,20 @@ T rsFindNearestUpwardZeroCrossing(T* buffer, int length, T searchStart)
   else
     return hi1 + buffer[hi1] / (buffer[hi1]-buffer[hi2]);
 }
+
+
+//=================================================================================================
+/*
+
+ToDo:
+
+- Maybe implement bucket sort and/or radix sort, see:
+  https://www.youtube.com/watch?v=Y95a-8oNqps  The hidden beauty of radix sort
+  Assuming that the dsitribution of the data and the buckets is such that all buckets have the
+  same chance of being used, bucket sort can be faster (on average) than the usual suspects like 
+  quicksort, heapsort, mergesort, etc.. It achieves this higher efficiency by not relying on 
+  pairwise comparisons. I think, the worst case occurs when all the data fall into one single 
+  bucket ...TBC...
+
+
+*/

@@ -189,6 +189,7 @@ Ideas:
    "multi-modular" is already taken, see:
    https://en.wikipedia.org/wiki/Residue_number_system
    https://en.wikipedia.org/wiki/Modular_arithmetic#Residue_systems
+   so maybe we should call them "mixed-modular".
   -Define for two moduli m1, m2: they are k-compatible if any value in modulus m1 or m2 can also be 
    interpreted as an unreduced value in modulus k. That means that m1, m2 must be divisible by k. 
    The highest compatibility number k for m1,m2 is kMax: gcd(m1, m2) ...verify
@@ -200,21 +201,40 @@ Ideas:
    modulus and still get the same result (verify this) - so if, in the middle of the computations, 
    we encounter different moduli we could choose (the smallest) one, which is "compatible" with 
    both moduli in this sense...would that make sense?
+  -Or maybe use the following definition: For a given modulus m, another modulus n with n > m is 
+   compatible with modulus m when we can do all arithmetic operations in modulus n and then at the 
+   very end take the remainder with respect to m and get the same result as we would have gotten 
+   when we would have done everything in modulus m to begin with. It follows immediately that for n
+   to be compatible with m, it must be a multiple of m (verify!). A modulus n with n < m can never 
+   be compatible with m, by the way. But we may not have to use this fact in the definition of 
+   compatibility - it just falls out (so we may get rid of the "with n > m" phrase in the proposed
+   definition). If we are now tasked with computing the result of an arithmetic operation with 
+   operands that have two different moduli m1 and m2, we can choose as the modulus for the result 
+   the smallest modulus mR that is compatible with both m1 and m2 - which is the lcm of m1 and m2.
+   So we have mR = lcm(m1, m2). With both definitions we end up with the lcm.
+  -An application of such mixed-modular integers could perhaps be to compute a result of a 
+   computation in two or more moduli at the same time. We just do the computation with the lcm of
+   all the moduli that we are interested in and at the end, we can take the remainder with the
+   individual moduli to get the results in the individual moduli. Not sure, if that works out the
+   way I think it does, but it seems to make sense.
   -Maybe as equivalence relation between such mixed-modular integers, we should use: The larger 
    modulus is a multiple of the smaller modulus and both values are congruent with respect to the
    smaller modulus. The first check ensures that is even makes sense to compare the values. The 
-   second check on the values seems to make sense because. Or maybe just compare the values using 
-   the gcd of both moduli (i.e. the highest compatibility number) to compare the values. That means
-   (v1,m1) == (v2,m2)  iff  v1 % k == v2 % k  where  k = gcd(m1,m2). I use the tuple notation (v,m)
-   to denote the pair of value and modulus here. I think, it would imply that two numbers with 
-   mutually prime moduli are always equivalent? ..except is one of then is zero and the other is 
-   not?
-  -What algebraic structure do we get with so defined multimodular integers? is it still a ring?
+   second check on the values seems to make sense because it ensures that the values with the 
+   higher modulus would reduce to the same value as the values with the smaller modulus when taken 
+   modulo the smaller modulus. Or maybe just compare the values using the gcd of both moduli (i.e. 
+   the highest compatibility number) to compare the values. That means (v1,m1) == (v2,m2)  iff  
+   v1 % k == v2 % k  where  k = gcd(m1,m2). I use the tuple notation (v,m) to denote the pair of 
+   value and modulus here. I think, it would imply that two numbers with mutually prime moduli are
+   always equivalent? ..except is one of then is zero and the other is not? But if that is the 
+   case, it would go against the intention of the equivalence relation.
+  -What algebraic structure do we get with so defined multimodular integers? Is it still a ring?
+   I think, it can't be a field - or can it?
   -Maybe for defining the equality comparison between such multimodular integers, one should 
    compare the remainders modulo the gcd of both moduli? ..but would such a definition actually 
    satisfy the constraints for an equivalence relation? ...i think, it breaks transitivity...
   -Maybe solving a system of equations in multimodular integers can be related to the Chinese
-   remainder theorem?
+   remainder theorem? (just wild speculation)
 
 - Does the notion of a modular rational number make any sense? i.e. numerator and/or denominator 
   are modular integers?
