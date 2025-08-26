@@ -404,16 +404,19 @@ linear fore-distance law - like a Hooke spring - but maybe not even then.
 
 
 See:
-https://www.youtube.com/watch?v=nZHjD3cI-EU  How to make HUGE N-Body Simulations (N=1,000,000+)
-...about "Barnes-Hut Algorithm", uses QuadTrees in 2D or OctTrees in 3D
 
+- How to make HUGE N-Body Simulations (N=1,000,000+)
+  https://www.youtube.com/watch?v=nZHjD3cI-EU  
+  - Is about "Barnes-Hut Algorithm", uses QuadTrees in 2D or OctTrees in 3D
 
-See also:
+- Bertrand's Theorem and Orbits in any Dimension
+  https://www.youtube.com/watch?v=DV16p2l7MLM
+  - ToDo: Try to re-create some of these simulations
 
-Bertrand's Theorem and Orbits in any Dimension
-https://www.youtube.com/watch?v=DV16p2l7MLM
--Try to re-create some of these simulations
-
+- Every power-law force has a conformal dual
+  https://www.youtube.com/watch?v=8XmktRwSGYQ
+  - Explains conformal duality between various power-law forces
+  - See also: https://arxiv.org/abs/1010.2238  Duality of force laws and Conformal transformations
 
 */
 

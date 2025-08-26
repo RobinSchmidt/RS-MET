@@ -2614,7 +2614,13 @@ protected:
 
 /** A class for generating the (integer) continued fraction expansion coefficients of a given
 (floating point) number. You pass the number to the constructor and after that, you can pull out
-successive cofficients via getValue(). */
+successive cofficients via getValue(). 
+
+References:
+
+  (1) Creating Rhythms (by Stefan and J. Richard Hollos)
+
+*/
 
 template<class TInt, class TFloat>
 class rsContinuedFractionGenerator
@@ -2651,17 +2657,23 @@ rsFraction<T> rsContinuedFractionConvergent(T* a, int N)
     q2 = a[i]*q1 + q0; q0 = q1; q1 = q2; }
   return rsFraction<T>(p2, q2);
 }
-// algorithm adapted from cfcv.c (by Hollos) - i don't really know, why it works
-// this can actually be done directly using the generator, without the need for explicitly
-// computing and storing the array a
-// maybe move into class rsContinuedFractionGenerator...maybe as static method
-// ..but i don't think that this continued fraction stuff should go into rsFraction - it's stuff
-// on top of it
-// -note the the convergents are not equal to the best approximants. there's some additional stuff
+// ToDo: Document what this function does. Maybe see:
+// https://mathworld.wolfram.com/Convergent.html
+// and (1) page 61 ff: "The increasingly accurate approximations are called convergents"
+// I think, it takes an array of continued fraction coeffs and converts them to a regular fraction.
+// 
+// The algorithm was adapted from cfcv.c (by Hollos), which resides in  
+// RS-MET/Libraries/ThirdParty/CreatingRhythms
+// I don't really know, why it works. This can actually be done directly using the generator, 
+// without the need for explicitly computing and storing the array a. Maybe move into class 
+// rsContinuedFractionGenerator...maybe as static method...but i don't think that this continued 
+// fraction stuff should go into rsFraction - it's stuff on top of it
+// -Note the the convergents are not equal to the best approximants. There's some additional stuff
 //  that needs to be done - maybe implement that in a function rsRationalApproximant:
 //  https://en.wikipedia.org/wiki/Continued_fraction#Best_rational_approximations
+//  Maybe write a function rsBestRationalApproximant.
 //
-// can we somehow figure out, how many of the CFE coeffs are correct without knowing the correct
+// Can we somehow figure out, how many of the CFE coeffs are correct without knowing the correct
 // CFE? maybe by converting the convergents back to double and only add more coeffs as long as
 // the back-converted number actually gets closer to the original number?
 // -maybe rename to rsContinuedToRegularFraction - it just converts an array of (simple) continued
