@@ -21,19 +21,33 @@ plotting functions wil actually invoke the plotter in this project. */
 // ..nah - that breaks the release build of rs_testing - but maybe we can try doing this in the
 // cpp file?
 
-
 // We need better colors - see getGraphColors and plotFrequencyResponses in FilterPlotter<T> for a 
 // possible implementation. The code to compute the colors should go into the GNUPlotter class. It 
 // uses rsColor<T>::hsl2hex. That function is something wee need also in GNUPlotter
 
+// ToDo: Maybe factor out a function rsSetupPlotStyles(GNUPlotter& plt) where we do some common 
+// setup tasks like calling setPixelSize(), setToDarkMode(), etc.
+
 
 #include "GNUPlotter.h"
+
+inline void rsSetupPlotStyles(GNUPlotter& plt)
+{
+  plt.setPixelSize(1600, 800);
+  // 1600 x 800 is still small enough to fit on a screen with a lowish full HD resolution (which 
+  // has 1080 x 1920 pixels) but it is also big enough to not be too tiny on an UHD screen. Maybe
+  // we should go for 1800 x 1000 - but maybe that would take too much space on an FHD screen.
+
+  plt.setToDarkMode();
+  // Because of course! Why would anyone use light mode? Pfff... Well, maybe for inclusion into pdf
+  // documents - but on screen, dark mode rulez!
+}
 
 template<class T>
 inline void rsPlotArray(const T* x, int N, std::string title = "")
 {
   GNUPlotter plt;
-  plt.setToDarkMode(); 
+  rsSetupPlotStyles(plt);
   plt.setTitle(title);
   plt.plotArrays(N, x);
 }
@@ -43,7 +57,7 @@ inline void rsPlotArrays(int N, const T* a1, const T* a2 = nullptr, const T* a3 
   const T* a4 = nullptr, const T* a5 = nullptr)
 {
   GNUPlotter plt;
-  plt.setToDarkMode();
+  rsSetupPlotStyles(plt);
   plt.plotArrays(N, a1, a2, a3, a4, a5);
 }
 // maybe allow for more than 5
@@ -53,7 +67,7 @@ inline void rsPlotArraysXY(int N, const T* x, const T* y1 = nullptr, const T* y2
   const T* y3 = nullptr, const T* y4 = nullptr, const T* y5 = nullptr, const T* y6 = nullptr)
 {
   GNUPlotter plt;
-  plt.setToDarkMode();
+  rsSetupPlotStyles(plt);
   plt.addDataArrays(N, x, y1, y2, y3, y4, y5, y6);
   plt.plot();
 }
@@ -70,7 +84,7 @@ template<class T>
 inline void rsStemPlot(int N, T *x, T *y)
 {
   GNUPlotter plt;
-  plt.setToDarkMode();
+  rsSetupPlotStyles(plt);
   plt.addDataArrays(N, x, y);
   plt.addDataArrays(N, x, y); // can probably be done without adding the data twice
   plt.setGraphStyles("impulses", "points pt 7 ps 1.2");
@@ -94,7 +108,7 @@ inline void rsPlotVectors(
 {
   // make a function that can take more vectors...maybe a vector of vectors?
   GNUPlotter plt;
-  //plt.setToDarkMode();
+  rsSetupPlotStyles(plt);
   if(v0.size() > 0) plt.addDataArrays((int) v0.size(), &v0[0]);
   if(v1.size() > 0) plt.addDataArrays((int) v1.size(), &v1[0]);
   if(v2.size() > 0) plt.addDataArrays((int) v2.size(), &v2[0]);
@@ -124,7 +138,7 @@ inline void rsPlotVectorsXY(
 )
 {
   GNUPlotter plt;
-  plt.setToDarkMode();
+  rsSetupPlotStyles(plt);
   int N = (int) x.size();
   //rsAssert(y1.size() == N);
   if(y1.size() > 0) plt.addDataArrays(N, &x[0], &y1[0]);
@@ -182,7 +196,7 @@ inline void rsPlotSpectrum(std::vector<T> fftMagnitudes, T sampleRate = T(0),
   }
 
   GNUPlotter plt;
-  plt.setToDarkMode();
+  rsSetupPlotStyles(plt);
   plt.addDataArrays(N, &f[0], &db[0]);
   plt.plot();
 }
@@ -196,7 +210,7 @@ template<class T>
 inline void rsPlotComplexArray(int numComplexValues, T* reImArray1, std::string title = std::string())
 {
   GNUPlotter plt;
-  plt.setToDarkMode();
+  rsSetupPlotStyles(plt);
   plt.setTitle(title);
 
   int N = numComplexValues;
@@ -228,7 +242,7 @@ template<class T>
 inline void rsPlotComplexArrays(int numComplexValues, T* reImArray1, T* reImArray2 = nullptr)
 {
   GNUPlotter plt;
-  plt.setToDarkMode();
+  rsSetupPlotStyles(plt);
   //plt.setTitle(title);
 
   int N = numComplexValues;
@@ -260,7 +274,7 @@ template<class T>
 inline void rsPlotFunction(const std::function<T(T)>& func, T xMin, T xMax, int N)
 {
   GNUPlotter plt;
-  plt.setToDarkMode();
+  rsSetupPlotStyles(plt);
   std::vector<T> x(N), y(N);
   plt.rangeLinear(&x[0], N, xMin, xMax);
   for(int i = 0; i < N; i++)
