@@ -2672,6 +2672,10 @@ rsFraction<T> rsContinuedFractionConvergent(T* a, int N)
 //  that needs to be done - maybe implement that in a function rsRationalApproximant:
 //  https://en.wikipedia.org/wiki/Continued_fraction#Best_rational_approximations
 //  Maybe write a function rsBestRationalApproximant.
+// 
+// I think, when we want to compute multiple approximants from N = 1 to maxN and call the function 
+// above repeatedly, we have created a "Shlemiel the Painter" algorithm. That's inefficient. ToDo:
+// Write a function that produces an array of approximants up to N - not just the Nth one itself.
 //
 // Can we somehow figure out, how many of the CFE coeffs are correct without knowing the correct
 // CFE? maybe by converting the convergents back to double and only add more coeffs as long as

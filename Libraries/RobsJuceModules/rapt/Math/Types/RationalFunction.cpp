@@ -510,4 +510,11 @@ ToDo:
   absolute value. Instead, we should use an appropriate rsIsBetterPivot() function. This is 
   currently in the works anyway.
 
+- Try to implement an algorithm that decomposes rational functions into continued fraction 
+  expansions. See:
+  https://www.fim.uni-passau.de/fileadmin/dokumente/fakultaeten/fim/lehrstuhl/sauer/geyer/Kettenbrueche.pdf
+  Maybe that could be useful to express filters in a nested structure of low order filters (e.g.
+  biquads?). Maybe the z^-1 factors (i.e. the delays) would then be replaced by more general 
+  filters?
+
 */

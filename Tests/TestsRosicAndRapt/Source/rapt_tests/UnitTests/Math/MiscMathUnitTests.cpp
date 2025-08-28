@@ -1005,7 +1005,7 @@ bool testFraction()  // maybe move up
   ok &= rsCeil( R(-39, 10)) == R(-3,1);   // ceil( -39/10) = -3
   ok &= rsCeil( R(-40, 10)) == R(-4,1);   // ceil( -40/10) = -4
 
-  // ToDo: implement and test rsRound
+  // ToDo: Implement and test rsRound
 
 
   // Test using vectors and matrices of rational numbers
@@ -1015,13 +1015,21 @@ bool testFraction()  // maybe move up
   Vec v({a,b,c,d});
   Mat A(2, 2, &v[0]);
   Mat A2 = A*A;
-  // todo: test solving a system of linear equations with rational numbers
-  // -pivoting is actually not necessary, but it should not hurt either. We should perhaps not 
-  //  choose the element with greatest absolute avlue as pivot but the one that is "simplest" in 
-  //  the sense that it's unlikely to blow up the numbers too much
+
+  // ToDo: Test solving a system of linear equations with rational numbers
+  // 
+  // - Pivoting is actually not necessary for accuracy but it may make sense to try to avoid 
+  //   integer overflow. To this end, we should perhaps not choose the element with greatest 
+  //   absolute value as pivot but the one that is "simplest" in the sense that it's unlikely to 
+  //   blow up the numbers in further compuations too much. A first heuristic may be to prefer 
+  //   fractions with small denominators as pivots. The Gaussian elemination algorithm should 
+  //   support different pivoting strategies by invoking a function like rsIsBetterPivot() for 
+  //   which we may provide explicit specializations for various types. For floating point types,
+  //   it would compare the absolute values and pick the larger. For fractions, it would compare 
+  //   denominators and pick the smaller.
 
 
-  // ToDo: implement function to produce Bernoulli numbers
+  // ToDo: Implement and test function to produce Bernoulli numbers
 
 
 

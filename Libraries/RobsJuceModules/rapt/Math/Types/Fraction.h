@@ -4,10 +4,7 @@
 /** Class for representing fractions a.k.a. rational numbers, i.e. ratios of two integers. 
 Numerator and denominator are kept as signed integers "num", "den". On construction and in 
 arithmetic operations, fractions are always put into a canonical representation which is a 
-reduced form where the minus sign (if any) is put into the numerator. 
-
-
-ToDo: document what happens when the user tries to create a fraction with zero as denominator. */
+reduced form where the minus sign (if any) is put into the numerator.  */
 
 template<class T>  // T should be a signed int type
 class rsFraction
@@ -19,16 +16,24 @@ public:
   // \name Lifetime
 
 
-  rsFraction() {}
+  /** Default constructor. Constructs the canonicial representation of zero which is given by the
+  fraction 0/1. */
+  rsFraction() 
+  {
+    // Implementation is empty because the initialization is done in the member declaration.
+  }
 
   /** Constructor that initializes numerator and denominator to the given values and then 
   canonicalizes the result (i.e. reduces it to lowest terms and makes sure that the minus sign, if 
-  any, is in the numerator)  */
+  any, is in the numerator). Can also be used to initialize a fraction from an integer in which 
+  case the denominator defaults to 1. */
   rsFraction(T numerator, T denominator = T(1)) : num(numerator), den(denominator)
   { 
     canonicalize();
     // ToDo: 
     // -Maybe do a static assert to make sure that T is a signed integer type.
+    // -Maybe provide a specialized constructor for converting integers to fractions. It should 
+    //  avoid the potentially costly call to canonicalize().
   }
 
 
@@ -122,7 +127,8 @@ protected:
   void canonicalize() { reduce(); if(den < 0) { num = -num; den = -den; }  }
   // Actually, the denominator is supposed to be positive and not only "nonnegative". However,
   // this function here really does only ensure nonnegativity, so the documentation is actually
-  // accurate. That the denominator is nonzero must be ensured elsewhere.
+  // accurate. That the denominator is nonzero must be ensured elsewhere. But maybe we should
+  // allow a denominator of zero to represent infinity and NaN.
 
   /** Numerator and denominator. They are always kept canonical, i.e. in reduced form and with 
   minus sign in numerator if the number is negative. */
@@ -183,6 +189,9 @@ inline bool rsIsBetterPivot(const rsFraction<T>& x, const rsFraction<T>& y)
 }
 // Needs tests. I'm not yet quite sure about the appropriateness of the applied criteria.
 
+
+// Some free functions that are relevant mainly in the context of matrices of fractions:
+
 template<class T>
 inline bool rsIsInvalidDivisor(const rsFraction<T>& p, const rsFraction<T>& tol)
 {
@@ -238,13 +247,11 @@ auto rsMaxNorm(const rsFraction<T>& q)
 //  care has to be taken to parenthesize expressions like (r^i) inside longer expressions due to 
 //  C++ precendence rules
 // -Maybe detect if overflow will happen and trigger an assert
-// -Implement functions to convert to double or float and/or operators for implicit conversion
-//  (but maybe that's not a good idea - conversions should probably always be explicit)
 // -In the Prototypes section, there's some stuff for converting between fractions and their
 //  continued fraction representation - maybe drag that in. 
 // -intAndFracPart via div and mod. r = n/d = i+f -> n = d*(i+f)
 // -Maybe try to instantiate it for T = rsPolynomial. If that works at all, compare results to
-//  rsRationalFunction...maybe that can even be rendered obsolete? ...but i don't think so, if only 
+//  rsRationalFunction...maybe that can even be rendered obsolete? ...but I don't think so, if only 
 //  for efficiency reasons.
 // -Try to implement reduce and canonicalize in a branchless way to admit T to be a SIMD type. But 
 //  this requires a branchless implementation of rsGcd, or at least an implementation that runs the 
@@ -264,7 +271,8 @@ auto rsMaxNorm(const rsFraction<T>& q)
 //  n. We'll see...
 // -Maybe integrate some stuff that deals with continued fractions - see the unit test
 //  See:   https://www.youtube.com/watch?v=tBc_xcRzMxk  Continued Fraction Arithmetic
-//  
+// -Document what happens when the user tries to create a fraction with zero as denominator.
+
 
 // Notes:
 // -Maybe it's sometimes convenient to keep fractions in unreduced form. It may be easier to spot 
