@@ -66,7 +66,11 @@ public:
   bool isNonNegative() const { return num >= T(0); }
   bool isInteger()     const { return den == T(1); }
 
-  // isInteger works because we always keep the representation canonical.
+  // isInteger works because we always keep the representation canonical. Well, actually it seems 
+  // they rely on a canonical representation (or at least on one or another aspect of it). For 
+  // example, isPositive() assumes that the denominator is positive. A non-canonical fraction like
+  // -3/-5 should mathematically also count as positive. Maybe we should insert assertions like
+  // rsAssert(isCanonical()); everywhere.
   // ToDo:  isOne
 
 
@@ -122,13 +126,15 @@ protected:
 
   /** Reduces this number to lowest terms. */
   void reduce() { T gcd = rsGcd(num, den); num /= gcd; den /= gcd; }
+  // ToDo: Verify and document that rsGcd does the right thing when the input is negative. 
 
   /** Reduces to lowest terms and ensures that denominator is nonnegative. */
   void canonicalize() { reduce(); if(den < 0) { num = -num; den = -den; }  }
   // Actually, the denominator is supposed to be positive and not only "nonnegative". However,
   // this function here really does only ensure nonnegativity, so the documentation is actually
   // accurate. That the denominator is nonzero must be ensured elsewhere. But maybe we should
-  // allow a denominator of zero to represent infinity and NaN.
+  // allow a denominator of zero to represent infinity and NaN. Maybe it could be better to first
+  // do the potential sign-flip and then reduce()?
 
   /** Numerator and denominator. They are always kept canonical, i.e. in reduced form and with 
   minus sign in numerator if the number is negative. */
@@ -188,6 +194,42 @@ inline bool rsIsBetterPivot(const rsFraction<T>& x, const rsFraction<T>& y)
   // dominates the cost of a matrix inversion, I guess (Verify! ...or at least justify)
 }
 // Needs tests. I'm not yet quite sure about the appropriateness of the applied criteria.
+
+
+// Functions to compute floor, ceil, round, etc. So far, the implementations are rather naive and 
+// can perhaps be optimized. They should also be documented:
+
+template<class T>
+rsFraction<T> rsTrunc(const rsFraction<T>& x)
+{
+  return x.getNumerator() / x.getDenominator();
+  // Trunction is just integer division, i.e. floor-division
+}
+
+template<class T>
+rsFraction<T> rsFloor(const rsFraction<T>& x)
+{
+  if(x.isInteger())       // Integers stay as is
+    return x;
+  if(x.isNonNegative())   // Non-negative fractions are truncated
+    return rsTrunc(x);
+  return rsTrunc(x) - 1;   // Negative fractions need a -1 after truncation
+
+  // ToDo: Optimize - maybe use:
+  // return rsFraction<T>(x.getNumerator() / x.getDenominator() - 1, 1);
+  // for the last case. This avoids the subtraction of fractions (which is expensive) and uses only
+  // subtraction of integers.
+}
+
+template<class T>
+rsFraction<T> rsCeil(const rsFraction<T>& x)
+{
+  if(x.isInteger())
+    return x;
+  if(x.isNonPositive())
+    return rsTrunc(x);
+  return rsTrunc(x) + 1;
+}
 
 
 // Some free functions that are relevant mainly in the context of matrices of fractions:
