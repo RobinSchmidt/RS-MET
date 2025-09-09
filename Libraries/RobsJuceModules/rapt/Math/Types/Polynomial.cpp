@@ -1971,6 +1971,8 @@ ToDo:
    https://www.hvks.com/Numerical/websolver.php
    https://www.hvks.com/Numerical/papers.html
 
+   https://github.com/osveliz/numerical-veliz/tree/master/src/rootfinding
+
    Jenkins-Traub in Python:
    https://github.com/jervisfm/JenkinsTraub/blob/master/poly.py
    https://github.com/osveliz/numerical-veliz/blob/master/src/rootfinding/JenkinsTraub.py

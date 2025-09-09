@@ -281,4 +281,12 @@ Create a version that generates a pseudo-resonance by:
 -we may need to implement an rsMinMaxFilter of non-integer length (by crossfading between two 
  buffered samples, min and 2nd-to-min, ditto for max)
 
+
+
+See also:
+
+The Cleverest Median Algorithm You've (Probably) Never Used
+https://www.youtube.com/watch?v=5JXpNOZWAHM  
+
+
 */

@@ -229,4 +229,16 @@ Numerical Integrators From Scratch in C++ - Vincent Reverdy - CppCon 2024
 -At around 46 min, he mentions this website:  https://www.sfu.ca/~jverner/
  which has coeffs for new Runge-Kutta like methods which are supposed to be very good, I guess.
 
+Beginning Scientific Computing  (Playlist by Nathan Kutz)
+https://www.youtube.com/playlist?list=PL6Vi_EcJpt8FqwhzZXC_6EWAkgopbF6xW
+-Has a lot of material about ODE solvers but also some preliminary stuff like numerical estimation 
+ of derivatives and numerical integration. (Maybe later PDE stuff will be added? It's not there 
+ yet, though). There seems to be some redundancy in the material (like video 4 and 10) - maybe it's
+ the same lecture from various years? Or maybe re-uploads? This seems to be belong to it:
+ https://github.com/nathankutz/ScientificComputing
+ Ah - For PDEs, there's actually a separate playlist:
+ https://www.youtube.com/playlist?list=PL6Vi_EcJpt8EA1XaEtdHTRmbvXg-A8uW5
+ ...or actually two of them:
+ https://www.youtube.com/playlist?list=PL6Vi_EcJpt8ERyFOjmWZb9VAuNe6CktGz
+
 */

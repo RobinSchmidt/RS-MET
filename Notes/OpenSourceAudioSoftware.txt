@@ -4,7 +4,7 @@ some non-audio stuff, too).
 ToDo: turn this into an .md file with clickable links and TOC
 
 ----------------------------------------------------------------------------------------------------
-Hosts
+DAWs, Audio Editors, Trackers, DJ-Software
 
 Ardour:
 https://github.com/Ardour/ardour
@@ -50,15 +50,6 @@ Mixxx:
 https://github.com/mixxxdj/mixxx
 -DJ software
 
-Integra Live:
-https://integra.io/portfolio-items/integralive/
-https://github.com/BirminghamConservatoire/IntegraLive
--Modular environment for interactive audio processing and music performance
-
-Element:
-https://github.com/kushview/element
--A modular AU/LV2/VST/VST3 audio plugin host. Works standalone or as plugin. 
-
 Milky Tracker:
 https://milkytracker.org/
 https://github.com/milkytracker/MilkyTracker
@@ -79,14 +70,46 @@ https://www.giadamusic.com/
 https://github.com/monocasual/giada
 -Not sure...seems to be some sort of tracker like music software with focus on live performance?
 
+----------------------------------------------------------------------------------------------------
+Modular environments
+
+Integra Live:
+https://integra.io/portfolio-items/integralive/
+https://github.com/BirminghamConservatoire/IntegraLive
+-Modular environment for interactive audio processing and music performance
+
+Element:
+https://github.com/kushview/element
+-A modular AU/LV2/VST/VST3 audio plugin host. Works standalone or as plugin. 
+
 Carla:
 https://kx.studio/Applications:Carla
 -A modular audio plugin host. Works standalone only, I think (verify!).
+
+----------------------------------------------------------------------------------------------------
+Audio/musical content analysis apps
 
 MuseScore:
 https://musescore.org/en
 https://github.com/musescore/MuseScore
 -Music notation software
+
+Tony:
+https://www.sonicvisualiser.org/tony/
+-Melody detection and transcription software
+
+Pitch Detection App:
+https://github.com/alesgenova/pitch-detection-app
+https://alesgenova.github.io/pitch-detection-app/  Live Demo
+-pitch detection app that uses Rust and WebAssembly
+
+Praat:
+https://praat.org/
+-Phonetic analysis software
+
+Aubio:
+https://aubio.org/
+-"aubio is a tool designed for the extraction of annotations from audio signals."
 
 ----------------------------------------------------------------------------------------------------
 Instrument Plugins
@@ -383,6 +406,9 @@ https://github.com/lsp-plugins/lsp-plugins
  and JACK standalone formats.
 -Linux only?
 
+Setekh:
+https://github.com/fullfxmedia/setekh
+-"minimalistic yet sonically powerful distortion plugin"  by https://fullfxmedia.com/
 
 ----------------------------------------------------------------------------------------------------
 Analysis plugins
@@ -398,6 +424,21 @@ https://github.com/ardura/Scrollscope
 PerceptoMap
 https://github.com/hqrrr/PerceptoMap
 -Perceptual spectrogram analyzer (with Mel spectrograms, Mel-frequency cepstral coefficients, etc.)
+
+Kholors Station
+https://github.com/QuentinFAIDIDE/KholorsStation
+https://www.kvraudio.com/forum/viewtopic.php?t=623292
+-Multi-track color coded analyzer
+-Consists of a plugin that can be inserted on multiple tracks in a DAW and a standalone app that 
+ receives signals from the plugin instances and shows the spectrograms of the individual track in a
+ color coded way.
+ 
+Pitch Tracking
+https://github.com/orchidas/Pitch-Tracking
+https://forum.juce.com/t/lowest-latency-real-time-pitch-detection/51741
+-Implements various algorithms: YIN, Cepstrum, max. likelihood, extended Kalman filter
+-Matlab files and JUCE plugin (only Mac/AU support so far)
+ 
 
 ----------------------------------------------------------------------------------------------------
 MIDI plugins
@@ -1181,6 +1222,6 @@ https://www.joehagenmusic.com/post/a-comprehensive-guide-to-high-quality-free-pl
 Maybe turn this file into a database. Each entry should have the following fields:
 - name, author/vendor, license (GPL, MIT, etc.), type (DAW, audio editor, instrument plugin, effect
   plugin, educational, library, utility, ...), formats (CLAP, VST, AU, LV2, Standalone, etc.), 
-  Website(s), Repo(s), maybe have a field for auxiliary links (for example, to forks, mirrors, 
+  Website(s), Repo(s), maybe have a field for auxiliary links (for example to forks, mirrors, 
   support files, etc. - sometimes the main repo or website is not the only relevant thing), maybe 
   have a field "comments" or "notes" where some free form text can be entered
