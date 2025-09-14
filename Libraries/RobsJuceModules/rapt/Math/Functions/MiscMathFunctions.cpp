@@ -8,6 +8,16 @@ Ideas:
 - Make classes similar to rsNormalizedSigmoids for functions of other qualitative kinds:
 
   - rsFadeFunctions: for fade-in/out and crossfade functions. See Notes/FadeInOut.txt
+    These laws can also be used for pan-laws. For a constant power pan, one usually uses the
+    sin/cos approach but (I think), using gL = sqrt(x) and gR = sqrt(1-x) should also work in the 
+    sense that for a cenetered setting, both signal are multiplied by sqrt(1/2). See:
+    
+    https://www.desmos.com/calculator/emhmmqjvzy
+    
+    It would "feel" different, though. The nice thing is that by using a geenralization like 
+    gL = x^p, gR = (1-x)^p with  0.5 <= p <= 1, we could smoothly blend between linear and 
+    const-power pan. Maybe try to figure out a way to do such a thing with sin/cos law, too. Of 
+    course, we could simply interpolate between the two laws - but maybe there's a better way? 
 
   - rsCycleFunctions: functions that have one cycle of an oscillation. See the experiments
     singleSineCycleWobbles(), multiSineCycleWobbles, etc.
@@ -21,7 +31,8 @@ Ideas:
     at 0. Examples: -x / (x^2 - 1), atanh(x), tan(x * pi/2), ...
 
 
-How to create certain fetaures:
+
+How to create certain fetaures in a function:
 
  - Zeros at any position z with order m can be created by introducing a factor (x-z)^m.
 

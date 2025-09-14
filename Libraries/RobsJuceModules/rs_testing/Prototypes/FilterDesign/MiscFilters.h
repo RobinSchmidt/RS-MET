@@ -428,7 +428,13 @@ output [VERIFY!].
 
 ToDo: 
 
-- Give expression for impulse response (see (1) page 346)
+- Give references for the formula for the difference equation. It's found in (2), Pg 16 and (1),
+  Pg ???
+
+- Give expression for impulse response (see (1) page 346 or (2) page 17). It's given by:
+
+    h[n] = D              for  n = 0
+           C A^(n-1) B    for  n > 0
 
 - Add conversions from/to direct forms
 
@@ -439,6 +445,8 @@ ToDo:
 References:
 
   (1) Introduction to Digital Filters with Audio Applications (Julius O. Smith)
+
+  (2) Physical Audio Signal Processing (Julius O. Smith)
 
 */
 
@@ -558,32 +566,55 @@ protected:
   // but we don't need any class members for these I/O variables. See (1) pg 345, Appendix G.
 
   // ToDo: 
-  // -Check terminology. I made some of it up myself (feedthrough, injection). The book (1) 
-  //  doesn't give them special names.
-  // -Perhaps production code should use sparse matrices? I think, the state update matrices are
-  //  typically sparse, right? But what about the other matrices? Are they also typically sparse?
-  //  Maybe only A should be sparse but B,C,D dense? Figure out! Maybe make a class 
-  //  rsSparseStateSpaceFilter that uses a sparse matrix implementation. I think, somewhere I have
-  //  a prototype for a class rsSparseMatrix lying around already. Or maybe templatize on the 
-  //  matrix type.
-  // -Implement a getTransferFunction() function that returns an rsMatrix of type
-  //  rsRationalFunction (a sparse filter should return a matrix of type rsSparseRationalFunction,
-  //  I think)
-  // -Maybe have two template parameter TSig and TPar as usual - but maybe not. The processFrame
-  //  function might not work if the type of the matrices does not match the type of the I/O 
-  //  arrays. It may need adaption. Maybe all the matrix-multiply functions need to be made more
-  //  flexible to allow for different types of matrices for both operands and for the result. I 
-  //  think, if we do this, the elements of both operand matrices should be converted to the 
-  //  element type of the result. For example, in the inner loop of the matrix multiplication,
-  //  instead of:
-  //    (*C)(i, j) += A.at(i, k) * B.at(k, j);
-  //  we would write
-  //    (*C)(i, j) += TRes(A.at(i, k)) * TRes(B.at(k, j));
-  //  where TRes is the element type of the result matrix. The operand matrices A and B could have 
-  //  different element types (different from the result type and/or different from one another)
-  //  I think, having this in place and working would be a preliminary to switching to the 
-  //  TSig, TPar pattern here.
-
+  // 
+  // - Check terminology. I made some of it up myself (feedthrough, injection). The book (1) 
+  //   doesn't give them special names.
+  // 
+  // - Perhaps production code should use sparse matrices? I think, the state update matrices are
+  //   typically sparse, right? But what about the other matrices? Are they also typically sparse?
+  //   Maybe only A should be sparse but B,C,D dense? Figure out! Maybe make a class 
+  //   rsSparseStateSpaceFilter that uses a sparse matrix implementation. I think, somewhere I have
+  //   a prototype for a class rsSparseMatrix lying around already. Or maybe templatize on the 
+  //   matrix type.
+  // 
+  // - Implement a getTransferFunction() function that returns an rsMatrix of type
+  //   rsRationalFunction (a sparse filter should return a matrix of type rsSparseRationalFunction,
+  //   I think)
+  // 
+  // - Maybe have two template parameter TSig and TPar as usual - but maybe not. The processFrame
+  //   function might not work if the type of the matrices does not match the type of the I/O 
+  //   arrays. It may need adaption. Maybe all the matrix-multiply functions need to be made more
+  //   flexible to allow for different types of matrices for both operands and for the result. I 
+  //   think, if we do this, the elements of both operand matrices should be converted to the 
+  //   element type of the result. For example, in the inner loop of the matrix multiplication,
+  //   instead of:
+  //     (*C)(i, j) += A.at(i, k) * B.at(k, j);
+  //   we would write
+  //     (*C)(i, j) += TRes(A.at(i, k)) * TRes(B.at(k, j));
+  //   where TRes is the element type of the result matrix. The operand matrices A and B could have
+  //   different element types (different from the result type and/or different from one another)
+  //   I think, having this in place and working would be a preliminary to switching to the 
+  //   TSig, TPar pattern here.
+  //
+  // - Implement a function diagonalize() that should diagonalize the state space model as 
+  //   described in (2), page 23. The diagonalized model uses the matrices  A~, B~, C~, D~  instead
+  //   of  A,B,C,D  where  A~ = E^-1 A E, B~ = E^-1 B, C~ = C E, D~ = D  where E is the matrix that
+  //   is constructed from the (possibly generalized?) eigenvectors of A, i.e. vectors e_i that 
+  //   satisfy  A e_i = lamdda_i e_i. Generalized eigenvectors are needed when one ore more poles 
+  //   has a multiplicity k > 1. A generalized eigenvector p of a matrix A satisfies 
+  //   (A - lambda I)^k p = 0 where I is the identity matrix of the same size as A. I have some 
+  //   crude selfmade eigendecomposition functions somewhere in the prototypes or scratchpad or
+  //   research repo. For some first proof-of-concept implementation, they may be good enough. 
+  //   Maybe they can be replaced later by a proper numerical linear algebra library.
+  //
+  // - Advantages of a diagonalized model: If we assume that the bulk of the state-update 
+  //   compuations is in the matrix-vector product A * x[n], i.e. the other matrices are "slim", 
+  //   then replacing A by the diagonal A~ will give use great computational savings. It is also 
+  //   much easier to interpret tha matrix A in terms of resonant frequencies. However, in general,
+  //   we may have to deal with complex matrices in the diagonal representation. Maybe we can 
+  //   construct a purely real form by combining complex conjugagate eigenvalues? Maybe this could
+  //   result in a Jordan normal form or something? Figure this out! But first, to ge the ball 
+  //   rolling, let's just use the complex representation for experimentation.
 };
 
 template<class T> 
