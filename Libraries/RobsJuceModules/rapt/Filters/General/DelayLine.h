@@ -112,6 +112,10 @@ public:
   feedback and crossfeedback stuff. */
   RS_INLINE void addToInput(T signalToAdd);
 
+
+  RS_INLINE void addToInputAt(T signalToAdd, int delay);
+
+
   /** Does the increment for the tap pointers and wraps them around if necesarray - should be
   used in conjunction with getSampleSuppressTapIncrements(). */
   RS_INLINE void incrementTapPointers();
@@ -149,7 +153,13 @@ public:
   inline T readOutputWithAdditionalDelay(int additionalDelay) const
   {
     int readPos = tapOut - additionalDelay;
+
     readPos = readPos & maxDelay;
+    // Is this correct? If so, document why. I think this function is already successfully in use 
+    // in the CombAllpass delays (Verify!), so it is supposedly indeed correct. Conceptually, I 
+    // think, it should behave like  readPos += maxDelay  whenever  readPos < 0. Does the 2s 
+    // complement representation take care of this behavior?
+
     return delayLine[readPos];
   }
   // Needs tests
@@ -223,6 +233,30 @@ RS_INLINE void rsDelay<T>::addToInput(T signalToAdd)
 {
   delayLine[tapIn] += signalToAdd;
 }
+
+template<class T>
+RS_INLINE void rsDelay<T>::addToInputAt(T signalToAdd, int delay)
+{
+  //int p = tapIn - delay;
+  //if(p < 0)
+  //  p += maxDelay;  
+    // Is that correct or should we use p += getDelayInSamples? That would be more costly, though
+    // so I actually hope, it is correct this way. Compare to implementation of 
+    // readOutputWithAdditionalDelay() and readOutputAt(). There, we do 
+    // readPos = readPos & maxDelay;
+
+  int writePos = tapIn - delay;
+  writePos = writePos & maxDelay;
+  delayLine[writePos] += signalToAdd;
+
+  // Maybe optimize this to just:
+  // 
+  //   delayLine[(tapIn-delay) & maxDelay] += signalToAdd;
+  //
+  // and benchmark if it makes any difference.
+}
+// Needs unit tests!
+
 
 template<class T>
 RS_INLINE void rsDelay<T>::incrementTapPointers()
