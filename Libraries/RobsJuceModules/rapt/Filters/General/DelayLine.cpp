@@ -38,6 +38,10 @@ void rsDelay<T>::setMaxDelayInSamples(int newMaxDelay)
     delayLine = new T[maxDelay+1];
     rsArrayTools::fillWithZeros(delayLine, maxDelay+1);
   }
+
+  // ToDo:
+  //
+  // - Document the crazy +1, -1 business that is going on here
 }
 
 template<class T>

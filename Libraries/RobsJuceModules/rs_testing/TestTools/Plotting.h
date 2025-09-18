@@ -586,12 +586,12 @@ check if two delaylines have the same or related content such that one may think
 of one of them. */
 template<class T>
 void rsPlotDelayLineContent(const RAPT::rsDelay<T>& dl1, 
-  const RAPT::rsDelay<T>& dl2)
+  const RAPT::rsDelay<T>& dl2, bool reverseSecond = false)
 {
   // Helper function to return the content of the given delayline as std::vector:
   auto getContent = [](const RAPT::rsDelay<T>& dl)
   {
-    // Maybe let the use switch between shwoing the full content (i.e. the full allocated memory)
+    // Maybe let the use switch between showing the full content (i.e. the full allocated memory)
     // or only up to the used length - current, we hrdcoded the used length:
     //int N = dl.getMaxDelayInSamples();
     int N = dl.getDelayInSamples();
@@ -604,7 +604,15 @@ void rsPlotDelayLineContent(const RAPT::rsDelay<T>& dl1,
   // Retrieve contents of both delaylines and plot them:
   std::vector<T> cnt1 = getContent(dl1);
   std::vector<T> cnt2 = getContent(dl2);
+  if(reverseSecond)
+    rsReverse(cnt2);
   rsPlotVectors(cnt1, cnt2);
+
+  // ToDo:
+  //
+  // - Done. -> Document it!
+  //   Maybe optionally reverse the content of the 2nd delay line. This may be convenient for
+  //   experimenting with implementing bidirectional delay lines 
 }
 
 

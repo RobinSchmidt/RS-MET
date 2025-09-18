@@ -144,3 +144,18 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
   default: { B::coeffsBypass(&this->b0, &this->b1, &this->a1); } break;
   }
 }
+
+/*=================================================================================================
+
+Notes:
+
+- The function coeffsLowShelfBLT() of class rsFirstOrderFilterBase does not produce a neutral 
+  filter when the gain is 1. Instead, it produces an allpass in this case. Probably, the same is 
+  true for coeffsHighShelfBLT(). Figure out if we can create a 1st order shelving design that is
+  neutral for a unit gain setting. Maybe a low-shelf can be produce by adding a scaled lowpass
+  output and a highpass can be produced by adding a scaled highpass output to the original. A
+  highpass can be produced by subtracting a lowpass from the original. A low-shelf could perhaps
+  also be produced by subtracting a highpass and applying an overall gain. In general, we could
+  do  y = cI*x + cH*xH + cL*xL  where cI,cL,cH are scaling factors for input, highpass and lowpass.
+
+*/

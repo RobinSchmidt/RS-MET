@@ -951,21 +951,40 @@ void splitterPrototypeD_4_6(double* k, std::complex<double>* p, std::complex<dou
 Notes:
 
 
--putting additional finite zeros into the s-plane is not a good idea - it makes the final slope
- shallower - the lowpass should have all of its zeros at infinity...soooo that means we have to use
- an allpole lowpass filter and therefore the highpass should have all its zeros at s=0. the only 
- wiggle room is the exact placement of the poles
--OR: we design a halfband lowpass prototype in the digital domain, leave the zeros at z = -1 
- and add *additional* zeros. this seems to work for the 2nd order case at least
--try "contracted Butterworth" - all pole angles are scaled by a factor < 1
- try to place poles on a ellipse instead of a circle - let the user select a width/height 
- ratio or eccentricity
--maybe experiment with multiplicities
--maybe start with z-plane prototype poles (and zeros), maybe aligned along the imaginary axis
- and spread in various ways
--place N poles along the imaginary axis and N zeros at z = -1. then try to place additional 
- zeros into the z-plane such that we get a nice crossover...maybe we need a GUI for freely
- placing poles and zeros into the z-plane
+- Putting additional finite zeros into the s-plane is not a good idea - it makes the final slope
+  shallower - the lowpass should have all of its zeros at infinity...soooo that means we have to 
+  use an allpole lowpass filter and therefore the highpass should have all its zeros at s=0. The 
+  only wiggle room is the exact placement of the poles
+
+- OR: We design a halfband lowpass prototype in the digital domain, leave the zeros at z = -1 
+  and add *additional* zeros. This seems to work for the 2nd order case at least.
+
+- Try "contracted Butterworth" - all pole angles are scaled by a factor < 1. Try to place poles on
+  an ellipse instead of a circle - let the user select a width/height ratio or eccentricity
+
+- Maybe experiment with multiplicities
+
+- Maybe start with z-plane prototype poles (and zeros), maybe aligned along the imaginary axis
+  and spread in various ways
+
+- Place N poles along the imaginary axis and N zeros at z = -1. Then try to place additional zeros
+  into the z-plane such that we get a nice crossover...maybe we need a GUI for freely placing poles
+  and zeros into the z-plane.
+
+- Maybe try to derive a principled approach to designing N-th order complementary LPF/HPF pairs. 
+  Maybe start by considering rational functions of a real variable x:  H(x) = B(x) / A(x)  where
+  B(x), A(x) are polynomials. Maybe for simplicity, start with B(x) = 1 like in allpole filters.
+  Use the requirement H(x) + H(1/x) = 1 for the symmetry and H(1) = 1, H(inf) = 0 for the lowpass
+  nature and and then impose more requirements on the derivatives: H'(1) = 0, H''(1) = 0, ...
+  Maybe we should right from the start only consider even polynomials for A(x), i.e. polynomials of
+  the form A(x) = a0 + a2*x^2 + a4*x^4 + a6*x^6 + ... and maybe we should express them as functions 
+  of x^2 rather than x itself. The function corresponding to Butterworth filters would be 
+  H(x) = 1 / (1 + x^2N). Maybe we could also impose more conditions at infinity like H'(inf) = 0,
+  etc. where H(inf) is to be understood as a limit. But maybe such conditions are redundant and 
+  automatically satisfied due to the other conditions (especially symmetry). Maybe to evaluate
+  all the derivatives analytically, we will need a generalized quotient rule (see my math book).
+  But maybe we should first do the first few cases manually with the help of SageMath. Maybe a 
+  pattern emerges.
 
 
 */

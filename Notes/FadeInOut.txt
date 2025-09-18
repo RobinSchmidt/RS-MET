@@ -99,3 +99,16 @@ function easeInOutBounce(x: number): number
   return x < 0.5 ? (1 - easeOutBounce(1 - 2 * x)) / 2
        : (1 + easeOutBounce(2 * x - 1)) / 2;
 }
+
+
+----------------------------------------------------------------------------------------------------
+Attack/Decay envelope shapes with infinite decay:
+
+- exp(-a*x) - exp(-b*x)
+  
+- exp(-1/x) * exp(-x)
+  
+- x^(1/x) * (1/x)^x
+
+https://www.desmos.com/calculator/sst4pydzfb
+

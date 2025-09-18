@@ -88,8 +88,23 @@ public:
     tf->_setNumeratorTerm(  0, T(1), M);
     tf->_setDenominatorTerm(0, T(1), 0);
   }
-  // Needs unit tests!
-  
+  // Needs unit tests! 
+  // 
+  // Maybe drag this function out of the class as a free function like:
+  // 
+  //   rsGetTransferFunction(const rsDelay<T>& delay, rsSparseTransferFunction<T, TTol>* tf)
+  // 
+  // I don't really like to introduce a coupling to class rsSparseTransferFunction here. I think,
+  // that generally thorughout the library, when we need functions that glue together two classes
+  // (like here rsDelay and rsSparseTransferFunction), they should preferably implemented as
+  // free functions (maybe) unless one of the two classes *very* basic - so basic that the 
+  // introduction of the coupling doesn't matter because we can safely assume the basic class to be
+  // avaibable (like #included or #imported or something) anyway. We actually can here because
+  // rsSparseTransferFunction is part of the Math submodule which is more basic than the 
+  // AudioBasics submodule (to which rsDelayLine belongs) - but still... Maybe someday I want to
+  // reorganize things. But: As a free function, it will be harder to discover. But maybe its
+  // ok when the free function resides in this file. It's less discovereable than when it's a 
+  // member function but perhaps still divcoverable enough.
 
 
 
@@ -108,12 +123,16 @@ public:
   RS_INLINE T getSampleSuppressTapIncrements(T in);
   // rename to getSampleNoTapIncrement or getSampleNoUpdate
 
+
+  RS_INLINE void writeInput(T in);
+
   /** Adds some signal value to the current tapIn-position in the delayLine - useful for
   feedback and crossfeedback stuff. */
   RS_INLINE void addToInput(T signalToAdd);
 
-
   RS_INLINE void addToInputAt(T signalToAdd, int delay);
+
+
 
 
   /** Does the increment for the tap pointers and wraps them around if necesarray - should be
@@ -224,8 +243,14 @@ RS_INLINE T rsDelay<T>::getSample(T in)
 template<class T>
 RS_INLINE T rsDelay<T>::getSampleSuppressTapIncrements(T in)
 {
-  delayLine[tapIn] = in;
+  delayLine[tapIn] = in;    // Maybe use writeInput(in) instead
   return delayLine[tapOut];
+}
+
+template<class T>
+RS_INLINE void rsDelay<T>::writeInput(T in)
+{
+  delayLine[tapIn] = in;
 }
 
 template<class T>
