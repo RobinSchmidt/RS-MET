@@ -238,8 +238,19 @@ void rsWaveEquation1D_Proto<T>::stepLeapFrog(std::vector<T>& u, std::vector<T>& 
 template<class T>
 void rsWaveEquation1D_Proto<T>::initForLeapFrog(const std::vector<T>& u, std::vector<T>& u1)
 {
-  rsError("Not yet implemented");
+  rsAssert(!u.empty());            // ToDo: Maybe just return if u is empty
+  rsAssert(rsAreSameSize(u, u1));
+
+  int M = (int)u.size();
+  rsZero(u1);
+  for(int m = 1; m < M-1; m++)
+  {
+    u1[m-1] += 0.5 * u[m];
+    u1[m+1] += 0.5 * u[m];
+  }
+  u1[0] = u1[M-1] = 0;             // Because after the loop, they may not be zero anymore.
 }
+// Needs tests
 
 
 
