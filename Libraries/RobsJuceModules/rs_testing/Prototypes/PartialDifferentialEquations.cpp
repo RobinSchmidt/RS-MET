@@ -181,6 +181,68 @@ void rsWaveEquation1D<T>::updateStateArrays()
 // https://en.wikipedia.org/wiki/Courant%E2%80%93Friedrichs%E2%80%93Lewy_condition
 
 
+//=================================================================================================
+
+template<class T>
+void rsWaveEquation1D_Proto<T>::stepLeapFrog(std::vector<T>& u, std::vector<T>& u1)
+{
+  rsAssert(rsAreSameSize(u, u1));
+  //rsAssert(rsAreEndsZero(&u, &u1));
+
+  int M = (int)u.size();
+  using Vec = std::vector<T>;
+
+  // Compute new shape of the string using the finite difference scheme:
+  Vec uNew(M);
+  for(int m = 1; m < M-1; m++)
+    uNew[m] = u[m+1] + u[m-1] - u1[m];
+
+  // Update state of the string:
+  u1 = u;
+  u  = uNew;
+
+  // ToDo:
+  //
+  // - Try to reformulate it in terms of u and v := u - u1, i.e. in terms of the displacement and
+  //   the "velocity" v where the velocity is taken to be the difference of the displacement "now"
+  //   (at time n) and one time step before (at time n-1). This is more physical. I think the v can
+  //   then be interpreted as the average string velocity in the time interval from n-1 to n. So, 
+  //   if we want to assign a time instant to v, then it should be n-0.5 (verify!).
+  //
+  // - Figure out and document how to convert desired initial condition for u and v to 
+  //   corresponding initial conditions for u and u1. From a user's perspective, it makes more 
+  //   sense to specify initial conditions for u and v. Maybe we can implement a function that
+  //   converts between u1 and v. It will probably also have to know about u. That is: u1 = f(u,v)
+  //   and v = g(u,u1) for f,g being the appropriate conversion functions.
+  // 
+  // - Figure out how we can inject signals into the string. Is it enough to just add some signal
+  //   to u[m] to simulate driving the string at position m or do we also need to take care of u1?
+  //   I actually don't think so but this should be verified. Maybe we need to add half of it to
+  //   u1[m-1] and u1[m+1], too? That's actually also plausible.
+  //
+  // - Try to derive a scheme that also involves a 1st spatial derivative. I think, this can be 
+  //   used to model damping. The book gives 1st order finite difference formulas for these. But 
+  //   maybe we should try using 2nd order formulas for these, too.
+  //
+  // - Figure out how we could incoporate an arbitrary wave velocity c into the scheme. As it 
+  //   stands, we have implemented the special case of c = 1 in which the wave travels one spatial
+  //   sample in every time step, I think. It results from setting X = c*T where X is the spatial 
+  //   sampling interval (grid density) and T is the temporal sampling interval (sample rate).
+  //
+  // 
+  // See also:
+  //
+  // - https://en.wikipedia.org/wiki/Leapfrog_integration
+}
+
+template<class T>
+void rsWaveEquation1D_Proto<T>::initForLeapFrog(const std::vector<T>& u, std::vector<T>& u1)
+{
+  rsError("Not yet implemented");
+}
+
+
+
 
 //=================================================================================================
 
@@ -403,24 +465,6 @@ void rsRectangularRoom<T>::computeLaplacian3D(const rsMultiArray<T>& u, rsMultiA
 // -implement Laplacian for cylindrical and spherical coordinates
 // -maybe rename this function to reflect that we a doing a 7 point approximation in cartesian 
 //  coordinates - there are so many other possibilities...
-
-
-//=================================================================================================
-
-template<class T>
-void rsWaveEquation1D_Proto<T>::stepLeapFrog(std::vector<T>& u, std::vector<T>& u1)
-{
-  rsError("Not yet implemented");
-  // An implementation is available in the research repo in rsStepWaveEquation1D_3. It seems to 
-  // work and is ready to be moved over.
-}
-
-template<class T>
-void rsWaveEquation1D_Proto<T>::initForLeapFrog(const std::vector<T>& u, std::vector<T>& u1)
-{
-  rsError("Not yet implemented");
-}
-
 
 
 /*=================================================================================================

@@ -310,11 +310,58 @@ protected:
 
 //=================================================================================================
 
+/** Some experimental and prototypical implementations of functions related to solving the 1D wave
+equation. 
+
+References:
+
+  (1) Numerical Sound Synthesis (Stefan Bilbao)
+  (2) Physical Audio Signal Processing (Julius O. Smith)
+
+*/
+
+template<class T>
+class rsWaveEquation1D_Proto
+{
+
+public:
+
+  /** Implements the finite difference scheme (FDS) also known as finite difference time domain
+  (FDTD) solver from (2), page 660 which is defined by the update equation:
+
+    u[n+1,m] = u[n,m+1] + u[n,m-1] - u[n-1,m]
+
+  The vector u contains the wave variable of displacement and u1 contains the displacement one step
+  before, i.e. the unit delayed displacement. The scheme is derived by replacing spatial and 
+  temporal derivatives in the wave equation by central difference approximations. The resulting 
+  scheme is known as leapfrog recursion (see page 671). This scheme has some nice properties: It is
+  efficient, stable and even exact at the spatial sample points. Another noteworthy feature is that
+  it is equivalent to a numerical solver based on waveguides. ...TBC...
+
+  See:
+  https://ccrma.stanford.edu/~jos/pasp/Finite_Difference_Schemes_I.html
+  https://ccrma.stanford.edu/~jos/pasp/Equivalence_Digital_Waveguide_Finite.html
+  https://arxiv.org/pdf/physics/0407032   
+  */
+  static void stepLeapFrog(std::vector<T>& u, std::vector<T>& u1);
+
+  /** Given the desired initial displacements in u at time instant n = 0, this function produces
+  the corresponding values u1 for time instant n = -1. These two initial conditions u[n=0] and
+  u[n=-1] are needed to get the iteration scheme started. */
+  static void initForLeapFrog(const std::vector<T>& u, std::vector<T>& u1);
+
+};
+// Maybe move up directly after rsWaveEquation1D
+
+
+//=================================================================================================
+
 /** Implements a numerical solution of the 2D wave-equation in cartesian coordinates for a 
 rectangular membrane.
 
 References:
-(1) Numerical Sound Synthesis (Stefan Bilbao) 
+
+  (1) Numerical Sound Synthesis (Stefan Bilbao) 
 
 */
 
@@ -527,23 +574,3 @@ protected:
 // how about using spatial pressure gradients and sound-velocities, i.e. vector-fields instead of
 // a (scalar) pressure field?
 
-//=================================================================================================
-
-/** Some experimental and prototypical implementations of functions related to solving the 1D wave 
-equation. */
-
-template<class T>
-class rsWaveEquation1D_Proto
-{
-
-public:
-
-  static void stepLeapFrog(std::vector<T>& u, std::vector<T>& u1);
-
-  /** Given the desired initial displacements in u at time instant n = 0, this function produces 
-  the corresponding values u1 for time instant n = -1. These two initial conditions u[n=0] and
-  u[n=-1] are needed to get the iteration scheme started. */
-  static void initForLeapFrog(const std::vector<T>& u, std::vector<T>& u1);
-
-};
-// Maybe move up directly after rsWaveEquation1D
