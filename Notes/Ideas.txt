@@ -481,10 +481,41 @@ Stereoization:
 Waveform Orthogonalization:
 
 -Take a bunch of single cycle waveforms and perform Gram-Schmidt orthogonalization on them
--The resulting can be used to mix the exact same set of waveforms as the originla ones - but 
+-The resulting can be used to mix the exact same set of waveforms as the original ones - but 
  possibly in a more intuitive way due to their orthogonality (i.e. non-interference)
 -Maybe the original waveforms could be saws and square waves at different frequencies (i.e. 
- multiples of a fundamental)
+ multiples of a fundamental) ...or maybe they are already orthogonal?
+ 
+----------------------------------------------------------------------------------------------------
+Waveform Fractalization:
+
+- Take a waveform and create versions of it at various higher frequencies (maybe octave spaced or
+  linearly spaced) and mix them with the original waveform with an amplitude rule like 1/k^p where
+  k is the frequency multiplicator and p is a power that controls the brightness. Maybe p could be 
+  modulated in realtime?
+  
+- Implement it as fractal oscillator in ToolChain. Controls:
+  -Loadable prototype waveform
+  -Frequency multiplicators (maybe 8 to 16)
+  -Amplitude rule (the power p)
+  -Detuning
+  -It should just run through the oscillator with 8 or 16 different increments. Maybe the superwave 
+   oscillator could be repurposed - we just need to use a different set of frequencies.
+
+----------------------------------------------------------------------------------------------------
+Dual Resonance Filter (Format, BiReso, DualReso, ResoPair, ...)
+
+- 2 peaking equalizers
+- Controls:
+  - Freq: controls freq of 1st filter (typically the upper, with higher center freq)
+  - Interval: controls tuning of 2nd filter in terms of semitones with respect to the 1st
+  - Q/Bandwidth: controls both bandwidths
+  - Bandwidth-spread: controls bandwidth offset (in octaves) of 2nd filter wrt 1st, +-1 oct for 
+    example - or maybe in semitones)
+  - Gain
+  - Gain spread
+  - Maybe have an optional 3rd filter that is lowpass in nature or: make the 2nd (upper) filter 
+    morphable between peak and lowpass. 
 
 -------------------------------------------------------------------------------
 Z-Transform
