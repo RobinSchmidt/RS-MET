@@ -526,3 +526,24 @@ protected:
 
 // how about using spatial pressure gradients and sound-velocities, i.e. vector-fields instead of
 // a (scalar) pressure field?
+
+//=================================================================================================
+
+/** Some experimental and prototypical implementations of functions related to solving the 1D wave 
+equation. */
+
+template<class T>
+class rsWaveEquation1D_Proto
+{
+
+public:
+
+  static void stepLeapFrog(std::vector<T>& u, std::vector<T>& u1);
+
+  /** Given the desired initial displacements in u at time instant n = 0, this function produces 
+  the corresponding values u1 for time instant n = -1. These two initial conditions u[n=0] and
+  u[n=-1] are needed to get the iteration scheme started. */
+  static void initForLeapFrog(const std::vector<T>& u, std::vector<T>& u1);
+
+};
+// Maybe move up directly after rsWaveEquation1D

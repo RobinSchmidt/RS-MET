@@ -405,11 +405,26 @@ void rsRectangularRoom<T>::computeLaplacian3D(const rsMultiArray<T>& u, rsMultiA
 //  coordinates - there are so many other possibilities...
 
 
-
-
 //=================================================================================================
 
-/*
+template<class T>
+void rsWaveEquation1D_Proto<T>::stepLeapFrog(std::vector<T>& u, std::vector<T>& u1)
+{
+  rsError("Not yet implemented");
+  // An implementation is available in the research repo in rsStepWaveEquation1D_3. It seems to 
+  // work and is ready to be moved over.
+}
+
+template<class T>
+void rsWaveEquation1D_Proto<T>::initForLeapFrog(const std::vector<T>& u, std::vector<T>& u1)
+{
+  rsError("Not yet implemented");
+}
+
+
+
+/*=================================================================================================
+
  Background:
 
 

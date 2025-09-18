@@ -47,6 +47,9 @@ namespace RAPT
 // move these instantioans into RaptInstantiations.cpp - at least those which are actually in 
 // the rapt library - some are not (yet) in this namespace, they can be kept here:
 
+
+// In RAPT namespace:
+
 template struct RAPT::rsFilterSpecificationZPK<float>;
 template struct RAPT::rsFilterSpecificationBA<float>;
 
@@ -58,6 +61,9 @@ template class RAPT::rsRatioGenerator<double>;
 template class RAPT::rsBlepOscArray<double, rsBlepReadyOscBase<double>, rsPolyBlep1<double, double>>;
 template class RAPT::rsBlepOscArray<double, rsBlepReadyOscBase<double>, rsPolyBlep2<double, double>>;
 template class RAPT::rsBlepOscArray<double, rsBlepReadyOscBase<double>, rsTableMinBlep<double, double>>;
+
+
+// In global namespace:
 
 template class rsSyncPhasor<double, rsPolyBlep1<double, double>>;
 template class rsSyncPhasor<double, rsPolyBlep2<double, double>>;
@@ -72,6 +78,7 @@ template class rsDualBlepOsc<double, rsTableMinBlep<double, double>>;
 
 template class rsHeatEquation1D<double>;
 template class rsWaveEquation1D<double>;
+template class rsWaveEquation1D_Proto<double>;
 template class rsRectangularMembrane<double>;
 template class rsRectangularRoom<float>;
 
