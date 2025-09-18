@@ -334,9 +334,9 @@ public:
   The vector u contains the wave variable of displacement and u1 contains the displacement one step
   before, i.e. the unit delayed displacement. The scheme is derived by replacing spatial and 
   temporal derivatives in the wave equation by central difference approximations. The resulting 
-  scheme is known as leapfrog recursion (see page 671). This scheme has some nice properties: It is
-  efficient, stable and even exact at the spatial sample points. Another noteworthy feature is that
-  it is equivalent to a numerical solver based on waveguides. ...TBC...
+  scheme is known as leapfrog recursion (see (2) page 671). This scheme has some nice properties: 
+  It is efficient, stable and even exact at the spatial sample points. Another noteworthy feature 
+  is that it is equivalent to a numerical solver based on waveguides. ...TBC...
 
   See:
   https://ccrma.stanford.edu/~jos/pasp/Finite_Difference_Schemes_I.html

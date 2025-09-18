@@ -529,15 +529,18 @@ void GNUPlotter::setGrid(bool x, bool y, bool x2, bool y2, bool z)
   addCommand(s);
 }
 
-void GNUPlotter::setLogScale(std::string axes, double /*base*/, bool shouldBeLogarithmic)
+void GNUPlotter::setLogScale(std::string axes, double base, bool shouldBeLogarithmic)
 {
   std::string s;
   if( !shouldBeLogarithmic )
     s += "un";
-  s += "set logscale " + axes + "\n";
+  //s += "set logscale " + axes + "\n";                             // Old
+  s += "set logscale " + axes + " " + std::to_string(base) + "\n";  // New
   addCommand(s);
 }
-// todo: use base or get rid of the parameter
+// todo: use base or get rid of the parameter, see:
+// https://stackoverflow.com/questions/47062230/using-a-log-scale-on-gnuplot
+// ..ok done. But: I think, we should really use an int parameter for the base
 
 void GNUPlotter::setRange(double xMin, double xMax, double yMin, double yMax, double zMin,
   double zMax)
