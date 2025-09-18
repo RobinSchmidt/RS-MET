@@ -242,17 +242,19 @@ void rsWaveEquation1D_Proto<T>::initForLeapFrog(const std::vector<T>& u, std::ve
   rsAssert(rsAreSameSize(u, u1));
 
   int M = (int)u.size();
-  rsZero(u1);
+  rsZero(u1);                      // Init to zero to prepare for accumulative scattering.
   for(int m = 1; m < M-1; m++)
   {
-    u1[m-1] += 0.5 * u[m];
-    u1[m+1] += 0.5 * u[m];
+    u1[m-1] += 0.5 * u[m];         // u[m] gets scattered into u1[m-1]..
+    u1[m+1] += 0.5 * u[m];         // ..and u[m+1] with weights 0.5
   }
   u1[0] = u1[M-1] = 0;             // Because after the loop, they may not be zero anymore.
+
+  // One could perhaps also use a gather algorithm rather than this scatter algorithm above. 
+  // Maybe that would be cleaner and more efficient (overwrites instead of pre-zeroing, needs just
+  // one mul+add per iteration). But it would be less intuitive, so maybe implement both variants. 
+  // Use scattering for a prototype version and gathering for use in production.
 }
-// Needs tests
-
-
 
 
 //=================================================================================================
