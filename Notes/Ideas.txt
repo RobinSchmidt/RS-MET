@@ -541,3 +541,28 @@ Arbitrary order filter
   interesting features happen to be, i.e. not in the flat zone? Maybe where the curvature is 
   maximal? Or maybe it actually is the flat zone after the cutoff that is of greatest interest? 
   After all, we want to approximate the *slope* of the desired fractional order filter.
+
+----------------------------------------------------------------------------------------------------
+2D Wave Equation solver
+
+- Implement a numerical solver for the 2D wave equation. The boundary conditions of fixed walls as 
+  well as hard obstacles can be implemented by keeping a std::vector<rsVector2D<T>> which contains 
+  all the points that shall remain fixed and can be configured by the user. Or better: use a 2D 
+  array of "mask" or "fixation" values. After the update step, multiply all displacements by that 
+  mask. A value of 0 at the point x,y means that the value is reset back to zero after the udpate, 
+  so it's as if it has remained at zero. Where the mask is 1, the medium is free to move without 
+  obstruction. We could allow also for values in between 0 and 1 and we could even allow to import
+  (monochrome) images and/or let the user "draw" the walls, obstacles, etc.
+  
+- Due to the fact that we can control the displacement by the mask, we can generally implement 
+  periodic boundary conditions, i.e. the the domain have the topology of a (a surface of) torus. If
+  we want reflections at the boudaries of the rectangular domain, we can just configure the mask
+  accordingly (draw a rectangle of 0.0 at the outer rim).
+  
+- Allow drawing of simple shapes (lines, circles, rectangles, triangels), rendering of more complex 
+  shapes (maybe turtle graphics with L-systems) and image processing rechniques on the mask such as 
+  invert, contrast, brightness, etc.  
+
+- Maybe call it BranePainter - because we can "paint" the features of a membrane. Maybe visualize 
+  the waves on a GUI - maybe scale time appropriately or create a static (or slowly changing) image 
+  of the energy distribution
