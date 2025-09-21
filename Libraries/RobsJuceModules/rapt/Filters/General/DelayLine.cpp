@@ -216,10 +216,11 @@ ToDo:
 
 - Use only one pointer for tapIn and tapOut (see Julius Smith's PASP-book)
 
-- Maybe add functions getMaxDelayLineLength() which should return maxDelay+1. Same for the actual
-  delay. The +1 is a trivial transformation but the point of having these functions lies in their
-  documentation value rather than in doing useful work. Their existence communicates to the user 
-  that the delay and delay line length are not the same (they differ by 1). That may help to avoid
-  off-by-one bugs in client code. I know because I had such a bug in rsPlotDelayLineContent().
+- Maybe add functions getMaxDelayLineLength() (or just getMaxLength() or getMaxLengthInSamples()) 
+  which should return maxDelay+1. Same for the actual delay. The +1 is a trivial transformation but
+  the point of having these functions lies in their documentation value rather than in doing useful
+  work. Their existence communicates to the user that the delay and delay line length are not the 
+  same (they differ by 1). That may help to avoid off-by-one bugs in client code. I know because I 
+  had such a bug in rsPlotDelayLineContent().
 
 */

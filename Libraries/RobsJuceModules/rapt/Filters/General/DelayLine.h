@@ -52,7 +52,9 @@ public:
     // ToDo: Document why we need to add maxDelay+1. One might expect that we should add maxDelay 
     // and suspect a bug here. But apparently, it's actually correct that way. There's a unit test
     // for this and it passes just fine. I think it's related to the maxDelay always being a power 
-    // of two minus one.
+    // of two minus one. ...well maxDelay+1 is actually the length of the allocated memory segment
+    // so that seems to be a plausible explanation. Another argument for introducing a function
+    // like getLengthInSamples().
   };
 
   /** Returns the maximum delay that this delayline can produce */
