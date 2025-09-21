@@ -594,7 +594,8 @@ void rsPlotDelayLineContent(const RAPT::rsDelay<T>& dl1,
     // Maybe let the use switch between showing the full content (i.e. the full allocated memory)
     // or only up to the used length - current, we hrdcoded the used length:
     //int N = dl.getMaxDelayInSamples();
-    int N = dl.getDelayInSamples();
+    //int N = dl.getDelayInSamples();    // Maybe we need to use +1?
+    int N = dl.getDelayInSamples() + 1;  // Yes, I think, the actual length is delay+1
     std::vector<T> cnt(N);
     for(int n = 0; n < N; n++)
       cnt[n] = dl.readOutputAt(n);

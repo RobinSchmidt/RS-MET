@@ -57,7 +57,12 @@ public:
 
   /** Returns the maximum delay that this delayline can produce */
   int getMaxDelayInSamples() const { return maxDelay; }
-  // Maybe rename to getMaxDelay
+  // Maybe rename to getMaxDelay. Same for the other delay setters/getters. Maybe adopt the 
+  // convention that in higher level classes that accept a delay time in a physical unit (i.e. 
+  // seconds), the functions should be named setDelayTime() etc. But then it seems a bit tedious to
+  // apply that convention consistently. What about envelope followers and compressors, etc.? Should
+  // we then also call their setters setAttackTime() rather than setAttack() etc.? For consistency,
+  // we really should. We'll see....
 
   /** Returns the value of the transfer function H(z) at the given value of z. If M is the delay in
   samples, then H(z) = z^-M. The function has its own template parameter TArg because the argument 
@@ -293,8 +298,15 @@ RS_INLINE void rsDelay<T>::incrementTapPointers()
   //tapOut = (++tapOut) & maxDelay;
     // it's crucial to use pre-increment "++tapIn" rather than post-increment "tapIn++" because
     // with post-increment, the bitmask will be applied before incrementing which results in
-    // reading/writing one sample behind the allocated memory
+    // reading/writing one sample behind the allocated memory. OK - it seems the parentheses solve
+    // it also. But maybe switch back to pre-increment for potential performance gains (unlikely
+    // but still)
 }
+// Maybe rename to incrementTaps() or updateTaps(). It's shorter, more descriptive and also more
+// abstract in the desireable sense of hiding more implementation details that are suppsoed to be 
+// irrelevant to the user. The user isn't interested in the questions whether or not we use 
+// pointers (and strictly speaking, we don't - we use integers as pointer-offsets) and also whether
+// we increment or decrement something or doing something even more weird.
 
 
 
