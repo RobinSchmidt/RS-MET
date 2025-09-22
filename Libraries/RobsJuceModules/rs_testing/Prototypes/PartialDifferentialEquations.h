@@ -315,8 +315,8 @@ equation.
 
 References:
 
-  (1) Numerical Sound Synthesis (Stefan Bilbao)
-  (2) Physical Audio Signal Processing (Julius O. Smith)
+  NSS   Numerical Sound Synthesis (Stefan Bilbao)
+  PASP  Physical Audio Signal Processing (Julius O. Smith)
 
 */
 

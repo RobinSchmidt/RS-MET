@@ -192,7 +192,7 @@ void rsWaveEquation1D_Proto<T>::stepLeapFrog(std::vector<T>& u, std::vector<T>& 
   int M = (int)u.size();
   using Vec = std::vector<T>;
 
-  // Compute new shape of the string using the finite difference scheme:
+  // Compute new shape of the interior points of the string using the finite difference scheme:
   Vec uNew(M);
   for(int m = 1; m < M-1; m++)
     uNew[m] = u[m+1] + u[m-1] - u1[m];
@@ -202,6 +202,57 @@ void rsWaveEquation1D_Proto<T>::stepLeapFrog(std::vector<T>& u, std::vector<T>& 
   u  = uNew;
 
   // ToDo:
+  // 
+  // - Compute new values for boundary points uNew[0] and uNew[M-1]. Maybe something like (just a 
+  //   guess):  uNew[0] = u[1] - 0.5 * u1[0]; uNew[M-1] = u[M-2] - 0.5 * u1[M-1]  could work? In 
+  //   the case of a fixed boundary, the update rule should ensure that uNew[0], uNew[M-1] should 
+  //   be fixed at zero, so maybe in this case we would require 0 = u[1] + c * u1[0]. Or maybe 
+  //   make an ansatz like  uNew[0] = a0*u[0] + a1*u[1] + b0*u1[0] + b1*u1[1]  so to compute the
+  //   boundary value at n+1, we would use past and present values (at n-1 and n) at the boundary
+  //   and one sample into the string. Maybe the required coeffs can be figured out by setting up
+  //   equations from the desired boundary conditions like  uNew[0] = 0  for a zero-displacement
+  //   condition. That would give us one equation: 0 = a0*u[0] + a1*u[1] + b0*u1[0] + b1*u1[1].
+  //   Maybe we can assume that  u[0] = 0  and  u1[0] = 0  because the displacement should have 
+  //   been zero at the two previous time steps (n, n-1), too. That would reduce the number of 
+  //   undetermined coeffs from 4 to 2. That would leave us with 0 = a1*u[1] + b1*u1[1]. I have no
+  //   idea if that leads to anywhere. Look up the PASP book for how to implement boundary 
+  //   conditions (page 691 ff). Or maybe NSS.
+  // 
+  // - One ad-hoc way to update the boundary points that came to my mind is to recall the 
+  //   derivation of the wave equation. In it, the string is approximated by a bunch of masses 
+  //   (lined up as string) connected by springs. Then, the force on each mass at position m is 
+  //   computed as the sum of the forces exerted on it due to its neighbor masses. This yields the
+  //   difference of differences of displacement, which, when taking the limit of the distance h 
+  //   between the masses going to zero, becomes the second spatial derivative. A point at the 
+  //   boundary, say at m = 0 would only have one neighbor at m = 1. So, instead of considering the
+  //   (scaled) difference of differences (y[n+1]-y[n-1])/(2*h) as the source of the force, we 
+  //   may just use the right-sided difference (y[1]-y[0])/h (and similarly, a left-sided 
+  //   difference (u[M-2]-u[M-1])/h for the right end. Note the reversal of direction. It's 
+  //   intentional.). I think, when taking this to the limit of h -> 0, this  would lead to 
+  //   u_tt = -u_x (rather than u_tt = u_xx as it is for the inner points). So, maybe
+  //   using this ansatz we can derive a special update formula for the boundary point u[0]. Maybe 
+  //   it's just du[0] = -k * (u[1]-u[0]) where du is the update (such that we update the string 
+  //   via u[0] += du[0]). But maybe we can also somehow incorporate u1[0] and u1[1] for a higher 
+  //   order scheme. The constant k could be related to the reflection coeff. If its zero, the 
+  //   boundary is fixed. Maybe it should be in the range 0 <= k <= 1 or maybe -1 <= k <= 1 
+  //   although I'm not sure, if negative values make any sense here. Maybe experiment with 
+  //   different values of k and maybe also with different formulas and compare the results to
+  //   the output of the shifting algo and/or the waveguide algo (which both already support 
+  //   reflection coeffs). Maybe as preliminary, re-derive the leapfrog integration scheme for the
+  //   interior points to get a sense, which boundary formula fits together most naturally with 
+  //   this scheme. I think, different integration schemes are the result of different 
+  //   approximations of the derivatives. In the leapfrog algo, we use central differences for both
+  //   spatial and temporal derivatives. And then the resulting update rule possibly needs to be
+  //   reformulated in terms of the past displacement u[m, n-1], u[m, n-2]. Maybe in such a 
+  //   re-derivation, we could also figure out the appropriate update formulas for a formulation
+  //   where we use u and v = u - u1 (displacement and velocity) as state variables rather than
+  //   two past displacement states. I think, such a scheme would be more easy to interpret 
+  //   physically. Although maybe the approximation for the velocity may not really be u - u1. 
+  //   Maybe it will also be a 2nd order approximation like v = (u[n]-u[n-2])/2 or similar. Figure
+  //   out, why the schemes in the literature do not use more natural physical state variables in 
+  //   the first place. Maybe it's because the scheme is more computationally efficient this way? 
+  //   In this case, implement both. The "physical" scheme for prototyping and reference in unit 
+  //   tests and the "delay-based" scheme for production.
   //
   // - Try to reformulate it in terms of u and v := u - u1, i.e. in terms of the displacement and
   //   the "velocity" v where the velocity is taken to be the difference of the displacement "now"
@@ -250,10 +301,18 @@ void rsWaveEquation1D_Proto<T>::initForLeapFrog(const std::vector<T>& u, std::ve
   }
   u1[0] = u1[M-1] = 0;             // Because after the loop, they may not be zero anymore.
 
-  // One could perhaps also use a gather algorithm rather than this scatter algorithm above. 
-  // Maybe that would be cleaner and more efficient (overwrites instead of pre-zeroing, needs just
-  // one mul+add per iteration). But it would be less intuitive, so maybe implement both variants. 
-  // Use scattering for a prototype version and gathering for use in production.
+  // Notes:
+  //
+  // - The final  u1[0] = u1[M-1] = 0;  is just for cleanliness. The leapfrog time stepper function
+  //   stepLeapFrog() does not actually read from these values anyway so these values don't affect 
+  //   the produced result. But maybe in an implementation that deals correctly with "moving 
+  //   boundaries", they should be taken into account? Maybe in some separate update steps that 
+  //   apply specifically to u[0] and u[M-1]. See ToDo comments there.
+  //
+  // - One could perhaps also use a gather algorithm rather than this scatter algorithm above. 
+  //   Maybe that would be cleaner and more efficient (overwrites instead of pre-zeroing, needs 
+  //   just one mul+add per iteration). But it would be less intuitive, so maybe implement both 
+  //   variants. Use scattering for a prototype version and gathering for use in production.
 }
 
 
