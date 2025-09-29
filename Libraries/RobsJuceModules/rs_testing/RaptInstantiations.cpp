@@ -452,7 +452,7 @@ template int RAPT::rsPrimeModularInverse2(const int& x, const int& p);
 template int RAPT::rsChineseRemainderTheorem(int* remainders, int* moduli, rsUint32 count);
 //template rsUint32 RAPT::rsChineseRemainderTheorem(rsUint32* remainders, rsUint32* moduli, rsUint32 count);
 template void RAPT::rsFillPrimeTable(rsUint32 *primes, rsUint32 numPrimes, rsUint32 bufferSize);
-
+template void RAPT::rsFindPrimesUpTo(std::vector<int>& primes, int upperLimit);
 
 
 template class RAPT::rsModularInteger<rsUint64>;

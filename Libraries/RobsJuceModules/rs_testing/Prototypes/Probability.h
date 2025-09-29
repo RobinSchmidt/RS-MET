@@ -8,7 +8,7 @@
 /** A class for representing a value in three valued logic. The truth value of a proposition can be
 either false (0 or F), true (1 or T) or unknown (2 or U). */
 
-class TriLogic
+class TriLogic   // Maybe rename to TernaryLogic
 {
 
   /** Negation. not(U) = U.
@@ -53,17 +53,20 @@ class TriLogic
 protected:
 
   char value = 0;  // 0: false, 1: true, 2: unknown
+                   // ToDo: Maybe use +1: true, -1 false, 0: unknown
 
 };
 // todo: maybe explore other binary functions besides and/or and their algebraic properties. Maybe
 // addition and multiplication modulo 3 could be useful and/or have interesting algebraic
 // properties (algebraic structure should be isomorphic to (Z_3,+,*) )
+//
+// Look up the "balanced ternary" number system. Donald Knuth praised it as the most elegant of all
+
+
 
 
 // Functions for continuous logic, where the truth values are seen as probability of an proposition
 // to be true.
-
-
 
 /** Given a probability p of an event to occur, this returns the probability of the event to not
 occur, which is just 1-p. */
@@ -98,8 +101,6 @@ between events B,C, this function computes the correlation between events A,C. *
 //inline double rsCorrelationComposition(double cab, double cbc) { return 0; }
 // not yet implemented ...i hope that somehow a formula can be derived via going through the
 // formulas that define correlation in terms of conditional probabilities
-
-
 
 
 

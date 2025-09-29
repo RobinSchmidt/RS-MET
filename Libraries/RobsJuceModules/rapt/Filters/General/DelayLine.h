@@ -133,6 +133,11 @@ public:
 
   RS_INLINE void writeInput(T in);
 
+
+  RS_INLINE void writeInputAt(T in, int delay);
+
+
+
   /** Adds some signal value to the current tapIn-position in the delayLine - useful for
   feedback and crossfeedback stuff. */
   RS_INLINE void addToInput(T signalToAdd);
@@ -258,6 +263,12 @@ template<class T>
 RS_INLINE void rsDelay<T>::writeInput(T in)
 {
   delayLine[tapIn] = in;
+}
+
+template<class T>
+RS_INLINE void rsDelay<T>::writeInputAt(T in, int delay)
+{
+  delayLine[(tapIn-delay) & maxDelay] = in;
 }
 
 template<class T>

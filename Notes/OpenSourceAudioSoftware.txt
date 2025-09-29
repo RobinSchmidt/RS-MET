@@ -1007,6 +1007,12 @@ Paul:
 https://github.com/baconpaul
 -Lots of repos, that I do not yet have listed above -> do it!
 
+ArtV Audio:
+https://codeberg.org/RafaGago/artv-audio   (seems to be the new main repo)
+https://github.com/RafaGago/artv-audio     (seems to be the old legacy repo)
+-MixMaxTrix: https://www.kvraudio.com/product/mixmaxtrix-by-artv (Mixing/Routing)
+-TurboPaco:  https://www.kvraudio.com/product/turbo-paco-by-artv (Reverb)
+
 ----------------------------------------------------------------------------------------------------
 Online Tools
 

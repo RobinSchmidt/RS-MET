@@ -139,4 +139,22 @@ then convert to target sample-rate
 0s and 1s: just count the 1s, and if there are n too many, change n randomly chosen 1-cells to 0
 (or the other way around)
 
+
+See also:
+
+https://www.youtube.com/watch?v=3aewaff1494  Ternary Computing Breakthrough Explained
+
+Balanced Ternary Logic Circuits (Playlist)
+https://www.youtube.com/watch?v=EVDI0rgQXcQ&list=PLwgb0qEIYnq-t7R9lRGmh-Czmdxo74yCD
+
+Counterfeit Coins and Balanced Ternary #SoME3
+https://www.youtube.com/watch?v=WXIENh49mLo
+
+The Magic of Balanced Bases
+https://www.youtube.com/watch?v=RcQ218t8ZO0
+
+The System That Could Replace Binary And Change Computers FOREVER
+https://www.youtube.com/watch?v=R4achTEgXEw
+
+
 */
