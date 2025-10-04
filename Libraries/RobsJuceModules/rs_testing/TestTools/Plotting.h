@@ -581,7 +581,7 @@ inline void addDataFunction(GNUPlotter& plt, const std::function<T(T)>& f, T xMi
 // This function could go into class GNUPlotter itself
 
 
-/** Plots the content of the two given delaylines. The pruposes of this function is to be able to
+/** Plots the content of the two given delaylines. The purposes of this function is to be able to
 check if two delaylines have the same or related content such that one may think about getting rid 
 of one of them. */
 template<class T>
@@ -610,6 +610,8 @@ void rsPlotDelayLineContent(const RAPT::rsDelay<T>& dl1,
   rsPlotVectors(cnt1, cnt2);
 
   // ToDo:
+  // 
+  // - Maybe the class rsDelay should provide a member function getContent(TSig *buf, int length).
   //
   // - Done. -> Document it!
   //   Maybe optionally reverse the content of the 2nd delay line. This may be convenient for
