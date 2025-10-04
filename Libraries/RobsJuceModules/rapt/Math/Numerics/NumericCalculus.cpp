@@ -479,6 +479,15 @@ Ideas:
   RootFinder or RootFinding, Optimizer or Optimization, Differentiation, Integration, 
   InitialValueSolver/ing, BoundaryValueSolver/ing, ...
 
+- Implement algorithms for numerical integration and differentiation pairwise in such a way that 
+  they cancel each other out exactly (up to roundoff error). That could be useful in DSP algorithms
+  when we want to create algorithms that do:  integrate -> process -> differentiate  for some 
+  arbitrary process (say waveshaping) and we want the whole algo to behave transparently when the 
+  "process" is a "do nothing" operation. Maybe view it in terms of DSP filters. Maybe assume a 
+  sample spacing of 1 and start with a trapezoidal integrator with 1 pole at z = 1 and 1 zero at 
+  z = -1. Then define the corresponding differentiator by swapping the pole and the zero. Then drag
+  the pole and zero inward a little to make a leaky (trapezoidal) integrator and a corresponding 
+  differentiator such that both are strictly stable when seen as 1st order IIR filters.
 
 
  Some potentially relevant resources:
