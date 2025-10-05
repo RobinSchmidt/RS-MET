@@ -240,6 +240,27 @@ protected:
   // ToDo: use std::vector for the delayLine. We may then get rid of maxDelay because it's stored
   // in the vector's size. ...or maybe capacity - depends on how we implement it.
 
+  // Make objects of this class non-copyable:
+  rsDelay(const rsDelay&) = delete;
+  rsDelay& operator= (const rsDelay&) = delete;
+  // We have a managed resource in this class, namely the pointer "delayLine". This requires us to
+  // be very careful when (explicitly or implicitly) copying objects. Such copy-attempts can happen
+  // automatically when one uses a std::vector of objects of rsDelay or any class that has rsDelay 
+  // members. This can be solved by either correctly implementing the copy constructor and 
+  // assignment operator for rsDelay or just flatly disallowing copying as we do here. Well, I 
+  // guess we could also just use a std::vector instead of the raw pointer for the delay memory 
+  // pointed to by "delayLine". In this case, the default copy constructor and assignment operator
+  // would do the right thing, namely, create a deep copy of the vector. With deleted copy 
+  // constructor and assignment operator, any attempt to create a copy will lead to a compilation 
+  // error. This way of handling the problem forces client code to think more carefully about when 
+  // and how to construct objects and be more explicit about it. This may be less convenient but it
+  // is a good thing from a performance point of view because we avoid accidental copying of 
+  // objects. I had such accidental copies happening with rsWaveGuideNetwork (in the research repo)
+  // where I initially tried to use a std::vector of objects of type rsWaveGuide. That caused 
+  // memory bugs. The class now uses a std::vector of (smart) pointers to rsWaveGuide and the old 
+  // and buggy code now won't even compile anymore thanks to deleting the copy constructor and 
+  // assignment operator here.
+
 };
 
 //-------------------------------------------------------------------------------------------------
