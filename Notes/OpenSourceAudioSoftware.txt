@@ -439,6 +439,11 @@ https://forum.juce.com/t/lowest-latency-real-time-pitch-detection/51741
 -Implements various algorithms: YIN, Cepstrum, max. likelihood, extended Kalman filter
 -Matlab files and JUCE plugin (only Mac/AU support so far)
  
+OnsetDetector:
+https://github.com/Mrugalla/OnsetDetector 
+https://www.kvraudio.com/forum/viewtopic.php?t=624211 
+-Onset detector based on multiband differential envelope technology (I guess from the description on 
+ KVR)
 
 ----------------------------------------------------------------------------------------------------
 MIDI plugins
@@ -798,6 +803,13 @@ https://github.com/aatishb/dissonance
 https://www.youtube.com/watch?v=tCsl6ZcY9ag  The Physics Of Dissonance
 -Very nice interactive presentation of the dissonance theory laid out in William Sethares' book 
  "Tuning, Timbre, Spectrum, Scale"
+
+Voc (Kelly-Lochbaum model of vocal tract in C):
+https://pbat.ch/proj/voc/
+https://pbat.ch/res/voc/voc.pdf
+https://github.com/paulbatchelor/voc
+Based on this:  https://dood.al/pinktrombone/  ..which is a lot of fun!
+
  
 Video series on radar: 
 https://github.com/brunerm99/videos 
@@ -953,6 +965,12 @@ https://github.com/ComposersDesktop/CDP8
 SoundThread:
 https://github.com/j-p-higgins/SoundThread
 -Node based graphical user interface for The Composers Desktop Project
+
+Guitarix:
+https://guitarix.org/
+https://sourceforge.net/projects/guitarix/
+-"...virtual guitar amplifier for Linux running on Jack Audio Connection Kit..."
+-Supports loading of LV2 plugins but is itself not available as a plugin, it seems.
 
 ----------------------------------------------------------------------------------------------------
 Audio AI projects and related stuff

@@ -384,3 +384,28 @@ void OnsetDetector::fitQuadratic(float *x, float *y, float &a, float &b, float &
   //  implementation somewhere, I think. I'm not sure about whether or not the API matches, though.
   //  Probably not.
 }
+
+//=================================================================================================
+/*
+
+See also:
+
+- Open source for an onset detector algorithms based on multiband differential envelope technology 
+  (I guess from the description on KVR)
+  https://github.com/Mrugalla/OnsetDetector 
+  https://www.kvraudio.com/forum/viewtopic.php?t=624211 
+  -Some brainstorming ideas: maybe a max operation (rather than a sum) of the different band outputs
+   could make sense
+  -Maybe one could look at the time-responses of the bandpasses and choose bandpass designs that 
+   optimize the time response.
+  -Maybe the bandpasses show time domain resonances at predictable frequencies (center or bandedge)
+   If so, one could try to connect the predicted peaks (of the absolute value) with linear segments.
+  -Maybe one could try to use Hilbert-transform filters, or a pair of allpasses with 90° relative
+   phase shift
+  -Since we are doing bandpass filtering anyway, one could perhaps try to use complex bandpasses
+   that let only positive frequencies pass - pretty much like how the quadrature networks rotates a
+   halfband lowpass by 90° in the z-plane, we could try to rotate lowpass with arbitrary bandwidth
+   by an arbitrary angle to isolate a (positive) band. Then take the complex absolute value to 
+   obtain a bandpass envelope.
+
+*/
