@@ -346,9 +346,9 @@ public:
 
   void setToAllpass(TPar newAllpassCoeff) 
   { 
-    bl =  newCoeff;
+    bl =  newAllpassCoeff;
     ff =  TPar(1);
-    fb = -newCoeff;
+    fb = -newAllpassCoeff;
   }
   // Needs tests. The filter should be equivalent to rsAllpassDelay with this setting.
 

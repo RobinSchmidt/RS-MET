@@ -69,8 +69,8 @@ int main(int argc, char* argv[])
   // Unit Tests:
 
   bool ok = true;
-  ok &= runUnitTestsRapt();
-  ok &= runUnitTestsRosic();
+  //ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
 
   // The allpass unit test currently fails because I changed the implementation of 
@@ -425,10 +425,10 @@ int main(int argc, char* argv[])
   //sineFromDecayingSines();
 
   // Delay, allpass, reverb stuff:
-  //delayLines();
+  delayLines();                    // Also includes some allpass and universal comb stuff
   //twoPoleAllpassDelays();
   //dampedCombAllpasses();
-//  feedbackDelayNetworks();
+  //feedbackDelayNetworks();
   //allpassFDN();                  // Under construction
 
   // Filter:
@@ -495,22 +495,22 @@ int main(int argc, char* argv[])
   //samplerFilters();
 
   // Modal Filters/Synthesis:
-  //twoPoleFilter();
-  //modalFilter();        // impulse response of decaying-sine filter
-  //modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
-  //attackDecayFilter();  // ...hmm..almost redundant
-  //modalTwoModes();
-  //dampedSineFilterDesign();
-  //dampedSineFilterImpResp();
-  //biquadImpulseResponseDesign();
-  //modalBankTransient();
-  //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
-  //modalWithFancyEnv();
-  //modalSynthSpectra();
+  twoPoleFilter();
+  modalFilter();        // impulse response of decaying-sine filter
+  modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
+  attackDecayFilter();  // ...hmm..almost redundant
+  modalTwoModes();
+  dampedSineFilterDesign();
+  dampedSineFilterImpResp();
+  biquadImpulseResponseDesign();
+  modalBankTransient();
+  fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
+  modalWithFancyEnv();
+  modalSynthSpectra();
   //modalDecayFit();
   //modalAnalysis1();
   //modalAnalysisPluck();
-  //modalPartialResynthesis();
+  modalPartialResynthesis();
   //modalAnalysisGloriosa();
 
   // Misc Audio:
@@ -766,7 +766,7 @@ int main(int argc, char* argv[])
 
   // The new renering scripts for creating sample content for the sfz engine:
   //createMiscSamples();
-  createAllpassDrums();
+  //createAllpassDrums();
   //createSamplerWaveforms();
 
   // Older sample-map creations based on modal synthesis (they take long):

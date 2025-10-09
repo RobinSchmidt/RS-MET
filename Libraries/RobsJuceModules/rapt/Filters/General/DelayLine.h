@@ -241,8 +241,8 @@ protected:
   // in the vector's size. ...or maybe capacity - depends on how we implement it.
 
   // Make objects of this class non-copyable:
-  rsDelay(const rsDelay&) = delete;
-  rsDelay& operator= (const rsDelay&) = delete;
+  //rsDelay(const rsDelay&) = delete;
+  //rsDelay& operator= (const rsDelay&) = delete;
   // We have a managed resource in this class, namely the pointer "delayLine". This requires us to
   // be very careful when (explicitly or implicitly) copying objects. Such copy-attempts can happen
   // automatically when one uses a std::vector of objects of rsDelay or any class that has rsDelay 
@@ -260,6 +260,16 @@ protected:
   // memory bugs. The class now uses a std::vector of (smart) pointers to rsWaveGuide and the old 
   // and buggy code now won't even compile anymore thanks to deleting the copy constructor and 
   // assignment operator here.
+  // Oh - but with these deletions, some code doesn't compile anymore now. For example class
+  // rsAllpassDelayNested::setMaxNumStages(). It is because the the class has a std::vector of
+  // rsDelay objects which is being resized there. So, I temporarily commented these deletions out 
+  // to make the code compile again. I think, the best way to fix this issue for real would be to 
+  // not use a raw pointer for the delay line memory and instead use a std::vector. Then, it would
+  // be possible to copy objects of class rsDelay because the when a std::vector is being copied,
+  // a deep copy of the vector's content is being created which is the behavior, we need. Creating
+  // copies of objects of class rsDelay is still a thing that should be done only sparingly in a 
+  // realtime plugin context, i.e. ideally only on initialization time. But for this, we do indeed 
+  // seem to need to facilitate copying.
 
 };
 

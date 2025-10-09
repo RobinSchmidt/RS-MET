@@ -291,7 +291,7 @@ void OnsetDetector::computeSpectralFlux()
   // loop over the blocks:
   while( blockEnd < length )
   {
-    // compute magnitude spectrum fo current block:
+    // compute magnitude spectrum for current block:
     createComplexBlockForTransform(&signal[blockStart], complexSpectrum);
     smbFft(complexSpectrum, blockSize, -1);
     computeMagnitudes(complexSpectrum, magnitudes, blockSize);
@@ -390,7 +390,7 @@ void OnsetDetector::fitQuadratic(float *x, float *y, float &a, float &b, float &
 
 See also:
 
-- Open source for an onset detector algorithms based on multiband differential envelope technology 
+- Open source for an onset detector algorithm based on multiband differential envelope technology 
   (I guess from the description on KVR)
   https://github.com/Mrugalla/OnsetDetector 
   https://www.kvraudio.com/forum/viewtopic.php?t=624211 

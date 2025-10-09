@@ -37,3 +37,25 @@
   should perhaps encode a negative DC by using a phase of pi
 
 - check rsFourierTransformerRadix2<T>::getRealSignalMagnitudesAndPhases - there seems to be a bug
+
+- Fix the API inconsistency where we use different sign conventions for the feedback coefficients
+  in direct form filters. This requires great(!) care because this is a (silent) breaking change 
+  for client code. Adopt one convention consistently throughout the whole library for all direct 
+  form filters. Use the one where the transfer function and difference equation in the case of a 
+  1-pole look like:
+
+    H(z) = (b0 + b1*z^-1) / (a0 + a1*z^-1) 
+    y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1]
+
+  I think, this convention is preferable because it matches the usual mathematical notation that is
+  used in the majority of the literature and I also use it in my own papers about filters.  Most of
+  the filter classes already follow the convention shown above but not all of them do. The 
+  rsOnePoleFilter class is one example that uses the other and I think some of the RBJ-based 
+  biquads also currently use the other convention. The implementations of the cookbook design 
+  formulas also do, I think. Maybe there are more places. Usage of the other convention in the 
+  library is a historical accident. It may have been chosen because it (falsely?) assummed that 
+  having all plusses in the difference equation may be advantageous with regard to parallelization. 
+  I also found it more straightforward as a beginner back in the day. Using plusses in the 
+  difference equation is also the convention used in the (beginner friendly) book "The Scientist 
+  and Engineer's Guide to Digital Signal Processing" (aka dspguide) by Steven W. Smith and I think, 
+  I just adopted it from there in my early days of DSP programming.

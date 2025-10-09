@@ -127,7 +127,7 @@ void delayLineLinear()
 void delayLineAllpass()
 {
   // This basically replicates the code of delayLineLinear but with an allpass interpolated 
-  // delayline. Maybe templaize this function on the delayline type such that we can use the same
+  // delayline. Maybe templatize this function on the delayline type such that we can use the same
   // function for both types of delayline
 
   static const int N = 30;
@@ -174,7 +174,11 @@ bool universalCombVsOnePole()
 {
   // Compares outputs of a one pole filter and universal comb to show the correspondence between 
   // the two types filters. The universal comb can be seen as a generalization to a general 1st 
-  // order filter where the unit delay has been replaced by an arbitrary delay of M samples.
+  // order filter where the unit delay has been replaced by an arbitrary delay of M samples. This 
+  // test demonstrates this by setting up a 1-pole filter and a uninversal comb filter with M=1 and
+  // the same coefficients (up to different sign conventions for a1 unfortunately - an 
+  // inconsistency in the APIs of the respective classes). In this case, both filters are supposed 
+  // to produce the exact same impulse response which is what we verify here.
 
 
   bool ok = true;
@@ -189,7 +193,7 @@ bool universalCombVsOnePole()
   int  N  =  10;        // Number of samples to produce
   Real b0 =  0.75;      // Coeff for direct input
   Real b1 =  0.25;      // Coeff for delayed input
-  Real a1 = -0.5;       // Coeff for delayed output
+  Real a1 = -0.5;       // Coeff for delayed output (Negated or not? -> Document sign convention)
 
   // Set up one pole and obtain its impulse response:
   OnePole onePole;
@@ -200,7 +204,7 @@ bool universalCombVsOnePole()
   Comb comb;
   comb.setMaxDelayInSamples(10);
   comb.setDelayInSamples(1);
-  comb.setCoeffs(b0, b1, a1);
+  comb.setCoeffs(b0, b1, a1);  // Has apparently different sign convenction than the 1-pole
   Vec h2 = impulseResponse(comb, N, 1.0);
 
   // Compute error and check that it's within numerical tolerance:
@@ -222,6 +226,21 @@ bool universalCombVsOnePole()
   //
   // - There is actually no difference in numerical roundoff error so we use use 0.0 as our error 
   //   tolerance here. Maybe try less nice coefficients and see if we still can use zero tolerance.
+  //
+  // - Fix the API inconsistency - but with great(!) care because this is a (silent) breaking 
+  //   change for client code. Adopt the convention that the transfer function is 
+  //   H(z) = (b0 + b1*z^-1) / (a0 + a1*z^-1)  such that  y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1]
+  //   consistently throughout the whole library for all direct form filters. Most of them already
+  //   follow this convention but not all. The 1-pole is one example and I think some of the 
+  //   RBJ-based biquads also currently use the other convention. Maybe there are more.
+}
+
+void combVsAllpassPhase()
+{
+  // Under construction...
+
+  // We plot the phase response, group delay and ring response for a comb and Schroeder allpass
+  // with the same feedback coefficient
 }
 
 void universalCombResponses()
@@ -265,9 +284,6 @@ void universalCombResponses()
 
   int M = 10;   // Delay to be used in all plots below.
 
-
-
- 
 
   // Feedback combs:
   //                     BL    FF    FB 
@@ -418,32 +434,57 @@ void universalCombResponses()
   //   the frequency response of the filter in the feedback path 
 }
 
-void combVsAllpassPhase()
+void combVsModalBank()
 {
-  // Under construction...
+  // We create comparative plots of the impulse- and frequency responses of a feedback comb filter
+  // and a bank of modal filters. We want to adjust the modes of the modal bank in such a way as 
+  // to match the modes of the comb in terns of center frequency, amplitude, decay time and ideally
+  // also phase. One goal is to figure out how to correctly set up the start phases of the modal 
+  // filters.  ...TBC...
 
-  // We plot the phase response, group delay and ring response for a comb and Schroeder allpass
-  // with the same feedback coefficient
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  using UCF  = rsUniversalCombFilter<Real, Real>;
+  using MFB  = rsModalFilter<Real, Real>;             // Maybe use rsModalFilterBank
+
+  // Setup:
+  int  N   = 200;                      // Number of samples to produce
+  int  M   = 10;                       // Number of modes
+  Real T60 = 100;                      // Number of samples to decay to -60 dB
+
+  // Create and set up the feedback comb filter:
+  UCF comb;
+  int delay = M;                       // Or maybe 2*M?
+  comb.setMaxDelayInSamples(delay);
+  comb.setDelayInSamples(delay);
+  comb.setToFeedbackComb(0.9);         // ToDo: Compute feedback coeff from T60
+
+  // Create and set up the bank of modal filters:
 
 
+  // Produce the impulse responses:
+  Vec hc = impulseResponse(comb, N, 1.0);
+  //Vec hm = impulseResponse(mfb, N, 1.0);
+
+  // Plot the results:
+  rsPlotVectors(hc);
+
+
+  int dummy = 0;
 }
-
 
 void delayLines()
 {
-  delayLineAllpass();
-
-
-
   // Delaylines with different interpolation methods:
-  delayLineBasic();     // No interpolation
-  delayLineLinear();    // Linear interpolation
-  delayLineAllpass();   // Allpass interpolation
+  //delayLineBasic();                // No interpolation
+  //delayLineLinear();               // Linear interpolation
+  //delayLineAllpass();              // Allpass interpolation
 
   // Other delayline based stuff:
-  universalCombVsOnePole();
-  universalCombResponses();
-  combVsAllpassPhase();
+  //universalCombVsOnePole();
+  //combVsAllpassPhase();              // Under construction
+  //universalCombResponses();          // Imp- and freq-responses of uniCombs with various settings
+  combVsModalBank();                   // Under construction
 }
 
 //=================================================================================================
