@@ -436,23 +436,24 @@ void universalCombResponses()
 
 void combVsModalBank()
 {
+  // Under construction
+
   // We create comparative plots of the impulse- and frequency responses of a feedback comb filter
   // and a bank of modal filters. We want to adjust the modes of the modal bank in such a way as 
   // to match the modes of the comb in terns of center frequency, amplitude, decay time and ideally
   // also phase. One goal is to figure out how to correctly set up the start phases of the modal 
   // filters.  ...TBC...
 
+  // Types:
   using Real = double;
   using Vec  = std::vector<Real>;
   using UCF  = rsUniversalCombFilter<Real, Real>;
-  //using MFB  = rsModalFilter<Real, Real>;             // Maybe use rsModalFilterBank
   using MFB  = rsModalFilterBank<Real, Real>;
 
-
   // Setup:
-  int  N   = 200;                      // Number of samples to produce
+  int  N   = 500;                      // Number of samples to produce
   int  M   = 10;                       // Number of modes
-  Real T60 = 500;                      // Number of samples to decay to -60 dB
+  Real T60 = 800;                      // Number of samples to decay to -60 dB
   bool odd = false;                    // If true, we produce only odd harmonics
 
   // Create and set up the feedback comb filter:
@@ -471,12 +472,13 @@ void combVsModalBank()
   Vec frq(M), amp(M), att(M), dec(M), phs(M);
   for(int m = 0; m < M; m++)
   {
-    frq[m] = m * f0;
+    frq[m] = m+1;                      // Relative frequency
     amp[m] = 1.0;
     att[m] = 0.0;
     dec[m] = decay;
-    phs[m] = 0.0;                      // Not sure if that is correct.
+    phs[m] = 0;                        // Not sure if that is correct.
 
+   // if(m > 4) amp[m] = 0.0;          // Test - zero out higher harmonics
   }
   MFB mfb;
   mfb.setSampleRate(1.0);
@@ -494,8 +496,11 @@ void combVsModalBank()
   rsPlotVectors(hc, hm);
   int dummy = 0;
 
-
-
+  // Observations:
+  //
+  // - Without the line "if(m > 4) amp[m] = 0.0;", the output of the modal bank is all zeros
+  //
+  //
   // ToDo:
   //
   // - Check if setting the phases of the modal filters is correct. Maybe we have to set them
