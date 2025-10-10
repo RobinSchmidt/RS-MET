@@ -30,6 +30,8 @@ T findDecayScalerLess1(T c)
 
   return k;
 
+    // ToDo: Make this a static member function of rsModalFilterWithAttack 
+
   // \todo: check this function in the range 0 <= c < 1, if all works well and the iteration count 
   // is always low, get rid of the iteration counter - it serves a purpose only during development
 
@@ -47,13 +49,21 @@ T findDecayScalerLess1(T c)
 template<class T>
 void expDiffScalerAndTau2(T tau1, T tp, T* tau2, T* scaler)
 {
-  if(tp >= tau1)
+  if(tp >= tau1)    // ToDo: Figure out if we need a tolerance! Like:  tp >= tau1 * (1-tol)
   {
-    rsError("assumes tp < tau1");
+    rsError("Assumes tp < tau1"); 
     *tau2   = tau1;
     *scaler = 1.0;
     return;
   }
+  if(tp == 0.0)     // ToDo: Figure out if we need a tolerance! Like:  tp <= tol * tau1
+  {
+    rsError("Zero attack not yet implemented.");
+    // ToDo: Handle the special case for when tp (time of the peak) is zero, i.e. the user requests
+    // a zero attack time.
+
+  }
+
   T a1 = 1/tau1;
   T c  = a1 * tp;
   T k  = findDecayScalerLess1(c);
@@ -62,6 +72,11 @@ void expDiffScalerAndTau2(T tau1, T tp, T* tau2, T* scaler)
 
   *tau2   = 1/a2;
   *scaler = 1/hp;
+
+  // ToDo: Make this a static member function of rsModalFilterWithAttack and document it. I think, 
+  // it computes tau2 (the decay time constant for the second filter) from tau1 (the decay time 
+  // constant of the first filter) and tp (the desired time instant of the peak). It also computes
+  // the overall scaler for the whole signal so that the peak amplitude becomes 1.
 }
 
 //=================================================================================================
@@ -295,18 +310,32 @@ void rsModalFilterWithAttack<TSig, TPar>::setModalParameters(TPar frequency, TPa
 {
   rsAssert(attackTime < decayTime);  // attackTime >= decayTime will not work (because of math)
 
-  TPar tau1, tau2, scaler;
-  tau1 = decayTime;
-  expDiffScalerAndTau2(tau1, attackTime, &tau2, &scaler);
-  amplitude *= scaler;
-  modalFilter1.setModalParameters(frequency,              amplitude, tau1, startPhase, sampleRate);
-  modalFilter2.setModalParameters(frequency*detuneFactor, amplitude, tau2, startPhase, sampleRate);
+  if(attackTime == TPar(0))
+  {
+    modalFilter1.setModalParameters(frequency, amplitude, decayTime, startPhase, sampleRate);
+    modalFilter2.setModalParameters(frequency, TPar(0),   TPar(0),   startPhase, sampleRate);
+  }
+  else
+  {
+    TPar tau1, tau2, scaler;
+    tau1 = decayTime;
+    expDiffScalerAndTau2(tau1, attackTime, &tau2, &scaler);
+    amplitude *= scaler;
+    modalFilter1.setModalParameters(frequency, amplitude, tau1, startPhase, sampleRate);
+    modalFilter2.setModalParameters(frequency*detuneFactor, amplitude, tau2, startPhase, sampleRate);
+  }
 
-  // \todo "detuneFactor" does not really work well because when attack and decay are very similar, 
-  // the amplitude explodes (due to a high value of "scaler") - either remove this parameter or 
-  // find a way to alleviate this (maybe the amplitude excess can be computed - math has to be 
-  // worked out) the detune is supposed to introduce some roughness into the transient by detuning 
-  // the quickly decaying sinusoid
+  // ToDo: 
+  // 
+  // - "detuneFactor" does not really work well because when attack and decay are very similar, 
+  //   the amplitude explodes (due to a high value of "scaler") - either remove this parameter or 
+  //   find a way to alleviate this (maybe the amplitude excess can be computed - math has to be 
+  //   worked out) the detune is supposed to introduce some roughness into the transient by 
+  //   detuning the quickly decaying sinusoid
+  //
+  // - Try to get rid of the special case branch for attackTime == 0. Make sure that the general
+  //   formulas that are used in the lower branch do the right thing in this case. We may need to 
+  //   take care of divisions by zero. Make sure that they behave corrently in the limiting case.
 }
 
 template<class TSig, class TPar>
@@ -387,11 +416,16 @@ void rsModalFilterWithAttack2<TSig, TPar>::reset()
 template<class TSig, class TPar>
 rsModalFilterBank<TSig, TPar>::rsModalFilterBank()
 {
+  /*
   sampleRate         = 44100.0;
   referenceFrequency = 440.0;
   referenceAttack    = 0.1;
   referenceDecay     = 1.0;
   numModes           = maxNumModes;
+  */
+  // ToDo: Init these in the class header! ...done
+
+
   modalFilters.reserve(maxNumModes);
   for(int m = 0; m < maxNumModes; m++)
     modalFilters.push_back(rsModalFilterWithAttack<TSig, TPar>());
@@ -582,6 +616,7 @@ std::vector<TPar> rsModalFilterBank<TSig, TPar>::scaleAtIntervals(std::vector<TP
   return r;
 }
 
+//=================================================================================================
 /*
 
 
@@ -621,8 +656,19 @@ modeling a scraping input signal:
 -maybe use pairs or triples of pulses
 -maybe add two or more of such scrape models
 
+- Additional ideas for per-mode parameters:
+  - Tremolo freq and amount. Can be implemented via beating between two slightly detuned modal 
+    filters or directly as amplitude modulation via sine-producing filter in the LFO-range (which
+    then somehow needs to amplitude normalize the output to 1 - maybe a complex phasor based 
+    implementation can do that)
+  - Panning - or maybe better: LFO-modulated panning, i.e. stereo-tremolo. Maybe a cheaper version
+    would be to (dynamically) pan even and odd modes such that not every mode needs it dedicated 
+    Pan-LFO. But of course, having a dedicated pans LFO for each mode with its own frequency will
+    create a much more complex modulation.
 
-modeling transients:
+
+
+Modeling transients:
 -transients are modeled as superposition attack/decay envelope filters (i.e. zero frequency) with
  delay
 -maybe an interative matching procedure can be used to find the parameters of the filters

@@ -246,6 +246,12 @@ inline void rsFilterDesignFormulas::dampedSine(
   *b0 = TCof(A*sp);               // = A*sin(p)
   *b1 = TCof(A*P*(sw*cp-cw*sp));  // = A*P*sin(w-p) via addition theorem
 
+  // ToDo:
+  //
+  // - Document what happens when d = 0. Then we compute P = exp(-1/0) = exp(-inf) = 0. Will this
+  //   work properly? ..yes - it seems so in the debugger.
+  //
+  //
   // See: 
   // http://www.rs-met.com/documents/dsp/TimeDomainBiquadDesign.pdf
   // https://www.kvraudio.com/forum/viewtopic.php?t=574343

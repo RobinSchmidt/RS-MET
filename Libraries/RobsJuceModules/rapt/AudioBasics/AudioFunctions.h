@@ -308,9 +308,9 @@ inline T rsWholeNotesToSeconds(T noteValue, T bpm)
   return (240.0/bpm) * noteValue;
 }
 
-/** Computes the desired feedback gain factor for a feedback loop with a given "roundtripLength"
+/** Computes the desired feedback gain factor for a feedback loop with a given "roundTripLength"
 such that after a given "decayTime" the amplitude of the output has decayed away to
-"targetAmplitude". It doesn't really matter in which units the decayTime and roundtripLength are
+"targetAmplitude". It doesn't really matter in which units the decayTime and roundTripLength are
 given as long as they are given in the same unit (might be seconds or samples or whatever other 
 time unit is convenient). For example, for a recursive comb filter based on a delayline of length 
 M, if your desired decay time in samples is D and your target amplitude A is 0.001 (== dBToAmp(-60)

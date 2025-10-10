@@ -445,32 +445,61 @@ void combVsModalBank()
   using Real = double;
   using Vec  = std::vector<Real>;
   using UCF  = rsUniversalCombFilter<Real, Real>;
-  using MFB  = rsModalFilter<Real, Real>;             // Maybe use rsModalFilterBank
+  //using MFB  = rsModalFilter<Real, Real>;             // Maybe use rsModalFilterBank
+  using MFB  = rsModalFilterBank<Real, Real>;
+
 
   // Setup:
   int  N   = 200;                      // Number of samples to produce
   int  M   = 10;                       // Number of modes
-  Real T60 = 100;                      // Number of samples to decay to -60 dB
+  Real T60 = 500;                      // Number of samples to decay to -60 dB
+  bool odd = false;                    // If true, we produce only odd harmonics
 
   // Create and set up the feedback comb filter:
+  int delay = M;                       // Or maybe 2*M? Or maybe it depends on "odd"?
+  Real fb = rsDecayTimeToFeedbackGain(T60, Real(M), 0.001);  // 0.001 is -60 dB
+  if(!odd)
+    fb = -fb;
   UCF comb;
-  int delay = M;                       // Or maybe 2*M?
   comb.setMaxDelayInSamples(delay);
   comb.setDelayInSamples(delay);
-  comb.setToFeedbackComb(0.9);         // ToDo: Compute feedback coeff from T60
+  comb.setToFeedbackComb(fb);          // ToDo: Compute feedback coeff from T60
 
   // Create and set up the bank of modal filters:
+  Real f0    = 1.0/M;                  // Verify!
+  Real decay = 100.0;                  // Preliminary. ToDo: Compute from T60
+  Vec frq(M), amp(M), att(M), dec(M), phs(M);
+  for(int m = 0; m < M; m++)
+  {
+    frq[m] = m * f0;
+    amp[m] = 1.0;
+    att[m] = 0.0;
+    dec[m] = decay;
+    phs[m] = 0.0;                      // Not sure if that is correct.
+
+  }
+  MFB mfb;
+  mfb.setSampleRate(1.0);
+  mfb.setReferenceFrequency(f0);
+  mfb.setModalParameters(frq, amp, att, dec, phs);
 
 
   // Produce the impulse responses:
   Vec hc = impulseResponse(comb, N, 1.0);
-  //Vec hm = impulseResponse(mfb, N, 1.0);
+  Vec hm = impulseResponse(mfb,  N, 1.0);
 
   // Plot the results:
-  rsPlotVectors(hc);
-
-
+  //rsPlotVectors(hc);
+  //rsPlotVectors(hm);
+  rsPlotVectors(hc, hm);
   int dummy = 0;
+
+
+
+  // ToDo:
+  //
+  // - Check if setting the phases of the modal filters is correct. Maybe we have to set them
+  //   alternatingly to 0 and pi? Maybe that depends of whether or not "odd" is true?
 }
 
 void delayLines()

@@ -329,7 +329,9 @@ protected:
 This class implements a filter that realizes an impulse response that is a sinusoid that is
 enveloped by an attack/decay envelope.
 
-\todo: move the ModalFilter classes into the directory with the filters
+ToDo: 
+-move the ModalFilter classes into the directory with the filters
+-Try to find a better (shorter) name
 
 // is this a Gammatone filter? http://en.wikipedia.org/wiki/Gammatone_filter
 
@@ -346,6 +348,8 @@ public:
   /** Sets all the mode parameters - this triggers a calculation of the filter coefficients. */
   void setModalParameters(TPar frequency, TPar amplitude, TPar attackTime,
     TPar decayTime, TPar startPhase, TPar sampleRate, TPar detuneFactor = 1.0);
+  // The detuneFactor feature is very experimental and should not yet be used in production. It 
+  // doesn't really work right yet and is subject to change - or even removal.
 
 
   /** \name Inquiry */
@@ -445,9 +449,10 @@ protected:
 
 //===============================================================================================
 
-/**
+/** This is a bank (i.e. parallel connection) of modal filters, each with its own set of 
+parameters.
 
-This is a bank (i.e. parallel connection) of modal filters, each with its own set of parameters.
+This is not yet production ready. It works, though. But the API needs to be cleaned up a lot.
 
 */
 
@@ -507,6 +512,7 @@ public:
     std::vector<TPar> newAttackTimes, 
     std::vector<TPar> newDecayTimes, 
     std::vector<TPar> newStartPhases);
+  // ToDo: Pass arguments by const reference
 
 
   /** \name Inquiry */
@@ -587,27 +593,33 @@ protected:
 
   static const int maxNumModes = 1000;    // get rid of this - allow an arbitrary number
 
-  std::vector<rsModalFilterWithAttack<TSig, TPar>> modalFilters;    // maybe use c-arrays instead
+  std::vector<rsModalFilterWithAttack<TSig, TPar>> modalFilters;    
+  // Maybe use fixed size C-arrays instead. But no - that implies stack allocation which may be
+  // problematic due to object size. And dynamically allocated raw pointers are a bad idea 
+  // generally due to memory safety pitfalls. std::vector is fine, I think.
 
-
-  //  consolidate into class rsModalBankParameters:
-  TPar referenceFrequency;
-  TPar referenceDecay;
-  TPar referenceAttack;
   std::vector<TPar> frequencies;
   std::vector<TPar> amplitudes;
   std::vector<TPar> attackTimes;
   std::vector<TPar> decayTimes;
   std::vector<TPar> startPhases;
-    // maybe use f, g, a, d, p
-  int    numModes;     // restricts the number of modes to be generated - if -1, there's no
-                       // restriction other than the minimum of the dimensionalities of the
-                       // parameter vectors
-  TPar sampleRate;
+  // Maybe use f, g, a, d, p or maybe create a struct ModeParams with fields frq, amp, att, dec,
+  // phs and have a single std::vector of this struct (i.e. use an array-of-structs rather than
+  // struct-of-arrays design)
 
-  TPar nonLinFeedback = TPar(0);
-  TSig out = 0;
+  TPar referenceFrequency = TPar(440);
+  TPar referenceDecay     = TPar(1.0);
+  TPar referenceAttack    = TPar(0.1);
+  TPar sampleRate         = TPar(44100);
+  int  numModes           = maxNumModes;   
+  // Restricts the number of modes to be generated - if -1, there's no restriction other than the 
+  // minimum of the dimensionalities of the parameter vectors
 
+  // Experimental:
+  TPar nonLinFeedback     = TPar(0);
+  TSig out                = TSig(0);
+
+  // ToDo: Maybe consolidate the parameters into a class rsModalBankParameters
 };
 
 //-----------------------------------------------------------------------------------------------
