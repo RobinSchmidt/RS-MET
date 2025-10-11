@@ -313,9 +313,10 @@ such that after a given "decayTime" the amplitude of the output has decayed away
 "targetAmplitude". It doesn't really matter in which units the decayTime and roundTripLength are
 given as long as they are given in the same unit (might be seconds or samples or whatever other 
 time unit is convenient). For example, for a recursive comb filter based on a delayline of length 
-M, if your desired decay time in samples is D and your target amplitude A is 0.001 (== dBToAmp(-60)
-such that decayTime would be a RT60 value), you would have to compute (0.001)^(M/D). This function 
-encapsulates this formula which in general is: gain = amplitude^(length/decay) . */
+M, if your desired decay time in samples is D and your target amplitude A is 0.001 (corresponding
+to dBToAmp(-60) such that decayTime would be a RT60 value), you would have to compute the required
+feedback gain as g = (0.001)^(M/D). This function encapsulates this formula which in general is: 
+gain = amplitude^(length/decay). */
 template<class T>
 inline T rsDecayTimeToFeedbackGain(T decayTime, T roundTripLength, T targetAmplitude)
 {
@@ -330,11 +331,13 @@ inline T rsDecayTimeToFeedbackGain(T decayTime, T roundTripLength, T targetAmpli
   //
   // - Maybe optimize based on exp or exp2, Maybe move into class rsBandwidthConverter - which 
   //   should really be renamed to something like rsFilterParameterConverter. It could also include
-  //  things like cutoffFreqToTimeConstant
+  //   things like cutoffFreqToTimeConstant
   //
   // - Test and document, if it can be called with infinity for the decayTime and does the right 
   //   thing in this case - namely, return 1 for the gain. ...yes - that seems to work. The 
   //   roundtripLength and targetAmplitude should always be positive, finite numbers, though.
+  //
+  // - Maybe make targetAmplitude optional, defaulting to 0.001 (i.e. -60 dB)
 }
 
 

@@ -831,4 +831,9 @@ Steve Brunton on using the FFT in PDE solvers:
  http://databookuw.com/databook.pdf
 
 
+- Coding Adventure: Smoke Simulation  https://www.youtube.com/watch?v=Q78wvrQ9xsU
+  by Sebastian Lague
+
+
+
 */

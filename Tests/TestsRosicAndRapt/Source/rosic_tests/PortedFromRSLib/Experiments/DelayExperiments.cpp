@@ -468,38 +468,41 @@ void combVsModalBank()
   using MFB  = rsModalFilterBank<Real, Real>;
 
   // Setup:
-  int  N   = 500;                      // Number of samples to produce
-  int  M   = 10;                       // Number of modes
-  Real T60 = 800;                      // Number of samples to decay to -60 dB
-  bool odd = false;                    // If true, we produce only odd harmonics
+  int  N    = 500;           // Number of samples to produce
+  int  M    = 5;             // Number of modes
+  Real T60  = 800;           // Number of samples to decay to -60 dB
+  bool odd  = false;         // If true, we produce only odd harmonics
+  int  mMin = 1;             // Lowest mode to produce
+  int  mMax = M-1;           // Highest mode to produce
+
+  // Maybe use M as number of modes and use a delay line length of 2M?
 
   // Create and set up the feedback comb filter:
-  int delay = M;                       // Or maybe 2*M? Or maybe it depends on "odd"?
-  Real fb = rsDecayTimeToFeedbackGain(T60, Real(M), 0.001);  // 0.001 is -60 dB
+  int delay = 2*M;           // M or 2*M? Maybe it depends on "odd"?
+  Real fb = rsDecayTimeToFeedbackGain(T60, Real(delay), 0.001);  // 0.001 is -60 dB
   if(!odd)
     fb = -fb;
   UCF comb;
   comb.setMaxDelayInSamples(delay);
   comb.setDelayInSamples(delay);
-  comb.setToFeedbackComb(fb);          // ToDo: Compute feedback coeff from T60
+  comb.setToFeedbackComb(fb);
 
   // Create and set up the bank of modal filters:
-  Real f0    = 1.0/M;                  // Verify!
-  Real decay = 100.0;                  // Preliminary. ToDo: Compute from T60 - obsolete!
-  Real tau   = rsReverbTimeToTau(T60);
-  int mMax   = 4;
-  Vec frq(M), amp(M), att(M), dec(M), phs(M);
-  for(int m = 0; m < M; m++)
+  Real f0   = 1.0/(2*M);               // Reference frequency (taken to be the fundamental)
+  Real tau  = rsReverbTimeToTau(T60);  // Decay time constant as used by rsModalFilter
+  Vec frq(M+1), amp(M+1), att(M+1), dec(M+1), phs(M+1);
+  for(int m = 0; m <= M; m++)
   {
-    frq[m] = m+1;                      // Relative frequency
-    //frq[m] = m;                       // Test - with DC (?)
+    //frq[m] = m+1;                      // Relative frequency
+    frq[m] = m;                       // Test - with DC (?)
     amp[m] = 1.0;
     att[m] = 0.0;
-    //dec[m] = decay;  // Old
-    dec[m] = tau;      // New
+    dec[m] = tau;
     phs[m] = 0;                        // Not sure if that is correct.
 
-    if(m > mMax) amp[m] = 0.0;         // Test - zero out higher harmonics
+    // Apply the brickwall filtering to the modes:
+    if(m < mMin || m > mMax) 
+      amp[m] = 0.0;
   }
   MFB mfb;
   mfb.setSampleRate(1.0);
@@ -514,7 +517,7 @@ void combVsModalBank()
   // Plot the results:
   //rsPlotVectors(hc);
   //rsPlotVectors(hm);
-  rsPlotVectors(hc, (1./3) * hm);
+  rsPlotVectors(hc, (1./3) * hm);  // Factor 1/3 is ad hoc for visual match
   int dummy = 0;
 
   // Observations:

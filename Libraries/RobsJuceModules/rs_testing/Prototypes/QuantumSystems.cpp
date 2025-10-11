@@ -427,9 +427,12 @@ Ideas:
 
 
 Resources:
--https://github.com/quantum-visualizations  This is the source code that was used to create this
- video: https://www.youtube.com/watch?v=0kXGb0_-1iY
 
+- https://github.com/quantum-visualizations  This is the source code that was used to create this
+  video: https://www.youtube.com/watch?v=0kXGb0_-1iY
+
+- Quantum Mechanics from a Programmer's Perspective 
+  https://www.youtube.com/watch?v=HvLGEIJdJXY
 
 
 */
