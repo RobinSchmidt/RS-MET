@@ -173,6 +173,10 @@ public:
   startPhase in degrees and sampleRate also in Hz. */
   void setModalParameters(TPar frequency, TPar amplitude, TPar decayTime, TPar startPhase, 
     TPar sampleRate);
+  // ToDo: Document the meaning of decayTime more clearly. I think, it is the time constant tau in
+  // an exponential decay f(t) = e^(-t/tau). This time constant tau is defined to be the time it 
+  // takes for the output to decay down to 1/e so we have 1/e = e^(-t/tau). At t = tau, this 
+  // reduces to 1/e = e^(-1), so t = tau is the time instant at which f(t) = 1/e.
 
   /** Copies the filter coefficients g, b1, a1, a2 from another instance into this one. */
   void copyCoefficientsFrom(const rsModalFilter &other);

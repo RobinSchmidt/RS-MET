@@ -434,6 +434,23 @@ void universalCombResponses()
   //   the frequency response of the filter in the feedback path 
 }
 
+/** Converts a reverberation time to the corresponding time constant tau of an exponential decay
+function f(t) = exp(-t/tau) that decays to a certain level (levelToReach) after reverbTime seconds
+or milliseconds or samples or whatever. The physical unit doesn't matter. The output will be in the
+same unit as the input. The desired target level to reach is given as a raw amplitude and it 
+defaults to 1/1000 which corresponds to -60 dB which is a standard value used in audio engineering 
+and acoustics to describe a reverb time. This time to decay down to -60 dB is also known as RT60 
+(RT for reverberation time). The time constant tau of an exponential decay, on the other hand, is 
+defined to be the time to decay down to 1/e. The formula to compute tau from the revrb time is 
+given by:  tau = -reverbTime / ln(levelToReach) which is what this function encapsulates. */
+template<class T>
+T rsReverbTimeToTau(T reverbTime, T levelToReach = T(0.001))
+{
+  return -reverbTime / rsLog(levelToReach);
+}
+// Needs tests. If it works, move it into the library into the file AudioFunctions.h near the
+// function rsDecayTimeToFeedbackGain().
+
 void combVsModalBank()
 {
   // Under construction
@@ -468,17 +485,21 @@ void combVsModalBank()
 
   // Create and set up the bank of modal filters:
   Real f0    = 1.0/M;                  // Verify!
-  Real decay = 100.0;                  // Preliminary. ToDo: Compute from T60
+  Real decay = 100.0;                  // Preliminary. ToDo: Compute from T60 - obsolete!
+  Real tau   = rsReverbTimeToTau(T60);
+  int mMax   = 4;
   Vec frq(M), amp(M), att(M), dec(M), phs(M);
   for(int m = 0; m < M; m++)
   {
     frq[m] = m+1;                      // Relative frequency
+    //frq[m] = m;                       // Test - with DC (?)
     amp[m] = 1.0;
     att[m] = 0.0;
-    dec[m] = decay;
+    //dec[m] = decay;  // Old
+    dec[m] = tau;      // New
     phs[m] = 0;                        // Not sure if that is correct.
 
-   // if(m > 4) amp[m] = 0.0;          // Test - zero out higher harmonics
+    if(m > mMax) amp[m] = 0.0;         // Test - zero out higher harmonics
   }
   MFB mfb;
   mfb.setSampleRate(1.0);
@@ -493,18 +514,28 @@ void combVsModalBank()
   // Plot the results:
   //rsPlotVectors(hc);
   //rsPlotVectors(hm);
-  rsPlotVectors(hc, hm);
+  rsPlotVectors(hc, (1./3) * hm);
   int dummy = 0;
 
   // Observations:
   //
-  // - Without the line "if(m > 4) amp[m] = 0.0;", the output of the modal bank is all zeros
+  // - Without the line "if(m > 4) amp[m] = 0.0;", the output of the modal bank is all zeros. 
+  //   What's going on here? Maybe the harmonics from m = 5 upwards are actually aliased 
+  //   frequencies with opposite phases due to the aliasing such that they cancel with the normal,
+  //   non-aliased modes? Figure this out and document it!
   //
   //
   // ToDo:
   //
   // - Check if setting the phases of the modal filters is correct. Maybe we have to set them
   //   alternatingly to 0 and pi? Maybe that depends of whether or not "odd" is true?
+  //
+  // - Give the user parameters mMin, mMax to allow a brickwall highpass and lowpass to be applied
+  //   to the modes produced. Maybe we should also allow for mMin = 0 corresponding to a (decaying)
+  //   DC component. Verify, if the modal filter can correctly handle that edge case. I think, I 
+  //   never tried that, so far. If it works, document that in class rsModalFilter. Instead of just
+  //   setting the modes below mMin and above mMax to zero amplitude, maybe we should actually 
+  //   shorten the frq, amp, etc. vectors accordingly, i.e. to lengths mMax-mMin+1.
 }
 
 void delayLines()

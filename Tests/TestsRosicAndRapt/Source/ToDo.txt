@@ -30,13 +30,13 @@
   rsPow(T,int) or rsPow(int, int). It's too easy to get wrong. When the 2nd arg is int, we should 
   should be forced to invoke rsPowInt to make that clear at the call site.
 
-- figure out, why rsSinusoidalAnalyzer may produce negative values for the amplitude of the DC 
+- Figure out, why rsSinusoidalAnalyzer may produce negative values for the amplitude of the DC 
   component (and fix it)
 
-- check, how the synthesis handles DC - i guess it creates just a cosine of 0 frequency? if so, we 
+- Check, how the synthesis handles DC - i guess it creates just a cosine of 0 frequency? if so, we 
   should perhaps encode a negative DC by using a phase of pi
 
-- check rsFourierTransformerRadix2<T>::getRealSignalMagnitudesAndPhases - there seems to be a bug
+- Check rsFourierTransformerRadix2<T>::getRealSignalMagnitudesAndPhases - there seems to be a bug
 
 - Fix the API inconsistency where we use different sign conventions for the feedback coefficients
   in direct form filters. This requires great(!) care because this is a (silent) breaking change 
@@ -59,3 +59,14 @@
   difference equation is also the convention used in the (beginner friendly) book "The Scientist 
   and Engineer's Guide to Digital Signal Processing" (aka dspguide) by Steven W. Smith and I think, 
   I just adopted it from there in my early days of DSP programming.
+
+- Fix API inconsistencies with respect to naming functions and classes. In particular regarding
+  the use of the rs prefix and also capitalization in CamelCase names. Should it be WaveGuide or
+  just Waveguide, for example? But also in acronyms like FFT, IIR, FIR, etc. Maybe acronyms should
+  be treated like normal words, capitalizing only the first letter? Maybe look up, how other 
+  libraries handle this (JUCE, STK, SciPy, etc.). In the jura module, I even sometimes use the R 
+  prefix (RSlider, etc.). That should become rsSlider. In rapt/rosic, some function names do not 
+  use any prefix at all.
+
+- Maybe rename the libraries (and therefore, their namespaces). Maybe rosic should become RAMP
+  which stands for Rob's Audio and Music Processors.
