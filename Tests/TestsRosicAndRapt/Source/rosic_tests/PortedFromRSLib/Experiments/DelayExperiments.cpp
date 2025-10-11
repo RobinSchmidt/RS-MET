@@ -449,17 +449,15 @@ T rsReverbTimeToTau(T reverbTime, T levelToReach = T(0.001))
   return -reverbTime / rsLog(levelToReach);
 }
 // Needs tests. If it works, move it into the library into the file AudioFunctions.h near the
-// function rsDecayTimeToFeedbackGain().
+// function rsDecayTimeToFeedbackGain(). OK - it seems to work well in combVsModalBank().
 
 void combVsModalBank()
 {
-  // Under construction
-
   // We create comparative plots of the impulse- and frequency responses of a feedback comb filter
   // and a bank of modal filters. We want to adjust the modes of the modal bank in such a way as 
-  // to match the modes of the comb in terns of center frequency, amplitude, decay time and ideally
-  // also phase. One goal is to figure out how to correctly set up the start phases of the modal 
-  // filters.  ...TBC...
+  // to match the modes of the comb in terms of frequency, amplitude, decay time and phase. One 
+  // goal is to figure out how to correctly set up the start phases of the modal  filters. 
+  // ...TBC...
 
   // Types:
   using Real = double;
@@ -468,17 +466,15 @@ void combVsModalBank()
   using MFB  = rsModalFilterBank<Real, Real>;
 
   // Setup:
-  int  N    = 1000;          // Number of samples to produce
-  int  M    = 50;            // Number of modes
-  Real T60  = 4000;          // Number of samples to decay to -60 dB
-  bool odd  = false;         // If true, we produce only odd harmonics
-  int  mMin = 0;             // Lowest mode to produce. 0 is DC, 1 the fundamental.
-  int  mMax = M;             // Highest mode to produce
-
-  // Maybe use M as number of modes and use a delay line length of 2M?
+  int  N    = 1000;     // Number of samples to produce
+  int  M    = 50;       // Number of modes
+  Real T60  = 4000;     // Number of samples to decay to -60 dB
+  bool odd  = false;    // If true, we produce only odd harmonics
+  int  mMin = 1;        // Lowest mode to produce. 0 is DC, 1 the fundamental.
+  int  mMax = M/10;     // Highest mode to produce
 
   // Create and set up the feedback comb filter:
-  int delay = 2*M;           // M or 2*M? Maybe it depends on "odd"?
+  int delay = 2*M;
   Real fb = rsDecayTimeToFeedbackGain(T60, Real(delay), 0.001);  // 0.001 is -60 dB
   if(!odd)
     fb = -fb;
@@ -487,14 +483,15 @@ void combVsModalBank()
   comb.setDelayInSamples(delay);
   comb.setToFeedbackComb(fb);
 
-  // Create and set up the bank of modal filters:
-  Real f0  = 1.0/(2*M);               // Reference frequency (taken to be the fundamental)
+  // Prepare the vectors of the modal parameters:
+  Real f0  = 0.5/M;                   // Fundamental frequency
   Real tau = rsReverbTimeToTau(T60);  // Decay time constant as used by rsModalFilter
+  Real scl = 1.0 / (mMax-mMin+1);     // Scale factor to obtain unit amplitude
   Vec frq(M+1), amp(M+1), att(M+1), dec(M+1), phs(M+1);
   for(int m = 0; m <= M; m++)
   {
     frq[m] = m;    // Frequency relative to the fundamental
-    amp[m] = 1.0;  // Linear amplitude
+    amp[m] = scl;  // Linear amplitude
     att[m] = 0.0;  // Attack time (i.e. location of the peak)
     dec[m] = tau;  // Decay time (i.e. time to decay dwon to 1/e)
     phs[m] = 90;   // Start phase in degrees. 90 seems correct when odd == false
@@ -503,23 +500,40 @@ void combVsModalBank()
     if(m < mMin || m > mMax) 
       amp[m] = 0.0;
   }
+
+  // Create and set up the bank of modal filters:
   MFB mfb;
   mfb.setSampleRate(1.0);
   mfb.setReferenceFrequency(f0);
   mfb.setModalParameters(frq, amp, att, dec, phs);
 
-  // Produce the impulse responses:
+  // Produce and plot the impulse responses:
   Vec hc = impulseResponse(comb, N, 1.0);
   Vec hm = impulseResponse(mfb,  N, 1.0);
-
-  // Plot the results:
-  Real scl = 1.0 / (mMax-mMin+1);  // Scale factor for a visual match - verify!
-  rsPlotVectors(hc, scl * hm); 
+  rsPlotVectors(hc, hm); 
 
 
   // Observations:
   // 
-  // - With M = 50, mMin = 0, mMax = M, odd = false
+  // - With M = 50, mMin = 0, mMax = M, odd = false, the modal response looks very similar to the 
+  //   comb response but it shows tiny ripples at the Nyquist frequency. It looks like they ripple 
+  //   roughly between 0 and 0.02 (which is 1/M). When we set mMin = 1, i.e. start at the 
+  //   fundamental rather that at DC, they ripple between 0 and -0.02. Maybe this is an artifact
+  //   relating to a phase error in the topmost harmonic? The Nyquist frequency is generally 
+  //   problematic with regard to phase because a sinusoid at exactly that frequency may either be
+  //   captured faithfully (when the sample instant align with the minima and maxima) or it may be 
+  //   not captured at all (when the sample instants align with the zero crossings) or anything in 
+  //   between (in which case it may have the wrong amplitude).
+  // 
+  // - When setting mMax to something like M/5 or M/10, the modal output looks like a lowpassed 
+  //   version of the impulse train that the comb produces. This is exactly what we expect. When
+  //   using scl = 1.0 / (mMax-mMin+1), the heights of the peaks will exactly match those of the
+  //   comb. Note however, that adjusting for the height of the peaks like that is actually "wrong"
+  //   in the sense that we really modify the amplitude of the lower modes in order to compensate
+  //   for cutting out the higher modes. It's good for the impulse response plot, though. It may be
+  //   bad for the frequency response plot, though. Verify that! Soo - maybe it would actually 
+  //   better to not bake the scaling factor already into the signal but instead apply it only when
+  //   plotting the impulse response.
   //
   // - It doesn't make a difference if we use mMax = M or mMax = M-1. The mode with m = M seems to
   //   be an all zeros signal. That can be verified by chossing mMin = mMax = M such that only that
@@ -528,19 +542,24 @@ void combVsModalBank()
   //
   //
   // ToDo:
+  // 
+  // - Plot the frequency responses of the comb and modal bank. 
   //
-  // - Check if setting the phases of the modal filters is correct. Maybe we have to set them
-  //   alternatingly to 0 and pi? Maybe that depends of whether or not "odd" is true?
+  // - Try it with odd = true. Maybe we have to adjust the number of modes and maybe the phases, 
+  //   too.
+  // 
+  // - Try it with different comb/allpass settings in the universal comb. Figure out how that 
+  //   affects the required modal parameters. I think, frequencies, amplitudes and decay times 
+  //   must remain the same so the only thing to adjust is the start phase.
   //
-  // - Give the user parameters mMin, mMax to allow a brickwall highpass and lowpass to be applied
-  //   to the modes produced. Maybe we should also allow for mMin = 0 corresponding to a (decaying)
-  //   DC component. Verify, if the modal filter can correctly handle that edge case. I think, I 
-  //   never tried that, so far. If it works, document that in class rsModalFilter. Instead of just
-  //   setting the modes below mMin and above mMax to zero amplitude, maybe we should actually 
-  //   shorten the frq, amp, etc. vectors accordingly, i.e. to lengths mMax-mMin+1.
+  // - Document in class rsModalFilter that "DC modes" are also allowed.
+  // 
+  // - Maybe instead of just setting the modes below mMin and above mMax to zero amplitude, we 
+  //   should actually shorten the frq, amp, etc. vectors accordingly, i.e. to lengths mMax-mMin+1.
   //
-  // - Use the scl scaling factor for amp[m] such that we produce the correctly scaled signal out
-  //   of the box without the need for post-processing
+  // - Maybe instead of baking the decay times and amplitudes into the individual mode parameters,
+  //   assign them to relative values and use tau in mfb.setReferenceDecay() and scl in 
+  //   mfb.setReferenceAmplitude(). The latter doesn't exist yet, I think -> add it.
 }
 
 void delayLines()
@@ -554,7 +573,7 @@ void delayLines()
   //universalCombVsOnePole();
   //combVsAllpassPhase();              // Under construction
   //universalCombResponses();          // Imp- and freq-responses of uniCombs with various settings
-  combVsModalBank();                   // Under construction
+  combVsModalBank();                   // Compare comb with matched modal bank
 }
 
 //=================================================================================================
