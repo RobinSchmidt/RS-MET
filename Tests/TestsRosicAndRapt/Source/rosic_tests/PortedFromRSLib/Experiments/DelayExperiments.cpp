@@ -468,12 +468,12 @@ void combVsModalBank()
   using MFB  = rsModalFilterBank<Real, Real>;
 
   // Setup:
-  int  N    = 500;           // Number of samples to produce
-  int  M    = 5;             // Number of modes
-  Real T60  = 800;           // Number of samples to decay to -60 dB
+  int  N    = 1000;          // Number of samples to produce
+  int  M    = 50;            // Number of modes
+  Real T60  = 4000;          // Number of samples to decay to -60 dB
   bool odd  = false;         // If true, we produce only odd harmonics
-  int  mMin = 1;             // Lowest mode to produce
-  int  mMax = M-1;           // Highest mode to produce
+  int  mMin = 1;             // Lowest mode to produce. 0 is DC, 1 the fundamental.
+  int  mMax = M/5;           // Highest mode to produce
 
   // Maybe use M as number of modes and use a delay line length of 2M?
 
@@ -498,7 +498,9 @@ void combVsModalBank()
     amp[m] = 1.0;
     att[m] = 0.0;
     dec[m] = tau;
-    phs[m] = 0;                        // Not sure if that is correct.
+
+    //phs[m] = PI/2;                     // Not sure if that is correct.
+    phs[m] = 90;                       // Not sure if that is correct.
 
     // Apply the brickwall filtering to the modes:
     if(m < mMin || m > mMax) 
@@ -515,17 +517,19 @@ void combVsModalBank()
   Vec hm = impulseResponse(mfb,  N, 1.0);
 
   // Plot the results:
+  Real scl = 1.0 / (mMax-mMin);  // Ad hoc scale factor for a visual match
   //rsPlotVectors(hc);
   //rsPlotVectors(hm);
-  rsPlotVectors(hc, (1./3) * hm);  // Factor 1/3 is ad hoc for visual match
+  rsPlotVectors(hc, scl * hm); 
   int dummy = 0;
+
 
   // Observations:
   //
-  // - Without the line "if(m > 4) amp[m] = 0.0;", the output of the modal bank is all zeros. 
-  //   What's going on here? Maybe the harmonics from m = 5 upwards are actually aliased 
-  //   frequencies with opposite phases due to the aliasing such that they cancel with the normal,
-  //   non-aliased modes? Figure this out and document it!
+  // - It doesn't make a difference if we use mMax = M or mMax = M-1. The mode with m = M seems to
+  //   be an all zeros signal. That can be verified by chossing mMin = mMax = M such that only that
+  //   mode is produced. The result is indeed all zeros. This was with M = 5. Seems to be the same 
+  //   with M = 6.
   //
   //
   // ToDo:
