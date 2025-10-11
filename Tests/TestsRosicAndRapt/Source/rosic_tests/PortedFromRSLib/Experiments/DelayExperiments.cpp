@@ -472,8 +472,8 @@ void combVsModalBank()
   int  M    = 50;            // Number of modes
   Real T60  = 4000;          // Number of samples to decay to -60 dB
   bool odd  = false;         // If true, we produce only odd harmonics
-  int  mMin = 1;             // Lowest mode to produce. 0 is DC, 1 the fundamental.
-  int  mMax = M/5;           // Highest mode to produce
+  int  mMin = 0;             // Lowest mode to produce. 0 is DC, 1 the fundamental.
+  int  mMax = M;             // Highest mode to produce
 
   // Maybe use M as number of modes and use a delay line length of 2M?
 
@@ -488,19 +488,16 @@ void combVsModalBank()
   comb.setToFeedbackComb(fb);
 
   // Create and set up the bank of modal filters:
-  Real f0   = 1.0/(2*M);               // Reference frequency (taken to be the fundamental)
-  Real tau  = rsReverbTimeToTau(T60);  // Decay time constant as used by rsModalFilter
+  Real f0  = 1.0/(2*M);               // Reference frequency (taken to be the fundamental)
+  Real tau = rsReverbTimeToTau(T60);  // Decay time constant as used by rsModalFilter
   Vec frq(M+1), amp(M+1), att(M+1), dec(M+1), phs(M+1);
   for(int m = 0; m <= M; m++)
   {
-    //frq[m] = m+1;                      // Relative frequency
-    frq[m] = m;                       // Test - with DC (?)
-    amp[m] = 1.0;
-    att[m] = 0.0;
-    dec[m] = tau;
-
-    //phs[m] = PI/2;                     // Not sure if that is correct.
-    phs[m] = 90;                       // Not sure if that is correct.
+    frq[m] = m;    // Frequency relative to the fundamental
+    amp[m] = 1.0;  // Linear amplitude
+    att[m] = 0.0;  // Attack time (i.e. location of the peak)
+    dec[m] = tau;  // Decay time (i.e. time to decay dwon to 1/e)
+    phs[m] = 90;   // Start phase in degrees. 90 seems correct when odd == false
 
     // Apply the brickwall filtering to the modes:
     if(m < mMin || m > mMax) 
@@ -511,25 +508,23 @@ void combVsModalBank()
   mfb.setReferenceFrequency(f0);
   mfb.setModalParameters(frq, amp, att, dec, phs);
 
-
   // Produce the impulse responses:
   Vec hc = impulseResponse(comb, N, 1.0);
   Vec hm = impulseResponse(mfb,  N, 1.0);
 
   // Plot the results:
-  Real scl = 1.0 / (mMax-mMin);  // Ad hoc scale factor for a visual match
-  //rsPlotVectors(hc);
-  //rsPlotVectors(hm);
+  Real scl = 1.0 / (mMax-mMin+1);  // Scale factor for a visual match - verify!
   rsPlotVectors(hc, scl * hm); 
-  int dummy = 0;
 
 
   // Observations:
+  // 
+  // - With M = 50, mMin = 0, mMax = M, odd = false
   //
   // - It doesn't make a difference if we use mMax = M or mMax = M-1. The mode with m = M seems to
   //   be an all zeros signal. That can be verified by chossing mMin = mMax = M such that only that
   //   mode is produced. The result is indeed all zeros. This was with M = 5. Seems to be the same 
-  //   with M = 6.
+  //   with other values of M.
   //
   //
   // ToDo:
@@ -543,6 +538,9 @@ void combVsModalBank()
   //   never tried that, so far. If it works, document that in class rsModalFilter. Instead of just
   //   setting the modes below mMin and above mMax to zero amplitude, maybe we should actually 
   //   shorten the frq, amp, etc. vectors accordingly, i.e. to lengths mMax-mMin+1.
+  //
+  // - Use the scl scaling factor for amp[m] such that we produce the correctly scaled signal out
+  //   of the box without the need for post-processing
 }
 
 void delayLines()
