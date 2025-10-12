@@ -466,12 +466,13 @@ void combVsModalBank()
   using MFB  = rsModalFilterBank<Real, Real>;
 
   // Setup:
-  int  N    = 1000;     // Number of samples to produce
-  int  M    = 50;       // Number of modes
-  Real T60  = 4000;     // Number of samples to decay to -60 dB
-  bool odd  = false;    // If true, we produce only odd harmonics
-  int  mMin = 1;        // Lowest mode to produce. 0 is DC, 1 the fundamental.
-  int  mMax = M/10;     // Highest mode to produce
+  int  N       = 1000;     // Number of samples to produce
+  int  M       = 100;      // Number of modes
+  Real T60     = 4000;     // Number of samples to decay to -60 dB
+  bool odd     = false;    // If true, we produce only odd harmonics
+  int  mMin    = 0;        // Lowest mode to produce. 0 is DC, 1 the fundamental.
+  int  mMax    = M/10;     // Highest mode to produce
+  int  numBins = 2001;     // Number of bins for frequency response plots
 
   // Create and set up the feedback comb filter:
   int delay = 2*M;
@@ -484,16 +485,13 @@ void combVsModalBank()
   comb.setToFeedbackComb(fb);
 
   // Prepare the vectors of the modal parameters:
-  Real f0  = 0.5/M;                   // Fundamental frequency
-  Real tau = rsReverbTimeToTau(T60);  // Decay time constant as used by rsModalFilter
-  Real scl = 1.0 / (mMax-mMin+1);     // Scale factor to obtain unit amplitude
   Vec frq(M+1), amp(M+1), att(M+1), dec(M+1), phs(M+1);
   for(int m = 0; m <= M; m++)
   {
     frq[m] = m;    // Frequency relative to the fundamental
-    amp[m] = scl;  // Linear amplitude
-    att[m] = 0.0;  // Attack time (i.e. location of the peak)
-    dec[m] = tau;  // Decay time (i.e. time to decay dwon to 1/e)
+    amp[m] = 1.0;  // Linear amplitude
+    att[m] = 0.0;  // Relative attack time (i.e. location of the peak)
+    dec[m] = 1.0;  // Relative decay time (i.e. time to decay dwon to 1/e)
     phs[m] = 90;   // Start phase in degrees. 90 seems correct when odd == false
 
     // Apply the brickwall filtering to the modes:
@@ -502,15 +500,25 @@ void combVsModalBank()
   }
 
   // Create and set up the bank of modal filters:
+  Real f0  = 0.5/M;                    // Fundamental frequency
+  Real tau = rsReverbTimeToTau(T60);   // Decay time constant 
   MFB mfb;
   mfb.setSampleRate(1.0);
   mfb.setReferenceFrequency(f0);
+  mfb.setReferenceDecay(tau);
   mfb.setModalParameters(frq, amp, att, dec, phs);
 
-  // Produce and plot the impulse responses:
+  // Produce the impulse responses:
   Vec hc = impulseResponse(comb, N, 1.0);
   Vec hm = impulseResponse(mfb,  N, 1.0);
-  rsPlotVectors(hc, hm); 
+
+  // Plot results:
+  Real scl = 1.0 / (mMax-mMin+1);      // Scale factor to obtain unit amplitude
+  rsPlotVectors(hc, scl*hm); 
+
+
+  plotFrequencyResponse(comb, numBins, 0.0, 0.5, 1.0, false);
+  plotFrequencyResponse(mfb,  numBins, 0.0, 0.5, 1.0, false);
 
 
   // Observations:
@@ -533,13 +541,17 @@ void combVsModalBank()
   //   for cutting out the higher modes. It's good for the impulse response plot, though. It may be
   //   bad for the frequency response plot, though. Verify that! Soo - maybe it would actually 
   //   better to not bake the scaling factor already into the signal but instead apply it only when
-  //   plotting the impulse response.
+  //   plotting the impulse response. ...done
   //
   // - It doesn't make a difference if we use mMax = M or mMax = M-1. The mode with m = M seems to
   //   be an all zeros signal. That can be verified by chossing mMin = mMax = M such that only that
   //   mode is produced. The result is indeed all zeros. This was with M = 5. Seems to be the same 
   //   with other values of M.
   //
+  // - With M = 10, mMin = 0, mMax = M, the frequency responses look very similar but the modal 
+  //   bank shows some differences near DC and sampleRate/2. ToDo: Try to multiply the amplitudes
+  //   of those bins by 1/2.
+  // 
   //
   // ToDo:
   // 
