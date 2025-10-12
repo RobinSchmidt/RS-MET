@@ -466,17 +466,17 @@ void combVsModalBank()
   using MFB  = rsModalFilterBank<Real, Real>;
 
   // Setup:
-  int  N       = 1000;     // Number of samples to produce
-  int  M       = 100;      // Number of modes
-  Real T60     = 4000;     // Number of samples to decay to -60 dB
-  bool odd     = false;    // If true, we produce only odd harmonics
-  int  mMin    = 0;        // Lowest mode to produce. 0 is DC, 1 the fundamental.
-  int  mMax    = M/10;     // Highest mode to produce
-  int  numBins = 2001;     // Number of bins for frequency response plots
+  int  M          = 100;      // Number of modes. Determines fundamental and delay length
+  Real RT60       = 4000;     // Number of samples to decay to -60 dB
+  bool odd        = false;    // If true, we produce only odd harmonics
+  int  mMin       = 0;        // Lowest mode to produce. 0 is DC, 1 the fundamental
+  int  mMax       = M/1;      // Highest mode to produce in the modal bank
+  int  numBins    = 2001;     // Number of bins for frequency response plots
+  int  numSamples = 1000;     // Number of samples for impulse response plots
 
   // Create and set up the feedback comb filter:
   int delay = 2*M;
-  Real fb = rsDecayTimeToFeedbackGain(T60, Real(delay), 0.001);  // 0.001 is -60 dB
+  Real fb = rsDecayTimeToFeedbackGain(RT60, Real(delay), 0.001);  // 0.001 is -60 dB
   if(!odd)
     fb = -fb;
   UCF comb;
@@ -497,11 +497,15 @@ void combVsModalBank()
     // Apply the brickwall filtering to the modes:
     if(m < mMin || m > mMax) 
       amp[m] = 0.0;
+
+    // Adjust the amplitude of the DC and Nyquist modes (see comments below why):
+    if(m == 0 || m == M)
+      amp[m] *= 0.5;
   }
 
   // Create and set up the bank of modal filters:
   Real f0  = 0.5/M;                    // Fundamental frequency
-  Real tau = rsReverbTimeToTau(T60);   // Decay time constant 
+  Real tau = rsReverbTimeToTau(RT60);  // Decay time constant 
   MFB mfb;
   mfb.setSampleRate(1.0);
   mfb.setReferenceFrequency(f0);
@@ -509,14 +513,12 @@ void combVsModalBank()
   mfb.setModalParameters(frq, amp, att, dec, phs);
 
   // Produce the impulse responses:
-  Vec hc = impulseResponse(comb, N, 1.0);
-  Vec hm = impulseResponse(mfb,  N, 1.0);
+  Vec hc = impulseResponse(comb, numSamples, 1.0);
+  Vec hm = impulseResponse(mfb,  numSamples, 1.0);
 
-  // Plot results:
+  // Plot impulse- and frequency responses:
   Real scl = 1.0 / (mMax-mMin+1);      // Scale factor to obtain unit amplitude
   rsPlotVectors(hc, scl*hm); 
-
-
   plotFrequencyResponse(comb, numBins, 0.0, 0.5, 1.0, false);
   plotFrequencyResponse(mfb,  numBins, 0.0, 0.5, 1.0, false);
 
@@ -550,15 +552,27 @@ void combVsModalBank()
   //
   // - With M = 10, mMin = 0, mMax = M, the frequency responses look very similar but the modal 
   //   bank shows some differences near DC and sampleRate/2. ToDo: Try to multiply the amplitudes
-  //   of those bins by 1/2.
+  //   of those modes (0 and M) by 1/2. I think, these modes are just too loud. Maybe it is because
+  //   in the comb, the DC component is represented to one half by the actual DC frequency and the 
+  //   to the other half by the Nyquist frequency and if, in the modal filter, we give both of 
+  //   these modes a gain of 1, we end up boosting DC and fs/2 by a factor of two compared to what 
+  //   it should be?
+  //   OK - done! And it does indeed work! We have now an exact match. The only problem is that now
+  //   when we choose mMax < M, the computation of the scl factor is now not exact anymore. ToDo:
+  //   fix this! I think, we should replace scl = 1.0 / (mMax-mMin+1); by 
+  //   scl = 1.0 / (mMax-mMin+0.5); or something like that. ...but maybe only when mMax < M and 
+  //   otherwise keep the formula as is. Figure this out by trial and error! It's not really 
+  //   important but would be nice to have.
   // 
   //
   // ToDo:
   // 
-  // - Plot the frequency responses of the comb and modal bank. 
+  // - Plot the frequency responses of the comb and modal bank together in a single plot to spot 
+  //   the differences more easily. Maybe for this, we need to write a new plotting function.
   //
   // - Try it with odd = true. Maybe we have to adjust the number of modes and maybe the phases, 
-  //   too.
+  //   too. Oh - and the computation of the modal frequencies, too. We will produce only odd 
+  //   harmonics! I think, that also means that there will be no DC component.
   // 
   // - Try it with different comb/allpass settings in the universal comb. Figure out how that 
   //   affects the required modal parameters. I think, frequencies, amplitudes and decay times 
