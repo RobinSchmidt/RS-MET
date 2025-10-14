@@ -463,16 +463,19 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M,
     mMax = M;
 
   // Prepare the vectors of the modal parameters:
-  std::vector<TPar> frq(M+1), amp(M+1), att(M+1), dec(M+1), phs(M+1);
+  int L = M;
+  if(!odd)
+    L += 1;
+  std::vector<TPar> frq(L), amp(L), att(L), dec(L), phs(L);
   if(odd == false)
   {
     for(int m = 0; m <= M; m++)
     {
-      frq[m] = m;    // Frequency relative to the fundamental
-      amp[m] = 1.0;  // Linear amplitude
-      att[m] = 0.0;  // Relative attack time (i.e. location of the peak)
-      dec[m] = 1.0;  // Relative decay time (i.e. time to decay dwon to 1/e)
-      phs[m] = 90;   // Start phase in degrees. 90 seems correct when odd == false
+      frq[m] = m;                  // Frequency relative to the fundamental
+      amp[m] = 1.0;                // Linear amplitude
+      att[m] = 0.0;                // Relative attack time (i.e. location of the peak)
+      dec[m] = 1.0;                // Relative decay time (i.e. time to decay dwon to 1/e)
+      phs[m] = 90;                 // Start phase in degrees. 90 seems correct when odd == false
 
       // Apply the brickwall filtering to the modes:
       if(m < mMin || m > mMax)
@@ -485,13 +488,13 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M,
   }
   else
   {   
-    for(int m = 0; m <= M; m++)
+    for(int m = 0; m < M; m++)
     {
-      frq[m] = 0.5*(2*m+1);  // 0.5 because it's one ocatve lower
+      frq[m] = 0.5*(2*m+1);        // 0.5 because it's one octave lower
       amp[m] = 1.0;
       att[m] = 0.0;
       dec[m] = 1.0;
-      phs[m] = 90;           // Not sure about that - may be wrong 
+      phs[m] = 90;
       if(m < mMin || m > mMax)
         amp[m] = 0.0;
     }
@@ -510,13 +513,20 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M,
   //   of these modes a gain of 1, we end up boosting DC and fs/2 by a factor of two compared to 
   //   what it should be. That's my hypothesis at least. ToDo: Verify it theoretically! By the way:
   //   Just setting the gain at m = M and/or m = 0 to zero doesn't fix it. We really need both 
-  //   components with gain 0.5 to make it right.
+  //   components with gain 0.5 to make it right. When only odd hamronic are produced, this is not 
+  //   necessary because in that case, we don't have to produce any DC component. The number of 
+  //   modes is also one less for that reason.
   //
   //
   // ToDo:
   //
-  // - Handle the case when odd == true. We currently only have the code for the case when the comb
-  //   produces all harmonics. 
+  // - Implement the brickwall lowpass by actually shortening the vectors rather than settings the
+  //   amplitudes to zero. Or maybe just remove that feature entirely and instead write a separate
+  //   function restricts the modes. Maybe it could even make sense to have such a brickwall filter
+  //   feature in rsModalFilterBank similar to what we have in the wavetable oscillator class. So
+  //   we could have functions like setMinModeIndex(), setMaxModeIndex() or maybe setHighpass()
+  //   setLowpass. Maybe the function names should be made consistent with those in the wavetable 
+  //   osc.
 }
 
 void combVsModalBank()
@@ -573,10 +583,6 @@ void combVsModalBank()
 
 
   // Observations:
-  // 
-  // - When odd == true, we again have some artifact at (or near) fs/2. I think, maybe the loop
-  //   should only go up to M-1 or M-2 or something. Maybe we go one to far and get aliasing from
-  //   above Nyquist into the mode immediately below.
   // 
   // - With M = 50, mMin = 0, mMax = M, odd = false, the modal response looks very similar to the 
   //   comb response but it shows tiny ripples at the Nyquist frequency. It looks like they ripple 
@@ -652,6 +658,13 @@ void combVsModalBank()
   //   is usually realized as two-pole/one-zero filter and the zero is therefore restricted to be 
   //   real valued. In order to cover the full range of the universal comb's possibilities, we may
   //   have to use a full biquad filter for each mode. 
+  //
+  // - Try to simulate a feedback comb with a 1st order damping filter in the feedback path. Or 
+  //   maybe more generally: any kind of filter in the feedback path. But I guess, that task is
+  //   quite a lot more complicated. Maybe we need to compute the poles and zeros of the comb for
+  //   this which is difficult because the polynomials are of very high order. They are sparse 
+  //   though but I'm not sure if that helps. But if it does, we will need a new root finding algo
+  //   for sparse polynomials.
 }
 
 void delayLines()
