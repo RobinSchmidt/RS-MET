@@ -464,21 +464,37 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M,
 
   // Prepare the vectors of the modal parameters:
   std::vector<TPar> frq(M+1), amp(M+1), att(M+1), dec(M+1), phs(M+1);
-  for(int m = 0; m <= M; m++)
+  if(odd == false)
   {
-    frq[m] = m;    // Frequency relative to the fundamental
-    amp[m] = 1.0;  // Linear amplitude
-    att[m] = 0.0;  // Relative attack time (i.e. location of the peak)
-    dec[m] = 1.0;  // Relative decay time (i.e. time to decay dwon to 1/e)
-    phs[m] = 90;   // Start phase in degrees. 90 seems correct when odd == false
+    for(int m = 0; m <= M; m++)
+    {
+      frq[m] = m;    // Frequency relative to the fundamental
+      amp[m] = 1.0;  // Linear amplitude
+      att[m] = 0.0;  // Relative attack time (i.e. location of the peak)
+      dec[m] = 1.0;  // Relative decay time (i.e. time to decay dwon to 1/e)
+      phs[m] = 90;   // Start phase in degrees. 90 seems correct when odd == false
 
-    // Apply the brickwall filtering to the modes:
-    if(m < mMin || m > mMax) 
-      amp[m] = 0.0;
+      // Apply the brickwall filtering to the modes:
+      if(m < mMin || m > mMax)
+        amp[m] = 0.0;
 
-    // Adjust the amplitude of the DC and Nyquist modes (see comments below why):
-    if(m == 0 || m == M)
-      amp[m] *= 0.5;
+      // Adjust the amplitude of the DC and Nyquist modes (see comments below why):
+      if(m == 0 || m == M)
+        amp[m] *= 0.5;
+    }
+  }
+  else
+  {   
+    for(int m = 0; m <= M; m++)
+    {
+      frq[m] = 0.5*(2*m+1);  // 0.5 because it's one ocatve lower
+      amp[m] = 1.0;
+      att[m] = 0.0;
+      dec[m] = 1.0;
+      phs[m] = 90;           // Not sure about that - may be wrong 
+      if(m < mMin || m > mMax)
+        amp[m] = 0.0;
+    }
   }
   
   mfb->setModalParameters(frq, amp, att, dec, phs);
@@ -520,7 +536,7 @@ void combVsModalBank()
   // Setup:
   int  M          = 100;      // Number of modes. Determines fundamental and delay length
   Real RT60       = 4000;     // Number of samples to decay to -60 dB
-  bool odd        = false;    // If true, we produce only odd harmonics
+  bool odd        = true;     // If true, we produce only odd harmonics
   int  mMin       = 0;        // Lowest mode to produce. 0 is DC, 1 the fundamental
   int  mMax       = M/1;      // Highest mode to produce in the modal bank
   int  numBins    = 2001;     // Number of bins for frequency response plots
@@ -557,6 +573,10 @@ void combVsModalBank()
 
 
   // Observations:
+  // 
+  // - When odd == true, we again have some artifact at (or near) fs/2. I think, maybe the loop
+  //   should only go up to M-1 or M-2 or something. Maybe we go one to far and get aliasing from
+  //   above Nyquist into the mode immediately below.
   // 
   // - With M = 50, mMin = 0, mMax = M, odd = false, the modal response looks very similar to the 
   //   comb response but it shows tiny ripples at the Nyquist frequency. It looks like they ripple 
