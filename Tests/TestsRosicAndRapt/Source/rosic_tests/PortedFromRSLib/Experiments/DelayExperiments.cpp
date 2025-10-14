@@ -481,6 +481,19 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M,
   }
   
   mfb->setModalParameters(frq, amp, att, dec, phs);
+
+  // Notes:
+  // 
+  // - The reason for multiplying the amplitudes for m = 0 (DC) and m = M (Nyquist) by one half is
+  //   the observation that otherwise, the impulse response of the modal bank will feature an 
+  //   oscillation at the Nyquist frequency which is not present in an actual feedback comb filter
+  //   implemented the standard way using a delay line. I think it may be because in an actual 
+  //   feedback comb filter, the DC component is represented to one half by the actual DC frequency
+  //   and the to the other half by the Nyquist frequency and if, in the modal filter, we give both
+  //   of these modes a gain of 1, we end up boosting DC and fs/2 by a factor of two compared to 
+  //   what it should be. That's my hypothesis at least. ToDo: Verify it theoretically! By the way:
+  //   Just setting the gain at m = M and/or m = 0 to zero doesn't fix it. We really need both 
+  //   components with gain 0.5 to make it right.
 }
 
 void combVsModalBank()
@@ -516,6 +529,7 @@ void combVsModalBank()
   comb.setDelayInSamples(delay);
   comb.setToFeedbackComb(fb);
 
+  /*
   // Prepare the vectors of the modal parameters:
   Vec frq(M+1), amp(M+1), att(M+1), dec(M+1), phs(M+1);
   for(int m = 0; m <= M; m++)
@@ -534,6 +548,7 @@ void combVsModalBank()
     if(m == 0 || m == M)
       amp[m] *= 0.5;
   }
+  */
 
   // Create and set up the bank of modal filters:
   Real f0  = 0.5/M;                    // Fundamental frequency
@@ -542,7 +557,8 @@ void combVsModalBank()
   mfb.setSampleRate(1.0);
   mfb.setReferenceFrequency(f0);
   mfb.setReferenceDecay(tau);
-  mfb.setModalParameters(frq, amp, att, dec, phs);
+  rsSetModalBankToComb(&mfb, M, odd, mMin, mMax);
+  //mfb.setModalParameters(frq, amp, att, dec, phs);  // Old
 
   // Produce the impulse responses:
   Vec hc = impulseResponse(comb, numSamples, 1.0);
