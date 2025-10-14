@@ -452,6 +452,7 @@ T rsReverbTimeToTau(T reverbTime, T levelToReach = T(0.001))
 // function rsDecayTimeToFeedbackGain(). OK - it seems to work well in combVsModalBank().
 
 
+/** Sets up a modal filter bank so as to simulate a feedback comb filter. ...TBC... */
 template<class TSig, class TPar>
 void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M, 
   bool odd = false, int mMin = 0, int mMax = -1)
@@ -494,6 +495,12 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M,
   //   what it should be. That's my hypothesis at least. ToDo: Verify it theoretically! By the way:
   //   Just setting the gain at m = M and/or m = 0 to zero doesn't fix it. We really need both 
   //   components with gain 0.5 to make it right.
+  //
+  //
+  // ToDo:
+  //
+  // - Handle the case when odd == true. We currently only have the code for the case when the comb
+  //   produces all harmonics. 
 }
 
 void combVsModalBank()
@@ -529,27 +536,6 @@ void combVsModalBank()
   comb.setDelayInSamples(delay);
   comb.setToFeedbackComb(fb);
 
-  /*
-  // Prepare the vectors of the modal parameters:
-  Vec frq(M+1), amp(M+1), att(M+1), dec(M+1), phs(M+1);
-  for(int m = 0; m <= M; m++)
-  {
-    frq[m] = m;    // Frequency relative to the fundamental
-    amp[m] = 1.0;  // Linear amplitude
-    att[m] = 0.0;  // Relative attack time (i.e. location of the peak)
-    dec[m] = 1.0;  // Relative decay time (i.e. time to decay dwon to 1/e)
-    phs[m] = 90;   // Start phase in degrees. 90 seems correct when odd == false
-
-    // Apply the brickwall filtering to the modes:
-    if(m < mMin || m > mMax) 
-      amp[m] = 0.0;
-
-    // Adjust the amplitude of the DC and Nyquist modes (see comments below why):
-    if(m == 0 || m == M)
-      amp[m] *= 0.5;
-  }
-  */
-
   // Create and set up the bank of modal filters:
   Real f0  = 0.5/M;                    // Fundamental frequency
   Real tau = rsReverbTimeToTau(RT60);  // Decay time constant 
@@ -558,7 +544,6 @@ void combVsModalBank()
   mfb.setReferenceFrequency(f0);
   mfb.setReferenceDecay(tau);
   rsSetModalBankToComb(&mfb, M, odd, mMin, mMax);
-  //mfb.setModalParameters(frq, amp, att, dec, phs);  // Old
 
   // Produce the impulse responses:
   Vec hc = impulseResponse(comb, numSamples, 1.0);
