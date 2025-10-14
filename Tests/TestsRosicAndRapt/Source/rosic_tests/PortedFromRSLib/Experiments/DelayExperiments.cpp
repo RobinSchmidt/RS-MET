@@ -451,6 +451,38 @@ T rsReverbTimeToTau(T reverbTime, T levelToReach = T(0.001))
 // Needs tests. If it works, move it into the library into the file AudioFunctions.h near the
 // function rsDecayTimeToFeedbackGain(). OK - it seems to work well in combVsModalBank().
 
+
+template<class TSig, class TPar>
+void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M, 
+  bool odd = false, int mMin = 0, int mMax = -1)
+{
+  // Default values must be known at compile time so we can't use something like mMax = M in the
+  // function signature. Instead, we use mMax = -1 as code to indicate that mMax should be M.
+  if(mMax == -1)
+    mMax = M;
+
+  // Prepare the vectors of the modal parameters:
+  std::vector<TPar> frq(M+1), amp(M+1), att(M+1), dec(M+1), phs(M+1);
+  for(int m = 0; m <= M; m++)
+  {
+    frq[m] = m;    // Frequency relative to the fundamental
+    amp[m] = 1.0;  // Linear amplitude
+    att[m] = 0.0;  // Relative attack time (i.e. location of the peak)
+    dec[m] = 1.0;  // Relative decay time (i.e. time to decay dwon to 1/e)
+    phs[m] = 90;   // Start phase in degrees. 90 seems correct when odd == false
+
+    // Apply the brickwall filtering to the modes:
+    if(m < mMin || m > mMax) 
+      amp[m] = 0.0;
+
+    // Adjust the amplitude of the DC and Nyquist modes (see comments below why):
+    if(m == 0 || m == M)
+      amp[m] *= 0.5;
+  }
+  
+  mfb->setModalParameters(frq, amp, att, dec, phs);
+}
+
 void combVsModalBank()
 {
   // We create comparative plots of the impulse- and frequency responses of a feedback comb filter
@@ -562,7 +594,8 @@ void combVsModalBank()
   //   fix this! I think, we should replace scl = 1.0 / (mMax-mMin+1); by 
   //   scl = 1.0 / (mMax-mMin+0.5); or something like that. ...but maybe only when mMax < M and 
   //   otherwise keep the formula as is. Figure this out by trial and error! It's not really 
-  //   important but would be nice to have.
+  //   important (because it only affects our plots here and nothing of it relates to any DSP that
+  //   we would do in a production context) but it would be nice to have anyway.
   // 
   //
   // ToDo:
@@ -586,6 +619,18 @@ void combVsModalBank()
   // - Maybe instead of baking the decay times and amplitudes into the individual mode parameters,
   //   assign them to relative values and use tau in mfb.setReferenceDecay() and scl in 
   //   mfb.setReferenceAmplitude(). The latter doesn't exist yet, I think -> add it.
+  //
+  // - Maybe write a function (or class) that encapsulates setting up a modal bank from (universal)
+  //   comb parameters to simulate the comb exactly by the modal bank. A class could be named
+  //   rsModalCombSimulator and a function could be named setupModalBankForCombSimulation. Maybe
+  //   it could take a const reference to the actual universal comb. Or maybe it could just work
+  //   with the comb parameters.
+  //
+  // - But maybe it's not possible to model the zeros of the universal comb in e.g. allpass mode 
+  //   or feedforward mode. This is because the comb's zeros are complex and a regular modal filter 
+  //   is usually realized as two-pole/one-zero filter and the zero is therefore restricted to be 
+  //   real valued. In order to cover the full range of the universal comb's possibilities, we may
+  //   have to use a full biquad filter for each mode. 
 }
 
 void delayLines()
