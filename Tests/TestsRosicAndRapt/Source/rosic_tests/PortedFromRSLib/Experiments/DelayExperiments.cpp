@@ -475,7 +475,7 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M,
       amp[m] = 1.0;                // Linear amplitude
       att[m] = 0.0;                // Relative attack time (i.e. location of the peak)
       dec[m] = 1.0;                // Relative decay time (i.e. time to decay dwon to 1/e)
-      phs[m] = 90;                 // Start phase in degrees. 90 seems correct when odd == false
+      phs[m] = 90;                 // Start phase in degrees.
 
       // Apply the brickwall filtering to the modes:
       if(m < mMin || m > mMax)
@@ -490,7 +490,7 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M,
   {   
     for(int m = 0; m < M; m++)
     {
-      frq[m] = 0.5*(2*m+1);        // 0.5 because it's one octave lower
+      frq[m] = 0.5*(2*m+1);        // 0.5: one octave lower, 2*m+1: only odd harmonics
       amp[m] = 1.0;
       att[m] = 0.0;
       dec[m] = 1.0;
@@ -500,6 +500,7 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M,
     }
   }
   
+  // Set up the modal bank with the prepared vectors of modal parameters:
   mfb->setModalParameters(frq, amp, att, dec, phs);
 
   // Notes:
@@ -513,9 +514,9 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M,
   //   of these modes a gain of 1, we end up boosting DC and fs/2 by a factor of two compared to 
   //   what it should be. That's my hypothesis at least. ToDo: Verify it theoretically! By the way:
   //   Just setting the gain at m = M and/or m = 0 to zero doesn't fix it. We really need both 
-  //   components with gain 0.5 to make it right. When only odd hamronic are produced, this is not 
+  //   components with gain 0.5 to make it right. When only odd harmonics are produced, this is not
   //   necessary because in that case, we don't have to produce any DC component. The number of 
-  //   modes is also one less for that reason.
+  //   modes is also one less for that reason. ...the devil is in the detail!
   //
   //
   // ToDo:
@@ -525,8 +526,11 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M,
   //   function restricts the modes. Maybe it could even make sense to have such a brickwall filter
   //   feature in rsModalFilterBank similar to what we have in the wavetable oscillator class. So
   //   we could have functions like setMinModeIndex(), setMaxModeIndex() or maybe setHighpass()
-  //   setLowpass. Maybe the function names should be made consistent with those in the wavetable 
+  //   setLowpass(). Maybe the function names should be made consistent with those in the wavetable
   //   osc.
+  //
+  // - Maybe we should set the relative attack to 1. It doesn't really matter in the experiment 
+  //   below because there, we set the overall attack-scaler to zero anyway.
 }
 
 void combVsModalBank()
@@ -544,9 +548,9 @@ void combVsModalBank()
   using MFB  = rsModalFilterBank<Real, Real>;
 
   // Setup:
-  int  M          = 100;      // Number of modes. Determines fundamental and delay length
+  int  M          = 50;       // Number of modes. Determines fundamental and delay length
   Real RT60       = 4000;     // Number of samples to decay to -60 dB
-  bool odd        = true;     // If true, we produce only odd harmonics
+  bool odd        = true;     // If true, we produce only odd harmonics, if false: all harmonics
   int  mMin       = 0;        // Lowest mode to produce. 0 is DC, 1 the fundamental
   int  mMax       = M/1;      // Highest mode to produce in the modal bank
   int  numBins    = 2001;     // Number of bins for frequency response plots
@@ -584,7 +588,16 @@ void combVsModalBank()
 
   // Observations:
   // 
-  // - With M = 50, mMin = 0, mMax = M, odd = false, the modal response looks very similar to the 
+  // - With M = 50, mMin = 0, mMax = M, odd = true, mMin = 0, mMax = M, the magnitude responses 
+  //   look different. It  looks like there's a different scale factor involved somewhere. It 
+  //   happens with odd = false, too. Also, the impulse response scaling is slightly off - by 0.02
+  //   so maybe it's 1/M in general (in both cases). I guess the scl = 1.0 / (mMax-mMin+1); is not
+  //   quite right anymore. It was right for the "all harmonics" case before we adjusted the 
+  //   amplitudes of the DC and Nyquist modes by 0.5. The odd harmonics case was not yet implemeted
+  //   at that time.
+  // 
+  // - Fixed!
+  //   With M = 50, mMin = 0, mMax = M, odd = false, the modal response looks very similar to the 
   //   comb response but it shows tiny ripples at the Nyquist frequency. It looks like they ripple 
   //   roughly between 0 and 0.02 (which is 1/M). When we set mMin = 1, i.e. start at the 
   //   fundamental rather that at DC, they ripple between 0 and -0.02. Maybe this is an artifact
@@ -602,7 +615,11 @@ void combVsModalBank()
   //   for cutting out the higher modes. It's good for the impulse response plot, though. It may be
   //   bad for the frequency response plot, though. Verify that! Soo - maybe it would actually 
   //   better to not bake the scaling factor already into the signal but instead apply it only when
-  //   plotting the impulse response. ...done
+  //   plotting the impulse response. ...done. The formula scl = 1.0 / (mMax-mMin+1) comes from the 
+  //   fact that when adding k cosine waves of unit amplitude, the height of the initial spike at 
+  //   n = 0 is precisely k. And adding cosine waves is what we do with the modal bank (the phases
+  //   of all modes are set to 90, the amplitudes are all 1 - except, as mentioned, for DC and 
+  //   Nyquist in the case of odd = false).
   //
   // - It doesn't make a difference if we use mMax = M or mMax = M-1. The mode with m = M seems to
   //   be an all zeros signal. That can be verified by chossing mMin = mMax = M such that only that
@@ -665,6 +682,13 @@ void combVsModalBank()
   //   this which is difficult because the polynomials are of very high order. They are sparse 
   //   though but I'm not sure if that helps. But if it does, we will need a new root finding algo
   //   for sparse polynomials.
+  //
+  // - Maybe encapsulate the *whole* process of setting up the modal filter in a convenience 
+  //   function. At the moment, some of the necessary steps (setting the reference frequency and 
+  //   decay, converting fromRT60 to tau, etc.) are implemented directly here. Maybe that function
+  //   should not receive the RT60 or tau as parameter but instead the feedback gain used in the 
+  //   comb directly. Then we also do not need the boolean parameter for "only odd harmonics" 
+  //   anymore because that can be inferred from the sign of the feedback gain.
 }
 
 void delayLines()
