@@ -441,22 +441,36 @@ same unit as the input. The desired target level to reach is given as a raw ampl
 defaults to 1/1000 which corresponds to -60 dB which is a standard value used in audio engineering 
 and acoustics to describe a reverb time. This time to decay down to -60 dB is also known as RT60 
 (RT for reverberation time). The time constant tau of an exponential decay, on the other hand, is 
-defined to be the time to decay down to 1/e. The formula to compute tau from the revrb time is 
-given by:  tau = -reverbTime / ln(levelToReach) which is what this function encapsulates. */
+defined to be the time to decay down to 1/e where e is Euler's number. The formula to compute tau 
+from the reverb time is given by: tau = -reverbTime / log(levelToReach) which is what this function
+encapsulates. */
 template<class T>
 T rsReverbTimeToTau(T reverbTime, T levelToReach = T(0.001))
 {
   return -reverbTime / rsLog(levelToReach);
 }
 // Needs tests. If it works, move it into the library into the file AudioFunctions.h near the
-// function rsDecayTimeToFeedbackGain(). OK - it seems to work well in combVsModalBank().
+// function rsDecayTimeToFeedbackGain(). OK - it seems to work well in combVsModalBank(). So, yeah
+// I think we can move it over into the library
 
 
-/** Sets up a modal filter bank so as to simulate a feedback comb filter. ...TBC... */
+/** Sets up a modal filter bank so as to simulate a feedback comb filter. The modal filter bank is
+passed as the pointer "mfb" and this function will call mfb->setModalParameters with appropriately
+prepared vectors of modal parameters. The parameter "M" denotes the number of modes and the boolean
+parameter "odd" decides whether only odd harmonics (true) or a full series of even and odd 
+harmonics (false) shall be produced. In the latter case, the will also be a DC component which is
+represented as a decaying cosine of zero frequency, i.e. just an exponential decay. The optional 
+"mMin", "mMax" parameters may be used to set the modal amplitudes below and above two given cutoff
+points to zero thereby realizing a brickwall filter. I'm not really sure if I'll keep them, though.
+Maybe optional brickwall filtering will someday be a feature of rsModalFilterBank itself. */
 template<class TSig, class TPar>
 void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M, 
   bool odd = false, int mMin = 0, int mMax = -1)
 {
+  // Maybe rename to rsSetCombModeParams and make another function rsSetModalBankToComb that does
+  // the full setup including setting sample rate, reference freq and decay, etc. and takes as
+  // parameters the delay (in samples) and feedback coeff of the comb to be simulated.
+
   // Default values must be known at compile time so we can't use something like mMax = M in the
   // function signature. Instead, we use mMax = -1 as code to indicate that mMax should be M.
   if(mMax == -1)
@@ -533,6 +547,49 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M,
   //   below because there, we set the overall attack-scaler to zero anyway.
 }
 
+template<class TSig, class TPar>
+void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar feedback)
+{
+  // Under construction.
+
+  int  M   = delay / 2;                             // Number of modes. What if delay is odd?
+  TPar f0  = 0.5 / M;                               // Fundamental frequency
+  TPar tau = rsFeedbackGainToDecayTime(
+    rsAbs(feedback), TPar(delay), TPar(1.0/EULER)); // Decay time constant
+  bool odd = feedback > TPar(0);
+
+  mfb->setSampleRate(1.0);                          // Get rid of that!
+  mfb->setReferenceFrequency(f0);
+  mfb->setReferenceDecay(tau);
+  rsSetModalBankToComb(mfb, M, odd);
+
+  // ToDo:
+  //
+  // - Don't change the sample rate of the mfb. Instead, set the fundamental to 
+  //   0.5 * sampleRate / M. (verify formula). For that, mfb needs a getSampleRate() function so we 
+  //   should add that.
+  //
+  // - Figure out what happens when delay is odd. It will probably not yet work correctly in such a
+  //   case. Fix that! Maybe it could be enough to just use f0 = 1.0/delay or later 
+  //   sampleRate/delay? Then M would evaluate to floor(delay/2) with the current code. Maybe we 
+  //   need ceil(delay/2). In that case, we could use M = (delay+1) / 2 when we want to keep the 
+  //   computations within the integers.
+  //
+  // - Maybe the code from rsSetModalBankToComb(mfb, M, odd); should be moved into this function 
+  //   directly. I don't think, it makes much sense to separate out that function. I also think,
+  //   we should get rid of the mMin,mMax parameters. 
+  //
+  // - Oh - and we should set the overall amplitude to 1/M (or maybe 1/(M+1) or 1/(M-1) or maybe it
+  //   depends on "odd" - but maybe 1/M is just fine in all cases. I'm not yet sure).
+  //
+  // - Figure out if it works with feedback == 0. Check also -1 and +1. And maybe add an assertion
+  //   that feedback is within -1..+1. And while we are at checking argument ranges, maybe also
+  //   assert that delay > 0.
+  //
+  // - Maybe the function should become a member function of rsModalFilterBank.
+}
+
+
 void combVsModalBank()
 {
   // We create comparative plots of the impulse- and frequency responses of a feedback comb filter
@@ -548,9 +605,9 @@ void combVsModalBank()
   using MFB  = rsModalFilterBank<Real, Real>;
 
   // Setup:
-  int  M          = 50;       // Number of modes. Determines fundamental and delay length
+  int  M          = 10;       // Number of modes. Determines fundamental and delay length
   Real RT60       = 4000;     // Number of samples to decay to -60 dB
-  bool odd        = true;     // If true, we produce only odd harmonics, if false: all harmonics
+  bool odd        = false;    // If true, we produce only odd harmonics, if false: all harmonics
   int  mMin       = 0;        // Lowest mode to produce. 0 is DC, 1 the fundamental
   int  mMax       = M/1;      // Highest mode to produce in the modal bank
   int  numBins    = 2001;     // Number of bins for frequency response plots
@@ -566,6 +623,13 @@ void combVsModalBank()
   comb.setDelayInSamples(delay);
   comb.setToFeedbackComb(fb);
 
+
+  // Test:
+  //Real test = rsFeedbackGainToDecayTime(fb, Real(delay), 0.001);
+  // Should be equal to RT60 - OK - looks good.
+
+  /*
+  // Old:
   // Create and set up the bank of modal filters:
   Real f0  = 0.5/M;                    // Fundamental frequency
   Real tau = rsReverbTimeToTau(RT60);  // Decay time constant 
@@ -573,7 +637,14 @@ void combVsModalBank()
   mfb.setSampleRate(1.0);
   mfb.setReferenceFrequency(f0);
   mfb.setReferenceDecay(tau);
-  rsSetModalBankToComb(&mfb, M, odd, mMin, mMax);
+  rsSetModalBankToComb(&mfb, M, odd, mMin, mMax);  
+  */
+
+
+  // New:
+  // Create and set up the bank of modal filters:
+  MFB mfb;
+  rsSetModalBankToComb(&mfb, delay, fb);
 
   // Produce the impulse responses:
   Vec hc = impulseResponse(comb, numSamples, 1.0);
@@ -589,7 +660,7 @@ void combVsModalBank()
   // Observations:
   // 
   // - With M = 50, mMin = 0, mMax = M, odd = true, mMin = 0, mMax = M, the magnitude responses 
-  //   look different. It  looks like there's a different scale factor involved somewhere. It 
+  //   look different. It looks like there's a different scale factor involved somewhere. It 
   //   happens with odd = false, too. Also, the impulse response scaling is slightly off - by 0.02
   //   so maybe it's 1/M in general (in both cases). I guess the scl = 1.0 / (mMax-mMin+1); is not
   //   quite right anymore. It was right for the "all harmonics" case before we adjusted the 
@@ -619,7 +690,9 @@ void combVsModalBank()
   //   fact that when adding k cosine waves of unit amplitude, the height of the initial spike at 
   //   n = 0 is precisely k. And adding cosine waves is what we do with the modal bank (the phases
   //   of all modes are set to 90, the amplitudes are all 1 - except, as mentioned, for DC and 
-  //   Nyquist in the case of odd = false).
+  //   Nyquist in the case of odd = false). BUT: I think, in the modal bank, we should always scale
+  //   all amplitudes by 1/M or maybe 1/(M+1) or 1/(M-1). Otherwise, we'll boost the impulse 
+  //   response!
   //
   // - It doesn't make a difference if we use mMax = M or mMax = M-1. The mode with m = M seems to
   //   be an all zeros signal. That can be verified by chossing mMin = mMax = M such that only that
@@ -646,10 +719,6 @@ void combVsModalBank()
   // 
   // - Plot the frequency responses of the comb and modal bank together in a single plot to spot 
   //   the differences more easily. Maybe for this, we need to write a new plotting function.
-  //
-  // - Try it with odd = true. Maybe we have to adjust the number of modes and maybe the phases, 
-  //   too. Oh - and the computation of the modal frequencies, too. We will produce only odd 
-  //   harmonics! I think, that also means that there will be no DC component.
   // 
   // - Try it with different comb/allpass settings in the universal comb. Figure out how that 
   //   affects the required modal parameters. I think, frequencies, amplitudes and decay times 
@@ -689,6 +758,34 @@ void combVsModalBank()
   //   should not receive the RT60 or tau as parameter but instead the feedback gain used in the 
   //   comb directly. Then we also do not need the boolean parameter for "only odd harmonics" 
   //   anymore because that can be inferred from the sign of the feedback gain.
+  //
+  // - Figure out how we can create a feedback comb that has its poles interleaved with zeros on
+  //   the unit circle (or, more generally, on a circle with adjustable radius). The angles of the
+  //   zeros should fall in between the angles of the poles, so this is different from what a
+  //   comb-based allpass or a notchpass can do because there, the poles and zeros are at the same
+  //   angles. The rationale to put notches in between the resonant frequencies is to separate the 
+  //   modes better in the frequency domain. Maybe we can create a stronger perception of pitch 
+  //   with less actual feedback/resonance this way? I think, maybe we could use a feedback comb 
+  //   with all harmonics together with a feedforward comb with only odd harmonics (or vice versa)
+  //   and possibly with suitable adjustments of the fundamental frequencies. We may want 
+  //   resonances (poles) at (f0/2) * [0,2,4,6,...] and notches (zeros) at (f0/2) * [1,3,5,7,...]
+  //   or the other way around when we want to produce only odd harmaonics. But in the latter case,
+  //   the pre-factor should be f0 rather than f0/2. How about creating a series of notches with 
+  //   adjustable Q. Then, each notch would itself require a pair of zeros as well as poles. I 
+  //   think, such a series of poles and zeros with same angles can be realized by a universal
+  //   comb with the appropriate settings. Maybe it is in general an interesting setup to put two
+  //   universal combs in series where the first is generally responsible for the 
+  //   resonances/peaks/poles and the second for the notches/zeros.
+  //
+  // - Experiment with taking the difference between two feedback comb filters with different 
+  //   feedback gains (and later maybe with different feedback filters). This generalized the idea
+  //   implemented in the modal filter with attack. There, we basically take the difference between
+  //   two modal filters (with different decay times) to give the output a smooth attack. We should 
+  //   try the same thing with a whole series of modes rather than just asingle one.
+  //
+  // - Figure out what happens when the delay is an odd number. We currently set it up as 
+  //   delay = 2*M implying that the delay is always even. We do not want to restrict ourselves to 
+  //   only even delay line lengths.
 }
 
 void delayLines()

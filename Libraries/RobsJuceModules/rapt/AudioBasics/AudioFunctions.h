@@ -313,18 +313,18 @@ such that after a given "decayTime" the amplitude of the output has decayed away
 "targetAmplitude". It doesn't really matter in which units the decayTime and roundTripLength are
 given as long as they are given in the same unit (might be seconds or samples or whatever other 
 time unit is convenient). For example, for a recursive comb filter based on a delayline of length 
-M, if your desired decay time in samples is D and your target amplitude A is 0.001 (corresponding
+L, if your desired decay time in samples is D and your target amplitude A is 0.001 (corresponding
 to dBToAmp(-60) such that decayTime would be a RT60 value), you would have to compute the required
-feedback gain as g = (0.001)^(M/D). This function encapsulates this formula which in general is: 
-gain = amplitude^(length/decay). */
+feedback gain as G = (0.001)^(L/D). This function encapsulates this formula which in general is: 
+G = A^(L/D) i.e. gain = amplitude^(length/decayTime). */
 template<class T>
 inline T rsDecayTimeToFeedbackGain(T decayTime, T roundTripLength, T targetAmplitude)
 {
   return rsPow(targetAmplitude, roundTripLength / decayTime);
 
-  // When we have a feedback loop with roundtrip length "d" and we want to reach a gain of "a" 
-  // after an elapsed time of "t", we need to solve:  a = k^(t/d)  for the feedback gain factor
-  // k. The result is k = a^(d/t).
+  // When we have a feedback loop with roundtrip length "L" and we want to reach an amplitude of
+  // "A" after an elapsed time of "D" (the decay time), then we need to solve:  A = G^(D/L)  for 
+  // the feedback gain factor G. The result is G = A^(L/D).
   //
   //
   // ToDo: 
@@ -340,6 +340,15 @@ inline T rsDecayTimeToFeedbackGain(T decayTime, T roundTripLength, T targetAmpli
   // - Maybe make targetAmplitude optional, defaulting to 0.001 (i.e. -60 dB)
 }
 
+/** Implements the inversion of rsDecayTimeToFeedbackGain(), i.e. given a feedback gain, roundtrip
+length and amplitude, it computes the time that it takes to decay down to that amplitude. It solves
+the formula G = A^(L/D) for D. The result is D = L / log_A(G) = L / (log(G)/log(A)).  */
+template<class T>
+inline T rsFeedbackGainToDecayTime(T feedbackGain, T roundTripLength, T targetAmplitude)
+{
+  return roundTripLength / rsLogB(feedbackGain, targetAmplitude);
+}
+// Needs unit tests!
 
 
 #endif

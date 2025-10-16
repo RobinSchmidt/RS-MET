@@ -487,8 +487,15 @@ public:
   sounds, this will be the fundamental frequency. */
   void setReferenceFrequency(TPar newFrequency);
 
+  // ToDo:
+  //void setReferenceAmplitude(TPar newAmplitude);
+
   void setReferenceAttack(TPar newAttack);
+
   void setReferenceDecay(TPar newDecay);
+
+  // ToDo:
+  //void setReferencePhase(TPar newPhase);
 
   /** Sets the strength of the nonlinear feedback. This parameter is important to shape the 
   transient. */
@@ -665,6 +672,7 @@ RS_INLINE TSig rsNonlinearModalFilter<TSig, TPar>::getSample(TSig in)
 
 
   /*
+  // Experimental:
   bool linear = false;
   if( linear == true )
     return amplitude * (cr*z.re + ci*z.im); // cr, ci are fixed
@@ -711,14 +719,10 @@ RS_INLINE TSig rsModalFilterWithAttack<TSig, TPar>::getSample(TSig in)
 template<class TSig, class TPar>
 RS_INLINE TSig rsModalFilterWithAttack2<TSig, TPar>::getSample(TSig in)
 {
-  TSig w0 = in - a1*w1 - a2*w2 - a3*w3 - a4*w4; // todo: use positive sign convention
-  TSig y  =      b1*w1 + b2*w2 + b3*w3;
-  w4 = w3;
-  w3 = w2;
-  w2 = w1;
-  w1 = w0;
-  return y;
-  //return b1*w2 + b2*w3 + b3*w4; // can also be used
+  TSig w0 = in - a1*w1 - a2*w2 - a3*w3 - a4*w4;  // Apply poles
+  TSig y  =      b1*w1 + b2*w2 + b3*w3;          // Apply zeros
+  w4 = w3; w3 = w2; w2 = w1; w1 = w0;            // Update state
+  return y;                                      // Return result
 }
 
 template<class TSig, class TPar>
