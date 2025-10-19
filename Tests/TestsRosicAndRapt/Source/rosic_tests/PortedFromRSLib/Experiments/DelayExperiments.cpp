@@ -538,10 +538,11 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   // Under construction. Kinda works already but has a few rough edges. Mostly the fact that it 
   // requires an even delay and that it modifies the sample rate in the mfb. 
 
-  rsAssert(rsIsEven(delay), "Currently, only even delay lengths are supported.");
+  //rsAssert(rsIsEven(delay), "Currently, only even delay lengths are supported.");
   // ToDo: Lift that restriction. For that, we may need to adapt a couple of formulas below.
 
-  int  M   = delay / 2;                             // Number of modes. What if delay is odd?
+  //int  M   = (delay+1) / 2;                       // Old. Number of modes. What if delay is odd?
+  TPar M   = 0.5 * delay;                           // Number of modes
   TPar f0  = 0.5 / M;                               // Fundamental frequency
   TPar tau = rsFeedbackGainToDecayTime(
     rsAbs(feedback), TPar(delay), TPar(1.0/EULER)); // Decay time constant
@@ -610,13 +611,13 @@ void combVsModalBank()
   // Setup:
   int  delay      = 20;     // Delay line length. Is twice the number of modes.
   Real RT60       = 4000;   // Number of samples to decay to -60 dB
-  bool odd        = false;  // If true, we produce only odd harmonics, if false: all harmonics
+  bool oddHarms   = false;  // If true, we produce only odd harmonics, if false: all harmonics
   int  numBins    = 2001;   // Number of bins for frequency response plots
   int  numSamples = 1000;   // Number of samples for impulse response plots
 
   // Create and set up the feedback comb filter:
   Real fb = rsDecayTimeToFeedbackGain(RT60, Real(delay), 0.001);  // 0.001 is -60 dB
-  if(!odd)
+  if(!oddHarms)
     fb = -fb;
   UCF comb;
   comb.setMaxDelayInSamples(delay);
@@ -631,6 +632,10 @@ void combVsModalBank()
   Vec hc = impulseResponse(comb, numSamples, 1.0);
   Vec hm = impulseResponse(mfb,  numSamples, 1.0);
 
+  // Check that they are equal (up to roundoff error):
+  bool ok = rsIsCloseTo(hc, hm, 1.e-12);   // A tolerance of 1.e-13 fails. 1.e-12 passes.
+  //rsAssert(ok);
+
   // Plot impulse- and frequency responses:
   //rsPlotVectors(hc);
   rsPlotVectors(hc, hm);
@@ -640,15 +645,23 @@ void combVsModalBank()
 
   // Observations:
   // 
-  // - The impulse responses and frequency responses of the actual comb filter and the modal filter
+  // - Only true for even delays:
+  //   The impulse responses and frequency responses of the actual comb filter and the modal filter
   //   bank that simulates it do indeed look equal as they should. So, we have demonstrated that it
   //   is indeed possible to set up a bank of modal filters in such a way as to exactly simulate a
   //   feedback comb filter.
   // 
-  // - When delay is odd, the modal bank's period is one sample too short
+  // - When delay is odd, the modal bank's period was one sample too short. This was fixed by 
+  //   letting M be of type TPar (no integer division anymore). But now we have again a parasitic 
+  //   oscillation at (or near) the Nyquist freq when delay is odd.
+  //   
   // 
   //
   // ToDo:
+  // 
+  // - Implement the stuff we do here in this experiment in a unit test that takes as parameters 
+  //   the (integer) delay, the boolean oddHarms parameter and make sure to call it even and odd
+  //   delays and with true and false for oddHarms.
   // 
   // - Plot the frequency responses of the comb and modal bank together in a single plot to spot 
   //   the differences more easily. Maybe for this, we need to write a new plotting function.
