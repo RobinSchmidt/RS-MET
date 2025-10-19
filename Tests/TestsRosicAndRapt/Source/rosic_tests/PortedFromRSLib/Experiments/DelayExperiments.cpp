@@ -478,7 +478,7 @@ void rsSetCombModeParams(rsModalFilterBank<TSig, TPar>* mfb, int M, bool odd = f
       amp[m] = 1.0;              // Linear amplitude
       att[m] = 1.0;              // Relative attack time (i.e. location of the peak)
       dec[m] = 1.0;              // Relative decay time (i.e. time to decay dwon to 1/e)
-      phs[m] = 90;               // Start phase in degrees.
+      phs[m] = 90;               // Start phase of sine in degrees. 90° produces a cosine.
       if(m == 0 || m == M)       // Adjust the amplitude of the DC and Nyquist modes..
         amp[m] *= 0.5;           // ..see comments below why
     }
@@ -585,9 +585,6 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   //   function like modalParamsForComb(int M, TPar* freqs, TPar* amps, TPar* attacks, ...). It 
   //   could perhaps be a static member function of rsModalFilterBank.
   //
-  // - Oh - and we should set the overall amplitude to 1/M (or maybe 1/(M+1) or 1/(M-1) or maybe it
-  //   depends on "odd" - but maybe 1/M is just fine in all cases. I'm not yet sure).
-  //
   // - Figure out if it works with feedback == 0. Check also -1 and +1. And maybe add an assertion
   //   that feedback is within -1..+1. And while we are at checking argument ranges, maybe also
   //   assert that delay > 0.
@@ -611,14 +608,13 @@ void combVsModalBank()
   using MFB  = rsModalFilterBank<Real, Real>;
 
   // Setup:
-  int  M          = 10;     // Number of modes. Determines fundamental and delay length
+  int  delay      = 20;     // Delay line length. Is twice the number of modes.
   Real RT60       = 4000;   // Number of samples to decay to -60 dB
-  bool odd        = true;   // If true, we produce only odd harmonics, if false: all harmonics
+  bool odd        = false;  // If true, we produce only odd harmonics, if false: all harmonics
   int  numBins    = 2001;   // Number of bins for frequency response plots
   int  numSamples = 1000;   // Number of samples for impulse response plots
 
   // Create and set up the feedback comb filter:
-  int delay = 2*M;
   Real fb = rsDecayTimeToFeedbackGain(RT60, Real(delay), 0.001);  // 0.001 is -60 dB
   if(!odd)
     fb = -fb;
@@ -636,6 +632,7 @@ void combVsModalBank()
   Vec hm = impulseResponse(mfb,  numSamples, 1.0);
 
   // Plot impulse- and frequency responses:
+  //rsPlotVectors(hc);
   rsPlotVectors(hc, hm);
   plotFrequencyResponse(comb, numBins, 0.0, 0.5, 1.0, false);
   plotFrequencyResponse(mfb,  numBins, 0.0, 0.5, 1.0, false);
@@ -647,6 +644,8 @@ void combVsModalBank()
   //   bank that simulates it do indeed look equal as they should. So, we have demonstrated that it
   //   is indeed possible to set up a bank of modal filters in such a way as to exactly simulate a
   //   feedback comb filter.
+  // 
+  // - When delay is odd, the modal bank's period is one sample too short
   // 
   //
   // ToDo:
