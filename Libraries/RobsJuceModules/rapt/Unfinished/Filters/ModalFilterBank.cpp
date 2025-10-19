@@ -454,6 +454,13 @@ void rsModalFilterBank<TSig, TPar>::setReferenceFrequency(TPar newFrequency)
 }
 
 template<class TSig, class TPar>
+void rsModalFilterBank<TSig, TPar>::setReferenceAmplitude(TPar newAmplitude)
+{
+  referenceAmplitude = newAmplitude;
+  calculateModalFilterCoefficients();
+}
+
+template<class TSig, class TPar>
 void rsModalFilterBank<TSig, TPar>::setReferenceAttack(TPar newAttack)
 {
   referenceAttack = newAttack;
@@ -538,7 +545,7 @@ void rsModalFilterBank<TSig, TPar>::calculateModalFilterCoefficients()
   {
     modalFilters[m].setModalParameters(
       referenceFrequency * frequencies[m], 
-      amplitudes[m],
+      referenceAmplitude * amplitudes[m],
       referenceAttack * attackTimes[m],
       referenceDecay * decayTimes[m], 
       startPhases[m], 

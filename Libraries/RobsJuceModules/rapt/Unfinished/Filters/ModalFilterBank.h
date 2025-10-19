@@ -487,8 +487,7 @@ public:
   sounds, this will be the fundamental frequency. */
   void setReferenceFrequency(TPar newFrequency);
 
-  // ToDo:
-  //void setReferenceAmplitude(TPar newAmplitude);
+  void setReferenceAmplitude(TPar newAmplitude);
 
   void setReferenceAttack(TPar newAttack);
 
@@ -619,6 +618,7 @@ protected:
   // struct-of-arrays design)
 
   TPar referenceFrequency = TPar(440);
+  TPar referenceAmplitude = TPar(1.0);
   TPar referenceDecay     = TPar(1.0);
   TPar referenceAttack    = TPar(0.1);
   TPar sampleRate         = TPar(44100);

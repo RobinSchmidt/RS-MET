@@ -469,6 +469,8 @@ template<class TSig, class TPar>
 void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M, 
   bool odd = false, int mMin = 0, int mMax = -1)
 {
+  // ToDo: Get rid of mMin,mMax
+
   // Maybe rename to rsSetCombModeParams and make another function rsSetModalBankToComb that does
   // the full setup including setting sample rate, reference freq and decay, etc. and takes as
   // parameters the delay (in samples) and feedback coeff of the comb to be simulated.
@@ -562,6 +564,8 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
 
   mfb->setSampleRate(1.0);                          // Get rid of that!
   mfb->setReferenceFrequency(f0);
+  mfb->setReferenceAmplitude(TPar(1.0/M));
+  mfb->setReferenceAttack(0.0);                     // Not sure, if 0.0 or 1.0 - doesn't really matter
   mfb->setReferenceDecay(tau);
   rsSetModalBankToComb(mfb, M, odd);
 
@@ -613,8 +617,8 @@ void combVsModalBank()
   int  M          = 10;       // Number of modes. Determines fundamental and delay length
   Real RT60       = 4000;     // Number of samples to decay to -60 dB
   bool odd        = false;    // If true, we produce only odd harmonics, if false: all harmonics
-  int  mMin       = 0;        // Lowest mode to produce. 0 is DC, 1 the fundamental
-  int  mMax       = M/1;      // Highest mode to produce in the modal bank
+  //int  mMin       = 0;        // Lowest mode to produce. 0 is DC, 1 the fundamental
+  //int  mMax       = M/1;      // Highest mode to produce in the modal bank
   int  numBins    = 2001;     // Number of bins for frequency response plots
   int  numSamples = 1000;     // Number of samples for impulse response plots
 
@@ -637,8 +641,9 @@ void combVsModalBank()
   Vec hm = impulseResponse(mfb,  numSamples, 1.0);
 
   // Plot impulse- and frequency responses:
-  Real scl = 1.0 / (mMax-mMin+1);      // Scale factor to obtain unit amplitude
-  rsPlotVectors(hc, scl*hm); 
+  //Real scl = 1.0 / (mMax-mMin+1);      // Scale factor to obtain unit amplitude
+  //rsPlotVectors(hc, scl*hm);           // Old
+  rsPlotVectors(hc, hm);                 // New
   plotFrequencyResponse(comb, numBins, 0.0, 0.5, 1.0, false);
   plotFrequencyResponse(mfb,  numBins, 0.0, 0.5, 1.0, false);
 
