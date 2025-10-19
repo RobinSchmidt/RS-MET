@@ -804,6 +804,13 @@ https://www.youtube.com/watch?v=tCsl6ZcY9ag  The Physics Of Dissonance
 -Very nice interactive presentation of the dissonance theory laid out in William Sethares' book 
  "Tuning, Timbre, Spectrum, Scale"
 
+New Tonality
+https://newtonality.net
+https://github.com/new-tonality-project
+https://www.youtube.com/@new_tonality
+-Website, repo and YouTube channel about exploring Xetonality (mostly based on Sethares' work)
+
+
 Voc (Kelly-Lochbaum model of vocal tract in C):
 https://pbat.ch/proj/voc/
 https://pbat.ch/res/voc/voc.pdf

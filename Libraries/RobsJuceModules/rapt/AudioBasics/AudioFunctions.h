@@ -350,5 +350,22 @@ inline T rsFeedbackGainToDecayTime(T feedbackGain, T roundTripLength, T targetAm
 }
 // Needs unit tests!
 
+/** Converts a reverberation time to the corresponding time constant tau of an exponential decay
+function f(t) = exp(-t/tau) that decays to a certain level (levelToReach) after reverbTime seconds
+or milliseconds or samples or whatever. The physical unit doesn't matter. The output will be in the
+same unit as the input. The desired target level to reach is given as a raw amplitude and it 
+defaults to 1/1000 which corresponds to -60 dB which is a standard value used in audio engineering 
+and acoustics to describe a reverb time. This time to decay down to -60 dB is also known as RT60 
+(RT for reverberation time). The time constant tau of an exponential decay, on the other hand, is 
+defined to be the time to decay down to 1/e where e is Euler's number. The formula to compute tau 
+from the reverb time is given by: tau = -reverbTime / log(levelToReach) which is what this function
+encapsulates. */
+template<class T>
+T rsReverbTimeToTau(T reverbTime, T levelToReach = T(0.001))
+{
+  return -reverbTime / rsLog(levelToReach);
+}
+// Needs tests.
+
 
 #endif

@@ -444,11 +444,13 @@ and acoustics to describe a reverb time. This time to decay down to -60 dB is al
 defined to be the time to decay down to 1/e where e is Euler's number. The formula to compute tau 
 from the reverb time is given by: tau = -reverbTime / log(levelToReach) which is what this function
 encapsulates. */
+/*
 template<class T>
 T rsReverbTimeToTau(T reverbTime, T levelToReach = T(0.001))
 {
   return -reverbTime / rsLog(levelToReach);
 }
+*/
 // Needs tests. If it works, move it into the library into the file AudioFunctions.h near the
 // function rsDecayTimeToFeedbackGain(). OK - it seems to work well in combVsModalBank(). So, yeah
 // I think we can move it over into the library
@@ -577,7 +579,10 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   //
   // - Maybe the code from rsSetModalBankToComb(mfb, M, odd); should be moved into this function 
   //   directly. I don't think, it makes much sense to separate out that function. I also think,
-  //   we should get rid of the mMin,mMax parameters. 
+  //   we should get rid of the mMin,mMax parameters. ...or maybe it does make sense to have a 
+  //   function that writes the (relative) modal parameters into pre-allocated arrays, i.e. a 
+  //   function like modalParamsForComb(int M, TPar* freqs, TPar* amps, TPar* attacks, ...). It 
+  //   could perhaps be a static member function of rsModalFilterBank.
   //
   // - Oh - and we should set the overall amplitude to 1/M (or maybe 1/(M+1) or 1/(M-1) or maybe it
   //   depends on "odd" - but maybe 1/M is just fine in all cases. I'm not yet sure).
@@ -623,25 +628,6 @@ void combVsModalBank()
   comb.setDelayInSamples(delay);
   comb.setToFeedbackComb(fb);
 
-
-  // Test:
-  //Real test = rsFeedbackGainToDecayTime(fb, Real(delay), 0.001);
-  // Should be equal to RT60 - OK - looks good.
-
-  /*
-  // Old:
-  // Create and set up the bank of modal filters:
-  Real f0  = 0.5/M;                    // Fundamental frequency
-  Real tau = rsReverbTimeToTau(RT60);  // Decay time constant 
-  MFB mfb;
-  mfb.setSampleRate(1.0);
-  mfb.setReferenceFrequency(f0);
-  mfb.setReferenceDecay(tau);
-  rsSetModalBankToComb(&mfb, M, odd, mMin, mMax);  
-  */
-
-
-  // New:
   // Create and set up the bank of modal filters:
   MFB mfb;
   rsSetModalBankToComb(&mfb, delay, fb);
