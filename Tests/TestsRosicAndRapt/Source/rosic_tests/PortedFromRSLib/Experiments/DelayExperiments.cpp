@@ -461,25 +461,10 @@ passed as the pointer "mfb" and this function will call mfb->setModalParameters 
 prepared vectors of modal parameters. The parameter "M" denotes the number of modes and the boolean
 parameter "odd" decides whether only odd harmonics (true) or a full series of even and odd 
 harmonics (false) shall be produced. In the latter case, the will also be a DC component which is
-represented as a decaying cosine of zero frequency, i.e. just an exponential decay. The optional 
-"mMin", "mMax" parameters may be used to set the modal amplitudes below and above two given cutoff
-points to zero thereby realizing a brickwall filter. I'm not really sure if I'll keep them, though.
-Maybe optional brickwall filtering will someday be a feature of rsModalFilterBank itself. */
+represented as a decaying cosine of zero frequency, i.e. just an exponential decay. */
 template<class TSig, class TPar>
-void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M, 
-  bool odd = false, int mMin = 0, int mMax = -1)
+void rsSetCombModeParams(rsModalFilterBank<TSig, TPar>* mfb, int M, bool odd = false)
 {
-  // ToDo: Get rid of mMin,mMax
-
-  // Maybe rename to rsSetCombModeParams and make another function rsSetModalBankToComb that does
-  // the full setup including setting sample rate, reference freq and decay, etc. and takes as
-  // parameters the delay (in samples) and feedback coeff of the comb to be simulated.
-
-  // Default values must be known at compile time so we can't use something like mMax = M in the
-  // function signature. Instead, we use mMax = -1 as code to indicate that mMax should be M.
-  if(mMax == -1)
-    mMax = M;
-
   // Prepare the vectors of the modal parameters:
   int L = M;
   if(!odd)
@@ -489,32 +474,24 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M,
   {
     for(int m = 0; m <= M; m++)
     {
-      frq[m] = m;                  // Frequency relative to the fundamental
-      amp[m] = 1.0;                // Linear amplitude
-      att[m] = 0.0;                // Relative attack time (i.e. location of the peak)
-      dec[m] = 1.0;                // Relative decay time (i.e. time to decay dwon to 1/e)
-      phs[m] = 90;                 // Start phase in degrees.
-
-      // Apply the brickwall filtering to the modes:
-      if(m < mMin || m > mMax)
-        amp[m] = 0.0;
-
-      // Adjust the amplitude of the DC and Nyquist modes (see comments below why):
-      if(m == 0 || m == M)
-        amp[m] *= 0.5;
+      frq[m] = m;                // Frequency relative to the fundamental
+      amp[m] = 1.0;              // Linear amplitude
+      att[m] = 1.0;              // Relative attack time (i.e. location of the peak)
+      dec[m] = 1.0;              // Relative decay time (i.e. time to decay dwon to 1/e)
+      phs[m] = 90;               // Start phase in degrees.
+      if(m == 0 || m == M)       // Adjust the amplitude of the DC and Nyquist modes..
+        amp[m] *= 0.5;           // ..see comments below why
     }
   }
   else
   {   
     for(int m = 0; m < M; m++)
     {
-      frq[m] = 0.5*(2*m+1);        // 0.5: one octave lower, 2*m+1: only odd harmonics
+      frq[m] = 0.5*(2*m+1);      // 0.5: one octave lower, 2*m+1: only odd harmonics
       amp[m] = 1.0;
-      att[m] = 0.0;
+      att[m] = 1.0;
       dec[m] = 1.0;
       phs[m] = 90;
-      if(m < mMin || m > mMax)
-        amp[m] = 0.0;
     }
   }
   
@@ -535,6 +512,10 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M,
   //   components with gain 0.5 to make it right. When only odd harmonics are produced, this is not
   //   necessary because in that case, we don't have to produce any DC component. The number of 
   //   modes is also one less for that reason. ...the devil is in the detail!
+  // 
+  // - We set all the attack times to 1.0 because we assume that some outer function will set the
+  //   overall attack time scaling to zero (via setReferenceAttack) such that the attack times of 
+  //   the individual modes will be all zero anyway.
   //
   //
   // ToDo:
@@ -554,7 +535,11 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int M,
 template<class TSig, class TPar>
 void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar feedback)
 {
-  // Under construction.
+  // Under construction. Kinda works already but has a few rough edges. Mostly the fact that it 
+  // requires an even delay and that it modifies the sample rate in the mfb. 
+
+  rsAssert(rsIsEven(delay), "Currently, only even delay lengths are supported.");
+  // ToDo: Lift that restriction. For that, we may need to adapt a couple of formulas below.
 
   int  M   = delay / 2;                             // Number of modes. What if delay is odd?
   TPar f0  = 0.5 / M;                               // Fundamental frequency
@@ -565,10 +550,22 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   mfb->setSampleRate(1.0);                          // Get rid of that!
   mfb->setReferenceFrequency(f0);
   mfb->setReferenceAmplitude(TPar(1.0/M));
-  mfb->setReferenceAttack(0.0);                     // Not sure, if 0.0 or 1.0 - doesn't really matter
+  mfb->setReferenceAttack(0.0);                     // Matters because see below
   mfb->setReferenceDecay(tau);
-  rsSetModalBankToComb(mfb, M, odd);
+  rsSetCombModeParams(mfb, M, odd);
 
+  // Notes:
+  //
+  // - We need to set the reference attack to zero because the call to rsSetCombModeParams will set 
+  //   the relative attack times of all individual modes to 1. So, we achieve zero attack by 
+  //   setting the global reference attack to zero - not by setting the indiviudal relative attack
+  //   times of the modes to zero. Te rationale is that someday we may want to add the feature of 
+  //   adjustable attack times and then it seems to be more convenient when we can do this via the
+  //   global attack parameter. Well, maybe someday we will also allow the user to set attack times
+  //   for individual modes in which case it may be necessary anyway to go into the (lower level) 
+  //   rsSetCombModeParams() function an modify that...hmm...we'll see...
+  //
+  //
   // ToDo:
   //
   // - Don't change the sample rate of the mfb. Instead, set the fundamental to 
@@ -614,13 +611,11 @@ void combVsModalBank()
   using MFB  = rsModalFilterBank<Real, Real>;
 
   // Setup:
-  int  M          = 10;       // Number of modes. Determines fundamental and delay length
-  Real RT60       = 4000;     // Number of samples to decay to -60 dB
-  bool odd        = false;    // If true, we produce only odd harmonics, if false: all harmonics
-  //int  mMin       = 0;        // Lowest mode to produce. 0 is DC, 1 the fundamental
-  //int  mMax       = M/1;      // Highest mode to produce in the modal bank
-  int  numBins    = 2001;     // Number of bins for frequency response plots
-  int  numSamples = 1000;     // Number of samples for impulse response plots
+  int  M          = 10;     // Number of modes. Determines fundamental and delay length
+  Real RT60       = 4000;   // Number of samples to decay to -60 dB
+  bool odd        = true;   // If true, we produce only odd harmonics, if false: all harmonics
+  int  numBins    = 2001;   // Number of bins for frequency response plots
+  int  numSamples = 1000;   // Number of samples for impulse response plots
 
   // Create and set up the feedback comb filter:
   int delay = 2*M;
@@ -641,69 +636,17 @@ void combVsModalBank()
   Vec hm = impulseResponse(mfb,  numSamples, 1.0);
 
   // Plot impulse- and frequency responses:
-  //Real scl = 1.0 / (mMax-mMin+1);      // Scale factor to obtain unit amplitude
-  //rsPlotVectors(hc, scl*hm);           // Old
-  rsPlotVectors(hc, hm);                 // New
+  rsPlotVectors(hc, hm);
   plotFrequencyResponse(comb, numBins, 0.0, 0.5, 1.0, false);
   plotFrequencyResponse(mfb,  numBins, 0.0, 0.5, 1.0, false);
 
 
   // Observations:
   // 
-  // - With M = 50, mMin = 0, mMax = M, odd = true, mMin = 0, mMax = M, the magnitude responses 
-  //   look different. It looks like there's a different scale factor involved somewhere. It 
-  //   happens with odd = false, too. Also, the impulse response scaling is slightly off - by 0.02
-  //   so maybe it's 1/M in general (in both cases). I guess the scl = 1.0 / (mMax-mMin+1); is not
-  //   quite right anymore. It was right for the "all harmonics" case before we adjusted the 
-  //   amplitudes of the DC and Nyquist modes by 0.5. The odd harmonics case was not yet implemeted
-  //   at that time.
-  // 
-  // - Fixed!
-  //   With M = 50, mMin = 0, mMax = M, odd = false, the modal response looks very similar to the 
-  //   comb response but it shows tiny ripples at the Nyquist frequency. It looks like they ripple 
-  //   roughly between 0 and 0.02 (which is 1/M). When we set mMin = 1, i.e. start at the 
-  //   fundamental rather that at DC, they ripple between 0 and -0.02. Maybe this is an artifact
-  //   relating to a phase error in the topmost harmonic? The Nyquist frequency is generally 
-  //   problematic with regard to phase because a sinusoid at exactly that frequency may either be
-  //   captured faithfully (when the sample instant align with the minima and maxima) or it may be 
-  //   not captured at all (when the sample instants align with the zero crossings) or anything in 
-  //   between (in which case it may have the wrong amplitude).
-  // 
-  // - When setting mMax to something like M/5 or M/10, the modal output looks like a lowpassed 
-  //   version of the impulse train that the comb produces. This is exactly what we expect. When
-  //   using scl = 1.0 / (mMax-mMin+1), the heights of the peaks will exactly match those of the
-  //   comb. Note however, that adjusting for the height of the peaks like that is actually "wrong"
-  //   in the sense that we really modify the amplitude of the lower modes in order to compensate
-  //   for cutting out the higher modes. It's good for the impulse response plot, though. It may be
-  //   bad for the frequency response plot, though. Verify that! Soo - maybe it would actually 
-  //   better to not bake the scaling factor already into the signal but instead apply it only when
-  //   plotting the impulse response. ...done. The formula scl = 1.0 / (mMax-mMin+1) comes from the 
-  //   fact that when adding k cosine waves of unit amplitude, the height of the initial spike at 
-  //   n = 0 is precisely k. And adding cosine waves is what we do with the modal bank (the phases
-  //   of all modes are set to 90, the amplitudes are all 1 - except, as mentioned, for DC and 
-  //   Nyquist in the case of odd = false). BUT: I think, in the modal bank, we should always scale
-  //   all amplitudes by 1/M or maybe 1/(M+1) or 1/(M-1). Otherwise, we'll boost the impulse 
-  //   response!
-  //
-  // - It doesn't make a difference if we use mMax = M or mMax = M-1. The mode with m = M seems to
-  //   be an all zeros signal. That can be verified by chossing mMin = mMax = M such that only that
-  //   mode is produced. The result is indeed all zeros. This was with M = 5. Seems to be the same 
-  //   with other values of M.
-  //
-  // - With M = 10, mMin = 0, mMax = M, the frequency responses look very similar but the modal 
-  //   bank shows some differences near DC and sampleRate/2. ToDo: Try to multiply the amplitudes
-  //   of those modes (0 and M) by 1/2. I think, these modes are just too loud. Maybe it is because
-  //   in the comb, the DC component is represented to one half by the actual DC frequency and the 
-  //   to the other half by the Nyquist frequency and if, in the modal filter, we give both of 
-  //   these modes a gain of 1, we end up boosting DC and fs/2 by a factor of two compared to what 
-  //   it should be?
-  //   OK - done! And it does indeed work! We have now an exact match. The only problem is that now
-  //   when we choose mMax < M, the computation of the scl factor is now not exact anymore. ToDo:
-  //   fix this! I think, we should replace scl = 1.0 / (mMax-mMin+1); by 
-  //   scl = 1.0 / (mMax-mMin+0.5); or something like that. ...but maybe only when mMax < M and 
-  //   otherwise keep the formula as is. Figure this out by trial and error! It's not really 
-  //   important (because it only affects our plots here and nothing of it relates to any DSP that
-  //   we would do in a production context) but it would be nice to have anyway.
+  // - The impulse responses and frequency responses of the actual comb filter and the modal filter
+  //   bank that simulates it do indeed look equal as they should. So, we have demonstrated that it
+  //   is indeed possible to set up a bank of modal filters in such a way as to exactly simulate a
+  //   feedback comb filter.
   // 
   //
   // ToDo:
