@@ -463,14 +463,14 @@ parameter "odd" decides whether only odd harmonics (true) or a full series of ev
 harmonics (false) shall be produced. In the latter case, the will also be a DC component which is
 represented as a decaying cosine of zero frequency, i.e. just an exponential decay. */
 template<class TSig, class TPar>
-void rsSetCombModeParams(rsModalFilterBank<TSig, TPar>* mfb, int M, bool odd = false)
+void rsSetCombModeParams(rsModalFilterBank<TSig, TPar>* mfb, int M, bool oddHarms = false)
 {
   // Prepare the vectors of the modal parameters:
   int L = M;
-  if(!odd)
+  if(!oddHarms)
     L += 1;
   std::vector<TPar> frq(L), amp(L), att(L), dec(L), phs(L);
-  if(odd == false)
+  if(oddHarms == false)
   {
     for(int m = 0; m <= M; m++)
     {
@@ -546,21 +546,25 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   TPar f0  = 0.5 / M;                               // Fundamental frequency
   TPar tau = rsFeedbackGainToDecayTime(
     rsAbs(feedback), TPar(delay), TPar(1.0/EULER)); // Decay time constant
-  bool odd = feedback > TPar(0);
+  bool oddHarms = feedback > TPar(0);
 
   mfb->setSampleRate(1.0);                          // Get rid of that!
   mfb->setReferenceFrequency(f0);
   mfb->setReferenceAmplitude(TPar(1.0/M));
   mfb->setReferenceAttack(0.0);                     // Matters because see below
   mfb->setReferenceDecay(tau);
-  rsSetCombModeParams(mfb, M, odd);
+
+  // This code doesn't work with odd delay:
+  rsSetCombModeParams(mfb, M, oddHarms);            // Old - uses floor on M implicitly
+  //rsSetCombModeParams(mfb, rsCeil(M), odd);         // New...test
+
 
   // Notes:
   //
   // - We need to set the reference attack to zero because the call to rsSetCombModeParams will set 
   //   the relative attack times of all individual modes to 1. So, we achieve zero attack by 
   //   setting the global reference attack to zero - not by setting the indiviudal relative attack
-  //   times of the modes to zero. Te rationale is that someday we may want to add the feature of 
+  //   times of the modes to zero. The rationale is that someday we may want to add the feature of 
   //   adjustable attack times and then it seems to be more convenient when we can do this via the
   //   global attack parameter. Well, maybe someday we will also allow the user to set attack times
   //   for individual modes in which case it may be necessary anyway to go into the (lower level) 
@@ -568,6 +572,12 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   //
   //
   // ToDo:
+  // 
+  // - Make it work correctly with odd delays. I think, currently, when delay is odd, we do not yet
+  //   handle the multiplication by the DC bin and highest bin correctly. The current way of doing
+  //   it is only appropriate for even delays. Maybe rsSetCombModeParams() should get a 2nd boolean
+  //   parameter scaleOuterModesbyHalf and set it to true or false here depending on the 
+  //   combination of oddHarms and rsIsOdd(delay). 
   //
   // - Don't change the sample rate of the mfb. Instead, set the fundamental to 
   //   0.5 * sampleRate / M. (verify formula). For that, mfb needs a getSampleRate() function so we 
@@ -638,6 +648,7 @@ void combVsModalBank()
 
   // Plot impulse- and frequency responses:
   //rsPlotVectors(hc);
+  rsPlotVectors(hm);
   rsPlotVectors(hc, hm);
   plotFrequencyResponse(comb, numBins, 0.0, 0.5, 1.0, false);
   plotFrequencyResponse(mfb,  numBins, 0.0, 0.5, 1.0, false);
@@ -653,7 +664,9 @@ void combVsModalBank()
   // 
   // - When delay is odd, the modal bank's period was one sample too short. This was fixed by 
   //   letting M be of type TPar (no integer division anymore). But now we have again a parasitic 
-  //   oscillation at (or near) the Nyquist freq when delay is odd.
+  //   oscillation at (or near) the Nyquist freq when delay is odd.  With rsSetCombModeParams(mfb, 
+  //   M, odd); it starts a bit below 1, with  rsSetCombModeParams(mfb, rsCeil(M), odd);  it starts 
+  //   a bit above one. 
   //   
   // 
   //
