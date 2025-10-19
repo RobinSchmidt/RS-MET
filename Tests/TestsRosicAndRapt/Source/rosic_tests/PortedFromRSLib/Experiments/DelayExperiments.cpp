@@ -603,15 +603,13 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   // - Maybe the function should become a member function of rsModalFilterBank.
 }
 
-
-void combVsModalBank()
+/** A unit test for the function that sets up a modal filter bank in such a way that it simulates
+a feedback comb filter. The "delay" parameter corresponds to the delay (in samples) in the comb 
+filter and the "oddHarms" parameter switches the sign of the feedback gain. Depending on this sign,
+the comb will either produce a full series of harmonics or only odd harmonics. The delay is equal
+to twice the number of modes (verify this for odd delays!) ...TBC... */
+bool testCombVsModalBank(int delay, bool oddHarms)
 {
-  // We create comparative plots of the impulse- and frequency responses of a feedback comb filter
-  // and a bank of modal filters. We want to adjust the modes of the modal bank in such a way as 
-  // to match the modes of the comb in terms of frequency, amplitude, decay time and phase. One 
-  // goal is to figure out how to correctly set up the start phases of the modal  filters. 
-  // ...TBC...
-
   // Types:
   using Real = double;
   using Vec  = std::vector<Real>;
@@ -619,9 +617,7 @@ void combVsModalBank()
   using MFB  = rsModalFilterBank<Real, Real>;
 
   // Setup:
-  int  delay      = 20;     // Delay line length. Is twice the number of modes.
   Real RT60       = 4000;   // Number of samples to decay to -60 dB
-  bool oddHarms   = false;  // If true, we produce only odd harmonics, if false: all harmonics
   int  numBins    = 2001;   // Number of bins for frequency response plots
   int  numSamples = 1000;   // Number of samples for impulse response plots
 
@@ -648,10 +644,31 @@ void combVsModalBank()
 
   // Plot impulse- and frequency responses:
   //rsPlotVectors(hc);
-  rsPlotVectors(hm);
+  //rsPlotVectors(hm);
   rsPlotVectors(hc, hm);
-  plotFrequencyResponse(comb, numBins, 0.0, 0.5, 1.0, false);
-  plotFrequencyResponse(mfb,  numBins, 0.0, 0.5, 1.0, false);
+  //plotFrequencyResponse(comb, numBins, 0.0, 0.5, 1.0, false);
+  //plotFrequencyResponse(mfb,  numBins, 0.0, 0.5, 1.0, false);
+
+  return ok;
+
+  // ToDo:
+  //
+  // - Move to unit tests and integrate there. But for this, we first need to integrate the
+  //   functionality of rsSetModalBankToComb() into the library. Maybe it's appropriate to make
+  //   this a member function of class rsModalFilterBank.
+  //
+  // - Maybe get rid of the numBins, numSamples variables. Pass these numbers directly to the
+  //   respective functions. Maybe let the RT60 also be a user parameter.
+}
+
+void combVsModalBank()
+{
+  bool ok = true;
+  ok &= testCombVsModalBank(20, false);
+  ok &= testCombVsModalBank(20, true);
+  //ok &= testCombVsModalBank(21, false);   // FAILS!
+  //ok &= testCombVsModalBank(21, true);    // FAILS!
+  rsAssert(ok);
 
 
   // Observations:
