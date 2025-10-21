@@ -979,6 +979,11 @@ https://sourceforge.net/projects/guitarix/
 -"...virtual guitar amplifier for Linux running on Jack Audio Connection Kit..."
 -Supports loading of LV2 plugins but is itself not available as a plugin, it seems.
 
+StageConnect:
+https://github.com/OpenMixerProject/StageConnect
+-Arduino-Library to create a StageConnect device. StageConnect is based on the automotive A2B audio 
+ bus which uses XLR connectors to transmit 32 channels of 48kHz 32bit audio.
+
 ----------------------------------------------------------------------------------------------------
 Audio AI projects and related stuff
 

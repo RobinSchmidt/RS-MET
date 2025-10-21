@@ -574,10 +574,13 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   // ToDo:
   // 
   // - Make it work correctly with odd delays. I think, currently, when delay is odd, we do not yet
-  //   handle the multiplication by the DC bin and highest bin correctly. The current way of doing
-  //   it is only appropriate for even delays. Maybe rsSetCombModeParams() should get a 2nd boolean
-  //   parameter scaleOuterModesbyHalf and set it to true or false here depending on the 
-  //   combination of oddHarms and rsIsOdd(delay). 
+  //   handle the multiplication by 0.5 of the DC bin and highest bin correctly. The current way of 
+  //   doing it is only appropriate for even delays. Maybe rsSetCombModeParams() should get a 2nd 
+  //   boolean parameter scaleOuterModesbyHalf and set it to true or false here depending on the 
+  //   combination of oddHarms and rsIsOdd(delay). Or maybe we should move the whole code from the 
+  //   function here and then handle the logic when to multiply DC and Nyquist bin by 0.5 here. 
+  //   Maybe in the case of odd delays, the multiplication should go into the 2nd branch. Maybe 
+  //   it's best to drag these multiplications out of the loop.
   //
   // - Don't change the sample rate of the mfb. Instead, set the fundamental to 
   //   0.5 * sampleRate / M. (verify formula). For that, mfb needs a getSampleRate() function so we 
