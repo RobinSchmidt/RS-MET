@@ -544,20 +544,23 @@ a feedback comb filter. The "delay" parameter corresponds to the delay (in sampl
 filter and the "oddHarms" parameter switches the sign of the feedback gain. Depending on this sign,
 the comb will either produce a full series of harmonics or only odd harmonics. The delay is equal
 to twice the number of modes (verify this for odd delays!) ...TBC... */
-bool testCombVsModalBank(int delay, bool oddHarms)
+template<class Real>
+bool testCombVsModalBank(int delay, bool oddHarms, Real RT60, int numSamples)
 {
+  // Maybe rename Real to T, let the user pass a tolerance
+
   // Types:
-  using Real = double;
+  //using Real = double;
   using Vec  = std::vector<Real>;
   using UCF  = rsUniversalCombFilter<Real, Real>;
   using MFB  = rsModalFilterBank<Real, Real>;
 
   // Setup:
-  Real RT60       = 4000;   // Number of samples to decay to -60 dB
-  int  numSamples = 1000;   // Number of samples for impulse response plots
+  //Real RT60       = 4000;   // Number of samples to decay to -60 dB
+  //int  numSamples = 1000;   // Number of samples for impulse response plots
 
   // Temporary for debugging:
-  RT60 = 400; numSamples = 101;
+  //RT60 = 400; numSamples = 101;
   // Maybe make these values optional function parameters, such that the unit test driver can 
   // choose values that are more appropriate to the given choice of delay. With a shorter delay,
   // we can get away with producing less samples and we will also usually want a smaller RT60. But
@@ -617,12 +620,18 @@ void combVsModalBank()
 
   bool ok = true;
 
+  // Setup:
+  double RT60       = 400;  // Number of samples to decay to -60 dB
+  int    numSamples = 100;  // Number of impulse response samples to generate
+  int    minDelay   =   1;  // Minimum delay (in samples) to use
+  int    maxDelay   =  10;  // Maximum delay (in samples) to use
+
   // Test combs with small delay values (from 1 to 10) with odd harmonics only (true) or all 
   // harmonics (false):
-  for(int i = 1; i <= 10; i++)
+  for(int i = minDelay; i <= maxDelay; i++)
   {
-    ok &= testCombVsModalBank(i, true ); 
-    ok &= testCombVsModalBank(i, false); 
+    ok &= testCombVsModalBank(i, true,  RT60, numSamples); 
+    ok &= testCombVsModalBank(i, false, RT60, numSamples); 
   }
   rsAssert(ok);
   // ToDo: Try to let i start from 0. The edge case of i == 0 currently does not yet work.
@@ -693,6 +702,8 @@ void combVsModalBank()
   //   implemented in the modal filter with attack. There, we basically take the difference between
   //   two modal filters (with different decay times) to give the output a smooth attack. We should 
   //   try the same thing with a whole series of modes rather than just asingle one.
+  //
+  // - Maybe make a unit test that compares the responses to noise inputs.
 }
 
 void delayLines()
