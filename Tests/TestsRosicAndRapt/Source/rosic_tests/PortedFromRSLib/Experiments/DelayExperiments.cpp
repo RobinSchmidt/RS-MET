@@ -456,6 +456,8 @@ T rsReverbTimeToTau(T reverbTime, T levelToReach = T(0.001))
 // I think we can move it over into the library
 
 
+
+// Obsolete:
 /** Sets up a modal filter bank so as to simulate a feedback comb filter. The modal filter bank is
 passed as the pointer "mfb" and this function will call mfb->setModalParameters with appropriately
 prepared vectors of modal parameters. The parameter "M" denotes the number of modes and the boolean
@@ -538,10 +540,6 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   // Under construction. Kinda works already but has a few rough edges. Mostly the fact that it 
   // modifies the sample rate in the mfb. 
 
-  //rsAssert(rsIsEven(delay), "Currently, only even delay lengths are supported.");
-  // ToDo: Lift that restriction. For that, we may need to adapt a couple of formulas below.
-
-  //int  M   = (delay+1) / 2;                       // Old. Number of modes. What if delay is odd?
   TPar M   = 0.5 * delay;                           // Number of modes
   TPar f0  = 0.5 / M;                               // Fundamental frequency
   TPar tau = rsFeedbackGainToDecayTime(
@@ -555,8 +553,6 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   mfb->setReferenceAttack(0.0);                     // Matters because see below
   mfb->setReferenceDecay(tau);
 
-  // New - under construction:
-
   // Prepare the vectors of the modal parameters:
   int L = M;                     // Implicit floor(M) -> Make it explicit! Use rsFloorInt(M)
   if(!oddHarms)
@@ -566,7 +562,6 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
     if(oddDelay)
       L += 1;
   }
-
   std::vector<TPar> frq(L), amp(L), att(L), dec(L), phs(L);
   if(oddHarms == false)
   {
@@ -577,8 +572,6 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
       att[m] = 1.0;              // Relative attack time (i.e. location of the peak)
       dec[m] = 1.0;              // Relative decay time (i.e. time to decay dwon to 1/e)
       phs[m] = 90;               // Start phase of sine in degrees. 90° produces a cosine.
-      //if(m == 0 || m == M)       // Adjust the amplitude of the DC and Nyquist modes..
-      //  amp[m] *= 0.5;           // ..see comments below why
     }
   }
   else
@@ -592,8 +585,6 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
       phs[m] = 90;
     }
   }
-
-  // Adjust the amplitude of the DC and Nyquist modes:
   if(!oddHarms)
   {
     amp[0] *= 0.5;
@@ -603,70 +594,39 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   else
   {
     if(oddDelay)
-    {
-      //amp[0]   *= 0.5;
-
       amp[L-1] *= 0.5;
-
-      //amp[L-1] = 0.0;
-    }
   }
 
-
-  
   // Set up the modal bank with the prepared vectors of modal parameters:
   mfb->setModalParameters(frq, amp, att, dec, phs);
-  return;
-
-
-  // ToDo:
-  // -If it all works, delete the old code and the explicit return
-
-  // Old:
-  // This code doesn't work with odd delay:
-  rsSetCombModeParams(mfb, M, oddHarms);            // Old, uses floor on M implicitly, fails for odd delay
-  //rsSetCombModeParams(mfb, rsCeil(M), oddHarms);    // New - Nope - also fails for odd delay.
-
 
   // Notes:
   //
-  // - We need to set the reference attack to zero because the call to rsSetCombModeParams will set 
-  //   the relative attack times of all individual modes to 1. So, we achieve zero attack by 
-  //   setting the global reference attack to zero - not by setting the indiviudal relative attack
-  //   times of the modes to zero. The rationale is that someday we may want to add the feature of 
-  //   adjustable attack times and then it seems to be more convenient when we can do this via the
-  //   global attack parameter. Well, maybe someday we will also allow the user to set attack times
-  //   for individual modes in which case it may be necessary anyway to go into the (lower level) 
-  //   rsSetCombModeParams() function an modify that...hmm...we'll see...
-  //
+  // - The reason for this complicated logic around "oddDelay" and "oddHarms" (lengthening the 
+  //   array or not, multiplying the amplitudes for m = 0 (DC) and/or m = L-1 (Nyquist) by one 
+  //   half) is the observation that otherwise, the impulse response of the modal bank will feature
+  //   an oscillation at the Nyquist frequency which is not present in an actual feedback comb 
+  //   filter implemented the standard way using a delay line. I think it may be because in an 
+  //   actual feedback comb filter, the DC component may in some cases be represented to one half 
+  //   by the actual DC frequency. That's my hypothesis at least. I figured out the required logic
+  //   by trial and error. ...the devil is in the detail!  ToDo: Verify it theoretically! 
+  // 
+  // - We need to set the reference attack to zero because we set all the relative attack times of 
+  //   all individual modes to 1. So, we achieve zero attack by setting the global reference attack
+  //   to zero - not by setting the indiviudal relative attack times of the modes to zero. The 
+  //   rationale is that someday we may want to add the feature of adjustable attack times and then
+  //   it seems to be more convenient when we can do this via the global attack parameter. Well, 
+  //   maybe someday we will also allow the user to set attack times for individual modes 
+  //   ...hmm...we'll see...
+  // 
   //
   // ToDo:
-  // 
-  // - Make it work correctly with odd delays. I think, currently, when delay is odd, we do not yet
-  //   handle the multiplication by 0.5 of the DC bin and highest bin correctly. The current way of 
-  //   doing it is only appropriate for even delays. Maybe rsSetCombModeParams() should get a 2nd 
-  //   boolean parameter scaleOuterModesbyHalf and set it to true or false here depending on the 
-  //   combination of oddHarms and rsIsOdd(delay). Or maybe we should move the whole code from the 
-  //   function here and then handle the logic when to multiply DC and Nyquist bin by 0.5 here. 
-  //   Maybe in the case of odd delays, the multiplication should go into the 2nd branch. Maybe 
-  //   it's best to drag these multiplications out of the loop.
   //
   // - Don't change the sample rate of the mfb. Instead, set the fundamental to 
   //   0.5 * sampleRate / M. (verify formula). For that, mfb needs a getSampleRate() function so we 
   //   should add that.
-  //
-  // - Figure out what happens when delay is odd. It will probably not yet work correctly in such a
-  //   case. Fix that! Maybe it could be enough to just use f0 = 1.0/delay or later 
-  //   sampleRate/delay? Then M would evaluate to floor(delay/2) with the current code. Maybe we 
-  //   need ceil(delay/2). In that case, we could use M = (delay+1) / 2 when we want to keep the 
-  //   computations within the integers.
-  //
-  // - Maybe the code from rsSetModalBankToComb(mfb, M, odd); should be moved into this function 
-  //   directly. I don't think, it makes much sense to separate out that function. I also think,
-  //   we should get rid of the mMin,mMax parameters. ...or maybe it does make sense to have a 
-  //   function that writes the (relative) modal parameters into pre-allocated arrays, i.e. a 
-  //   function like modalParamsForComb(int M, TPar* freqs, TPar* amps, TPar* attacks, ...). It 
-  //   could perhaps be a static member function of rsModalFilterBank.
+  // 
+  // - Try to simplify the logic. Not sure, if possible, though. 
   //
   // - Figure out if it works with feedback == 0. Check also -1 and +1. And maybe add an assertion
   //   that feedback is within -1..+1. And while we are at checking argument ranges, maybe also
