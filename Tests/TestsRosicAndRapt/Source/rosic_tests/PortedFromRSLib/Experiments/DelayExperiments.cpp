@@ -530,8 +530,10 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   // ToDo:
   //
   // - Don't change the sample rate of the mfb. Instead, set the fundamental to 
-  //   0.5 * sampleRate / M. (verify formula). For that, mfb needs a getSampleRate() function so we 
-  //   should add that.
+  //   0.5 * sampleRate / M. (verify formula). But I think, we may also need to adapt the 
+  //   intepretation of the decay time - it will then be given in seconds. And maybe the delay 
+  //   needs to be re-interpreted, too? Maybe setting the sample rate to 1 is actually fine? But 
+  //   nah! That may become inconvenient at some point.
   // 
   // - Try to simplify the logic. Not sure, if that is possible, though. 
   //

@@ -528,6 +528,9 @@ public:
 
   /** \name Inquiry */
 
+  /** Returns the sample rate that this filter currently runs at. */
+  TPar getSampleRate() const { return sampleRate; }
+
   /** Returns the filter's z-domain transfer function value at the given value of z. */
   std::complex<TPar> getTransferFunctionAt(std::complex<TPar> z);
 
