@@ -613,44 +613,21 @@ bool testCombVsModalBank(int delay, bool oddHarms)
 
 void combVsModalBank()
 {
+  // Rename to testCombVsModalBank()
+
   bool ok = true;
 
-  // The odd/true case is still problematic - try a couple with nice, small delays:
-  //ok &= testCombVsModalBank(0,  true);   // FAILS! Try to fix this!
-  ok &= testCombVsModalBank(1,  true); 
-  ok &= testCombVsModalBank(2,  true);
-  ok &= testCombVsModalBank(3,  true); 
-  ok &= testCombVsModalBank(4,  true);
-  ok &= testCombVsModalBank(5,  true);
-  ok &= testCombVsModalBank(6,  true);
-  //ok &= testCombVsModalBank(15, true);
-  //ok &= testCombVsModalBank(25, true);
-
-
-  // Test all combinations of even-vs-odd delay lengths and producing all-vs-odd harmonics:
-  ok &= testCombVsModalBank(20, false);
-  ok &= testCombVsModalBank(20, true);
-  ok &= testCombVsModalBank(21, false);
-  ok &= testCombVsModalBank(21, true);
+  // Test combs with small delay values (from 1 to 10) with odd harmonics only (true) or all 
+  // harmonics (false):
+  for(int i = 1; i <= 10; i++)
+  {
+    ok &= testCombVsModalBank(i, true ); 
+    ok &= testCombVsModalBank(i, false); 
+  }
   rsAssert(ok);
+  // ToDo: Try to let i start from 0. The edge case of i == 0 currently does not yet work.
 
 
-  // Observations:
-  // 
-  // - Only true for even delays:
-  //   The impulse responses and frequency responses of the actual comb filter and the modal filter
-  //   bank that simulates it do indeed look equal as they should. So, we have demonstrated that it
-  //   is indeed possible to set up a bank of modal filters in such a way as to exactly simulate a
-  //   feedback comb filter.
-  // 
-  // - When delay is odd, the modal bank's period was one sample too short. This was fixed by 
-  //   letting M be of type TPar (no integer division anymore). But now we have again a parasitic 
-  //   oscillation at (or near) the Nyquist freq when delay is odd.  With rsSetCombModeParams(mfb, 
-  //   M, odd); it starts a bit below 1, with  rsSetCombModeParams(mfb, rsCeil(M), odd);  it starts 
-  //   a bit above one. 
-  //   
-  // 
-  //
   // ToDo:
   // 
   // - Try to fix the edge case for delay = 0. It's of no practical relevance but it would be 
