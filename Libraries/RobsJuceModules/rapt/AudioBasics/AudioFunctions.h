@@ -365,7 +365,8 @@ T rsReverbTimeToTau(T reverbTime, T levelToReach = T(0.001))
 {
   return -reverbTime / rsLog(levelToReach);
 }
-// Needs tests.
+// Needs unit tests. It has once been tested inside an experiment and it worked there as expected, 
+// but that experiment doesn't exist in this form anymore (it has been superseded by other code).
 
 
 #endif

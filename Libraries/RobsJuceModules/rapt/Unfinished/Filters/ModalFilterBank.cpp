@@ -673,7 +673,10 @@ modeling a scraping input signal:
     Pan-LFO. But of course, having a dedicated pans LFO for each mode with its own frequency will
     create a much more complex modulation.
 
-
+-Maybe it could even make sense to have a brickwall filter feature in rsModalFilterBank similar to 
+ what we have in the wavetable oscillator class. So we could have functions like setMinModeIndex(), 
+ setMaxModeIndex() or maybe setHighpass(), setLowpass(). Maybe the function names should be made 
+ consistent with those in the wavetable osc.
 
 Modeling transients:
 -transients are modeled as superposition attack/decay envelope filters (i.e. zero frequency) with
