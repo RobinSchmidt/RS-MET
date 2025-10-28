@@ -536,7 +536,7 @@ template<class TSig, class TPar>
 void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar feedback)
 {
   // Under construction. Kinda works already but has a few rough edges. Mostly the fact that it 
-  // requires an even delay and that it modifies the sample rate in the mfb. 
+  // modifies the sample rate in the mfb. 
 
   //rsAssert(rsIsEven(delay), "Currently, only even delay lengths are supported.");
   // ToDo: Lift that restriction. For that, we may need to adapt a couple of formulas below.
@@ -561,6 +561,12 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   int L = M;                     // Implicit floor(M) -> Make it explicit! Use rsFloorInt(M)
   if(!oddHarms)
     L += 1;
+  else
+  {
+    if(oddDelay)
+      L += 1;
+  }
+
   std::vector<TPar> frq(L), amp(L), att(L), dec(L), phs(L);
   if(oddHarms == false)
   {
@@ -598,14 +604,14 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   {
     if(oddDelay)
     {
-      //amp[0]   *= 0.5;  // Produces undulation at f0
-      //amp[L-1] *= 0.5;
+      //amp[0]   *= 0.5;
 
-      amp[L-1] = 0.0;
+      amp[L-1] *= 0.5;
+
+      //amp[L-1] = 0.0;
     }
   }
-  // This logic is still wrong for oddDelay == true && oddHarms == true. I think, maybe in this 
-  // case, our L is one too short?
+
 
   
   // Set up the modal bank with the prepared vectors of modal parameters:
@@ -689,6 +695,11 @@ bool testCombVsModalBank(int delay, bool oddHarms)
 
   // Temporary for debugging:
   RT60 = 400; numSamples = 101;
+  // Maybe make these values optional function parameters, such that the unit test driver can 
+  // choose values that are more appropriate to the given choice of delay. With a shorter delay,
+  // we can get away with producing less samples and we will also usually want a smaller RT60. But
+  // actually, it may make sense to also try short delays with long decays. This might be the 
+  // numerically most challenging setup because the feedback gains gets close to 1. 
 
   // Create and set up the feedback comb filter:
   Real fb = rsDecayTimeToFeedbackGain(RT60, Real(delay), 0.001);  // 0.001 is -60 dB
@@ -735,6 +746,9 @@ void combVsModalBank()
   bool ok = true;
 
   // The odd/true case is still problematic - try a couple with nice, small delays:
+  //ok &= testCombVsModalBank(1,  true);    // Fails
+  ok &= testCombVsModalBank(2,  true);
+  ok &= testCombVsModalBank(3,  true);    // Fails
   ok &= testCombVsModalBank(4,  true);
   ok &= testCombVsModalBank(5,  true);    // Fails
   ok &= testCombVsModalBank(6,  true);
@@ -768,9 +782,9 @@ void combVsModalBank()
   //
   // ToDo:
   // 
-  // - Implement the stuff we do here in this experiment in a unit test that takes as parameters 
-  //   the (integer) delay, the boolean oddHarms parameter and make sure to call it even and odd
-  //   delays and with true and false for oddHarms.
+  // - Maybe run these unit tests in a loop over various choices for the delay ranging from 1 to
+  //   maybe 10 or 20. Maybe try to figure out what happens when we request a delay of 0. Maybe add
+  //   assertions that the delay is greater than zero where appropriate.
   // 
   // - Plot the frequency responses of the comb and modal bank together in a single plot to spot 
   //   the differences more easily. Maybe for this, we need to write a new plotting function.
