@@ -33,7 +33,9 @@ public:
     // ToDo: 
     // -Maybe do a static assert to make sure that T is a signed integer type.
     // -Maybe provide a specialized constructor for converting integers to fractions. It should 
-    //  avoid the potentially costly call to canonicalize().
+    //  avoid the potentially costly call to canonicalize() which, besides other thing, calls a gcd
+    //  algorithm. The denominator is just 1 is such a case. No need to call a gcd algo and other 
+    //  stuff.
   }
 
 
@@ -128,13 +130,23 @@ protected:
   void reduce() { T gcd = rsGcd(num, den); num /= gcd; den /= gcd; }
   // ToDo: Verify and document that rsGcd does the right thing when the input is negative. 
 
-  /** Reduces to lowest terms and ensures that denominator is nonnegative. */
+  /** Brings this fraction into its canonical form by reducing it to lowest terms and ensuring that
+  denominator is nonnegative. */
   void canonicalize() { reduce(); if(den < 0) { num = -num; den = -den; }  }
   // Actually, the denominator is supposed to be positive and not only "nonnegative". However,
   // this function here really does only ensure nonnegativity, so the documentation is actually
   // accurate. That the denominator is nonzero must be ensured elsewhere. But maybe we should
-  // allow a denominator of zero to represent infinity and NaN. Maybe it could be better to first
-  // do the potential sign-flip and then reduce()?
+  // allow a denominator of zero to represent infinity and NaN (NaN would be when num _and_ den are
+  // zero). Maybe it could be better to first do the potential sign-flip and then reduce()? The 
+  // rationale being that the gcd algorithm may be tripped up by negative inputs. I'm not sure 
+  // about that, though - it may work just fine. Also, what about when both, num and den are 
+  // negative? Maybe that never happens? At least not in arithmetic operations? But it may happen
+  // when the user passes such arguments to the constructor. Verify that we have unit tests for all
+  // of these cases. 
+  // Maybe rename to canonize(). That's much shorter and seems to be a legal English word, see:
+  // https://www.merriam-webster.com/dictionary/canonize If doing so, do it also in opther classes 
+  // with similar functionality, for example in rsSparseRationalFunction. Search the whole codebase
+  // for such canonicalization (canonization) functions and name them all consistently.
 
   /** Numerator and denominator. They are always kept canonical, i.e. in reduced form and with 
   minus sign in numerator if the number is negative. */

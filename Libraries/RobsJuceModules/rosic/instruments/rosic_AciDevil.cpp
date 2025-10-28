@@ -395,11 +395,17 @@ Ideas:
  would turn the subosc into a bona-fide second oscillator and thereby expand the sonic range 
  drastically. Maybe we could even do AM and/or RM with the main oscillator.
 -The filter FM may be controlled separately by 3 signals: main-osc, sub-osc, feedback.
--Maybe have different glide modes. See the TodDo.txt in the sampler engine folder for ideas.
+-Maybe have different glide modes. See the ToDo.txt in the sampler engine folder for ideas.
+-Maybe have a 2nd sub-osc that is 2 octaves below the main oscs. And then maybe have "ByKey" 
+ fade-in/out for all 3 oscs. The rationale is that for higher notes, the main osc fades out and the 
+ subosc takes over - and for even higher notes, the 1st sub-osc fades out and the 2nd subsub takes 
+ over. Pretty much like in Shepard tones. That may extend the meaningfully playable range.
 -...puh - so many features. Maybe they should be hidden in an "Advanced Features" section which 
  should have a "Reset" button to set them to defaults, i.e. turn them off in order to get back to
  an original, authentic 303 sound. Maybe the GUI should be switchable between 2 layouts: one where
  the advanced featues have their own section and another one where they are situated where they
  logically belong in the signal flow.
+
+
 
 */
