@@ -554,9 +554,18 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   mfb->setReferenceAttack(0.0);                     // Matters because see below
   mfb->setReferenceDecay(tau);
 
+  // New:
+  // ...
+  // ToDo:
+  // -Copy the body of rsSetCombModeParams() to here and do the needed fixes to handle odd delays.
+  // -Insert an explicit return to avoid entering the old code.
+  // -If it all works, delete the old code and the explicit return
+
+
+  // Old:
   // This code doesn't work with odd delay:
-  rsSetCombModeParams(mfb, M, oddHarms);            // Old - uses floor on M implicitly
-  //rsSetCombModeParams(mfb, rsCeil(M), odd);         // New...test
+  rsSetCombModeParams(mfb, M, oddHarms);            // Old, uses floor on M implicitly, fails for odd delay
+  //rsSetCombModeParams(mfb, rsCeil(M), oddHarms);    // New - Nope - also fails for odd delay.
 
 
   // Notes:
@@ -667,10 +676,10 @@ bool testCombVsModalBank(int delay, bool oddHarms)
 void combVsModalBank()
 {
   bool ok = true;
+  ok &= testCombVsModalBank(21, false);   // FAILS!
+  ok &= testCombVsModalBank(21, true);    // FAILS!
   ok &= testCombVsModalBank(20, false);
   ok &= testCombVsModalBank(20, true);
-  //ok &= testCombVsModalBank(21, false);   // FAILS!
-  //ok &= testCombVsModalBank(21, true);    // FAILS!
   rsAssert(ok);
 
 
