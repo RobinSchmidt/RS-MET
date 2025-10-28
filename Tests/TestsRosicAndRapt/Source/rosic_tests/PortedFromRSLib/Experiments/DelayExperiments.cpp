@@ -687,6 +687,9 @@ bool testCombVsModalBank(int delay, bool oddHarms)
   int  numBins    = 2001;   // Number of bins for frequency response plots
   int  numSamples = 1000;   // Number of samples for impulse response plots
 
+  // Temporary for debugging:
+  RT60 = 400; numSamples = 101;
+
   // Create and set up the feedback comb filter:
   Real fb = rsDecayTimeToFeedbackGain(RT60, Real(delay), 0.001);  // 0.001 is -60 dB
   if(!oddHarms)
@@ -732,9 +735,11 @@ void combVsModalBank()
   bool ok = true;
 
   // The odd/true case is still problematic - try a couple with nice, small delays:
-  //ok &= testCombVsModalBank(5,  true);    // Fails
-  //ok &= testCombVsModalBank(15, true);    // Fails
-  //ok &= testCombVsModalBank(25, true);    // Fails
+  ok &= testCombVsModalBank(4,  true);
+  ok &= testCombVsModalBank(5,  true);    // Fails
+  ok &= testCombVsModalBank(6,  true);
+  ok &= testCombVsModalBank(15, true);    // Fails
+  ok &= testCombVsModalBank(25, true);    // Fails
 
 
   // Test all combinations of even-vs-odd delay lengths and producing all-vs-odd harmonics:
