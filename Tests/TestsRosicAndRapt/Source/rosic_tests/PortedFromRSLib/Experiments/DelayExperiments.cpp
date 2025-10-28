@@ -512,8 +512,10 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   //   an oscillation at the Nyquist frequency which is not present in an actual feedback comb 
   //   filter implemented the standard way using a delay line. I think it may be because in an 
   //   actual feedback comb filter, the DC component may in some cases be represented to one half 
-  //   by the actual DC frequency. That's my hypothesis at least. I figured out the required logic
-  //   by trial and error. ...the devil is in the detail!  ToDo: Verify it theoretically! 
+  //   by the actual DC frequency and to the other half by the Nyquist freq. That's my hypothesis 
+  //   at least. I figured out the required logic by trial and error. ...the devil is in the 
+  //   detail!  ToDo: Verify it theoretically! ..wait...that doesn't seem to make sense! Figure 
+  //   this out!
   // 
   // - We need to set the reference attack to zero because we set all the relative attack times of 
   //   all individual modes to 1. So, we achieve zero attack by setting the global reference attack
@@ -530,7 +532,7 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   //   0.5 * sampleRate / M. (verify formula). For that, mfb needs a getSampleRate() function so we 
   //   should add that.
   // 
-  // - Try to simplify the logic. Not sure, if possible, though. 
+  // - Try to simplify the logic. Not sure, if that is possible, though. 
   //
   // - Figure out if it works with feedback == 0. Check also -1 and +1. And maybe add an assertion
   //   that feedback is within -1..+1. And while we are at checking argument ranges, maybe also
@@ -544,31 +546,16 @@ a feedback comb filter. The "delay" parameter corresponds to the delay (in sampl
 filter and the "oddHarms" parameter switches the sign of the feedback gain. Depending on this sign,
 the comb will either produce a full series of harmonics or only odd harmonics. The delay is equal
 to twice the number of modes (verify this for odd delays!) ...TBC... */
-template<class Real>
-bool testCombVsModalBank(int delay, bool oddHarms, Real RT60, int numSamples)
+template<class T>
+bool testCombVsModalBank(int delay, bool oddHarms, T RT60, int numSamples, T tol)
 {
-  // Maybe rename Real to T, let the user pass a tolerance
-
   // Types:
-  //using Real = double;
-  using Vec  = std::vector<Real>;
-  using UCF  = rsUniversalCombFilter<Real, Real>;
-  using MFB  = rsModalFilterBank<Real, Real>;
-
-  // Setup:
-  //Real RT60       = 4000;   // Number of samples to decay to -60 dB
-  //int  numSamples = 1000;   // Number of samples for impulse response plots
-
-  // Temporary for debugging:
-  //RT60 = 400; numSamples = 101;
-  // Maybe make these values optional function parameters, such that the unit test driver can 
-  // choose values that are more appropriate to the given choice of delay. With a shorter delay,
-  // we can get away with producing less samples and we will also usually want a smaller RT60. But
-  // actually, it may make sense to also try short delays with long decays. This might be the 
-  // numerically most challenging setup because the feedback gains gets close to 1. 
+  using Vec = std::vector<T>;
+  using UCF = rsUniversalCombFilter<T, T>;
+  using MFB = rsModalFilterBank<T, T>;
 
   // Create and set up the feedback comb filter:
-  Real fb = rsDecayTimeToFeedbackGain(RT60, Real(delay), 0.001);  // 0.001 is -60 dB
+  T fb = rsDecayTimeToFeedbackGain(RT60, T(delay), T(0.001));  // 0.001 is -60 dB
   if(!oddHarms)
     fb = -fb;
   UCF comb;
@@ -581,20 +568,19 @@ bool testCombVsModalBank(int delay, bool oddHarms, Real RT60, int numSamples)
   rsSetModalBankToComb(&mfb, delay, fb);
 
   // Produce the impulse responses:
-  Vec hc = impulseResponse(comb, numSamples, 1.0);
-  Vec hm = impulseResponse(mfb,  numSamples, 1.0);
+  Vec hc = impulseResponse(comb, numSamples, T(1));
+  Vec hm = impulseResponse(mfb,  numSamples, T(1));
 
   // Check that they are equal (up to roundoff error):
-  bool ok = rsIsCloseTo(hc, hm, 1.e-12);   // A tolerance of 1.e-13 fails. 1.e-12 passes.
+  bool ok = rsIsCloseTo(hc, hm, tol);
 
-
-  // Plot impulse- and frequency responses:
-  //rsPlotVectors(hc);                                           // Imp resp of comb
-  //rsPlotVectors(hm);                                           // Imp resp of modal bank
-  //rsPlotVectors(hc, hm);                                       // Imp resps of both
-  //plotFrequencyResponse(comb, 2001, 0.0, 0.5, 1.0, false);     // Freq resp of comb
-  //plotFrequencyResponse(mfb,  2001, 0.0, 0.5, 1.0, false);     // Freq resp of modal bank
-
+  // Plot impulse- and frequency responses (uncomment as needed for debugging):
+  //rsPlotVectors(hc-hm);                                     // Imp resp difference
+  //rsPlotVectors(hc);                                        // Imp resp of comb
+  //rsPlotVectors(hm);                                        // Imp resp of modal bank
+  //rsPlotVectors(hc, hm);                                    // Imp resps of both
+  //plotFrequencyResponse(comb, 2001, 0.0, 0.5, 1.0, false);  // Freq resp of comb
+  //plotFrequencyResponse(mfb,  2001, 0.0, 0.5, 1.0, false);  // Freq resp of modal bank
 
   return ok;
 
@@ -603,39 +589,27 @@ bool testCombVsModalBank(int delay, bool oddHarms, Real RT60, int numSamples)
   // - Move to unit tests and integrate there. But for this, we first need to integrate the
   //   functionality of rsSetModalBankToComb() into the library. Maybe it's appropriate to make
   //   this a member function of class rsModalFilterBank.
-  //
-  // - Maybe get rid of the numBins, numSamples variables. Pass these numbers directly to the
-  //   respective functions. Maybe let the RT60 also be a user parameter. Then we may need to 
-  //   templatize the function on the Real type
-  //
-  // - Let the caller pass the numerical tolerance.
-  //
-  // - Maybe the numSamples should be something like k*delay with k=10 or 20 or something. Or maybe
-  //   we should use numSamples = k * RT60  with k = 0.2 or 0.5
 }
 
-void combVsModalBank()
+void testCombVsModalBank()
 {
-  // Rename to testCombVsModalBank()
-
   bool ok = true;
 
   // Setup:
-  double RT60       = 400;  // Number of samples to decay to -60 dB
-  int    numSamples = 100;  // Number of impulse response samples to generate
-  int    minDelay   =   1;  // Minimum delay (in samples) to use
-  int    maxDelay   =  10;  // Maximum delay (in samples) to use
+  double tol        = 1.e-12;  // Numerical tolerance for impulse response comparison
+  double RT60       = 400;     // Number of samples to decay to -60 dB
+  int    numSamples = 400;     // Number of impulse response samples to generate
+  int    minDelay   =   1;     // Minimum delay (in samples) to use
+  int    maxDelay   =  10;     // Maximum delay (in samples) to use
 
   // Test combs with small delay values (from 1 to 10) with odd harmonics only (true) or all 
   // harmonics (false):
   for(int i = minDelay; i <= maxDelay; i++)
   {
-    ok &= testCombVsModalBank(i, true,  RT60, numSamples); 
-    ok &= testCombVsModalBank(i, false, RT60, numSamples); 
+    ok &= testCombVsModalBank(i, true,  RT60, numSamples, tol); 
+    ok &= testCombVsModalBank(i, false, RT60, numSamples, tol); 
   }
   rsAssert(ok);
-  // ToDo: Try to let i start from 0. The edge case of i == 0 currently does not yet work.
-
 
   // ToDo:
   // 
@@ -704,6 +678,14 @@ void combVsModalBank()
   //   try the same thing with a whole series of modes rather than just asingle one.
   //
   // - Maybe make a unit test that compares the responses to noise inputs.
+  //
+  // - The plots of the differences of the impulse responses are quite interesting. Maybe make an 
+  //   additional experiment function to investigate these more closely. They feature an 
+  //   attack/decay envelope. I think, the attack comes from more and more error accumulation and 
+  //   the decay comes from the fact that both responses eventually fall down to zero.
+  //
+  // - Return the boolean ok value from this function. Maybe then get rid of the rsAssert(ok) and
+  //   defer that to the caller.
 }
 
 void delayLines()
@@ -717,7 +699,7 @@ void delayLines()
   //universalCombVsOnePole();
   //combVsAllpassPhase();              // Under construction
   //universalCombResponses();          // Imp- and freq-responses of uniCombs with various settings
-  combVsModalBank();                   // Compare comb with matched modal bank
+  testCombVsModalBank();             // Compare comb with matched modal bank
 }
 
 //=================================================================================================
