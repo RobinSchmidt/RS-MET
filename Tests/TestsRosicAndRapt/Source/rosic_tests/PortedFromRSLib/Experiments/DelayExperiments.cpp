@@ -448,8 +448,6 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   TPar f0  = 0.5 / M;                               // Fundamental frequency
   TPar tau = rsFeedbackGainToDecayTime(
     rsAbs(feedback), TPar(delay), TPar(1.0/EULER)); // Decay time constant
-  bool oddHarms = feedback > TPar(0);
-  bool oddDelay = rsIsOdd(delay);
 
   mfb->setSampleRate(1.0);                          // Get rid of that!
   mfb->setReferenceFrequency(f0);
@@ -458,7 +456,9 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   mfb->setReferenceDecay(tau);
 
   // Prepare the vectors of the modal parameters:
-  int L = M;                     // Implicit floor(M) -> Make it explicit! Use rsFloorInt(M)
+  bool oddHarms = feedback > TPar(0);
+  bool oddDelay = rsIsOdd(delay);
+  int L = rsFloorInt(M);    
   if(!oddHarms)
     L += 1;
   else
@@ -514,8 +514,9 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   //   actual feedback comb filter, the DC component may in some cases be represented to one half 
   //   by the actual DC frequency and to the other half by the Nyquist freq. That's my hypothesis 
   //   at least. I figured out the required logic by trial and error. ...the devil is in the 
-  //   detail!  ToDo: Verify it theoretically! ..wait...that doesn't seem to make sense! Figure 
-  //   this out!
+  //   detail!  ToDo: Verify it theoretically! A sinusoid at the Nyquist frequency can produce DC
+  //   when the start phase is such that...wait...no that doesn't seem to make sense! It can't. A 
+  //   sinusoid at the sample-rate aliases to DC. But fs/2? ...Nope! Figure this out!
   // 
   // - We need to set the reference attack to zero because we set all the relative attack times of 
   //   all individual modes to 1. So, we achieve zero attack by setting the global reference attack
@@ -618,21 +619,11 @@ void testCombVsModalBank()
   //   case, though. Maybe the "correct" behavior is when both filters just produce a zero signal. 
   //   Maybe we need to special case it in the setup function.
   // 
-  // - Maybe run these unit tests in a loop over various choices for the delay ranging from 1 to
-  //   maybe 10 or 20. Maybe try to figure out what happens when we request a delay of 0. Maybe add
-  //   assertions that the delay is greater than zero where appropriate.
-  // 
-  // - Plot the frequency responses of the comb and modal bank together in a single plot to spot 
-  //   the differences more easily. Maybe for this, we need to write a new plotting function.
-  // 
   // - Try it with different comb/allpass settings in the universal comb. Figure out how that 
   //   affects the required modal parameters. I think, frequencies, amplitudes and decay times 
   //   must remain the same so the only thing to adjust is the start phase.
   //
   // - Document in class rsModalFilter that "DC modes" are also allowed.
-  // 
-  // - Maybe instead of just setting the modes below mMin and above mMax to zero amplitude, we 
-  //   should actually shorten the frq, amp, etc. vectors accordingly, i.e. to lengths mMax-mMin+1.
   //
   // - Maybe write a function (or class) that encapsulates setting up a modal bank from (universal)
   //   comb parameters to simulate the comb exactly by the modal bank. A class could be named
@@ -644,7 +635,11 @@ void testCombVsModalBank()
   //   or feedforward mode. This is because the comb's zeros are complex and a regular modal filter 
   //   is usually realized as two-pole/one-zero filter and the zero is therefore restricted to be 
   //   real valued. In order to cover the full range of the universal comb's possibilities, we may
-  //   have to use a full biquad filter for each mode. 
+  //   have to use a full biquad filter for each mode. But wait! Are the zeros of the modal *bank*
+  //   also restricted to be real just because the zeros of the individual modal filters are? I 
+  //   don't think so! The zeros of a parallel connection of filters depends in complicated ways on
+  //   the poles and zeros of the indiviudal filters, so maybe we can actually get away with a real
+  //   zero per mode and can still simulate the complex zeros of the universal comb.
   //
   // - Try to simulate a feedback comb with a 1st order damping filter in the feedback path. Or 
   //   maybe more generally: any kind of filter in the feedback path. But I guess, that task is

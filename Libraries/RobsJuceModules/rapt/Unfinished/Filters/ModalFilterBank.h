@@ -522,7 +522,8 @@ public:
     std::vector<TPar> newAttackTimes, 
     std::vector<TPar> newDecayTimes, 
     std::vector<TPar> newStartPhases);
-  // ToDo: Pass arguments by const reference
+  // ToDo: Pass arguments by const reference or maybe pass an integer M for the number of modes and
+  // raw C arrays.
 
 
   /** \name Inquiry */
