@@ -547,6 +547,7 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   TPar tau = rsFeedbackGainToDecayTime(
     rsAbs(feedback), TPar(delay), TPar(1.0/EULER)); // Decay time constant
   bool oddHarms = feedback > TPar(0);
+  bool oddDelay = rsIsOdd(delay);
 
   mfb->setSampleRate(1.0);                          // Get rid of that!
   mfb->setReferenceFrequency(f0);
@@ -557,26 +558,26 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   // New - under construction:
 
   // Prepare the vectors of the modal parameters:
-  int L = M;
+  int L = M;                     // Implicit floor(M) -> Make it explicit! Use rsFloorInt(M)
   if(!oddHarms)
     L += 1;
   std::vector<TPar> frq(L), amp(L), att(L), dec(L), phs(L);
   if(oddHarms == false)
   {
-    for(int m = 0; m <= M; m++)
+    for(int m = 0; m < L; m++)
     {
       frq[m] = m;                // Frequency relative to the fundamental
       amp[m] = 1.0;              // Linear amplitude
       att[m] = 1.0;              // Relative attack time (i.e. location of the peak)
       dec[m] = 1.0;              // Relative decay time (i.e. time to decay dwon to 1/e)
       phs[m] = 90;               // Start phase of sine in degrees. 90° produces a cosine.
-      if(m == 0 || m == M)       // Adjust the amplitude of the DC and Nyquist modes..
-        amp[m] *= 0.5;           // ..see comments below why
+      //if(m == 0 || m == M)       // Adjust the amplitude of the DC and Nyquist modes..
+      //  amp[m] *= 0.5;           // ..see comments below why
     }
   }
   else
   {   
-    for(int m = 0; m < M; m++)
+    for(int m = 0; m < L; m++)
     {
       frq[m] = 0.5*(2*m+1);      // 0.5: one octave lower, 2*m+1: only odd harmonics
       amp[m] = 1.0;
@@ -585,6 +586,27 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
       phs[m] = 90;
     }
   }
+
+  // Adjust the amplitude of the DC and Nyquist modes:
+  if(!oddHarms)
+  {
+    amp[0] *= 0.5;
+    if(!oddDelay)
+      amp[L-1] *= 0.5;
+  }
+  else
+  {
+    if(oddDelay)
+    {
+      //amp[0]   *= 0.5;  // Produces undulation at f0
+      //amp[L-1] *= 0.5;
+
+      amp[L-1] = 0.0;
+    }
+  }
+  // This logic is still wrong for oddDelay == true && oddHarms == true. I think, maybe in this 
+  // case, our L is one too short?
+
   
   // Set up the modal bank with the prepared vectors of modal parameters:
   mfb->setModalParameters(frq, amp, att, dec, phs);
@@ -708,10 +730,18 @@ bool testCombVsModalBank(int delay, bool oddHarms)
 void combVsModalBank()
 {
   bool ok = true;
-  ok &= testCombVsModalBank(21, false);   // old code fails, new code works
-  //ok &= testCombVsModalBank(21, true);    // old code fails, new code produces access violation
+
+  // The odd/true case is still problematic - try a couple with nice, small delays:
+  //ok &= testCombVsModalBank(5,  true);    // Fails
+  //ok &= testCombVsModalBank(15, true);    // Fails
+  //ok &= testCombVsModalBank(25, true);    // Fails
+
+
+  // Test all combinations of even-vs-odd delay lengths and producing all-vs-odd harmonics:
   ok &= testCombVsModalBank(20, false);
   ok &= testCombVsModalBank(20, true);
+  ok &= testCombVsModalBank(21, false);
+  ok &= testCombVsModalBank(21, true);    // Fails!
   rsAssert(ok);
 
 
