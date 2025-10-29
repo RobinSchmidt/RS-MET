@@ -639,6 +639,11 @@ public:
 
   /** Returns a copy of the i-th row as a std::vector. */
   std::vector<T> getRowAsVector(int i) const { return toVector(getRowPointerConst(i), numCols); }
+  // Maybe rename to getRowAsStdVector(int i). Rationale: We may want to have a custom vector class
+  // rsVector or something here in the RAPT library (maybe we already do?) and "Vector" without 
+  // qualification, vector should usually refer to that class by convention.
+
+  // ToDo: getColumnAs(Std)Vector(int i)
 
   /** Copies data of i-th row into given array arr which should be of length numCols. */
   void copyRow(int i, T* arr) const

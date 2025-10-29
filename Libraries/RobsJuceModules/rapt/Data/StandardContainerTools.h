@@ -127,7 +127,21 @@ std::vector<TDst> rsConvert(const std::vector<TSrc>& x, TDst dummy)
 // That would be more convenient but i have not yet figured out what the right syntax would have to
 // be to write such a convert function (or if it's possible at all). The dummy is ugly.
 
-
+/** Convolves the given vector x with the given vector h. The result is a vector y which has a 
+length of Ny = Nx + Nh - 1 where Nx,Nh are the lengths of x and h respectively. We may interpret x
+as an input signal and h as impulse response (aka filter kernel). Such an interpretation is 
+optional, though. However, it is very common in the DSP literature which is why I named the 
+parameters like the DSP literature usually names these signals (x: input, h: kernel, y: output). */
+template<class T>
+std::vector<T> rsConvolve(const std::vector<T>& x, const std::vector<T>& h)
+{
+  int Nx = (int) x.size();
+  int Nh = (int) h.size();
+  int Ny = Nx + Nh - 1;
+  std::vector<T> y(Ny);
+  rsArrayTools::convolve(&x[0], Nx, &h[0], Nh, &y[0]);
+  return y;
+}
 
 /** Copies data from src to dst, where dst will be resized if necessarry. */
 template<class T>

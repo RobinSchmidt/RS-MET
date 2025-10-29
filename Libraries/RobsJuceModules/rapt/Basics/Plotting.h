@@ -87,8 +87,15 @@ inline void rsStemPlot(int N, T *x, T *y)
   rsSetupPlotStyles(plt);
   plt.addDataArrays(N, x, y);
   plt.addDataArrays(N, x, y); // can probably be done without adding the data twice
-  plt.setGraphStyles("impulses", "points pt 7 ps 1.2");
+  plt.setGraphStyles("impulses", "points pt 7 ps 2.0");
   plt.plot();
+
+  // Notes:
+  //
+  // - In previously had the style set up as plt.setGraphStyles("impulses", "points pt 7 ps 1.2");
+  //   but on a high resoultion screen the point size of 1.2 is too small, so I increased it to 2.0
+  //   which looks more appropriate. It may now look bad on low res screens, though. But nowadays,
+  //   looking good on high-res is more important.
 }
 
 /** Plots a bunch of vectors as functions of the index. */
