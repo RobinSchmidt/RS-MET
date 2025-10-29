@@ -441,21 +441,24 @@ call mfb->setModalParameters with appropriately prepared vectors of modal parame
 template<class TSig, class TPar>
 void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar feedback)
 {
-  // Under construction. Kinda works already but has a few rough edges. Mostly the fact that it 
-  // modifies the sample rate in the mfb. 
-
-  TPar M   = 0.5 * delay;                           // Number of modes
-  TPar f0  = 0.5 / M;                               // Fundamental frequency
+  // Compute some intermediate values:
+  TPar fs  = mfb->getSampleRate();                      // Retrieve sample rate
+  TPar M   = 0.5 * delay;                               // Number of modes
+  TPar f0  = 0.5 * fs / M;                              // Fundamental frequency
   TPar tau = rsFeedbackGainToDecayTime(
-    rsAbs(feedback), TPar(delay), TPar(1.0/EULER)); // Decay time constant
+    rsAbs(feedback), TPar(delay/fs), TPar(1.0/EULER));  // Decay time constant
 
-  mfb->setSampleRate(1.0);                          // Get rid of that!
+  // Set up global parameters in the modal bank:
   mfb->setReferenceFrequency(f0);
   mfb->setReferenceAmplitude(TPar(1.0/M));
-  mfb->setReferenceAttack(0.0);                     // Matters because see below
+  mfb->setReferenceAttack(0.0);                         // Matters because see below
   mfb->setReferenceDecay(tau);
+  // ToDo: Verify that this setup is complete. Maybe we should add setReferencePhase(0). Or: use 
+  // setReferencePhase(90) and set all the (relative) phases for the individual modes to 0. This 
+  // would be more consistent with handling the attack and decay. But for this, we actually need to 
+  // implement a setReferencePhase function in the modal bank. It's not yet there.
 
-  // Prepare the vectors of the modal parameters:
+  // Prepare the vectors of the parameters for the individual modes:
   bool oddHarms = feedback > TPar(0);
   bool oddDelay = rsIsOdd(delay);
   int L = rsFloorInt(M);    
@@ -474,7 +477,7 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
       frq[m] = m;                // Frequency relative to the fundamental
       amp[m] = 1.0;              // Linear amplitude
       att[m] = 1.0;              // Relative attack time (i.e. location of the peak)
-      dec[m] = 1.0;              // Relative decay time (i.e. time to decay dwon to 1/e)
+      dec[m] = 1.0;              // Relative decay time (i.e. time to decay down to 1/e)
       phs[m] = 90;               // Start phase of sine in degrees. 90° produces a cosine.
     }
   }
@@ -542,6 +545,20 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   //   assert that delay > 0.
   //
   // - Maybe the function should become a member function of rsModalFilterBank.
+  //
+  // - Change the API of rsModalFilterBank so we can avoid allocating these temporary std::vectors
+  //   here. Let it have a function setNumModes(newNumModes, bool zeroAdditionalModes = false) and 
+  //   setModeParams(index, freq, amp, attack, decay, phase). The zeroAdditionalModes should 
+  //   optionally set the new modes to zero amplitude in case the new number is greater than the 
+  //   old. The rationale is that the internal arrays may contain data that is considered to be
+  //   garbage when setting the new number higher than the old - so when the parameter is true, 
+  //   we would clean out the garbage as well. But that may not always be wanted. Sometimes the old
+  //   data may still be valid so that clean up should be optional. It should probably default to
+  //   true to force the user to set up new data when uing the defaults in order to not run into a 
+  //   situation in which a test has good data but in production the data is garbage. Keeping the 
+  //   potentially invalid old data should be a deliberate opt in. Maybe the logic should be 
+  //   reversed and the parameter should be keepOldModeParams - and that should then default to 
+  //   false. Or maybe call it reUseOldModeParams.
 }
 
 /** A unit test for the function that sets up a modal filter bank in such a way that it simulates
