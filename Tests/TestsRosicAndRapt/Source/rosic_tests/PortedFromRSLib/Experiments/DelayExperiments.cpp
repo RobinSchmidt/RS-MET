@@ -531,14 +531,8 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   // 
   //
   // ToDo:
-  //
-  // - Don't change the sample rate of the mfb. Instead, set the fundamental to 
-  //   0.5 * sampleRate / M. (verify formula). But I think, we may also need to adapt the 
-  //   intepretation of the decay time - it will then be given in seconds. And maybe the delay 
-  //   needs to be re-interpreted, too? Maybe setting the sample rate to 1 is actually fine? But 
-  //   nah! That may become inconvenient at some point.
   // 
-  // - Try to simplify the logic. Not sure, if that is possible, though. 
+  // - Try to simplify the oddDelay/oddHarms logic. Not sure, if that is possible, though. 
   //
   // - Figure out if it works with feedback == 0. Check also -1 and +1. And maybe add an assertion
   //   that feedback is within -1..+1. And while we are at checking argument ranges, maybe also
@@ -549,16 +543,17 @@ void rsSetModalBankToComb(rsModalFilterBank<TSig, TPar>* mfb, int delay, TPar fe
   // - Change the API of rsModalFilterBank so we can avoid allocating these temporary std::vectors
   //   here. Let it have a function setNumModes(newNumModes, bool zeroAdditionalModes = false) and 
   //   setModeParams(index, freq, amp, attack, decay, phase). The zeroAdditionalModes should 
-  //   optionally set the new modes to zero amplitude in case the new number is greater than the 
-  //   old. The rationale is that the internal arrays may contain data that is considered to be
-  //   garbage when setting the new number higher than the old - so when the parameter is true, 
-  //   we would clean out the garbage as well. But that may not always be wanted. Sometimes the old
-  //   data may still be valid so that clean up should be optional. It should probably default to
-  //   true to force the user to set up new data when uing the defaults in order to not run into a 
-  //   situation in which a test has good data but in production the data is garbage. Keeping the 
-  //   potentially invalid old data should be a deliberate opt in. Maybe the logic should be 
-  //   reversed and the parameter should be keepOldModeParams - and that should then default to 
-  //   false. Or maybe call it reUseOldModeParams.
+  //   optionally set the new modes to zero amplitude (and maybe init the other mode variables as 
+  //   well) in case the new number is greater than the old. The rationale is that the internal 
+  //   arrays may contain data that is considered to be garbage when setting the new number higher 
+  //   than the old - so when the parameter is true, we would clean out the garbage as well. But 
+  //   that may not always be wanted. Sometimes the old data may still be valid so that clean up 
+  //   should be optional. It should probably default to true to force the user to set up new data 
+  //   when uing the defaults in order to not run into a situation in which a test has good data 
+  //   but in production the data is garbage. Keeping the potentially invalid old data should be a 
+  //   deliberate opt in. Maybe the logic should be reversed and the parameter should be 
+  //   keepOldModeParams - and that should then default to false. Or maybe call it 
+  //   reUseOldModeParams.
 }
 
 /** A unit test for the function that sets up a modal filter bank in such a way that it simulates
