@@ -628,7 +628,9 @@ void beatingSines2()
   //   match by just using the cosine rather than the sine for the amp-modulator, i.e. use
   //   a[n] = (1 + d * cos(wm * n));
   //
-  // - Maybe 
+  // - Assume that the perceived frequency is given by (a1 * f1 + a2 * f2) / (a1 + a2) or maybe by
+  //   (a1^2 * f1 + a2^2 * f2) / (a1^2 + a2^2) and use this relation to tune f1, f2 to the desired
+  //   fc
 }
 
 void beatingSines()
