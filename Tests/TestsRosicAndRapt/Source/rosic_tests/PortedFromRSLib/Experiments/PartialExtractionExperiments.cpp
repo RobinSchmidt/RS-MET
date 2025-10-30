@@ -571,7 +571,17 @@ void beatingSines2()
   rsPlotVectors(x, a);   // Anp mod signal with its amp envelope
 
 
-
+  // Observations:
+  //
+  // - With fc = 100, fm = 10, d = 0.5, the following parameters seem to work well:
+  //   f1 = 95, f2 = 10.5, a1 = 2/3, a2 = 1/3. Swapping the amplitudes, i.e. using a1 = 1/3,
+  //   a2 = 2/3 works equally well
+  // 
+  // - The true amplitude modulation signal keeps the phase between successive periods of the 
+  //   modulator whereas the pseudo amp mod signal has every other cycle of the modulater wave
+  //   phase inverted.
+  //
+  //
   // ToDo:
   //
   // - Produce the sum of two sines with a1,w1 and a2,w2 and try to figure out how these parameters
