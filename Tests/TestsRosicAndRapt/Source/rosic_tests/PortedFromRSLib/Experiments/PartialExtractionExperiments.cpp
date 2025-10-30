@@ -498,12 +498,8 @@ void beatingSines1()
   // ...hmm...but that seems a dead end
 }
 
-void beatingSines2()
+void pseudoAmpModViaBeating()
 {
-  // ToDo: Rename to pseudoAmpModViaBeating
-
-  // Under construction
-
   // We want to figure out how we can best parameterize a pair of beating sinusoids for the user.
   // We want to use two sine waves and we want to achieve an effect like amplitude modulation, i.e.
   // something similar to:
@@ -538,11 +534,11 @@ void beatingSines2()
   Real fs = 10000;       // Sample rate
   Real fc =   100;       // Carrier frequency
   Real fm =    10;       // Modulator frequency
-  Real d  =   0.25;      // Modulation depth
+  Real d  =   0.2;       // Modulation depth
   Real f1 =    95;       // Lower sine frequency
   Real f2 =   105;       // Upper sine frequency
-  Real a1 =   3./4;      // Lower sine amplitude
-  Real a2 =   1./4;      // Upper sine amplitude
+  Real a1 =   4./5;      // Lower sine amplitude
+  Real a2 =   1./5;      // Upper sine amplitude
 
 
   // Produce actual amplitude modulation signal:
@@ -565,10 +561,12 @@ void beatingSines2()
     y[n] = a1 * sin(w1 * n) + a2 * sin(w2 * n);
 
   // Plot outputs:
-  //rsPlotVectors(x, y);     // Actual and pseudo amp mod signal
-  //rsPlotVectors(y);        // Pseudo amp mod signal
-  //rsPlotVectors(x, a);     // Amp mod signal with its amp envelope
-  rsPlotVectors(a, x, y);      // Envelope and both signals
+  //rsPlotVectors(x, y);        // Actual and pseudo amp mod signal
+  //rsPlotVectors(y);           // Pseudo amp mod signal
+  //rsPlotVectors(x, a);        // Amp mod signal with its amp envelope
+  rsPlotVectors(a, x, y);     // Envelope and both signals
+  //rsPlotVectors(x+y, x-y);    // Sum and difference of proper and pseudo amp mod
+
 
 
   // Observations:
@@ -604,11 +602,24 @@ void beatingSines2()
   // - It seems that using f1 = fc - fm/2, f2 = fc + m/2, a1 = d, a2 = 1-d is the correct mapping
   //   from fc,fm,d to f1,f2,a1,a2 - at least for small d. For d = 1, a1 = a2 = 1/2 seems to be 
   //   correct. Or maybe it should be a1 = d/2, a2 = 1-d/2? Or a1 = ..
+  //   Or maybe use s = 1/d, a1 = 1/s, a2 = (s-1)/s
+  //   d = 0.2  = 1/5:   s = 1/d =  5, a1 = 1/s = 1/5,  a2 = (s-1)/s = (5-1) /5  = 4/5
+  //   d = 0.1  = 1/10:  s = 1/d = 10, a1 = 1/s = 1/10, a2 = (s-1)/s = (10-1)/10 = 9/10
+  //   d = 0.5  = 1/2:   s = 1/d =  2, a1 = 1/s = 1/2,  a2 = (s-1)/s = (2-1) /2  = 1/2
+  //   d = 0.25 = 1/4:   s = 1/d =  4, a1 = 1/s = 1/4,  a2 = (s-1)/s = (4-1 )/4  = 3/4
   // 
   // - Or maybe we should use:
   //   f1 = fc - d*fm, f2 = fc + (1-d)*fm  or   f1 = fc - (1-d)*fm, f2 = fc + d*fm
   // 
-  //
+  // - There are always two ways to achieve the desired effect: Either the lower frequency gets the
+  //   lower amplitude and the higher frequency gets the higher amplitude or the lower frequency 
+  //   gets the higher amplitude and higher frequency gets the lower amplitude. Maybe to put this 
+  //   into a user control, we could use a signed mod depth parameter. When its negative, the
+  //   low freq gets the high amp and when its positive, the high freq gets the high amp. 
+  //   Rationale: Positive values shift the spectral balance up, negative values shift it down 
+  //   which seems to be intuitive. The depth parameter could range from -1 to +1 or from -100% to
+  //   +100%. We would actually use the absolute value of it and use the sign to determine which 
+  //   sine gets the higher amplitude.
   //
   //
   // ToDo:
@@ -631,14 +642,41 @@ void beatingSines2()
   // - Assume that the perceived frequency is given by (a1 * f1 + a2 * f2) / (a1 + a2) or maybe by
   //   (a1^2 * f1 + a2^2 * f2) / (a1^2 + a2^2) and use this relation to tune f1, f2 to the desired
   //   fc
+  // 
+  // - Produce wavefiles with actual and pseudo amp mod signals for comparison. Are there 
+  //   perceptual differences? Beating sines are usually described as sounding "rough" in the
+  //   psychoacoustics literature (see Plomp-Levelt curves, for example). Will the actually 
+  //   amp-modulated signal sound equally rough as the corresponding beating (pseudo-amp-mod) 
+  //   signal? Or maybe it will sound less rough because the carrier wave in the center has a 
+  //   "stabilizing" perceptual effect?
+  // 
+  // - Could the "continuous phase switch" between the cycles of the modulator be expressed in 
+  //   terms of phase modulation? Try to figure this out! What would the modulating signal have to
+  //   look like? I guess, it's not a sine because I think, the "switch" occurrs faster than that
+  //   from looking at the plots. Also, from a spectral point of view, we know that phase 
+  //   modulation with a sine wave would produce spectra with many more sidebands (see FM-synthesis
+  //   theory) but here we really only have two sines. Maybe it could be related to single sideband
+  //   modulation theory somehow?
+  // 
+  // - Try using the class rsSingleSineModeler on the beating signal in order to figure out the 
+  //   instantaneous frequency, amplitude and phase of the beating signal when we try to interpret
+  //   it as a single amplitude and phase modulated sine. Maybe try to first express it in terms of
+  //   instantaneos phase and amplitude only. then later also with instantaneous frequency. Maybe
+  //   try to treat the instantaneous frequency as given by the weighted average frequency. Then 
+  //   try to estimate it as well.
+  // 
+  //
+  // See also:
+  //
+  // - https://github.com/RobinSchmidt/RS-MET/discussions/322
 }
 
 void beatingSines()
 {
-  beatingSines2();
+  pseudoAmpModViaBeating();
 
   beatingSines1();
-  beatingSines2();
+  pseudoAmpModViaBeating();
 }
 
 
