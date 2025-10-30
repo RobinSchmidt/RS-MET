@@ -510,22 +510,51 @@ void beatingSines2()
   //
   // where the parameter d is the modulation depth (0 <= d <= 1), wm is the modulator's radian
   // frequency and wc is the carrier's radian frequency. However, just adding two sines will not 
-  // be able to exactly produce such a signal because in actualy amnplitude modulation, what 
+  // be able to exactly produce such a signal because in actual amnplitude modulation, what 
   // happens is that there are actually 3 sinusoids: one in the center at the carrier frequency wc
-  // and the two ring-modulation products at wc - wm and wc + wm. But adding just two sinusoids
-  // with a frequencies w1,w2 will produce a similar (not equal) effect when the amplitudes a1,a2 
-  // of the two sinusoids are not exactly equal. Rather than the explicit and actual amplitude 
-  // modulation signal above, we want to produce our signal like this:
+  // and the two ring-modulation products at wc - wm and wc + wm. Amplitude modulation with varying
+  // depth d is basically a crossfade between the umodulated carrier signal and a ringmod product
+  // of the carrier and modulator. Adding just two sinusoids with a frequencies w1,w2 will produce 
+  // a similar (not equal) effect when the amplitudes a1,a2 of the two sinusoids are not exactly 
+  // equal. Rather than the explicit and actual amplitude modulation signal above, we want to 
+  // produce our signal like this:
   // 
   //   y(t) = a1 * sin(w1 * t) + a2 * sin(w2 * t)
   // 
   // And we want y(t) to be perceptually (and maybe visually when looking at the plot) similar to 
   // x(t) such that it can be used as a stand in for an actual amplitude modulated sine wave. We 
-  // want tp provide to the user parameters like (pseudo) carrier frequency and (pseudo) modulator
+  // want to provide to the user parameters like (pseudo) carrier frequency and (pseudo) modulator
   // frequency and (pseudo) modulation depth. The quest is to compute w1,w2,a1,a2 from wc,wm,d. The
   // first thing we can do to get rid of one degree of freedom is to fix the sum of the amplitudes
   // a1 + a2 such that the peak amplitude of both signals.  ...TBC...
 
+  using Real = double;
+  using Vec  = std::vector<Real>;
+
+  // Setup:
+  int  N  =  3000;       // Number of samples
+  Real fs = 10000;       // Sample rate
+  Real fc =   100;       // Carrier frequency
+  Real fm =    10;       // Modulator frequency
+  Real d  =   0.5;       // Modulation depth
+
+
+  Real wc = 2*PI*fc/fs;  // Normalized carrier radian frequency
+  Real wm = 2*PI*fm/fs;  // Normalized radian frequency
+
+  // Produce actual amplitude modulation signal:
+  Vec a(N), x(N);
+  for(int n = 0; n < N; n++)
+  {
+    a[n] = (1 + d * sin(wm * n));  // Amplitude envelope
+    x[n] = a[n] * sin(wc * n);     // Enveloped sinusoid
+
+    //x[n] = (1 + d * sin(wm * n)) * sin(wc * n);
+  }
+
+
+  // Plot outputs:
+  rsPlotVectors(a, x);
 
 
   // ToDo:
@@ -537,6 +566,8 @@ void beatingSines2()
   // - When we have (approximate) rules for how pseudo carrier and modulator frequency are related
   //   to a1,w1,a2,w2, we may be able to invert the relations to produce our algorithm parameters
   //   a1,w1,a2,w2 from the user parameters wc,wm,d.
+  //
+  // - Maybe plot also the modulation signal itself, i.e. the amplitude envelope
 }
 
 void beatingSines()
