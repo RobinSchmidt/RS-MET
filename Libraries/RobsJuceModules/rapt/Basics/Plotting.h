@@ -38,7 +38,7 @@ inline void rsSetupPlotStyles(GNUPlotter& plt)
   // has 1080 x 1920 pixels) but it is also big enough to not be too tiny on an UHD screen. Maybe
   // we should go for 1800 x 1000 - but maybe that would take too much space on an FHD screen.
 
-  plt.setToDarkMode();
+  //plt.setToDarkMode();
   // Because of course! Why would anyone use light mode? Pfff... Well, maybe for inclusion into pdf
   // documents - but on screen, dark mode rulez!
 }

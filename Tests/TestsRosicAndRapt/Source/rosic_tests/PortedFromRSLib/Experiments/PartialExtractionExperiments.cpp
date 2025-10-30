@@ -538,24 +538,23 @@ void beatingSines2()
   Real fs = 10000;       // Sample rate
   Real fc =   100;       // Carrier frequency
   Real fm =    10;       // Modulator frequency
-  Real d  =   0.1;       // Modulation depth
+  Real d  =   0.25;      // Modulation depth
   Real f1 =    95;       // Lower sine frequency
   Real f2 =   105;       // Upper sine frequency
-  Real a1 =   9./10;     // Lower sine amplitude
-  Real a2 =   1./10;     // Upper sine amplitude
+  Real a1 =   3./4;      // Lower sine amplitude
+  Real a2 =   1./4;      // Upper sine amplitude
 
-
-  Real wc = 2*PI*fc/fs;  // Normalized carrier radian frequency
-  Real wm = 2*PI*fm/fs;  // Normalized radian frequency
 
   // Produce actual amplitude modulation signal:
+  Real wc = 2*PI*fc/fs;  // Normalized carrier radian frequency
+  Real wm = 2*PI*fm/fs;  // Normalized radian frequency
   Vec a(N), x(N);
   for(int n = 0; n < N; n++)
   {
-    //a[n] = (1 + d * sin(wm * n));  // Amplitude envelope
-    a[n]  = (1 + d * cos(wm * n));  // Amplitude envelope
-    x[n]  = a[n] * sin(wc * n);     // Enveloped sinusoid
-    x[n] /= 1 + d;                  // Renormalize peak amplitude
+    //a[n] = (1 + d * sin(wm * n));      // Amplitude envelope
+    a[n]  = (1 + d * cos(wm * n));     // Amplitude envelope - cos gives better match than sin
+    a[n] /= 1 + d;                     // Renormalize peak amplitude
+    x[n]  = a[n] * sin(wc * n);        // Enveloped sinusoid
   }
 
   // Produce pseudo amplitude modulation signal via beating sines:
@@ -566,9 +565,10 @@ void beatingSines2()
     y[n] = a1 * sin(w1 * n) + a2 * sin(w2 * n);
 
   // Plot outputs:
-  rsPlotVectors(x, y);   // Actual and pseudo amp mod signal
-  rsPlotVectors(y);      // Pseudo amp mod signal
-  rsPlotVectors(x, a);   // Anp mod signal with its amp envelope
+  //rsPlotVectors(x, y);     // Actual and pseudo amp mod signal
+  //rsPlotVectors(y);        // Pseudo amp mod signal
+  //rsPlotVectors(x, a);     // Amp mod signal with its amp envelope
+  rsPlotVectors(a, x, y);      // Envelope and both signals
 
 
   // Observations:
@@ -593,13 +593,21 @@ void beatingSines2()
   //   modulator whereas the pseudo amp mod signal has every other cycle of the modulater wave
   //   phase inverted. Of course, the phase does not switch discontinuously. Instead there is a
   //   smooth transition between the normal and the opposite pahse cycles
+  // 
+  // - I think, the reason why the pseudo-amp mod tends to go a little bit too quiet in the 
+  //   troughs is because near the troughs the two sines must get out of phase in order to smoothly
+  //   implement the phase inversion
   //
   // 
   // Conclusion:
   //
   // - It seems that using f1 = fc - fm/2, f2 = fc + m/2, a1 = d, a2 = 1-d is the correct mapping
   //   from fc,fm,d to f1,f2,a1,a2 - at least for small d. For d = 1, a1 = a2 = 1/2 seems to be 
-  //   correct. Or maybe it should be a1 = d/2, a2 = 1-d/2? Or a1 = 
+  //   correct. Or maybe it should be a1 = d/2, a2 = 1-d/2? Or a1 = ..
+  // 
+  // - Or maybe we should use:
+  //   f1 = fc - d*fm, f2 = fc + (1-d)*fm  or   f1 = fc - (1-d)*fm, f2 = fc + d*fm
+  // 
   //
   //
   //
@@ -619,6 +627,8 @@ void beatingSines2()
   //   the actual amp mod signal. Or maybe that too complicated. It turns out that we can get a 
   //   match by just using the cosine rather than the sine for the amp-modulator, i.e. use
   //   a[n] = (1 + d * cos(wm * n));
+  //
+  // - Maybe 
 }
 
 void beatingSines()
