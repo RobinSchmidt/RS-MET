@@ -538,11 +538,11 @@ void beatingSines2()
   Real fs = 10000;       // Sample rate
   Real fc =   100;       // Carrier frequency
   Real fm =    10;       // Modulator frequency
-  Real d  =   0.5;       // Modulation depth
+  Real d  =   0.1;       // Modulation depth
   Real f1 =    95;       // Lower sine frequency
   Real f2 =   105;       // Upper sine frequency
-  Real a1 =   1./3;      // Lower sine amplitude
-  Real a2 =   2./3;      // Upper sine amplitude
+  Real a1 =   9./10;     // Lower sine amplitude
+  Real a2 =   1./10;     // Upper sine amplitude
 
 
   Real wc = 2*PI*fc/fs;  // Normalized carrier radian frequency
@@ -573,13 +573,34 @@ void beatingSines2()
 
   // Observations:
   //
-  // - With fc = 100, fm = 10, d = 0.5, the following parameters seem to work well:
-  //   f1 = 95, f2 = 10.5, a1 = 2/3, a2 = 1/3. Swapping the amplitudes, i.e. using a1 = 1/3,
-  //   a2 = 2/3 works equally well
+  // - With fc = 100, fm = 10, d = 0.5, the following parameters seem to be (exactly?) correct:
+  //   f1 = 95, f2 = 105, a1 = 2/3, a2 = 1/3. Swapping the amplitudes, i.e. using a1 = 1/3,
+  //   a2 = 2/3 works equally well.
+  // 
+  // - With fc = 100, fm = 10, d = 1.0:  
+  //   f1 = 95, f2 = 105, a1 = 1/2, a2 = 1/2   ...seems to be exactly correct
+  // 
+  // - With fc = 100, fm = 10, d = 0.25:  
+  //   f1 = 95, f2 = 105, a1 = 1/4, a2 = 3/4   ...looks okayish but is not quite right - or is it?
+  // 
+  // - With fc = 100, fm = 10, d = 0.2:  
+  //   f1 = 95, f2 = 105, a1 = 1/5, a2 = 4/5   ...looks okayish
+  // 
+  // - With fc = 100, fm = 10, d = 0.1:  
+  //   f1 = 95, f2 = 105, a1 = 1/10, a2 = 9/10 ...looks pretty good!
   // 
   // - The true amplitude modulation signal keeps the phase between successive periods of the 
   //   modulator whereas the pseudo amp mod signal has every other cycle of the modulater wave
-  //   phase inverted.
+  //   phase inverted. Of course, the phase does not switch discontinuously. Instead there is a
+  //   smooth transition between the normal and the opposite pahse cycles
+  //
+  // 
+  // Conclusion:
+  //
+  // - It seems that using f1 = fc - fm/2, f2 = fc + m/2, a1 = d, a2 = 1-d is the correct mapping
+  //   from fc,fm,d to f1,f2,a1,a2 - at least for small d. For d = 1, a1 = a2 = 1/2 seems to be 
+  //   correct. Or maybe it should be a1 = d/2, a2 = 1-d/2? Or a1 = 
+  //
   //
   //
   // ToDo:
