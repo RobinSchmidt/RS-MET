@@ -534,7 +534,7 @@ void beatingSines2()
   using Vec  = std::vector<Real>;
 
   // Setup:
-  int  N  =  3000;       // Number of samples
+  int  N  =  4000;       // Number of samples
   Real fs = 10000;       // Sample rate
   Real fc =   100;       // Carrier frequency
   Real fm =    10;       // Modulator frequency
@@ -552,8 +552,10 @@ void beatingSines2()
   Vec a(N), x(N);
   for(int n = 0; n < N; n++)
   {
-    a[n] = (1 + d * sin(wm * n));  // Amplitude envelope
-    x[n] = a[n] * sin(wc * n);     // Enveloped sinusoid
+    //a[n] = (1 + d * sin(wm * n));  // Amplitude envelope
+    a[n]  = (1 + d * cos(wm * n));  // Amplitude envelope
+    x[n]  = a[n] * sin(wc * n);     // Enveloped sinusoid
+    x[n] /= 1 + d;                  // Renormalize peak amplitude
   }
 
   // Produce pseudo amplitude modulation signal via beating sines:
@@ -564,7 +566,7 @@ void beatingSines2()
     y[n] = a1 * sin(w1 * n) + a2 * sin(w2 * n);
 
   // Plot outputs:
-  //rsPlotVectors(x, y);   // Actual and pseudo amp mod signal
+  rsPlotVectors(x, y);   // Actual and pseudo amp mod signal
   rsPlotVectors(y);      // Pseudo amp mod signal
   rsPlotVectors(x, a);   // Anp mod signal with its amp envelope
 
@@ -583,7 +585,9 @@ void beatingSines2()
   //   a1,w1,a2,w2 from the user parameters wc,wm,d.
   //
   // - Include phase parameters p1,p2. I think, they are needed to match the peaks and troughs of
-  //   the actual amp mod signal.
+  //   the actual amp mod signal. Or maybe that too complicated. It turns out that we can get a 
+  //   match by just using the cosine rather than the sine for the amp-modulator, i.e. use
+  //   a[n] = (1 + d * cos(wm * n));
 }
 
 void beatingSines()
