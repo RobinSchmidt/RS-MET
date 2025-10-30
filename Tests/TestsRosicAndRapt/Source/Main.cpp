@@ -425,7 +425,7 @@ int main(int argc, char* argv[])
   //sineFromDecayingSines();
 
   // Delay, allpass, reverb stuff:
-  delayLines();                    // Also includes some allpass and universal comb stuff
+  //delayLines();                    // Also includes allpass, universal comb, comb vs modal bank stuff
   //twoPoleAllpassDelays();
   //dampedCombAllpasses();
   //feedbackDelayNetworks();
@@ -495,22 +495,22 @@ int main(int argc, char* argv[])
   //samplerFilters();
 
   // Modal Filters/Synthesis:
-  twoPoleFilter();
-  modalFilter();        // impulse response of decaying-sine filter
-  modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
-  attackDecayFilter();  // ...hmm..almost redundant
-  modalTwoModes();
-  dampedSineFilterDesign();
-  dampedSineFilterImpResp();
-  biquadImpulseResponseDesign();
-  modalBankTransient();
-  fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
-  modalWithFancyEnv();
-  modalSynthSpectra();
+  //twoPoleFilter();
+  //modalFilter();        // impulse response of decaying-sine filter
+  //modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
+  //attackDecayFilter();  // ...hmm..almost redundant
+  //modalTwoModes();
+  //dampedSineFilterDesign();
+  //dampedSineFilterImpResp();
+  //biquadImpulseResponseDesign();
+  //modalBankTransient();
+  //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
+  //modalWithFancyEnv();
+  //modalSynthSpectra();
   //modalDecayFit();
   //modalAnalysis1();
   //modalAnalysisPluck();
-  modalPartialResynthesis();
+  //modalPartialResynthesis();
   //modalAnalysisGloriosa();
 
   // Misc Audio:

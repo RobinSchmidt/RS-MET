@@ -672,6 +672,7 @@ modeling a scraping input signal:
     would be to (dynamically) pan even and odd modes such that not every mode needs it dedicated 
     Pan-LFO. But of course, having a dedicated pans LFO for each mode with its own frequency will
     create a much more complex modulation.
+  - Delay. Could be implemented by a simple delay line
 
 -Maybe it could even make sense to have a brickwall filter feature in rsModalFilterBank similar to 
  what we have in the wavetable oscillator class. So we could have functions like setMinModeIndex(), 
@@ -679,10 +680,21 @@ modeling a scraping input signal:
  consistent with those in the wavetable osc.
 
 Modeling transients:
--transients are modeled as superposition attack/decay envelope filters (i.e. zero frequency) with
+-Transients are modeled as superposition attack/decay envelope filters (i.e. zero frequency) with
  delay
--maybe an interative matching procedure can be used to find the parameters of the filters
+-Maybe an interative matching procedure can be used to find the parameters of the filters
+-Or maybe use modeling in terms of a general pole/zero model
+-Maybe model broadband transients by allpass filters
 
--or maybe use modeling in terms of a general pole/zero model
+A general instrument based on modal synthesis could look like:
+- output = modes + transient  where 
+    modes = modal-bank -> dispersion allpass -> equalizer
+    transient = transient allpass (bank?) -> equalizer
+  so we would feed an exciter input into a parallel connection of a modal bank (with post 
+  processing) and a mdoule responsibel for creating transients. Maybe for sustained excitation 
+  signals like noise, they should not go into the transient module - or maybe with an envelope 
+  applied. We could use a differential envelope detector to extract a transient from an input noise
+  generator.
+
 
 */

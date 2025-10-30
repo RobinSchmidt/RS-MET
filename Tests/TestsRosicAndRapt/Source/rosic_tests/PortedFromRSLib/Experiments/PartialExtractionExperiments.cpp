@@ -362,10 +362,12 @@ void biDirectionalFilter()
   int dummy = 0;
 }
 
-void beatingSines()
+void beatingSines1()
 {
+  // ToDo: Maybe rename to something more informative - like beatingSinesEnvModeling
+
   // We investigate the beating effects that occur when two sinusoids with similar frequencies
-  // are played simultaneously.
+  // are played simultaneously. ...TBC...
 
   // experiment parameters:
   int N = 1000;           // number of samples
@@ -394,7 +396,8 @@ void beatingSines()
   // synthesize signals:
   std::vector<double> t(N), s1(N), s2(N), sc(N), sm(N), sum(N), prod(N); // sc,sm: carrier,modulator
   RAPT::rsArrayTools::fillWithRangeLinear(&t[0], N, tMin, tMax);     // time axis
-  for(int n = 0; n < N; n++) {
+  for(int n = 0; n < N; n++) 
+  {
     //s1[n]  = amp1 * sin(w1*t[n] + p1);  // i couldn't find formulas for re-expressing the sum of 
     //s2[n]  = amp2 * sin(w2*t[n] + p2);  // sines as product for arbitrary amplitudes - so use 1
     s1[n]  = sin(w1*t[n] + p1);
@@ -411,7 +414,8 @@ void beatingSines()
   // function and a time-varying phase function - as the sinusoidal modeling would do:
   std::vector<double> a(N), p(N), ip(N), rs(N), db(N);
   // amplitude- and phase functions, instantaneous phase and recreated signal
-  for(int n = 0; n < N; n++) {
+  for(int n = 0; n < N; n++) 
+  {
     a[n] = fabs(sm[n]);                  // amplitude function is rectified modulator
     p[n] = pc;                           // phase function is...
     if(sm[n] < 0) p[n] += PI;            // ...a square wave
@@ -493,6 +497,57 @@ void beatingSines()
   // e^(ia) + e^(ib) = e^(-i(a+b)) * ( e^(ia + i(a+b)) + e^(ib + i(a+b)) )
   // ...hmm...but that seems a dead end
 }
+
+void beatingSines2()
+{
+  // Under construction
+
+  // We want to figure out how we can best parameterize a pair of beating sinusoids for the user.
+  // We want to use two sine waves and we want to achieve an effect like amplitude modulation, i.e.
+  // something similar to:
+  //
+  //   x(t) = (1 + d * sin(wm * t)) * sin(wc * t)
+  //
+  // where the parameter d is the modulation depth (0 <= d <= 1), wm is the modulator's radian
+  // frequency and wc is the carrier's radian frequency. However, just adding two sines will not 
+  // be able to exactly produce such a signal because in actualy amnplitude modulation, what 
+  // happens is that there are actually 3 sinusoids: one in the center at the carrier frequency wc
+  // and the two ring-modulation products at wc - wm and wc + wm. But adding just two sinusoids
+  // with a frequencies w1,w2 will produce a similar (not equal) effect when the amplitudes a1,a2 
+  // of the two sinusoids are not exactly equal. Rather than the explicit and actual amplitude 
+  // modulation signal above, we want to produce our signal like this:
+  // 
+  //   y(t) = a1 * sin(w1 * t) + a2 * sin(w2 * t)
+  // 
+  // And we want y(t) to be perceptually (and maybe visually when looking at the plot) similar to 
+  // x(t) such that it can be used as a stand in for an actual amplitude modulated sine wave. We 
+  // want tp provide to the user parameters like (pseudo) carrier frequency and (pseudo) modulator
+  // frequency and (pseudo) modulation depth. The quest is to compute w1,w2,a1,a2 from wc,wm,d. The
+  // first thing we can do to get rid of one degree of freedom is to fix the sum of the amplitudes
+  // a1 + a2 such that the peak amplitude of both signals.  ...TBC...
+
+
+
+  // ToDo:
+  //
+  // - Produce the sum of two sines with a1,w1 and a2,w2 and try to figure out how these parameters
+  //   determine the "apparent" carrier and modulator frequency. My guess is that the apparent 
+  //   carrier frequency will be just (w1+w2)/2 but the apparent modulator frequency may be w2-w1.
+  //
+  // - When we have (approximate) rules for how pseudo carrier and modulator frequency are related
+  //   to a1,w1,a2,w2, we may be able to invert the relations to produce our algorithm parameters
+  //   a1,w1,a2,w2 from the user parameters wc,wm,d.
+}
+
+void beatingSines()
+{
+  beatingSines2();
+
+  beatingSines1();
+  beatingSines2();
+}
+
+
 
 void envelopeDeBeating()
 {

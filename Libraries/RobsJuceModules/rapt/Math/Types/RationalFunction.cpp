@@ -517,4 +517,17 @@ ToDo:
   biquads?). Maybe the z^-1 factors (i.e. the delays) would then be replaced by more general 
   filters?
 
+- Implement an algorithm that decomposes an arbitrary filter transfer function H(z) into an
+  FIR part plus (or maybe times?) a series connection of a minimum phase IIR filter and an allpass.
+  Decomposing a proper (i.e. #zeros <= #poles) IIR transfer function into a minimum phase part and
+  allpass could perhaps be achieved by factoring numerator and denominator, then finding the zeros
+  outside of the unit circle and factor them out. Maybe they are already combined with 
+  corresponding poles inside the unit circle - in this case, we would factor out a pair of zeros 
+  and poles at a time. For zeros outside the unit circle that do not have a partner pole (i.e. are
+  not part of an allpass), maybe we need to introduce one "ghost-pole" in the allpass (to keep it 
+  allpass) and then perhaps compensate for that by introducing a cancelling zero into the min-phase 
+  IIR part or into the FIR part. Probably the latter - otherwise the min-phase IIR would not be a 
+  proper rational function (it may then have more zeros than poles - which isn't necessarily a 
+  problem though) ..not sure about that, though.
+
 */
