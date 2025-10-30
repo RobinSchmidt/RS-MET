@@ -500,6 +500,8 @@ void beatingSines1()
 
 void beatingSines2()
 {
+  // ToDo: Rename to pseudoAmpModViaBeating
+
   // Under construction
 
   // We want to figure out how we can best parameterize a pair of beating sinusoids for the user.
@@ -537,6 +539,10 @@ void beatingSines2()
   Real fc =   100;       // Carrier frequency
   Real fm =    10;       // Modulator frequency
   Real d  =   0.5;       // Modulation depth
+  Real f1 =    95;       // Lower sine frequency
+  Real f2 =   105;       // Upper sine frequency
+  Real a1 =   1./3;      // Lower sine amplitude
+  Real a2 =   2./3;      // Upper sine amplitude
 
 
   Real wc = 2*PI*fc/fs;  // Normalized carrier radian frequency
@@ -548,13 +554,20 @@ void beatingSines2()
   {
     a[n] = (1 + d * sin(wm * n));  // Amplitude envelope
     x[n] = a[n] * sin(wc * n);     // Enveloped sinusoid
-
-    //x[n] = (1 + d * sin(wm * n)) * sin(wc * n);
   }
 
+  // Produce pseudo amplitude modulation signal via beating sines:
+  Real w1 = 2*PI*f1/fs;  // Lower sine radian frequency
+  Real w2 = 2*PI*f2/fs;  // Upper sine radian frequency
+  Vec y(N);
+  for(int n = 0; n < N; n++)
+    y[n] = a1 * sin(w1 * n) + a2 * sin(w2 * n);
 
   // Plot outputs:
-  rsPlotVectors(a, x);
+  //rsPlotVectors(x, y);   // Actual and pseudo amp mod signal
+  rsPlotVectors(y);      // Pseudo amp mod signal
+  rsPlotVectors(x, a);   // Anp mod signal with its amp envelope
+
 
 
   // ToDo:
@@ -562,12 +575,15 @@ void beatingSines2()
   // - Produce the sum of two sines with a1,w1 and a2,w2 and try to figure out how these parameters
   //   determine the "apparent" carrier and modulator frequency. My guess is that the apparent 
   //   carrier frequency will be just (w1+w2)/2 but the apparent modulator frequency may be w2-w1.
+  //   Or maybe the apparent/perceived carrier frequency is a weighted average fo f1,f2 with 
+  //   weights a1,a2 or maybe a1^2,a2^2? That would make more sense.
   //
   // - When we have (approximate) rules for how pseudo carrier and modulator frequency are related
   //   to a1,w1,a2,w2, we may be able to invert the relations to produce our algorithm parameters
   //   a1,w1,a2,w2 from the user parameters wc,wm,d.
   //
-  // - Maybe plot also the modulation signal itself, i.e. the amplitude envelope
+  // - Include phase parameters p1,p2. I think, they are needed to match the peaks and troughs of
+  //   the actual amp mod signal.
 }
 
 void beatingSines()
