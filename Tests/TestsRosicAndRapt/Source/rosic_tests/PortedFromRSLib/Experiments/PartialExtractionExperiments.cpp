@@ -509,6 +509,26 @@ void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2,
   // then we get full modulation down to zero already at d=0.5 and at d=1 the modulation is off 
   // again
 
+  //// This (kind of) works for |d| > 0.5 but for |d| < 0.5, it makes things worse:
+  //if(phaseAlign)
+  //  d *= 0.5;
+  // I think, we need a nonlinear map that behaves like the identity near the origin but has 
+  // y-values of +-0.5 at x = +-1 (it needs to have odd symmetry). Maybe try a quadratic polynomial
+  // f(x)  = a0 + a1*x + a2*x^2 and require f(0) = 0, f'(0) = 1, f(1) = 1/2. We have:
+  // f'(x) = a1 + a2*x and so: f(0) = a0, f'(0) = a1, f(1) = a0 + a1 + a2 so we get:
+  // a0 = 0, a1 = 1, 1/2 = 0 + 1 + a2 -> a2 = -1/2
+  // f(x) = x - 0.5*x^2
+  // But that function may work only for positive x (or d). Maybe may a cubic ansatz
+  // f(x) = a1*x + a3*x^3 which has the right symmetry by construction
+
+
+  // Preliminary - only good for d > 0:
+  if(phaseAlign)
+    d = d - 0.5*d*d;
+  // The solution is to either symmetrize the function (apply it to the abs and then re-apply the 
+  // sign) or try using a cubic ansatz
+
+
 
   *a1 = rsAbs(d);
   *a2 = T(1) - *a1;
