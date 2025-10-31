@@ -580,15 +580,20 @@ void pseudoAmpModViaBeating()
   // Let's analyze the beating sines signals x,y and z with the single sine modeler class to figure
   // out how to describe thos signals in terms of instantaneous phase and amplitude:
   rsSingleSineModeler<Real> ssm;
-  Vec ax(N), px(N);
-  ssm.analyzeAmpAndPhase(&x[0], N, &ax[0], &px[0]);
+  Vec ax(N), px(N); ssm.analyzeAmpAndPhase(&x[0], N, &ax[0], &px[0]);
+  Vec ay(N), py(N); ssm.analyzeAmpAndPhase(&y[0], N, &ay[0], &py[0]);
+  Vec az(N), pz(N); ssm.analyzeAmpAndPhase(&z[0], N, &az[0], &pz[0]);
   // Maybe use analyzeAmpFreqAndPhaseMod(). I think, it treats the sine frequency as given rather 
   // than trying to estimate it. Or maybe not? Or maybe try using sigAndFreqToPhaseAndAmp(). This 
   // seems to be the one that treats the frequency as an input. Using the method above, we seem to
   // overestimate the amplitude modulation depth. Or maybe not? The detected amplitude oscillates 
-  // between 1 and 0.67 with d = 0.2. We would expect to to oscillate between 1 and (1-d)/(1+d) 
+  // between 1 and 0.67 with d = 0.2. We would expect it to oscillate between 1 and (1-d)/(1+d) 
   // which is 0.8/1.2 = 0.666. Aha! So our analysis result is actually quite good! Nevertheless, it
-  // could perhaps be further improved by treating the instantaneous frequency as given.
+  // could perhaps be further improved by treating the instantaneous frequency as given. Maybe use
+  // phaseAndFreqToPhaseMod() to estimate the amount of phase modulation present in the beating 
+  // signals. I think, maybe there is some slow phase modulation going on? Or at least, we can 
+  // approximate the apparent effects as phase modulation? If so, try to integrate an 
+  // phase-modulation into x in order to match y or z.
 
 
   // Plot outputs:
@@ -600,7 +605,8 @@ void pseudoAmpModViaBeating()
   //rsPlotVectors(y, z);          // Beating with pre-assigned and comuted parameters
   //rsPlotVectors(a, x, y, z);    // Amp env, amp-mod and two beating signals
   rsPlotVectors(ax, px);        // Instantaneous amp and phase of amp-mod signal
-
+  rsPlotVectors(ay, py);        // Instantaneous amp and phase of beating signal 1
+  rsPlotVectors(az, pz);        // Instantaneous amp and phase of beating signal 2
 
 
 
