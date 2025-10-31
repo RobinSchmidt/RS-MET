@@ -539,11 +539,16 @@ void pseudoAmpModViaBeating()
   Real f2 =   105;       // Upper sine frequency
   Real a1 =   4./5;      // Lower sine amplitude
   Real a2 =   1./5;      // Upper sine amplitude
+  bool pm =   true;      // Switch phase matching on/off
 
   // Test - optional overall frequency shifting for the beating pair:
-  Real df = +5.0; 
-  //f1 += df; f2 += df;
-  // This can be uncommented for experimenting with shifting both frequencies of the beating pair
+  if(pm == true)
+  {
+    Real df = +5.0;  
+    f1 += df; f2 += df;
+    // ToDo: Use a formula! df = 5 works for fc=100, fm=10, d=+0.2, f1=95,f2=105,a1=0.8,a2=0.5
+  }
+  // This can be used for experimenting with shifting both frequencies of the beating pair
   // by some amount df. By doing this shift by the right amount, we may get a very close match 
   // between the amp-mod signal and the beating pair. The progressive phase shifting that we would 
   // otherwise see, can be completely suppressed.
@@ -586,10 +591,27 @@ void pseudoAmpModViaBeating()
     f2 = fc - a1*fm;
   }
 
-  // Frequency shifting for better match with amp-mod signal (should be optional):
-  //df = -d * fm;  // Ad hoc, found by trial and error
-  //f1 += df; f2 += df;
-
+  // Frequency shifting for better phase-match with amp-mod signal (should be optional):
+  if(pm == true)
+  {
+    Real df = -d * fm;              // Ad hoc, found by trial and error
+    f1 += df; f2 += df;
+    if(d < 0)
+    {
+      a1 = -a1;
+      //a2 = -a2;              // Nope!
+      Real s = (1-d)/(1+d);
+      a1 *= s;
+      a2 *= s;
+    }
+  }
+  // This formula seems to work well for |d| = 0.0...0.5 but beyond that, it makes things worse. In
+  // this range for d, it works equally well for positive and negative fm. Maybe for negative d,
+  // we should use something involving (1-d)? And maybe we should clip/saturate the shift at
+  // +-rsClip(d, 0.5)? Well - actually the formula could perhaps also be use for d < 0 but maybe 
+  // we need then also negate the amplitues a1,a2? or maybe just one of them? Yes! Negating a1 
+  // works almost! But we'll also need an overall scale factor!
+  //
   // ToDo: Document these formulas! 
   // Document why we have to use  f1 = fc - a2*fm; f2 = fc + a1*fm;  and not the more intuitive
   // f1 = fc - a1*fm; f2 = fc + a2*fm;  I tried the latter but when I do, the louder frequency is 
@@ -641,14 +663,14 @@ void pseudoAmpModViaBeating()
   //rsPlotVectors(x, y);        // Actual and pseudo amp mod signal
   //rsPlotVectors(y);           // Pseudo amp mod signal
   //rsPlotVectors(x, a);        // Amp mod signal with its amp envelope
-  //rsPlotVectors(a, x, y);     // Envelope, amp-mod, pre-assigned beating pair 
+  rsPlotVectors(a, x, y);     // Envelope, amp-mod, pre-assigned beating pair 
   rsPlotVectors(a, x, z);     // Envelope, amp-mod, computed beating pair 
   //rsPlotVectors(x+y, x-y);    // Sum and difference of proper and pseudo amp mod
-  //rsPlotVectors(y, z);          // Beating with pre-assigned and computed parameters
-  //rsPlotVectors(a, x, y, z);    // Amp env, amp-mod and two beating signals
-  //rsPlotVectors(ax, px);        // Instantaneous amp and phase of amp-mod signal
-  //rsPlotVectors(ay, py);        // Instantaneous amp and phase of beating signal 1
-  //rsPlotVectors(az, pz);        // Instantaneous amp and phase of beating signal 2
+  //rsPlotVectors(y, z);        // Beating with pre-assigned and computed parameters
+  rsPlotVectors(a, x, y, z);  // Amp env, amp-mod and two beating signals
+  //rsPlotVectors(ax, px);      // Instantaneous amp and phase of amp-mod signal
+  //rsPlotVectors(ay, py);      // Instantaneous amp and phase of beating signal 1
+  //rsPlotVectors(az, pz);      // Instantaneous amp and phase of beating signal 2
 
 
 
