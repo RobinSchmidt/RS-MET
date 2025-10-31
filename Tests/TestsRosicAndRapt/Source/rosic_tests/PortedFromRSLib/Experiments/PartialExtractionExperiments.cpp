@@ -530,25 +530,26 @@ void pseudoAmpModViaBeating()
   using Vec  = std::vector<Real>;
 
   // Setup:
-  int  N  =  4000;       // Number of samples
+  int  N  =  5000;       // Number of samples
   Real fs = 10000;       // Sample rate
   Real fc =   100;       // Carrier frequency
-  Real fm =   -10;       // Modulator frequency
-  Real d  =  -0.2;       // Modulation depth in -1..+1
+  Real fm =   +10;       // Modulator frequency in -fc..+fc (I guess)
+  Real d  =  +0.2;       // Modulation depth in -1..+1
   Real f1 =    95;       // Lower sine frequency
   Real f2 =   105;       // Upper sine frequency
   Real a1 =   1./5;      // Lower sine amplitude
   Real a2 =   4./5;      // Upper sine amplitude
 
+  // Test:
+  Real df = -5.0; f1 += df; f2 += df;
 
   // Produce actual amplitude modulation signal:
   Real wc = 2*PI*fc/fs;                // Normalized carrier radian frequency
   Real wm = 2*PI*fm/fs;                // Normalized radian frequency
-  Vec a(N), x(N);
+  Vec a(N), x(N);                      // Amplitude envelope and amp-mod signal
   for(int n = 0; n < N; n++)
   {
-    //a[n] = (1 + d * sin(wm * n));      // Amplitude envelope
-    a[n]  = (1 + d * cos(wm * n));     // Amplitude envelope - cos gives better match than sin
+    a[n]  = (1 + d * cos(wm * n));     // Amplitude envelope, cos gives better match than sin
     a[n] /= 1 + d;                     // Renormalize peak amplitude
     x[n]  = a[n] * sin(wc * n);        // Enveloped sinusoid
   }
@@ -579,7 +580,7 @@ void pseudoAmpModViaBeating()
     f1 = fc + a2*fm;
     f2 = fc - a1*fm;
   }
-  // ToDo: Document these formulas! Maybe use abs(d) and swap a1,a2 (and maybe f1,f2?) if d < 0.
+  // ToDo: Document these formulas! 
   // Document why we have to use  f1 = fc - a2*fm; f2 = fc + a1*fm;  and not the more intuitive
   // f1 = fc - a1*fm; f2 = fc + a2*fm;  I tried the latter but when I do, the louder frequency is 
   // farther way from fc regardless of whether we do  a1 = d; a2 = 1-d;  or  a1 = 1-d, a2 = d;
@@ -630,7 +631,7 @@ void pseudoAmpModViaBeating()
   //rsPlotVectors(x, y);        // Actual and pseudo amp mod signal
   //rsPlotVectors(y);           // Pseudo amp mod signal
   //rsPlotVectors(x, a);        // Amp mod signal with its amp envelope
-  //rsPlotVectors(a, x, y);     // Envelope and both signals
+  rsPlotVectors(a, x, y);     // Envelope and both signals
   //rsPlotVectors(x+y, x-y);    // Sum and difference of proper and pseudo amp mod
   //rsPlotVectors(y, z);          // Beating with pre-assigned and comuted parameters
   rsPlotVectors(a, x, y, z);    // Amp env, amp-mod and two beating signals
@@ -677,6 +678,8 @@ void pseudoAmpModViaBeating()
   //   troughs is because near the troughs the two sines must get out of phase in order to smoothly
   //   implement the phase inversion. 
   //
+  // - 
+  // 
   // 
   // Conclusion:
   //
@@ -759,7 +762,9 @@ void pseudoAmpModViaBeating()
   //
   // - Try to get an exact match between x and y by slighty changing the center frequency in y. I 
   //   guess, the supposed "phase-modulation" could be just an additional linearly increasing or
-  //   decreasing phase term.
+  //   decreasing phase term. ...done. Turns out that we need to shift f1 and f2 down by 5 Hz in 
+  //   order to have y match x better when f1=95, f2=105, a1=1/5, a2=4/5. Maybe in general, that 
+  //   means that the louder frequency should match the center frequency fc?
   //
   // See also:
   //
