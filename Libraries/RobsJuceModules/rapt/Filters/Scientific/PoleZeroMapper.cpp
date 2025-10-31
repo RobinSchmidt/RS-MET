@@ -600,6 +600,27 @@ ToDo:
    function H(z), a root at z = r * e^p will be turned into M roots at r * e^(k*p/M) for 
    k = 1,..,M, I think. In terms of the coeff array, it amounts to zero stuffing it, i.e. 
    inserting (M-1) zeros between all the coeffs in the original polynomial coeff arrays.
-  -...TBC...
+  -Substitute z by an allpass transfer function A(z). If A(z) is 1st order, this will do 
+   frequency warping. If it's higher order, it will also do duplications.
+  -Substitute z by an arbitrary transfer function G(z).
+  -Multiply through by z^M (or z^-M). Should introduce an overall delay? In terms of the coeffs
+   array, it would just right-shift them filling up the empty spaces on the left with zeros.
+  -What about zeroing out all even or odd coeffs? That should extract even and odd symmetric 
+   parts, I guess? But what does that mean in terms of the roots?
+  -How could we contract/expand the root pattern? In termz of ZPK, we would just multiply the 
+   roots by some real constant scaler c > 0. In the z domain, such an operation would 
+   decrease/increase the Q values of all roots. If c < 0, it would also involve reflection. If c
+   would be complex, it would involve a rotation. Multiplying by the imaginary unit c = j rotates 
+   by 90°. This is used in the design of quadrature filter pairs. Using a general unit magnitude
+   complex c = e^(j*p) would be a pure rotation by p.
+  -Substitue z by c*z for a constant c. In terms of the BA representation, this amounts to multiply
+   each polynomial coeff a_n by c^n, I think.
+  -Substitute s in H(s) by s+c would shift the roots by c. Together with back-and-forth bilinear
+   transform (BLT), this could also be used to manipulate the Q values.
+  -Substitute z by (1-c)*z + c. This would lead to some sort of high frequency damping, I guess.
+   For c=0.5, it's just a two point moving average (MA) filter. For c=0, it does nothing and for 
+   c=1 it's a ..dunno..1-sample delay or advance maybe?
+  -Can we somehow substitute z = r*e^(j*p) by r*e^(j*(p-q)) for some phase offset q?
+
 
 */
