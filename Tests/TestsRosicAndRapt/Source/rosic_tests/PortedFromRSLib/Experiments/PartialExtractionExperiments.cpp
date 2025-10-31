@@ -534,16 +534,16 @@ void pseudoAmpModViaBeating()
   Real fs = 10000;       // Sample rate
   Real fc =   100;       // Carrier frequency
   Real fm =    10;       // Modulator frequency
-  Real d  =   0.2;       // Modulation depth
+  Real d  =   0.2;       // Modulation depth in -1..+1
   Real f1 =    95;       // Lower sine frequency
   Real f2 =   105;       // Upper sine frequency
-  Real a1 =   4./5;      // Lower sine amplitude
-  Real a2 =   1./5;      // Upper sine amplitude
+  Real a1 =   1./5;      // Lower sine amplitude
+  Real a2 =   4./5;      // Upper sine amplitude
 
 
   // Produce actual amplitude modulation signal:
-  Real wc = 2*PI*fc/fs;  // Normalized carrier radian frequency
-  Real wm = 2*PI*fm/fs;  // Normalized radian frequency
+  Real wc = 2*PI*fc/fs;                // Normalized carrier radian frequency
+  Real wm = 2*PI*fm/fs;                // Normalized radian frequency
   Vec a(N), x(N);
   for(int n = 0; n < N; n++)
   {
@@ -560,12 +560,49 @@ void pseudoAmpModViaBeating()
   for(int n = 0; n < N; n++)
     y[n] = a1 * sin(w1 * n) + a2 * sin(w2 * n);
 
+  // OK - Let's now try to compute the values for f1,f2 and a1,a2 from fc,fm,d rather than using
+  // the pre assigned values from the setup:
+  Real s  = 1 / d;                     // Maybe use 1 / abs(d)
+  a1 = 1 / s;
+  a2 = (s - 1) / s;                    // Maybe swap a1,a2 if d < 0
+  //f1 = fc - fm/2;                    // Preliminary - later take into account a1,a2
+  //f2 = fc + fm/2;
+  f1 = fc - a2*fm;
+  f2 = fc + a1*fm;
+
+  // Now produce the sine beating with the calculated parameters:
+  w1 = 2*PI*f1/fs;
+  w2 = 2*PI*f2/fs;
+  Vec z(N);
+  for(int n = 0; n < N; n++)
+    z[n] = a1 * sin(w1 * n) + a2 * sin(w2 * n);
+
+  // Let's analyze the beating sines signals x,y and z with the single sine modeler class to figure
+  // out how to describe thos signals in terms of instantaneous phase and amplitude:
+  rsSingleSineModeler<Real> ssm;
+  Vec ax(N), px(N);
+  ssm.analyzeAmpAndPhase(&x[0], N, &ax[0], &px[0]);
+  // Maybe use analyzeAmpFreqAndPhaseMod(). I think, it treats the sine frequency as given rather 
+  // than trying to estimate it. Or maybe not? Or maybe try using sigAndFreqToPhaseAndAmp(). This 
+  // seems to be the one that treats the frequency as an input. Using the method above, we seem to
+  // overestimate the amplitude modulation depth. Or maybe not? The detected amplitude oscillates 
+  // between 1 and 0.67 with d = 0.2. We would expect to to oscillate between 1 and (1-d)/(1+d) 
+  // which is 0.8/1.2 = 0.666. Aha! So our analysis result is actually quite good! Nevertheless, it
+  // could perhaps be further improved by treating the instantaneous frequency as given.
+
+
   // Plot outputs:
   //rsPlotVectors(x, y);        // Actual and pseudo amp mod signal
   //rsPlotVectors(y);           // Pseudo amp mod signal
   //rsPlotVectors(x, a);        // Amp mod signal with its amp envelope
-  rsPlotVectors(a, x, y);     // Envelope and both signals
+  //rsPlotVectors(a, x, y);     // Envelope and both signals
   //rsPlotVectors(x+y, x-y);    // Sum and difference of proper and pseudo amp mod
+  //rsPlotVectors(y, z);          // Beating with pre-assigned and comuted parameters
+  //rsPlotVectors(a, x, y, z);    // Amp env, amp-mod and two beating signals
+  rsPlotVectors(ax, px);        // Instantaneous amp and phase of amp-mod signal
+
+
+
 
 
 
@@ -588,13 +625,21 @@ void pseudoAmpModViaBeating()
   //   f1 = 95, f2 = 105, a1 = 1/10, a2 = 9/10 ...looks pretty good!
   // 
   // - The true amplitude modulation signal keeps the phase between successive periods of the 
-  //   modulator whereas the pseudo amp mod signal has every other cycle of the modulater wave
-  //   phase inverted. Of course, the phase does not switch discontinuously. Instead there is a
-  //   smooth transition between the normal and the opposite pahse cycles
+  //   modulator whereas the pseudo amp mod signal y with f1 = fc - fm/2, f2 = fc + fm/2 has 
+  //   every other cycle of the modulator wave phase inverted. Of course, the phase does not 
+  //   switch discontinuously. Instead there is a smooth transition between the normal and the 
+  //   opposite phase cycles. When we use the formulas f1 = fc - a2*fm, f2 = fc + a1*fm, with 
+  //   d = 0.1, the phase shift between amp mod and beating in the z signal is less than 180° in
+  //   the 2nd cycle. The sines seems to continuously drift into and out of phase and when we use 
+  //   f1 = fc - fm/2, f2 = fc + fm/2 it happens to be the case that the frequency of exact 
+  //   alignment happens to coincide exactly with fm but with the other formula, it seems to not 
+  //   coincide. It looks like when d = 0.25, it takes exactly twice as long for z to drift into
+  //   and out of phase with x than it takes for y. At the peak of the modulator at around n=1000,
+  //   x,y,z seem to be in the phase relation: x: 0°, y: 180°, z: 90°
   // 
   // - I think, the reason why the pseudo-amp mod tends to go a little bit too quiet in the 
   //   troughs is because near the troughs the two sines must get out of phase in order to smoothly
-  //   implement the phase inversion
+  //   implement the phase inversion. 
   //
   // 
   // Conclusion:
@@ -623,6 +668,12 @@ void pseudoAmpModViaBeating()
   //
   //
   // ToDo:
+  // 
+  // - Try negative values for the depth d. Adapt the code for computing a1,a2,f1,f2. Use |d| for
+  //   the computation of the amplitudes and use the sign of d to determine whether the upper or 
+  //   lower sine should be louder. But maybe it could actually make sense to just keep the sign
+  //   in the computations for a1,a2, i.e. allow them to become negative, and make the decision
+  //   which sine gets the higher amplitude an additional parameter.
   //
   // - Produce the sum of two sines with a1,w1 and a2,w2 and try to figure out how these parameters
   //   determine the "apparent" carrier and modulator frequency. My guess is that the apparent 
@@ -642,6 +693,11 @@ void pseudoAmpModViaBeating()
   // - Assume that the perceived frequency is given by (a1 * f1 + a2 * f2) / (a1 + a2) or maybe by
   //   (a1^2 * f1 + a2^2 * f2) / (a1^2 + a2^2) and use this relation to tune f1, f2 to the desired
   //   fc
+  // 
+  // - Try to figure out via listening tests what sort of weighted average we need - the one with 
+  //   raw amplitudes as weights or the one with the squared amplitudes. Or maybe some other rule
+  //   for the weights? Document the findings. Or maybe some research about this already exists?
+  //   Figure this out!
   // 
   // - Produce wavefiles with actual and pseudo amp mod signals for comparison. Are there 
   //   perceptual differences? Beating sines are usually described as sounding "rough" in the

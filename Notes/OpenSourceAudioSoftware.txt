@@ -817,6 +817,13 @@ https://pbat.ch/res/voc/voc.pdf
 https://github.com/paulbatchelor/voc
 Based on this:  https://dood.al/pinktrombone/  ..which is a lot of fun!
 
+
+https://github.com/julian-parker/DAFX-AntiAliasing
+https://github.com/julian-parker/DAFX-Tape
+https://github.com/julian-parker/DAFX-NLML
+https://github.com/julian-parker/DAFX22_FNO
+
+
  
 Video series on radar: 
 https://github.com/brunerm99/videos 
