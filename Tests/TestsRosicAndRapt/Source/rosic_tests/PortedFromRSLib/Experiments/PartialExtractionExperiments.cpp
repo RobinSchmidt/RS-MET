@@ -509,6 +509,7 @@ void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2,
   // then we get full modulation down to zero already at d=0.5 and at d=1 the modulation is off 
   // again
 
+
   *a1 = rsAbs(d);
   *a2 = T(1) - *a1;
   if(d >= T(0))
@@ -526,7 +527,7 @@ void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2,
   if(phaseAlign == true)
   {
     // These formulas were found by trial and error:
-    T df = -d * fm;                
+    T df = -d * fm;
     *f1 += df; 
     *f2 += df;
     if(d < 0)
@@ -567,6 +568,9 @@ void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2,
   // I think, the phase alignment tries to align the phases of the beating sines to the phase of 
   // the amp-mod sine at the points where the amplitude is maximal. When the amplitude goes 
   // through a minimum, the aligment gets worse - but there it doesn't matter that much
+
+  // Try to do:
+  // if(phaseAlign) d *= 0.5  and maybe use    T df = -2*d * fm;  as compensation or maybe not
 }
 
 void pseudoAmpModViaBeating()
@@ -605,7 +609,7 @@ void pseudoAmpModViaBeating()
   Real fs = 10000;       // Sample rate
   Real fc =   100;       // Carrier frequency
   Real fm =   +10;       // Modulator frequency in -fc..+fc (I guess)
-  Real d  =  +0.2;       // Modulation depth in -1..+1
+  Real d  =  +0.5;       // Modulation depth in -1..+1
   Real f1 =    95;       // Lower sine frequency
   Real f2 =   105;       // Upper sine frequency
   Real a1 =   4./5;      // Lower sine amplitude
