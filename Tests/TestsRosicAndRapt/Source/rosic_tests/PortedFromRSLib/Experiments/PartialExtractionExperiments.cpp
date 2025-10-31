@@ -530,7 +530,7 @@ void pseudoAmpModViaBeating()
   using Vec  = std::vector<Real>;
 
   // Setup:
-  int  N  =  5000;       // Number of samples
+  int  N  =  6000;       // Number of samples
   Real fs = 10000;       // Sample rate
   Real fc =   100;       // Carrier frequency
   Real fm =   +10;       // Modulator frequency in -fc..+fc (I guess)
@@ -540,8 +540,9 @@ void pseudoAmpModViaBeating()
   Real a1 =   4./5;      // Lower sine amplitude
   Real a2 =   1./5;      // Upper sine amplitude
 
-  // Test:
-  //Real df = +5.0; f1 += df; f2 += df;
+  // Test - optional overall frequency shifting for the beating pair:
+  Real df = +5.0; 
+  //f1 += df; f2 += df;
   // This can be uncommented for experimenting with shifting both frequencies of the beating pair
   // by some amount df. By doing this shift by the right amount, we may get a very close match 
   // between the amp-mod signal and the beating pair. The progressive phase shifting that we would 
@@ -584,6 +585,11 @@ void pseudoAmpModViaBeating()
     f1 = fc + a2*fm;
     f2 = fc - a1*fm;
   }
+
+  // Frequency shifting for better match with amp-mod signal (should be optional):
+  //df = -d * fm;  // Ad hoc, found by trial and error
+  //f1 += df; f2 += df;
+
   // ToDo: Document these formulas! 
   // Document why we have to use  f1 = fc - a2*fm; f2 = fc + a1*fm;  and not the more intuitive
   // f1 = fc - a1*fm; f2 = fc + a2*fm;  I tried the latter but when I do, the louder frequency is 
@@ -592,7 +598,7 @@ void pseudoAmpModViaBeating()
   // both fm is positive and we increase d from 0 to a positive, the behavior should be that a 
   // second sine appears below the original one and by further increasing d, they both shift up (
   // while also altering their amplitude balance). I think, that is actually what currently happens
-  // but it should be verified. Currently, we get with fc = 100:
+  // but it should be verified. Currently, we get with fc = 100 (with df = 0.0):
   // 
   //   d = +0.2, fm = +10:  f1 =  92, a1 = 0.2,  f2 = 102, a2 = 0.8
   //   d = +0.2, fm = -10:  f1 = 108, a1 = 0.2,  f2 =  98, a2 = 0.8
@@ -635,10 +641,11 @@ void pseudoAmpModViaBeating()
   //rsPlotVectors(x, y);        // Actual and pseudo amp mod signal
   //rsPlotVectors(y);           // Pseudo amp mod signal
   //rsPlotVectors(x, a);        // Amp mod signal with its amp envelope
-  rsPlotVectors(a, x, y);     // Envelope and both signals
+  //rsPlotVectors(a, x, y);     // Envelope, amp-mod, pre-assigned beating pair 
+  rsPlotVectors(a, x, z);     // Envelope, amp-mod, computed beating pair 
   //rsPlotVectors(x+y, x-y);    // Sum and difference of proper and pseudo amp mod
-  //rsPlotVectors(y, z);          // Beating with pre-assigned and comuted parameters
-  rsPlotVectors(a, x, y, z);    // Amp env, amp-mod and two beating signals
+  //rsPlotVectors(y, z);          // Beating with pre-assigned and computed parameters
+  //rsPlotVectors(a, x, y, z);    // Amp env, amp-mod and two beating signals
   //rsPlotVectors(ax, px);        // Instantaneous amp and phase of amp-mod signal
   //rsPlotVectors(ay, py);        // Instantaneous amp and phase of beating signal 1
   //rsPlotVectors(az, pz);        // Instantaneous amp and phase of beating signal 2
