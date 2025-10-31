@@ -552,6 +552,11 @@ void pseudoAmpModViaBeating()
     a[n] /= 1 + d;                     // Renormalize peak amplitude
     x[n]  = a[n] * sin(wc * n);        // Enveloped sinusoid
   }
+  // ToDo: Maybe introduce a loudness compensation parameter p in 0..1 and do a[n] /= (1+d)^p. 
+  // When we do this, we will also need to introduce some factor into the a1,a2 coeffs for the 
+  // beating sines to get a match for all values of p. In production, we could have special cases
+  // for p=0, p=0.5, p=1 for optimization purposes at the 3 best optimizable and also (supposedly)
+  // most common settings.
 
   // Produce pseudo amplitude modulation signal via beating sines:
   Real w1 = 2*PI*f1/fs;                // Lower sine radian frequency
@@ -562,18 +567,14 @@ void pseudoAmpModViaBeating()
 
   // OK - Let's now try to compute the values for f1,f2 and a1,a2 from fc,fm,d rather than using
   // the pre assigned values from the setup:
-  //Real s  = 1 / d;                     // Maybe use 1 / abs(d)
-  //a1 = 1 / s;
-  //a2 = (s - 1) / s;                    // Maybe swap a1,a2 if d < 0
-  a1 = d;                              // Maybe use abs(d)
-  a2 = 1-d;                            // Maybe use 1-a1
-  //f1 = fc - fm/2;                    // Preliminary - later take into account a1,a2
-  //f2 = fc + fm/2;
+  a1 = d;                               // Maybe use abs(d)
+  a2 = 1-a1;                            // Maybe use 1-a1
   f1 = fc - a2*fm;
   f2 = fc + a1*fm;
-  // ToDo: Document these formulas! Where do they come from? What's the rationale behind them?
-  // Can we simplify them to get rid of divisions? I think, it's just a1 = d, a2 = 1-d. Verify 
-  // that! ...yeah...right
+  // ToDo: Document these formulas! Maybe use abs(d) and swap a1,a2 (and maybe f1,f2?) if d < 0.
+  // Document why we have to use  f1 = fc - a2*fm; f2 = fc + a1*fm;  and not the more intuitive
+  // f1 = fc - a1*fm; f2 = fc + a2*fm;  I tried the latter but when I do, the louder frequency is 
+  // farther way from fc regardless of whether we do  a1 = d; a2 = 1-d;  or  a1 = 1-d, a2 = d;
 
   // Now produce the sine beating with the calculated parameters:
   w1 = 2*PI*f1/fs;
@@ -731,7 +732,10 @@ void pseudoAmpModViaBeating()
   //   instantaneos phase and amplitude only. then later also with instantaneous frequency. Maybe
   //   try to treat the instantaneous frequency as given by the weighted average frequency. Then 
   //   try to estimate it as well.
-  // 
+  //
+  // - Try to get an exact match between x and y by slighty changing the center frequency in y. I 
+  //   guess, the supposed "phase-modulation" could be just an additional linearly increasing or
+  //   decreasing phase term.
   //
   // See also:
   //
