@@ -120,28 +120,48 @@ public:
   /** \name Static functions */
 
   /** There's a recursion formula for the sine with normalized radian frequeny w: 
+  
     y[n] = a1*y[n-1] - y[n-2] 
+
   where 
+
     a1 = 2*cos(w) 
+
   and the states y[n-1], y[n-2] are initialized as: 
+
     y[n-1] = A * sin(p - w), y[n-2] = A * sin(p - 2*w) 
-  which in our notation here translates to yR = a1*yC - yL. This leads to 
-    a1 = (yL+yR)/yC and
-    w  = acos(a1/2). 
-  This formula for w is implemented here. Note that we don't check against division by zero, so yC
-  should be large enough. However, we do check, if the input to acos is in -1..+1, so the formula 
-  is "half-safe". */
+
+  In our notation here, we have yL = y[n-2], yC = y[n-1], yR = y[n] so the recursion formula 
+  translates to yR = a1*yC - yL. We treat y[n-1] as our center sample, y[n-2] as its left neighbor
+  and y[n] as its right neighbor. This leads to the following formula for estimating w:
+
+    w = acos(a1/2)   with   a1 = (yL+yR)/yC
+
+  This formula for w is implemented here. It estimates the intantaneopus frequency w at the instant
+  of the center sample yC. Note that we don't check against division by zero, so yC should be large
+  enough. However, we do check, if the input to acos is in -1..+1 (i.e. we clip the input to acos 
+  to that range), so the formula is "half-safe". */
   static T freqFormula(T yL, T yC, T yR) 
   { return acos(rsClip(T(0.5)*(yL+yR)/yC, T(-1), T(+1))); }
-  // todo: make it totally safe! document what yL,yC,yR mean (y[n-1], y[n], y[n+1] i.e. 
-  // left/center/right), what about the amplitude? can we compute it as well?
-  // range of the output values is 0..pi, 0 results from input to acos == +1, pi results from -1
-  // that means, in subsequent formulas that use an w computed by this function, we can assume that
-  // 0 <= w <= pi
+  // ToDo: 
+  // -Make it totally safe! Maybe when |yC| < thresh, we can use a special formula? Maybe we can
+  //  find it using limits? Or maybe by looking at the specific situation. But maybe we can't 
+  //  really infer anything about the frequency unless we know the amplitude because at a zero 
+  //  crossing of a sine (i.e. yC = 0) we will observe yL = -c, yR = +c (by symmetry of the sine)
+  //  for some constant c. But how large that constant c is will be determined by amplitude and 
+  //  frequency together. Bigger amplitudes as well as bigger frequencies will lead to a bigger c.
+  //  In practice, we may probably get away by treating these zero crossing samples as "missing 
+  //  data" and fill it in by interpolating from the neighbors where we have data. Q: What would it
+  //  mean when yC == 0 but yL != -yR? Would that mean that our signal model is wrong? I think so.
+  // -Document what yL,yC,yR mean (y[n-1], y[n], y[n+1] i.e. 
+  //  left/center/right), what about the amplitude? Can we compute it as well?
+  // -Range of the output values is 0..pi, 0 results from input to acos == +1, pi results from -1
+  //  that means, in subsequent formulas that use an w computed by this function, we can assume 
+  //  that 0 <= w <= pi. Document that!
 
 
 
-  /** Handles the egde-cases for the pahse-amd-formula where w is (close to) a multiple of pi and 
+  /** Handles the egde-cases for the phase-amp-formula where w is (close to) a multiple of pi and 
   returns true, if the case was handled, i.e. a and p were assigned. */
   static bool handlePhaseAmpEdgeCase(T y0, T w, T* a, T* p);
 

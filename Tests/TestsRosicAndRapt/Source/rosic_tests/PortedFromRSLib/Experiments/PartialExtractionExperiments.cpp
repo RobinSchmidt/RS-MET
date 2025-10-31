@@ -554,21 +554,26 @@ void pseudoAmpModViaBeating()
   }
 
   // Produce pseudo amplitude modulation signal via beating sines:
-  Real w1 = 2*PI*f1/fs;  // Lower sine radian frequency
-  Real w2 = 2*PI*f2/fs;  // Upper sine radian frequency
+  Real w1 = 2*PI*f1/fs;                // Lower sine radian frequency
+  Real w2 = 2*PI*f2/fs;                // Upper sine radian frequency
   Vec y(N);
   for(int n = 0; n < N; n++)
     y[n] = a1 * sin(w1 * n) + a2 * sin(w2 * n);
 
   // OK - Let's now try to compute the values for f1,f2 and a1,a2 from fc,fm,d rather than using
   // the pre assigned values from the setup:
-  Real s  = 1 / d;                     // Maybe use 1 / abs(d)
-  a1 = 1 / s;
-  a2 = (s - 1) / s;                    // Maybe swap a1,a2 if d < 0
+  //Real s  = 1 / d;                     // Maybe use 1 / abs(d)
+  //a1 = 1 / s;
+  //a2 = (s - 1) / s;                    // Maybe swap a1,a2 if d < 0
+  a1 = d;                              // Maybe use abs(d)
+  a2 = 1-d;                            // Maybe use 1-a1
   //f1 = fc - fm/2;                    // Preliminary - later take into account a1,a2
   //f2 = fc + fm/2;
   f1 = fc - a2*fm;
   f2 = fc + a1*fm;
+  // ToDo: Document these formulas! Where do they come from? What's the rationale behind them?
+  // Can we simplify them to get rid of divisions? I think, it's just a1 = d, a2 = 1-d. Verify 
+  // that! ...yeah...right
 
   // Now produce the sine beating with the calculated parameters:
   w1 = 2*PI*f1/fs;
@@ -577,8 +582,8 @@ void pseudoAmpModViaBeating()
   for(int n = 0; n < N; n++)
     z[n] = a1 * sin(w1 * n) + a2 * sin(w2 * n);
 
-  // Let's analyze the beating sines signals x,y and z with the single sine modeler class to figure
-  // out how to describe thos signals in terms of instantaneous phase and amplitude:
+  // Let's analyze the signals x,y and z with the single sine modeler class to figure out how to 
+  // describe those signals in terms of instantaneous phase and amplitude:
   rsSingleSineModeler<Real> ssm;
   Vec ax(N), px(N); ssm.analyzeAmpAndPhase(&x[0], N, &ax[0], &px[0]);
   Vec ay(N), py(N); ssm.analyzeAmpAndPhase(&y[0], N, &ay[0], &py[0]);
@@ -603,10 +608,10 @@ void pseudoAmpModViaBeating()
   //rsPlotVectors(a, x, y);     // Envelope and both signals
   //rsPlotVectors(x+y, x-y);    // Sum and difference of proper and pseudo amp mod
   //rsPlotVectors(y, z);          // Beating with pre-assigned and comuted parameters
-  //rsPlotVectors(a, x, y, z);    // Amp env, amp-mod and two beating signals
-  rsPlotVectors(ax, px);        // Instantaneous amp and phase of amp-mod signal
-  rsPlotVectors(ay, py);        // Instantaneous amp and phase of beating signal 1
-  rsPlotVectors(az, pz);        // Instantaneous amp and phase of beating signal 2
+  rsPlotVectors(a, x, y, z);    // Amp env, amp-mod and two beating signals
+  //rsPlotVectors(ax, px);        // Instantaneous amp and phase of amp-mod signal
+  //rsPlotVectors(ay, py);        // Instantaneous amp and phase of beating signal 1
+  //rsPlotVectors(az, pz);        // Instantaneous amp and phase of beating signal 2
 
 
 
@@ -670,7 +675,7 @@ void pseudoAmpModViaBeating()
   //   Rationale: Positive values shift the spectral balance up, negative values shift it down 
   //   which seems to be intuitive. The depth parameter could range from -1 to +1 or from -100% to
   //   +100%. We would actually use the absolute value of it and use the sign to determine which 
-  //   sine gets the higher amplitude.
+  //   sine gets the higher amplitude. Maybe the modulation frequency fm could also be negative?
   //
   //
   // ToDo:
