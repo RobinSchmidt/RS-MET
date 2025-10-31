@@ -505,28 +505,9 @@ template<class T>
 void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2, 
   bool phaseAlign = false)
 {
-  // Under construction. Does not yet work well for |d| > 0.5 when we phase align. It seems like 
-  // then we get full modulation down to zero already at d=0.5 and at d=1 the modulation is off 
-  // again
+  // Under construction. 
 
-  //// This (kind of) works for |d| > 0.5 but for |d| < 0.5, it makes things worse:
-  //if(phaseAlign)
-  //  d *= 0.5;
-  // I think, we need a nonlinear map that behaves like the identity near the origin but has 
-  // y-values of +-0.5 at x = +-1 (it needs to have odd symmetry). Maybe try a quadratic polynomial
-  // f(x)  = a0 + a1*x + a2*x^2 and require f(0) = 0, f'(0) = 1, f(1) = 1/2. We have:
-  // f'(x) = a1 + a2*x and so: f(0) = a0, f'(0) = a1, f(1) = a0 + a1 + a2 so we get:
-  // a0 = 0, a1 = 1, 1/2 = 0 + 1 + a2 -> a2 = -1/2
-  // f(x) = x - 0.5*x^2
-  // But that function may work only for positive x (or d). Maybe may a cubic ansatz
-  // f(x)  = a1*x + a3*x^3 which has the right symmetry by construction
-  // f'(x) = a1 + 3*a3*x^2
-  // f'(0) = 1 = a1 -> a1 = 1
-  // f(1)  = 1/2 = a1 + 3*a3 = 1 + 3*a3 -> 1/2 - 1 = 3*a3 -> -1/6 = a3
-  // f(x) = x - x^3/6 ...but that's wrong! f(x) = x - x^3/2 works, i.e. satisfies the 3 consitions 
-  // but it overshoots 0.5 before "reaching" it, so the curve is no good!
-
-  // Preliminary - only good for d > 0:
+  // Nonlinear mapping for the modulation depth d that we need in case of phase-alignment:
   if(phaseAlign)
   {
     if(d >= 0)
@@ -534,11 +515,12 @@ void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2,
     else
       d = d + 0.5*d*d;
   }
-  // The solution is to either symmetrize the function (apply it to the abs and then re-apply the 
-  // sign) or try using a cubic ansatz. OK - we have symmetrized it. BUT: now it still looks wrong
-  // when d < 0. I guess that now the d < 0 branch at the bottom (that updates a1,a2) is not 
-  // suitable anymore!
-
+  // This function was found by making a quadratic polynomial ansatz f(x) = a0 + a1*x + a2*x^2 and 
+  // requiring f(0) = 0, f'(0) = 1, f(1) = 1/2. The motivation was the observation that in case of 
+  // phase alignment for high values of d (i.e. close to 1), it seemed appropriate to use only half
+  // the value whereas for small values of d (close to zero) it was more appropriate to use d as 
+  // is. The conditional is just to symmetrize the function because the polynomial ansatz is valid 
+  // only for d >= 0.
 
 
   *a1 = rsAbs(d);
@@ -562,15 +544,7 @@ void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2,
     *f1 += df; 
     *f2 += df;
     if(d < 0)
-    {
       *a1 = -(*a1);
-
-      //T s = (T(1)-d) / (T(1)+d);
-      //*a1 *= s;
-      //*a2 *= s;
-      // Oh! I think, the amplitude scaling might be wrong. I adjusted it to mathc a reference 
-      // signal which itself had the wrong amplitude normalization!
-    }
   }
   // This formula seems to work well for |d| = 0.0...0.5 but beyond that, it makes things worse. In
   // this range for d, it works equally well for positive and negative fm. Maybe for negative d,
@@ -643,7 +617,7 @@ void pseudoAmpModViaBeating()
   Real fs = 10000;       // Sample rate
   Real fc =   100;       // Carrier frequency
   Real fm =   +10;       // Modulator frequency in -fc..+fc (I guess)
-  Real d  =  +1.0;       // Modulation depth in -1..+1
+  Real d  =  +0.2;       // Modulation depth in -1..+1
   Real f1 =    95;       // Lower sine frequency
   Real f2 =   105;       // Upper sine frequency
   Real a1 =   4./5;      // Lower sine amplitude
