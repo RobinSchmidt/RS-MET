@@ -498,6 +498,71 @@ void beatingSines1()
   // ...hmm...but that seems a dead end
 }
 
+
+
+
+template<class T>
+void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2, 
+  bool phaseAlign = false)
+{
+  // Under construction. Does not yet work well for |d| > 0.5
+
+  *a1 = rsAbs(d);
+  *a2 = T(1) - *a1;
+  if(d >= T(0))
+  {
+    *f1 = fc - *a2 * fm;
+    *f2 = fc + *a1 * fm;
+  }
+  else
+  {
+    *f1 = fc + *a2 * fm;
+    *f2 = fc - *a1 * fm;
+  }
+
+  // Frequency shifting for better phase-match with amp-mod signal (should be optional):
+  if(phaseAlign == true)
+  {
+    // These formulas were found by trial and error:
+    T df = -d * fm;                
+    *f1 += df; 
+    *f2 += df;
+    if(d < 0)
+    {
+      *a1 = -(*a1);
+      T s = (T(1)-d) / (T(1)+d);
+      *a1 *= s;
+      *a2 *= s;
+    }
+  }
+  // This formula seems to work well for |d| = 0.0...0.5 but beyond that, it makes things worse. In
+  // this range for d, it works equally well for positive and negative fm. Maybe for negative d,
+  // we should use something involving (1-d)? And maybe we should clip/saturate the shift at
+  // +-rsClip(d, 0.5)? Well - actually the formula could perhaps also be use for d < 0 but maybe 
+  // we need then also negate the amplitues a1,a2? or maybe just one of them? Yes! Negating a1 
+  // works almost! But we'll also need an overall scale factor!
+  //
+  // ToDo: Document these formulas! 
+  // Document why we have to use  f1 = fc - a2*fm; f2 = fc + a1*fm;  and not the more intuitive
+  // f1 = fc - a1*fm; f2 = fc + a2*fm;  I tried the latter but when I do, the louder frequency is 
+  // farther way from fc regardless of whether we do  a1 = d; a2 = 1-d;  or  a1 = 1-d, a2 = d;
+  // Maybe swap the bodies two branches. I'm not sure, which way is more intuitive. I think, when 
+  // both fm is positive and we increase d from 0 to a positive, the behavior should be that a 
+  // second sine appears below the original one and by further increasing d, they both shift up (
+  // while also altering their amplitude balance). I think, that is actually what currently happens
+  // but it should be verified. Currently, we get with fc = 100 (with pm == false):
+  // 
+  //   d = +0.2, fm = +10:  f1 =  92, a1 = 0.2,  f2 = 102, a2 = 0.8
+  //   d = +0.2, fm = -10:  f1 = 108, a1 = 0.2,  f2 =  98, a2 = 0.8
+  //   d = -0.2, fm = +10:  f1 = 108, a1 = 0.2,  f2 =  98, a2 = 0.8
+  //   d = -0.2, fm = -10:  f1 =  92, a1 = 0.2,  f2 = 102, a2 = 0.8
+  //
+  // What is important is that it is always the frequency that is closer to fc that gets the higher
+  // amplitude. Actually it would be nicer, if that frequency would be f1 because it makes more
+  // sense when f1 remains present and f2 disappears when d = 0. Currently, it's alwaya f2 that is 
+  // closer to fc, so maybe we should change something here. 
+}
+
 void pseudoAmpModViaBeating()
 {
   // We want to figure out how we can best parameterize a pair of beating sinusoids for the user.
@@ -577,63 +642,9 @@ void pseudoAmpModViaBeating()
     y[n] = a1 * sin(w1 * n) + a2 * sin(w2 * n);
 
   // OK - Let's now try to compute the values for f1,f2 and a1,a2 from fc,fm,d rather than using
-  // the pre assigned values from the setup:
-  a1 = rsAbs(d);
-  a2 = 1 - a1;
-  if(d >= 0.0)
-  {
-    f1 = fc - a2*fm;
-    f2 = fc + a1*fm;
-  }
-  else
-  {
-    f1 = fc + a2*fm;
-    f2 = fc - a1*fm;
-  }
-
-  // Frequency shifting for better phase-match with amp-mod signal (should be optional):
-  if(pm == true)
-  {
-    Real df = -d * fm;              // Ad hoc, found by trial and error
-    f1 += df; f2 += df;
-    if(d < 0)
-    {
-      a1 = -a1;
-      //a2 = -a2;              // Nope!
-      Real s = (1-d)/(1+d);
-      a1 *= s;
-      a2 *= s;
-    }
-  }
-  // This formula seems to work well for |d| = 0.0...0.5 but beyond that, it makes things worse. In
-  // this range for d, it works equally well for positive and negative fm. Maybe for negative d,
-  // we should use something involving (1-d)? And maybe we should clip/saturate the shift at
-  // +-rsClip(d, 0.5)? Well - actually the formula could perhaps also be use for d < 0 but maybe 
-  // we need then also negate the amplitues a1,a2? or maybe just one of them? Yes! Negating a1 
-  // works almost! But we'll also need an overall scale factor!
-  //
-  // ToDo: Document these formulas! 
-  // Document why we have to use  f1 = fc - a2*fm; f2 = fc + a1*fm;  and not the more intuitive
-  // f1 = fc - a1*fm; f2 = fc + a2*fm;  I tried the latter but when I do, the louder frequency is 
-  // farther way from fc regardless of whether we do  a1 = d; a2 = 1-d;  or  a1 = 1-d, a2 = d;
-  // Maybe swap the bodies two branches. I'm not sure, which way is more intuitive. I think, when 
-  // both fm is positive and we increase d from 0 to a positive, the behavior should be that a 
-  // second sine appears below the original one and by further increasing d, they both shift up (
-  // while also altering their amplitude balance). I think, that is actually what currently happens
-  // but it should be verified. Currently, we get with fc = 100 (with df = 0.0):
-  // 
-  //   d = +0.2, fm = +10:  f1 =  92, a1 = 0.2,  f2 = 102, a2 = 0.8
-  //   d = +0.2, fm = -10:  f1 = 108, a1 = 0.2,  f2 =  98, a2 = 0.8
-  //   d = -0.2, fm = +10:  f1 = 108, a1 = 0.2,  f2 =  98, a2 = 0.8
-  //   d = -0.2, fm = -10:  f1 =  92, a1 = 0.2,  f2 = 102, a2 = 0.8
-  //
-  // What is important is that it is always the frequency that is closer to fc that gets the higher
-  // amplitude. Actually it would be nicer, if that frequency would be f1 because it makes more
-  // sense when f1 remains present and f2 disappears when d = 0. Currently, it's alwaya f2 that is 
-  // closer to fc, so maybe we should change something here. Maybe warp this computation into a 
-  // function rsSineBeatFromAmpModParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2).
-
-  // Now produce the sine beating with the calculated parameters:
+  // the pre assigned values from the setup and produce the sine beating with the calculated 
+  // parameters:
+  rsAmpModToSineBeatParams(fc, fm, d, &f1, &a1, &f2, &a2, pm);
   w1 = 2*PI*f1/fs;
   w2 = 2*PI*f2/fs;
   Vec z(N);
@@ -819,6 +830,14 @@ void beatingSines()
 
   beatingSines1();
   pseudoAmpModViaBeating();
+
+  // See:
+  // https://github.com/RobinSchmidt/RS-MET/discussions/322
+  // https://en.wikipedia.org/wiki/Beat_(acoustics)
+  // https://www.youtube.com/watch?v=CKfykhkQKVw  ECE2026 L11: Beat Frequencies and Amplitude Modulation (Introduction to Signal Processing)
+  // physicsforums.com/threads/am-vs-beats-why-do-we-need-a-carrier-wave.890811/
+  // https://www.dsprelated.com/showthread/comp.dsp/88415-1.php
+  // https://ccrma.stanford.edu/~jos/st/Sinusoidal_Amplitude_Modulation_AM.html
 }
 
 
