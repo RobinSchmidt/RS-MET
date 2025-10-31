@@ -533,8 +533,8 @@ void pseudoAmpModViaBeating()
   int  N  =  4000;       // Number of samples
   Real fs = 10000;       // Sample rate
   Real fc =   100;       // Carrier frequency
-  Real fm =    10;       // Modulator frequency
-  Real d  =   0.2;       // Modulation depth in -1..+1
+  Real fm =   -10;       // Modulator frequency
+  Real d  =  -0.2;       // Modulation depth in -1..+1
   Real f1 =    95;       // Lower sine frequency
   Real f2 =   105;       // Upper sine frequency
   Real a1 =   1./5;      // Lower sine amplitude
@@ -567,14 +567,38 @@ void pseudoAmpModViaBeating()
 
   // OK - Let's now try to compute the values for f1,f2 and a1,a2 from fc,fm,d rather than using
   // the pre assigned values from the setup:
-  a1 = d;                               // Maybe use abs(d)
-  a2 = 1-a1;                            // Maybe use 1-a1
-  f1 = fc - a2*fm;
-  f2 = fc + a1*fm;
+  a1 = rsAbs(d);
+  a2 = 1 - a1;
+  if(d >= 0.0)
+  {
+    f1 = fc - a2*fm;
+    f2 = fc + a1*fm;
+  }
+  else
+  {
+    f1 = fc + a2*fm;
+    f2 = fc - a1*fm;
+  }
   // ToDo: Document these formulas! Maybe use abs(d) and swap a1,a2 (and maybe f1,f2?) if d < 0.
   // Document why we have to use  f1 = fc - a2*fm; f2 = fc + a1*fm;  and not the more intuitive
   // f1 = fc - a1*fm; f2 = fc + a2*fm;  I tried the latter but when I do, the louder frequency is 
   // farther way from fc regardless of whether we do  a1 = d; a2 = 1-d;  or  a1 = 1-d, a2 = d;
+  // Maybe swap the bodies two branches. I'm not sure, which way is more intuitive. I think, when 
+  // both fm is positive and we increase d from 0 to a positive, the behavior should be that a 
+  // second sine appears below the original one and by further increasing d, they both shift up (
+  // while also altering their amplitude balance). I think, that is actually what currently happens
+  // but it should be verified. Currently, we get with fc = 100:
+  // 
+  //   d = +0.2, fm = +10:  f1 =  92, a1 = 0.2,  f2 = 102, a2 = 0.8
+  //   d = +0.2, fm = -10:  f1 = 108, a1 = 0.2,  f2 =  98, a2 = 0.8
+  //   d = -0.2, fm = +10:  f1 = 108, a1 = 0.2,  f2 =  98, a2 = 0.8
+  //   d = -0.2, fm = -10:  f1 =  92, a1 = 0.2,  f2 = 102, a2 = 0.8
+  //
+  // What is important is that it is always the frequency that is closer to fc that gets the higher
+  // amplitude. Actually it would be nicer, if that frequency would be f1 because it makes more
+  // sense when f1 remains present and f2 disappears when d = 0. Currently, it's alwaya f2 that is 
+  // closer to fc, so maybe we should change something here. Maybe warp this computation into a 
+  // function rsSineBeatFromAmpModParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2).
 
   // Now produce the sine beating with the calculated parameters:
   w1 = 2*PI*f1/fs;
