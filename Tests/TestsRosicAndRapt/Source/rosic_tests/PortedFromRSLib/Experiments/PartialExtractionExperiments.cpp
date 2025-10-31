@@ -519,14 +519,25 @@ void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2,
   // a0 = 0, a1 = 1, 1/2 = 0 + 1 + a2 -> a2 = -1/2
   // f(x) = x - 0.5*x^2
   // But that function may work only for positive x (or d). Maybe may a cubic ansatz
-  // f(x) = a1*x + a3*x^3 which has the right symmetry by construction
-
+  // f(x)  = a1*x + a3*x^3 which has the right symmetry by construction
+  // f'(x) = a1 + 3*a3*x^2
+  // f'(0) = 1 = a1 -> a1 = 1
+  // f(1)  = 1/2 = a1 + 3*a3 = 1 + 3*a3 -> 1/2 - 1 = 3*a3 -> -1/6 = a3
+  // f(x) = x - x^3/6 ...but that's wrong! f(x) = x - x^3/2 works, i.e. satisfies the 3 consitions 
+  // but it overshoots 0.5 before "reaching" it, so the curve is no good!
 
   // Preliminary - only good for d > 0:
   if(phaseAlign)
-    d = d - 0.5*d*d;
+  {
+    if(d >= 0)
+      d = d - 0.5*d*d;
+    else
+      d = d + 0.5*d*d;
+  }
   // The solution is to either symmetrize the function (apply it to the abs and then re-apply the 
-  // sign) or try using a cubic ansatz
+  // sign) or try using a cubic ansatz. OK - we have symmetrized it. BUT: now it still looks wrong
+  // when d < 0. I guess that now the d < 0 branch at the bottom (that updates a1,a2) is not 
+  // suitable anymore!
 
 
 
@@ -553,9 +564,12 @@ void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2,
     if(d < 0)
     {
       *a1 = -(*a1);
-      T s = (T(1)-d) / (T(1)+d);
-      *a1 *= s;
-      *a2 *= s;
+
+      //T s = (T(1)-d) / (T(1)+d);
+      //*a1 *= s;
+      //*a2 *= s;
+      // Oh! I think, the amplitude scaling might be wrong. I adjusted it to mathc a reference 
+      // signal which itself had the wrong amplitude normalization!
     }
   }
   // This formula seems to work well for |d| = 0.0...0.5 but beyond that, it makes things worse. In
@@ -629,7 +643,7 @@ void pseudoAmpModViaBeating()
   Real fs = 10000;       // Sample rate
   Real fc =   100;       // Carrier frequency
   Real fm =   +10;       // Modulator frequency in -fc..+fc (I guess)
-  Real d  =  +0.5;       // Modulation depth in -1..+1
+  Real d  =  +1.0;       // Modulation depth in -1..+1
   Real f1 =    95;       // Lower sine frequency
   Real f2 =   105;       // Upper sine frequency
   Real a1 =   4./5;      // Lower sine amplitude
@@ -655,7 +669,8 @@ void pseudoAmpModViaBeating()
   for(int n = 0; n < N; n++)
   {
     a[n]  = (1 + d * cos(wm * n));     // Amplitude envelope, cos gives better match than sin
-    a[n] /= 1 + d;                     // Renormalize peak amplitude
+    //a[n] /= 1 + d;                     // Renormalize peak amplitude
+    a[n] /= 1 + rsAbs(d);              // Renormalize peak amplitude
     x[n]  = a[n] * sin(wc * n);        // Enveloped sinusoid
   }
   // ToDo: Maybe introduce a loudness compensation parameter p in 0..1 and do a[n] /= (1+d)^p. 
