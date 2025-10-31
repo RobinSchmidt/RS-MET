@@ -505,7 +505,9 @@ template<class T>
 void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2, 
   bool phaseAlign = false)
 {
-  // Under construction. Does not yet work well for |d| > 0.5
+  // Under construction. Does not yet work well for |d| > 0.5 when we phase align. It seems like 
+  // then we get full modulation down to zero already at d=0.5 and at d=1 the modulation is off 
+  // again
 
   *a1 = rsAbs(d);
   *a2 = T(1) - *a1;
@@ -561,6 +563,10 @@ void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2,
   // amplitude. Actually it would be nicer, if that frequency would be f1 because it makes more
   // sense when f1 remains present and f2 disappears when d = 0. Currently, it's alwaya f2 that is 
   // closer to fc, so maybe we should change something here. 
+
+  // I think, the phase alignment tries to align the phases of the beating sines to the phase of 
+  // the amp-mod sine at the points where the amplitude is maximal. When the amplitude goes 
+  // through a minimum, the aligment gets worse - but there it doesn't matter that much
 }
 
 void pseudoAmpModViaBeating()
@@ -674,15 +680,15 @@ void pseudoAmpModViaBeating()
   //rsPlotVectors(x, y);        // Actual and pseudo amp mod signal
   //rsPlotVectors(y);           // Pseudo amp mod signal
   //rsPlotVectors(x, a);        // Amp mod signal with its amp envelope
-  rsPlotVectors(a, x, y);     // Envelope, amp-mod, pre-assigned beating pair 
+  //rsPlotVectors(a, x, y);     // Envelope, amp-mod, pre-assigned beating pair 
   rsPlotVectors(a, x, z);     // Envelope, amp-mod, computed beating pair 
   //rsPlotVectors(x+y, x-y);    // Sum and difference of proper and pseudo amp mod
   //rsPlotVectors(y, z);        // Beating with pre-assigned and computed parameters
-  rsPlotVectors(a, x, y, z);  // Amp env, amp-mod and two beating signals
+  //rsPlotVectors(a, x, y, z);  // Amp env, amp-mod and two beating signals
   //rsPlotVectors(ax, px);      // Instantaneous amp and phase of amp-mod signal
   //rsPlotVectors(ay, py);      // Instantaneous amp and phase of beating signal 1
   //rsPlotVectors(az, pz);      // Instantaneous amp and phase of beating signal 2
-
+  int dummy = 0;
 
 
 
