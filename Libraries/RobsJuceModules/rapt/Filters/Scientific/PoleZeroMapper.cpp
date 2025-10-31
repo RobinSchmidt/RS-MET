@@ -556,27 +556,50 @@ bool rsPoleZeroMapper<T>::sFilterRootBefore(const Complex& r1, const Complex& r2
   return false;
 }
 
+//=================================================================================================
 /*
+
 ToDo:
--Implement also the discrete versions of the frequency transformations (Constantinides formulas)
--Implement this: https://vicanek.de/articles/BiquadFits.pdf and maybe MZTi, too
- -Maybe use as matching frequencies, 0, fs/2, fc, fu, fu/2 where fu is the lower bandedge freq.
-  If there is no such thing, maybe use fu = fc/2. Avoid using the upper bandedge because that may 
-  actually go above fs/2
--Maybe we can also derive formulas that match the magnitude only at 4 frequencies and match the
- phase at fc. ...or maybe match magnitude at 3 frequencies and phase at fc and fs/2
--Maybe rename bilinearAnalogToDigital to bilinear_s2z - or have a seperate class 
- TimeDiscretizaionMapper (or something) and the methods can be named bilinear (for s -> z) and
- invBilinear (for z -> s)
--Implement also Impulse-Invariant, (improved) Matched-Z, 3-point Magnitude Match, 
- 5-point Magnitude Match, etc.
--Implement Phase-Invariant-Method (PIM) and Magnitude-Invariant-Method (MIM) to map poles and zeros
- from s-plane to z-plane (and maybe back, if possible), 
- see https://soar.wichita.edu/handle/10057/1564
 
+- Implement also the discrete versions of the frequency transformations (Constantinides formulas).
+  See: http://rs-met.com/documents/dsp/TwoInterpretationsOfFrequencyWarpedTransferFunctions.pdf
 
--Maybe wite a similar class that operates on biquads rather than poles and zeros. It could have 
- functions like bilinearAnalogToDigital(T B0, T B1, T B2, T A0, T A1, T A2, T& b0, ...)
+- Implement this: https://vicanek.de/articles/BiquadFits.pdf and maybe MZTi, too
+  - Maybe use as matching frequencies, 0, fs/2, fc, fu, fu/2 where fu is the lower bandedge freq.
+    If there is no such thing, maybe use fu = fc/2. Avoid using the upper bandedge because that may
+    actually go above fs/2
 
+- Maybe we can also derive formulas that match the magnitude only at 4 frequencies and match the
+  phase at fc. ...or maybe match magnitude at 3 frequencies and phase at fc and fs/2
+
+- Maybe rename bilinearAnalogToDigital to bilinear_s2z - or have a seperate class 
+  TimeDiscretizaionMapper (or something) and the methods can be named bilinear (for s -> z) and
+  invBilinear (for z -> s)
+
+- Implement also Impulse-Invariant, (improved) Matched-Z, 3-point Magnitude Match, 
+  5-point Magnitude Match, etc.
+
+- Implement Phase-Invariant-Method (PIM) and Magnitude-Invariant-Method (MIM) to map poles and 
+  zeros from s-plane to z-plane (and maybe back, if possible), 
+  see https://soar.wichita.edu/handle/10057/1564
+
+- Maybe wite a similar class that operates on biquads rather than poles and zeros. It could have 
+  functions like bilinearAnalogToDigital(T B0, T B1, T B2, T A0, T A1, T A2, T& b0, ...)
+
+- Ideas for manipulating poles and zeros in terms of explicitly given roots (poles and zeros,  
+  filter in ZPK representation) and in terms of polyonomial coefficient arrays (filter in BA 
+  representation):
+  -The regular, well known s-domain and z-domain frequency transformations (LP->LP, LP->HP, LP->BP,
+   LP->BR, LP->LS, LP->HS, LP->BS, etc.) can be interpreted as such transformations. They are
+   straightforward to perform on the ZPK representation. ToDo: Figure out how to do them in the BA
+   representation.
+  -Reversing the polynomial coeffs-array reflects roots in unit circle. This is useful mostly (or 
+   only?) in the z-domain. I think, this can be expressed by substituting z by 1/z and then 
+   multiplying through by z^M where M is the order of the polynomial.
+  -Substituting z by z^M duplicates the roots M times. When doing this to a digital transfer 
+   function H(z), a root at z = r * e^p will be turned into M roots at r * e^(k*p/M) for 
+   k = 1,..,M, I think. In terms of the coeff array, it amounts to zero stuffing it, i.e. 
+   inserting (M-1) zeros between all the coeffs in the original polynomial coeff arrays.
+  -...TBC...
 
 */
