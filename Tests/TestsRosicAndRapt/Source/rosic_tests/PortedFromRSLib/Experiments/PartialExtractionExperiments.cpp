@@ -537,11 +537,15 @@ void pseudoAmpModViaBeating()
   Real d  =  +0.2;       // Modulation depth in -1..+1
   Real f1 =    95;       // Lower sine frequency
   Real f2 =   105;       // Upper sine frequency
-  Real a1 =   1./5;      // Lower sine amplitude
-  Real a2 =   4./5;      // Upper sine amplitude
+  Real a1 =   4./5;      // Lower sine amplitude
+  Real a2 =   1./5;      // Upper sine amplitude
 
   // Test:
-  Real df = -5.0; f1 += df; f2 += df;
+  //Real df = +5.0; f1 += df; f2 += df;
+  // This can be uncommented for experimenting with shifting both frequencies of the beating pair
+  // by some amount df. By doing this shift by the right amount, we may get a very close match 
+  // between the amp-mod signal and the beating pair. The progressive phase shifting that we would 
+  // otherwise see, can be completely suppressed.
 
   // Produce actual amplitude modulation signal:
   Real wc = 2*PI*fc/fs;                // Normalized carrier radian frequency
@@ -762,9 +766,18 @@ void pseudoAmpModViaBeating()
   //
   // - Try to get an exact match between x and y by slighty changing the center frequency in y. I 
   //   guess, the supposed "phase-modulation" could be just an additional linearly increasing or
-  //   decreasing phase term. ...done. Turns out that we need to shift f1 and f2 down by 5 Hz in 
-  //   order to have y match x better when f1=95, f2=105, a1=1/5, a2=4/5. Maybe in general, that 
-  //   means that the louder frequency should match the center frequency fc?
+  //   decreasing phase term. ...done. Turns out that we need to shift f1 and f2 down by 5 Hz (i.e.
+  //   df = -5) in order to have y match x better when f1=95, f2=105, a1=1/5, a2=4/5. When swapping
+  //   the amplitudes to a1=4/5, a2=1/5, we need df = +5, i.e. shift both freqs up by 5 Hz. Maybe 
+  //   in general that means that the louder frequency should match the center frequency fc? Maybe 
+  //   that implies that perceptually, we will tend to hear the louder sine as the pitch and maybe 
+  //   not the weighted average (as hypothesized)? But what if we smoothly change which one is 
+  //   louder? We can't have a discontinuous jump in the perceived frequency, right?
+  // 
+  // - The fact that the beating pair can extremely closely match the amp-mod signal seems to imply
+  //   that in the right circumstances, 2 sines can very closely approximate 3 sines (amp-mod can 
+  //   be re-epxressed as 3 sines: 1 center and 2 sidebands). This is rather surprising! Maybe this
+  //   could be used in optimizing additive synthesis in certain settings?
   //
   // See also:
   //
