@@ -520,9 +520,9 @@ void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2,
   // phase alignment for high values of d (i.e. close to 1), it seemed appropriate to use only half
   // the value whereas for small values of d (close to zero) it was more appropriate to use d as 
   // is. The conditional is just to symmetrize the function because the polynomial ansatz is valid 
-  // only for d >= 0.
+  // only for d >= 0. Maybe express this as d = d - rsSign(d) * d*d;
 
-
+  // Maybe factor out this section into a function in its own right:
   *a1 = rsAbs(d);
   *a2 = T(1) - *a1;
   if(d >= T(0))
@@ -535,6 +535,8 @@ void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2,
     *f1 = fc + *a2 * fm;
     *f2 = fc - *a1 * fm;
   }
+
+
 
   // Frequency shifting for better phase-match with amp-mod signal (should be optional):
   if(phaseAlign == true)
