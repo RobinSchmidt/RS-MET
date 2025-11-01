@@ -1,8 +1,17 @@
 #ifndef RAPT_ARRAYTOOLS_H_INCLUDED
 #define RAPT_ARRAYTOOLS_H_INCLUDED
 
-/** A collection of functions that operate on 1-dimensional arrays. 
-
+/** A collection of functions that operate on 1-dimensional arrays. The inputs and outputs to the
+functions are typically raw C-style arrays (pointers to the data) together with integers indicating
+the array lengths. This is low level stuff with no safety nets (aside from assertions here or 
+there) so the appropriate care should be taken when using it. Yes - RAPT is (at least partially) a 
+low level number crunching library. We actually do such dirty stuff here. :-P  Somewhere, someone 
+has to do it. If you work with std::vectors, maybe also have a look at StandardContainerTools.h 
+where there may be safer and more convenient wrappers for the functionality provided here. This 
+safety and convenience comes often at the price of doing memory allocations, though - so the vector
+wrappers might be ok for quick prototyping and for performance-uncritical, non-realtime purposes 
+but maybe not so much for use in production in the context of realtime DSP where we have to go low 
+level.
 
 todo: 
 -sort the functions in the header by purpose (fill, search, sort, arithmetic/combine (add,
@@ -19,8 +28,13 @@ todo:
  ->done up to copy
  ...maybe change the const by-value parameters to by-reference parameters
 -inline, where it makes sense (trivial functions like copy/convert)
--use workspace pointers instead of heap allocation, where applicable, keep the functions with 
- heap-allocations as convenience functions (create workspace -> call worker -> delete workspace)
+-Use workspace pointers instead of heap allocation, where applicable, keep the functions with 
+ heap-allocations (and without the workspace parameters) as convenience functions. Their 
+ implementations should follow the simple pattern: 
+ allocate workspace  ->  call worker (with workspace)  ->  delete workspace
+ These convenience functions also serve a documentation purpose. They show exactly how the 
+ workspace-based functions shall be used correctly - in particular how much workspace they need, 
+ etc.
 -maybe introduce another template parameters for the index-type such that it can be used with int 
  or size_t (the former is used throughout much of my own code but size_t is used by std::vector
  ...this incompatibility actually kinda sucks anyway). But be careful with functions that return an 

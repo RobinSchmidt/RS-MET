@@ -2,7 +2,9 @@
 #define RAPT_STANDARDCONTAINER_H_INCLUDED
 
 /** A collection of convenience functions for the container classes of the C++ standard template
-library (STL), such as std::vector, std::map, etc. */
+library (STL), such as std::vector, std::map, etc. Many of the functions for std::vector are just
+convenience wrappers around the corresponding functions in rsArrayTools that operate on raw C-style
+arrays. */
 
 //=================================================================================================
 // Convenience functions for any sort of container that has a size() function
