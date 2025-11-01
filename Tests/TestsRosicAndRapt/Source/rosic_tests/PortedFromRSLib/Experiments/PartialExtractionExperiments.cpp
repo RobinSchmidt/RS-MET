@@ -520,7 +520,13 @@ void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2,
   // phase alignment for high values of d (i.e. close to 1), it seemed appropriate to use only half
   // the value whereas for small values of d (close to zero) it was more appropriate to use d as 
   // is. The conditional is just to symmetrize the function because the polynomial ansatz is valid 
-  // only for d >= 0. Maybe express this as d = d - rsSign(d) * d*d;
+  // only for d >= 0. Maybe express this as d = d - rsSign(d) * d*d;  Maybe try to improve the 
+  // function. Maybe try to get data points for x = input depth, y = f(x) = desired output depth. 
+  // Maybe set up an interactive Jupyter notebook for this using Python. An interactive plot may 
+  // help to figure out the desired mapping. We want a slider for the nominal depth and one for 
+  // the modified depth and then plot the true AM signal together with the beating pair and then we
+  // can set a nominal depth with the 1st slider and adjust the 2nd (for the modified depth) until
+  // the signal match best visually.
 
   // Maybe factor out this section into a function in its own right:
   *a1 = rsAbs(d);
