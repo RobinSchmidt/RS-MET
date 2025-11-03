@@ -621,8 +621,11 @@ void pseudoAmpModViaBeating()
   Real f2 =   105;       // Upper sine frequency
   Real a1 =   4./5;      // Lower sine amplitude
   Real a2 =   1./5;      // Upper sine amplitude
-  bool pm =   true;      // Switch phase matching on/off
+  bool pm =   true;      // Switch phase matching (aka alignment) on/off
 
+
+  /*
+  // I think, this is obsolete now:
   // Test - optional overall frequency shifting for the beating pair:
   if(pm == true)
   {
@@ -634,14 +637,19 @@ void pseudoAmpModViaBeating()
   // by some amount df. By doing this shift by the right amount, we may get a very close match 
   // between the amp-mod signal and the beating pair. The progressive phase shifting that we would 
   // otherwise see, can be completely suppressed.
+  */
+
 
   // Produce actual amplitude modulation signal:
   Real wc = 2*PI*fc/fs;                // Normalized carrier radian frequency
   Real wm = 2*PI*fm/fs;                // Normalized radian frequency
-  Vec a(N), x(N);                      // Amplitude envelope and amp-mod signal
+  Vec m(N);                            // Modulator signal
+  Vec a(N);                            // Amplitude envelope
+  Vec x(N);                            // Amp-modulated signal
   for(int n = 0; n < N; n++)
   {
-    a[n]  = (1 + d * cos(wm * n));     // Amplitude envelope, cos gives better match than sin
+    m[n]  = cos(wm * n);               // Modulator. Cosine gives better match than sine.
+    a[n]  = (1 + d * m[n]);            // Amplitude envelope.
     a[n] /= 1 + rsAbs(d);              // Renormalize peak amplitude
     x[n]  = a[n] * sin(wc * n);        // Enveloped sinusoid
   }
@@ -680,6 +688,15 @@ void pseudoAmpModViaBeating()
   for(int n = 0; n < N; n++)
     z[n] = a1 * sin(w1 * n) + a2 * sin(w2 * n);
 
+  // Try to produce a signal that looks like the amplitude envelope of the beating pair:
+  Vec b(N);
+  for(int n = 0; n < N; n++)
+    b[n]  = rsAbs(cos(0.5*wm * n));
+  // A rectified cosine wave at half the modulator frequency works for d = 1 with pm = true 
+  // (phase-align/match). For d = -1, it has the wrong phase.
+
+
+
   // Let's analyze the signals x,y and z with the single sine modeler class to figure out how to 
   // describe those signals in terms of instantaneous phase and amplitude:
   rsSingleSineModeler<Real> ssm;
@@ -703,6 +720,8 @@ void pseudoAmpModViaBeating()
   //rsPlotVectors(x, y);        // Actual and pseudo amp mod signal
   //rsPlotVectors(y);           // Pseudo amp mod signal
   //rsPlotVectors(x, a);        // Amp mod signal with its amp envelope
+  //rsPlotVectors(z, m);        // Beating sines and modulator. The latter is _not_ the env of the former as I suspected!
+  //rsPlotVectors(z, b);        // Beating sines and supposed amp-env. Works for d=1, pm=true.
   //rsPlotVectors(a, x, y);     // Envelope, amp-mod, pre-assigned beating pair 
   rsPlotVectors(a, x, z);     // Envelope, amp-mod, computed beating pair 
   //rsPlotVectors(x+y, x-y);    // Sum and difference of proper and pseudo amp mod
@@ -751,7 +770,11 @@ void pseudoAmpModViaBeating()
   //   troughs is because near the troughs the two sines must get out of phase in order to smoothly
   //   implement the phase inversion. 
   //
-  // - 
+  // - Plotting z,m for d=1 does not make as much sense as I thought it would. I now think, to 
+  //   really get the amp-envelope of the betaing signal, we may need to produce a sine at half the
+  //   modulator's frequency and then take its absolute value. Plotting z,b (with d = +1, 
+  //   pm = true), we do  indeed get a match. For d = -1, the envelope has the rioght shape but is
+  //   phase-shifted.
   // 
   // 
   // Conclusion:
@@ -780,6 +803,12 @@ void pseudoAmpModViaBeating()
   //
   //
   // ToDo:
+  // 
+  // - Try overlaying a plot of the absolute value of the modulator when the depth is set to 1. I 
+  //   think, the beating signal's envelope should look roughly like that and want to to verify 
+  //   that. The beating signal comes up a bit faster around the troughs compared to the AM signal.
+  //   This is plausible when looking at the AM envelope where the modulating sine the curve 
+  //   flattens out around the minima
   // 
   // - Try negative values for the depth d. Adapt the code for computing a1,a2,f1,f2. Use |d| for
   //   the computation of the amplitudes and use the sign of d to determine whether the upper or 
