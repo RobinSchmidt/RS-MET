@@ -95,3 +95,4 @@ Products/AudioPlugins/ToolChain/Builds/VisualStudio2022/x64/Debug/Standalone Plu
 /Tests/TestsRosicAndRapt/Builds/VisualStudio2022/x64
 Tests/TestsRosicAndRapt/Builds/VisualStudio2022/testTextFile2.txt
 Tests/TestsRosicAndRapt/Builds/VisualStudio2022/testTextFile.txt
+/Tests/TestsRosicAndRapt/Builds/VisualStudio2022/enc_temp_folder

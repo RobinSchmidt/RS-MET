@@ -520,15 +520,16 @@ void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2,
   // phase alignment for high values of d (i.e. close to 1), it seemed appropriate to use only half
   // the value whereas for small values of d (close to zero) it was more appropriate to use d as 
   // is. The conditional is just to symmetrize the function because the polynomial ansatz is valid 
-  // only for d >= 0. Maybe express this as d = d - rsSign(d) * d*d;  Maybe try to improve the 
-  // function. Maybe try to get data points for x = input depth, y = f(x) = desired output depth. 
-  // Maybe set up an interactive Jupyter notebook for this using Python. An interactive plot may 
-  // help to figure out the desired mapping. We want a slider for the nominal depth and one for 
-  // the modified depth and then plot the true AM signal together with the beating pair and then we
-  // can set a nominal depth with the 1st slider and adjust the 2nd (for the modified depth) until
-  // the signal match best visually.
+  // only for d >= 0. For d < 0, we just do a reflection about the origin. Maybe express this as 
+  // d = d - rsSign(d) * d*d;  Maybe try to improve the function. Maybe try to get data points for 
+  // x = input depth, y = f(x) = desired output depth. Maybe set up an interactive Jupyter notebook
+  // for this using Python. An interactive plot may help to figure out the desired mapping. We want 
+  // a slider for the nominal depth and one for the modified depth and then plot the true AM signal 
+  // together with the beating pair and then we can set a nominal depth with the 1st slider and 
+  // adjust the 2nd (for the modified depth) until the signal match best visually.
 
-  // Maybe factor out this section into a function in its own right:
+  // Maybe factor out this section into a function in its own right. It implements the conversion 
+  // without the phase alignment:
   *a1 = rsAbs(d);
   *a2 = T(1) - *a1;
   if(d >= T(0))
@@ -600,13 +601,13 @@ void pseudoAmpModViaBeating()
   // where the parameter d is the modulation depth (0 <= d <= 1), wm is the modulator's radian
   // frequency and wc is the carrier's radian frequency. However, just adding two sines will not 
   // be able to exactly produce such a signal because in actual amnplitude modulation, what 
-  // happens is that there are actually 3 sinusoids: one in the center at the carrier frequency wc
-  // and the two ring-modulation products at wc - wm and wc + wm. Amplitude modulation with varying
-  // depth d is basically a crossfade between the umodulated carrier signal and a ringmod product
-  // of the carrier and modulator. Adding just two sinusoids with a frequencies w1,w2 will produce 
-  // a similar (not equal) effect when the amplitudes a1,a2 of the two sinusoids are not exactly 
-  // equal. Rather than the explicit and actual amplitude modulation signal above, we want to 
-  // produce our signal like this:
+  // happens from a spectral point of view is that there are actually 3 sinusoids: one in the 
+  // center at the carrier frequency wc and the two ring-modulation products at wc - wm and 
+  // wc + wm. Amplitude modulation with varying depth d is basically a crossfade between the 
+  // umodulated carrier signal and the ringmodulation product of the carrier and modulator. Adding
+  // just two sinusoids with a frequencies w1,w2 will produce a similar (not equal) effect when the
+  // amplitudes a1,a2 of the two sinusoids are not exactly equal. Rather than the explicit and 
+  // actual amplitude modulation signal above, we want to produce our signal like this:
   // 
   //   y(t) = a1 * sin(w1 * t) + a2 * sin(w2 * t)
   // 
