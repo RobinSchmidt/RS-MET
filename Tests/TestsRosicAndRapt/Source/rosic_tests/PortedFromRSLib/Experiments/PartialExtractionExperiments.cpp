@@ -498,14 +498,29 @@ void beatingSines1()
   // ...hmm...but that seems a dead end
 }
 
-
-
+template<class T>
+void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2)
+{
+  *a1 = rsAbs(d);
+  *a2 = T(1) - *a1;
+  if(d >= T(0))
+  {
+    *f1 = fc - *a2 * fm;
+    *f2 = fc + *a1 * fm;
+  }
+  else
+  {
+    *f1 = fc + *a2 * fm;
+    *f2 = fc - *a1 * fm;
+  }
+}
 
 template<class T>
-void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2, 
+void rsAmpModToSineBeatParams_2(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2, 
   bool phaseAlign = false)
 {
-  // Under construction. 
+  // Under construction. ToDo: get rid of the phase-align parameter because we now have factored
+  // out a function for the mapping without alignment
 
   // Nonlinear mapping for the modulation depth d that we need in case of phase-alignment:
   if(phaseAlign)
@@ -530,20 +545,7 @@ void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2,
 
   // Maybe factor out this section into a function in its own right. It implements the conversion 
   // without the phase alignment:
-  *a1 = rsAbs(d);
-  *a2 = T(1) - *a1;
-  if(d >= T(0))
-  {
-    *f1 = fc - *a2 * fm;
-    *f2 = fc + *a1 * fm;
-  }
-  else
-  {
-    *f1 = fc + *a2 * fm;
-    *f2 = fc - *a1 * fm;
-  }
-
-
+  rsAmpModToSineBeatParams(fc, fm, d, f1, a1, f2, a2);
 
   // Frequency shifting for better phase-match with amp-mod signal (should be optional):
   if(phaseAlign == true)
@@ -672,7 +674,10 @@ void pseudoAmpModViaBeating()
   // OK - Let's now try to compute the values for f1,f2 and a1,a2 from fc,fm,d rather than using
   // the pre assigned values from the setup and produce the sine beating with the calculated 
   // parameters:
-  rsAmpModToSineBeatParams(fc, fm, d, &f1, &a1, &f2, &a2, pm);
+  if(pm == true)
+    rsAmpModToSineBeatParams_2(fc, fm, d, &f1, &a1, &f2, &a2, true);
+  else
+    rsAmpModToSineBeatParams(  fc, fm, d, &f1, &a1, &f2, &a2);
   w1 = 2*PI*f1/fs;
   w2 = 2*PI*f2/fs;
   Vec z(N);
