@@ -616,7 +616,7 @@ void pseudoAmpModViaBeating()
   Real fs = 10000;       // Sample rate
   Real fc =   100;       // Carrier frequency
   Real fm =   +10;       // Modulator frequency in -fc..+fc (I guess)
-  Real d  =  +0.2;       // Modulation depth in -1..+1
+  Real d  =  +1.0;       // Modulation depth in -1..+1
   Real f1 =    95;       // Lower sine frequency
   Real f2 =   105;       // Upper sine frequency
   Real a1 =   4./5;      // Lower sine amplitude
@@ -691,9 +691,21 @@ void pseudoAmpModViaBeating()
   // Try to produce a signal that looks like the amplitude envelope of the beating pair:
   Vec b(N);
   for(int n = 0; n < N; n++)
-    b[n]  = rsAbs(cos(0.5*wm * n));
+  {
+    Real c = rsAbs(cos(0.5*wm * n));
+    Real w = rsAbs(d);                // Weight for cosine
+    //w = 1 - w*w;                    // Works for d = 0.5
+    //w = 1 - w*(1-w);
+    //w *= 1-w;
+    w = sqrt(w);                      // Looks reasonable
+    b[n] = (1-w) + w*c;               // Test - ad hoc - linear interpolation between 1 and c
+    //b[n] = c;                       // Works well for d = 1
+  }
   // A rectified cosine wave at half the modulator frequency works for d = 1 with pm = true 
-  // (phase-align/match). For d = -1, it has the wrong phase.
+  // (phase-align/match). For d = -1, it has the wrong phase. For the range d = 0..1, using linear
+  // interpolation between 1 and the cosine wave with a weight sqrt(d) seems to work reasonably
+  // well. Maybe the visible differences are due to the "carrier's" phase? Maybe try other powers
+  // like d^0.75, d^0.6666, etc.
 
 
 
@@ -721,7 +733,7 @@ void pseudoAmpModViaBeating()
   //rsPlotVectors(y);           // Pseudo amp mod signal
   //rsPlotVectors(x, a);        // Amp mod signal with its amp envelope
   //rsPlotVectors(z, m);        // Beating sines and modulator. The latter is _not_ the env of the former as I suspected!
-  //rsPlotVectors(z, b);        // Beating sines and supposed amp-env. Works for d=1, pm=true.
+  rsPlotVectors(z, b);        // Beating sines and supposed amp-env. Works for d=1, pm=true.
   //rsPlotVectors(a, x, y);     // Envelope, amp-mod, pre-assigned beating pair 
   rsPlotVectors(a, x, z);     // Envelope, amp-mod, computed beating pair 
   //rsPlotVectors(x+y, x-y);    // Sum and difference of proper and pseudo amp mod
