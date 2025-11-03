@@ -499,7 +499,7 @@ void beatingSines1()
 }
 
 template<class T>
-void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2)
+void rsAmpModToSineBeatParams_1(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2)
 {
   *a1 = rsAbs(d);
   *a2 = T(1) - *a1;
@@ -516,20 +516,15 @@ void rsAmpModToSineBeatParams(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2)
 }
 
 template<class T>
-void rsAmpModToSineBeatParams_2(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2, 
-  bool phaseAlign = false)
+void rsAmpModToSineBeatParams_2(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2)
 {
-  // Under construction. ToDo: get rid of the phase-align parameter because we now have factored
-  // out a function for the mapping without alignment
+  // Under construction.
 
   // Nonlinear mapping for the modulation depth d that we need in case of phase-alignment:
-  if(phaseAlign)
-  {
-    if(d >= 0)
-      d = d - 0.5*d*d;
-    else
-      d = d + 0.5*d*d;
-  }
+  if(d >= 0)
+    d = d - 0.5*d*d;
+  else
+    d = d + 0.5*d*d;
   // This function was found by making a quadratic polynomial ansatz f(x) = a0 + a1*x + a2*x^2 and 
   // requiring f(0) = 0, f'(0) = 1, f(1) = 1/2. The motivation was the observation that in case of 
   // phase alignment for high values of d (i.e. close to 1), it seemed appropriate to use only half
@@ -543,20 +538,16 @@ void rsAmpModToSineBeatParams_2(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2,
   // together with the beating pair and then we can set a nominal depth with the 1st slider and 
   // adjust the 2nd (for the modified depth) until the signal match best visually.
 
-  // Maybe factor out this section into a function in its own right. It implements the conversion 
-  // without the phase alignment:
-  rsAmpModToSineBeatParams(fc, fm, d, f1, a1, f2, a2);
+  // This implements the conversion without the phase alignment:
+  rsAmpModToSineBeatParams_1(fc, fm, d, f1, a1, f2, a2);
 
-  // Frequency shifting for better phase-match with amp-mod signal (should be optional):
-  if(phaseAlign == true)
-  {
-    // These formulas were found by trial and error:
-    T df = -d * fm;
-    *f1 += df; 
-    *f2 += df;
-    if(d < 0)
-      *a1 = -(*a1);
-  }
+  // Frequency shifting for better phase-match with amp-mod signal. These formulas were found by
+  // trial and error:
+  T df = -d * fm;
+  *f1 += df;
+  *f2 += df;
+  if(d < 0)
+    *a1 = -(*a1);
   // This formula seems to work well for |d| = 0.0...0.5 but beyond that, it makes things worse. In
   // this range for d, it works equally well for positive and negative fm. Maybe for negative d,
   // we should use something involving (1-d)? And maybe we should clip/saturate the shift at
@@ -586,10 +577,7 @@ void rsAmpModToSineBeatParams_2(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2,
 
   // I think, the phase alignment tries to align the phases of the beating sines to the phase of 
   // the amp-mod sine at the points where the amplitude is maximal. When the amplitude goes 
-  // through a minimum, the aligment gets worse - but there it doesn't matter that much
-
-  // Try to do:
-  // if(phaseAlign) d *= 0.5  and maybe use    T df = -2*d * fm;  as compensation or maybe not
+  // through a minimum, the aligment gets worse - but there it doesn't matter that much.
 }
 
 void pseudoAmpModViaBeating()
@@ -654,15 +642,23 @@ void pseudoAmpModViaBeating()
   for(int n = 0; n < N; n++)
   {
     a[n]  = (1 + d * cos(wm * n));     // Amplitude envelope, cos gives better match than sin
-    //a[n] /= 1 + d;                     // Renormalize peak amplitude
     a[n] /= 1 + rsAbs(d);              // Renormalize peak amplitude
     x[n]  = a[n] * sin(wc * n);        // Enveloped sinusoid
   }
-  // ToDo: Maybe introduce a loudness compensation parameter p in 0..1 and do a[n] /= (1+d)^p. 
+  // ToDo: Maybe introduce a loudness compensation parameter p in 0..1 and do a[n] /= (1+|d|)^p. 
   // When we do this, we will also need to introduce some factor into the a1,a2 coeffs for the 
   // beating sines to get a match for all values of p. In production, we could have special cases
   // for p=0, p=0.5, p=1 for optimization purposes at the 3 best optimizable and also (supposedly)
-  // most common settings.
+  // most common settings. The rationale is that introducing amplitude modulation with normalized
+  // peak amplitude (as implemented above) may make the sound perceptually more quiet because the 
+  // average power is reduced. By introducing the parameter p, the user can choose between peak 
+  // normalization (p = 1), power normalization (p = 0.5) and no normalization at all (p = 0) and
+  // anything in between. ToDo: Verify that p = 0.5 actually amounts to power normalization. I 
+  // think so. Or maybe we need to use a[n] /= (1 + |d|^2)^0.5 and in general
+  // a[n] /= (1 + |d|^(1/p))^p? Figure that out! The goal it to be able to dial in a setting that 
+  // maintains the same perceptual loudness regardless of the modulation depth. The end values
+  // should be "no normalization" (at p=0) and "peak normalization" (at p=1) and somewhere in 
+  // between (ideally at p=0.5), we want to achieve some "equal loudness" normalization.
 
   // Produce pseudo amplitude modulation signal via beating sines:
   Real w1 = 2*PI*f1/fs;                // Lower sine radian frequency
@@ -675,9 +671,9 @@ void pseudoAmpModViaBeating()
   // the pre assigned values from the setup and produce the sine beating with the calculated 
   // parameters:
   if(pm == true)
-    rsAmpModToSineBeatParams_2(fc, fm, d, &f1, &a1, &f2, &a2, true);
+    rsAmpModToSineBeatParams_2(fc, fm, d, &f1, &a1, &f2, &a2);
   else
-    rsAmpModToSineBeatParams(  fc, fm, d, &f1, &a1, &f2, &a2);
+    rsAmpModToSineBeatParams_1(fc, fm, d, &f1, &a1, &f2, &a2);
   w1 = 2*PI*f1/fs;
   w2 = 2*PI*f2/fs;
   Vec z(N);
