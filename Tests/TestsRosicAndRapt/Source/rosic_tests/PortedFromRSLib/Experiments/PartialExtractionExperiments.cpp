@@ -513,6 +513,28 @@ void rsAmpModToSineBeatParams_1(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2)
     *f1 = fc + *a2 * fm;
     *f2 = fc - *a1 * fm;
   }
+
+  // ToDo: Document these formulas! 
+  // Document why we have to use  f1 = fc - a2*fm; f2 = fc + a1*fm;  and not the more intuitive
+  // f1 = fc - a1*fm; f2 = fc + a2*fm;  I tried the latter but when I do, the louder frequency is 
+  // farther way from fc regardless of whether we do  a1 = d; a2 = 1-d;  or  a1 = 1-d, a2 = d;
+  // Maybe swap the bodies two branches. I'm not sure, which way is more intuitive. I think, when 
+  // both fm is positive and we increase d from 0 to a positive, the behavior should be that a 
+  // second sine appears below the original one and by further increasing d, they both shift up 
+  // (while also altering their amplitude balance). I think, that is actually what currently 
+  // happens but it should be verified. Currently, we get with fc = 100:
+  // 
+  //   d = +0.2, fm = +10:  f1 =  92, a1 = 0.2,  f2 = 102, a2 = 0.8
+  //   d = +0.2, fm = -10:  f1 = 108, a1 = 0.2,  f2 =  98, a2 = 0.8
+  //   d = -0.2, fm = +10:  f1 = 108, a1 = 0.2,  f2 =  98, a2 = 0.8
+  //   d = -0.2, fm = -10:  f1 =  92, a1 = 0.2,  f2 = 102, a2 = 0.8
+  //
+  // What is important is that it is always the frequency that is closer to fc that gets the higher
+  // amplitude. Actually it would be nicer, if that frequency would be f1 because it makes more
+  // sense when f1 remains present and f2 disappears when d = 0. Currently, it's always f2 that is 
+  // closer to fc, so maybe we should change something here. Something that swaps the roles of f1 
+  // and f2. But the verify that the function rsAmpModToSineBeatParams_2 still works as expected.
+  // Maybe it then needs some adaption, too. Although, looking at it, I actually don't think so.
 }
 
 template<class T>
@@ -548,32 +570,7 @@ void rsAmpModToSineBeatParams_2(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2)
   *f2 += df;
   if(d < 0)
     *a1 = -(*a1);
-  // This formula seems to work well for |d| = 0.0...0.5 but beyond that, it makes things worse. In
-  // this range for d, it works equally well for positive and negative fm. Maybe for negative d,
-  // we should use something involving (1-d)? And maybe we should clip/saturate the shift at
-  // +-rsClip(d, 0.5)? Well - actually the formula could perhaps also be use for d < 0 but maybe 
-  // we need then also negate the amplitues a1,a2? or maybe just one of them? Yes! Negating a1 
-  // works almost! But we'll also need an overall scale factor!
-  //
-  // ToDo: Document these formulas! 
-  // Document why we have to use  f1 = fc - a2*fm; f2 = fc + a1*fm;  and not the more intuitive
-  // f1 = fc - a1*fm; f2 = fc + a2*fm;  I tried the latter but when I do, the louder frequency is 
-  // farther way from fc regardless of whether we do  a1 = d; a2 = 1-d;  or  a1 = 1-d, a2 = d;
-  // Maybe swap the bodies two branches. I'm not sure, which way is more intuitive. I think, when 
-  // both fm is positive and we increase d from 0 to a positive, the behavior should be that a 
-  // second sine appears below the original one and by further increasing d, they both shift up (
-  // while also altering their amplitude balance). I think, that is actually what currently happens
-  // but it should be verified. Currently, we get with fc = 100 (with pm == false):
-  // 
-  //   d = +0.2, fm = +10:  f1 =  92, a1 = 0.2,  f2 = 102, a2 = 0.8
-  //   d = +0.2, fm = -10:  f1 = 108, a1 = 0.2,  f2 =  98, a2 = 0.8
-  //   d = -0.2, fm = +10:  f1 = 108, a1 = 0.2,  f2 =  98, a2 = 0.8
-  //   d = -0.2, fm = -10:  f1 =  92, a1 = 0.2,  f2 = 102, a2 = 0.8
-  //
-  // What is important is that it is always the frequency that is closer to fc that gets the higher
-  // amplitude. Actually it would be nicer, if that frequency would be f1 because it makes more
-  // sense when f1 remains present and f2 disappears when d = 0. Currently, it's alwaya f2 that is 
-  // closer to fc, so maybe we should change something here. 
+
 
   // I think, the phase alignment tries to align the phases of the beating sines to the phase of 
   // the amp-mod sine at the points where the amplitude is maximal. When the amplitude goes 
@@ -616,7 +613,7 @@ void pseudoAmpModViaBeating()
   Real fs = 10000;       // Sample rate
   Real fc =   100;       // Carrier frequency
   Real fm =   +10;       // Modulator frequency in -fc..+fc (I guess)
-  Real d  =  +1.0;       // Modulation depth in -1..+1
+  Real d  =  +0.2;       // Modulation depth in -1..+1
   Real f1 =    95;       // Lower sine frequency
   Real f2 =   105;       // Upper sine frequency
   Real a1 =   4./5;      // Lower sine amplitude
@@ -733,7 +730,7 @@ void pseudoAmpModViaBeating()
   //rsPlotVectors(y);           // Pseudo amp mod signal
   //rsPlotVectors(x, a);        // Amp mod signal with its amp envelope
   //rsPlotVectors(z, m);        // Beating sines and modulator. The latter is _not_ the env of the former as I suspected!
-  rsPlotVectors(z, b);        // Beating sines and supposed amp-env. Works for d=1, pm=true.
+  //rsPlotVectors(z, b);        // Beating sines and supposed amp-env. Works for d=1, pm=true.
   //rsPlotVectors(a, x, y);     // Envelope, amp-mod, pre-assigned beating pair 
   rsPlotVectors(a, x, z);     // Envelope, amp-mod, computed beating pair 
   //rsPlotVectors(x+y, x-y);    // Sum and difference of proper and pseudo amp mod
@@ -745,24 +742,23 @@ void pseudoAmpModViaBeating()
   int dummy = 0;
 
 
-
-
   // Observations:
   //
-  // - With fc = 100, fm = 10, d = 0.5, the following parameters seem to be (exactly?) correct:
+  // - With fc = 100, fm = 10, d = 0.5, pm = false, the following parameters seem to be (exactly?) 
+  //   correct:
   //   f1 = 95, f2 = 105, a1 = 2/3, a2 = 1/3. Swapping the amplitudes, i.e. using a1 = 1/3,
   //   a2 = 2/3 works equally well.
   // 
-  // - With fc = 100, fm = 10, d = 1.0:  
+  // - With fc = 100, fm = 10, d = 1.0, pm = false:  
   //   f1 = 95, f2 = 105, a1 = 1/2, a2 = 1/2   ...seems to be exactly correct
   // 
-  // - With fc = 100, fm = 10, d = 0.25:  
+  // - With fc = 100, fm = 10, d = 0.25, pm = false:  
   //   f1 = 95, f2 = 105, a1 = 1/4, a2 = 3/4   ...looks okayish but is not quite right - or is it?
   // 
-  // - With fc = 100, fm = 10, d = 0.2:  
+  // - With fc = 100, fm = 10, d = 0.2, pm = false:  
   //   f1 = 95, f2 = 105, a1 = 1/5, a2 = 4/5   ...looks okayish
   // 
-  // - With fc = 100, fm = 10, d = 0.1:  
+  // - With fc = 100, fm = 10, d = 0.1, pm = false:  
   //   f1 = 95, f2 = 105, a1 = 1/10, a2 = 9/10 ...looks pretty good!
   // 
   // - The true amplitude modulation signal keeps the phase between successive periods of the 
@@ -889,6 +885,7 @@ void pseudoAmpModViaBeating()
   //   be re-epxressed as 3 sines: 1 center and 2 sidebands). This is rather surprising! Maybe this
   //   could be used in optimizing additive synthesis in certain settings?
   //
+  // 
   // See also:
   //
   // - https://github.com/RobinSchmidt/RS-MET/discussions/322
