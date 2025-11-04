@@ -540,7 +540,7 @@ void rsAmpModToSineBeatParams_1(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2)
 template<class T>
 void rsAmpModToSineBeatParams_2(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2)
 {
-  // Under construction.
+  // Under construction. Works already but may still be refined, I guess.
 
   // Nonlinear mapping for the modulation depth d that we need in case of phase-alignment:
   if(d >= 0)
@@ -553,12 +553,12 @@ void rsAmpModToSineBeatParams_2(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2)
   // the value whereas for small values of d (close to zero) it was more appropriate to use d as 
   // is. The conditional is just to symmetrize the function because the polynomial ansatz is valid 
   // only for d >= 0. For d < 0, we just do a reflection about the origin. Maybe express this as 
-  // d = d - rsSign(d) * d*d;  Maybe try to improve the function. Maybe try to get data points for 
-  // x = input depth, y = f(x) = desired output depth. Maybe set up an interactive Jupyter notebook
-  // for this using Python. An interactive plot may help to figure out the desired mapping. We want 
-  // a slider for the nominal depth and one for the modified depth and then plot the true AM signal 
-  // together with the beating pair and then we can set a nominal depth with the 1st slider and 
-  // adjust the 2nd (for the modified depth) until the signal match best visually.
+  // d = d - rsSign(d) * d*d;  Maybe try to improve/refine the function. Maybe try to get data 
+  // points for x = input depth, y = f(x) = desired output depth. Maybe set up an interactive 
+  // Jupyter notebook for this using Python. An interactive plot may help to figure out the desired
+  // mapping. We want a slider for the nominal depth and one for the modified depth and then plot 
+  // the true AM signal together with the beating pair and then we can set a nominal depth with the 
+  // 1st slider and adjust the 2nd (for the modified depth) until the signal match best visually.
 
   // This implements the conversion without the phase alignment:
   rsAmpModToSineBeatParams_1(fc, fm, d, f1, a1, f2, a2);
@@ -570,7 +570,6 @@ void rsAmpModToSineBeatParams_2(T fc, T fm, T d, T* f1, T* a1, T* f2, T* a2)
   *f2 += df;
   if(d < 0)
     *a1 = -(*a1);
-
 
   // I think, the phase alignment tries to align the phases of the beating sines to the phase of 
   // the amp-mod sine at the points where the amplitude is maximal. When the amplitude goes 
@@ -619,23 +618,6 @@ void pseudoAmpModViaBeating()
   Real a1 =   4./5;      // Lower sine amplitude
   Real a2 =   1./5;      // Upper sine amplitude
   bool pm =   true;      // Switch phase matching (aka alignment) on/off
-
-
-  /*
-  // I think, this is obsolete now:
-  // Test - optional overall frequency shifting for the beating pair:
-  if(pm == true)
-  {
-    Real df = +5.0;  
-    f1 += df; f2 += df;
-    // ToDo: Use a formula! df = 5 works for fc=100, fm=10, d=+0.2, f1=95,f2=105,a1=0.8,a2=0.5
-  }
-  // This can be used for experimenting with shifting both frequencies of the beating pair
-  // by some amount df. By doing this shift by the right amount, we may get a very close match 
-  // between the amp-mod signal and the beating pair. The progressive phase shifting that we would 
-  // otherwise see, can be completely suppressed.
-  */
-
 
   // Produce actual amplitude modulation signal:
   Real wc = 2*PI*fc/fs;                // Normalized carrier radian frequency
@@ -691,18 +673,14 @@ void pseudoAmpModViaBeating()
   {
     Real c = rsAbs(cos(0.5*wm * n));
     Real w = rsAbs(d);                // Weight for cosine
-    //w = 1 - w*w;                    // Works for d = 0.5
-    //w = 1 - w*(1-w);
-    //w *= 1-w;
-    w = sqrt(w);                      // Looks reasonable
-    b[n] = (1-w) + w*c;               // Test - ad hoc - linear interpolation between 1 and c
-    //b[n] = c;                       // Works well for d = 1
+    w = sqrt(w);                      // Ad hoc - looks reasonable
+    b[n] = (1-w) + w*c;               // Ad hoc - linear interpolation between 1 and c
   }
   // A rectified cosine wave at half the modulator frequency works for d = 1 with pm = true 
   // (phase-align/match). For d = -1, it has the wrong phase. For the range d = 0..1, using linear
   // interpolation between 1 and the cosine wave with a weight sqrt(d) seems to work reasonably
   // well. Maybe the visible differences are due to the "carrier's" phase? Maybe try other powers
-  // like d^0.75, d^0.6666, etc.
+  // like d^0.75, d^0.6666, etc. This formula can (and perhaps should) be further refined.
 
 
 
@@ -731,7 +709,7 @@ void pseudoAmpModViaBeating()
   //rsPlotVectors(x, a);        // Amp mod signal with its amp envelope
   //rsPlotVectors(z, m);        // Beating sines and modulator. The latter is _not_ the env of the former as I suspected!
   //rsPlotVectors(z, b);        // Beating sines and supposed amp-env. Works for d=1, pm=true.
-  //rsPlotVectors(a, x, y);     // Envelope, amp-mod, pre-assigned beating pair 
+  rsPlotVectors(a, x, y);     // Envelope, amp-mod, pre-assigned beating pair 
   rsPlotVectors(a, x, z);     // Envelope, amp-mod, computed beating pair 
   //rsPlotVectors(x+y, x-y);    // Sum and difference of proper and pseudo amp mod
   //rsPlotVectors(y, z);        // Beating with pre-assigned and computed parameters
@@ -811,6 +789,13 @@ void pseudoAmpModViaBeating()
   //
   //
   // ToDo:
+  // 
+  // - Maybe get rid of the signal y. We don't need it anymore. We only created it initially in 
+  //   order to figure out the correct formulas for f1,f2,a1,a2. Now we haven them (implemented in
+  //   rsAmpModToSineBeatParams_1,2) and from now on, we can just use them. Maybe after deleting y,
+  //   we can rename z to y. We may then also remove the f1,f2,a1,a2 variables from the setup 
+  //   section. They should now not be regarded as user tweakables anymore. Instead, they are 
+  //   computed via the formulas that we have figured out here.
   // 
   // - Try overlaying a plot of the absolute value of the modulator when the depth is set to 1. I 
   //   think, the beating signal's envelope should look roughly like that and want to to verify 
