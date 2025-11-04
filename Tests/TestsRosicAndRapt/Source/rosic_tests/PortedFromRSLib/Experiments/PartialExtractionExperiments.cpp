@@ -608,16 +608,21 @@ void pseudoAmpModViaBeating()
   using Vec  = std::vector<Real>;
 
   // Setup:
+
+  // User parameters:
   int  N  =  6000;       // Number of samples
   Real fs = 10000;       // Sample rate
   Real fc =   100;       // Carrier frequency
   Real fm =   +10;       // Modulator frequency in -fc..+fc (I guess)
   Real d  =  +0.2;       // Modulation depth in -1..+1
-  Real f1 =    95;       // Lower sine frequency
-  Real f2 =   105;       // Upper sine frequency
-  Real a1 =   4./5;      // Lower sine amplitude
-  Real a2 =   1./5;      // Upper sine amplitude
-  bool pm =   true;      // Switch phase matching (aka alignment) on/off
+  bool pm =  true;       // Switch phase matching (aka alignment) on/off
+
+  // Parameters that we actually want to compute but we also have one experiment where we use the
+  // manually assigned values from here:
+  Real f1 =   95;        // Lower sine frequency
+  Real f2 =  105;        // Upper sine frequency
+  Real a1 = 4./5;        // Lower sine amplitude
+  Real a2 = 1./5;        // Upper sine amplitude
 
   // Produce actual amplitude modulation signal:
   Real wc = 2*PI*fc/fs;                // Normalized carrier radian frequency
@@ -636,26 +641,28 @@ void pseudoAmpModViaBeating()
   // When we do this, we will also need to introduce some factor into the a1,a2 coeffs for the 
   // beating sines to get a match for all values of p. In production, we could have special cases
   // for p=0, p=0.5, p=1 for optimization purposes at the 3 best optimizable and also (supposedly)
-  // most common settings. The rationale is that introducing amplitude modulation with normalized
-  // peak amplitude (as implemented above) may make the sound perceptually more quiet because the 
-  // average power is reduced. By introducing the parameter p, the user can choose between peak 
-  // normalization (p = 1), power normalization (p = 0.5) and no normalization at all (p = 0) and
-  // anything in between. ToDo: Verify that p = 0.5 actually amounts to power normalization. I 
-  // think so. Or maybe we need to use a[n] /= (1 + |d|^2)^0.5 and in general
-  // a[n] /= (1 + |d|^(1/p))^p? Figure that out! The goal it to be able to dial in a setting that 
-  // maintains the same perceptual loudness regardless of the modulation depth. The end values
-  // should be "no normalization" (at p=0) and "peak normalization" (at p=1) and somewhere in 
-  // between (ideally at p=0.5), we want to achieve some "equal loudness" normalization.
+  // most common settings. The rationale is that increasing the amount of amplitude modulation 
+  // while a normalized peak amplitude (as implemented above) may make the sound perceptually more
+  // quiet because the average power is reduced as the modulation depth is increased. By 
+  // introducing the parameter p, the user can choose between peak normalization (p = 1), power 
+  // normalization (p = 0.5) and no normalization at all (p = 0) and anything in between. ToDo: 
+  // Verify that p = 0.5 actually amounts to power normalization. I think so. Or maybe we need to
+  // use a[n] /= (1 + |d|^2)^0.5 and in general a[n] /= (1 + |d|^(1/p))^p? Figure that out! The 
+  // goal it to be able to dial in a setting that maintains the same perceptual loudness regardless
+  // of the modulation depth. The end values should be "no normalization" (at p=0) and "peak 
+  // normalization" (at p=1) and somewhere in between (ideally at p=0.5), we want to achieve some
+  // "equal loudness" normalization.
 
-  // Produce pseudo amplitude modulation signal via beating sines:
+  // Produce pseudo amplitude modulation signal via beating sines using the pre-assigned parameters
+  // from the setup:
   Real w1 = 2*PI*f1/fs;                // Lower sine radian frequency
   Real w2 = 2*PI*f2/fs;                // Upper sine radian frequency
   Vec y(N);
   for(int n = 0; n < N; n++)
     y[n] = a1 * sin(w1 * n) + a2 * sin(w2 * n);
 
-  // OK - Let's now try to compute the values for f1,f2 and a1,a2 from fc,fm,d rather than using
-  // the pre assigned values from the setup and produce the sine beating with the calculated 
+  // Let's now try to compute the values for f1,f2 and a1,a2 from fc,fm,d rather than using the 
+  // pre-assigned values from the setup and produce the sine beating with the calculated 
   // parameters:
   if(pm == true)
     rsAmpModToSineBeatParams_2(fc, fm, d, &f1, &a1, &f2, &a2);
@@ -676,13 +683,13 @@ void pseudoAmpModViaBeating()
     w = sqrt(w);                      // Ad hoc - looks reasonable
     b[n] = (1-w) + w*c;               // Ad hoc - linear interpolation between 1 and c
   }
-  // A rectified cosine wave at half the modulator frequency works for d = 1 with pm = true 
-  // (phase-align/match). For d = -1, it has the wrong phase. For the range d = 0..1, using linear
-  // interpolation between 1 and the cosine wave with a weight sqrt(d) seems to work reasonably
-  // well. Maybe the visible differences are due to the "carrier's" phase? Maybe try other powers
-  // like d^0.75, d^0.6666, etc. This formula can (and perhaps should) be further refined.
-
-
+  // The formulas where found by looking at the plots, guessing and trial and error. A rectified 
+  // cosine wave at half the modulator frequency works for d = 1 with pm = true (phase-match). 
+  // For d = -1, it has the wrong phase. For the range d = 0..1, using linear interpolation between
+  // 1 and the cosine wave with a weight sqrt(d) seems to work reasonably well. Maybe the visible 
+  // differences are due to the "carrier's" phase? Maybe try other powers like d^0.75, d^0.6666, 
+  // etc. This formula can (and perhaps should) be further refined. It's not really used inside any
+  // DSP algo though, so it's not super-important to get this right. It's just out of couriosity.
 
   // Let's analyze the signals x,y and z with the single sine modeler class to figure out how to 
   // describe those signals in terms of instantaneous phase and amplitude:
@@ -713,7 +720,7 @@ void pseudoAmpModViaBeating()
   rsPlotVectors(a, x, z);     // Envelope, amp-mod, computed beating pair 
   //rsPlotVectors(x+y, x-y);    // Sum and difference of proper and pseudo amp mod
   //rsPlotVectors(y, z);        // Beating with pre-assigned and computed parameters
-  //rsPlotVectors(a, x, y, z);  // Amp env, amp-mod and two beating signals
+  rsPlotVectors(a, x, y, z);  // Amp env, amp-mod and two beating signals
   //rsPlotVectors(ax, px);      // Instantaneous amp and phase of amp-mod signal
   //rsPlotVectors(ay, py);      // Instantaneous amp and phase of beating signal 1
   //rsPlotVectors(az, pz);      // Instantaneous amp and phase of beating signal 2
@@ -795,7 +802,10 @@ void pseudoAmpModViaBeating()
   //   rsAmpModToSineBeatParams_1,2) and from now on, we can just use them. Maybe after deleting y,
   //   we can rename z to y. We may then also remove the f1,f2,a1,a2 variables from the setup 
   //   section. They should now not be regarded as user tweakables anymore. Instead, they are 
-  //   computed via the formulas that we have figured out here.
+  //   computed via the formulas that we have figured out here. BUT: The parameters of the 
+  //   generated signal y are actually different from those used to produce z but nevertheless,
+  //   bot look reasonable for fc = 100, fm = 10, d = 0.2, f1 = 95, f2 = 105, a1 = 4/5, a2 = 1/5,
+  //   pm = false. So, maybe let's just keep them both.
   // 
   // - Try overlaying a plot of the absolute value of the modulator when the depth is set to 1. I 
   //   think, the beating signal's envelope should look roughly like that and want to to verify 
@@ -864,6 +874,10 @@ void pseudoAmpModViaBeating()
   //   that implies that perceptually, we will tend to hear the louder sine as the pitch and maybe 
   //   not the weighted average (as hypothesized)? But what if we smoothly change which one is 
   //   louder? We can't have a discontinuous jump in the perceived frequency, right?
+  // 
+  // - Maybe try to optimize the empirically found fudging functions by numerically maximizing the
+  //   correlation between x and z. Or maybe by minimizing the absolute (or squared) difference 
+  //   between x and z. Maybe try a polynomial and a rational ansatz. Or maybe a power rule.
   // 
   // - The fact that the beating pair can extremely closely match the amp-mod signal seems to imply
   //   that in the right circumstances, 2 sines can very closely approximate 3 sines (amp-mod can 
