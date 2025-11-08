@@ -543,7 +543,7 @@ Ideas:
  (including zero!) and Lx,Ly,Lz are the dimensions of the room. The delays should then be 
  reciprocals of these (i think).
 
--Maybe try powers of the golden ration (reduced to the octave [1,2)
+-Maybe try powers of the golden ratio (reduced to the octave [1,2)
 
 -Instead of using the 2 produced outputs for left/right, try using them for mid/side. Maybe 
  introduce a stereo width parameter as well
@@ -568,6 +568,8 @@ Ideas:
 -Would it make sense to replace the delaylines with bidirectional delayline as used in waveguide 
  modeling? ..i.e. a feedback waveguide network (FWN)
 
+-Try rounding the delayline length to the nearest prime or nearest prime-power. This is a 
+ sufficient (although not necessary, I think) condition for the delay lengths to be mutually prime
 
 
 Resources:

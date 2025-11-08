@@ -716,11 +716,11 @@ void pseudoAmpModViaBeating()
   //rsPlotVectors(x, a);        // Amp mod signal with its amp envelope
   //rsPlotVectors(z, m);        // Beating sines and modulator. The latter is _not_ the env of the former as I suspected!
   //rsPlotVectors(z, b);        // Beating sines and supposed amp-env. Works for d=1, pm=true.
-  rsPlotVectors(a, x, y);     // Envelope, amp-mod, pre-assigned beating pair 
+  //rsPlotVectors(a, x, y);     // Envelope, amp-mod, pre-assigned beating pair 
   rsPlotVectors(a, x, z);     // Envelope, amp-mod, computed beating pair 
   //rsPlotVectors(x+y, x-y);    // Sum and difference of proper and pseudo amp mod
   //rsPlotVectors(y, z);        // Beating with pre-assigned and computed parameters
-  rsPlotVectors(a, x, y, z);  // Amp env, amp-mod and two beating signals
+  //rsPlotVectors(a, x, y, z);  // Amp env, amp-mod and two beating signals
   //rsPlotVectors(ax, px);      // Instantaneous amp and phase of amp-mod signal
   //rsPlotVectors(ay, py);      // Instantaneous amp and phase of beating signal 1
   //rsPlotVectors(az, pz);      // Instantaneous amp and phase of beating signal 2
