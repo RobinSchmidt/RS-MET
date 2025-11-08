@@ -1072,6 +1072,17 @@ https://github.com/cgzirim/seek-tune
 ----------------------------------------------------------------------------------------------------
 Unsorted:
 
+
+https://ccrma.stanford.edu/planetccrma/software/
+-Collection of rpm packages for Fedora Linux
+
+https://ccrma.stanford.edu/~jos/resample/Free_Resampling_Software.html
+-Free resampling software
+
+Open Source Audio Library (abandoned)
+https://sourceforge.net/projects/osalp/files/
+
+
 https://github.com/stevefolta/SFZero
 https://github.com/stevefolta/sfzq
 https://github.com/stevefolta/sf2dump
