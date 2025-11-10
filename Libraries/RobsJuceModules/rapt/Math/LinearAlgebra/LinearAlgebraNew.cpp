@@ -2,10 +2,11 @@ template<class T>
 std::vector<T> rsLinearAlgebraNew::solve(const RAPT::rsMatrixView<T>& A_, const std::vector<T>& b_)
 {
   int N = (int) b_.size();
-  std::vector<T> x(N), b = b_; // temporaries
+  std::vector<T> x(N), b = b_;                   // Temporaries
   rsMatrix<T> A(N, N, A_.getDataPointerConst());
   rsMatrixView<T> vx(N, 1, &x[0]), vb(N, 1, &b[0]);
-  solve(A, vx, vb);
+  bool ok = solve(A, vx, vb);
+  rsAssert(ok, "Matrix is singular in rsLinearAlgebraNew::solve().");
   return x;
 }
 
@@ -17,7 +18,7 @@ RAPT::rsMatrix<T> rsLinearAlgebraNew::inverse(const RAPT::rsMatrixView<T>& A)
   RAPT::rsMatrix<T> tmp(N, N, A.getDataPointerConst()), E(N, N);
   E.setToIdentity(A(0,0));
   bool ok = solve(tmp, E, E);
-  rsAssert(ok, "Matrix is singular and can't be inverted.");
+  rsAssert(ok, "Matrix is singular in rsLinearAlgebraNew::inverse().");
   return E; 
 }
 
@@ -28,9 +29,9 @@ bool rsLinearAlgebraNew::solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixV
   rsAssert(X.hasSameShapeAs(B));                 // num of solutions == num of rhs-vectors
   rsAssert(A.isSquare()); 
   if(makeTriangular(A, B) != A.getNumRows())
-    return false;                                // matrix A was singular -> report failure
+    return false;                                // Matrix A was singular -> report failure
   solveTriangular(A, X, B);
-  return true;                                   // matrix A was regular -> report success
+  return true;                                   // Matrix A was regular -> report success
 }
 
 template<class T>
@@ -52,8 +53,8 @@ void rsLinearAlgebraNew::solveTridiagonal(int N, const T* L, T* D, const T* U, T
   // -The commented L[i] -= ... is what we do conceptually to zero out the L[i] element but there's 
   //  no need to actually do it because we will not read the L[i] element anymore because we know 
   //  that from then on, it's supposed to be zero anyway. Not having to modify the L or U arrays is
-  //  nice because it means that we can have L and U const pointers, allowing the caller to use the 
-  //  same array for both. Having equal lower and upper diagonals (possibly with a shift) does 
+  //  nice because it means that we can have L and U as const pointers, allowing the caller to use 
+  //  the same array for both. Having equal lower and upper diagonals (possibly with a shift) does 
   //  occur in practice, for example, in cubic spline interpolation.
   // -This algo here seems equivalent to the one given here:
   //    https://www.cfd-online.com/Wiki/Tridiagonal_matrix_algorithm_-_TDMA_(Thomas_algorithm)
@@ -62,6 +63,7 @@ void rsLinearAlgebraNew::solveTridiagonal(int N, const T* L, T* D, const T* U, T
 
   // ToDo:
   // -Can x and b be the same? I think so. If so, we can use the algo in place. -> Document that.
+  //  Check and document also if they can overlap arbitrarily.
   // -Make a version that solves the system for two (or maybe M?) right-hand-sides simultaneously. 
   //  This is needed for the Sherman-Morrison-Woodbury formula (for cubic splines with periodic 
   //  boundary conditions)
@@ -141,6 +143,12 @@ void rsLinearAlgebraNew::solveTridiagonal(const T* L, T* D, const T* U,
     k = T(1) / D[i];
     for(int j = 0; j < M; j++)
       X(i,j) = (B(i,j) - U[i]*X(i+1,j)) * k; }
+
+  // ToDo:
+  //
+  // - Maybe document in the function name that it doesn't do pivoting and therefore may fail even
+  //   in case of a regular matrix A. Maybe call it solveTriDiagNoPiv(). Maybe implement a version 
+  //   with pivoting.
 }
 
 

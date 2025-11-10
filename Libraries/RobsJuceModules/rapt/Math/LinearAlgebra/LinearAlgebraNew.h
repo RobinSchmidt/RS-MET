@@ -68,21 +68,37 @@ public:
   and/or if X and B are vectors?  ->  figure out and document.  */
   template<class T>
   static bool solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B);
-  // -doesn't allocate, todo: document, when this may be used in place
-  // -maybe pass arguments as A,B,X - outputs should come last - check, how the old versions does 
+  // -Doesn't allocate, todo: document, when this may be used in place
+  // -Maybe pass arguments as A,B,X - outputs should come last - check, how the old versions does 
   //  it
-  // -document return value: it returns true, iff the linear system has a unique solution - it will
+  // -Document return value: it returns true, iff the linear system has a unique solution - it will
   //  fail whenever there are no solutions or a continuum of solutions, i.e. when the matrix A is 
   //  singular. ToDo: maybe in a case where there is a continumum of solutions, return the minimum
   //  norm solution - but I guess that computation needs to allocate extra matrices, so maybe it's 
   //  not a good idea.
-  // -maybe it should also return the rank?
-  // -maybe rename to solveGaussPartialPivot or ..RowPivot, implement also solveGaussFullPivot, 
+  // -Maybe it should also return the rank?
+  // -Maybe rename to solveGaussPartialPivot or ..RowPivot, implement also solveGaussFullPivot, 
   //  maybe keep the unqualified "solve" as alias for convenience..or maybe the unqualified solve 
   //  should take an additional parameter that selects the algorithm (which may default to Gaussian
   //  elimination with partial pivoting). maybe the algo parameter should be a bitfield: one 
   //  segment selects the core algo, another the preconditioner, yet another the incremental 
   //  refinement, etc.
+  // -Document how we handle errors resulting from singular matrices. This low level function here
+  //  will just return false but it won't trigger an assert in such a case. The higher level 
+  //  convenience functions above (which have a std::vector or rsMatrix as return value), on the 
+  //  other hand, will trigger an assert. The general rule should be: low level functions report 
+  //  singular matrix (error) conditions in their boolean return values and don't assert, high 
+  //  level functions that return matrices or vectors trigger an assert. The idea is that in the 
+  //  low level functions, the occurence of a singular matrix should be treated as a case that is
+  //  to be expected and if it indeed happens, it should be reported to the (higher level) caller 
+  //  and the caller should handle it somehow. Currently, this "handling" is to trigger an assert. 
+  //  One could also imagine that in this case, the caller branches off into computing a 
+  //  least-squares approximation to a true solution (in case of an inconsistent overdetermined 
+  //  system) or a minimum-norm solution (in case of an underdetermined system) - i.e. solutions 
+  //  based on the pseudo-inverse. I'm not sure, if it's a good idea to do something like that 
+  //  silently, though. Probably not. No! I am sure. It is certainly not a good idea. If we do such
+  //  a thing, it should be reflected in the name of the function - maybe like pseudoSolve() or 
+  //  solveOrApprox() or solveLeastSquaresMinNorm() or something but not just solve().
 
   /** Solves the tridiagonal system of equations defined by a NxN matrix having the 3 nonzero 
   diagonals 'lowerDiag', 'mainDiag' and 'upperDiag' where the 'mainDiag' array should have N 
