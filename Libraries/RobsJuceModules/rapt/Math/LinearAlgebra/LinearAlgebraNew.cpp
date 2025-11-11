@@ -2,12 +2,26 @@ template<class T>
 std::vector<T> rsLinearAlgebraNew::solve(const RAPT::rsMatrixView<T>& A_, const std::vector<T>& b_)
 {
   int N = (int) b_.size();
-  std::vector<T> x(N), b = b_;                   // Temporaries
-  rsMatrix<T> A(N, N, A_.getDataPointerConst());
+  std::vector<T> x(N), b = b_;                        // Temporary vectors
+  rsMatrix<T> A(N, N, A_.getDataPointerConst());      // Temporary matrix
   rsMatrixView<T> vx(N, 1, &x[0]), vb(N, 1, &b[0]);
   bool ok = solve(A, vx, vb);
-  rsAssert(ok, "Matrix is singular in rsLinearAlgebraNew::solve().");
+  rsAssert(ok, "Matrix A is singular in rsLinearAlgebraNew::solve().");
   return x;
+
+  // Notes:
+  // 
+  // - We need the temporaries because solve(A, vx, vb) destroys the contents of the matrix A and 
+  //   the vector vx in the process but the passed arguments A_ and b_ are const and therefore 
+  //   shall not be modified by this function. But maybe we could get rid of the temporary b for 
+  //   b_ by letting the matrix view vb wrap directly around b_? Figure that out and if so, make 
+  //   the appropriate change. We then should also implement a unit test to verify that this is 
+  //   indeed safe. Maybe there already is one. Check that and then document it here! I'm not sure
+  //   but maybe the contents of vb also gets destroyed? Yes - I think so. But I also think that 
+  //   calling solve(A, vx, vx) is admissible, i.e. the solver can work in place. It would then 
+  //   replace the right hand side vector (or matrix) by the solution vector (or matrix). So we 
+  //   could perhaps init x from b_ and then call solve(A, vx, vx) to use in place processing in 
+  //   the actual solver. That would save one temporary vector.
 }
 
 template<class T>
@@ -18,7 +32,7 @@ RAPT::rsMatrix<T> rsLinearAlgebraNew::inverse(const RAPT::rsMatrixView<T>& A)
   RAPT::rsMatrix<T> tmp(N, N, A.getDataPointerConst()), E(N, N);
   E.setToIdentity(A(0,0));
   bool ok = solve(tmp, E, E);
-  rsAssert(ok, "Matrix is singular in rsLinearAlgebraNew::inverse().");
+  rsAssert(ok, "Matrix A is singular in rsLinearAlgebraNew::inverse().");
   return E; 
 }
 
@@ -26,11 +40,11 @@ template<class T>
 bool rsLinearAlgebraNew::solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
 {
   rsAssert(A.getNumColumns() == X.getNumRows()); // A*X = B or A*x = b must make sense
-  rsAssert(X.hasSameShapeAs(B));                 // num of solutions == num of rhs-vectors
-  rsAssert(A.isSquare()); 
-  if(makeTriangular(A, B) != A.getNumRows())
+  rsAssert(X.hasSameShapeAs(B));                 // Num of solutions == num of rhs-vectors
+  rsAssert(A.isSquare());                        // Num of equations == num of unknowns
+  if(makeTriangular(A, B) != A.getNumRows())     // Gaussian elimination
     return false;                                // Matrix A was singular -> report failure
-  solveTriangular(A, X, B);
+  solveTriangular(A, X, B);                      // Backsubstitution
   return true;                                   // Matrix A was regular -> report success
 }
 
