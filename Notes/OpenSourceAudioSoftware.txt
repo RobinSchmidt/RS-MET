@@ -257,6 +257,8 @@ Related to the emulators above:
 https://github.com/probonopd/MiniDexed
 https://github.com/giulioz/mini-jv880
 https://github.com/nukeykt/Nuked-SC55
+https://www.kvraudio.com/forum/viewtopic.php?t=620542
+
 
 CompuFart:
 https://github.com/alexmfink/compufart
@@ -824,6 +826,9 @@ https://github.com/julian-parker/DAFX-NLML
 https://github.com/julian-parker/DAFX22_FNO
 
 
+Machine Learning & Simulation:
+https://github.com/Ceyron/machine-learning-and-simulation
+https://www.youtube.com/channel/UCh0P7KwJhuQ4vrzc3IRuw4Q
  
 Video series on radar: 
 https://github.com/brunerm99/videos 

@@ -312,6 +312,13 @@ Modules
 - StereoTool: Gain, Pan, Pos, M/S, Mono-Switch - show 2x2 gain matrix and make it editable, 
   too - i.e. link the parameters  Gain, Pan, Pos M/S  to  L2L, L2R, R2L, R2R
 
+- TransientSeperator: Splits the signal into transient/sustain or attack/release parts and allow 
+  to remix them. Maybe use linear multiplication factors such that we can also invert one or the 
+  other and have zero gain naturally available. In Quadrifex, we could make tranient/sustain split
+  equalizer patches where we use a parallel connection of two serial connections of 
+  TransientSeparator and Equalizer. The two transient splitters should use the same settings for 
+  the envelope extraction and the upper branch should have unit gain for the transient and zero 
+  gain for the sustain and in the lower branch, it would be the other way around.
 
 ---------------------------------------------------------------------------------------------------
 Improvements
@@ -332,6 +339,9 @@ Improvements
   different underlying sigmoid shapes (e.g. tanh, atan, erf, etc.). Maybe the softQuantToBits could 
   have an additional "mode" parameter. Maybe it could be a string-type parameter? If that's not 
   possible, we need to encode the different shapes as integers in an enum style approach.
+
+- The preset section could show a right-click context menu with options Load, Save, Copy, Paste. 
+  Then the permanently visible load, Save buttons could be made optional
 
 ---------------------------------------------------------------------------------------------------
 Installation
