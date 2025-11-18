@@ -796,7 +796,6 @@ inline std::vector<T> operator*(const std::vector<T>& v, const T& x)
   return result;
 }
 
-
 /** Divides a vector by a scalar. */
 template<class T>
 inline std::vector<T> operator/(const std::vector<T>& v, const T& x)
@@ -805,6 +804,22 @@ inline std::vector<T> operator/(const std::vector<T>& v, const T& x)
   for(size_t i = 0; i < v.size(); i++)
     result[i] = v[i] / x;
   return result;
+}
+
+/** Divides a vector by an integer. */
+template<class T>
+inline std::vector<T> operator/(const std::vector<T>& v, int x)
+{
+  std::vector<T> result(v.size());
+  for(size_t i = 0; i < v.size(); i++)
+    result[i] = v[i] / T(x);
+  return result;
+
+  // Maybe we could just 
+  // 
+  //   return v / T(x);
+  //
+  // rather than (almost) duplicating the code from the "vector / scalar" implementation? Try it!
 }
 
 /** Divides a scalar by a vector. */

@@ -222,6 +222,9 @@ template void rsLinearAlgebraNew::solveWrappedTridiagonal(int N, const double* L
 template void rsLinearAlgebraNew::solveTridiagonal(const double* lowerDiag, double* mainDiag, 
   const double* upperDiag, RAPT::rsMatrixView<double>& X, RAPT::rsMatrixView<double>& B);
 
+template std::vector<rsFraction<int>> rsLinearAlgebraNew::solve(
+  const rsMatrixView<rsFraction<int>>& A, const std::vector<rsFraction<int>>& b);
+
 
 template class RAPT::rsMatrixOld<double>;  // Try to get rid
 
