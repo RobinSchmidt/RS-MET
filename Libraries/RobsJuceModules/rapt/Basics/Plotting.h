@@ -127,6 +127,18 @@ inline void rsPlotVectors(
   if(v8.size() > 0) plt.addDataArrays((int) v8.size(), &v8[0]);
   if(v9.size() > 0) plt.addDataArrays((int) v9.size(), &v9[0]);
   plt.plot();
+
+  // Notes:
+  //
+  // - This function does not work for T = rsFraction<int> for example. This is clear because 
+  //   rsFraction is a class template defined in RAPT and it is unknown to GNUPlotter. To make
+  //   it work, we could perhaps wrap the member function calls plt.addDataArrays() into a free 
+  //   function calls of a function like rsAddDataArrays(plt, v0) etc. and in the implementation of
+  //   that function, we could convert the incoming std::vector into a vector of doubles before 
+  //   calling the add.. method on the plotter object. The same strategy could be used for 
+  //   rsPlotVectorsXY() below. Maybe we could use the function rsConvert() in the file 
+  //   StandardContainerTools.h for the conversion. The conditionals like if(v0.size()) could also
+  //   be done inside rsAddDataArrays()
 }
 
 /** Plots a bunch of y-vectors as functions of a given x-vector. */
