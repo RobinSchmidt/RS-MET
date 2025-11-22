@@ -114,7 +114,10 @@ Visual Studio:
   https://learn.microsoft.com/en-us/visualstudio/ide/customizing-window-layouts-in-visual-studio?view=vs-2022  
   It needs to be done after a (re)installation of the IDE
 -Toolbars (in Tools -> Customize): Build, Debug, Standard, Text Editor
--Options (in Tools): Color Theme: Dark
+-Options (in Tools): Color Theme: Dark  or download the theme "Midnight Deep" or "Midnight Lights" 
+ from here:
+ https://marketplace.visualstudio.com/items?itemName=AustinStanding.vsthememidnightdeep
+ https://marketplace.visualstudio.com/items?itemName=AustinStanding.vsthememidnightlights
 
 XCode:
 

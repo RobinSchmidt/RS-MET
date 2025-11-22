@@ -38,7 +38,7 @@ inline void rsSetupPlotStyles(GNUPlotter& plt)
   // has 1080 x 1920 pixels) but it is also big enough to not be too tiny on an UHD screen. Maybe
   // we should go for 1800 x 1000 - but maybe that would take too much space on an FHD screen.
 
-  //plt.setToDarkMode();
+  plt.setToDarkMode();
   // Because of course! Why would anyone use light mode? Pfff... Well, maybe for inclusion into pdf
   // documents - but on screen, dark mode rulez!
 }
@@ -92,8 +92,8 @@ inline void rsStemPlot(int N, T *x, T *y)
 
   // Notes:
   //
-  // - In previously had the style set up as plt.setGraphStyles("impulses", "points pt 7 ps 1.2");
-  //   but on a high resoultion screen the point size of 1.2 is too small, so I increased it to 2.0
+  // - I previously had the style set up as plt.setGraphStyles("impulses", "points pt 7 ps 1.2");
+  //   but on a high resolution screen the point size of 1.2 is too small, so I increased it to 2.0
   //   which looks more appropriate. It may now look bad on low res screens, though. But nowadays,
   //   looking good on high-res is more important.
 }

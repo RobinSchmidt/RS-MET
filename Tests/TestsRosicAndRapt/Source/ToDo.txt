@@ -68,5 +68,11 @@
   prefix (RSlider, etc.). That should become rsSlider. In rapt/rosic, some function names do not 
   use any prefix at all.
 
+- Consistently use rsComplex rather than the current mix of rsComplex and std::complex. The reason
+  for this mix is that I started out with my own class rsComplex, then discovered std::complex and
+  used that for while with the intention to switch to it completely but then discovered that it
+  doesn't work with custom data types (like SIMD, multi-precision, etc.). It only supports float, 
+  double and long double.
+
 - Maybe rename the libraries (and therefore, their namespaces). Maybe rosic should become RAMP
   which stands for Rob's Audio and Music Processors.
