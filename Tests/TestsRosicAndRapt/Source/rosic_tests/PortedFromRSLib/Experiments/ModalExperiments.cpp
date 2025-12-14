@@ -1297,6 +1297,14 @@ void modalReverb()
   rsHeapSort(&freqs[0], numModes);
 
 
+  // Approximate modal density as function of frequency and plot it:
+  Vec dens(numModes);
+  for(int i = 1; i < numModes-1; i++)
+    dens[i] = 1.0 / (freqs[i+1] - freqs[i-1]);
+  rsPlotVectorsXY(freqs, dens);
+  // The so estimated density has infinities because it can happen that 3 modal frequencies
+  // coincide. For example, at i = 1240 that happens. Maybe we need to take a numerical derivative,
+  // then apply a smoothing filter and only _then_ take the reciprocal.
 
   int dummy = 0;
 
@@ -1314,10 +1322,12 @@ void modalReverb()
   //
   // ToDo:
   //
-  // - Plot the mode density as function of frequency.
+  // - Plot the mode density as function of frequency. I think, we can approximate it qualitatively
+  //   as reciprocal of the difference between adjacent modal frequencies. Maybe we should use a
+  //   central difference like d[i] = f[i+1] - f[i-1]
   //
   // - Try to create simpler formulas that produce a qualitatively similar mode density. I think,
-  //   the mode density as function of frequency, let's denote it by D(f) increases quadratically.
+  //   the mode density as function of frequency, let's denote it by d(f), increases quadratically.
   //   So, maybe a function that starts at some lowest frequency f0 and computes f[i+1] from f[i]
   //   as f[i+1] = f[i] = df where df = a / f^2 for some constant a could be appropriate? Verify!
   //
