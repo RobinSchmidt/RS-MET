@@ -1269,10 +1269,10 @@ void modalReverb()
   // Setup:
   Real sampleRate = 48000;     // Sample rate
   Real soundSpeed =   343.0;   // Speed of sound in m/s
-  Real Lx         =     7.0;   // Length in x-direction (length)
-  Real Ly         =     5.0;   // Length in y-direction (width)
-  Real Lz         =     3.0;   // Length in z-direction (height)
-  int  nMax       =      10;   // Upper limit for nx,ny,nz. Acts like a sort of lowpass.
+  Real Lx         =     7.0;   // Length in x-direction (length) in m
+  Real Ly         =     5.0;   // Length in y-direction (width) in m
+  Real Lz         =     3.0;   // Length in z-direction (height) in m
+  int  nMax       =      20;   // Upper limit for nx,ny,nz. Acts like a sort of lowpass.
 
   // The number of modes that we have to produce (including aliasing) is given by nMax^3. Modes 
   // that would alias can (and should!) be scrapped, though - so actually, it's probably less than
@@ -1286,7 +1286,10 @@ void modalReverb()
       for(int nz = 1; nz <= nMax; nz++)
       {
         int modeIndex = (nx-1)*nMax*nMax + (ny-1)*nMax + (nz-1);
-        Real f = (soundSpeed/2.0) * sqrt( (nx/Lx)*(nx/Lx) + (ny/Ly)*(ny/Ly) + (nz/Lz)*(nz/Lz) );
+        Real fx = nx/Lx;
+        Real fy = ny/Ly;
+        Real fz = nz/Lz;
+        Real f  = (soundSpeed/2.0) * sqrt(fx*fx + fy*fy + fz*fz);
         freqs[modeIndex] = f;
       }
     }
@@ -1303,7 +1306,10 @@ void modalReverb()
   // - When nMax is so low that we do not fill the whole spectrum, the denstity goes down towards
   //   the upper freqs again. Maybe instead of using an nMax, we should use a fixed fMax. But that
   //   complicates the loop logic. Maybe we should have a simple implementation based on nMax and 
-  //   later a more advanced implementation using fMax that implements the more complex logic.
+  //   later a more advanced implementation using fMax that implements the more complex logic. 
+  //   These can be factored out into functions. We already have somewhere functions that compute 
+  //   modal frequencies for other physical systems (I think, an ideal rod, for example). It fits
+  //   there.
   //
   //
   // ToDo:
