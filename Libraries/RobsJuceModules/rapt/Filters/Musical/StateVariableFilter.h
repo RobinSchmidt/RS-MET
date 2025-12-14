@@ -124,7 +124,8 @@ protected:
 
 //-------------------------------------------------------------------------------------------------
 // Implementation. Those functions that are typically called per sample are defined in the .h file 
-// to facilitate inlining. The others are in the .cpp file.
+// to facilitate faster code via inlining. The others are in the .cpp file to facilitate smaller 
+// code via reuse. 
 
 // Setup:
 

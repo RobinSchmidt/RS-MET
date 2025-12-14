@@ -1,5 +1,6 @@
 This my personal curated list of links to interesting open source audio software projects (and maybe 
-some non-audio stuff, too).
+some non-audio stuff, too). Well - "curated" is perhaps not the correct word - at least not anymore.
+Perhaps "collected" would be a better fit.
 
 ToDo: turn this into an .md file with clickable links and TOC
 
@@ -29,7 +30,8 @@ https://opendaw.org/
 https://github.com/andremichelle/openDAW
 https://github.com/andremichelle/opendaw-studio
 https://github.com/andremichelle/opendaw-lib
--Web-based DAW. No source code available yet but coming (soon?). 
+-Web-based DAW. No source code available yet but coming (soon?). Written in TypeScript with Web 
+ Audio API. Runs in a web browser. Open-source under AGPL-3 
 
 Stargate DAW:
 https://github.com/stargatedaw/stargate
@@ -220,7 +222,7 @@ https://github.com/christophhart/HISE/
 
 JC-303
 https://github.com/midilab/jc303
--A Cmake JUCE port of Robin Schmidt`s Open303, a Roland TB-303 clone plugin.
+-A Cmake JUCE port of Robin Schmidt's Open303, a Roland TB-303 clone plugin.
 
 Aeolus:
 https://github.com/Archie3d/aeolus_plugin
@@ -258,7 +260,6 @@ https://github.com/probonopd/MiniDexed
 https://github.com/giulioz/mini-jv880
 https://github.com/nukeykt/Nuked-SC55
 https://www.kvraudio.com/forum/viewtopic.php?t=620542
-
 
 CompuFart:
 https://github.com/alexmfink/compufart
@@ -615,8 +616,8 @@ https://www.orastron.com/brickworks
 https://www.kvraudio.com/forum/viewtopic.php?t=589519
 https://github.com/sdangelo/brickworks 
 -Audio DSP library available for licensing under GPL or commercially
--It looks like only the headers are public so that actually doesn't count as open source. :-(  I 
- think, it initially was.
+-It looks like only the headers are public so that actually doesn't count as open source. I think, 
+ it initially was but later got closed. :-( 
 
 Synthesis Toolkit (STK):
 https://ccrma.stanford.edu/software/stk/
@@ -759,6 +760,35 @@ SynthLab
 https://github.com/willpirkleaudio/SynthLab
 -DSP library by Will Pirkle (author of ASPiK framework and books on plugin development)
 
+Various stuff by Laurent de Soras:
+https://ldesoras.fr/prod.html#src
+
+HIIR (fork):
+https://github.com/unevens/hiir
+-Oversampling library
+
+ob_HIIR:
+https://github.com/AndrewJJ/ob_HIIR
+-wrapper class for HIIR library for oversampling in JUCE projects.
+
+r8brain:
+https://www.kvraudio.com/forum/viewtopic.php?t=389711
+-Resampler in C++ by Aleksey Vaneev (Voxengo)
+
+ivantsov-filters:
+https://github.com/yIvantsov/ivantsov-filters
+-Fast decramped first and second order IIR filters suited for audio rate modulation.
+
+DSPFilters:
+https://github.com/vinniefalco/DSPFilters
+https://github.com/vinniefalco/DSPFiltersDemo
+https://www.kvraudio.com/forum/viewtopic.php?t=249926
+-Butterworth, Chebychev, elliptic, etc. IIR filters
+
+
+
+
+
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:
 
@@ -832,6 +862,12 @@ https://www.youtube.com/channel/UCh0P7KwJhuQ4vrzc3IRuw4Q
  
 Video series on radar: 
 https://github.com/brunerm99/videos 
+
+
+https://github.com/noel-lang/realtime_guitar_effects
+https://www.youtube.com/watch?v=L-sfcQ1PH-g
+-Super basic distortion command line app app in Rust. Shows how to do basic audio I/O
+
 
 ----------------------------------------------------------------------------------------------------
 Numerical Math and Algorithms Libraries
@@ -922,8 +958,9 @@ https://github.com/justinfrankel/reaper-sdk
 DAWProject:
 https://github.com/bitwig/dawproject
 -Open standard format for DAW project files.
--Created by Bitwig (and Presonus?) and supported by: ...tbc..
--Converter tools are available for the following other formats: Reaper ...tbc...
+-Created by Bitwig (and Presonus?) and supported by: Bitwig, Studio One, Steinberg Cubase
+-Converter tools are available for the following other formats: Reaper
+ https://mossgrabers.de/Software/ProjectConverter/ProjectConverter.html
 -Ardour seems to be evaluating it: 
  https://discourse.ardour.org/t/dawproject-in-ardour/109230/11
 -See also:
@@ -939,6 +976,11 @@ https://github.com/git-moss/ConvertWithMoss
 https://www.mossgrabers.de/Software/ConvertWithMoss/ConvertWithMoss.html
 https://www.kvraudio.com/forum/viewtopic.php?f=42&t=575352
 -Converter tool for sampler files (sfz, sfz2, nki, etc.)
+
+ProjectConverter:
+https://github.com/git-moss/ProjectConverter
+https://mossgrabers.de/Software/ProjectConverter/ProjectConverter.html
+-Converts between Reaper and DAWproject formats
 
 Libsndfile:
 https://libsndfile.github.io/libsndfile/
@@ -995,6 +1037,11 @@ StageConnect:
 https://github.com/OpenMixerProject/StageConnect
 -Arduino-Library to create a StageConnect device. StageConnect is based on the automotive A2B audio 
  bus which uses XLR connectors to transmit 32 channels of 48kHz 32bit audio.
+
+Plugin Analyser:
+https://github.com/lucaromagnoli/plugin-analyser
+https://www.kvraudio.com/forum/viewtopic.php?t=625462
+-Plugin analysis tool focusing on batch processing (rather than interactive exploration)
 
 ----------------------------------------------------------------------------------------------------
 Audio AI projects and related stuff
@@ -1054,6 +1101,8 @@ https://codeberg.org/RafaGago/artv-audio   (seems to be the new main repo)
 https://github.com/RafaGago/artv-audio     (seems to be the old legacy repo)
 -MixMaxTrix: https://www.kvraudio.com/product/mixmaxtrix-by-artv (Mixing/Routing)
 -TurboPaco:  https://www.kvraudio.com/product/turbo-paco-by-artv (Reverb)
+
+...TBC...
 
 ----------------------------------------------------------------------------------------------------
 Online Tools
@@ -1215,6 +1264,10 @@ https://github.com/bmc0/dsp/wiki/System-Wide-DSP-Guide
 https://github.com/jaakkopasanen/AutoEq
 https://github.com/bmc0/dsp
 https://t-5.eu/hp/Software/Pulseaudio%20Parametric%20Equalizer/
+
+DaisyVerb:
+https://github.com/adion12/DaisyVerb
+https://www.youtube.com/watch?v=PNHGs7RQc_o
 
 
 

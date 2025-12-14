@@ -359,6 +359,30 @@ Code Quality
   we should do it like Surge XT and use Documents/RS-MET. Maybe we can use 
   JUCE::File::getSpecialLocation? Look into the Surge codebase for how they do it.
 
+- In some AudioModule subclasses (for example EqualizerAudioModule), we have a pointer to an 
+  underlying DSP core object which in some situations may be an owned pointer (i.e. created via 
+  new in the constructor and deleted in the destuctor) and in some other situations, it may be a 
+  pointer to an existing DSP core object around which we just "wrap" the AudioModule for 
+  controlling it without also managing its lifetime. The AudioModule subclass maintains a boolean 
+  "..IsOwned" flag to distinguish between the two cases. That strategy appears again and again and
+  should therefore be factored out into a sort of smart-pointer class that can be owning or 
+  non-owning. It should hold the pointer to the object (so it should be templatized on the object 
+  type T) and have a bool "isOwned" flag. When the constructor of this smart-pointer is called with 
+  a nullptr parameter, it should create a new instance of T and set isOwned to true. If the 
+  constructor is called with an existing pointee, it should just set the pointer member to it and 
+  set isOwned to false. The destructor should check the isOwned flag and call delete on the object, 
+  iff isOwned is true. The constructor of e.g. EqualizerAudioModule should pass the pointer 
+  argument via its constructor list to the smart pointer class. The smart pointer class could also
+  provide functionality like setObject(T* newPointee, bool isOwned = false) to set the object later
+  but typically, the pointee should be passed to the constructor and iff a nullptr is passed to the 
+  constructor, the constructor should itself create a new object and consider it as owned (and 
+  therefore delete it in the destructor). This idiom should be used in all subclasses of 
+  jura::AudioModule that hold a pointer to an owned or non-owned DSP object. Maybe the class could 
+  be named rsOwnedOrNonOwnedPointer<T> or rsMaybeOwnedPointer<T> and should probably be part of
+  the jura_framework module. Maybe it could also be in rosic. Maybe the smart-pointer member 
+  variables in the AudioModule should be consistently called something like "dspCore" to establish
+  an idiomatic way to do this.
+
 ---------------------------------------------------------------------------------------------------
 Cosmetic GUI issues (layout, appearance, etc.):
 

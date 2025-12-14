@@ -566,3 +566,29 @@ Arbitrary order filter
 - Maybe call it BranePainter - because we can "paint" the features of a membrane. Maybe visualize 
   the waves on a GUI - maybe scale time appropriately or create a static (or slowly changing) image 
   of the energy distribution
+  
+----------------------------------------------------------------------------------------------------
+Drum Synth based on allpass filters
+
+- An excitation signal is generated consiting of an adjustable mix of an impulse and enveloped noise 
+  (and maybe samples - or maybe the impulse can be replaced by a sample - the noise is always 
+  synthesized).
+  
+- The excitation goes into a dual allpass filter (via a 2x2 mix matrix) where one is a 
+  sweepdown-based allpass and the other is a comb-bank based allpass. The allpasses can feed into 
+  each other (adjustable crossfeedback) which also allows a series connection.
+  
+- The outputs of the allpasses are mixed and another amp-env is applied. And/or maybe have separate 
+  amp-envs for the outputs of both filters. Maybe also have filters/equalizers for the two outputs.
+  
+- This mix then goes into and FDN and after the FDN, yet another amp-env is applied.
+
+----------------------------------------------------------------------------------------------------
+Osc-Ensemble
+
+- Goal: Create an oscillator that is capable of producing sounds similar to the THX signature sound
+  called "The Deep Note". See:
+  https://www.youtube.com/watch?v=6grjzBmHVTY  THX Deep Note with Dr. Andy Moorer
+  https://www.youtube.com/watch?v=NRnIBuR0fjU  Recreating the THX "Deep Note" in Phase Plant
+  
+  

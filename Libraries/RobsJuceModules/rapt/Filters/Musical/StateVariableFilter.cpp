@@ -11,6 +11,8 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   TPar T  = T1 * T2;
   TPar S  = sqrt(-1 / T);
   TPar r  = 2*(a2 - 1) / (T*S);
+
+  // Check sanity:
   if(T >= 0)
   {
     rsError("The formulas work only for T < 0.");
@@ -30,33 +32,6 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   g  = -1 / (T1*S);
   c  =  g + r;
   s  =  1 / (1 + g*c);
-
-  // ToDo:
-  //
-  // - Check what happens in the limit as T -> 0 from below. The T in the denominator of the 
-  //   formula for r approaches 0 as well, but S approaches infinity but more slowly due to the 
-  //   sqrt. So, I guess, overall r should approach infinity but sublinearly, namely as sqrt. 
-  //   Verify that and give an interpretation for what that means. Perhaps rather than going into
-  //   muted mode, we should go into bypass mode? And what if T > 0? But we also have a2 in the 
-  //   numerator and if the approaches 1, the numerator approaches 0.
-  //
-  // - Check if we need some tolerance, i.e. if  T < 0  is not good enough but we rather need 
-  //   something like  T < -tol  where tol is some small positive number like the machine espilon
-  //   or some multiple of it or its sqrt.
-  //
-  // - We may be able to reduce the number of divisions by defining T1 = 1/(a1-A); T2 = 1/(a1+A).
-  //   T = T1*T2 stays the same; S = sqrt(-T); r = 2*(a2 - 1) * (T*S); aH =  (b1 - B ) * T1;
-  //   (b0 - b2) * 2/S; (b1 + B ) * T2; g = -1 * (T1*S); ...I think. That would be 3 divisions
-  //   instead of 5 (not counting the one in s = ..., because that's unaffected). Hmm - I tried but
-  //   it doesn't seem to work -> check the math! Wait: I think, the computation of S still needs
-  //   the reciprocation - but then we would save only one division, I think.
-  //
-  // - What about those biquads that have poles exactly on the unit circle? I guess, those are the
-  //   ones with T = 0? Can we realize them, too? Filters with poles on the unit circle can be 
-  //   useful as sinusoidal oscillators. Maybe set up some tests with bandpasses with very high Q.
-  //   Check what happens to the coefficients. Using setupBandpassSkirt(TPar w, TPar Q) with 
-  //   infinite Q should lead to r = 0; c = g; s = 1/(1+g^2); That looks reasonable. Try it! Maybe
-  //   try also lowpass and highpass with infinite Q.
 }
 
 template<class TSig, class TPar>
@@ -150,13 +125,15 @@ ToDo:
   getQualityFactor() = 1 / (gpr - g). But the Q formula is wrong for bell filters and the omega
   formula is wrong for shelf filters. But maybe we can infer in which mode we are and then dispatch
   to the appropriate formula. The mode could be figured out by looking at the pattern of the mixing
-  the mixing coeffs. I think, we have  LP: 1,0,0  HP: 0,0,1  BPS: 0,1,0  BPP: 0,+,0  BS: 1,0,1  
-  AP: 1,-,1  PK: 1,+,1  LS: +,+,1  HS: 1,+,+. In the prototype folder in MiscFilters.h, there is 
-  some subclass  rsStateVariableFilter2 that extends this class by some add-on functionality that
-  includes things like that. Maybe someday, some of it should be dragged over. 
+  coeffs. I think, we have  LP: 1,0,0  HP: 0,0,1  BPS: 0,1,0  BPP: 0,+,0  BS: 1,0,1  AP: 1,-,1  
+  PK: 1,+,1  LS: +,+,1  HS: 1,+,+. In the prototype folder in MiscFilters.h, there is some subclass
+  rsStateVariableFilter2 that extends this class by some add-on functionality that includes things
+  like that. Maybe someday, some of it should be dragged over. 
 
 - Figure out if there is a more direct way to evaluate the transfer function, i.e. one that 
-  doesn't go through a conversion to a direct form biquad.
+  doesn't go through a conversion to a direct form biquad. Somewhere is a text file where I convert
+  between SVF and stats-space filter coeffs. Maybe that could be useful for evaluating the transfer
+  function, too?
 
 - Add an experiment that looks at the DC-response when switching the cutoff freq. The Wishnick 
   paper says that this is a good test for modulation response.
@@ -203,5 +180,47 @@ ToDo:
 
 - Add classes for chains of state variable filters - with equal and with different coeffs per 
   stage.
+
+- Maybe use inline or RS_INLINE also for the setup... functions. In the context of a synthesizer,
+  they will typically be called at sample-rate due to envelope and LFO on the cutoff. However, in 
+  other contexts (like an equalizer), the settings may be static - so I'm not sure if we really 
+  want to always inline them. It may bloat the code (although: verify if the produced assmbler code
+  is actually bigger - the function call overhead might not be negligible in this case). It would 
+  generally be really nice if we could control inlining at the call site. Figure out, if that is 
+  possible with "modern" C++. If so, maybe use it.
+
+- In setupFromBiquad(..):
+
+  - Check what happens in the limit as T -> 0 from below. The T in the denominator of the 
+    formula for r approaches 0 as well, but S approaches infinity but more slowly due to the 
+    sqrt. So, I guess, overall r should approach infinity but sublinearly, namely as sqrt. 
+    Verify that and give an interpretation for what that means. Perhaps rather than going into
+    muted mode, we should go into bypass mode? And what if T > 0? But we also have a2 in the 
+    numerator and if the approaches 1, the numerator approaches 0.
+  
+  - Check if we need some tolerance, i.e. if  T < 0  is not good enough but we rather need 
+    something like  T < -tol  where tol is some small positive number like the machine espilon
+    or some multiple of it or its sqrt.
+  
+  - We may be able to reduce the number of divisions by defining T1 = 1/(a1-A); T2 = 1/(a1+A).
+    T = T1*T2 stays the same; S = sqrt(-T); r = 2*(a2 - 1) * (T*S); aH =  (b1 - B ) * T1;
+    (b0 - b2) * 2/S; (b1 + B ) * T2; g = -1 * (T1*S); ...I think. That would be 3 divisions
+    instead of 5 (not counting the one in s = ..., because that's unaffected). Hmm - I tried but
+    it doesn't seem to work -> check the math! Wait: I think, the computation of S still needs
+    the reciprocation - but then we would save only one division, I think.
+
+  - The intermediate variable r is only used once, so maybe get rid of it. Maybe do the
+    if(T >= 0)... test immediately after computing T. That would require to drag the S = ...
+    computation into the lower part which would kind of invalidate the comments that say
+    "intermediate variables" and "final coeffs", though.
+  
+  - Maybe wrap constants like 2,1,-1 into TPar().
+
+  - What about those biquads that have poles exactly on the unit circle? I guess, those are the
+    ones with T = 0? Can we realize them, too? Filters with poles on the unit circle can be 
+    useful as sinusoidal oscillators. Maybe set up some tests with bandpasses with very high Q.
+    Check what happens to the coefficients. Using setupBandpassSkirt(TPar w, TPar Q) with 
+    infinite Q should lead to r = 0; c = g; s = 1/(1+g^2); That looks reasonable. Try it! Maybe
+    try also lowpass and highpass with infinite Q.
 
 */

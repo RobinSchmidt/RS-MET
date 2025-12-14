@@ -35,7 +35,7 @@ public:
   // value. It may have been with simd types for TSig or TPar? I'm not sure anymore. Maybe for 
   // bigger types (like simd vectors or other kinds of multichannel types), it's advisable to pass
   // by reference anyway. But then we should really do it consistently throught the whole library.
-  // Although, it doesn't really affect client code - it will look the same regardless.
+  // Although, it doesn't really affect client code. Client code will look the same regardless.
 
 
 
@@ -44,15 +44,17 @@ public:
   enum Mode
   {
     FLAT = 0, 
-    LP_6, LP_12, LP_18, LP_24,                            // lowpasses
-    HP_6, HP_12, HP_18, HP_24,                            // highpasses
-    BP_6_6, BP_6_12, BP_6_18, BP_12_6, BP_12_12, BP_18_6, // bandpasses
+    LP_6, LP_12, LP_18, LP_24,                            // Lowpasses
+    HP_6, HP_12, HP_18, HP_24,                            // Highpasses
+    BP_6_6, BP_6_12, BP_6_18, BP_12_6, BP_12_12, BP_18_6, // Bandpasses
     NUM_MODES
   };
-  // add more modes: allpass1/2/3/4, notch(es), maybe peak if possible (perhaps requires gain 
-  // parameter), shelf
-  // maybe rename to Lowpass_6, etc., 
-  // see https://www.juce.com/doc/tutorial_playing_sound_files
+  // ToDo:
+  // -Add more modes: allpass1/2/3/4, notch(es), maybe peak if possible (perhaps requires gain 
+  //  parameter), shelf
+  // -Maybe rename to Lowpass_6, etc., maybe turn into enum class
+  // -see https://www.juce.com/doc/tutorial_playing_sound_files  ..link is now dead. What was to 
+  //  see there?
 
 
   //-----------------------------------------------------------------------------------------------
