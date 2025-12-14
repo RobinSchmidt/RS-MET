@@ -512,6 +512,7 @@ int main(int argc, char* argv[])
   //modalAnalysisPluck();
   //modalPartialResynthesis();
   //modalAnalysisGloriosa();
+  modalReverb();               // Under construction
 
   // Misc Audio:
   //centroid();
@@ -550,7 +551,7 @@ int main(int argc, char* argv[])
 
   // Partial Extraction:
   //biDirectionalFilter();    // maybe move to filter tests
-  beatingSines();
+  //beatingSines();
   //envelopeDeBeating();
   //sineRecreation();               // maybe move elsewhere
   //sineRecreationBandpassNoise();
@@ -693,7 +694,7 @@ int main(int argc, char* argv[])
   // Move them to a better place. Maybe to DelayExperiments.h/cpp
 
   // feedbackDelayNetwork();            // writes wave file
-  // algoVerb();                        // writes wave file
+  algoVerb();                        // writes wave file
 
 
 

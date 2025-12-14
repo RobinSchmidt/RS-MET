@@ -25,6 +25,7 @@ void modalAnalysis1();
 void modalAnalysisPluck();
 void modalPartialResynthesis();
 void modalAnalysisGloriosa();
+void modalReverb();
 
 
 

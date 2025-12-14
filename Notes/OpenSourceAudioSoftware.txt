@@ -495,6 +495,10 @@ https://puredata.info/downloads
 https://msp.ucsd.edu/software.html
 -Visual audio programming environment (like max/msp)
 
+PlugData:
+https://github.com/plugdata-team/plugdata
+-Plugin for Pure Data
+
 Camomile:
 https://github.com/pierreguillot/Camomile
 -Plugin for using PD patches in a DAW

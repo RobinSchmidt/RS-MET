@@ -1235,12 +1235,6 @@ void modalAnalysisGloriosa()
   // Analyze the sound, i.e. estimate the modal parameters from the signal:
   auto modalParams = ma.analyze(&x[0], (int)x.size());
 
-
-
-
-
-
-
   // Write output files:
   rosic::writeToMonoWaveFile("GloriosaModalOriginal.wav", &x[0], (int)x.size(), (int)sampleRate);
   int dummy = 0;
@@ -1251,6 +1245,82 @@ void modalAnalysisGloriosa()
   //  parameters as reference for our analysis result.
   // -Resynthesize the sound from the estimated parameters and compare result with original.
   // -Add some plots/visualizations
+}
+
+
+void modalReverb()
+{
+  // Under construction.
+
+  // We compute the modal frequencies of a room shaped like rectangular box and use those 
+  // frequencies in a modal filter bank in order to simulate the reverb in this room. The formula 
+  // for the modal frequencies is given by:
+  //
+  //   f = (c/2) * sqrt( (nx/Lx)^2 + (ny/Ly)^2 + (nz/Lz)^2 )
+  //
+  // where nx,ny,nz are 3 independent indices that run from 1 to infinity and Lx,Ly,Lz 
+  // are the lengths in the x,y,z directions and c is the speed of sound.
+  //
+  // ToDo: Check, if nx,ny,nz should really start at 1 or rather at 0.
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+
+  // Setup:
+  Real sampleRate = 48000;     // Sample rate
+  Real soundSpeed =   343.0;   // Speed of sound in m/s
+  Real Lx         =     7.0;   // Length in x-direction (length)
+  Real Ly         =     5.0;   // Length in y-direction (width)
+  Real Lz         =     3.0;   // Length in z-direction (height)
+  int  nMax       =      10;   // Upper limit for nx,ny,nz. Acts like a sort of lowpass.
+
+  // The number of modes that we have to produce (including aliasing) is given by nMax^3. Modes 
+  // that would alias can (and should!) be scrapped, though - so actually, it's probably less than
+  // that. How much less depends on the dimensions of the room. ...TBC...
+  int numModes = nMax * nMax * nMax;
+  Vec freqs(numModes);
+  for(int nx = 1; nx <= nMax; nx++)
+  {
+    for(int ny = 1; ny <= nMax; ny++)
+    {
+      for(int nz = 1; nz <= nMax; nz++)
+      {
+        int modeIndex = (nx-1)*nMax*nMax + (ny-1)*nMax + (nz-1);
+        Real f = (soundSpeed/2.0) * sqrt( (nx/Lx)*(nx/Lx) + (ny/Ly)*(ny/Ly) + (nz/Lz)*(nz/Lz) );
+        freqs[modeIndex] = f;
+      }
+    }
+  }
+  rsHeapSort(&freqs[0], numModes);
+
+
+
+  int dummy = 0;
+
+
+  // Observations:
+  //
+  // - When nMax is so low that we do not fill the whole spectrum, the denstity goes down towards
+  //   the upper freqs again. Maybe instead of using an nMax, we should use a fixed fMax. But that
+  //   complicates the loop logic. Maybe we should have a simple implementation based on nMax and 
+  //   later a more advanced implementation using fMax that implements the more complex logic.
+  //
+  //
+  // ToDo:
+  //
+  // - Plot the mode density as function of frequency.
+  //
+  // - Try to create simpler formulas that produce a qualitatively similar mode density. I think,
+  //   the mode density as function of frequency, let's denote it by D(f) increases quadratically.
+  //   So, maybe a function that starts at some lowest frequency f0 and computes f[i+1] from f[i]
+  //   as f[i+1] = f[i] = df where df = a / f^2 for some constant a could be appropriate? Verify!
+  //
+  //
+  // See:
+  //
+  // https://computational-acoustics.gitlab.io/website/posts/5-acoustic-modes-of-a-rectangular-room/
+  // https://reference.wolfram.com/language/PDEModels/tutorial/Acoustics/ModelCollection/RoomEigenfrequencies.html
+  // https://ccrma.stanford.edu/~jos/pasp/footnode.html#foot14150 or PASP, pg 89
 }
 
 
