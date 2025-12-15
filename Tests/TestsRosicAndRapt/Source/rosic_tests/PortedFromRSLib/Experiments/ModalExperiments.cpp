@@ -1306,46 +1306,51 @@ void modalReverb()
 
   // Now let's try to do the band-limiting more properly based on a maximum frequency fMax:
   Real fMax = 1000;
+  Real c    = soundSpeed;
   Vec freqs2;
   freqs2.reserve(numModes);  
-  // Might be an ok approximation? ...but maybe with a scale factor that depends on fMax and nMax?
+  // The previously used numModes might be an ok approximation for what is actually needed here? 
+  // ...but maybe with a scale factor that depends on fMax and nMax?
+
 
   int nx = 0;
-  int ny = 0;
-  int nz = 0;
   while(true)
   {
     nx++;
     Real fx = nx/Lx;
-    ny = 0;
+    if(modeFreq(fx, 1/Ly, 1/Lz, c) > fMax)
+      break;
+    // 1/Ly, 1/Lz are the minimum possible contributions. They aries from setting ny = nz = 1 in
+    // the formula.
 
+    //if(fx > fMax)   // Maybe we need if(sqrt(fx*fx + 1/(Ly*Ly) + 1/(Lz*Lz)) > fMax)?
+    //  break;
+
+
+    int ny = 0;
     while(true)
     {
       ny++;
       Real fy = ny/Ly;
-      nz = 0;
+      if(modeFreq(fx, fy, 1/Lz, c) > fMax)
+        break;
+     
+     // if(fy > fMax) 
+     //   break;
+        // Is that correct? ..or do we need something lile if(fx+fy > fMax) or 
+        // if(sqrt(fx*fx + fy*fy + 1/(Lz*Lz)) > fMax)?
 
+      int nz = 0;
       while(true)
       {
         nz++;
         Real fz = nz/Lz;
-        Real f  = modeFreq(fx, fy, fz, soundSpeed);
+        Real f  = modeFreq(fx, fy, fz, c);
         if(f > fMax)
           break;
         freqs2.push_back(f);
       }
-
-      // Is that correct?: 
-      if(fy > fMax) 
-        break;
-      // ..or do we need something lile if(fx+fy > fMax) or 
-      // if(sqrt(fx*fx + fy*fy + 1/(Lz*Lz)) > fMax)?
     }
-
-
-    if(fx > fMax)
-      break;
-    // Maybe we need if(sqrt(fx*fx + 1/(Ly*Ly) + 1/(Lz*Lz)) > fMax)?
   }
   rsHeapSort(&freqs2[0], (int)freqs2.size());
   // I think, we can move the if(..) conditions up - directly after the computations of
@@ -1355,6 +1360,7 @@ void modalReverb()
   // DOESN'T WORK YET:
   // Approximate modal density as function of frequency and plot it:
   Vec freqs = freqs2;
+  numModes = freqs.size();
   Vec dens(numModes);
   for(int i = 1; i < numModes-1; i++)
   {
