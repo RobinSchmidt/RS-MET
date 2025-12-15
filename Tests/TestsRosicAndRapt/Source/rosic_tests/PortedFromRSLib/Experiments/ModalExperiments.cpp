@@ -1348,7 +1348,7 @@ void modalReverb()
     // Maybe we need if(sqrt(fx*fx + 1/(Ly*Ly) + 1/(Lz*Lz)) > fMax)?
   }
   rsHeapSort(&freqs2[0], (int)freqs2.size());
-  // I think, we can move the if(..) conditions up - driectly after the computations of
+  // I think, we can move the if(..) conditions up - directly after the computations of
   // fx, fy, fz respectively.
 
 
@@ -1425,6 +1425,13 @@ void modalReverb()
   //   channel 54 and 56 both with amplitude 0.5 in the side channel. Try to make the output of the
   //   modal bank stereo but in a mono-compatible way. The modulation frequency (i.e. difference 
   //   between lower and upper) should scale with some power of the center frequency.
+  // 
+  // - Maybe it's better to try to tune the modes to the gaps between the notes. Maybe give the 
+  //   user a global detune parameter. If it's at 0, the center freqs are spot on the notes, 
+  //   when it's at 50 cents, the center freqs are maximally far away from the notes.
+  // 
+  // - Maybe instead of modal filters, try using (allpass) comb filters. If allpasses are used, 
+  //   maybe they should be in series.
   // 
   //
   // See:

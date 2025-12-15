@@ -696,5 +696,30 @@ A general instrument based on modal synthesis could look like:
   applied. We could use a differential envelope detector to extract a transient from an input noise
   generator.
 
+- Create a variation that provides a a two-stage decay envelope. Instead of a single decay 
+  pameteter, we would have two: EarlyDecay and LateDecay and a DecayMix parameter. The way this 
+  would be implemented is by creating a weighted sum of two decaying modes with two different 
+  decay times. The computation of the decay-time for the subtracted attack mode would have to use
+  a more complex formula. To achieve this, we would now need 3 modal filters for a single mode:
+  Two with the two different decay times and one for the (subtracted) attack portion.
+
+- Provide a delay parameter for each mode by prepending or appending a delay line.
+
+- Allow mode beating by using two slightly detuned versiond of the modal filter. The parameters 
+  should be: BeatFreq, BeatAmount. See the experiments about sine beating for how to realize it.
+  We want it to look like amplitude modulation. Maybe we could also have some stereo-beating
+  effect, i.e. different phases in the envelope in left and right signal. 
+
+- Maybe the carrier wave itself could also have a different phase in left and right signal.
+
+- Each mode should also have a Pan parameter.
+
+- Provide a different implementation that splits the computation into two multiplicative parts
+  used for the sinusoid and the attack/decay envelope. The envelope may operate on the absolute
+  value of the inputs signal. Such a splitting may lead to more efficient algorithms compared to
+  producing differently enveloped sinuosoids dierectly and adding them.
+
+- Full list of possible per mode parameters: Freq, Amp, Pan, PhaseLeft, PhaseRight, EarlyDecay, 
+  LateDecay, DecayMix, Attack, Delay, BeatFreq, BeatAmount, StereoBeat, FreqByAmp,
 
 */

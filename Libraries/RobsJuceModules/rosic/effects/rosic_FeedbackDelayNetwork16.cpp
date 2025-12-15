@@ -1011,7 +1011,7 @@ void FeedbackDelayNetwork16::reset()
 -Can use different seed numbers (can be user parameter)
 -Maybe, when all times are computed, the should be sorted ascending (but may be optional)
 -To make the delays mutually prime, first compute an array some preliminary delay times in samples
- [n1,n2,n3,n4,...]. n1 is the reference. Investivate n2. Compute the gcd with n1. Increment n1 as 
+ [n1,n2,n3,n4,...]. n1 is the reference. Investigate n2. Compute the gcd with n1. Increment n1 as 
  long as the gcd is unequal to 1. After that, n1,n2 are mutually prime. Now investigate n3. Compute
  its gcd with n1 and n2 and increment n3 as long as any of those in unequal to 1. Ater that, 
  n1,n2,n3 are mutually prime. Now investigate n4, ...and so on. Maybe make the modification to

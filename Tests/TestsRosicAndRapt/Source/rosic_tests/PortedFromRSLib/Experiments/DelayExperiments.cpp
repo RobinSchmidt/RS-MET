@@ -74,6 +74,19 @@ void algoVerb()
   //   different coeffs, this is unlikely to happen. Maybe we can even ensure that it doesn't 
   //   happen by relating the angle phi of various levels by fixed phase shifts. See
   //   rsStagedKroneckerTrafo2x2()
+  //
+  //
+  // Ideas:
+  //
+  // - Make different modules that can be put together in various ways (serial, parallel, etc.) to 
+  //   create a full reverb algorithm. Make these modules available in Quadrifex. there, we can 
+  //   then already put togther 4 such modules in various configurations. The modules should be:
+  //   EarlyReflections (tapped delay line), ResoModes (modal filter bank), DiffuseTail (FDN),
+  //   Convolution. The modal resonators and the FDN should have built in gate/expander for gated
+  //   reverb effects. The early reflection module should be able to spatialize the tap outputs 
+  //   (pan, maybe Haas delay) and to filter them (peak EQ, tilt EQ) and to disperse them 
+  //   (sweepdown disperser). The FDN should have some built in modulation capabilities. Maybe 
+  //   modulate the feedback matrix (easy with generalized Hadamard matrix) and/or the delay times.
 }
 
 void delayLineBasic()
