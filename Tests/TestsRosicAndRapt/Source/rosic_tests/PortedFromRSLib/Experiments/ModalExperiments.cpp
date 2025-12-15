@@ -1395,6 +1395,12 @@ void modalReverb()
   //   the mode density as function of frequency, let's denote it by d(f), increases quadratically.
   //   So, maybe a function that starts at some lowest frequency f0 and computes f[i+1] from f[i]
   //   as f[i+1] = f[i] = df where df = a / f^2 for some constant a could be appropriate? Verify!
+  // 
+  // - Compute modal decay times, amplitudes and phases according to some rule. Decay should depend
+  //   on some power of frequency, I think. Amp probably also and/or maybe amp should also depend
+  //   on the decay for energy compensation. Then set up a modal bank with these parameters and 
+  //   produce its impulse response. Plot it and write it to a wavefile. Maybe let the modes also
+  //   have a nonzero attack time.
   //
   // 
   // Ideas:
@@ -1416,7 +1422,9 @@ void modalReverb()
   //   present in both stereo channels and in the left channel we would have 54 with gain 0.5 and 
   //   56 with gain 0.25 and in the right channel, we could have 54 with gain 0.25 and 56 with gain
   //   0.5. 55 would be present in both channels with gain 1. Or maybe we could have 55 for the mid
-  //   channel 54 and 56 in the side channel.
+  //   channel 54 and 56 both with amplitude 0.5 in the side channel. Try to make the output of the
+  //   modal bank stereo but in a mono-compatible way. The modulation frequency (i.e. difference 
+  //   between lower and upper) should scale with some power of the center frequency.
   // 
   //
   // See:
