@@ -998,15 +998,32 @@ void FeedbackDelayNetwork16::reset()
 }
 
 
+//=================================================================================================
 /*
-Idea for producing relative delayline lengths:
-start with an irrational number r, like, for example: r = (1+sqrt(5))/2
-(1) take r as 1st relative delay-time
-(2) square it: r = r^2  ...or maybe r = r^2 + c for c some additive constant (like 0.2)
-(3) while r > 2: r = r/2
-    -use r as next delay time
-(4) back to (2)
 
-can use different seed numbers (can be user parameter)
--maybe, when all times are computed, the should be sorted ascending (but may be optional)
+-Idea for producing relative delayline lengths:
+ Start with an irrational number r, like, for example: r = (1+sqrt(5))/2
+ (1) take r as 1st relative delay-time
+ (2) square it: r = r^2  ...or maybe r = r^2 + c for c some additive constant (like 0.2)
+ (3) while r > 2: r = r/2
+     -use r as next delay time
+ (4) back to (2)
+-Can use different seed numbers (can be user parameter)
+-Maybe, when all times are computed, the should be sorted ascending (but may be optional)
+-To make the delays mutually prime, first compute an array some preliminary delay times in samples
+ [n1,n2,n3,n4,...]. n1 is the reference. Investivate n2. Compute the gcd with n1. Increment n1 as 
+ long as the gcd is unequal to 1. After that, n1,n2 are mutually prime. Now investigate n3. Compute
+ its gcd with n1 and n2 and increment n3 as long as any of those in unequal to 1. Ater that, 
+ n1,n2,n3 are mutually prime. Now investigate n4, ...and so on. Maybe make the modification to
+ pairwise mutual primes optional. If turned off, just use the preliminary delay times as is. Figure
+ out, if it's really important to have them be mutually prime. The literature says so but I'm a bit
+ sceptical. Maybe it's important for 4x4 FDNs with very short delays but maybe not so much anymore
+ with larger FDNs and with greater delay times.
+-Maybe use fractional delays with 1st order allpass interpolation.
+-Try to SIMDify a bunch of delaylines. For example, with __m128, we could have 4 delaylines. The 
+ memory access code (i.e. reading and writing from/to delaylines) probably cannot be meaningfully 
+ SIMDified when all delay lines have different delay times but the interpolation code and the 
+ tap-pointer update code can. The tap pointers would use __i128.
+
+
 */
