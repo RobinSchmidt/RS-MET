@@ -1279,6 +1279,7 @@ void modalReverb()
   {
     return 0.5 * c * sqrt(fx*fx + fy*fy + fz*fz);
   };
+  // Factor out into rsModeFreqShoeBox(kx, ky, lz, c)
 
 
   // The number of modes that we have to produce (including aliasing) is given by nMax^3. Modes 
@@ -1302,6 +1303,7 @@ void modalReverb()
     }
   }
   rsHeapSort(&freqs1[0], numModes);
+  // Factor out into rsModalFreqsShoeBox_1(Lx, Ly, Lz, c, nMax)
 
 
   // Now let's try to do the band-limiting more properly based on a maximum frequency fMax:
@@ -1340,7 +1342,7 @@ void modalReverb()
     }
   }
   rsHeapSort(&freqs2[0], (int)freqs2.size());
-
+  // Factor out into rsModalFreqsShoeBox_2(Lx, Ly, Lz, c, fMax)
 
 
   // DOESN'T WORK YET:
@@ -1350,7 +1352,8 @@ void modalReverb()
   Vec dens(numModes);
   for(int i = 1; i < numModes-1; i++)
   {
-    dens[i] = freqs[i+1] - freqs[i-1];            // This is spacing, not actually density!
+    dens[i]  = freqs[i+1] - freqs[i-1];           // This is spacing, not actually density!
+    //dens[i] *= freqs[i] * freqs[i];             // Test. Should make it constant up to noise?
     //dens[i] = 1.0 / (freqs[i+1] - freqs[i-1]);  // Actual density is problematic. See below.
   }
   rsPlotVectorsXY(freqs, dens);
