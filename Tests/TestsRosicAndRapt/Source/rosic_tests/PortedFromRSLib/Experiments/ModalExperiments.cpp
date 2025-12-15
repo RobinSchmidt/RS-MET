@@ -1318,28 +1318,15 @@ void modalReverb()
   {
     nx++;
     Real fx = nx/Lx;
-    if(modeFreq(fx, 1/Ly, 1/Lz, c) > fMax)
+    if(modeFreq(fx, 1/Ly, 1/Lz, c) > fMax)   // 1/Ly, 1/Lz arise from ny = nz = 1 in the formula
       break;
-    // 1/Ly, 1/Lz are the minimum possible contributions. They aries from setting ny = nz = 1 in
-    // the formula.
-
-    //if(fx > fMax)   // Maybe we need if(sqrt(fx*fx + 1/(Ly*Ly) + 1/(Lz*Lz)) > fMax)?
-    //  break;
-
-
     int ny = 0;
     while(true)
     {
       ny++;
       Real fy = ny/Ly;
-      if(modeFreq(fx, fy, 1/Lz, c) > fMax)
+      if(modeFreq(fx, fy, 1/Lz, c) > fMax)   // 1/Lz arises from nz = 1 in the formula
         break;
-     
-     // if(fy > fMax) 
-     //   break;
-        // Is that correct? ..or do we need something lile if(fx+fy > fMax) or 
-        // if(sqrt(fx*fx + fy*fy + 1/(Lz*Lz)) > fMax)?
-
       int nz = 0;
       while(true)
       {
@@ -1353,8 +1340,7 @@ void modalReverb()
     }
   }
   rsHeapSort(&freqs2[0], (int)freqs2.size());
-  // I think, we can move the if(..) conditions up - directly after the computations of
-  // fx, fy, fz respectively.
+
 
 
   // DOESN'T WORK YET:
