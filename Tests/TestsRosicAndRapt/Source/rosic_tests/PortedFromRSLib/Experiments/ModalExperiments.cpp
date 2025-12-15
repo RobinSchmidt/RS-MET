@@ -1247,6 +1247,24 @@ void modalAnalysisGloriosa()
   // -Add some plots/visualizations
 }
 
+/** Returns one of the modal frequencies of a rectangular box. It's given by:
+
+  f = (c/2) * sqrt(kx^2 + ky^2 + kz^2)
+
+where kx = nx/Lx, ky = ny/Ly, kz = nz/Lz  and  nx,ny,nz are 3 independent modal indices that run 
+from 1 to infinity and Lx,Ly,Lz are the lengths in the x,y,z directions and c is the speed of 
+sound. 
+
+See:
+https://computational-acoustics.gitlab.io/website/posts/5-acoustic-modes-of-a-rectangular-room/
+https://reference.wolfram.com/language/PDEModels/tutorial/Acoustics/ModelCollection/RoomEigenfrequencies.html
+https://ccrma.stanford.edu/~jos/pasp/footnode.html#foot14150 or PASP book, page 89.  
+*/
+template<class T>
+T rsModeFreqRectBox(T kx, T ky, T kz, T c)
+{
+  return 0.5 * c * sqrt(kx*kx + ky*ky + kz*kz);
+}
 
 void modalReverb()
 {
@@ -1274,12 +1292,14 @@ void modalReverb()
   Real Lz         =     3.0;   // Length in z-direction (height) in m.
   int  nMax       =      20;   // Upper limit for nx,ny,nz. Acts like a sort of lowpass.
 
+  /*
   // Helper function:
   auto modeFreq = [](Real fx, Real fy, Real fz, Real c)
   {
-    return 0.5 * c * sqrt(fx*fx + fy*fy + fz*fz);
+    return rsModeFreqRectBox(fx, fy, fz, c);
+    //return 0.5 * c * sqrt(fx*fx + fy*fy + fz*fz);
   };
-  // Factor out into rsModeFreqShoeBox(kx, ky, lz, c)
+  */
 
 
   // The number of modes that we have to produce (including aliasing) is given by nMax^3. Modes 
@@ -1296,7 +1316,7 @@ void modalReverb()
         Real fx = nx/Lx;
         Real fy = ny/Ly;
         Real fz = nz/Lz;
-        Real f  = modeFreq(fx, fy, fz, soundSpeed);
+        Real f  = rsModeFreqRectBox(fx, fy, fz, soundSpeed);
         int modeIndex    = (nx-1)*nMax*nMax + (ny-1)*nMax + (nz-1);
         freqs1[modeIndex] = f;
       }
@@ -1312,7 +1332,22 @@ void modalReverb()
   Vec freqs2;
   freqs2.reserve(numModes);  
   // The previously used numModes might be an ok approximation for what is actually needed here? 
-  // ...but maybe with a scale factor that depends on fMax and nMax?
+  // ...but maybe with a scale factor that depends on fMax and nMax? It seems to be not enough but
+  // its not too far off. Maybe we can find an exact formula from involving fMax,Lx,Ly,Lz,c? Or at 
+  // least a formula for an upper bound that we can use for reserve()? I think, we should solve:
+  // 
+  //   fMax = (c/2) * sqrt( (nxMax/Lx)^2 + (1/Ly)^2     + (1/Lz)^2     )
+  //   fMax = (c/2) * sqrt( (1/Lx)^2     + (nyMax/Ly)^2 + (1/Lz)^2     )
+  //   fMax = (c/2) * sqrt( (1/Lx)^2     + (1/Ly)^2     + (nzMax/Lz)^2 )
+  // 
+  // for nxMax, nyMax, nzMax and reserve numModes = nxMax * nyMax * nzMax. Verify this! The idea is
+  // that to compute nxMax, we fix ny,nz to the lowest values they could possibly have and likewise
+  // for computing nyMax, nzMax. We always assume that the respective other n-values are at their 
+  // lowest possible value, i.e. at 1, and then figure out how high our currently computed n-value
+  // can go in order to not exceed fMax. I think, we can keep the nxMax, nyMax, nzMax value as 
+  // float and take a single ceil for numModes at the end. But also try using ceil on the 
+  // individually computed nxMax,... values. I'm not totally sure, we we need to put the call to 
+  // ceil() but I think, that one ceil() at the very end should be enough.
 
 
   int nx = 0;
@@ -1320,21 +1355,21 @@ void modalReverb()
   {
     nx++;
     Real fx = nx/Lx;
-    if(modeFreq(fx, 1/Ly, 1/Lz, c) > fMax)   // 1/Ly, 1/Lz arise from ny = nz = 1 in the formula
-      break;
+    if(rsModeFreqRectBox(fx, 1/Ly, 1/Lz, c) > fMax)   
+      break;             //  1/Ly, 1/Lz arise from setting ny = nz = 1 in the formula
     int ny = 0;
     while(true)
     {
       ny++;
       Real fy = ny/Ly;
-      if(modeFreq(fx, fy, 1/Lz, c) > fMax)   // 1/Lz arises from nz = 1 in the formula
-        break;
+      if(rsModeFreqRectBox(fx, fy, 1/Lz, c) > fMax)   
+        break;             //      1/Lz arises from setting nz = 1 in the formula
       int nz = 0;
       while(true)
       {
         nz++;
         Real fz = nz/Lz;
-        Real f  = modeFreq(fx, fy, fz, c);
+        Real f  = rsModeFreqRectBox(fx, fy, fz, c);
         if(f > fMax)
           break;
         freqs2.push_back(f);
@@ -1352,7 +1387,7 @@ void modalReverb()
   Vec dens(numModes);
   for(int i = 1; i < numModes-1; i++)
   {
-    dens[i]  = freqs[i+1] - freqs[i-1];           // This is spacing, not actually density!
+    dens[i]  = 0.5 * (freqs[i+1] - freqs[i-1]);   // This is spacing, not actually density!
     //dens[i] *= freqs[i] * freqs[i];             // Test. Should make it constant up to noise?
     //dens[i] = 1.0 / (freqs[i+1] - freqs[i-1]);  // Actual density is problematic. See below.
   }
@@ -1360,7 +1395,13 @@ void modalReverb()
   // The so estimated density has infinities because it can happen that 3 modal frequencies
   // coincide. For example, at i = 1240 that happens. Maybe we need to take a numerical derivative,
   // then apply a smoothing filter and only _then_ take the reciprocal. Or plot the inverse mode
-  // density. Maybe call it mode spacing. Maybe try to fit an a/x^2 function to it.
+  // density. Maybe call it mode spacing. Maybe try to fit an a/x^2 function to it. The modal
+  // density should perhaps be expressed in numModes per Hertz as physical unit. Maybe we could
+  // denote it as M/Hz or N/Hz or Mds/Hz where Mds abbrevieates "Modes" or just #/Hz where the #
+  // sign denotes a generic "number of". To apply smoothing, we would need a smoothing filter that
+  // works for non-equally spaced data. I think, I implemented a nun-uniform MA filter for Elan at
+  // some point in the past. That could work here. Try to find the code and maybe use that! But 
+  // wait! Do we really need a non-uniform filter here?
 
 
   int dummy = 0;
@@ -1377,7 +1418,10 @@ void modalReverb()
   //   there.
   // 
   // - With c = 343, Lx = 7, Ly = 5, Lz = 3, nMax = 20, it happens that some modal frequencies
-  //   coincide. For example, at i = 1239,1240,1241, they are all 514.5 Hz.
+  //   in freqs1 coincide. For example, at i = 1239,1240,1241, they are all 514.5 Hz. 
+  // 
+  // - In freqs2, starting at 6889, there's even a section of 5 equal values! ToDo: Figure out what 
+  //   the nx,ny,ny are for these modes and explain why this happens mathematically.
   //
   //
   // ToDo:

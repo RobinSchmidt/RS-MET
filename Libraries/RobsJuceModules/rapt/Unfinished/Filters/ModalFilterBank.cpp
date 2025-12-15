@@ -721,5 +721,12 @@ A general instrument based on modal synthesis could look like:
 
 - Full list of possible per mode parameters: Freq, Amp, Pan, PhaseLeft, PhaseRight, EarlyDecay, 
   LateDecay, DecayMix, Attack, Delay, BeatFreq, BeatAmount, StereoBeat, FreqByAmp,
+  The FreqByAmp feature could be implemented in a way similar to rsModalFilterNonLinear but 
+  instead of computing the instantaneous amplitude using sqrt, we may run a filter with the same 
+  envelope settings and zero freq in parallel. Essentially, we bump the phase a bit further by 
+  additional multiplication of the state with another rotor which depends on the instantaneous 
+  amplitude..I think. Need to think about it more - it's tricky to do efficiently but it would be
+  a really nice fetaure. It would even nicer if we could generally modulate the frequency somehow.
+  With an envelope and an LFO.
 
 */
