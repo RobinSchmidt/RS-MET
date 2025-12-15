@@ -1267,12 +1267,18 @@ void modalReverb()
   using Vec  = std::vector<Real>;
 
   // Setup:
-  Real sampleRate = 48000;     // Sample rate
-  Real soundSpeed =   343.0;   // Speed of sound in m/s
-  Real Lx         =     7.0;   // Length in x-direction (length) in m
-  Real Ly         =     5.0;   // Length in y-direction (width) in m
-  Real Lz         =     3.0;   // Length in z-direction (height) in m
+  Real sampleRate = 48000;     // Sample rate.
+  Real soundSpeed =   343.0;   // Speed of sound in m/s. Also denoted as c.
+  Real Lx         =     7.0;   // Length in x-direction (length) in m.
+  Real Ly         =     5.0;   // Length in y-direction (width) in m.
+  Real Lz         =     3.0;   // Length in z-direction (height) in m.
   int  nMax       =      20;   // Upper limit for nx,ny,nz. Acts like a sort of lowpass.
+
+  // Helper function:
+  auto modeFreq = [](Real fx, Real fy, Real fz, Real c)
+  {
+    return 0.5 * c * sqrt(fx*fx + fy*fy + fz*fz);
+  };
 
   // The number of modes that we have to produce (including aliasing) is given by nMax^3. Modes 
   // that would alias can (and should!) be scrapped, though - so actually, it's probably less than
@@ -1285,11 +1291,11 @@ void modalReverb()
     {
       for(int nz = 1; nz <= nMax; nz++)
       {
-        int modeIndex = (nx-1)*nMax*nMax + (ny-1)*nMax + (nz-1);
         Real fx = nx/Lx;
         Real fy = ny/Ly;
         Real fz = nz/Lz;
-        Real f  = (soundSpeed/2.0) * sqrt(fx*fx + fy*fy + fz*fz);
+        Real f  = modeFreq(fx, fy, fz, soundSpeed);
+        int modeIndex    = (nx-1)*nMax*nMax + (ny-1)*nMax + (nz-1);
         freqs[modeIndex] = f;
       }
     }
@@ -1297,14 +1303,20 @@ void modalReverb()
   rsHeapSort(&freqs[0], numModes);
 
 
+  // DOESN'T WORK YET:
   // Approximate modal density as function of frequency and plot it:
   Vec dens(numModes);
   for(int i = 1; i < numModes-1; i++)
-    dens[i] = 1.0 / (freqs[i+1] - freqs[i-1]);
+  {
+    dens[i] = freqs[i+1] - freqs[i-1];            // This is spacing, not actually density!
+    //dens[i] = 1.0 / (freqs[i+1] - freqs[i-1]);  // Actual density is problematic. See below.
+  }
   rsPlotVectorsXY(freqs, dens);
   // The so estimated density has infinities because it can happen that 3 modal frequencies
   // coincide. For example, at i = 1240 that happens. Maybe we need to take a numerical derivative,
-  // then apply a smoothing filter and only _then_ take the reciprocal.
+  // then apply a smoothing filter and only _then_ take the reciprocal. Or plot the inverse mode
+  // density. Maybe call it mode spacing. Maybe try to fit an a/x^2 function to it.
+
 
   int dummy = 0;
 
@@ -1318,6 +1330,9 @@ void modalReverb()
   //   These can be factored out into functions. We already have somewhere functions that compute 
   //   modal frequencies for other physical systems (I think, an ideal rod, for example). It fits
   //   there.
+  // 
+  // - With c = 343, Lx = 7, Ly = 5, Lz = 3, nMax = 20, it happens that some modal frequencies
+  //   coincide. For example, at i = 1239,1240,1241, they are all 514.5 Hz.
   //
   //
   // ToDo:
@@ -1331,6 +1346,28 @@ void modalReverb()
   //   So, maybe a function that starts at some lowest frequency f0 and computes f[i+1] from f[i]
   //   as f[i+1] = f[i] = df where df = a / f^2 for some constant a could be appropriate? Verify!
   //
+  // 
+  // Ideas:
+  // 
+  // - I think, from a perceptual perspective it doesn't really make sense to have higher mode 
+  //   density at higher frequencies. Quite to the contrary, actually. We tend to resolve 
+  //   frequencies less accurately at higher frequencies, so it seems, we could actually afford a 
+  //   lower mode density there. I think, and FDN produces a more less constant mode density over
+  //   the whole frequency range. This might strike a good compromise between physical accuracy and
+  //   perceptual relevance.
+  // 
+  // - Maybe for a reverb algo, we could combine modal filters for the low frequency range with 
+  //   an FDN for the high frequency range. If the FDN doesn't need to care about producing low
+  //   frequencies, it can use shorter delay times so it would take less memory.
+  // 
+  // - Maybe for the low frequency modes, take exponentially spaced modal frequencies maybe 
+  //   arranged around the musical notes. For example, we could have 2 or 3 frequencies around 55 
+  //   Hz, perhaps at 54 and 56 - maybe the 55 itself could also be present. Maybe 55 could be 
+  //   present in both stereo channels and in the left channel we would have 54 with gain 0.5 and 
+  //   56 with gain 0.25 and in the right channel, we could have 54 with gain 0.25 and 56 with gain
+  //   0.5. 55 would be present in both channels with gain 1. Or maybe we could have 55 for the mid
+  //   channel 54 and 56 in the side channel.
+  // 
   //
   // See:
   //
