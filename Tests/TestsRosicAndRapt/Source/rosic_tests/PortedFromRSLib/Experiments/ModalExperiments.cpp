@@ -1404,45 +1404,31 @@ void modalReverb()
   // Setup:
   Real sampleRate = 48000;     // Sample rate.
   Real length     =     1.0;   // Length of sample to produce in secodns
-  //Real soundSpeed =   343.0;   // Speed of sound in m/s. Also denoted as c. GET RID!
   Real Lx         =     7.0;   // Length in x-direction (length) in m.
   Real Ly         =     5.0;   // Length in y-direction (width) in m.
   Real Lz         =     3.0;   // Length in z-direction (height) in m.
-  int  nMax       =      20;   // Upper limit for nx,ny,nz. Acts like a sort of lowpass. GET RID!
-  Real fMax       =    1000;   // Upper limit for modal frequency. Acts like a proper lowpass.
-
+  Real fMax       =    1000;   // Upper limit for modal frequency. Acts like a lowpass.
   Real decay      =     0.5;   // Mode decay time in seconds
-  Real attack     =     0.0;
-  Real phase      =     0.0;
-
-
-  // Whether nMax of fMax is used depends on the algorithm that we use. The simple algo uses nMax
-  // but has modal gaps higher up and the better algo uses fMax but is more complicated.
-
-  // For convenience:
-  //Real c = soundSpeed;
-
-  // Compute modal frequencies with limits imposed on nx,ny,nz:
-  Vec freqs1 = rsModalFreqsRectBox_1(Lx, Ly, Lz, nMax, nMax, nMax);
-  // This is algorithmically simpler to do but does not do a proper bandlimiting of the modes. Some 
-  // modes that are below a desired cutoff frequency, will be missing.
+  Real attack     =     0.0;   // Mode attack time in seconds
+  Real randPhase  =     1.0;   // Phase randomness in 0..1
 
   // Compute modal frequencies with limit imposed on the maximum mode frequency fMax:
-  Vec freqs2 = rsModalFreqsRectBox_2(Lx, Ly, Lz, fMax);
+  Vec freqs = rsModalFreqsRectBox_2(Lx, Ly, Lz, fMax);
+  int numModes = freqs.size();
 
-  // Decide which of the produced frequency arrays we want to use from now on and plot it:
-  //Vec freqs = freqs1;   // Freqs from simple algo.
-  Vec freqs = freqs2;     // Freqs from proper algo.
+  // Try to approximate the freqs using a function of the form f(n) = a + b * sqrt(n):
+  Real a = freqs[0];   // Plausible?
+  Real b = 1.0;
+  Vec freqsApprox(numModes);
+  // ...
+
+  // Plot frequencies and the graph that should approximate them::
   rsPlotVector(freqs);
-  // The output of the proper algo looks qualitatively like a sqrt function which should be 
-  // expected when we know that the mode density in 3D grows quadratically with frequency. The
-  // output of the simplified algo looks initially like the proper one but towards higher 
-  // frequencies, it deviates because of the missing modes.
+
 
 
   // DOESN'T WORK YET - at least not as ultimately desired:
   // Approximate modal density as function of frequency and plot it:
-  int numModes = freqs.size();
   Vec dens(numModes);
   for(int i = 1; i < numModes-1; i++)
   {
@@ -1474,22 +1460,14 @@ void modalReverb()
   mfb.setReferenceAttack(attack);
   mfb.setMaxNumModes(numModes);
   mfb.setNumModes(numModes);
-
-  RAPT::rsNoiseGenerator<Real> prng;
+  RAPT::rsNoiseGenerator<Real> prng;        // Random generator for the phases
   prng.setRange(0.0, 360.0);
-
   for(int m = 0; m < numModes; m++)
   {
-    Real phase = prng.getSample();
-    //phase = 0;
+    Real phase = randPhase * prng.getSample();
     mfb.setModeParams(m, freqs[m], 1.0, 1.0, 1.0, phase);
   }
-  //mfb.setModalParameters(frq, amp, 0.1*dec, dec, phs);
-  // ToDo: Change the API of rsModalFilterBank in such a way that we can set the number of modes
-  // in advance and loop through them and set the parameters for one mode at a time. With such an 
-  // API, we will not be forced to produce arrays for all the individual decays, attacks, etc.
-  // Then, set up the mfb using that new API and produce its impulse response and write it to a 
-  // wave file and listen to it.
+
 
   Vec h = impulseResponse(mfb, N, Real(1));
   rsArrayTools::normalize(&h[0], N);
@@ -1521,6 +1499,13 @@ void modalReverb()
   // - With totally random start phases, it sounds like a strongly ringing noise. Almost like 
   //   bandpass noise but it's actually lowpass.
   // 
+  // - In a spectrum view, we see an upward slope, i.e. increase of signal energy with frequency.
+  //   This is plausible because the mode density increases with frequency. ToDo: Figure out the
+  //   slope and explain it. I think, if the modal density would increase linearly, we should 
+  //   expect to see +3 dB/oct. Here it oncreases qudratically, so we should see + 6 dB/oct. 
+  //   Verify this! Counteract by reducing amplitudes and/or decay times towards higher 
+  //   frequencies.
+  // 
   //
   // ToDo:
   // 
@@ -1532,6 +1517,9 @@ void modalReverb()
   //   factor n, then the decay should be shorter by a factor n. Or maybe it should also be longer
   //   and we should then mostly use negative factors? Yes, I think, on a GUI, when dragging the 
   //   slider leftward, the sound should get darker.
+  // 
+  // - Use a nonzero attack time. I'm not sure about the physical plausibility of this but I think,
+  //   it may be perceptually nice when used in reverb.
   //
   // - Plot the mode density as function of frequency. I think, we can approximate it qualitatively
   //   as reciprocal of the difference between adjacent modal frequencies. Maybe we should use a
