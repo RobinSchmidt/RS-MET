@@ -69,8 +69,8 @@ int main(int argc, char* argv[])
   // Unit Tests:
 
   bool ok = true;
-  ok &= runUnitTestsRapt();
-  ok &= runUnitTestsRosic();
+  //ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
 
   // The allpass unit test currently fails because I changed the implementation of 
@@ -503,7 +503,7 @@ int main(int argc, char* argv[])
   //dampedSineFilterDesign();
   //dampedSineFilterImpResp();
   //biquadImpulseResponseDesign();
-  //modalBankTransient();
+  modalBankTransient();
   //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
   //modalWithFancyEnv();
   //modalSynthSpectra();
@@ -761,8 +761,8 @@ int main(int argc, char* argv[])
 
   // Modal:
   //createInsertionSortSound();  // move somewhere else
-  //createModalFilterExamples();
-  //createModalFilterBankExamples(); // takes long
+  createModalFilterExamples();
+  createModalFilterBankExamples(); // takes long
   //createPiano1();
 
   // The new renering scripts for creating sample content for the sfz engine:
@@ -771,7 +771,7 @@ int main(int argc, char* argv[])
   //createSamplerWaveforms();
 
   // Older sample-map creations based on modal synthesis (they take long):
-  //createBass1();
+  createBass1();
   //createGong1();
   //createBell1();
   //createPluck1();

@@ -446,6 +446,23 @@ void rsModalFilterBank<TSig, TPar>::setSampleRate(TPar newSampleRate)
   calculateModalFilterCoefficients();
 }
 
+
+template<class TSig, class TPar>
+void rsModalFilterBank<TSig, TPar>::setMaxNumModes(int newMax)
+{
+  maxNumModes = newMax;
+
+
+}
+
+template<class TSig, class TPar>
+void rsModalFilterBank<TSig, TPar>::setNumModes(int newNum, bool init)
+{
+
+}
+
+
+
 template<class TSig, class TPar>
 void rsModalFilterBank<TSig, TPar>::setReferenceFrequency(TPar newFrequency)
 {
@@ -623,13 +640,32 @@ std::vector<TPar> rsModalFilterBank<TSig, TPar>::scaleAtIntervals(std::vector<TP
   return r;
 }
 
+template<class TSig, class TPar>
+bool rsModalFilterBank<TSig, TPar>::checkClassInvariants()
+{
+  bool ok = true;
+
+  ok &= numModes    == getNumModes();
+  ok &= numModes    <= maxNumModes;
+  ok &= maxNumModes == frequencies.size();
+  ok &= maxNumModes == amplitudes.size();
+  ok &= maxNumModes == attackTimes.size();
+  ok &= maxNumModes == decayTimes.size();
+  ok &= maxNumModes == startPhases.size();
+
+  return ok;
+
+  // ToDo: 
+  //
+  // - Maybe we should really switch to a arrays-of-struct design rather than the current 
+  //   struct-of-arrays design. Then we could remove the check that all the arrays have the same 
+  //   size
+}
+
+
+
 //=================================================================================================
 /*
-
-
-
-
-
 
 Ideas
 

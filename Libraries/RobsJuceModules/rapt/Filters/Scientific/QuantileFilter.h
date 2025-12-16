@@ -370,6 +370,9 @@ protected:
   bool isStateConsistent();               // O(N)
   bool isNodeConsistent(const Node& n);   // O(N)
   bool isBufferSlotConsistent(int i);     // O(1)
+  // Maybe rename them to isStateValid() etc. and use this naming convention throughout the 
+  // library. Maybe use isStateOk or juts isOk() - but nah. Or maybe call is 
+  // checkClassInvariants()
 
 };
 

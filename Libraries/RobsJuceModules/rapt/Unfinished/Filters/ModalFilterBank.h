@@ -466,7 +466,9 @@ class rsModalFilterBank
 
 public:
 
-  /** \name Construction/Destruction */
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Lifetime */
 
   /** Constructor. */
   rsModalFilterBank();
@@ -475,12 +477,17 @@ public:
   ~rsModalFilterBank();
 
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** \todo: use const references for the parameter vectors */
 
   /** Sets up the sample-rate fopr this filter. */
   void setSampleRate(TPar newSampleRate);
+
+  void setMaxNumModes(int newMax);
+
+  void setNumModes(int newNum, bool init = true);
 
   /** Sets the reference frequency with respect to which all the absolute mode frequencies are
   computed like absoluteModeFrequency = referenceFrequency * relativeModeFrequency. For harmonic
@@ -495,6 +502,9 @@ public:
 
   // ToDo:
   //void setReferencePhase(TPar newPhase);
+
+  void setModeParams(int modeIndex, TPar freq, TPar amp, TPar attack, TPar decay, TPar phase);
+
 
   /** Sets the strength of the nonlinear feedback. This parameter is important to shape the 
   transient. */
@@ -526,6 +536,7 @@ public:
   // raw C arrays.
 
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns the sample rate that this filter currently runs at. */
@@ -533,22 +544,27 @@ public:
 
   /** Returns the filter's z-domain transfer function value at the given value of z. */
   std::complex<TPar> getTransferFunctionAt(std::complex<TPar> z);
+  // Make const!
 
   /** Returns the length (in seconds) until the produced sound will have decayed to the specified
   level. */
   TPar getLength(TPar decayLevel);
+  // Make const!
 
   /** Returns the currently active number of modal filters. */
-  RS_INLINE int getNumModes()
+  RS_INLINE int getNumModes() const
   {
     int M = (int)rsMin((size_t)numModes, frequencies.size(), amplitudes.size(), decayTimes.size());
     return (int)rsMin((size_t)M, startPhases.size());
-    // M: number of modes - optimize this, use a member variable
+    // M: number of modes - optimize this, use a member variable. We already have numModes. Maybe
+    // we should return it directly but assert that numModes is in the allowed range by having a 
+    // self-check function isConsistent() or isValid() or isStateValid() or checkClassInvariants()
+    // for debugging
   }
 
 
-
-  /** \name Audio Processing */
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
 
   /** Calculates one sample at a time. You should pass an exitatition signal in the input
   argument - if this is a unit impulse, the response will be a superposition of decaying
@@ -560,14 +576,13 @@ public:
   likewise for the output block. The pointers must be distinct. */
   void processBlock(TSig in[], TSig out[], int blockSize);
 
-
-  /** \name Misc */
-
   /** Resets the internal states of the filters. */
   void reset();
 
-  void calculateModalFilterCoefficients();
+  //-----------------------------------------------------------------------------------------------
+  /** \name Misc */
 
+  void calculateModalFilterCoefficients();
 
   /** \name Static member functions  */
   // useful for setting up vectors of modal parameters - these should go into a class
@@ -598,6 +613,11 @@ public:
   static std::vector<TPar> scaleAtIntervals(std::vector<TPar> v, int startIndex, int interval,
     TPar scaler);
 
+
+  /** Self-check function for debugging. */
+  bool checkClassInvariants();
+
+
 protected:
 
   /** Feedback saturation function. */
@@ -606,7 +626,9 @@ protected:
 
   /** \name Data */
 
-  static const int maxNumModes = 1000;    
+
+  int maxNumModes = 1024;                 // New
+  //static const int maxNumModes = 1000;  // Old
   // Get rid of this - allow an arbitrary number that can be passed to the constructor and defaults
   // to a sensible value like maybe 1024. Also have a function like setMaxNumModes that may 
   // re-allocate. Maybe have also functions like allocateModes()
@@ -732,6 +754,7 @@ RS_INLINE TSig rsModalFilterWithAttack2<TSig, TPar>::getSample(TSig in)
   w4 = w3; w3 = w2; w2 = w1; w1 = w0;            // Update state
   return y;                                      // Return result
 }
+
 
 template<class TSig, class TPar>
 RS_INLINE TSig rsModalFilterBank<TSig, TPar>::saturate(TSig x)

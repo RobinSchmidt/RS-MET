@@ -74,5 +74,10 @@
   doesn't work with custom data types (like SIMD, multi-precision, etc.). It only supports float, 
   double and long double.
 
+- For classes that contain self-check functions for debugging purposes, use a consitent naming
+  convention for their names. Maybe use isStateConsistent(), isStateValid(), isValid(), isOk(), 
+  etc. - although the latter names may be too vague. Maybe call it checkClassInvariants().
+  See rsQuantileFilterCore::isStateConsistent() for an example of such a self-test function.
+
 - Maybe rename the libraries (and therefore, their namespaces). Maybe rosic should become RAMP
   which stands for Rob's Audio and Music Processors.
