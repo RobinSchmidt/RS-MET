@@ -1252,8 +1252,8 @@ void modalAnalysisGloriosa()
   f = (c/2) * sqrt(kx^2 + ky^2 + kz^2)
 
 where kx = nx/Lx, ky = ny/Ly, kz = nz/Lz  and  nx,ny,nz are 3 independent modal indices that run 
-from 1 to infinity and Lx,Ly,Lz are the lengths in the x,y,z directions and c is the speed of 
-sound. 
+from 1 to infinity (theoretically - practically, we'll use some upper limit) and Lx,Ly,Lz are the
+lengths in the x,y,z directions and c is the speed of sound. 
 
 See:
 https://computational-acoustics.gitlab.io/website/posts/5-acoustic-modes-of-a-rectangular-room/
@@ -1283,7 +1283,8 @@ std::vector<T> rsModalFreqsRectBox_1(T Lx, T Ly, T Lz, T c, int nxMax, int nyMax
         T f  = rsModeFreqRectBox(fx, fy, fz, c);
 
         int modeIndex = (nx-1)*nxMax*nyMax + (ny-1)*nyMax + (nz-1); 
-        // Verify the nxMax*nyMax and nyMax multipliers
+        // Verify the nxMax*nyMax and nyMax multipliers. They were previously all just nMax because
+        // we only had one single limit for all indices.
 
         freqs[modeIndex] = f;
       }
@@ -1291,6 +1292,10 @@ std::vector<T> rsModalFreqsRectBox_1(T Lx, T Ly, T Lz, T c, int nxMax, int nyMax
   }
   rsHeapSort(&freqs[0], numModes);
   return freqs;
+
+  // ToDo: Maybe put the c parameter last and make it optional. It should default to a #defined
+  // constant RS_SPEED_OF_SOUND or a constant rsSpeedOfSound of type double. Wrap it in the T()
+  // constructore here. Replace the divisions inside the loop by multiplications.
 }
 
 void modalReverb()
@@ -1298,15 +1303,8 @@ void modalReverb()
   // Under construction.
 
   // We compute the modal frequencies of a room shaped like rectangular box and use those 
-  // frequencies in a modal filter bank in order to simulate the reverb in this room. The formula 
-  // for the modal frequencies is given by:
-  //
-  //   f = (c/2) * sqrt( (nx/Lx)^2 + (ny/Ly)^2 + (nz/Lz)^2 )
-  //
-  // where nx,ny,nz are 3 independent indices that run from 1 to infinity and Lx,Ly,Lz 
-  // are the lengths in the x,y,z directions and c is the speed of sound.
-  //
-  // ToDo: Check, if nx,ny,nz should really start at 1 or rather at 0.
+  // frequencies in a modal filter bank in order to simulate the reverb in this room. 
+
 
   using Real = double;
   using Vec  = std::vector<Real>;
@@ -1318,44 +1316,22 @@ void modalReverb()
   Real Ly         =     5.0;   // Length in y-direction (width) in m.
   Real Lz         =     3.0;   // Length in z-direction (height) in m.
   int  nMax       =      20;   // Upper limit for nx,ny,nz. Acts like a sort of lowpass.
-  Real fMax       = 1000;
+  Real fMax       =    1000;   // Upper limit for modal frequency. Acts like a proper lowpass.
+  // Whether nMax of fMax is used depends on the algorithm that we use. The simple algo uses nMax
+  // but has modal gaps higher up and the better algo uses fMax but is more complicated.
 
   // For convenience:
   Real c = soundSpeed;
-  int  numModes = nMax * nMax * nMax;  // Get rid!
 
-
-  /*
-  // The number of modes that we have to produce (including aliasing) is given by nMax^3. Modes 
-  // that would alias can (and should!) be scrapped, though - so actually, it's probably less than
-  // that. How much less depends on the dimensions of the room. ...TBC...
-
-  Vec freqs1(numModes);
-  for(int nx = 1; nx <= nMax; nx++)
-  {
-    for(int ny = 1; ny <= nMax; ny++)
-    {
-      for(int nz = 1; nz <= nMax; nz++)
-      {
-        Real fx = nx/Lx;
-        Real fy = ny/Ly;
-        Real fz = nz/Lz;
-        Real f  = rsModeFreqRectBox(fx, fy, fz, soundSpeed);
-        int modeIndex    = (nx-1)*nMax*nMax + (ny-1)*nMax + (nz-1);
-        freqs1[modeIndex] = f;
-      }
-    }
-  }
-  rsHeapSort(&freqs1[0], numModes);
-  // Factor out into rsModalFreqsRectBox_1(Lx, Ly, Lz, c, nxMax, nyMax, nzMax)
-  */
-
+  // Compute modal frequencies with limits imposed on nx,ny,nz:
   Vec freqs1 = rsModalFreqsRectBox_1(Lx, Ly, Lz, c, nMax, nMax, nMax);
+  // This is algorithmically simpler to do but does not do a proper bandlimiting of the modes. Some 
+  // modes that are below a desired cutoff frequency, will be missing.
 
 
   // Now let's try to do the band-limiting more properly based on a maximum frequency fMax:
-
   Vec freqs2;
+  int  numModes = nMax * nMax * nMax;  // Get rid!
   freqs2.reserve(numModes);  
   // The previously used numModes might be an ok approximation for what is actually needed here? 
   // ...but maybe with a scale factor that depends on fMax and nMax? It seems to be not enough but
@@ -1406,7 +1382,7 @@ void modalReverb()
     }
   }
   rsHeapSort(&freqs2[0], (int)freqs2.size());
-  // Factor out into rsModalFreqsShoeBox_2(Lx, Ly, Lz, c, fMax)
+  // Factor out into rsModalFreqsRectBox_2(Lx, Ly, Lz, c, fMax)
 
 
   // DOESN'T WORK YET:
@@ -1503,10 +1479,17 @@ void modalReverb()
   //   maybe they should be in series. Maybe a using a large number (in the 100s) of parallel 
   //   feedback combs with well tuned frequencies / lengths, we could produce a nice reverb effect.
   // 
+  // - Maybe use N combs with lengths (in seconds) of:  L_n = a * r^n  for n = 0,1,2,..,N, 
+  //   a = some constant (like 0.5 seconds), r = some constant (like 1/goldenRatio). But figure 
+  //   out, if powers of the golden ratio are also nicely irrational. Maybe look at their continued 
+  //   fraction expansions.
+  // 
   // - Maybe replace the unit delays z^-1 in the modal filters by z^-M elements. With that, one 
   //   filter would produce M (equidistant, I think) modes. But what would be the difference to 
   //   comb filters then? Would there be any? Would we get a special kind of "modal comb" or would
   //   it just boil down to a regular comb? Try it!
+  // 
+  // - Make a similar experiment for the modes of a rectangular plate, circular plate, etc.
   // 
   //
   // See:
