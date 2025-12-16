@@ -1418,13 +1418,18 @@ void modalReverb()
 
   // Try to approximate the freqs using a function of the form f(n) = a + b * sqrt(n):
   Real a = freqs[0];   // Plausible?
-  Real b = 1.0;
+  Real b = 10.0;
   Vec freqsApprox(numModes);
-  // ...
+  for(int m = 0; m < numModes; m++)
+  {
+    freqsApprox[m] = a + b * sqrt(Real(m));
+  }
+  // a = freqs[0] = 70; b = 10.0; makes the graphs cross. 
+  // Hmm...maybe it should be a cbrt?
 
   // Plot frequencies and the graph that should approximate them::
-  rsPlotVector(freqs);
-
+  //rsPlotVector(freqs);
+  rsPlotVectors(freqs, freqsApprox);
 
 
   // DOESN'T WORK YET - at least not as ultimately desired:
