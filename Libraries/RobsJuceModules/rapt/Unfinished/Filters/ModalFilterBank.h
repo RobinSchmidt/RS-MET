@@ -554,6 +554,11 @@ public:
   /** Returns the currently active number of modal filters. */
   RS_INLINE int getNumModes() const
   {
+    // New - does not yet work:
+    //rsAssert(checkClassInvariants());
+    //return numModes;
+
+    // Old:
     int M = (int)rsMin((size_t)numModes, frequencies.size(), amplitudes.size(), decayTimes.size());
     return (int)rsMin((size_t)M, startPhases.size());
     // M: number of modes - optimize this, use a member variable. We already have numModes. Maybe
@@ -615,7 +620,7 @@ public:
 
 
   /** Self-check function for debugging. */
-  bool checkClassInvariants();
+  bool checkClassInvariants() const;
 
 
 protected:

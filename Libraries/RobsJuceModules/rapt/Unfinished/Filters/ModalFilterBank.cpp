@@ -641,11 +641,14 @@ std::vector<TPar> rsModalFilterBank<TSig, TPar>::scaleAtIntervals(std::vector<TP
 }
 
 template<class TSig, class TPar>
-bool rsModalFilterBank<TSig, TPar>::checkClassInvariants()
+bool rsModalFilterBank<TSig, TPar>::checkClassInvariants() const
 {
   bool ok = true;
 
-  ok &= numModes    == getNumModes();
+  //ok &= numModes    == getNumModes();  
+  // Will later produce a stack overflow when we call checkClassInvariants there. The code is not 
+  // active yet, though.
+
   ok &= numModes    <= maxNumModes;
   ok &= maxNumModes == frequencies.size();
   ok &= maxNumModes == amplitudes.size();
