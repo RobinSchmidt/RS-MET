@@ -1307,47 +1307,47 @@ std::vector<T> rsModalFreqsRectBox_1(T Lx, T Ly, T Lz, int nxMax, int nyMax, int
 }
 
 
-
-
-
-void modalReverb()
+template<class T>
+std::vector<T> rsModalFreqsRectBox_2(T Lx, T Ly, T Lz, T fMax, T c = T(rsSpeedOfSound))
 {
-  // Under construction.
+  int numModes = 1;      // PRELIMINARY! ToDo: Precompute how many modes we will produce
+  std::vector<T> freqs;    
+  freqs.reserve(1);      // This amount of pre-allocation is not yet enough!
 
-  // We compute the modal frequencies of a room shaped like rectangular box and use those 
-  // frequencies in a modal filter bank in order to simulate the reverb in this room. 
+  int nx = 0;
+  while(true)
+  {
+    nx++;
+    T fx = nx/Lx;
+    if(rsModeFreqRectBox(fx, 1/Ly, 1/Lz, c) > fMax)   
+      break;             //  1/Ly, 1/Lz arise from setting ny = nz = 1 in the formula
+    int ny = 0;
+    while(true)
+    {
+      ny++;
+      T fy = ny/Ly;
+      if(rsModeFreqRectBox(fx, fy, 1/Lz, c) > fMax)   
+        break;             //      1/Lz arises from setting nz = 1 in the formula
+      int nz = 0;
+      while(true)
+      {
+        nz++;
+        T fz = nz/Lz;
+        T f  = rsModeFreqRectBox(fx, fy, fz, c);
+        if(f > fMax)
+          break;
+        freqs.push_back(f);
+      }
+    }
+  }
+  rsHeapSort(&freqs[0], (int)freqs.size());
+  return freqs;
 
 
-  using Real = double;
-  using Vec  = std::vector<Real>;
-
-  // Setup:
-  Real sampleRate = 48000;     // Sample rate.
-  Real soundSpeed =   343.0;   // Speed of sound in m/s. Also denoted as c.
-  Real Lx         =     7.0;   // Length in x-direction (length) in m.
-  Real Ly         =     5.0;   // Length in y-direction (width) in m.
-  Real Lz         =     3.0;   // Length in z-direction (height) in m.
-  int  nMax       =      20;   // Upper limit for nx,ny,nz. Acts like a sort of lowpass.
-  Real fMax       =    1000;   // Upper limit for modal frequency. Acts like a proper lowpass.
-  // Whether nMax of fMax is used depends on the algorithm that we use. The simple algo uses nMax
-  // but has modal gaps higher up and the better algo uses fMax but is more complicated.
-
-  // For convenience:
-  Real c = soundSpeed;
-
-  // Compute modal frequencies with limits imposed on nx,ny,nz:
-  Vec freqs1 = rsModalFreqsRectBox_1(Lx, Ly, Lz, nMax, nMax, nMax, c);
-  // This is algorithmically simpler to do but does not do a proper bandlimiting of the modes. Some 
-  // modes that are below a desired cutoff frequency, will be missing.
-
-
-  // Now let's try to do the band-limiting more properly based on a maximum frequency fMax:
-  Vec freqs2;
-  int  numModes = nMax * nMax * nMax;  // Get rid!
-  freqs2.reserve(numModes);  
-  // The previously used numModes might be an ok approximation for what is actually needed here? 
-  // ...but maybe with a scale factor that depends on fMax and nMax? It seems to be not enough but
-  // its not too far off. Maybe we can find an exact formula from involving fMax,Lx,Ly,Lz,c? Or at 
+  // ToDo: 
+  // 
+  // Optimize this by precomputing the number of modes and pre-allocating the memory in the 
+  // vector. Maybe we can find an exact formula from involving fMax,Lx,Ly,Lz,c? Or at 
   // least a formula for an upper bound that we can use for reserve()? I think, we should solve:
   // 
   //   fMax = (c/2) * sqrt( (nxMax/Lx)^2 + (1/Ly)^2     + (1/Lz)^2     )
@@ -1365,43 +1365,58 @@ void modalReverb()
   // generalized to other formulas for modes that depend on a family of mode-indices. To compute 
   // the max value of one index, set all others to their min values, plug in the desired fMax and
   // solve for the desired nMax.
+}
 
 
-  int nx = 0;
-  while(true)
-  {
-    nx++;
-    Real fx = nx/Lx;
-    if(rsModeFreqRectBox(fx, 1/Ly, 1/Lz, c) > fMax)   
-      break;             //  1/Ly, 1/Lz arise from setting ny = nz = 1 in the formula
-    int ny = 0;
-    while(true)
-    {
-      ny++;
-      Real fy = ny/Ly;
-      if(rsModeFreqRectBox(fx, fy, 1/Lz, c) > fMax)   
-        break;             //      1/Lz arises from setting nz = 1 in the formula
-      int nz = 0;
-      while(true)
-      {
-        nz++;
-        Real fz = nz/Lz;
-        Real f  = rsModeFreqRectBox(fx, fy, fz, c);
-        if(f > fMax)
-          break;
-        freqs2.push_back(f);
-      }
-    }
-  }
-  rsHeapSort(&freqs2[0], (int)freqs2.size());
-  // Factor out into rsModalFreqsRectBox_2(Lx, Ly, Lz, c, fMax)
+
+
+
+void modalReverb()
+{
+  // Under construction.
+
+  // We compute the modal frequencies of a room shaped like rectangular box and use those 
+  // frequencies in a modal filter bank in order to simulate the reverb in this room. 
+
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+
+  // Setup:
+  Real sampleRate = 48000;     // Sample rate.
+  Real soundSpeed =   343.0;   // Speed of sound in m/s. Also denoted as c. GET RID!
+  Real Lx         =     7.0;   // Length in x-direction (length) in m.
+  Real Ly         =     5.0;   // Length in y-direction (width) in m.
+  Real Lz         =     3.0;   // Length in z-direction (height) in m.
+  int  nMax       =      20;   // Upper limit for nx,ny,nz. Acts like a sort of lowpass.
+  Real fMax       =    1000;   // Upper limit for modal frequency. Acts like a proper lowpass.
+  // Whether nMax of fMax is used depends on the algorithm that we use. The simple algo uses nMax
+  // but has modal gaps higher up and the better algo uses fMax but is more complicated.
+
+  // For convenience:
+  Real c = soundSpeed;
+
+  // Compute modal frequencies with limits imposed on nx,ny,nz:
+  Vec freqs1 = rsModalFreqsRectBox_1(Lx, Ly, Lz, nMax, nMax, nMax, c);
+  // This is algorithmically simpler to do but does not do a proper bandlimiting of the modes. Some 
+  // modes that are below a desired cutoff frequency, will be missing.
+
+  // Compute modal frequencies with limit imposed on the maximum mode frequency fMax:
+  Vec freqs2 = rsModalFreqsRectBox_2(Lx, Ly, Lz, fMax, c);
+
+  // Decide which of the produced frequency arrays we want to use from now on and plot it:
+  //Vec freqs = freqs1;   // Freqs from simple algo.
+  Vec freqs = freqs2;     // Freqs from proper algo.
+  rsPlotVector(freqs);
+  // The output of the proper algo looks qualitatively like a sqrt function which should be 
+  // expected when we know that the mode density in 3D grows quadratically with frequency. The
+  // output of the simplified algo looks initially like the proper one but towards higher 
+  // frequencies, it deviates because of the missing modes.
 
 
   // DOESN'T WORK YET:
   // Approximate modal density as function of frequency and plot it:
-  Vec freqs = freqs1;
-  //Vec freqs = freqs2;
-  numModes = freqs.size();
+  int numModes = freqs.size();
   Vec dens(numModes);
   for(int i = 1; i < numModes-1; i++)
   {
@@ -1420,7 +1435,6 @@ void modalReverb()
   // works for non-equally spaced data. I think, I implemented a nun-uniform MA filter for Elan at
   // some point in the past. That could work here. Try to find the code and maybe use that! But 
   // wait! Do we really need a non-uniform filter here?
-
 
   int dummy = 0;
 
