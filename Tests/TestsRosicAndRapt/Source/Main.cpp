@@ -551,7 +551,7 @@ int main(int argc, char* argv[])
 
   // Partial Extraction:
   //biDirectionalFilter();    // maybe move to filter tests
-  beatingSines();
+  //beatingSines();
   //envelopeDeBeating();
   //sineRecreation();               // maybe move elsewhere
   //sineRecreationBandpassNoise();

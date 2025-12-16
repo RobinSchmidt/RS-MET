@@ -1247,6 +1247,11 @@ void modalAnalysisGloriosa()
   // -Add some plots/visualizations
 }
 
+// Maybe move to RAPT library:
+static const double rsSpeedOfSound = 343.0;  // Speed of sound in m/s in air at 20 °C
+// https://en.wikipedia.org/wiki/Speed_of_sound
+
+
 /** Returns one of the modal frequencies of a rectangular box. It's given by:
 
   f = (c/2) * sqrt(kx^2 + ky^2 + kz^2)
@@ -1267,7 +1272,8 @@ T rsModeFreqRectBox(T kx, T ky, T kz, T c)
 }
 
 template<class T>
-std::vector<T> rsModalFreqsRectBox_1(T Lx, T Ly, T Lz, T c, int nxMax, int nyMax, int nzMax)
+std::vector<T> rsModalFreqsRectBox_1(T Lx, T Ly, T Lz, int nxMax, int nyMax, int nzMax, 
+  T c = T(rsSpeedOfSound))
 {
   int numModes = nxMax * nyMax * nzMax;
   std::vector<T> freqs(numModes);
@@ -1302,6 +1308,8 @@ std::vector<T> rsModalFreqsRectBox_1(T Lx, T Ly, T Lz, T c, int nxMax, int nyMax
 
 
 
+
+
 void modalReverb()
 {
   // Under construction.
@@ -1328,7 +1336,7 @@ void modalReverb()
   Real c = soundSpeed;
 
   // Compute modal frequencies with limits imposed on nx,ny,nz:
-  Vec freqs1 = rsModalFreqsRectBox_1(Lx, Ly, Lz, c, nMax, nMax, nMax);
+  Vec freqs1 = rsModalFreqsRectBox_1(Lx, Ly, Lz, nMax, nMax, nMax, c);
   // This is algorithmically simpler to do but does not do a proper bandlimiting of the modes. Some 
   // modes that are below a desired cutoff frequency, will be missing.
 
