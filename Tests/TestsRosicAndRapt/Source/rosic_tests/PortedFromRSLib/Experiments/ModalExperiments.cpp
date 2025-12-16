@@ -1266,6 +1266,33 @@ T rsModeFreqRectBox(T kx, T ky, T kz, T c)
   return 0.5 * c * sqrt(kx*kx + ky*ky + kz*kz);
 }
 
+template<class T>
+std::vector<T> rsModalFreqsRectBox_1(T Lx, T Ly, T Lz, T c, int nxMax, int nyMax, int nzMax)
+{
+  int numModes = nxMax * nyMax * nzMax;
+  std::vector<T> freqs(numModes);
+  for(int nx = 1; nx <= nxMax; nx++)
+  {
+    for(int ny = 1; ny <= nyMax; ny++)
+    {
+      for(int nz = 1; nz <= nzMax; nz++)
+      {
+        T fx = nx/Lx;
+        T fy = ny/Ly;
+        T fz = nz/Lz;
+        T f  = rsModeFreqRectBox(fx, fy, fz, c);
+
+        int modeIndex = (nx-1)*nxMax*nyMax + (ny-1)*nyMax + (nz-1); 
+        // Verify the nxMax*nyMax and nyMax multipliers
+
+        freqs[modeIndex] = f;
+      }
+    }
+  }
+  rsHeapSort(&freqs[0], numModes);
+  return freqs;
+}
+
 void modalReverb()
 {
   // Under construction.
@@ -1291,21 +1318,18 @@ void modalReverb()
   Real Ly         =     5.0;   // Length in y-direction (width) in m.
   Real Lz         =     3.0;   // Length in z-direction (height) in m.
   int  nMax       =      20;   // Upper limit for nx,ny,nz. Acts like a sort of lowpass.
+  Real fMax       = 1000;
+
+  // For convenience:
+  Real c = soundSpeed;
+  int  numModes = nMax * nMax * nMax;  // Get rid!
+
 
   /*
-  // Helper function:
-  auto modeFreq = [](Real fx, Real fy, Real fz, Real c)
-  {
-    return rsModeFreqRectBox(fx, fy, fz, c);
-    //return 0.5 * c * sqrt(fx*fx + fy*fy + fz*fz);
-  };
-  */
-
-
   // The number of modes that we have to produce (including aliasing) is given by nMax^3. Modes 
   // that would alias can (and should!) be scrapped, though - so actually, it's probably less than
   // that. How much less depends on the dimensions of the room. ...TBC...
-  int numModes = nMax * nMax * nMax;
+
   Vec freqs1(numModes);
   for(int nx = 1; nx <= nMax; nx++)
   {
@@ -1323,12 +1347,14 @@ void modalReverb()
     }
   }
   rsHeapSort(&freqs1[0], numModes);
-  // Factor out into rsModalFreqsShoeBox_1(Lx, Ly, Lz, c, nMax)
+  // Factor out into rsModalFreqsRectBox_1(Lx, Ly, Lz, c, nxMax, nyMax, nzMax)
+  */
+
+  Vec freqs1 = rsModalFreqsRectBox_1(Lx, Ly, Lz, c, nMax, nMax, nMax);
 
 
   // Now let's try to do the band-limiting more properly based on a maximum frequency fMax:
-  Real fMax = 1000;
-  Real c    = soundSpeed;
+
   Vec freqs2;
   freqs2.reserve(numModes);  
   // The previously used numModes might be an ok approximation for what is actually needed here? 
@@ -1347,7 +1373,10 @@ void modalReverb()
   // can go in order to not exceed fMax. I think, we can keep the nxMax, nyMax, nzMax value as 
   // float and take a single ceil for numModes at the end. But also try using ceil on the 
   // individually computed nxMax,... values. I'm not totally sure, we we need to put the call to 
-  // ceil() but I think, that one ceil() at the very end should be enough.
+  // ceil() but I think, that one ceil() at the very end should be enough. The method can be 
+  // generalized to other formulas for modes that depend on a family of mode-indices. To compute 
+  // the max value of one index, set all others to their min values, plug in the desired fMax and
+  // solve for the desired nMax.
 
 
   int nx = 0;
@@ -1382,7 +1411,8 @@ void modalReverb()
 
   // DOESN'T WORK YET:
   // Approximate modal density as function of frequency and plot it:
-  Vec freqs = freqs2;
+  Vec freqs = freqs1;
+  //Vec freqs = freqs2;
   numModes = freqs.size();
   Vec dens(numModes);
   for(int i = 1; i < numModes-1; i++)
@@ -1470,7 +1500,13 @@ void modalReverb()
   //   when it's at 50 cents, the center freqs are maximally far away from the notes.
   // 
   // - Maybe instead of modal filters, try using (allpass) comb filters. If allpasses are used, 
-  //   maybe they should be in series.
+  //   maybe they should be in series. Maybe a using a large number (in the 100s) of parallel 
+  //   feedback combs with well tuned frequencies / lengths, we could produce a nice reverb effect.
+  // 
+  // - Maybe replace the unit delays z^-1 in the modal filters by z^-M elements. With that, one 
+  //   filter would produce M (equidistant, I think) modes. But what would be the difference to 
+  //   comb filters then? Would there be any? Would we get a special kind of "modal comb" or would
+  //   it just boil down to a regular comb? Try it!
   // 
   //
   // See:
