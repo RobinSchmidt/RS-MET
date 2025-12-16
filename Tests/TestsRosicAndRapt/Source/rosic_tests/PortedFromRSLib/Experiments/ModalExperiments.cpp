@@ -1257,7 +1257,7 @@ static const double rsSpeedOfSound = 343.0;  // Speed of sound in m/s in air at 
   f = (c/2) * sqrt(kx^2 + ky^2 + kz^2)
 
 where kx = nx/Lx, ky = ny/Ly, kz = nz/Lz  and  nx,ny,nz are 3 independent modal indices that run 
-from 1 to infinity (theoretically - practically, we'll use some upper limit) and Lx,Ly,Lz are the
+from 1 to infinity (theoretically - practically, we'll use some upper limits) and Lx,Ly,Lz are the
 lengths in the x,y,z directions and c is the speed of sound. 
 
 See:
@@ -1271,6 +1271,8 @@ T rsModeFreqRectBox(T kx, T ky, T kz, T c)
   return 0.5 * c * sqrt(kx*kx + ky*ky + kz*kz);
 }
 
+/** Computes the modal frequencies of a rectangular box of given dimensions up to some upper limits
+for the 3 modal indices nx, ny, nz and returns them in a std::vector. */
 template<class T>
 std::vector<T> rsModalFreqsRectBox_1(T Lx, T Ly, T Lz, int nxMax, int nyMax, int nzMax, 
   T c = T(rsSpeedOfSound))
@@ -1299,14 +1301,16 @@ std::vector<T> rsModalFreqsRectBox_1(T Lx, T Ly, T Lz, int nxMax, int nyMax, int
   rsHeapSort(&freqs[0], numModes);
   return freqs;
 
-  // ToDo: Maybe put the c parameter last and make it optional. It should default to a #defined
-  // constant RS_SPEED_OF_SOUND or a constant rsSpeedOfSound of type double. Wrap it in the T()
-  // constructore here. Replace the divisions inside the loop by multiplications. Maybe explain in
-  // the documentation that this function is not really valuable in a production context. It's more
-  // for reference during development and testing.
+  // Replace the divisions inside the loop by multiplications. Also, drag out the computations of
+  // fx into the outermost loop and that of fy into the mid-level loop. They do not all change in
+  // the innermost loop.
+  // 
+  // Maybe explain in the documentation that this function is not really valuable in a production 
+  // context. It's more for reference during development and testing.
 }
 
-
+/** Computes the modal frequencies of a rectangular box of given dimensions up to some upper limit
+fMax for the modal frequency and returns them in a std::vector. */
 template<class T>
 std::vector<T> rsModalFreqsRectBox_2(T Lx, T Ly, T Lz, T fMax, T c = T(rsSpeedOfSound))
 {
@@ -1347,7 +1351,7 @@ std::vector<T> rsModalFreqsRectBox_2(T Lx, T Ly, T Lz, T fMax, T c = T(rsSpeedOf
   // ToDo: 
   // 
   // Optimize this by precomputing the number of modes and pre-allocating the memory in the 
-  // vector. Maybe we can find an exact formula from involving fMax,Lx,Ly,Lz,c? Or at 
+  // vector. Maybe we can find an exact formula involving fMax,Lx,Ly,Lz,c? Or at 
   // least a formula for an upper bound that we can use for reserve()? I think, we should solve:
   // 
   //   fMax = (c/2) * sqrt( (nxMax/Lx)^2 + (1/Ly)^2     + (1/Lz)^2     )
@@ -1361,15 +1365,29 @@ std::vector<T> rsModalFreqsRectBox_2(T Lx, T Ly, T Lz, T fMax, T c = T(rsSpeedOf
   // can go in order to not exceed fMax. I think, we can keep the nxMax, nyMax, nzMax value as 
   // float and take a single ceil for numModes at the end. But also try using ceil on the 
   // individually computed nxMax,... values. I'm not totally sure, we we need to put the call to 
-  // ceil() but I think, that one ceil() at the very end should be enough. The method can be 
-  // generalized to other formulas for modes that depend on a family of mode-indices. To compute 
-  // the max value of one index, set all others to their min values, plug in the desired fMax and
-  // solve for the desired nMax.
+  // ceil() but I think, that one ceil() at the very end should be enough. Put an assertion at the
+  // end of the function like rsAssert(numModes == (int) freqs.size()) to verify that our amount of
+  // pre-allocated memory does indeed match the number of produced modes. Then do a couple of unit
+  // tests with different random values for Lx,Ly,Lz,fMax. If the assertion never triggers, we can 
+  // be confident that the formula (including the placement of the ceil call(s)) is correct.
+  // 
+  // But: When we have correctly(!) precomputed the upper limits for nx,ny,nz we could actually
+  // just call rsModalFreqsRectBox_1() with those values. But then, we would enforce that the 
+  // assertion would not fire. Maybe we should do it like that in production code but still keep 
+  // the current implementation as prototype for unit tests. Such an implementation would also be a
+  // bit more efficient because it doesn't need to make the expensive repeated calls to 
+  // rsModeFreqRectBox() in the two outer loops. It would still have to do the calls in the 
+  // innermost loop though and those calls outnumber the calls in the outer loops by far so it 
+  // doesn't matter that much - but still...
+  // 
+  // The method to precompute the desired number of modes can be generalized to other formulas for
+  // modes that depend on a family of mode-indices. To compute the max value of one index, set all 
+  // others to their min values, plug in the desired fMax and solve for the desired nMax.
+  //
+  // We should also replace the divisions by multiplications and maybe rename fx,fy,fz to kx,ky,kz.
+  // But before doing that, check PASP page 89. It also uses k but there, these k-values are scaled
+  // by pi because it doesn't use frequency in Hz but rather radian frequency in rad/s. 
 }
-
-
-
-
 
 void modalReverb()
 {
