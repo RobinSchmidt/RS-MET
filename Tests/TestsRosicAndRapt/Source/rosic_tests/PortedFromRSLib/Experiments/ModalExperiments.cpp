@@ -1422,6 +1422,8 @@ void modalReverb()
 
   a = 30; b = 45;  // Test - looks quite good!
 
+  //a = 35.5; b = 45;
+
   Vec freqsApprox(numModes);
   for(int m = 0; m < numModes; m++)
   {
@@ -1431,7 +1433,9 @@ void modalReverb()
   // a = freqs[0] = 71; b = 10.0; makes the graphs cross when using sqrt
   // Hmm...maybe it should be a cbrt? With the crbt, a = 71, b = 40, the shape looks better but it
   // doesn't fit quite right. Maybe the offset nees to the less than freqs[0]. Wait! I think, m
-  // should run from 1 to <= numModes
+  // should run from 1 to <= numModes. The a,b params should _not_ depend of fMax. That would make
+  // no sense. fMax is just our arbitrary plotting limit. I think, we can produce one constrain 
+  // equation to produce the 0th frequency at freqs[0]. But then what?
 
   // Plot frequencies and the graph that should approximate them::
   //rsPlotVector(freqs);
