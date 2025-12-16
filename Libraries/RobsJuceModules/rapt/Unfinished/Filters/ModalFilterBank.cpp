@@ -451,17 +451,23 @@ template<class TSig, class TPar>
 void rsModalFilterBank<TSig, TPar>::setMaxNumModes(int newMax)
 {
   maxNumModes = newMax;
+  numModes = rsMin(numModes, maxNumModes);   // Truncate current numModes, if needed
 
+  frequencies.resize(maxNumModes);
+  amplitudes.resize(maxNumModes);
+  attackTimes.resize(maxNumModes);
+  decayTimes.resize(maxNumModes);
+  startPhases.resize(maxNumModes);
 
+  // ToDo: Maybe init the arrays to all zeros.
 }
 
 template<class TSig, class TPar>
-void rsModalFilterBank<TSig, TPar>::setNumModes(int newNum, bool init)
+void rsModalFilterBank<TSig, TPar>::setNumModes(int newNum)
 {
-
+  rsAssert(newNum <= maxNumModes, "Requested number of modes exceeds maximum");
+  numModes = rsMin(newNum, maxNumModes);
 }
-
-
 
 template<class TSig, class TPar>
 void rsModalFilterBank<TSig, TPar>::setReferenceFrequency(TPar newFrequency)
@@ -491,6 +497,23 @@ void rsModalFilterBank<TSig, TPar>::setReferenceDecay(TPar newDecay)
   calculateModalFilterCoefficients();
 }
 
+template<class TSig, class TPar>
+void rsModalFilterBank<TSig, TPar>::setModeParams(int m, 
+  TPar freq, TPar amp, TPar attack, TPar decay, TPar phase)
+{
+  rsAssert(m >= 0 && m < numModes);  // Maybe factor out into isValidModeIndex()
+
+  frequencies[m] = freq;
+  amplitudes[m]  = amp;
+  attackTimes[m] = attack;
+  decayTimes[m]  = decay;
+  startPhases[m] = phase;
+
+  updateFilterCoeffs(m);             // Maybe make that update optional
+}
+
+
+// DEPRECATE THIS:
 template<class TSig, class TPar>
 void rsModalFilterBank<TSig, TPar>::setModalParameters(std::vector<TPar> newFrequencies, 
   std::vector<TPar> newAmplitudes, std::vector<TPar> newAttackTimes, 
@@ -554,12 +577,30 @@ void rsModalFilterBank<TSig, TPar>::reset()
 }
 
 template<class TSig, class TPar>
+void rsModalFilterBank<TSig, TPar>::updateFilterCoeffs(int m)
+{
+  modalFilters[m].setModalParameters(  
+    referenceFrequency * frequencies[m], 
+    referenceAmplitude * amplitudes[m],
+    referenceAttack    * attackTimes[m],
+    referenceDecay     * decayTimes[m], 
+    startPhases[m], 
+    sampleRate); 
+}
+
+// Maybe rename to updateModalFilterCoeffs()
+template<class TSig, class TPar>
 void rsModalFilterBank<TSig, TPar>::calculateModalFilterCoefficients()
 {
   size_t nm = rsMin((size_t)numModes, frequencies.size(), amplitudes.size(), decayTimes.size());
   nm = rsMin(nm, startPhases.size());
   for(size_t m = 0; m < nm; m++)
   {
+    updateFilterCoeffs(m);
+
+    // Old:
+    /*
+    // Factor out into calculateModalFilterCoefficients(m) or updateModalFilterCoeffs(m)
     modalFilters[m].setModalParameters(
       referenceFrequency * frequencies[m], 
       referenceAmplitude * amplitudes[m],
@@ -567,6 +608,7 @@ void rsModalFilterBank<TSig, TPar>::calculateModalFilterCoefficients()
       referenceDecay * decayTimes[m], 
       startPhases[m], 
       sampleRate); 
+      */
   }
 }
 
@@ -663,6 +705,14 @@ bool rsModalFilterBank<TSig, TPar>::checkClassInvariants() const
   // - Maybe we should really switch to a arrays-of-struct design rather than the current 
   //   struct-of-arrays design. Then we could remove the check that all the arrays have the same 
   //   size
+  //
+  // - Verify that the vector sizes really correspond to the maxNumModes. I'm not sure anymore if
+  //   I have intended it this way, i.e. using the vector sizes for maxNumModes and numModes to 
+  //   only use a part of these vectors or if I wanted to use the sizes for the current number and
+  //   the capacities for the max. The former makes more sense thoug, so that should be the way to
+  //   do it.
+  //
+  // - Check that the attack times are less than the decay times with some safety margin.
 }
 
 

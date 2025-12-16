@@ -487,7 +487,7 @@ public:
 
   void setMaxNumModes(int newMax);
 
-  void setNumModes(int newNum, bool init = true);
+  void setNumModes(int newNum);
 
   /** Sets the reference frequency with respect to which all the absolute mode frequencies are
   computed like absoluteModeFrequency = referenceFrequency * relativeModeFrequency. For harmonic
@@ -533,7 +533,8 @@ public:
     std::vector<TPar> newDecayTimes, 
     std::vector<TPar> newStartPhases);
   // ToDo: Pass arguments by const reference or maybe pass an integer M for the number of modes and
-  // raw C arrays.
+  // raw C arrays. We really should get rid of this function. The user should use setNumModes() and
+  // then loop through the modes and call setModeParams() for each.
 
 
   //-----------------------------------------------------------------------------------------------
@@ -587,7 +588,10 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Misc */
 
+  void updateFilterCoeffs(int modeIndex);
+
   void calculateModalFilterCoefficients();
+  // Rename to updateFilterCoeffs()
 
   /** \name Static member functions  */
   // useful for setting up vectors of modal parameters - these should go into a class

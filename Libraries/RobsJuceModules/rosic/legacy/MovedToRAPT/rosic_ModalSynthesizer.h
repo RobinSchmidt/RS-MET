@@ -266,6 +266,7 @@ namespace rosic
     void resetModalFilters();
 
     void calculateModalFilterCoefficients();
+    // Rename to updateFilterCoeffs()
 
     //=============================================================================================
 
