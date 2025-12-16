@@ -603,9 +603,13 @@ protected:
   /** Feedback saturation function. */
   RS_INLINE TSig saturate(TSig x);
 
+
   /** \name Data */
 
-  static const int maxNumModes = 1000;    // get rid of this - allow an arbitrary number
+  static const int maxNumModes = 1000;    
+  // Get rid of this - allow an arbitrary number that can be passed to the constructor and defaults
+  // to a sensible value like maybe 1024. Also have a function like setMaxNumModes that may 
+  // re-allocate. Maybe have also functions like allocateModes()
 
   std::vector<rsModalFilterWithAttack<TSig, TPar>> modalFilters;    
   // Maybe use fixed size C-arrays instead. But no - that implies stack allocation which may be
@@ -626,7 +630,7 @@ protected:
   TPar referenceDecay     = TPar(1.0);
   TPar referenceAttack    = TPar(0.1);
   TPar sampleRate         = TPar(44100);
-  int  numModes           = maxNumModes;   
+  int  numModes           = maxNumModes;   // Maybe init to 0
   // Restricts the number of modes to be generated - if -1, there's no restriction other than the 
   // minimum of the dimensionalities of the parameter vectors
 

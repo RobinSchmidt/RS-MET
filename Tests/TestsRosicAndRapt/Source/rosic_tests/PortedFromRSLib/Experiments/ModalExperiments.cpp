@@ -1399,6 +1399,7 @@ void modalReverb()
 
   using Real = double;
   using Vec  = std::vector<Real>;
+  using MFB  = RAPT::rsModalFilterBank<Real, Real>;
 
   // Setup:
   Real sampleRate = 48000;     // Sample rate.
@@ -1460,18 +1461,26 @@ void modalReverb()
   // Use the so produced frequency array with a modal filter bank and produce its impulse response:
   // set up modal filter bank:
   int N = ceilInt(length * sampleRate);
-  Vec x(N);
-  rosic::rsModalFilterBankDD mfb;
+  MFB mfb;
   mfb.setSampleRate(sampleRate);
   mfb.setReferenceFrequency(1.0);
   //mfb.setReferenceDecay(decay);
   //mfb.setReferenceAttack(attack);
+  //mfb.setNumModes(numModes);  // or maybe have a function initModes(numModes)
+  for(int m = 0; m < numModes; m++)
+  {
+    //mfb.setModalParameters(m, freqs[m], ...);
+
+
+  }
   //mfb.setModalParameters(frq, amp, 0.1*dec, dec, phs);
   // ToDo: Change the API of rsModalFilterBank in such a way that we can set the number of modes
   // in advance and loop through them and set the parameters for one mode at a time. With such an 
   // API, we will not be forced to produce arrays for all the individual decays, attacks, etc.
   // Then, set up the mfb using that new API and produce its impulse response and write it to a 
   // wave file and listen to it.
+
+  //Vec x(N);
 
 
 
