@@ -1402,7 +1402,8 @@ void modalReverb()
 
   // Setup:
   Real sampleRate = 48000;     // Sample rate.
-  Real soundSpeed =   343.0;   // Speed of sound in m/s. Also denoted as c. GET RID!
+  Real length     =     1.0;   // Length of sample to produce in secodns
+  //Real soundSpeed =   343.0;   // Speed of sound in m/s. Also denoted as c. GET RID!
   Real Lx         =     7.0;   // Length in x-direction (length) in m.
   Real Ly         =     5.0;   // Length in y-direction (width) in m.
   Real Lz         =     3.0;   // Length in z-direction (height) in m.
@@ -1412,15 +1413,15 @@ void modalReverb()
   // but has modal gaps higher up and the better algo uses fMax but is more complicated.
 
   // For convenience:
-  Real c = soundSpeed;
+  //Real c = soundSpeed;
 
   // Compute modal frequencies with limits imposed on nx,ny,nz:
-  Vec freqs1 = rsModalFreqsRectBox_1(Lx, Ly, Lz, nMax, nMax, nMax, c);
+  Vec freqs1 = rsModalFreqsRectBox_1(Lx, Ly, Lz, nMax, nMax, nMax);
   // This is algorithmically simpler to do but does not do a proper bandlimiting of the modes. Some 
   // modes that are below a desired cutoff frequency, will be missing.
 
   // Compute modal frequencies with limit imposed on the maximum mode frequency fMax:
-  Vec freqs2 = rsModalFreqsRectBox_2(Lx, Ly, Lz, fMax, c);
+  Vec freqs2 = rsModalFreqsRectBox_2(Lx, Ly, Lz, fMax);
 
   // Decide which of the produced frequency arrays we want to use from now on and plot it:
   //Vec freqs = freqs1;   // Freqs from simple algo.
@@ -1432,7 +1433,7 @@ void modalReverb()
   // frequencies, it deviates because of the missing modes.
 
 
-  // DOESN'T WORK YET:
+  // DOESN'T WORK YET - at least not as ultimately desired:
   // Approximate modal density as function of frequency and plot it:
   int numModes = freqs.size();
   Vec dens(numModes);
@@ -1453,6 +1454,26 @@ void modalReverb()
   // works for non-equally spaced data. I think, I implemented a nun-uniform MA filter for Elan at
   // some point in the past. That could work here. Try to find the code and maybe use that! But 
   // wait! Do we really need a non-uniform filter here?
+
+
+  // Under construction:
+  // Use the so produced frequency array with a modal filter bank and produce its impulse response:
+  // set up modal filter bank:
+  int N = ceilInt(length * sampleRate);
+  Vec x(N);
+  rosic::rsModalFilterBankDD mfb;
+  mfb.setSampleRate(sampleRate);
+  mfb.setReferenceFrequency(1.0);
+  //mfb.setReferenceDecay(decay);
+  //mfb.setReferenceAttack(attack);
+  //mfb.setModalParameters(frq, amp, 0.1*dec, dec, phs);
+  // ToDo: Change the API of rsModalFilterBank in such a way that we can set the number of modes
+  // in advance and loop through them and set the parameters for one mode at a time. With such an 
+  // API, we will not be forced to produce arrays for all the individual decays, attacks, etc.
+  // Then, set up the mfb using that new API and produce its impulse response and write it to a 
+  // wave file and listen to it.
+
+
 
   int dummy = 0;
 
@@ -1534,6 +1555,21 @@ void modalReverb()
   //   it just boil down to a regular comb? Try it!
   // 
   // - Make a similar experiment for the modes of a rectangular plate, circular plate, etc.
+  // 
+  // - It seems like the modal frequecies follow a rule f(n) = a + b * sqrt(n). Verify that and
+  //   figure out a and b. I think, a could be the frequency of the lowest mode. Maybe try 
+  //   plotting such functions f(n) together with freqs in a single plot and adjust a,b by eye 
+  //   until we have a match. Maybe the values are related to some sort of mean (arithmetic, 
+  //   harmonic, quadratic, etc.) of Lx,Ly,Lz? Maybe try it using Lx = Ly = Lz = 5. That would be a
+  //   cubic box. Maybe the a,b values are generally related to the volume of the box and the 
+  //   aspect ratio is only responsible for the finer details but not for the general trend? Look 
+  //   up the acoustics literature. I think, there may be formula for modal density in terms of 
+  //   volume. Maybe try to figure out modal frequencies for an ellipsoid. Investigate the 2D cases
+  //   as well: rectangular and elliptic membrane.
+  // 
+  // - Maybe it could generally make sense to produce modes via a power rule: 
+  //   f(n) = a + b * n^(1/c). Here c = 2 which means the modal density increases with the square
+  //   of the frequency.
   // 
   //
   // See:
