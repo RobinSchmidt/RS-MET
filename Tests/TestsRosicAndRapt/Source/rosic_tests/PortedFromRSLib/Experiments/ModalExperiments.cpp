@@ -1419,15 +1419,19 @@ void modalReverb()
   // Try to approximate the freqs using a function of the form f(n) = a + b * sqrt(n):
   Real a = freqs[0];   // Plausible?
   Real b = 40.0;
+
+  a = 30; b = 45;  // Test - looks quite good!
+
   Vec freqsApprox(numModes);
   for(int m = 0; m < numModes; m++)
   {
     //freqsApprox[m] = a + b * sqrt(Real(m));
-    freqsApprox[m] = a + b * cbrt(Real(m));
+    freqsApprox[m] = a + b * cbrt(Real(m+1));
   }
   // a = freqs[0] = 71; b = 10.0; makes the graphs cross when using sqrt
   // Hmm...maybe it should be a cbrt? With the crbt, a = 71, b = 40, the shape looks better but it
-  // doesn't fit quite right
+  // doesn't fit quite right. Maybe the offset nees to the less than freqs[0]. Wait! I think, m
+  // should run from 1 to <= numModes
 
   // Plot frequencies and the graph that should approximate them::
   //rsPlotVector(freqs);
