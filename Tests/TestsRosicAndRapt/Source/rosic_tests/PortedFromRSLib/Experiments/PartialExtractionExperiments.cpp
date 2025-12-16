@@ -797,6 +797,33 @@ void pseudoAmpModViaBeating()
   //
   // ToDo:
   // 
+  // - Figure out and document what happens to the signal when we swap the amplitudes of the two
+  //   sines. 
+  // 
+  // - In a new function, produce two (pseudo) tremolo sines intended for use in a stereo context 
+  //   for left and right channel. Try to give them the same center frequency and let them differ 
+  //   only in the phase of the sinusoidal pseudo modulator that produces the tremolo effect. Try 
+  //   also to let them differ in the phase of the (pseudo) carrier wave. Try also to give them 
+  //   different center frequencies (like 98 and 102 Hz) but the same modulation frequency, e.g. 
+  //   where we previously had 95 and 105 Hz for a single sien, we may now use 93/103, 97/107 
+  //   pairs. Check what the complete mix of all 4 sines would look like - would the stereo signal
+  //   be mono-compatible in the sense that the mono-sum would have similar features as the two 
+  //   channel signals? Eventually, I want to use this in the context of modal syntthesis to let 
+  //   modes have at least BeatFreq and BeatAmount parameters but possibly also some sort 
+  //   StereoBeat. I'm not yet sure what's the best (most efficient and most intuitive/usable) way 
+  //   to implement this. The purpose of such an experiment would be to figure this out. Maybe 
+  //   compare the obtained results also to actual, true tremolo (i.e. amplitude modulation). The
+  //   thing is that for true tremolo, we would need 3 sines (per channel) whereas with pseudo
+  //   tremolo, we would only need 2, so using pseudo-tremolo instead of true tremolo would be an
+  //   optimization. Or..well - true tremolo could also be implemented by explicitly using a 
+  //   carrier and a modulator and them multiplying them. That would also only take two oscillators
+  //   per mode (per channel). However, I think, it may be more problematic to implement it like 
+  //   that. We would probably have to deal with undamped recursive sine oscillators which may 
+  //   respond not so nicely to input signals. We would then probably also implement the amp 
+  //   envelope explicitly. It may be more felxible to implement it that way, though. It would be 
+  //   easier to introduce amplitude dependent freq- or phase-modulation because the amplitude is
+  //   more readily available.
+  // 
   // - Maybe get rid of the signal y. We don't need it anymore. We only created it initially in 
   //   order to figure out the correct formulas for f1,f2,a1,a2. Now we haven them (implemented in
   //   rsAmpModToSineBeatParams_1,2) and from now on, we can just use them. Maybe after deleting y,

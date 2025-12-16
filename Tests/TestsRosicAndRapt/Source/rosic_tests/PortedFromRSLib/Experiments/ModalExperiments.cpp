@@ -1295,8 +1295,12 @@ std::vector<T> rsModalFreqsRectBox_1(T Lx, T Ly, T Lz, T c, int nxMax, int nyMax
 
   // ToDo: Maybe put the c parameter last and make it optional. It should default to a #defined
   // constant RS_SPEED_OF_SOUND or a constant rsSpeedOfSound of type double. Wrap it in the T()
-  // constructore here. Replace the divisions inside the loop by multiplications.
+  // constructore here. Replace the divisions inside the loop by multiplications. Maybe explain in
+  // the documentation that this function is not really valuable in a production context. It's more
+  // for reference during development and testing.
 }
+
+
 
 void modalReverb()
 {

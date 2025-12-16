@@ -712,7 +712,12 @@ A general instrument based on modal synthesis could look like:
 
 - Maybe the carrier wave itself could also have a different phase in left and right signal.
 
-- Each mode should also have a Pan parameter.
+- Each mode should also have a Pan parameter. 
+
+- Maybe it could also have a waveshape parameter. We could pass the waveshape through a 
+  waveshaper, like tanh. It may also be interesting to pass groups of modes through waveshapers 
+  to let them interact nonlinearly. Maybe the octaves of the fundamental together with the octaves
+  of mode 3, i.e. sines at f0 and 3*f0, would produce some nice powerchord like sound?
 
 - Provide a different implementation that splits the computation into two multiplicative parts
   used for the sinusoid and the attack/decay envelope. The envelope may operate on the absolute
