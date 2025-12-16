@@ -47,6 +47,8 @@ https://github.com/audacity/audacity
  https://github.com/tenacityteam/tenacity , https://codeberg.org/tenacityteam/tenacity
  https://github.com/Audacium/audacium  (archived, is now merged with tenacity)
  https://github.com/Binaergewitter/audiocity
+ https://github.com/Sneeds-Feed-and-Seed/sneedacity
+ 
 
 Mixxx:
 https://github.com/mixxxdj/mixxx
@@ -1176,7 +1178,8 @@ https://github.com/jameshball/osci-render
 https://osci-render.com/
 
 
-
+https://audiomass.co/
+-Web-based audio editor
 
 
 https://ldesoras.fr/prod.html#src
@@ -1332,6 +1335,10 @@ https://github.com/traviscross/expreval
 
 
 https://www.joehagenmusic.com/post/a-comprehensive-guide-to-high-quality-free-plugins-that-you-ll-actually-use
+
+
+Websites with reviews:
+https://filmora.wondershare.de/audio-editing/open-source-audio-editor.html
 
 
 

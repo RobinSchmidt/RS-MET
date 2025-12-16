@@ -1411,7 +1411,7 @@ void modalReverb()
   int  nMax       =      20;   // Upper limit for nx,ny,nz. Acts like a sort of lowpass. GET RID!
   Real fMax       =    1000;   // Upper limit for modal frequency. Acts like a proper lowpass.
 
-  Real decay      =     0.1;   // Mode decay time in seconds
+  Real decay      =     0.5;   // Mode decay time in seconds
   Real attack     =     0.0;
   Real phase      =     0.0;
 
@@ -1474,9 +1474,15 @@ void modalReverb()
   mfb.setReferenceAttack(attack);
   mfb.setMaxNumModes(numModes);
   mfb.setNumModes(numModes);
+
+  RAPT::rsNoiseGenerator<Real> prng;
+  prng.setRange(0.0, 360.0);
+
   for(int m = 0; m < numModes; m++)
   {
-    mfb.setModeParams(m, freqs[m], 1.0, 1.0, 1.0, 0.0);
+    Real phase = prng.getSample();
+    //phase = 0;
+    mfb.setModeParams(m, freqs[m], 1.0, 1.0, 1.0, phase);
   }
   //mfb.setModalParameters(frq, amp, 0.1*dec, dec, phs);
   // ToDo: Change the API of rsModalFilterBank in such a way that we can set the number of modes
@@ -1512,10 +1518,14 @@ void modalReverb()
   //   start and the output looks a bit like a decaying sinusoid. There's a lot of ringing going 
   //   on. I think, this comes from the brickwall filtering of the modes.
   // 
+  // - With totally random start phases, it sounds like a strongly ringing noise. Almost like 
+  //   bandpass noise but it's actually lowpass.
+  // 
   //
   // ToDo:
   // 
-  // - Try random start phases.
+  // - Try random start phases. OK - done. This indeed removes the click. Maybe try also +-90°
+  //   and try using a scalable randomness amount.
   // 
   // - Try making the decay times frequency dependent such that low frequencies ring longer. Maybe
   //   use a power law for the dependency where 1 should mean: when the frequency is higher by a 
