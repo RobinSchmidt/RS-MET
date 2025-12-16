@@ -1485,9 +1485,9 @@ void modalReverb()
   // Then, set up the mfb using that new API and produce its impulse response and write it to a 
   // wave file and listen to it.
 
-  //Vec x(N);
-
-
+  Vec h = impulseResponse(mfb, N, Real(1));
+  rsArrayTools::normalize(&h[0], N);
+  rosic::writeToMonoWaveFile("RectRoomModes.wav", &h[0], N, (int)sampleRate);
 
   int dummy = 0;
 
@@ -1508,8 +1508,20 @@ void modalReverb()
   // - In freqs2, starting at 6889, there's even a section of 5 equal values! ToDo: Figure out what 
   //   the nx,ny,ny are for these modes and explain why this happens mathematically.
   //
+  // - When using a start phase of 0 for all modes, the sound has a distinct plop sound at the 
+  //   start and the output looks a bit like a decaying sinusoid. There's a lot of ringing going 
+  //   on. I think, this comes from the brickwall filtering of the modes.
+  // 
   //
   // ToDo:
+  // 
+  // - Try random start phases.
+  // 
+  // - Try making the decay times frequency dependent such that low frequencies ring longer. Maybe
+  //   use a power law for the dependency where 1 should mean: when the frequency is higher by a 
+  //   factor n, then the decay should be shorter by a factor n. Or maybe it should also be longer
+  //   and we should then mostly use negative factors? Yes, I think, on a GUI, when dragging the 
+  //   slider leftward, the sound should get darker.
   //
   // - Plot the mode density as function of frequency. I think, we can approximate it qualitatively
   //   as reciprocal of the difference between adjacent modal frequencies. Maybe we should use a

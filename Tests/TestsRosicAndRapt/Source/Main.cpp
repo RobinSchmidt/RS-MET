@@ -503,7 +503,7 @@ int main(int argc, char* argv[])
   //dampedSineFilterDesign();
   //dampedSineFilterImpResp();
   //biquadImpulseResponseDesign();
-  modalBankTransient();
+  //modalBankTransient();
   //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
   //modalWithFancyEnv();
   //modalSynthSpectra();
