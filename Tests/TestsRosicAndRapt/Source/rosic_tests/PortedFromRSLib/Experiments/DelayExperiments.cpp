@@ -87,6 +87,9 @@ void algoVerb()
   //   (pan, maybe Haas delay) and to filter them (peak EQ, tilt EQ) and to disperse them 
   //   (sweepdown disperser). The FDN should have some built in modulation capabilities. Maybe 
   //   modulate the feedback matrix (easy with generalized Hadamard matrix) and/or the delay times.
+  //   Maybe instead of a modal filter bank for the room modes, we could use an allpass filter 
+  //   chain with highly resonant allpass filters. Maybe the module should be able to switch 
+  //   between the two modes modal-bank / allpass-chain. Or maybe we should have separate modules.
 }
 
 void delayLineBasic()

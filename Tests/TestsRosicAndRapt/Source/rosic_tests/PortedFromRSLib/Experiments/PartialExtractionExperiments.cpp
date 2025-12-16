@@ -895,7 +895,7 @@ void beatingSines()
   pseudoAmpModViaBeating();
 
   beatingSines1();
-  pseudoAmpModViaBeating();
+  pseudoAmpModViaBeating();   // Maybe rename to pseudoTremolo...
 
   // See:
   // https://github.com/RobinSchmidt/RS-MET/discussions/322
