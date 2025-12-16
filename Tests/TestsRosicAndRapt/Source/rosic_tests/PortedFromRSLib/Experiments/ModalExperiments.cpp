@@ -1408,8 +1408,14 @@ void modalReverb()
   Real Lx         =     7.0;   // Length in x-direction (length) in m.
   Real Ly         =     5.0;   // Length in y-direction (width) in m.
   Real Lz         =     3.0;   // Length in z-direction (height) in m.
-  int  nMax       =      20;   // Upper limit for nx,ny,nz. Acts like a sort of lowpass.
+  int  nMax       =      20;   // Upper limit for nx,ny,nz. Acts like a sort of lowpass. GET RID!
   Real fMax       =    1000;   // Upper limit for modal frequency. Acts like a proper lowpass.
+
+  Real decay      =     0.1;   // Mode decay time in seconds
+  Real attack     =     0.0;
+  Real phase      =     0.0;
+
+
   // Whether nMax of fMax is used depends on the algorithm that we use. The simple algo uses nMax
   // but has modal gaps higher up and the better algo uses fMax but is more complicated.
 
@@ -1464,14 +1470,13 @@ void modalReverb()
   MFB mfb;
   mfb.setSampleRate(sampleRate);
   mfb.setReferenceFrequency(1.0);
-  //mfb.setReferenceDecay(decay);
-  //mfb.setReferenceAttack(attack);
-  //mfb.setNumModes(numModes);  // or maybe have a function initModes(numModes)
+  mfb.setReferenceDecay(decay);
+  mfb.setReferenceAttack(attack);
+  mfb.setMaxNumModes(numModes);
+  mfb.setNumModes(numModes);
   for(int m = 0; m < numModes; m++)
   {
-    //mfb.setModalParameters(m, freqs[m], ...);
-
-
+    mfb.setModeParams(m, freqs[m], 1.0, 1.0, 1.0, 0.0);
   }
   //mfb.setModalParameters(frq, amp, 0.1*dec, dec, phs);
   // ToDo: Change the API of rsModalFilterBank in such a way that we can set the number of modes

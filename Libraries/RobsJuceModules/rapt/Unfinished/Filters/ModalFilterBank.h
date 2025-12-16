@@ -504,7 +504,7 @@ public:
   //void setReferencePhase(TPar newPhase);
 
   void setModeParams(int modeIndex, TPar freq, TPar amp, TPar attack, TPar decay, TPar phase);
-
+  // Maybe rename to setupMode
 
   /** Sets the strength of the nonlinear feedback. This parameter is important to shape the 
   transient. */

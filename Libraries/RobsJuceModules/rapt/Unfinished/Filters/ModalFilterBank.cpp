@@ -459,6 +459,8 @@ void rsModalFilterBank<TSig, TPar>::setMaxNumModes(int newMax)
   decayTimes.resize(maxNumModes);
   startPhases.resize(maxNumModes);
 
+  modalFilters.resize(maxNumModes);
+
   // ToDo: Maybe init the arrays to all zeros.
 }
 
@@ -692,11 +694,14 @@ bool rsModalFilterBank<TSig, TPar>::checkClassInvariants() const
   // active yet, though.
 
   ok &= numModes    <= maxNumModes;
+
   ok &= maxNumModes == frequencies.size();
   ok &= maxNumModes == amplitudes.size();
   ok &= maxNumModes == attackTimes.size();
   ok &= maxNumModes == decayTimes.size();
   ok &= maxNumModes == startPhases.size();
+
+  ok &= maxNumModes == modalFilters.size();
 
   return ok;
 
