@@ -1465,29 +1465,51 @@ void modalReverb()
   // ToDo: 7,2,1
 
   // Test:
-  Real c = rsSpeedOfSound;
-  a = (c/4) * sqrt(3) / L;  // Not sure, if that formula is correct. It's a guess.
+  //Real c = rsSpeedOfSound;
+  //a = (c/4) * sqrt(3) / L;  // Not sure, if that formula is correct. It's a guess.
                               // ...for our meager 4 examples, it seems to work, though.
   //b = cbrt(sqrt(3) * (c/2) / L);  // Also a guess. ...Nope! That is wrong!
+  
+  //a = freqs[0];               // That would make sense when we start counting modes from 0
+  //b = 40;                     // Kinda works for 5,5,5 - but not well. Graphs cross
 
   // Compute some of the first mode frequencies with the two formulas. The actual correct formula
   // and the surrogate formula with the cbrt:
   //                                          // Values for Lx = Ly = Lz = 5
-  Real f1 = rsModeFreqRectBox(1/L, 1/L, 1/L); // f(1,1,1) =  59.409
+  Real f1 = rsModeFreqRectBox(1/L, 1/L, 1/L); // f(1,1,1) =  59.409 = freqs[0]
   Real f2 = rsModeFreqRectBox(2/L, 2/L, 2/L); // f(2,2,2) = 118.818 = freqs[10]
-  Real g1 = a + b * cbrt(1);                  // g(1)
-  Real g2 = a + b * cbrt(2);                  // g(2)
+  Real f3 = rsModeFreqRectBox(3/L, 3/L, 3/L); // f(3,3,3) = 178.228 = freqs[44..47]
+  Real g1 = a + b * cbrt( 1);                 // g(1)           ~ f(1,1,1)
+  Real g2 = a + b * cbrt( 8);                 // g(8)  = g(2^3) ~ f(2,2,2)
+  Real g3 = a + b * cbrt(27);                 // g(27) = g(3^3) ~ f(3,3,3)
   // We want a match at the 1st mode such that we require g(1) = f(1,1,1). We may also want a match
   // at the f(2,2,2) mode. I think, we want g(8) to match f(2,2,2) not g(2) because
   // g(2) corresponds to f(1,1,2). Also, g(3) ~ f(1,2,1), g(4) ~ f(1,2,2), g(5) ~ f(2,1,1),
   // g(6) ~ f(2,1,2), g(7) ~ f(2,2,1), g(8) ~ f(2,2,2) ...so in general, I think, we want to match
   // g(n^3) to f(n,n,n). If we pick two values of n such as n = 1 and n = 2, this will give us two
-  // equations from which we may compute a and b.
+  // equations from which we may compute a and b. Wait! I think, matching g(n^3) to f(n,n,n) is 
+  // wrong. It's not that simple. It's not just n^3. I think, we may need the formula to compute
+  // the modeIndex from nx,ny,nz and into that, plug in n for nx,ny,nz. But no! That makes no sense
+  // either because it involves an nMax and it computes the index before sorting anyway. So maybe 
+  // n^3 is right, after all. Maybe instead of trying to match 2 particular modes, we may also try
+  // do some sort of least-squares fitting. Or maybe match the lowest mode exactly and do the rest 
+  // via least squares. Maybe try to set up a function that computes a(L), b(L) via least squares
+  // fits and then plot a(L) and b(L) against L and try to figure out the functions from these 
+  // plots. Our function g(a,b,n) is nonlinear only in n but linear in the parameters a,b so a 
+  // linear least squares fitting procedure should be applicable.
+  // Maybe we could make it even easier by using g(n) = a + b * cbrt(m) but let m start at 0 rather
+  // than 1. That would mean a must exactly be equal to f(1,1,1). 
 
 
   Vec freqsApprox(numModes);
   for(int m = 0; m < numModes; m++)
+  {
     freqsApprox[m] = a + b * cbrt(Real(m+1));
+
+    //freqsApprox[m] = a + b * cbrt(Real(m));   // Test. Simplifies match of f(1,1,1)
+    // But this formula seems to give worse overall matching performance. The one with m+1 is
+    // better
+  }
   // a = freqs[0] = 71; b = 10.0; makes the graphs cross when using sqrt. Using sqrt seems wrong!
   // Hmm...maybe it should be a cbrt? With the crbt, a = 71, b = 40, the shape looks better but it
   // doesn't fit quite right. Maybe the offset nees to the less than freqs[0]. Wait! I think, m
