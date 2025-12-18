@@ -1258,7 +1258,7 @@ static const double rsSpeedOfSound = 343.0;  // Speed of sound in m/s in air at 
 
 where kx = nx/Lx, ky = ny/Ly, kz = nz/Lz  and  nx,ny,nz are 3 independent modal indices that run 
 from 1 to infinity (theoretically - practically, we'll use some upper limits) and Lx,Ly,Lz are the
-lengths in the x,y,z directions and c is the speed of sound. 
+lengths in the x,y,z directions (like length, width, height) and c is the speed of sound. 
 
 See:
 https://computational-acoustics.gitlab.io/website/posts/5-acoustic-modes-of-a-rectangular-room/
@@ -1266,7 +1266,7 @@ https://reference.wolfram.com/language/PDEModels/tutorial/Acoustics/ModelCollect
 https://ccrma.stanford.edu/~jos/pasp/footnode.html#foot14150 or PASP book, page 89.  
 */
 template<class T>
-T rsModeFreqRectBox(T kx, T ky, T kz, T c)
+T rsModeFreqRectBox(T kx, T ky, T kz, T c)    // Maybe make c optional
 {
   return 0.5 * c * sqrt(kx*kx + ky*ky + kz*kz);
 }
@@ -1450,13 +1450,19 @@ void modalReverb()
 
   // We try to find a setting for Lx = Ly = Lz that produces the same general shape as our current
   // setup of Lx,Ly,Lz. It looks like the geometric mean works well for this:
-  Real mean = reGeneralizedMean(0.0, Lx, Ly, Lz); // Generalized mean with p = 0 is geometric mean 
+  Real L = reGeneralizedMean(0.0, Lx, Ly, Lz); // Generalized mean with p = 0 is geometric mean 
 
   // These values were found to be appropriate by manual tuning:
                          // Lx, Ly, Lz    
   a = 30; b = 45;        // 7,  5,  3     or all 4.7
   //a = 32; b = 52;      // 7,  5,  2     or all 4.1
   //a = 30; b = 42.4;    // 5,  5,  5
+
+  // Test:
+  Real c = rsSpeedOfSound;
+  a = (c/4) * sqrt(3) / L;  // Not sure, if that formula is correct. It's a guess.
+                            // ...for our meager 3 examples, it seems to work, though.
+
   Vec freqsApprox(numModes);
   for(int m = 0; m < numModes; m++)
     freqsApprox[m] = a + b * cbrt(Real(m+1));
@@ -1484,6 +1490,11 @@ void modalReverb()
   // affecting the general shape. That has simplified our problem of parameter estimation for a,b 
   // to a problem that can be formulated in terms of a single parameter L rather than 3 parameters.
   // We now want to find formulas a = a(L) and b = b(L) that work. ...TBC...
+  // I think, a = (c/2) * sqrt( 3 * (1/L)^2 ) = (c/2) * sqrt(3) / L could work. I obtained this by
+  // by taking the formula f(nx,ny,nz) = (c/2) * sqrt( (nx/Lx)^2 + (ny/Ly)^2 + (nz/Lz)^2 ), 
+  // replacing  Lx,Ly,Lz by L = cbrt(Lx*Ly*Lz)  to obtain a surrogate room with the same general 
+  // mode distribution and then choosing nx = ny = nz = 1 to obtain the frequency of the lowest 
+  // mode. Ah - no - I think, if anything, we need to use half of that value. 
 
 
   // Plot frequencies and the graph that should approximate them::
