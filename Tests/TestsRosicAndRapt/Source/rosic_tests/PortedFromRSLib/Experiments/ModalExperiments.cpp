@@ -1402,12 +1402,12 @@ void modalReverb()
   using MFB  = RAPT::rsModalFilterBank<Real, Real>;
 
   // Setup:
-  Real sampleRate = 48000;     // Sample rate.
-  Real length     =     1.0;   // Length of sample to produce in secodns
+  Real sampleRate = 48000.0;   // Sample rate.
+  Real length     =     1.0;   // Length of sample to produce in seconds
   Real Lx         =     7.0;   // Length in x-direction (length) in m.
   Real Ly         =     5.0;   // Length in y-direction (width) in m.
   Real Lz         =     3.0;   // Length in z-direction (height) in m.
-  Real fMax       =    1000;   // Upper limit for modal frequency. Acts like a lowpass.
+  Real fMax       =  1000.0;   // Upper limit for modal frequency. Acts like a lowpass.
   Real decay      =     0.5;   // Mode decay time in seconds
   Real attack     =     0.0;   // Mode attack time in seconds
   Real randPhase  =     1.0;   // Phase randomness in 0..1
@@ -1416,26 +1416,32 @@ void modalReverb()
   Vec freqs = rsModalFreqsRectBox_2(Lx, Ly, Lz, fMax);
   int numModes = freqs.size();
 
-  // Try to approximate the freqs using a function of the form f(n) = a + b * sqrt(n):
-  Real a = freqs[0];   // Plausible?
+  // Try to approximate the freqs using a function of the form f(n) = a + b * cbrt(n):
+  Real a = freqs[0];   // Plausible? ..Nah! Doesn't look good!
   Real b = 40.0;
 
-  a = 30; b = 45;  // Test - looks quite good!
-
-  //a = 35.5; b = 45;
-
+  // These values were found to be appropriate by manual tuning:
+                       // Lx, Ly, Lz
+  a = 30; b = 45;      // 7,  5,  3
+  //a = 30; b = 42.4;    // 5,  5,  5
   Vec freqsApprox(numModes);
   for(int m = 0; m < numModes; m++)
-  {
-    //freqsApprox[m] = a + b * sqrt(Real(m));
     freqsApprox[m] = a + b * cbrt(Real(m+1));
-  }
-  // a = freqs[0] = 71; b = 10.0; makes the graphs cross when using sqrt
+  // a = freqs[0] = 71; b = 10.0; makes the graphs cross when using sqrt. Using sqrt seems wrong!
   // Hmm...maybe it should be a cbrt? With the crbt, a = 71, b = 40, the shape looks better but it
   // doesn't fit quite right. Maybe the offset nees to the less than freqs[0]. Wait! I think, m
   // should run from 1 to <= numModes. The a,b params should _not_ depend of fMax. That would make
   // no sense. fMax is just our arbitrary plotting limit. I think, we can produce one constrain 
   // equation to produce the 0th frequency at freqs[0]. But then what?
+  // ToDo: Start with 7,5,3 and try to find a setting for Lx = Ly = Lz that has the same shape. It
+  // should probably be some sort of mean. However, the arithmetic mean of 5 does not work. Try the
+  // harmonic mean, etc. Maybe write a function rsGeneralizedMean(Real power, T x1, T, x2, ...)
+  // that can be called with any number of arguments. Here, we need it for 3. I think, we need a 
+  // variadic template. I think, it will have to use an inner variadic template 
+  // rsPowerSum(Real power, T x1, T x2, ...) that calls itself recursively. Trying to manually match
+  // it, it looks like Lx = Ly = Lz = 4.7 produces a result similar to Lx, Ly, Lz = 7, 5, 3. Try to
+  // figure out, how 4.7 can be produced as a particluar mean of 7,5,3. What power do we need to 
+  // use? And then: Try to generalize it.
 
   // Plot frequencies and the graph that should approximate them::
   //rsPlotVector(freqs);
@@ -1550,6 +1556,10 @@ void modalReverb()
   //   on the decay for energy compensation. Then set up a modal bank with these parameters and 
   //   produce its impulse response. Plot it and write it to a wavefile. Maybe let the modes also
   //   have a nonzero attack time.
+  // 
+  // - Make a unit test that tries different permutations of the same values of Lx,Ly,Ly. They 
+  //   should always produce the same modal frequencies. They will initially be generated in a 
+  //   different order, but after sorting, the result should be the same in all cases.
   //
   // 
   // Ideas:
