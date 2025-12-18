@@ -1444,7 +1444,11 @@ void modalReverb()
   Vec freqs = rsModalFreqsRectBox_2(Lx, Ly, Lz, fMax);
   int numModes = freqs.size();
 
+
+   
+  // --------------------------------------------
   // Try to approximate the freqs using a function of the form f(n) = a + b * cbrt(n):
+
   Real a = freqs[0];   // Plausible? ..Nah! Doesn't look good!
   Real b = 40.0;
 
@@ -1557,19 +1561,22 @@ void modalReverb()
 
   // Observations:
   //
-  // - When nMax is so low that we do not fill the whole spectrum, the denstity goes down towards
+  // - When nMax is so low that we do not fill the whole spectrum, the density goes down towards
   //   the upper freqs again. Maybe instead of using an nMax, we should use a fixed fMax. But that
   //   complicates the loop logic. Maybe we should have a simple implementation based on nMax and 
   //   later a more advanced implementation using fMax that implements the more complex logic. 
   //   These can be factored out into functions. We already have somewhere functions that compute 
   //   modal frequencies for other physical systems (I think, an ideal rod, for example). It fits
-  //   there.
+  //   there. ...DONE!
   // 
   // - With c = 343, Lx = 7, Ly = 5, Lz = 3, nMax = 20, it happens that some modal frequencies
   //   in freqs1 coincide. For example, at i = 1239,1240,1241, they are all 514.5 Hz. 
+  //   ...obsolete! We don't use nMax anymore. We use now fMax. However, I think, that doesn't 
+  //   really matter in this case. We must only make sure that fMax > 515.
   // 
   // - In freqs2, starting at 6889, there's even a section of 5 equal values! ToDo: Figure out what 
   //   the nx,ny,ny are for these modes and explain why this happens mathematically.
+  //   ...obsolete! There is no freqs2 anymore!
   //
   // - When using a start phase of 0 for all modes, the sound has a distinct plop sound at the 
   //   start and the output looks a bit like a decaying sinusoid. There's a lot of ringing going 
@@ -1583,7 +1590,7 @@ void modalReverb()
   //   slope and explain it. I think, if the modal density would increase linearly, we should 
   //   expect to see +3 dB/oct. Here it oncreases qudratically, so we should see + 6 dB/oct. 
   //   Verify this! Counteract by reducing amplitudes and/or decay times towards higher 
-  //   frequencies.
+  //   frequencies. The latter makes more sense acoustically, I think.
   // 
   //
   // ToDo:
@@ -1608,6 +1615,9 @@ void modalReverb()
   //   the mode density as function of frequency, let's denote it by d(f), increases quadratically.
   //   So, maybe a function that starts at some lowest frequency f0 and computes f[i+1] from f[i]
   //   as f[i+1] = f[i] = df where df = a / f^2 for some constant a could be appropriate? Verify!
+  //   OK - partially done. I think, the right form is  f(m) = a + b * cbrt(m)  where m is the mode
+  //   index. I'm now trying to figure out appropriate formulas for a and b. See code segment 
+  //   starting at the comment "Try to approximate the freqs ..."
   // 
   // - Compute modal decay times, amplitudes and phases according to some rule. Decay should depend
   //   on some power of frequency, I think. Amp probably also and/or maybe amp should also depend
