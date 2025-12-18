@@ -1465,23 +1465,25 @@ void modalReverb()
   // ToDo: 7,2,1
 
   // Test:
-  //Real c = rsSpeedOfSound;
+  Real c = rsSpeedOfSound;
   //a = (c/4) * sqrt(3) / L;  // Not sure, if that formula is correct. It's a guess.
                               // ...for our meager 4 examples, it seems to work, though.
+                              // 
   //b = cbrt(sqrt(3) * (c/2) / L);  // Also a guess. ...Nope! That is wrong!
+  //b = cbrt((sqrt(3)*c) / (2*L));  // ...same formula written differently
   
   //a = freqs[0];               // That would make sense when we start counting modes from 0
   //b = 40;                     // Kinda works for 5,5,5 - but not well. Graphs cross
 
   // Compute some of the first mode frequencies with the two formulas. The actual correct formula
   // and the surrogate formula with the cbrt:
-  //                                          // Values for Lx = Ly = Lz = 5
-  Real f1 = rsModeFreqRectBox(1/L, 1/L, 1/L); // f(1,1,1) =  59.409 = freqs[0]
-  Real f2 = rsModeFreqRectBox(2/L, 2/L, 2/L); // f(2,2,2) = 118.818 = freqs[10]
-  Real f3 = rsModeFreqRectBox(3/L, 3/L, 3/L); // f(3,3,3) = 178.228 = freqs[44..47]
-  Real g1 = a + b * cbrt( 1);                 // g(1)           ~ f(1,1,1)
-  Real g2 = a + b * cbrt( 8);                 // g(8)  = g(2^3) ~ f(2,2,2)
-  Real g3 = a + b * cbrt(27);                 // g(27) = g(3^3) ~ f(3,3,3)
+  //                                            // Values for Lx = Ly = Lz = 5
+  Real f111 = rsModeFreqRectBox(1/L, 1/L, 1/L); // f(1,1,1) =  59.409 = freqs[0]
+  Real f222 = rsModeFreqRectBox(2/L, 2/L, 2/L); // f(2,2,2) = 118.818 = freqs[10]
+  Real f333 = rsModeFreqRectBox(3/L, 3/L, 3/L); // f(3,3,3) = 178.228 = freqs[44..47]
+  Real g1   = a + b * cbrt( 1);                 // g(1)           ~ f(1,1,1)
+  Real g2   = a + b * cbrt( 8);                 // g(8)  = g(2^3) ~ f(2,2,2)
+  Real g3   = a + b * cbrt(27);                 // g(27) = g(3^3) ~ f(3,3,3)
   // We want a match at the 1st mode such that we require g(1) = f(1,1,1). We may also want a match
   // at the f(2,2,2) mode. I think, we want g(8) to match f(2,2,2) not g(2) because
   // g(2) corresponds to f(1,1,2). Also, g(3) ~ f(1,2,1), g(4) ~ f(1,2,2), g(5) ~ f(2,1,1),
@@ -1499,6 +1501,14 @@ void modalReverb()
   // linear least squares fitting procedure should be applicable.
   // Maybe we could make it even easier by using g(n) = a + b * cbrt(m) but let m start at 0 rather
   // than 1. That would mean a must exactly be equal to f(1,1,1). 
+
+  // Test the simplifeid formula for f(n,n,n) = n  *  (cbrt(3) * c) / (2*L)
+  Real f1 = 1 * (sqrt(3) * c) / (2 * L);  // == f111
+  Real f2 = 2 * (sqrt(3) * c) / (2 * L);  // == f222
+  Real f3 = 3 * (sqrt(3) * c) / (2 * L);  // == f333
+  // OK - that does indeed work.
+
+
 
 
   Vec freqsApprox(numModes);
