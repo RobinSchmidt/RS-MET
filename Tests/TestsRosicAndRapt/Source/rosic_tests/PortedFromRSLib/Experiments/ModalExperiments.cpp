@@ -1432,10 +1432,10 @@ void modalReverb()
   // Setup:
   Real sampleRate = 48000.0;   // Sample rate.
   Real length     =     1.0;   // Length of sample to produce in seconds
-  Real Lx         =     9.0;   // Length in x-direction (length) in m.
-  Real Ly         =     9.0;   // Length in y-direction (width) in m.
-  Real Lz         =     9.0;   // Length in z-direction (height) in m.
-  Real fMax       =  1000.0;   // Upper limit for modal frequency. Acts like a lowpass.
+  Real Lx         =     5.0;   // Length in x-direction (length) in m.
+  Real Ly         =     5.0;   // Length in y-direction (width) in m.
+  Real Lz         =     5.0;   // Length in z-direction (height) in m.
+  Real fMax       =  2000.0;   // Upper limit for modal frequency. Acts like a lowpass.
   Real decay      =     0.5;   // Mode decay time in seconds
   Real attack     =     0.0;   // Mode attack time in seconds
   Real randPhase  =     1.0;   // Phase randomness in 0..1
@@ -1458,9 +1458,9 @@ void modalReverb()
 
   // These values were found to be appropriate by manual tuning:
                          // Lx, Ly, Lz    
-  a = 30; b = 45;        // 7,  5,  3     or all 4.7
+  //a = 30; b = 45;        // 7,  5,  3     or all 4.7
   //a = 32; b = 52;      // 7,  5,  2     or all 4.1
-  //a = 30; b = 42.4;    // 5,  5,  5
+  a = 30; b = 42.4;    // 5,  5,  5
   //a = 43; b = 61;        // 7,  3,  2     or all 3.5
   // ToDo: 7,2,1
 
@@ -1469,16 +1469,12 @@ void modalReverb()
   Real k = sqrt(3)*c / (2*L);
   //a = (c/4) * sqrt(3) / L;  // Not sure, if that formula is correct. It's a guess.
                               // ...for our meager 4 examples, it seems to work, though.
-                              // 
-  //b = cbrt(sqrt(3) * (c/2) / L);  // Also a guess. ...Nope! That is wrong!
-  //b = cbrt((sqrt(3)*c) / (2*L));  // ...same formula written differently
-  
-  //a = freqs[0];               // That would make sense when we start counting modes from 0
-  //b = 40;                     // Kinda works for 5,5,5 - but not well. Graphs cross
 
-  b = 0.725*k;                  // This was found by trial and error
-  a = k-b;                      // This seems to assure that we match f(1,1,1) with g(1)
-                                // (but only when Lx = Ly = Lz)
+  b = 0.7195*k;               // This was found by trial and error
+  //b = k / sqrt(2);          // Nah!
+  //b = k;                    // Näh!
+  a = k-b;                    // This seems to assure that we match f(1,1,1) with g(1)
+                              // (but only when Lx = Ly = Lz)
 
   // Compute some of the first mode frequencies with the two formulas. The actual correct formula
   // and the surrogate formula with the cbrt:
@@ -1486,9 +1482,12 @@ void modalReverb()
   Real f111 = rsModeFreqRectBox(1/L, 1/L, 1/L); // f(1,1,1) =  59.409 = freqs[0]
   Real f222 = rsModeFreqRectBox(2/L, 2/L, 2/L); // f(2,2,2) = 118.818 = freqs[10]
   Real f333 = rsModeFreqRectBox(3/L, 3/L, 3/L); // f(3,3,3) = 178.228 = freqs[44..47]
+  Real f1   = 1 * (sqrt(3) * c) / (2 * L);      // == f111,  f(n,n,n) = n * k
+  Real f2   = 2 * (sqrt(3) * c) / (2 * L);      // == f222
+  Real f3   = 3 * (sqrt(3) * c) / (2 * L);      // == f333
   Real g1   = a + b * cbrt( 1);                 // g(1)           ~ f(1,1,1)
-  Real g2   = a + b * cbrt( 8);                 // g(8)  = g(2^3) ~ f(2,2,2)
-  Real g3   = a + b * cbrt(27);                 // g(27) = g(3^3) ~ f(3,3,3)
+  Real g8   = a + b * cbrt( 8);                 // g(8)  = g(2^3) ~ f(2,2,2)
+  Real g27  = a + b * cbrt(27);                 // g(27) = g(3^3) ~ f(3,3,3)
   // We want a match at the 1st mode such that we require g(1) = f(1,1,1). We may also want a match
   // at the f(2,2,2) mode. I think, we want g(8) to match f(2,2,2) not g(2) because
   // g(2) corresponds to f(1,1,2). Also, g(3) ~ f(1,2,1), g(4) ~ f(1,2,2), g(5) ~ f(2,1,1),
@@ -1506,14 +1505,6 @@ void modalReverb()
   // linear least squares fitting procedure should be applicable.
   // Maybe we could make it even easier by using g(n) = a + b * cbrt(m) but let m start at 0 rather
   // than 1. That would mean a must exactly be equal to f(1,1,1). 
-
-  // Test the simplifeid formula for f(n,n,n) = n  *  (cbrt(3) * c) / (2*L)
-  Real f1 = 1 * (sqrt(3) * c) / (2 * L);  // == f111
-  Real f2 = 2 * (sqrt(3) * c) / (2 * L);  // == f222
-  Real f3 = 3 * (sqrt(3) * c) / (2 * L);  // == f333
-  // OK - that does indeed work.
-
-
 
 
   Vec freqsApprox(numModes);
@@ -1635,6 +1626,9 @@ void modalReverb()
   // - In freqs2, starting at 6889, there's even a section of 5 equal values! ToDo: Figure out what 
   //   the nx,ny,ny are for these modes and explain why this happens mathematically.
   //   ...obsolete! There is no freqs2 anymore!
+  // 
+  // - With Lx = Ly = Lz, the frequencies f(1,1,1), f(2,2,2), f(3,3,3) are harmonically related as
+  //   f0, 2*f0, 3*f0.
   //
   // - When using a start phase of 0 for all modes, the sound has a distinct plop sound at the 
   //   start and the output looks a bit like a decaying sinusoid. There's a lot of ringing going 
