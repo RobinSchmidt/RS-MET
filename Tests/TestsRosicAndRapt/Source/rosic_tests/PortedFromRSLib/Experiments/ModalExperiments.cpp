@@ -1461,11 +1461,13 @@ void modalReverb()
   a = 30; b = 45;        // 7,  5,  3     or all 4.7
   //a = 32; b = 52;      // 7,  5,  2     or all 4.1
   //a = 30; b = 42.4;    // 5,  5,  5
+  //a = 43; b = 61;        // 7,  3,  2     or all 3.5
+  // ToDo: 7,2,1
 
   // Test:
-  //Real c = rsSpeedOfSound;
+  Real c = rsSpeedOfSound;
   //a = (c/4) * sqrt(3) / L;  // Not sure, if that formula is correct. It's a guess.
-                              // ...for our meager 3 examples, it seems to work, though.
+                              // ...for our meager 4 examples, it seems to work, though.
   //b = cbrt(sqrt(3) * (c/2) / L);  // Also a guess. ...Nope! That is wrong!
 
 
