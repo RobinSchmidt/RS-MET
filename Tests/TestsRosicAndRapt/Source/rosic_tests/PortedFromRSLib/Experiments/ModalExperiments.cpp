@@ -1453,8 +1453,9 @@ void modalReverb()
   Real mean = reGeneralizedMean(0.0, Lx, Ly, Lz); // Generalized mean with p = 0 is geometric mean 
 
   // These values were found to be appropriate by manual tuning:
-                       // Lx, Ly, Lz
-  a = 30; b = 45;      // 7,  5,  3
+                         // Lx, Ly, Lz    
+  a = 30; b = 45;        // 7,  5,  3     or all 4.7
+  //a = 32; b = 52;      // 7,  5,  2     or all 4.1
   //a = 30; b = 42.4;    // 5,  5,  5
   Vec freqsApprox(numModes);
   for(int m = 0; m < numModes; m++)
@@ -1474,7 +1475,15 @@ void modalReverb()
   // it, it looks like Lx = Ly = Lz = 4.7 produces a result similar to Lx, Ly, Lz = 7, 5, 3. Try to
   // figure out, how 4.7 can be produced as a particluar mean of 7,5,3. What power do we need to 
   // use? OK - it looks like the geometric mean is the right one. Try it with more settings for
-  // Lx,Ly,Lz to see if it holds up generally or was an happy accident.
+  // Lx,Ly,Lz to see if it holds up generally or was an happy accident. I think, using the geometric
+  // mean means that we get the same volume. So, it appears, mode density can be expressed in terms
+  // of volume - just like Sabine's formula for reverb time. See:
+  // https://en.wikipedia.org/wiki/Reverberation#Sabine_equation
+  // OK - now we have established that for a given setting of Lx,Ly,Lz we can replace these by
+  // a single characteristic length  L = cbrt(Lx*Ly*Lz)  that would lead to the same volume without
+  // affecting the general shape. That has simplified our problem of parameter estimation for a,b 
+  // to a problem that can be formulated in terms of a single parameter L rather than 3 parameters.
+  // We now want to find formulas a = a(L) and b = b(L) that work. ...TBC...
 
 
   // Plot frequencies and the graph that should approximate them::
