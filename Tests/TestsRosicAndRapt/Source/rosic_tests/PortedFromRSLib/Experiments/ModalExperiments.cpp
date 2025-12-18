@@ -1432,10 +1432,10 @@ void modalReverb()
   // Setup:
   Real sampleRate = 48000.0;   // Sample rate.
   Real length     =     1.0;   // Length of sample to produce in seconds
-  Real Lx         =     5.0;   // Length in x-direction (length) in m.
+  Real Lx         =     7.0;   // Length in x-direction (length) in m.
   Real Ly         =     5.0;   // Length in y-direction (width) in m.
-  Real Lz         =     5.0;   // Length in z-direction (height) in m.
-  Real fMax       =  2000.0;   // Upper limit for modal frequency. Acts like a lowpass.
+  Real Lz         =     3.0;   // Length in z-direction (height) in m.
+  Real fMax       =  1000.0;   // Upper limit for modal frequency. Acts like a lowpass.
   Real decay      =     0.5;   // Mode decay time in seconds
   Real attack     =     0.0;   // Mode attack time in seconds
   Real randPhase  =     1.0;   // Phase randomness in 0..1
@@ -1470,7 +1470,9 @@ void modalReverb()
   //a = (c/4) * sqrt(3) / L;  // Not sure, if that formula is correct. It's a guess.
                               // ...for our meager 4 examples, it seems to work, though.
 
-  b = 0.7195*k;               // This was found by trial and error
+
+  //b = 0.7195*k;               // This was found by trial and error
+  b = 0.725*k;                 // This was found by trial and error
   //b = k / sqrt(2);          // Nah!
   //b = k;                    // Näh!
   a = k-b;                    // This seems to assure that we match f(1,1,1) with g(1)
