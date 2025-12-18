@@ -1389,6 +1389,34 @@ std::vector<T> rsModalFreqsRectBox_2(T Lx, T Ly, T Lz, T fMax, T c = T(rsSpeedOf
   // by pi because it doesn't use frequency in Hz but rather radian frequency in rad/s. 
 }
 
+/** Computes the generalized mean of 3 numbers for the given power p. The formula is:
+
+  gm_p(x1, x2, x3) = ( (x1^p + x2^p + x3^p) / 3 )^(1/p)
+
+where gm_p means: the generalized mean with power parameter p. In the special case of p = 0, the
+mean is the geometric mean, i.e. the cube root of the product:
+
+  gm_0(x1, x2, x3) = cbrt(x1 * x2 * x3) 
+
+For p = 1, it reduces to the arithmetic mean, for p = 2, we get the quadratic mean, for p = -1, we
+get the harmonic mean, etc. */
+template<class T>
+T reGeneralizedMean(T p, T x1, T x2, T x3)
+{
+  if(p == T(0))
+    return cbrt(x1*x2*x3);
+
+  T powSum = pow(x1, p) + pow(x2, p) + pow(x3, p);
+  return pow(powSum * T(1.0/3.0), 1.0/p);
+
+  // ToDo: 
+  // 
+  // - Treat the power == 0 case specially. We should produce the geometric mean in this case.
+  //   ...done! Verify it!
+  //
+  // - Implement the function as a variadic template for any number of arguments.
+}
+
 void modalReverb()
 {
   // Under construction.
@@ -1420,6 +1448,10 @@ void modalReverb()
   Real a = freqs[0];   // Plausible? ..Nah! Doesn't look good!
   Real b = 40.0;
 
+  // We try to find a setting for Lx = Ly = Lz that produces the same general shape as our current
+  // setup of Lx,Ly,Lz. It looks like the geometric mean works well for this:
+  Real mean = reGeneralizedMean(0.0, Lx, Ly, Lz); // Generalized mean with p = 0 is geometric mean 
+
   // These values were found to be appropriate by manual tuning:
                        // Lx, Ly, Lz
   a = 30; b = 45;      // 7,  5,  3
@@ -1441,7 +1473,9 @@ void modalReverb()
   // rsPowerSum(Real power, T x1, T x2, ...) that calls itself recursively. Trying to manually match
   // it, it looks like Lx = Ly = Lz = 4.7 produces a result similar to Lx, Ly, Lz = 7, 5, 3. Try to
   // figure out, how 4.7 can be produced as a particluar mean of 7,5,3. What power do we need to 
-  // use? And then: Try to generalize it.
+  // use? OK - it looks like the geometric mean is the right one. Try it with more settings for
+  // Lx,Ly,Lz to see if it holds up generally or was an happy accident.
+
 
   // Plot frequencies and the graph that should approximate them::
   //rsPlotVector(freqs);
