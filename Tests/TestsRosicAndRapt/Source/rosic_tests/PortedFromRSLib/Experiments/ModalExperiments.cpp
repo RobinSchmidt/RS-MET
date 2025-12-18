@@ -1266,7 +1266,7 @@ https://reference.wolfram.com/language/PDEModels/tutorial/Acoustics/ModelCollect
 https://ccrma.stanford.edu/~jos/pasp/footnode.html#foot14150 or PASP book, page 89.  
 */
 template<class T>
-T rsModeFreqRectBox(T kx, T ky, T kz, T c)    // Maybe make c optional
+T rsModeFreqRectBox(T kx, T ky, T kz, T c = T(rsSpeedOfSound))
 {
   return 0.5 * c * sqrt(kx*kx + ky*ky + kz*kz);
 }
@@ -1432,9 +1432,9 @@ void modalReverb()
   // Setup:
   Real sampleRate = 48000.0;   // Sample rate.
   Real length     =     1.0;   // Length of sample to produce in seconds
-  Real Lx         =     7.0;   // Length in x-direction (length) in m.
+  Real Lx         =     5.0;   // Length in x-direction (length) in m.
   Real Ly         =     5.0;   // Length in y-direction (width) in m.
-  Real Lz         =     3.0;   // Length in z-direction (height) in m.
+  Real Lz         =     5.0;   // Length in z-direction (height) in m.
   Real fMax       =  1000.0;   // Upper limit for modal frequency. Acts like a lowpass.
   Real decay      =     0.5;   // Mode decay time in seconds
   Real attack     =     0.0;   // Mode attack time in seconds
@@ -1447,7 +1447,7 @@ void modalReverb()
 
    
   // --------------------------------------------
-  // Try to approximate the freqs using a function of the form f(n) = a + b * cbrt(n):
+  // Try to approximate the freqs using a function of the form g(n) = a + b * cbrt(n):
 
   Real a = freqs[0];   // Plausible? ..Nah! Doesn't look good!
   Real b = 40.0;
@@ -1458,17 +1458,31 @@ void modalReverb()
 
   // These values were found to be appropriate by manual tuning:
                          // Lx, Ly, Lz    
-  a = 30; b = 45;        // 7,  5,  3     or all 4.7
+  //a = 30; b = 45;        // 7,  5,  3     or all 4.7
   //a = 32; b = 52;      // 7,  5,  2     or all 4.1
-  //a = 30; b = 42.4;    // 5,  5,  5
+  a = 30; b = 42.4;    // 5,  5,  5
   //a = 43; b = 61;        // 7,  3,  2     or all 3.5
   // ToDo: 7,2,1
 
   // Test:
   Real c = rsSpeedOfSound;
-  //a = (c/4) * sqrt(3) / L;  // Not sure, if that formula is correct. It's a guess.
+  a = (c/4) * sqrt(3) / L;  // Not sure, if that formula is correct. It's a guess.
                               // ...for our meager 4 examples, it seems to work, though.
   //b = cbrt(sqrt(3) * (c/2) / L);  // Also a guess. ...Nope! That is wrong!
+
+  // Compute some of the first mode frequencies with the two formulas. The actual correct formula
+  // and the surrogate formula with the cbrt:
+  //                                          // Values for Lx = Ly = Lz = 5
+  Real f1 = rsModeFreqRectBox(1/L, 1/L, 1/L); // f(1,1,1) =  59.409
+  Real f2 = rsModeFreqRectBox(2/L, 2/L, 2/L); // f(2,2,2) = 118.818 = freqs[10]
+  Real g1 = a + b * cbrt(1);                  // g(1)
+  Real g2 = a + b * cbrt(2);                  // g(2)
+  // We want a match at the 1st mode such that we require g(1) = f(1,1,1). We may also want a match
+  // at the f(2,2,2) mode. I think, we want g(8) to match f(2,2,2) not g(2) because
+  // g(2) corresponds to f(1,1,2). Also, g(3) ~ f(1,2,1), g(4) ~ f(1,2,2), g(5) ~ f(2,1,1),
+  // g(6) ~ f(2,1,2), g(7) ~ f(2,2,1), g(8) ~ f(2,2,2) ...so in general, I think, we want to match
+  // g(n^3) to f(n,n,n). If we pick two values of n such as n = 1 and n = 2, this will give us two
+  // equations from which we may compute a and b.
 
 
   Vec freqsApprox(numModes);
@@ -1500,11 +1514,16 @@ void modalReverb()
   // We now want to find formulas a = a(L) and b = b(L) that work. ...TBC...
   // I think, a = (c/2) * sqrt( 3 * (1/L)^2 ) = (c/2) * sqrt(3) / L could work. I obtained this by
   // by taking the formula f(nx,ny,nz) = (c/2) * sqrt( (nx/Lx)^2 + (ny/Ly)^2 + (nz/Lz)^2 ), 
-  // replacing  Lx,Ly,Lz by L = cbrt(Lx*Ly*Lz)  to obtain a surrogate room with the same general 
-  // mode distribution and then choosing nx = ny = nz = 1 to obtain the frequency of the lowest 
-  // mode. Ah - no - I think, if anything, we need to use half of that value. It seems to work for
-  // a couple of examples. But why? Assuming this value of a is correct to match the lowest mode, 
-  // maybe we can compute b by matching some other mode as well. Perhaps the nx = ny = nz = 2 mode?
+  // replacing  Lx,Ly,Lz by L = cbrt(Lx*Ly*Lz)  to obtain a surrogate room with the same volume and
+  // therefore with the general mode distribution (the matching a,b params are the same - only the 
+  // details of function are different) and then choosing nx = ny = nz = 1 to obtain the frequency 
+  // of the lowest mode. Ah - no - I think, if anything, we need to use half of that value. It 
+  // seems to work for a couple of examples. But why? Ah! I think, when we use the general form
+  // g(n) = a + b * cbrt(n) and substitute n = 1 into it, we get g(1) = a + b. So, hmm..well, dunno
+  // 
+  // Assuming this value of a is correct to match 
+  // the lowest mode, maybe we can compute b by matching some other mode as well. Perhaps the 
+  // nx = ny = nz = 2 mode?
 
 
   // Plot frequencies and the graph that should approximate them::

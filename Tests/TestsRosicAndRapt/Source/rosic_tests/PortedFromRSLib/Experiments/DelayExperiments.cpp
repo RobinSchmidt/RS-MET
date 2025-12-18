@@ -79,9 +79,9 @@ void algoVerb()
   // Ideas:
   //
   // - Make different modules that can be put together in various ways (serial, parallel, etc.) to 
-  //   create a full reverb algorithm. Make these modules available in Quadrifex. there, we can 
+  //   create a full reverb algorithm. Make these modules available in Quadrifex. There, we can 
   //   then already put togther 4 such modules in various configurations. The modules should be:
-  //   EarlyReflections (tapped delay line), ResoModes (modal filter bank), DiffuseTail (FDN),
+  //   EarlyReflections (tapped delay line), RoomModes (modal filter bank), DiffuseTail (FDN),
   //   Convolution. The modal resonators and the FDN should have built in gate/expander for gated
   //   reverb effects. The early reflection module should be able to spatialize the tap outputs 
   //   (pan, maybe Haas delay) and to filter them (peak EQ, tilt EQ) and to disperse them 
@@ -90,6 +90,13 @@ void algoVerb()
   //   Maybe instead of a modal filter bank for the room modes, we could use an allpass filter 
   //   chain with highly resonant allpass filters. Maybe the module should be able to switch 
   //   between the two modes modal-bank / allpass-chain. Or maybe we should have separate modules.
+  //   Maybe the output of the early reflections module should be mixed to the FDN input. Maybe the
+  //   output of the FDN should be highpassed in order to not get in the way of the room modes. 
+  //   Maybe we could use a steep filter and use its ringing as topmost explicitly modeled room
+  //   mode. But it may be more difficult to control its decay time than with the modal resonators.
+  //   The frequencies of the room modes may be tuned musically.
+  //
+  // - See: https://en.wikipedia.org/wiki/Room_modes
 }
 
 void delayLineBasic()
