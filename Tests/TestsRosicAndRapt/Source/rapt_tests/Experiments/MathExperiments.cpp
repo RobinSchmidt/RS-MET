@@ -5827,7 +5827,7 @@ void divisibility()
 
 // computes the "arithmetic derivative" of given natural number (todo: generalize to integers and
 // rationals)
-rsUint32 numDeriv(rsUint32 n)  // number derivative
+rsUint32 numDeriv(rsUint32 n)  // number derivative - rename to rsArithmetic derivative
 {
   if(n == 0 || n == 1)
     return 0;
@@ -5843,6 +5843,13 @@ rsUint32 numDeriv(rsUint32 n)  // number derivative
   rsUint32 d = (rsUint32) round(ns); // the derivative
 
   return d;
+
+  // ToDo:
+  //
+  // - Explain why this algorithm works. Maybe also implement a naive recursive algorithm. 
+  //
+  // - Optimize: Replace the call to rsPrimeFactors by something else. rsPrimeFactors is convenient
+  //   but inefficient. We need an implementation that works with a precomputed table of primes.
 }
 void arithmeticDerivative()
 {
@@ -5852,7 +5859,7 @@ void arithmeticDerivative()
     x[i] = i;
     d[i] = numDeriv(i);
   }
-  //int dummy = 0;
+  int dummy = 0;
 }
 /*
 https://oeis.org/A003415/list

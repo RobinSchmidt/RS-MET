@@ -1528,6 +1528,15 @@ ToDo:
 
 - isPermutationOf - uses containsOnce on the first array for each element of a second array
 
+- overlap(T* x, int Nx, T* y, int Ny) should return an integer that tells us by how many items the
+  arrays x and y overlap. This can be used in assertions like rsAssert(overlap(x, y) == 0) when the
+  function requires that the arrays are distinct. Currently, we have checks like rsAssert(x != y) 
+  in some places where x and y need to be distinct. This may catch the most common case of overlap,
+  namely x and y pointing to the same array. But we currently do not catch the other cases. Maybe
+  we could also have a convenience function areDistinct() which just checks if the overlap is zero.
+  We should also make sure that we have those assertion everywhere where we can't tolerate overlap.
+  Or maybe it could be called areNonOverlapping() or just noOverlap().
+
 - maybe make a class rsVectorTools that just contains convenience functions for the functions from
   rsArrayTools, such that we don't need the ugly &b[0] syntax and maybe can get rid of the length
   parameters (because vectors know their lengths)...but maybe it should also include
