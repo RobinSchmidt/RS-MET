@@ -1432,9 +1432,9 @@ void modalReverb()
   // Setup:
   Real sampleRate = 48000.0;   // Sample rate.
   Real length     =     1.0;   // Length of sample to produce in seconds
-  Real Lx         =     5.0;   // Length in x-direction (length) in m.
-  Real Ly         =     5.0;   // Length in y-direction (width) in m.
-  Real Lz         =     5.0;   // Length in z-direction (height) in m.
+  Real Lx         =     9.0;   // Length in x-direction (length) in m.
+  Real Ly         =     9.0;   // Length in y-direction (width) in m.
+  Real Lz         =     9.0;   // Length in z-direction (height) in m.
   Real fMax       =  1000.0;   // Upper limit for modal frequency. Acts like a lowpass.
   Real decay      =     0.5;   // Mode decay time in seconds
   Real attack     =     0.0;   // Mode attack time in seconds
@@ -1458,14 +1458,15 @@ void modalReverb()
 
   // These values were found to be appropriate by manual tuning:
                          // Lx, Ly, Lz    
-  //a = 30; b = 45;        // 7,  5,  3     or all 4.7
+  a = 30; b = 45;        // 7,  5,  3     or all 4.7
   //a = 32; b = 52;      // 7,  5,  2     or all 4.1
-  a = 30; b = 42.4;    // 5,  5,  5
+  //a = 30; b = 42.4;    // 5,  5,  5
   //a = 43; b = 61;        // 7,  3,  2     or all 3.5
   // ToDo: 7,2,1
 
   // Test:
   Real c = rsSpeedOfSound;
+  Real k = sqrt(3)*c / (2*L);
   //a = (c/4) * sqrt(3) / L;  // Not sure, if that formula is correct. It's a guess.
                               // ...for our meager 4 examples, it seems to work, though.
                               // 
@@ -1474,6 +1475,10 @@ void modalReverb()
   
   //a = freqs[0];               // That would make sense when we start counting modes from 0
   //b = 40;                     // Kinda works for 5,5,5 - but not well. Graphs cross
+
+  b = 0.725*k;                  // This was found by trial and error
+  a = k-b;                      // This seems to assure that we match f(1,1,1) with g(1)
+                                // (but only when Lx = Ly = Lz)
 
   // Compute some of the first mode frequencies with the two formulas. The actual correct formula
   // and the surrogate formula with the cbrt:
