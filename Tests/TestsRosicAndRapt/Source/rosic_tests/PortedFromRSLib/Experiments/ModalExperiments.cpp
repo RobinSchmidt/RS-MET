@@ -1459,9 +1459,11 @@ void modalReverb()
   //a = 30; b = 42.4;    // 5,  5,  5
 
   // Test:
-  Real c = rsSpeedOfSound;
-  a = (c/4) * sqrt(3) / L;  // Not sure, if that formula is correct. It's a guess.
-                            // ...for our meager 3 examples, it seems to work, though.
+  //Real c = rsSpeedOfSound;
+  //a = (c/4) * sqrt(3) / L;  // Not sure, if that formula is correct. It's a guess.
+                              // ...for our meager 3 examples, it seems to work, though.
+  //b = cbrt(sqrt(3) * (c/2) / L);  // Also a guess. ...Nope! That is wrong!
+
 
   Vec freqsApprox(numModes);
   for(int m = 0; m < numModes; m++)
@@ -1494,7 +1496,9 @@ void modalReverb()
   // by taking the formula f(nx,ny,nz) = (c/2) * sqrt( (nx/Lx)^2 + (ny/Ly)^2 + (nz/Lz)^2 ), 
   // replacing  Lx,Ly,Lz by L = cbrt(Lx*Ly*Lz)  to obtain a surrogate room with the same general 
   // mode distribution and then choosing nx = ny = nz = 1 to obtain the frequency of the lowest 
-  // mode. Ah - no - I think, if anything, we need to use half of that value. 
+  // mode. Ah - no - I think, if anything, we need to use half of that value. It seems to work for
+  // a couple of examples. But why? Assuming this value of a is correct to match the lowest mode, 
+  // maybe we can compute b by matching some other mode as well. Perhaps the nx = ny = nz = 2 mode?
 
 
   // Plot frequencies and the graph that should approximate them::
