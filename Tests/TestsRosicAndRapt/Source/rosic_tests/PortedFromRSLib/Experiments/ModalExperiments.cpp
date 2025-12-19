@@ -1556,27 +1556,16 @@ void modalReverb()
   Real a1 = P / (8*c);                             // Coeff for f^1 in Bolt-Morse formula
   Real a2 = (PI*S) / (4*c*c);                      // Coeff for f^2
   Real a3 = (4*PI*V) / (3*c*c*c);                  // Coeff for f^3
-
-  Real b1 = (3*S*c)/(16*V);
-  Real b2 = (3*(Lx+Ly+Lz)*c*c)/(8*PI*V);
-
   Vec modeCount(numModes);                         // Actual number of modes
-  Vec modeBolt(numModes);                          // Predicted of number of modes
-  Vec modeMaa(numModes);
-
-  //P = (Lx + Ly + Lz); // Test. set P = sum of length + width + height as in Maa's formula
-  // Doesn't make much of a difference.
-
+  Vec modePred(numModes);                          // Predicted of number of modes
   for(int m = 0; m < numModes; m++)
   {
     Real f  = freqs[m];
-    Real nB = a3 * f*f*f  +  a2 * f*f  +  a1 * f;  // Bolt-Morse formula
-    Real nM = a3*f*f*f * (1 + b1/f + b2/(f*f));    // Maa formula
+    Real mP = a3 * f*f*f  +  a2 * f*f  +  a1 * f;  // Bolt-Morse formula
     modeCount[m] = m+1;
-    modeBolt[m]  = nB;
-    modeMaa[m]   = nM;
+    modePred[m]  = mP;
   }
-  rsPlotVectorsXY(freqs, modeCount, modeBolt, modeMaa);
+  rsPlotVectorsXY(freqs, modeCount, modePred);
   // They do not look the same but they are not too far off either. I think, it could be the case
   // that the formula holds only asymptotically and overestimates the modal density for lower 
   // frequencies? It seems like when increasing fMax, the relative error gets smaller. For 
@@ -1586,7 +1575,8 @@ void modalReverb()
   // 105000. Better still! So, the match seems to get better when we increase fMax. The ratio 
   // between actual and predicted seems to approach 1 as f increases just as we would expect from
   // an asymptotic approximation formula. ToDo: Figure out and document, where this formula comes 
-  // from. How was it derived? try also Maa's formula which seems to be somewhat different
+  // from. How was it derived? Try also Maa's formula which seems to be somewhat different. Ah - it
+  // just looks different but is algebraically equivalent.
   //
   // If we can make this approach using the Bolt-Morse formula work, then all the fudging above to
   // find a and b for the surrogate can actually be superseded by taking this N(f) function and 
@@ -1823,6 +1813,15 @@ void modalReverb()
   // 
   // See also:
   // https://pubs.aip.org/asa/jasa/article/150/6/R11/995495/Maa-s-equation-for-the-number-of-normal-modes-of
+  // The formula looks different, but it is algebraically equivalent to the Bolt-Morse formula.
+  // 
+  // About some formula of Bolt and Morse about absorbtion
+  // https://bura.brunel.ac.uk/bitstream/2438/3855/1/Fulltext.pdf
+  // 
+  // I think, this may be the relevant paper:
+  // https://journals.aps.org/rmp/abstract/10.1103/RevModPhys.16.69
+  // https://journals.aps.org/rmp/abstract/10.1103/RevModPhys.16.324
+  // "Sound Waves in Rooms"  by  Philip M. Morse and Richard H. Bolt
   // 
   // Other geometries and systems:
   // https://euphonics.org/4-2-4-weinreichs-formula-for-modal-density/  
