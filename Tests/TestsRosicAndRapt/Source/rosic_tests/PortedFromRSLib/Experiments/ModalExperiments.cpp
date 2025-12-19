@@ -1547,36 +1547,38 @@ void modalReverb()
   // Plot the number of modes against frequency along with the predicted mode count according to 
   // the Bolt-Morse formula along with the actual mode count for comparison:
 
-  Real V = Lx * Ly * Lz;                  // Volume
-  Real S = 2 * (Lx*Ly + Lx*Lz + Ly*Lz);   // Surface area of walls
-  Real P = 4 * (Lx + Ly + Lz);            // Total room perimeter (sum of length of all edges)
-  Vec modeCount = rsLinearRangeVector(numModes, 1, numModes); // Actual number of modes
-  Vec modePred(numModes);                                     // Predicted of number of modes
+  Real V = Lx * Ly * Lz;                 // Volume
+  Real S = 2 * (Lx*Ly + Lx*Lz + Ly*Lz);  // Surface area of walls
+  Real P = 4 * (Lx + Ly + Lz);           // Total room perimeter (sum of length of all edges)
+  Real a1 = P / (8*c);                   // Coeff for f^1
+  Real a2 = (PI*S) / (4*c*c);            // Coeff for f^2
+  Real a3 = (4*PI*V) / (3*c*c*c);        // Coeff for f^3
+  Vec modeCount(numModes);               // Actual number of modes
+  Vec modePred(numModes);                // Predicted of number of modes
   for(int m = 0; m < numModes; m++)
   {
     Real f  = freqs[m];
-    Real Nf = ((4*PI*V)/(3*c*c*c))*(f*f*f) + ((PI*S)/(4*c*c))*(f*f) + (P/(8*c))*f;
-    modePred[m] = Nf;
+    Real Nf = a3 * f*f*f  +  a2 * f*f  +  a1 * f;  // Bolt-Morse formula
+    modePred[m]  = Nf;
+    modeCount[m] = m+1;
   }
   rsPlotVectorsXY(freqs, modeCount, modePred);
-  // Hmm - they do not look the same. They are not too far off, though. Verify the formulas for the
-  // coefficients! Maybe we have some scale factor wrong? What about the physical units? Maybe
-  // one is in terms of frequency, the other in terms of radian frequency "omega"? I think, it 
-  // could be the case that the formula holds only asymptotically and overestimates the modal 
-  // density for lower frequencies? It seems like when increasing fMax, the relative error gets
-  // smaller. For Lx = Ly = Lz = 5, using fMax = 500 produces an actual number of around 1200 modes
-  // and the predicted number is around 1900. That's a pretty bad approximation! For fMax = 1000: 
+  // They do not look the same but they are not too far off either. I think, it could be the case
+  // that the formula holds only asymptotically and overestimates the modal density for lower 
+  // frequencies? It seems like when increasing fMax, the relative error gets smaller. For 
+  // Lx = Ly = Lz = 5, using fMax = 500 produces an actual number of around 1200 modes and the 
+  // predicted number is around 1900. That's a pretty bad approximation! For fMax = 1000: 
   // actual: 12000, predicted: 14000. Already better! For fMax = 2000: actual: 100000, predicted: 
-  // 105000. Better still! So, the match seems to get better when we increase fMax.
+  // 105000. Better still! So, the match seems to get better when we increase fMax. The ratio 
+  // between actual and predicted seems to approach 1 as f increases just as we would expect from
+  // an asymptotic approximation formula. ToDo: Figure out and document, where this formula comes 
+  // from. How was it derived?
   //
   // If we can make this approach using the Bolt-Morse formula work, then all the fudging above to
   // find a and b for the surrogate can actually be superseded by taking this N(f) function and 
   // producing its inverse function f(N) which amounts to finding the solution of a cubic equation.
   // That would be more principled. On the other hand, the fudged formula seems to give a better
   // match for low(ish) values of fMax. Maybe we should keep both.
-  //
-  // ToDo: Maybe precompute the polynomial coeffs outside of the loop: a3 = ((4*PI*V)/(3*c*c*c)), 
-  // a2 = ((PI*S)/(4*c*c)), a1 = (P/(8*c))
 
 
   // --------------------------------------------
