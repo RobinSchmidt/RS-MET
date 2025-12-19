@@ -1545,24 +1545,38 @@ void modalReverb()
 
   // --------------------------------------------
   // Plot the number of modes against frequency along with the predicted mode count according to 
-  // the Bolt-Morse formula along with the actual mode count for comparison:
+  // the Bolt-Morse formula along with the actual mode count for comparison. This formula computes
+  // the total number of modes N up to a given frequency f as a function N(f) in terms of the 
+  // volume V, the surface area of all walls S and the total room perimeter P, i.e. the sum of the
+  // lengths of all the edges (I think).
 
-  Real V = Lx * Ly * Lz;                 // Volume
-  Real S = 2 * (Lx*Ly + Lx*Lz + Ly*Lz);  // Surface area of walls
-  Real P = 4 * (Lx + Ly + Lz);           // Total room perimeter (sum of length of all edges)
-  Real a1 = P / (8*c);                   // Coeff for f^1
-  Real a2 = (PI*S) / (4*c*c);            // Coeff for f^2
-  Real a3 = (4*PI*V) / (3*c*c*c);        // Coeff for f^3
-  Vec modeCount(numModes);               // Actual number of modes
-  Vec modePred(numModes);                // Predicted of number of modes
+  Real V = Lx * Ly * Lz;                           // Volume
+  Real S = 2 * (Lx*Ly + Lx*Lz + Ly*Lz);            // Surface area of walls
+  Real P = 4 * (Lx + Ly + Lz);                     // Total room perimeter
+  Real a1 = P / (8*c);                             // Coeff for f^1 in Bolt-Morse formula
+  Real a2 = (PI*S) / (4*c*c);                      // Coeff for f^2
+  Real a3 = (4*PI*V) / (3*c*c*c);                  // Coeff for f^3
+
+  Real b1 = (3*S*c)/(16*V);
+  Real b2 = (3*(Lx+Ly+Lz)*c*c)/(8*PI*V);
+
+  Vec modeCount(numModes);                         // Actual number of modes
+  Vec modeBolt(numModes);                          // Predicted of number of modes
+  Vec modeMaa(numModes);
+
+  //P = (Lx + Ly + Lz); // Test. set P = sum of length + width + height as in Maa's formula
+  // Doesn't make much of a difference.
+
   for(int m = 0; m < numModes; m++)
   {
     Real f  = freqs[m];
-    Real Nf = a3 * f*f*f  +  a2 * f*f  +  a1 * f;  // Bolt-Morse formula
-    modePred[m]  = Nf;
+    Real nB = a3 * f*f*f  +  a2 * f*f  +  a1 * f;  // Bolt-Morse formula
+    Real nM = a3*f*f*f * (1 + b1/f + b2/(f*f));    // Maa formula
     modeCount[m] = m+1;
+    modeBolt[m]  = nB;
+    modeMaa[m]   = nM;
   }
-  rsPlotVectorsXY(freqs, modeCount, modePred);
+  rsPlotVectorsXY(freqs, modeCount, modeBolt, modeMaa);
   // They do not look the same but they are not too far off either. I think, it could be the case
   // that the formula holds only asymptotically and overestimates the modal density for lower 
   // frequencies? It seems like when increasing fMax, the relative error gets smaller. For 
@@ -1572,7 +1586,7 @@ void modalReverb()
   // 105000. Better still! So, the match seems to get better when we increase fMax. The ratio 
   // between actual and predicted seems to approach 1 as f increases just as we would expect from
   // an asymptotic approximation formula. ToDo: Figure out and document, where this formula comes 
-  // from. How was it derived?
+  // from. How was it derived? try also Maa's formula which seems to be somewhat different
   //
   // If we can make this approach using the Bolt-Morse formula work, then all the fudging above to
   // find a and b for the surrogate can actually be superseded by taking this N(f) function and 
@@ -1806,6 +1820,9 @@ void modalReverb()
   // have V = Lx * Ly * Lz, S = 2 * (Lx*Ly + Lx*Lz + Ly*Lz), P = 4 * (Lx + Ly + Lz). Maybe create 
   // an array with the mode-indices, i.e. just an array 1..numModes and plot it as y-values using
   // the freqs array as x-axis. Then create a second array using this formula.
+  // 
+  // See also:
+  // https://pubs.aip.org/asa/jasa/article/150/6/R11/995495/Maa-s-equation-for-the-number-of-normal-modes-of
   // 
   // Other geometries and systems:
   // https://euphonics.org/4-2-4-weinreichs-formula-for-modal-density/  
