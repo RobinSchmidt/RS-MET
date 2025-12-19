@@ -1119,7 +1119,8 @@ https://www.carvetoy.online/
 
 Strudel:
 https://codeberg.org/uzu/strudel
--Javescript based live audio coding environment
+https://github.com/tidalcycles/strudel
+-Javascript based live audio coding environment
 -Port of Tidal https://codeberg.org/uzu/tidal which is written in Haskell
  https://tidalcycles.org/
 

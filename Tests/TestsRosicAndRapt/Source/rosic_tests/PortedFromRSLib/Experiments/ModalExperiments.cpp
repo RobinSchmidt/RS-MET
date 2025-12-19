@@ -1393,13 +1393,16 @@ std::vector<T> rsModalFreqsRectBox_2(T Lx, T Ly, T Lz, T fMax, T c = T(rsSpeedOf
 
   gm_p(x1, x2, x3) = ( (x1^p + x2^p + x3^p) / 3 )^(1/p)
 
-where gm_p means: the generalized mean with power parameter p. In the special case of p = 0, the
-mean is the geometric mean, i.e. the cube root of the product:
+where gm_p means: the generalized mean with power parameter p. In the special case of p = 0, the 
+formula is not applicable. Instead, in this case, the geometric mean is computed, i.e. the cube 
+root of the product:
 
   gm_0(x1, x2, x3) = cbrt(x1 * x2 * x3) 
 
-For p = 1, it reduces to the arithmetic mean, for p = 2, we get the quadratic mean, for p = -1, we
-get the harmonic mean, etc. */
+This special case treatment has the correct limit behavior, i.e. the general formula above has this
+special formula as limit when p approaches zero at which point the general formual breaks down due 
+to containing a division by zero in this case. For p = 1, it reduces to the arithmetic mean, for 
+p = 2, we get the quadratic mean, for p = -1, we get the harmonic mean, etc. */
 template<class T>
 T reGeneralizedMean(T p, T x1, T x2, T x3)
 {
@@ -1414,7 +1417,16 @@ T reGeneralizedMean(T p, T x1, T x2, T x3)
   // - Treat the power == 0 case specially. We should produce the geometric mean in this case.
   //   ...done! Verify it!
   //
-  // - Implement the function as a variadic template for any number of arguments.
+  // - Implement the function as a variadic template for any number of arguments. I think, it will 
+  //   have to use an inner variadic template rsPowerSum(Real power, T x1, T x2, ...) that calls 
+  //   itself recursively. The division by the number of parameters and raising that to the power 
+  //   of 1/p can be done non-recursively. But we also need to somehow keep track of the number of
+  //   compile time arguments. Maybe the recursive rsPowerSum function should return a 
+  //   std::pair<T, int> where the T is the result and the int is the nesting depth, i.e. the 
+  //   number of arguments. The base case would init it to 1 and the recursive case would increment
+  //   it.
+  //
+  // - Move to library and add unit tests.
 }
 
 void modalReverb()
@@ -1452,8 +1464,10 @@ void modalReverb()
   Real a = freqs[0];   // Plausible? ..Nah! Doesn't look good!
   Real b = 40.0;
 
-  // We try to find a setting for Lx = Ly = Lz that produces the same general shape as our current
-  // setup of Lx,Ly,Lz. It looks like the geometric mean works well for this:
+  // Find a setting for a surrogat single length L = Lx = Ly = Lz that produces the same general 
+  // shape as our current setup of Lx,Ly,Lz. The geometric mean seems to be appropriate, which 
+  // indicates that the general shape of the function depends on the volume of the room (just like
+  // in Sabine's formula for reverb time):
   Real L = reGeneralizedMean(0.0, Lx, Ly, Lz); // Generalized mean with p = 0 is geometric mean 
 
   // These values were found to be appropriate by manual tuning:
@@ -1518,42 +1532,6 @@ void modalReverb()
     // But this formula seems to give worse overall matching performance. The one with m+1 is
     // better
   }
-  // a = freqs[0] = 71; b = 10.0; makes the graphs cross when using sqrt. Using sqrt seems wrong!
-  // Hmm...maybe it should be a cbrt? With the crbt, a = 71, b = 40, the shape looks better but it
-  // doesn't fit quite right. Maybe the offset nees to the less than freqs[0]. Wait! I think, m
-  // should run from 1 to <= numModes. The a,b params should _not_ depend of fMax. That would make
-  // no sense. fMax is just our arbitrary plotting limit. I think, we can produce one constrain 
-  // equation to produce the 0th frequency at freqs[0]. But then what?
-  // ToDo: Start with 7,5,3 and try to find a setting for Lx = Ly = Lz that has the same shape. It
-  // should probably be some sort of mean. However, the arithmetic mean of 5 does not work. Try the
-  // harmonic mean, etc. Maybe write a function rsGeneralizedMean(Real power, T x1, T, x2, ...)
-  // that can be called with any number of arguments. Here, we need it for 3. I think, we need a 
-  // variadic template. I think, it will have to use an inner variadic template 
-  // rsPowerSum(Real power, T x1, T x2, ...) that calls itself recursively. Trying to manually match
-  // it, it looks like Lx = Ly = Lz = 4.7 produces a result similar to Lx, Ly, Lz = 7, 5, 3. Try to
-  // figure out, how 4.7 can be produced as a particluar mean of 7,5,3. What power do we need to 
-  // use? OK - it looks like the geometric mean is the right one. Try it with more settings for
-  // Lx,Ly,Lz to see if it holds up generally or was an happy accident. I think, using the geometric
-  // mean means that we get the same volume. So, it appears, mode density can be expressed in terms
-  // of volume - just like Sabine's formula for reverb time. See:
-  // https://en.wikipedia.org/wiki/Reverberation#Sabine_equation
-  // OK - now we have established that for a given setting of Lx,Ly,Lz we can replace these by
-  // a single characteristic length  L = cbrt(Lx*Ly*Lz)  that would lead to the same volume without
-  // affecting the general shape. That has simplified our problem of parameter estimation for a,b 
-  // to a problem that can be formulated in terms of a single parameter L rather than 3 parameters.
-  // We now want to find formulas a = a(L) and b = b(L) that work. ...TBC...
-  // I think, a = (c/2) * sqrt( 3 * (1/L)^2 ) = (c/2) * sqrt(3) / L could work. I obtained this by
-  // by taking the formula f(nx,ny,nz) = (c/2) * sqrt( (nx/Lx)^2 + (ny/Ly)^2 + (nz/Lz)^2 ), 
-  // replacing  Lx,Ly,Lz by L = cbrt(Lx*Ly*Lz)  to obtain a surrogate room with the same volume and
-  // therefore with the general mode distribution (the matching a,b params are the same - only the 
-  // details of function are different) and then choosing nx = ny = nz = 1 to obtain the frequency 
-  // of the lowest mode. Ah - no - I think, if anything, we need to use half of that value. It 
-  // seems to work for a couple of examples. But why? Ah! I think, when we use the general form
-  // g(n) = a + b * cbrt(n) and substitute n = 1 into it, we get g(1) = a + b. So, hmm..well, dunno
-  // 
-  // Assuming this value of a is correct to match 
-  // the lowest mode, maybe we can compute b by matching some other mode as well. Perhaps the 
-  // nx = ny = nz = 2 mode?
 
 
   // Plot frequencies and the graph that should approximate them::
