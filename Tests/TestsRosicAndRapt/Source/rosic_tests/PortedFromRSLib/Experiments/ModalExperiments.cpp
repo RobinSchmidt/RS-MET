@@ -1765,7 +1765,8 @@ void modalReverb()
   //   df      c^3            2 c^2         8 c
   // 
   // where: V: volume, S: surface area of the walls, P: total perimeter length (sum of length of 
-  // all edges, I think - verify!). Maybe try to verify these formulas numerically!
+  // all edges, I think - verify!). Maybe try to verify these formulas numerically! I think, we 
+  // have V = Lx * Ly * Lz, S = 2 * (Lx*Ly + Lx*Lz + Ly*Lz), P = 4 * (Lx + Ly + Lz).
   // 
   // Other geometries and systems:
   // https://euphonics.org/4-2-4-weinreichs-formula-for-modal-density/  
