@@ -1530,7 +1530,12 @@ void modalReverb()
 
     //freqsApprox[m] = a + b * cbrt(Real(m));   // Test. Simplifies match of f(1,1,1)
     // But this formula seems to give worse overall matching performance. The one with m+1 is
-    // better
+    // better. I think, m+1 is correct because our loop index starts at 0 and mode indices start at
+    // 1. Well, in our 3D case here, we have actually 3 mode indices nx,ny,nz and they all start at
+    // 1. We map these into a single index m here (where the mapping is determined by the mode 
+    // frequencies - we sort them by ascending freq) - so, strictly speaking, we are free to choose
+    // any mapping from  nx,ny,nz  to  m  we want. But I think, it makes sense to still start 
+    // counting at 1 in our mapped indices.
   }
 
 
@@ -1539,14 +1544,19 @@ void modalReverb()
   rsPlotVectors(freqs, freqsApprox);
 
 
-  // DOESN'T WORK YET - at least not as ultimately desired:
+  // --------------------------------------------
+  // DOESN'T WORK YET - at least not as ultimately desired. 
   // Approximate modal density as function of frequency and plot it:
   Vec dens(numModes);
   for(int i = 1; i < numModes-1; i++)
   {
-    dens[i]  = 0.5 * (freqs[i+1] - freqs[i-1]);   // This is spacing, not actually density!
-    //dens[i] *= freqs[i] * freqs[i];             // Test. Should make it constant up to noise?
-    //dens[i] = 1.0 / (freqs[i+1] - freqs[i-1]);  // Actual density is problematic. See below.
+    // Compute mode spacing, i.e. the inverse of the actual modal density, as the numerical 
+    // derivative of the freq-vs-modeIndex function:
+    dens[i] = 0.5 * (freqs[i+1] - freqs[i-1]);   
+
+    // To compute the actual modal density, we would now have to take the reciprocal. But this is
+    // problematic because it can happen that 3 modal frequencies actually coincide such that the
+    // difference freqs[i+1] - freqs[i-1] is zero. That means, we could produce division by zero.
   }
   rsPlotVectorsXY(freqs, dens);
   // The so estimated density has infinities because it can happen that 3 modal frequencies
@@ -1558,9 +1568,17 @@ void modalReverb()
   // sign denotes a generic "number of". To apply smoothing, we would need a smoothing filter that
   // works for non-equally spaced data. I think, I implemented a nun-uniform MA filter for Elan at
   // some point in the past. That could work here. Try to find the code and maybe use that! But 
-  // wait! Do we really need a non-uniform filter here?
+  // wait! Do we really need a non-uniform filter here? ...but actually it doesn't seem to be 
+  // important anymore to get this modal density (i.e. mode density against frequency) plot right 
+  // because the plot above where we plot modal frequency against mode-index is just as good or 
+  // even better for practical purposes. Eventually, we want to be able to compute mode frequencies
+  // as function of mode index - and above we do precisely that directly. The modal density is only
+  // a more indirect way to express the same functional relation. Maybe delete this section at some
+  // point but leave note in the "Notes" section below that explains that it once existed and why
+  // it doesn't anymore.
 
 
+  // --------------------------------------------
   // Under construction:
   // Use the so produced frequency array with a modal filter bank and produce its impulse response:
   // set up modal filter bank:
@@ -1726,6 +1744,33 @@ void modalReverb()
   // https://computational-acoustics.gitlab.io/website/posts/5-acoustic-modes-of-a-rectangular-room/
   // https://reference.wolfram.com/language/PDEModels/tutorial/Acoustics/ModelCollection/RoomEigenfrequencies.html
   // https://ccrma.stanford.edu/~jos/pasp/footnode.html#foot14150 or PASP, pg 89
+  //
+  // Formulas for modal density:
+  // 
+  // Pressure waves in rectangular rooms:
+  // https://www.sciencedirect.com/science/article/abs/pii/S0022460X03009507
+  // Has Bolt-Morse formula in 4th paragraph in the "Introduction". Oh - but it seems the text 
+  // formatting has messed it up? This seems better:
+  // https://strutt.arup.com/help/Building_Acoustics/BoltModes.htm
+  // So the formula for the number N of modes up to frequency f appears to be:
+  // 
+  //           4 pi V           pi S             P 
+  //   N(f) = -------- f^3  +  ------- f^2  +  ----- f
+  //           3 c^3            4 c^2           8 c
+  // 
+  // It's derivative is the modal density and it is given by:
+  // 
+  //   dN     4 pi V          pi S           P
+  //  ---- = -------- f^2  + ------- f  +  -----
+  //   df      c^3            2 c^2         8 c
+  // 
+  // where: V: volume, S: surface area of the walls, P: total perimeter length (sum of length of 
+  // all edges, I think - verify!). Maybe try to verify these formulas numerically!
+  // 
+  // Other geometries and systems:
+  // https://euphonics.org/4-2-4-weinreichs-formula-for-modal-density/  
+  // https://www.sciencedirect.com/topics/engineering/modal-density (bending waves in beams)
+  // https://pubs.aip.org/asa/jasa/article-abstract/119/2/788/829894/Modal-density-of-rectangular-volumes-areas-and?redirectedFrom=fulltext
 }
 
 
