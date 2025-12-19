@@ -1538,11 +1538,19 @@ void modalReverb()
     // counting at 1 in our mapped indices.
   }
 
-
   // Plot frequencies and the graph that should approximate them::
   //rsPlotVector(freqs);
   rsPlotVectors(freqs, freqsApprox);
 
+
+  // --------------------------------------------
+  // Plot the number of modes against frequency:
+
+  Vec modeCount = rsLinearRangeVector(numModes, 1, numModes);
+  rsPlotVectorsXY(freqs, modeCount);
+
+  // ToDo: Plot the predicted mode count according to the Bolt-Morse formula along with the actual
+  // mode count for comparison
 
   // --------------------------------------------
   // DOESN'T WORK YET - at least not as ultimately desired. 
@@ -1766,7 +1774,9 @@ void modalReverb()
   // 
   // where: V: volume, S: surface area of the walls, P: total perimeter length (sum of length of 
   // all edges, I think - verify!). Maybe try to verify these formulas numerically! I think, we 
-  // have V = Lx * Ly * Lz, S = 2 * (Lx*Ly + Lx*Lz + Ly*Lz), P = 4 * (Lx + Ly + Lz).
+  // have V = Lx * Ly * Lz, S = 2 * (Lx*Ly + Lx*Lz + Ly*Lz), P = 4 * (Lx + Ly + Lz). Maybe create 
+  // an array with the mode-indices, i.e. just an array 1..numModes and plot it as y-values using
+  // the freqs array as x-axis. Then create a second array using this formula.
   // 
   // Other geometries and systems:
   // https://euphonics.org/4-2-4-weinreichs-formula-for-modal-density/  
