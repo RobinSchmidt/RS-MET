@@ -1547,10 +1547,29 @@ void modalReverb()
   // Plot the number of modes against frequency:
 
   Vec modeCount = rsLinearRangeVector(numModes, 1, numModes);
-  rsPlotVectorsXY(freqs, modeCount);
+  //rsPlotVectorsXY(freqs, modeCount);
 
   // ToDo: Plot the predicted mode count according to the Bolt-Morse formula along with the actual
   // mode count for comparison
+
+  Real V = Lx * Ly * Lz;
+  Real S = 2 * (Lx*Ly + Lx*Lz + Ly*Lz);
+  Real P = 4 * (Lx + Ly + Lz);
+
+  Vec modePred(numModes);  // Prediction of number of modes
+
+  for(int m = 0; m < numModes; m++)
+  {
+    Real f = freqs[m];
+    Real N = ((4*PI*V)/(3*c*c*c))*(f*f*f) + ((PI*S)/(4*c*c))*(f*f) + (P/(8*c))*f;
+    modePred[m] = N;
+  }
+
+  rsPlotVectorsXY(freqs, modeCount, modePred);
+
+
+
+
 
   // --------------------------------------------
   // DOESN'T WORK YET - at least not as ultimately desired. 
