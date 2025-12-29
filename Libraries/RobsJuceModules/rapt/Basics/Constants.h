@@ -1,36 +1,52 @@
 #ifndef RAPT_CONSTANTS_H_INCLUDED
 #define RAPT_CONSTANTS_H_INCLUDED
 
-// todo: change the #defines into constants and wrap them into the RAPT namespace - we don't want
-// to pollute everything with #defines
+// ToDo: change the #defines into constants and wrap them into the RAPT namespace - we don't want
+// to pollute everything with #defines. Make the number of digits consistent. I think, we should be
+// accurate upf to quad precision in the IEEE 754 standard to be somewhat future proof. I think, 
+// that requires at least 34 decimal digits. See:
+// https://en.wikipedia.org/wiki/IEEE_754#Basic_and_interchange_formats
 
-// mathematical constants (maybe prepend RS_ - but turn them into constexpr):
+// When trying to convert macros to constexpr, i get compiler errors for some - for example for 
+// LN10_INV - one those errors is:
+// rapt\Basics\TypeDefinitions.h(8,1): error C2144:  syntax error: 'signed char' should be preceded by ';'
+// Maybe add 1/e
 
+
+// Maybe move these somewhere else or try to get rid of them:
+#undef min  // some silly include header on windows (minwindef.h) defines min/max as macros
+#undef max
+
+
+// Mathematical constants (maybe prepend RS_ - but turn them into constexpr):
 #define PI 3.1415926535897932384626433832795
 #define TWO_PI 6.283185307179586476925286766559                     // maybe use TAU, https://tauday.com/tau-manifesto
 #define PI_INV 0.31830988618379067153776752674503                   // 1/PI
-#define EULER 2.7182818284590452353602874713527
-#define EULER_CONSTANT 0.5772156649015328606065120900824024310421
-#define SQRT2 1.4142135623730950488016887242097
-#define SQRT2_INV 0.70710678118654752440084436210485                // 1 / sqrt(2)
+#define EULER 2.7182818284590452353602874713527                     // Maybe rename to EULER_E
+#define EULER_CONSTANT 0.5772156649015328606065120900824024310421   // Maybe rename to EULER_GAMMA
 #define LN10 2.3025850929940456840179914546844
 #define LN10_INV 0.43429448190325182765112891891661                 // 1 / log(10)
 #define LN2 0.69314718055994530941723212145818                      // log(2)
 #define LN2_INV 1.4426950408889634073599246810019                   // 1 / log(2)
 #define GOLDEN_RATIO 1.6180339887498948482045868343656381           // (1+sqrt(5))/2
-#define SEMITONE_FACTOR 1.0594630943592952645618252949463           // 12th root of 2
 #define PI_F ((float)PI)
+
+
+// Physical unit prefixes:
+//#define MILLI 0.001
+//#define MICRO 0.000001 
 #define NANO 0.000000001  // used by romos - get rid of usage there - define a constexpr there
-// when trying to convert macros to constexpr, i get compiler errors for some - for example for 
-// LN10_INV - one those errors is:
-// rapt\Basics\TypeDefinitions.h(8,1): error C2144:  syntax error: 'signed char' should be preceded by ';'
-
-// music/audio related constants:
+// ToDo: MILLI, MICRO, ..., KILO, MEGA, ...
 
 
-// constants related to numeric format:
-#undef min  // some silly include header on windows (minwindef.h) defines min/max as macros
-#undef max
+// Music/audio related constants:
+#define SQRT2 1.4142135623730950488016887242097
+#define SQRT2_INV 0.70710678118654752440084436210485                // 1 / sqrt(2)
+#define SEMITONE_FACTOR 1.0594630943592952645618252949463           // 12th root of 2
+// ToDo: Maybe add constants that are needed to convert to decibels etc.
+
+
+// Constants related to numeric format:
 #define RS_INF(T) (std::numeric_limits<T>::infinity())
 #define RS_MIN(T) (std::numeric_limits<T>::min())
 #define RS_MAX(T) (std::numeric_limits<T>::max())
@@ -40,7 +56,8 @@
 // ToDo: deprecate them. Use templated functions instead. See definition of rsEpsilon below. That's
 // the way, it should be done.
 
-// powers of two:
+
+// Powers of two:
 #define RS_POW2_0 1          // 2^0 = 1
 #define RS_POW2_1 2          // 2^1 = 2
 #define RS_POW2_2 4          // 2^2 = 4
@@ -58,8 +75,13 @@
 #define RS_POW2_14 16384
 #define RS_POW2_15 32768
 
+
 //#define FIX_DENORM 1.e-12  // small constant to add to avoid denormal numbers
 #define RS_TINY RS_MIN(float)
+// It is not a good to base this on a value that is specific to float. Try to get rid of it 
+// altogether. I think, the places we used it are mostly IIR filters and we used it there to avoid
+// denormals. But this pesky denormal stuff should be properly handled by fitzdazzing anyway (which
+// I do in the jura plugin framework).
 
 
 // Move into a class rsBitTwiddling or rsBits and then get rid of the redundant "Bit" part in the 
@@ -86,15 +108,19 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 // see also:
 // https://graphics.stanford.edu/~seander/bithacks.html
 
+
 template<class T>
 T rsEpsilon(T x)
 {
   return std::numeric_limits<T>::epsilon();
+
+  // Maybe get rid of the parameter x. It should be invoked via:
+  // T eps = rsEpsilon<T>();
 }
 
 
-// See also std::mumbers (C++20):
+// See also std::numbers (C++20):
 // https://en.cppreference.com/w/cpp/symbol_index/numbers
-
+// https://en.cppreference.com/w/cpp/numeric/constants.html
 
 #endif

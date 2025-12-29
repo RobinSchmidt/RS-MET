@@ -1576,7 +1576,10 @@ void modalReverb()
   // between actual and predicted seems to approach 1 as f increases just as we would expect from
   // an asymptotic approximation formula. ToDo: Figure out and document, where this formula comes 
   // from. How was it derived? Try also Maa's formula which seems to be somewhat different. Ah - it
-  // just looks different but is algebraically equivalent.
+  // just looks different but is algebraically equivalent. Some sources also mention a 
+  // "Weyl formula" which seems to be just the volume dependent cubic term of the Bolt-Morse 
+  // formula which dominates at high frequencies anyway. The other terms are considered to be 
+  // corrections to the Weyl formula to make it even more exact.
   //
   // If we can make this approach using the Bolt-Morse formula work, then all the fudging above to
   // find a and b for the surrogate can actually be superseded by taking this N(f) function and 
@@ -1815,7 +1818,7 @@ void modalReverb()
   // https://pubs.aip.org/asa/jasa/article/150/6/R11/995495/Maa-s-equation-for-the-number-of-normal-modes-of
   // The formula looks different, but it is algebraically equivalent to the Bolt-Morse formula.
   // 
-  // About some formula of Bolt and Morse about absorbtion
+  // About some formula of Bolt and Morse about absorption
   // https://bura.brunel.ac.uk/bitstream/2438/3855/1/Fulltext.pdf
   // 
   // I think, this may be the relevant paper:

@@ -39,6 +39,21 @@ https://gitlab.com/stargatedaw
 https://codeberg.org/stargatedaw
 -DAW. Main repo is on github. The ones on gitlab and codeberg are mirrors.
 
+Meadowlark:
+https://github.com/MeadowlarkDAW/Meadowlark
+https://codeberg.org/Meadowlark/Meadowlark
+-DAW (in Rust)
+-Looks like the main repo and also its dependencies are now here:
+ https://codeberg.org/Meadowlark
+
+ChipBox:
+https://github.com/chipnertkj/chipbox
+-DAW (in Rust)
+
+DAWr (pronounced Door)
+https://github.com/defuse/DAWr
+-DAW (in Rust)
+
 Audacity:
 https://www.audacityteam.org/
 https://github.com/audacity/audacity
@@ -49,7 +64,6 @@ https://github.com/audacity/audacity
  https://github.com/Binaergewitter/audiocity
  https://github.com/Sneeds-Feed-and-Seed/sneedacity
  
-
 Mixxx:
 https://github.com/mixxxdj/mixxx
 -DJ software
@@ -1133,6 +1147,10 @@ https://github.com/cgzirim/seek-tune
 ----------------------------------------------------------------------------------------------------
 Unsorted:
 
+Tek:
+https://codeberg.org/unspeaker/tek
+-Music making program for 24-bit unicode terminals written in rust with ratatui on crossterm for 
+ jack and pipewire.
 
 https://ccrma.stanford.edu/planetccrma/software/
 -Collection of rpm packages for Fedora Linux
