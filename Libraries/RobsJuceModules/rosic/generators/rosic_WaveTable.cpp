@@ -331,6 +331,17 @@ double WaveTable::warpPhaseIndex(double unwarpedIndex)
 //=================================================================================================
 /*
 
+ToDo:
+
+- Rename the class to something like rsWaveForm so that we can use the term wavetable in the
+  PPG/Waldorf sense. The class MipMappedWaveTable should perhaps then be namen rsWaveFormMipMap.
+
+- Create classes rsWaveTable and rsWaveTableMipMap that implement wavetables in the waldorf sense.
+  Maybe use them in the ResoReplacer filter and use the detected amplitude for the waveshape, i.e.
+  the indexing into the table of different waveforms.
+
+
+
 Ideas:
 
 - For more ideas to modify the wavetable, see:

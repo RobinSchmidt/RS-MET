@@ -277,6 +277,10 @@ https://github.com/giulioz/mini-jv880
 https://github.com/nukeykt/Nuked-SC55
 https://www.kvraudio.com/forum/viewtopic.php?t=620542
 
+RD Piano:
+https://github.com/giulioz/rdpiano
+-Emulates SA-synthesis digital pianos, such as Roland MKS-20, RD1000, Rhodes MK-80 electric piano.
+
 CompuFart:
 https://github.com/alexmfink/compufart
 -Fart sound synthesizer written in Cmajor 
@@ -423,11 +427,16 @@ https://lsp-plug.in/
 https://github.com/lsp-plugins/lsp-plugins
 -Collection of open-source plugins currently compatible with CLAP, LADSPA, LV2, VST2/LinuxVST, VST3 
  and JACK standalone formats.
--Linux only?
+-Linux only? 
 
 Setekh:
 https://github.com/fullfxmedia/setekh
 -"minimalistic yet sonically powerful distortion plugin"  by https://fullfxmedia.com/
+
+VBAP (Vector Base Amplitude Panner):
+https://github.com/drbafflegab/vbap
+-Surround panning plugin
+
 
 ----------------------------------------------------------------------------------------------------
 Analysis plugins
@@ -609,6 +618,15 @@ RtAudio:
 https://github.com/thestk/rtaudio
 -Realtime audio I/O abstraction layer for Linux/Mac/Windows (JACK, CoreAudio, ASIO, WASAPI, etc.)
 
+MiniAudio:
+https://miniaud.io/
+https://github.com/mackron/miniaudio
+-audio playback and capture library for C and C++, cross platform
+
+foleys_gui_magic:
+https://github.com/ffAudio/foleys_gui_magic
+-This module allows to create GUIs without any coding.
+
 
 JUCE Add-Ons:
 
@@ -620,9 +638,10 @@ juce_clap_hosting:
 https://github.com/jatinchowdhury18/juce_clap_hosting
 -a JUCE module, which allows the user to host CLAP plugins within a JUCE app/plugin.
 
-foleys_gui_magic:
-https://github.com/ffAudio/foleys_gui_magic
--This module allows to create GUIs without any coding.
+cxx-juce:
+https://github.com/JamesHallowell/cxx-juce
+-Rust bindings for a subset of JUCE using cxx.
+-Includes the following juce modules: core, events, audio_basics, audi_devices, audio_processors.
 
 ----------------------------------------------------------------------------------------------------
 DSP Libraries
@@ -702,6 +721,11 @@ Dr. Baloney's Audio Converter
 https://github.com/drbaloney/audio-converter/tree/main
 -Resampling library for conversion between common sample rates. 
 -Has push- and pull API written in C.
+
+Dr. Bafflegab's Audio Converter
+https://github.com/drbafflegab/audio-converter
+-C library for real-time sample rate conversion of audio streams
+-...looks like Dr. Bafflegab is Dr. Baloney. The Dr. Baloney link above now redirecty to Bafflegab.
 
 ofxATK
 https://github.com/aaronaanderson/ofxATK
@@ -940,6 +964,15 @@ https://github.com/free-audio
 -Liberally licensed audio plugin format.
 -Tutorial: https://www.kvraudio.com/forum/viewtopic.php?t=589258
 
+CLAP-Wrapper rs:
+https://crates.io/crates/clap-wrapper
+-"An easy way to use clap-wrapper in your Rust plugins!"
+
+Clack:
+https://github.com/prokopyl/clack
+-A set of crates offering low-level, safe Rust wrappers to create audio plugins and hosts using the 
+ CLAP audio plugin API.
+
 FST:
 https://github.com/pierreguillot/FTS
 -Free Studio Technology (VST2 Replacement)
@@ -1090,6 +1123,11 @@ https://github.com/gudgud96/frechet-audio-distance
 
 ----------------------------------------------------------------------------------------------------
 People
+
+Giulio Zausa:
+https://giuliozausa.dev/
+https://github.com/giulioz
+https://www.youtube.com/@GiulioZausa
 
 Cristian J. Steinmetz
 https://github.com/csteinmetz1
