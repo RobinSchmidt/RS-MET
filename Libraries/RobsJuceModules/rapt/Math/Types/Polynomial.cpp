@@ -1950,6 +1950,32 @@ ToDo:
   sense like for example with regard to evaluation. Maybe also have rsFactoredRationalFunction and
   rsPartialFractionExpansion.
 
+- Factor out the polynomial root finding algorithm into its own class rsPolynomialRootFinder. In 
+  this class, implement different root finding algorithms such a Laguerre, Jenkins-Traub, closed 
+  form formulas for degrees 1..4, algo for factoring real polynomials into linear and quadratic
+  factors (see Numerical Recipies), Newton-Raphson for refining root guesses (and maybe generally 
+  higher order Householder methods - see class rsRootFinder), etc.
+
+- For greatest generality, we may want to allow the type for the coefficients, the arguments, the 
+  function values, and the roots to be different types. For example, we may want to evaluate 
+  polynomials with real coeffs and complex or even matrix-valued arguments. Or polynomials with 
+  integer coeffs at rational or real arguments. And so on. I think, we should use the template 
+  parameter T of the class rsPolynomial for the coeffs (as we do now) and let the evaluation 
+  functions have an additional template parameter TArg similar to the way we do it already in some
+  places where we evaluate transfer functions for filters at complex values of z. See 
+  getTransferFunctionAt() in class rsDelay for example. See also operator() in rsSparsePolynomial.
+  In the evaluation functions, do not assume commutativity of multiplication. Maybe instantiate it
+  with T = rsMatrix2x2 where we use matrices for the coeffs, arguments and values. In general, in 
+  math terms, the type for the coeffs will typically be a subset of the type of the arguments. The
+  type of the roots is the same as the type for the arguments (because roots _are_ (specific) 
+  arguments, namely those arguments for which the output value is zero). I think, the type of the 
+  function values is also the same as the argument type. We could possibly think to have TCoef, 
+  TArg, TVal, TRoot but I really think that the last 3 should always be the same type. (ToDo: Try 
+  to construct situations where this is not the case!). I think, the type for the roots has in 
+  general to be a specific superset of the coefficient type - namely the algebraic closure of the 
+  coefficient type ...or maybe of the argument type, if this should be different from the root 
+  type. We'll see...
+
 
  Other methods for root finding (here, we use the Laguerre method:)
  https://en.wikipedia.org/wiki/Durand%E2%80%93Kerner_method

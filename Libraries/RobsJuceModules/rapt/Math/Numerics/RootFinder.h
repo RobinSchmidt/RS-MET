@@ -11,9 +11,9 @@ flexibility and ease of use. Some algorithms (e.g. bisection) require the user t
 interval that is assumed to bracket the root, others (e.g. Newton iteration) require an initial 
 estimate of the root that should be somewhere near the root. Some higher level functions don't 
 require anything like that - but these functions will need to make a guess for the bracket or 
-initial estimate internally which may lead to suboptimal performance - because, you know, good 
-guesses are hard to come by when you don't have any information at all about the particual function
-to work with. So, these high-level functions are mostly meant for quick-and-dirty prototype 
+initial estimate internally which may lead to suboptimal performance - because, good guesses are 
+hard to come by when you don't have any information at all about the particual function to work 
+with. So, these high-level functions are mostly meant for quick-and-dirty prototype 
 implementations. If you know a bit more about your particular function at hand, it's a good idea to 
 use that knowledge together with the lower level root-finding functions.
 
@@ -51,6 +51,7 @@ public:
   iteration, we get one more correct binary digit in the root estimate) and convergence is 
   guaranteed. That means: the method is slow but safe. */
   static T bisection(const std::function<T(T)>& func, T xLeft, T xRight, T y = 0);
+  // ToDo:
   // -Maybe instead of std::function use a second template parameter F
   // -Maybe declare the template parameters in front of the functions, not the class (like in 
   //  rsArrayTools)
@@ -121,15 +122,15 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Derivative Methods
 
-  /** Computes the delta for one update step in the Newton iteration method. The update step uses 
-  the formula  xNew = xOld + dx  with: 
+  /** Computes the delta for one update step in the Newton (aka Newton-Raphson) iteration method. 
+  The update step uses the formula  xNew = xOld + dx  with: 
   
           -f(x)
     dx = -------
           f'(x)
   
   This function computes the dx and can be used within the Newton iteration like  
-  x += newtonStep(f, fp)  after you have computed function value f and derivative fp at the 
+  x += stepNewton(f, fp)  after you have computed function value f and derivative fp at the 
   current estimate for x. In practice, you'll probably want to assign the dx to a variable, though
   - so you can check the convergence criterion before (or after) doing the update step. 
   See:  https://en.wikipedia.org/wiki/Newton%27s_method  */
@@ -140,11 +141,14 @@ public:
   These are output parameters and passed by pointer. The reason to use a single function to compute 
   value and derivative is that it often happens that it's more efficient to evaluate a function and 
   its derivative at the same time rather than starting completely from scratch for evaluating the 
-  derivative. The API should enable such an optimization. */
+  derivative. The API should enable such an optimization. Therefore, we do not use separate 
+  arguments for the function and the derivative. */
   static T newton(const std::function<void(T, T*, T*)>& func, T xGuess, T y = 0);
     // ToDo: give it additional parameters for tolerance, maxNumIterations, rootMultiplicity. The 
     // latter should be used to scale the steps. Maybe call it stepSize and write into the 
-    // documentation that the optimal stepsize is given by the root's multiplicity.
+    // documentation that the optimal stepsize is given by the root's multiplicity. Newton can be 
+    // slow for multiple roots but with this little tweak, it becomes fast again when you happen 
+    // to know the multplicity of the root.
 
 
   /** Computes the delta for one update step in the Halley iteration method.  The 
@@ -195,7 +199,8 @@ public:
   // I think, in practice, going higher than 3rd order with the Householder method may be not 
   // advantageous and higher order methods may be more of academic interest. I'm not sure, though.
   // Maybe it's worth to try even higher order methods at some point. For the time being, I'll
-  // stop at 3, though.
+  // stop at 3, though. ToDo: Try to figure out the general formula for the step dx in the n-th
+  // order Householder method (Try to derive it (maybe with a CAS) or look it up or ask AI).
 
 
 };
