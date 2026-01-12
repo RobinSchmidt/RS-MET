@@ -1966,8 +1966,10 @@ ToDo:
   getTransferFunctionAt() in class rsDelay for example. See also operator() in rsSparsePolynomial.
   In the evaluation functions, do not assume commutativity of multiplication. Maybe instantiate it
   with T = rsMatrix2x2 where we use matrices for the coeffs, arguments and values. In general, in 
-  math terms, the type for the coeffs will typically be a subset of the type of the arguments. The
-  type of the roots is the same as the type for the arguments (because roots _are_ (specific) 
+  math terms, the type for the coeffs will typically be (convertible to) a subset of the type of 
+  the arguments (in the case of scalar coeffs and matrix arguments, one may also think about the
+  coeffs as being converted to scalar matrices first (i.e. a constant times the identity matrix)).
+  The type of the roots is the same as the type for the arguments (because roots _are_ (specific) 
   arguments, namely those arguments for which the output value is zero). I think, the type of the 
   function values is also the same as the argument type. We could possibly think to have TCoef, 
   TArg, TVal, TRoot but I really think that the last 3 should always be the same type. (ToDo: Try 

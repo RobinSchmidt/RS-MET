@@ -450,18 +450,21 @@ inline unsigned int rsMaxNorm(unsigned int x) { return x;           }
 inline int          rsMaxNorm(int          x) { return std::abs(x); }
 inline float        rsMaxNorm(float        x) { return std::abs(x); }
 inline double       rsMaxNorm(double       x) { return std::abs(x); }
-// ToDo: add all primitive types like int64_t etc.
+// ToDo: Add all primitive types like int64_t etc.
 
 
-/** Implements the maximum norm for std::complex<T> where T can be either double or float. The 
-maximum of a complex number x + i*y is defined as max(|x|,|y|). When viewing the complex plane as
-a 2D real vector space, this is also called the infinity norm for this vector space. That's because
-it's the limit of the p-norm: L_p(x,y) = (|x|^p + |y|^p)^(1/p) as p approaches infinity. */
+/** Implements the maximum norm for std::complex<T> where T can be either double or float. We
+define the maximum norm of a complex number  z = x + i*y  as  max(|x|,|y|). When viewing the 
+complex plane as a 2D real vector space, this is also called the infinity norm for this vector 
+space. That's because it's the limit of the p-norm: L_p(x,y) = (|x|^p + |y|^p)^(1/p) as p 
+approaches infinity. */
 template<class T>
 T rsMaxNorm(const std::complex<T>& z)
 {
   return std::max(std::abs(z.real()), std::abs(z.imag()));
 }
+// ToDo: Describe the geometric shape of the unit circle with respect to this norm. I think it is 
+// shaped like a the unit square...or maybe like a diamond? Figure out and document!
 
 /** Implements rsMaxNorm for an array of elements of length N passed as raw pointer. This is meant
 to be used as utility function to implement rsMaxNorm() for types that maintain an array of 
@@ -540,7 +543,7 @@ auto rsMaxNorm(const std::vector<T>& v)
 // It could invoke the definition for rsMatrixView by an upcast (cast to baseclass reference). Try 
 // that! It would be the less invasive solution and therefore perhaps preferable over modifying 
 // rsMatrix(View). At the moment, it's fine as is because I currently don't really need a max-norm 
-// function for any STL containers except td::vector. So, for the time being, it's fine. But maybe 
+// function for any STL containers except std::vector. So, for the time being, it's fine. But maybe
 // it's something to change later.
 
 
