@@ -1,10 +1,10 @@
 #ifndef RAPT_STANDARDCONTAINER_H_INCLUDED
 #define RAPT_STANDARDCONTAINER_H_INCLUDED
 
-/** A collection of convenience functions for the container classes of the C++ standard template
-library (STL), such as std::vector, std::map, etc. Many of the functions for std::vector are just
-convenience wrappers around the corresponding functions in rsArrayTools that operate on raw C-style
-arrays. */
+/** A collection of utility and convenience functions for the container classes of the C++ standard
+template library (STL), such as std::vector, std::map, etc. Some of the functions for std::vector 
+are just convenience wrappers around the corresponding functions in rsArrayTools that operate on 
+raw C-style arrays. */
 
 //=================================================================================================
 // Convenience functions for any sort of container that has a size() function
@@ -980,7 +980,14 @@ void rsFlushToZeroReIm(std::complex<T>* z, int N, T tol)
 }
 
 
+//=================================================================================================
+/*
 
+ToDo:
+
+- Maybe rename the file to ContainerTools.h or STLUtils.h
+
+*/
 
 
 #endif

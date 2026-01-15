@@ -530,4 +530,12 @@ ToDo:
   proper rational function (it may then have more zeros than poles - which isn't necessarily a 
   problem though) ..not sure about that, though.
 
+- I think, rational functions R with rational coefficients can always be re-expressed as rational
+  functions with integer coeffs by doing the following: Find the lcm of all the denominators of
+  the coeffs (both numerator and denominator coeffs), then multiply numerator and denominator of R
+  by that lcm. Now every coeff should be an integer, i.e. the denominator of each coeff should be 
+  1. It now could still be the case that these integer coeffs have common factors, so it may make 
+  sense to compute the gcd of all coeffs (again considering both numerator and denominator of the 
+  function R) and then divide numerator and denominator by that gcd.
+
 */

@@ -21,7 +21,55 @@ ToDo:
 -maybe split the member variables of filter implementations into a "state" and
  "coeffs" part to allow for easier optimization of memory usage on higher 
  levels. That may make a big difference especially when many filters with equal
- settings are used
+ settings are used. Maybe even hae a 3rd class: Params for the user parameters. 
+ Example:
+ 
+ class rsBiquad
+ {
+ 
+   public:
+   
+   struct Params
+   {
+     enum Type
+	 {
+	   bypass = 0,
+	   lowpass,
+	   highpass,
+	   // ...
+	   numModes
+	 };
+   
+     double sampleRate = 44100, frequency = 1000, quality = 1/sqrt(2);
+	 Type type = bypass;
+   };
+   
+   struct Coeffs
+   {
+     double b0, b1, b2, a1, a2;
+   };
+   
+   struct StateDF1
+   {
+     double x1, x2, y1, y2;
+   };
+   
+   
+   protected:
+   
+   Coeffs   coeffs;
+   StateDF1 state;
+ 
+ };
+ 
+ Maybe the classes for Params, Coeffs, State should be dragged out into classes in their own right 
+ like rsBiquadParams, rsBiquadCoeffs, rsBiquadState. But that increases the surface area of the 
+ library so it may be better to avoid it. Also: when templatizing, coeffs and params may need to 
+ have a different template parameter than tse state (for example: Params/Coeffs use float and State
+ usesd rsFloat32x4), so we can't just propagate down temaplte params from rsBiquad to state...unless
+rsBiquad has two templated params TSig, TPar - which it probably should have anyway.
+ 
+ 
 -maybe preferably use /**< ... */ instead of /** ... */ for the doxygen stuff
  for member functions. It's just nicer when the function name appears as 
  "headline" above the docstring in the code. but check, if intellisense still 
@@ -89,6 +137,12 @@ Efficiency:
 -always declare members in order of descencing size (reduces padding)
 -use workspaces for operations on arrays that need auxiliary memory - and have
  convenience functions that allocate a workspace internally
+-In low level DSP classes, try to avoid virtual functions as much as possible, especially in small
+ objects (like 1st or 2nd order filters) where the vtable would significantly increase the size
+ relatively to without vtable. So, as a general rule, use only compile time polymorphism, if 
+ polymorphism is used at all. Exceptions must be justified on a case by case basis. See:
+ https://www.youtube.com/watch?v=wF6OfkqK6fE  Most C++ Virtual Calls Are NOT Dynamic Dispatch
+ https://www.youtube.com/watch?v=NWsdK_ly_fw  C++ Objects Are NOT What You Think (Inside vtables & ABI)
 
 Safety:
 -if a pointer cannot be a nullptr, say so by using not_null
@@ -134,6 +188,33 @@ specific things to pay attention to
 -edge cases:
  -sometimes they are handled automatically correct -> implement the general case first and test
   (and reason about) what that implementation will do in the edge case
+
+
+
+Resources:
+
+- Some arguments about why free functions may be preferable over member functions:
+
+  https://www.youtube.com/watch?v=WLDT1lDOsb4  CppCon 2017: Klaus Iglberger “Free Your Functions!”
+  https://www.youtube.com/watch?v=nWJHhtmWYcY  Free your functions! - Klaus Iglberger - Meeting C++ 2017
+  
+  Examples for when free functions are better than member functions in the RAPT library could be 
+  functions like rsAbs() for absolute value,  rsDot(), rsCross() for dot-and cross-product of 
+  vectors, rsDet() for a determinant of a matrix etc. The rationale for prefering a free function 
+  call like  d = rsDot(v, w)  over a member function call like  d = v.dot(w)  to compute the dot 
+  product between two vectors v and w (for example, inside some geometry algorithm that should work 
+  with generic(!) vectors) is that not all vector classes that we may want to use in our algo may 
+  implement the dot() member function. For example, std::vector doesn't - and we also can't add one
+  (unless we use a subclass of std::vector). However, a free function like rsDot() taking two 
+  std::vectors could easily be added. Similar considerations apply to functions for computing a 
+  norm, determinant, etc.
+
+  He makes the argument, that convenience functions like clearAll() that internally just call lower 
+  level clearing functions like clearThis(), clearThat() etc. should be pulled out of the class 
+  because then we have one function less to worry about potentially messing up class invariances. In
+  general, I think, this applies to all public member functions that just call other public member 
+  functions. The disadvantage might be discoverability and generated documentation - it may not list
+  the non-member function.
 
 ---------------------------------------------------------------------------------------------------
 Updating strategies:

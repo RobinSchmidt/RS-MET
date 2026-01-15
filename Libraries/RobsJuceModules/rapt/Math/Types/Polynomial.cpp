@@ -1954,7 +1954,12 @@ ToDo:
   this class, implement different root finding algorithms such a Laguerre, Jenkins-Traub, closed 
   form formulas for degrees 1..4, algo for factoring real polynomials into linear and quadratic
   factors (see Numerical Recipies), Newton-Raphson for refining root guesses (and maybe generally 
-  higher order Householder methods - see class rsRootFinder), etc.
+  higher order Householder methods - see class rsRootFinder), etc. There is a stub for this in the
+  research repo.
+
+- Maybe factor out some other other functionality into separate classes as well. For example:
+  the methods for fitting and interpolation and the methods for dealing with special kinds of 
+  polynomials (Chebychev, Bessel, etc.). The class has currently too many responsibilities.
 
 - For greatest generality, we may want to allow the type for the coefficients, the arguments, the 
   function values, and the roots to be different types. For example, we may want to evaluate 
@@ -1978,6 +1983,13 @@ ToDo:
   coefficient type ...or maybe of the argument type, if this should be different from the root 
   type. We'll see...
 
+- Try to undo polynomial composition, i.e. given a polynomial r(x) = q(p(x)) and q (or p), try to 
+  find p (or q).
+
+- Try to instantiate it with T = rsRationalFunction<double>. This could be used to represent a sort
+  of ladder filter where different filters H(z) are in series and we tap off na output signal
+  after each stage and pass that through another filter a_i(z). Thereby we produce the overall
+  transfer function: P(z) = a0(z) + a1(z)*H(z) + a2(z)*(H(z))^2 + a3(z)*(H(z))^3 + ...
 
  Other methods for root finding (here, we use the Laguerre method:)
  https://en.wikipedia.org/wiki/Durand%E2%80%93Kerner_method
