@@ -120,6 +120,9 @@ Interface:
  as well) but a verb like "multiply" when the function performs some action on 
  passed inputs like multiplying array element-wise
 
+See also:
+ https://github.com/RobinSchmidt/RS-MET/wiki/Standards
+
 Implementation:
 -whether algo parameters are updated directly in setCutoff, setResonance, etc.
  or are updated in getSample based on an "upToDate" flag should be consistent

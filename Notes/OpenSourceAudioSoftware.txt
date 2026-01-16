@@ -829,8 +829,10 @@ https://github.com/vinniefalco/DSPFiltersDemo
 https://www.kvraudio.com/forum/viewtopic.php?t=249926
 -Butterworth, Chebychev, elliptic, etc. IIR filters
 
-
-
+rouziclib:
+https://github.com/Photosounder/rouziclib
+-DSP library by Michel Rouzic that is used in Photosounder, Spiral, SplineEQ. 
+ See:  https://photosounder.com/  for the products (which are themselves not open source, though)
 
 
 ----------------------------------------------------------------------------------------------------

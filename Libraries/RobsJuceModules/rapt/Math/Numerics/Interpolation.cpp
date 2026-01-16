@@ -580,36 +580,55 @@ void cubicSplineArcLength2D(T *a, T *b, T *t, T* s, int N)
 // "vector-coeff" elements...figure out, if that can be made to work...
 
 
+//=================================================================================================
 /*
 
 Ideas:
--Linear interpolation has the nice feature that is doesn't matter whether we interpret the input 
- data as representing y as function of x or representing x as function of y as long as the function
- is strictly monotonically increasing. That means: the linear interpolating function represents 
- both y = f(x) and x = f^-1(y). That is not true for cubic interpolation. Interpolating y as 
- function of x gives a different curve than when interpolating x as function of y. A simpler case
- would be quadratic interpolation: y = f(x) = a0 + a1*x + a2*x^2. If instead we would interpolate
- x = f^-1(y) = b0 + b1*y + b2*y^2, we'd get a different curve and re-expressing this interpolant 
- as y = f(x) would involve square-roots in the formula. That is: inverse quadratic interpolation
- gives rise to a sort of square-root interpolation which gives a different set of functions.
--The idea is to invent an interpolation scheme that has the same feature of representing 
- y = f(x) and x = f^-1(y) simultaneously while also being 1st order smooth, i.e. have matching 
- derivatives at the nodes. An idea for such a scheme base on Moebius transformations is implemented
- in selfInverseInterpolation() in MathExperiments.h. 
 
--Implement spherical linear interpolation ("slerp") for interpolating rotations. The formula is:
- -p0, p1: points on the unit sphere to be interpolated (can be n-dimensional for any n, I think)
- -t: intetpolation parameter in 0...1
- -w = acos(dot(p0, p1)): angle between p0, p1
- -slerp(p0,p1,t) = (sin((1-t)*w) * p0  +  sin(t*w) * p1)  /  sin(w)
--A simplified version is called normalized linear interpolation ("nlerp") that just linearly 
- interpolates between p0 and p1 and renormalizes the result. The path is the same but the speed is
- not constant anymore. It's slower at the endpoints and maximum in the middle. That might actually 
- be desirable in the context of animations.
+- Linear interpolation has the nice feature that is doesn't matter whether we interpret the input 
+  data as representing y as function of x or representing x as function of y as long as the 
+  function is strictly monotonically increasing. That means: the linear interpolating function 
+  represents both y = f(x) and x = f^-1(y). That is not true for cubic interpolation. Interpolating
+  y as function of x gives a different curve than when interpolating x as function of y. A simpler 
+  case would be quadratic interpolation: y = f(x) = a0 + a1*x + a2*x^2. If instead we would 
+  interpolate x = f^-1(y) = b0 + b1*y + b2*y^2, we'd get a different curve and re-expressing this 
+  interpolant as y = f(x) would involve square-roots in the formula. That is: inverse quadratic 
+  interpolation gives rise to a sort of square-root interpolation which gives a different set of 
+  functions.
 
--Implement a method to "naturally" interpolate between matrices:
- -Do a singular value decomposition of A = U * D * V
- -Interpolate D via regular lerp and U,V via column-wise slerp
+- The idea is to invent an interpolation scheme that has the same feature of representing 
+  y = f(x) and x = f^-1(y) simultaneously while also being 1st order smooth, i.e. have matching 
+  derivatives at the nodes. An idea for such a scheme base on Moebius transformations is 
+  implemented in selfInverseInterpolation() in MathExperiments.h. 
+  Update: Somewhere in the prototypes, there is now the class rsLinearFractionalInterpolator. See:
+  https://www.kvraudio.com/forum/viewtopic.php?t=600628
+  https://github.com/RobinSchmidt/RS-MET/discussions/343
+
+- Implement spherical linear interpolation ("slerp") for interpolating rotations. The formula is:
+  - p0, p1: points on the unit sphere to be interpolated (can be n-dimensional for any n, I think)
+  - t: intetpolation parameter in 0...1
+  - w = acos(dot(p0, p1)): angle between p0, p1
+  - slerp(p0,p1,t) = (sin((1-t)*w) * p0  +  sin(t*w) * p1)  /  sin(w)
+
+- A simplified version is called normalized linear interpolation ("nlerp") that just linearly 
+  interpolates between p0 and p1 and renormalizes the result. The path is the same but the speed is
+  not constant anymore. It's slower at the endpoints and maximum in the middle. That might actually 
+  be desirable in the context of animations.
+
+- Implement a method to "naturally" interpolate between matrices:
+  - Do a singular value decomposition of A = U * D * V
+  - Interpolate D via regular lerp and U,V via column-wise slerp
+
+- Implement a generalization of the Hermite interpolation scheme where we are given an arbitrary
+  number of data points and want to fit a single polynomial (segement) to these datapoints and for
+  each of the data points, we know the x-coordinate, the y-coordinate and possibly some number of 
+  target derivatives and that number may in general be different per data point. For example, the 
+  data to be fitted could consist of (x1,y1,y1'), (x2,y2,y2',y''), (x3,y3), (x4,y4,y4',y4'',y4''').
+  Currently, we have the Hermite scheme only for data in the form 
+  (x0,y0,y0',...), (x1,y1,y1',...) where in the actual formula computations, we also assum that 
+  x0 = y0 = 0, x1 = y1 = 1 and the more general case is simply obtained by appropriately scaling
+  and shifting in the x- and y-directions. I think, for the general case, we should set up one
+  equation per constraint and not assume any special values for any of the xs and ys.
 
 
 

@@ -331,6 +331,11 @@ ToDo:
   applying Newton's method to an quadratic approximation of the original function f. That makes it 
   much easier to compute but it has the same convergence speed as the original Muller's method.
 
+- The boost library has the "TOMS748" algorithm and says that it is better than Brent's method.
+  Maybe try to implement it. See:
+  https://www.boost.org/doc/libs/1_64_0/libs/math/doc/html/math_toolkit/roots/roots_noderiv/TOMS748.html
+  https://na.math.kit.edu/alefeld/download/1995_Algorithm_748_Enclosing_Zeros_of_Continuous_Functions.pdf
+
 
 Resources for higher order variants of Newton iteration:
 

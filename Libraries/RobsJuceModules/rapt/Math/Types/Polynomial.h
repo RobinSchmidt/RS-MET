@@ -575,7 +575,8 @@ public:
   template<class R>
   static R evaluateWithTwoDerivativesAndError(const std::complex<R>* a, int degree,
     std::complex<R> z, std::complex<R>* P);
-  // rename "P" to "y" ...or "w2 as is common in complex functions
+  // Rename "P" to "y" ...or "w" as is common in complex functions. If this function is relevant
+  // only within the Laguerre algorithm, move it in there as lamba helper function.
 
   /** Evaluates the indefinite integral of the polynomial at given x with given integration 
   constant c. */
