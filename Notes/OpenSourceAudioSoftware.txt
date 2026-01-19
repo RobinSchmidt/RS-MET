@@ -210,6 +210,10 @@ https://github.com/sfztools/sfizz
 https://github.com/sfztools/sfizz-ui
 -SFZ player
 
+juicysfplugin:
+https://github.com/Birch-san/juicysfplugin
+-SF2 and SF3 soundfont player plugin
+
 FluidSynth:
 https://github.com/FluidSynth/fluidsynth
 -Soundfont 2 player
@@ -1186,6 +1190,15 @@ https://github.com/cgzirim/seek-tune
 
 ----------------------------------------------------------------------------------------------------
 Unsorted:
+
+https://github.com/keithhearne/VSTPlugins/tree/master
+-A number of VST plugins developed using the JUCE framework and C++ in Xcode.
+
+https://github.com/rolinmb/vst-dev
+-Collection of projects made whilst learning to build VST3 plugins using the standard Steinberg 
+ Media VST3 SDK, as well as the JUCE C++ library more recently.
+-Associanted YouTube channel: https://www.youtube.com/@aikelab/featured
+
 
 Tek:
 https://codeberg.org/unspeaker/tek

@@ -3152,13 +3152,13 @@ void hilbertFilter()
 
   using WT = RAPT::rsWindowFunction::WindowType;
 
-  int numTaps = 256;                 // Odd lengths give bandpass, even highpass approximations
-  int fftSize = 4096;                // FFT size for plotting frequency response
+  int numTaps = 256;           // Odd lengths give bandpass, even highpass approximations
+  int fftSize = 4096;          // FFT size for plotting frequency response
   WT  window  = WT::blackman;
-  int numSamples    = 300;           // Number of samples for test waveform
+  int numSamples    = 300;     // Number of samples for test waveform
   double freq       = 441;
   double sampleRate = 44100;
-  bool   smooth     = false;         // Apply a 2-sample MA to even lengths or 3-saempl MA to odd lengths
+  bool   smooth     = false;   // Apply a 2-sample MA to even lengths or 3-sample MA to odd lengths
 
   // Design the filter and plot its impulse response:
   using WFD = rsWindowedFilterDesigner;
@@ -3275,6 +3275,7 @@ void hilbertFilter()
   //
   // See:
   // https://en.wikipedia.org/wiki/Hilbert_transform
+  // https://www.kvraudio.com/forum/viewtopic.php?t=608320
 
 }
 

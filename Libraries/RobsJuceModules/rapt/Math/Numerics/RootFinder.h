@@ -147,8 +147,8 @@ public:
     // ToDo: give it additional parameters for tolerance, maxNumIterations, rootMultiplicity. The 
     // latter should be used to scale the steps. Maybe call it stepSize and write into the 
     // documentation that the optimal stepsize is given by the root's multiplicity. Newton can be 
-    // slow for multiple roots but with this little tweak, it becomes fast again when you happen 
-    // to know the multplicity of the root.
+    // slow for roots with multiplicity > 1 but with this little tweak, you can make it fast again 
+    // when you happen to know the multiplicity of the root in advance.
 
 
   /** Computes the delta for one update step in the Halley iteration method.  The 

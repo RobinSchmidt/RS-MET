@@ -512,7 +512,7 @@ int main(int argc, char* argv[])
   //modalAnalysisPluck();
   //modalPartialResynthesis();
   //modalAnalysisGloriosa();
-  modalReverb();               // Under construction
+//  modalReverb();               // Under construction
 
   // Misc Audio:
   //centroid();
@@ -633,7 +633,7 @@ int main(int argc, char* argv[])
   //sigmoidPrototypes();
   //sigmoidConvergenceRates();
   //sixticPositive();
-  //hilbertDistortion();
+  hilbertDistortion();
   //adHocTapeEmuIdeas();
   //tapeEmulation();                  // Jatin Chowdhury's tape hysteresis algorithm
 

@@ -331,10 +331,30 @@ ToDo:
   applying Newton's method to an quadratic approximation of the original function f. That makes it 
   much easier to compute but it has the same convergence speed as the original Muller's method.
 
+- Figure out if the trick of scaling the step size by the multiplicity in Newton's method also 
+  works for the higher order Householder methods. If so, allow the caller to pass a stepsize.
+
 - The boost library has the "TOMS748" algorithm and says that it is better than Brent's method.
   Maybe try to implement it. See:
   https://www.boost.org/doc/libs/1_64_0/libs/math/doc/html/math_toolkit/roots/roots_noderiv/TOMS748.html
   https://na.math.kit.edu/alefeld/download/1995_Algorithm_748_Enclosing_Zeros_of_Continuous_Functions.pdf
+
+- Implement Uspensky's method given in "Polynomials of One Variable: the Theory of Equations" by 
+  Chris K. Caldwell, pg. 214. It's a Householder method alike formula that, according to the book,
+  always(!!!) converges. It is defined by the iteration formula:
+
+    xNew = xOld - (f*f1) / (f1^2 - 0.5*f*f2)
+
+  where f,f1,f2 are f(x), f'(x), f''(x) respectively, just like in the definitions of the 
+  Householder type methods (Newton, Halley, etc.). Implement it with an API consistent with the
+  Householder methods. Implement unit tests for it and figure out its rate of convergence 
+  empirically. Figure out if it can also be used for complex roots. If so, maybe write a polynomial
+  root finder based on that method. It seems to be super simple to implement and its convergence
+  guarantee makes it super attractive! I currently use Laguerre's method in the polynomial root 
+  finder for which no theoretical convergence guarantee is known (although the practical evidence 
+  suggests that it indeed does always converge). Figure out, if the "stepsize = multiplicity" trick
+  also works for this method. If so, implement it.
+
 
 
 Resources for higher order variants of Newton iteration:
