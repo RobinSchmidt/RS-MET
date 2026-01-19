@@ -164,6 +164,7 @@ public:
   // Needs unit tests for even and odd lengths.
 
   void setSmoothing(bool shouldSmooth) { hilbert.setSmoothing(shouldSmooth); }
+  // Maybe let the function take an integer or even a real number to set the amount of smoothing.
 
 
   //-----------------------------------------------------------------------------------------------

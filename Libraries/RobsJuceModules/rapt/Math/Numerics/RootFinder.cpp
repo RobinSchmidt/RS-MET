@@ -353,7 +353,10 @@ ToDo:
   guarantee makes it super attractive! I currently use Laguerre's method in the polynomial root 
   finder for which no theoretical convergence guarantee is known (although the practical evidence 
   suggests that it indeed does always converge). Figure out, if the "stepsize = multiplicity" trick
-  also works for this method. If so, implement it.
+  also works for this method. If so, implement it. I tried to search for the method via Google but
+  it didn't find anything of relevance (on 2026/01/19). It found some mentions of another "Uspensky
+  method" for polynomial root isolation - but not about the method above. It seems to be not widely
+  known.
 
 
 

@@ -1053,7 +1053,7 @@ void hilbertDistortion2()
   // realtime processing friendly form.
 
   // Setup:
-  int numTaps    = 255;      // Number of taps for Hilbert filter.
+  int numTaps    = 256;      // Number of taps for Hilbert filter.
   int sampleRate = 44100;    // Sample rate in Hz
   int numSamples = 2000;     // Number of samples to render
   double drive   =  4.0;     // Drive for tanh-waveshaper as raw amplitude multiplier
@@ -1076,12 +1076,32 @@ void hilbertDistortion2()
   for(int n = 0; n < N; n++)
     y[n] = dist.getSample(x[n]);
   rsPlotVectors(x, y); 
+
+  // Observations:
+  //
+  // - With numTaps = 255, we see jaggy artifacts. With numTaps = 256, the output signal is nicely
+  //   smooth.
+}
+
+void hilbertPhaseModulation()
+{
+  // Under construction
+
+  // We try to replicate the behavior of the Kilohearts Phase Distortion plugin that is an 
+  // important ingredient of the cymbla synthesis algorithm described here:
+  // https://www.kvraudio.com/forum/viewtopic.php?t=627069
+  // ...TBC...
+
+
+
+  int dummy = 0;
 }
 
 void hilbertDistortion()
 {
   //hilbertDistortion1();
-  hilbertDistortion2();
+  //hilbertDistortion2();
+  hilbertPhaseModulation();
 }
 
 void adHocTapeEmuIdeas()

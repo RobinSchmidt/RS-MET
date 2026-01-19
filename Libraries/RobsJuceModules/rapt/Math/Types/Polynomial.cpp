@@ -2032,5 +2032,8 @@ ToDo:
    https://www.youtube.com/watch?v=zB_pQJWnhTc  Bernoulli's Method with QD
    https://github.com/osveliz/numerical-veliz/blob/master/src/rootfinding/Bernoulli.jl
 
+   Methods for root isolation:
+   https://en.wikipedia.org/wiki/Real-root_isolation
+
 */
 

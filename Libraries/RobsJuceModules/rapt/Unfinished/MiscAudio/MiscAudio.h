@@ -253,7 +253,7 @@ public:
 
 protected:
 
-  static const int maxLength = 1024;  // Maybe make thsi also user adjustable
+  static const int maxLength = 1024;  // Maybe make this also user adjustable
 
   rsComplexifier<TSig, TPar> complexifier;
 
@@ -262,7 +262,39 @@ protected:
   TPar makeUp = 0.0;
 
 };
-// Maybe rename to AnalyticDistortion or EnvelopeDriver EnvDriver/EnvyDriver
+
+// ToDo:
+// 
+// - Maybe rename to AnalyticDistortion or EnvelopeDriver, EnvDriver/EnvyDriver. OK - in ToolChain,
+//   I call it EnvyDriver. I think, that's a catchy name.
+//
+// - Let the user select different waveshaping functions. Add a "DC" or "Bias" or "Offset" or 
+//   "Shift" parameter. Maybe add oversampling. Maybe let FuncShaper have different modes: 
+//   WaveShaping (current mode), EnvShaping/AmpShaping/MagShaping/MagniShaping (using the class 
+//   rsHilbertDistortion), PhaseShaping (maybe with different algorithms to compute instantaneous
+//   amplitude and phase - using Hilbert filters, use class rsSingleSineModeler), ...
+//
+// - Let the user set up the maximum Hilbert kernel length via a function setMaxKernelLength(). 
+//   This function may have to re-allocate, so make that very clear in the documentation.
+// 
+// - Introduce a smoothing parameter to set or unset complexifier.setSmoothing().
+// 
+// - Check the alignment between original signal x and Hilbert transform y. Maybe for even filter
+//   lengths, the maybe misaligned by half a sample? If so, compensate by a half sample delay 
+//   somewhere. Maybe this is already being done. I can't remember anymore. Verify and document it!
+//
+// - Maybe optionally apply a smoothing lowpass filter to the magnitude. Maybe try to place it 
+//   before or after the waveshaper.
+//
+// - Experiment with different windows to figure out what works best and document the findings. I 
+//   didn't yet make any deliberate choice for that. I think, it's currently using Blackman (verify
+//   and document!) - but for no particular reason. Maybe eventually also allow the user to choose 
+//   the window function in EnvyDriver. 
+
+
+
+
+
 
 
 

@@ -528,6 +528,9 @@ more time. But the more we iterate, the more evaluations of tanh we will need to
 become more expensive. Maybe implement a general framework for doing this thing with sigmoids. It
 could be a class that keeps the underlying sigmoid as std::function member.
 
+Maybe try replacing x by x^p in tanh(x) = (e^x - e^-x) / (e^x + e^-x). Try also using just
+e^x - e^-x without the normalization. Ah - I think, this is just asinh (maybe up to a constant).
+
 
 Try to find more accurate asymptotic expressions in a systematic way - these were found by trial 
 and error. See: 
