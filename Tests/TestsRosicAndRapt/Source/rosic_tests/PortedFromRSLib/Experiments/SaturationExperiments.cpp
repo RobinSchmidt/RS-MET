@@ -1100,7 +1100,7 @@ void hilbertPhaseModulation()
   int  numSamples   =   500;       // Number of samples to produce
   Real sineFreq     =   441;       // Frequency of sinusoid
   Real modDepth     =     1.5;     // Depth of the phase modulation
-  int  kernelLength =   256;       // Length of the Hilbert filter kernel
+  int  kernelLength =   301;       // Length of the Hilbert filter kernel
   bool smooth       = false;       // Toggle smoothing for the Hilbert filter
 
 
@@ -1112,19 +1112,35 @@ void hilbertPhaseModulation()
 
   // Create an input sinusoid x[n] and an actual phase-modulated version y[n] for reference:
   int N = numSamples;
-  Vec x(N), y(N);
+  Vec x(N), pm(N);
   Real w = 2*PI* sineFreq / sampleRate;
   for(int n = 0; n < N; n++)
   {
-    x[n] = sin(w*n);                    // The non-modulated sine
-    y[n] = sin(w*n + modDepth * x[n]);  // The phase-modulated sine
+    x[n]  = sin(w*n);                    // The non-modulated sine
+    pm[n] = sin(w*n + modDepth * x[n]);  // The phase-modulated sine
   }
 
   // Use the signal x[n] as input for a phase-modulation effect that is based on a Hilbert filter:
+  Vec y(N), a(N), p(N), q(N), z(N); 
+  for(int n = 0; n < N; n++)
+  {
+    complexifier.processSampleFrame(&x[n], &y[n]);
+    // This overwrites our original x[n]. That's actually not desirable because we want to keep it
+    // for reference
+
+    a[n] = sqrt(x[n]*x[n] + y[n]*y[n]);
+    p[n] = atan2(y[n], x[n]);
+    q[n] = p[n] + modDepth * x[n];  // ToDo: Add offset
+    //z[n] = a[n] * cos(p[n]);      // Test - try to reconstruct x exactly
+    z[n] = a[n] * cos(q[n]);
+
+  }
 
 
-
-  rsPlotVectors(x, y);
+  //rsPlotVectors(x, pm);
+  //rsPlotVectors(x, y, a, p);
+  //rsPlotVectors(x, z);
+  rsPlotVectors(pm, z);
   int dummy = 0;
 
   // ToDo:
@@ -1133,6 +1149,8 @@ void hilbertPhaseModulation()
   //   actual phase modulation signal.
   //
   // - Try it also on different signals like sawtooth, pulse, triangle, etc.
+  //
+  // - Apply an adjustable lowpass filter to x[n] before using it as modulator for the phase.
 }
 
 void hilbertDistortion()
