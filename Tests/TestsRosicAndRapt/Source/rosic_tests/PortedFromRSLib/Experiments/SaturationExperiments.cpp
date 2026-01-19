@@ -1088,13 +1088,51 @@ void hilbertPhaseModulation()
   // Under construction
 
   // We try to replicate the behavior of the Kilohearts Phase Distortion plugin that is an 
-  // important ingredient of the cymbla synthesis algorithm described here:
+  // important ingredient of the cymbal synthesis algorithm described here:
   // https://www.kvraudio.com/forum/viewtopic.php?t=627069
   // ...TBC...
 
+  using Real = double;
+  using Vec  = std::vector<Real>;
+
+  // Setup:
+  Real sampleRate   = 44100;       // Sample rate
+  int  numSamples   =   500;       // Number of samples to produce
+  Real sineFreq     =   441;       // Frequency of sinusoid
+  Real modDepth     =     1.5;     // Depth of the phase modulation
+  int  kernelLength =   256;       // Length of the Hilbert filter kernel
+  bool smooth       = false;       // Toggle smoothing for the Hilbert filter
 
 
+  // Create the complexifier object 
+  RAPT::rsComplexifier<Real, Real> complexifier;
+  complexifier.setMaxLength(kernelLength);
+  complexifier.setLength(kernelLength);
+  complexifier.setSmoothing(smooth);
+
+  // Create an input sinusoid x[n] and an actual phase-modulated version y[n] for reference:
+  int N = numSamples;
+  Vec x(N), y(N);
+  Real w = 2*PI* sineFreq / sampleRate;
+  for(int n = 0; n < N; n++)
+  {
+    x[n] = sin(w*n);                    // The non-modulated sine
+    y[n] = sin(w*n + modDepth * x[n]);  // The phase-modulated sine
+  }
+
+  // Use the signal x[n] as input for a phase-modulation effect that is based on a Hilbert filter:
+
+
+
+  rsPlotVectors(x, y);
   int dummy = 0;
+
+  // ToDo:
+  //
+  // - Apply the Hilbert-filter based phase modulation to a sinusoid and compare the result to an
+  //   actual phase modulation signal.
+  //
+  // - Try it also on different signals like sawtooth, pulse, triangle, etc.
 }
 
 void hilbertDistortion()

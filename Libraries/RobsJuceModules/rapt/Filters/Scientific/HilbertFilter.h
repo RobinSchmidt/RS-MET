@@ -159,9 +159,10 @@ public:
   void setLength(int newLength) 
   { 
     hilbert.setNominalLength(newLength); 
-    delay.setLength(newLength/2);   // call hilbert.getDelay
+    delay.setLength(newLength/2);   // ToDo: Use a function hilbert.getDelay()
   }
   // Needs unit tests for even and odd lengths.
+  // Maybe rename to setKernelLength (and likewise setMaxKernelLength)
 
   void setSmoothing(bool shouldSmooth) { hilbert.setSmoothing(shouldSmooth); }
   // Maybe let the function take an integer or even a real number to set the amount of smoothing.

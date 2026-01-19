@@ -38,7 +38,14 @@ void rsHilbertFilter<TSig, TPar>::computeCoeffs(TPar* h, int numTaps,
   // https://www.intechopen.com/chapters/39362
   //
   // ToDo:
-  // -Compare the results of this routine with those of some reference implementations from octave 
-  //  or numpy/scipy
+
+  // - Compare the results of this routine with those of some reference implementations from octave
+  //   or numpy/scipy
+  //
+  // - Explain why this is commented out. I think, it may be obsolete due to the implementation of
+  //   updateCoeffs() in the .h file? See also: rsWindowedFilterDesigner. It has a member function 
+  //   hilbert() which seems to implement this algorithm here. Verify if the algorithm there is 
+  //   really exactly the same as the one here. If so, delete this code here (but maybe move over 
+  //   the comments from here before).
 }
 */
