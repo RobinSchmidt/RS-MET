@@ -1143,7 +1143,20 @@ void hilbertPhaseModulation()
   rsPlotVectors(pm, z);
   int dummy = 0;
 
+
+  // Observations:
+  //
+  // - With sineFreq = 441 (such that the cycle length is 100 samples), we get good results with a 
+  //   kernel length of 201 in the sense that pm and z look very similar. With 101, we get a very 
+  //   bad result. With 301, the result is weird. I think, it may be out of phase with the 
+  //   reference by 180° or something? Take a closed look! With 401, the result is very good - even
+  //   better than with 201, although the price is a greater latency.
+  //
+  //
   // ToDo:
+  // 
+  // - Rename the signals: use in for x, ref or tgt for pm (reference or target), out for z, x for 
+  //   the delayed in, etc.
   //
   // - Apply the Hilbert-filter based phase modulation to a sinusoid and compare the result to an
   //   actual phase modulation signal.
@@ -1151,6 +1164,8 @@ void hilbertPhaseModulation()
   // - Try it also on different signals like sawtooth, pulse, triangle, etc.
   //
   // - Apply an adjustable lowpass filter to x[n] before using it as modulator for the phase.
+  //
+  // - Maybe implement phase-shaping as well.
 }
 
 void hilbertDistortion()
