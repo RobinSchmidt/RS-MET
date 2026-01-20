@@ -1099,8 +1099,8 @@ void hilbertPhaseModulation()
   Real sampleRate   = 44100;       // Sample rate
   int  numSamples   =   500;       // Number of samples to produce
   Real sineFreq     =   441;       // Frequency of sinusoid
-  Real modDepth     =     2.8;     // Depth of the phase modulation
-  int  kernelLength =   401;       // Length of the Hilbert filter kernel
+  Real modDepth     =     3.0;     // Depth of the phase modulation
+  int  kernelLength =   201;       // Length of the Hilbert filter kernel
   bool smooth       = false;       // Toggle smoothing for the Hilbert filter
 
 
