@@ -4749,20 +4749,41 @@ protected:
 
 //=================================================================================================
 
-/** Under construction
+/** Under construction. ...has not yet been tested
 
 An oversampling wrapper class for arbitrary types DSP processors TProc.  */
 
-//template<class TIn, class TOut, class TPar>
-//template<class TProc>
 template<class TIn, class TOut, class TPar, class TProc>
 class rsOverSampler : public TProc
 {
 
 public:
 
-  // To (statically) override:
-  // setSampleRate(), processFrame(), reset()
+  //-----------------------------------------------------------------------------------------------
+  // \name Statically overriden functionality inherited from TProc:
+
+  void setSampleRate(TPar newSampleRate)
+  {
+    sampleRate = newSampleRate;
+    TProc::setSampleRate(TPar(overSampleFactor) * sampleRate);
+  }
+
+  void processFrame(const TIn& in, TOut* out)
+  {
+    TIn  x = antiImageFilter.getSample(in);     // Maybe we need to scale "in" by overSampleFactor?
+    TOut y = Proc::getSample(x);
+    for(int i = 1; i < overSampleFactor; i++)
+    {
+      x = antiImageFilter.getSample(TIn(0));    // Upsample input
+      y = Proc::getSample(x);                   // Process
+      y = antiAliasFilter(y);                   // Downsample output
+    }
+    y = antiAliasFilter(y);
+    return y;
+  }
+  // Maybe have a branch for overSampleFactor == 1 to avoid applying the filters.
+  // ToDo: Do not call functions like getSample(). Instead use processFrame() calls. The class 
+  // TProc as well as the class rsEllipticSubBandFilter needs to implement them.
 
   void reset()
   {
@@ -4771,23 +4792,35 @@ public:
     antiAliasFilter.reset();
   }
 
-  // To add:
-  // setOverSampling(int)
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Newly added functionality by the wrapper:
+
+  void setOverSampling(int newFactor)
+  {
+    overSampleFactor = newFactor;
+    antiImageFilter.setSubDivision(overSampleFactor);
+    TProc::setSampleRate(TPar(overSampleFactor) * sampleRate);
+    antiAliasFilter.setSubDivision(overSampleFactor);
+  }
+
 
 protected:
 
   RAPT::rsEllipticSubBandFilter<TPar, TIn>  antiImageFilter;
   RAPT::rsEllipticSubBandFilter<TPar, TOut> antiAliasFilter;
 
-  int oversampleFactor = 1;
+  TPar sampleRate = 44100;
+  int  overSampleFactor = 1;
 
 };
 
 // Goals:
 //
 // - Wrapping an existing DSP class into an oversampling wrapper should require no change in the 
-//   processor class to be oversampled and as little as change as possible in all places where that
-//   class is used and should be replaced by the oversampled version. 
+//   processor class to be oversampled (as long as it adheres to the convention of how to write
+//   such processor classes) and as little as change as possible in all places where that class is
+//   used and should be replaced by the oversampled version. 
 // 
 // - In particular, all of its typical member function calls like e.g. setCutoff(), setResonance(),
 //   etc. should remain exactly the same at all call sites. This is achieved by publically 
@@ -4800,6 +4833,9 @@ protected:
 //    
 // - Maybe rename to rsEllipticOverSampler because we may potentially want to implement other 
 //   variants as well (FIR-filter based, say).
+//
+// - Document requirements on TProc. It must implement functions setSampleRate, processFrame and
+//   reset.
 
 
 
