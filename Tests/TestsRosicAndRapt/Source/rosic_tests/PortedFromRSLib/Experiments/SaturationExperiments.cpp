@@ -1085,12 +1085,34 @@ void hilbertDistortion2()
 
 void hilbertPhaseModulation()
 {
-  // Under construction
-
   // We try to replicate the behavior of the Kilohearts Phase Distortion plugin that is an 
   // important ingredient of the cymbal synthesis algorithm described here:
-  // https://www.kvraudio.com/forum/viewtopic.php?t=627069
-  // ...TBC...
+  // 
+  //   https://www.kvraudio.com/forum/viewtopic.php?t=627069
+  // 
+  // An input signal, assumed to be a sinusoid, is passed through a Hilbert transform filter to 
+  // obtain a sine (i.e. imaginary) part that corresponds to the input which is taken to be the
+  // cosine (i.e. real) part of an analytic signal. These two signals, let's call them x(t) and 
+  // y(t), are then translated from the cartesian (x,y) coordinate system to the polar (a,p) 
+  // coordinate system via the usual 2D cartesian-to-polar conversion formulas:
+  // 
+  //   a = sqrt(x^2 + y^2), p = atan2(y, x)
+  // 
+  // where a = a(t) is the instantaneous amplitude and p = p(t) is the instantaneous phase. The 
+  // instantaneous phase p(t) is then modulated by the input signal x(t) by some adjustable amount
+  // or modulation depth d to obtain a modulated phase:
+  // 
+  //   q(t) = p(t) + d * x(t)
+  // 
+  // Finally, we convert back from instantaneous amplitude a(t) and modified instantaneous phase
+  // q(t) to obtain modified (more specifically: modulated) signals xm(t), ym(t):
+  // 
+  //   xm(t) = a * cos(q), ym = a * sin(q)    (maybe we need to negate the sine part?)
+  // 
+  // Of these, we take xm as our final output. This represents a signal in which we modulate the 
+  // instantaneous phase of the input by the input itself in a feedforward configuration. We 
+  // compare the result of this process to an actual phase modulation signal which we use as target
+  // or reference.
 
   using Real = double;
   using Vec  = std::vector<Real>;
@@ -1103,8 +1125,7 @@ void hilbertPhaseModulation()
   int  kernelLength =   201;       // Length of the Hilbert filter kernel
   bool smooth       = false;       // Toggle smoothing for the Hilbert filter
 
-
-  // Create the complexifier object 
+  // Create the complexifier object:
   RAPT::rsComplexifier<Real, Real> complexifier;
   complexifier.setMaxLength(kernelLength);
   complexifier.setLength(kernelLength);
@@ -1112,48 +1133,49 @@ void hilbertPhaseModulation()
 
   // Create an input sinusoid x[n] and an actual phase-modulated version y[n] for reference:
   int N = numSamples;
-  Vec x(N), pm(N);
+  Vec in(N), tgt(N);
   Real w = 2*PI* sineFreq / sampleRate;
   for(int n = 0; n < N; n++)
   {
-    x[n]  = sin(w*n);                    // The non-modulated sine
-    pm[n] = sin(w*n + modDepth * x[n]);  // The phase-modulated sine
+    in[n]  = sin(w*n);                     // The non-modulated sine
+    tgt[n] = sin(w*n + modDepth * in[n]);  // The phase-modulated sine
   }
 
   // Use the signal x[n] as input for a phase-modulation effect that is based on a Hilbert filter:
-  Vec y(N), a(N), p(N), q(N), z(N); 
+  Vec x(N), y(N), a(N), p(N), q(N), xm(N), ym(N); 
   for(int n = 0; n < N; n++)
   {
+    x[n] = in[n];
     complexifier.processSampleFrame(&x[n], &y[n]);
-    // This overwrites our original x[n]. That's actually not desirable because we want to keep it
-    // for reference
-
     a[n] = sqrt(x[n]*x[n] + y[n]*y[n]);
     p[n] = atan2(y[n], x[n]);
-    q[n] = p[n] + modDepth * x[n];  // ToDo: Add offset
+    q[n] = p[n] + modDepth * x[n];  // ToDo: Add a constant offset/bias/shift
     //z[n] = a[n] * cos(p[n]);      // Test - try to reconstruct x exactly
-    z[n] = a[n] * cos(q[n]);
-
+    xm[n] = a[n] * cos(q[n]);
+    ym[n] = a[n] * sin(q[n]);
   }
 
-
-  //rsPlotVectors(x, pm);
-  rsPlotVectors(x, y, a, p);
-  //rsPlotVectors(x, z);
-  rsPlotVectors(pm, z);
-  int dummy = 0;
-
+  // PLot the results:
+  rsPlotVectors(in, tgt);     // Input and target reference
+  rsPlotVectors(x, y, a, p);  // Internal signals inside the algorithm
+  rsPlotVectors(in,  xm);     // Input and output
+  rsPlotVectors(tgt, xm);     // Target and output
 
   // Observations:
   //
   // - With sineFreq = 441 (such that the cycle length is 100 samples), we get good results with a 
-  //   kernel length of 201 in the sense that pm and z look very similar. The latency is exactly 
+  //   kernel length of 201 in the sense that tgt and xm look very similar. The latency is exactly 
   //   one cycle. The first half-cycle of the output looks a bit different that the others. We 
   //   apparently get some sort of transient artifacts when the filter is not yet fully warmed up.
   //   With 101, we get a very bad result. With 301 the waveshape also looks good but latency is 
   //   such that the output is out of phase with the reference by half a cycle. With 401, the 
   //   result is very good - even better than with 201, although the price is a greater latency, 
   //   namely 2 full cycles.
+  // 
+  // - With the kernel length of 201, we see a small ripple in the estimated amplitude envelope. 
+  //   This comes about because the output of the Hilbert filter is slightly too quiet probably due
+  //   to the slight highpass (or bandpass) characteristic. This can be counteracted by making the
+  //   kernel longer because doing so shifts the cutoff frequency further down towards DC, I think.
   //
   //
   // ToDo:
@@ -1167,6 +1189,14 @@ void hilbertPhaseModulation()
   // - Try it also on different signals like sawtooth, pulse, triangle, etc.
   //
   // - Apply an adjustable lowpass filter to x[n] before using it as modulator for the phase.
+  // 
+  // - In addition to plotting target and output (tgt, xm) plot also an appropiately shifted 
+  //   version of tgt against the output. I think, we need to shift by kernelLength/2. But maybe
+  //   try also (kernelLength+1)/2 and (kernelLength-1)/2. I'm not totally sure what the correct
+  //   expected delay is among these 3 (ToDo: Figure out and document in class rsComplexifier. The
+  //   correct formula may depend on the settings, i.e. even or odd kernel length, smoothing on or 
+  //   off etc. Maybe the class shoud have a member function getDelay() or something.). Maybe the 
+  //   correct required shift is indeed by a half-integer amount?
   //
   // - Maybe implement phase-shaping as well.
 }

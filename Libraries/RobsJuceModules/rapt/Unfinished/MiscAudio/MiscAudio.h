@@ -292,6 +292,29 @@ protected:
 //   the window function in EnvyDriver. 
 
 
+//=================================================================================================
+
+/** Under construction
+
+*/
+
+template<class TSig, class TPar>
+class rsPhaseModulation
+{
+
+
+public:
+
+
+protected:
+
+  rsComplexifier<TSig, TPar> complexifier;
+
+  TPar modDepth = 0.0; 
+
+};
+
+
 
 
 
