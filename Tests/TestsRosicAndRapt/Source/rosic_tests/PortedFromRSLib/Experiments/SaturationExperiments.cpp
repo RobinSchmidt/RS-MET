@@ -1099,8 +1099,8 @@ void hilbertPhaseModulation()
   Real sampleRate   = 44100;       // Sample rate
   int  numSamples   =   500;       // Number of samples to produce
   Real sineFreq     =   441;       // Frequency of sinusoid
-  Real modDepth     =     1.5;     // Depth of the phase modulation
-  int  kernelLength =   301;       // Length of the Hilbert filter kernel
+  Real modDepth     =     2.8;     // Depth of the phase modulation
+  int  kernelLength =   401;       // Length of the Hilbert filter kernel
   bool smooth       = false;       // Toggle smoothing for the Hilbert filter
 
 
@@ -1138,7 +1138,7 @@ void hilbertPhaseModulation()
 
 
   //rsPlotVectors(x, pm);
-  //rsPlotVectors(x, y, a, p);
+  rsPlotVectors(x, y, a, p);
   //rsPlotVectors(x, z);
   rsPlotVectors(pm, z);
   int dummy = 0;
@@ -1147,10 +1147,13 @@ void hilbertPhaseModulation()
   // Observations:
   //
   // - With sineFreq = 441 (such that the cycle length is 100 samples), we get good results with a 
-  //   kernel length of 201 in the sense that pm and z look very similar. With 101, we get a very 
-  //   bad result. With 301, the result is weird. I think, it may be out of phase with the 
-  //   reference by 180° or something? Take a closed look! With 401, the result is very good - even
-  //   better than with 201, although the price is a greater latency.
+  //   kernel length of 201 in the sense that pm and z look very similar. The latency is exactly 
+  //   one cycle. The first half-cycle of the output looks a bit different that the others. We 
+  //   apparently get some sort of transient artifacts when the filter is not yet fully warmed up.
+  //   With 101, we get a very bad result. With 301 the waveshape also looks good but latency is 
+  //   such that the output is out of phase with the reference by half a cycle. With 401, the 
+  //   result is very good - even better than with 201, although the price is a greater latency, 
+  //   namely 2 full cycles.
   //
   //
   // ToDo:
