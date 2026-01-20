@@ -68,6 +68,14 @@
   prefix (RSlider, etc.). That should become rsSlider. In rapt/rosic, some function names do not 
   use any prefix at all.
 
+- Consistently use processFrame(const TIn& input, TOut* output) to process a single sample frame 
+  instead of the somewhat inconsistent use of TOut getSample(), TOut getSample(TIn in), 
+  getSampleFrameStereo(TSig* inOutL, TSig* inOutR), getSampleFrameStereo(TIn* inL, TIn* inR,
+  TOut* outL, TOut* outR), etc. Rationale to have different template types for input and output:
+  There may eb processors with mono in and stereo out, etc. By using TIn, TOut in general, we can
+  express this by using e.g. float for TIn and rsStereoPair<float> for TOut, for example. Also 
+  add procesBlock functions where it makes sense.
+
 - Consistently use rsComplex rather than the current mix of rsComplex and std::complex. The reason
   for this mix is that I started out with my own class rsComplex, then discovered std::complex and
   used that for while with the intention to switch to it completely but then discovered that it
@@ -81,3 +89,5 @@
 
 - Maybe rename the libraries (and therefore, their namespaces). Maybe rosic should become RAMP
   which stands for Rob's Audio and Music Processors.
+
+- Implement a class rsOverSampler (see Prototypes.h for a draft)

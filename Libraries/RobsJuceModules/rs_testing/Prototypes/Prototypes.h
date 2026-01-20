@@ -43,6 +43,7 @@ of optimizations), for tweaking an algorithm's internal parameters which might n
 in the production-code versions, and to create reference output for the unit-tests for production
 code. */
 
+
 /*
 moved to rapt:
 static constexpr int allBits = -1;                                      // all bits are 1
@@ -4743,6 +4744,67 @@ protected:
 
 };
 */
+
+
+
+//=================================================================================================
+
+/** Under construction
+
+An oversampling wrapper class for arbitrary types DSP processors TProc.  */
+
+//template<class TIn, class TOut, class TPar>
+//template<class TProc>
+template<class TIn, class TOut, class TPar, class TProc>
+class rsOverSampler : public TProc
+{
+
+public:
+
+  // To (statically) override:
+  // setSampleRate(), processFrame(), reset()
+
+  void reset()
+  {
+    antiImageFilter.reset();
+    TProc::reset();
+    antiAliasFilter.reset();
+  }
+
+  // To add:
+  // setOverSampling(int)
+
+protected:
+
+  RAPT::rsEllipticSubBandFilter<TPar, TIn>  antiImageFilter;
+  RAPT::rsEllipticSubBandFilter<TPar, TOut> antiAliasFilter;
+
+  int oversampleFactor = 1;
+
+};
+
+// Goals:
+//
+// - Wrapping an existing DSP class into an oversampling wrapper should require no change in the 
+//   processor class to be oversampled and as little as change as possible in all places where that
+//   class is used and should be replaced by the oversampled version. 
+// 
+// - In particular, all of its typical member function calls like e.g. setCutoff(), setResonance(),
+//   etc. should remain exactly the same at all call sites. This is achieved by publically 
+//   inheriting from the TProc class. The processFrame() and reset() calls should also need no 
+//   change at the call site - but they will be overriden statically by the oversampler wrapper.
+// 
+// - Ideally, the only thing that needs to be changed is replacing a processor object e.g.
+//   "rsLadderFilter filter;" somewhere by something like "rsOverSampler<rsLadderFilter> filter;"
+//   and adding some calls to filter.setOverSampling(newFactor) in some appropriate places.
+//    
+// - Maybe rename to rsEllipticOverSampler because we may potentially want to implement other 
+//   variants as well (FIR-filter based, say).
+
+
+
+
+
 
 
 //=================================================================================================

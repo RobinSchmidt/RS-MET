@@ -1198,7 +1198,8 @@ void hilbertPhaseModulation()
   //   off etc. Maybe the class shoud have a member function getDelay() or something.). Maybe the 
   //   correct required shift is indeed by a half-integer amount?
   //
-  // - Maybe implement phase-shaping as well.
+  // - Maybe implement phase-shaping as well. By that I mean applying a waveshaping function to the
+  //   phase (maybe after normalizing it from -pi..+pi to 0..1).
 }
 
 void hilbertDistortion()
