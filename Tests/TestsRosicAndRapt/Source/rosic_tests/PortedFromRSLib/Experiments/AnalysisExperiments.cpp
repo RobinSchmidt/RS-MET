@@ -699,8 +699,6 @@ void peakFinder()
 
 void peakSmoother()
 {
-  // Under construction
-
   // We experiment with applying a smoothing filter to two peaks where the first peak is of height 
   // 1 and occurs only at a single sample whereas the second peak is of height 0.5 and spans two 
   // samples. These are the two extreme cases for how peak could be aligned or misaligned with the
@@ -709,6 +707,9 @@ void peakSmoother()
   // (i.e. would be insensitive to) the (mis)alignment of peaks with the sample grid. We want to 
   // figure out, how to appropriately smooth a signal as pre-processing for a peak detector.
   //
+  // Update: We now have also included a third peak which is partially aligned, i.e. it spreads
+  // it values like [...,0,0,0.75,0.25,0,0,...]
+  // 
   // ...TBC...
 
   using Real = double;
@@ -716,9 +717,9 @@ void peakSmoother()
   using AT   = rsArrayTools;
 
   // Setup:
-  int  numSamples  = 100;
+  int  numSamples  = 150;
   //Real smoothCoeff = 1.0;
-  int  numPasses   = 1;  // I think, to go higher than 5, we need more spacing between the peaks
+  int  numPasses   = 1;
 
   // Create smoothing kernel:
   //Real a = smoothCoeff / 3.0;
@@ -729,6 +730,7 @@ void peakSmoother()
   Vec x(N);
   x[ 25] = 1;
   x[ 75] = x[76] = 0.5;
+  x[125] = 0.75; x[126] = 0.25;
 
   // Smooth it with the kernel:
   Vec y = x;
@@ -747,11 +749,11 @@ void peakSmoother()
   // Observations:
   //
   // - As expected, the relative peak height difference (i.e. the peak height ratio) between the 
-  //   two peaks is equal to 2.0 for the unsmoothed peaks and much reduced by the smoothing. The 
+  //   two peaks is equal to 2.0 for the unsmoothed peaks and is much reduced by the smoothing. The
   //   ratios seem to depend on numPasses as follows: 
   //   0: 2/1, 1: 1/1, 2: 6/5, 3: 14/13, 4: 38/35, 5: 17/16, ... 
-  //   I found them by copying the floating point values into Wolfram Alpha to let it guess a 
-  //   possible closed form. I think, we should expect rational numbers.
+  //   I found the exact ratios by copying the floating point values into Wolfram Alpha to let it 
+  //   guess a possible closed form. We should expect rational numbers.
   // 
   // - Generally, the trend is: The greater the number of passes, the more the two peaks tend to be
   //   of equal height - but with one notable exception: For a single pass, the two peaks actually
@@ -761,7 +763,9 @@ void peakSmoother()
   // Conclusions:
   // 
   // - A single pass of a 3 point MA filter actually seems to be ideal when the goal is to equalize
-  //   the peak heights of perfectly grid-aligned and "perfectly" misaligned peaks.
+  //   the peak heights of perfectly grid-aligned and "perfectly" misaligned peaks. It makes the 
+  //   maximum sample value exactly equal. It even seems to work with other amounts of 
+  //   (mis)alignment as well.
   // 
   // 
   // ToDo:
@@ -774,15 +778,18 @@ void peakSmoother()
   // 
   // - Try using a peak that is neither completely aliged nor misaligend. Maybe spread it like
   //   [...,0.75,0.25,...], [...,0.2,0.8,...], ... Figure out if the 1 pass of a 2pt MA equalizes
-  //   them all. That would seem to be almost too good to be true!
+  //   them all. That would seem to be almost too good to be true! ..ok - with 0.75,0.25 it seems
+  //   to also work. The maximum peak height is always 1/3. That is great!
   //
   // - Increase the peak spacing such that we can use at least up to 10 passes. I think, we need to
   //   space them by at least 20 samples to avoid the smoothed peaks to overlap. Each pass 
   //   increases the width of the peaks by one sample to the left and one sample to the right. 
   //   Wait! No! It increases it by 2 samples, I think. Verify this!
-
+  //
+  // - I think, such a peak smoothing algorithm could be a good pre-processing step for FFT based
+  //   polyphonic pitch detection that is based on searching for harmonic series in complex 
+  //   spectra.
 }
-
 
 // convenience function to make the zero-crossing finding work for plain arrays (as required for
 // plotting)
