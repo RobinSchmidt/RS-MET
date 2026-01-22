@@ -23,6 +23,7 @@ void maxShortTimeRMS();
 void arrayRMS();
 
 void peakFinder();
+void peakSmoother();
 
 void zeroCrossingFinder();
 void zeroCrossingFinder2();

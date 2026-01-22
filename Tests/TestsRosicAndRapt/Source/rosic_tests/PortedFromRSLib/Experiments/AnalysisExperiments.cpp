@@ -697,6 +697,16 @@ void peakFinder()
   //  around 10% - the eestimation error indeed decreases with increasing precision - it works!
 }
 
+void peakSmoother()
+{
+  // Under construction
+
+
+
+  int dummy = 0;
+}
+
+
 // convenience function to make the zero-crossing finding work for plain arrays (as required for
 // plotting)
 void upwardZeroCrossings(double *x, int N, double *z, int Nz, int p)

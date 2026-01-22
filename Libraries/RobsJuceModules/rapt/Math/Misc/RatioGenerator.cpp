@@ -199,5 +199,32 @@ https://en.wikipedia.org/wiki/Metallic_mean
 https://rosettacode.org/wiki/Metallic_ratios
 https://arxiv.org/abs/1901.02619  Generalized metallic means
 https://www.researchgate.net/publication/351173999_Three_Interesting_Properties_of_Metallic_Ratios
-    
+  
+
+This blog post:
+https://atosynth.blogspot.com/2026/01/a-closer-look-at-super-saw-code.html?m=1
+analyzes the detuning ratios of the Roland supersaw. The author says that reverse engineered code
+results in:
+  [0, 0.01953125, -0.01953125, 0.06225585, -0.0628662, 0.107421875, -0.10986328125]
+which by multiplying by 8192 gives:
+  [0, 160,  -160, 509.9999, -514.99999, 880, -900]
+so it stands to reason that the original ratios were meant to be:
+  [0, 160,  -160, 510, -515, 880, -900] / 8192
+but also mentions a code example (I don't know what this is refering to) that lists:
+  [0, 318, -318, 1020, -1029, 1760, -1800] / 16384
+which would be _almost_ two times the above array. The 318 should actually be a 320 etc. and it's
+being speculated that at some stage there was some rounding involved. It also says:
+"
+ When using floats, the outer oscillators should have a frequency Fn:
+   Fn = F0 * (1 + floatCoefficient[n])
+ When using the integer coefficients, we instead get
+   Fn = F0 * (1 + integerCoefficient[n] / 2^14)
+ Or 
+   Fn = F0 * (1 + integerCoefficient[n] >> 14)
+ We have to do the bitshift after multiplying with F0:
+   Fn = F0 + (F0 * integerCoefficient[n]) >> 14
+"
+See also: https://www.kvraudio.com/forum/viewtopic.php?t=258924
+
+
 */
