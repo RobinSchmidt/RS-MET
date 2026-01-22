@@ -701,9 +701,76 @@ void peakSmoother()
 {
   // Under construction
 
+  // We experiment with applying a smoothing filter to two peaks where the first peak is of height 
+  // 1 and occurs only at a single sample whereas the second peak is of height 0.5 and spans two 
+  // samples. These are the two extreme cases for how peak could be aligned or misaligned with the
+  // sample grid. What we want to achieve is to smooth the signal such that the two peaks have 
+  // roughly the same height after smoothing such that a peak-detection algorithm wouldn't care
+  // (i.e. would be insensitive to) the (mis)alignment of peaks with the sample grid. We want to 
+  // figure out, how to appropriately smooth a signal as pre-processing for a peak detector.
+  //
+  // ...TBC...
 
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  using AT   = rsArrayTools;
 
+  // Setup:
+  int  numSamples  = 200;
+  //Real smoothCoeff = 1.0;
+  int  numPasses   = 5;  // I think, to go higher than 5, we need more spacing between the peaks
+
+  // Create smoothing kernel:
+  //Real a = smoothCoeff / 3.0;
+  //Vec h({a, 1-2*a, a});
+
+  // Create input:
+  int N = numSamples;
+  Vec x(N);
+  x[ 80] = 1;
+  x[120] = x[121] = 0.5;
+
+  // Smooth it with the kernel:
+  Vec y = x;
+  for(int i = 1; i <= numPasses; i++)
+  {
+    //AT::convolve(&y[0], N-2, &h[0], 3, &y[0]);
+    AT::movingAverage3pt(&y[0], N, &y[0]);
+  }
+
+  Real ratio = y[100] / y[120];
+
+  rsPlotVectors(x, y);
   int dummy = 0;
+
+
+  // Observations:
+  //
+  // - As expected, the relative peak height difference (i.e. the peak height ratio) between the 
+  //   two peaks is equal to 2.0 for the unsmoothed peaks and much reduced by the smoothing. The 
+  //   ratios seem to depend on numPasses as follows: 
+  //   1: 1/1, 2: 6/5, 3: 14/13, 4: 38/35, 5: 17/16, ... 
+  //   I found them by copying the floating point values into Wolfram Alpha to let it guess a 
+  //   possible closed form. I think, we should expect rational numbers.
+  // 
+  // - Generally, the trend is: The greater the number of passes, the more the two peaks tend to be
+  //   of equal height - but with one notable exception: For a single pass, the two peaks actually
+  //   have the exact same height.
+  //
+  //
+  // ToDo:
+  //
+  // - Maybe to get the exact fractions directly from the output, use Real = rsFraction<int>
+  //
+  // - Use a moving average kernel of the form: [c, 1-2*c, c] where c is between 0 and 1/3. With 
+  //   c = 0, there is no smoothing at all, with c = 1/3, we get [1/3, 1/3, 1/3], i.e. the maximum
+  //   amount of smoothing for a 3 point kernel.
+  //
+  // - Increase the peak spacing such that we can use at least up to 10 passes. I think, we need to
+  //   space them by at least 20 samples to avoid the smoothed peaks to overlap. Each pass 
+  //   increases the width of the peaks by one sample to the left and one sample to the right. 
+  //   Wait! No! It increases it by 2 samples, I think. Verify this!
+
 }
 
 
