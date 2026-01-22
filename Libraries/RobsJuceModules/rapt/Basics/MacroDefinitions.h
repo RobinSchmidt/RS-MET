@@ -182,6 +182,9 @@ updated to get rid of the deprecation warnings. */
 // the new, also inheriting constructors? maybe define a macor RS_DEPRECTE_CLASS
 // maybe try it with rsPolynomial -> rename it to rsPolynom ...but maybe not - that's not widely 
 // used as an english word
+//
+// ToDo: Maybe use the [[deprecated]] attribute instead, see:
+// https://en.cppreference.com/w/cpp/language/attributes.html
 
 
 

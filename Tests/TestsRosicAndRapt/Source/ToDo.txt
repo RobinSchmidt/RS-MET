@@ -74,7 +74,14 @@
   TOut* outL, TOut* outR), etc. Rationale to have different template types for input and output:
   There may eb processors with mono in and stereo out, etc. By using TIn, TOut in general, we can
   express this by using e.g. float for TIn and rsStereoPair<float> for TOut, for example. Also 
-  add procesBlock functions where it makes sense.
+  add procesBlock functions where it makes sense. Although, for mono-to-stereo processors, we could
+  use the convention that the 1st parameter is an in/out parameter and the 2nd is an out parameter
+  as we do in rsComplexifier. Maybe we could also have a processFrame() function that has a 
+  consistent API in all DSP classes in addition to the getSample(), ...functions whose API may 
+  differ depending on what the concrete class does. Maybe processFarme should always work in 
+  place and always receive a pointer to the sample-frame. It could be single channel or multi 
+  channel and if the number inputs and output is different, the size should just be 
+  max(numIns, numOuts)
 
 - Consistently use rsComplex rather than the current mix of rsComplex and std::complex. The reason
   for this mix is that I started out with my own class rsComplex, then discovered std::complex and

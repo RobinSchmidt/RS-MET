@@ -1131,7 +1131,7 @@ void hilbertPhaseModulation()
   complexifier.setLength(kernelLength);
   complexifier.setSmoothing(smooth);
 
-  // Create an input sinusoid x[n] and an actual phase-modulated version y[n] for reference:
+  // Create input sinusoid "in" and actual phase-modulated version "tgt" (target) for reference:
   int N = numSamples;
   Vec in(N), tgt(N);
   Real w = 2*PI* sineFreq / sampleRate;
@@ -1141,12 +1141,12 @@ void hilbertPhaseModulation()
     tgt[n] = sin(w*n + modDepth * in[n]);  // The phase-modulated sine
   }
 
-  // Use the signal x[n] as input for a phase-modulation effect that is based on a Hilbert filter:
+  // Use the input signal as input for a phase-modulation effect that is based on a Hilbert filter:
   Vec x(N), y(N), a(N), p(N), q(N), xm(N), ym(N); 
   for(int n = 0; n < N; n++)
   {
     x[n] = in[n];
-    complexifier.processSampleFrame(&x[n], &y[n]);
+    complexifier.processSampleFrame(&x[n], &y[n]);   // Works in place
     a[n] = sqrt(x[n]*x[n] + y[n]*y[n]);
     p[n] = atan2(y[n], x[n]);
     q[n] = p[n] + modDepth * x[n];  // ToDo: Add a constant offset/bias/shift

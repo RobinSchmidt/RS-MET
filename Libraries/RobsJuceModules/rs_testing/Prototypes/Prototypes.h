@@ -4751,9 +4751,12 @@ protected:
 
 /** Under construction. ...has not yet been tested
 
-An oversampling wrapper class for arbitrary types DSP processors TProc.  */
+An oversampling wrapper class for arbitrary types DSP processors TProc. The class is a public 
+subclass
 
-template<class TIn, class TOut, class TPar, class TProc>
+*/
+
+template<class TIn, class TOut, class TPar, class TProc>  // Maybe put TProc first
 class rsOverSampler : public TProc
 {
 
@@ -4829,13 +4832,63 @@ protected:
 // 
 // - Ideally, the only thing that needs to be changed is replacing a processor object e.g.
 //   "rsLadderFilter filter;" somewhere by something like "rsOverSampler<rsLadderFilter> filter;"
-//   and adding some calls to filter.setOverSampling(newFactor) in some appropriate places.
-//    
+//   and adding some calls to filter.setOverSampling(newFactor) in some appropriate places. Oh - 
+//   but we have 4 template parameters here, so the wrapping and instantiation code would have to 
+//   look more complicated. Can we somehow avoid this by somehow inferring TIn, TOut, TPar from
+//   TProc? Maybe we can do somthing like "std::vector" with its "value_type" member? Like putting 
+//   declarations like 
+// 
+//   public: 
+//     /** \name Type aliases */
+//     using InputType  = TSig;
+//     using OutputType = TSig;
+//     using ParamType  = TPar;
+// 
+//   into the TProc class and using here things like:
+//  
+//     RAPT::rsEllipticSubBandFilter<TProc::ParamType, TProc::InputType>  antiImageFilter;
+//     RAPT::rsEllipticSubBandFilter<TProc::ParamType, TProc::OutputType> antiAliasFilter;  
+// 
+//   That would go a bit aginst the desire of not having to change TProc to make it compatible with
+//   the wrapper but maybe that kind of change could be acceptable because it also serves the
+//   additional purpose of documenting what TSig and TPar actually mean. We could also have here
+//   declarations like:
+// 
+//   public: 
+//     using InputType  = TProc::InputType;
+//     using OutputType = TProc::OutputType;
+//     using ParamType  = TProc::ParamType;
+// 
+//   and then write the filter declarations a bit shorter like:
+// 
+//     RAPT::rsEllipticSubBandFilter<ParamType, InputType>  antiImageFilter;
+//     RAPT::rsEllipticSubBandFilter<ParamType, OutputType> antiAliasFilter;  
+// 
+// - Maybe replace TIn, TOut by a common TSig. Different numbers of input and output channels
+//   can be handled like explained in RS-MET/Tests/TestsRosicAndRapt/Source/ToDo.txt, namely by
+//   always providing a pointer to the frame which always serves as in/out parameter.
+// 
 // - Maybe rename to rsEllipticOverSampler because we may potentially want to implement other 
 //   variants as well (FIR-filter based, say).
 //
 // - Document requirements on TProc. It must implement functions setSampleRate, processFrame and
 //   reset.
+//
+// - Explain how the pattern we implement here relates to the decorator pattern and the CRTP
+//   pattern. It's simpler than CRTP, though.
+//
+// - Maybe implement a similar wrapper/decorator class for on-the-fly resampling by non-integer 
+//   amounts. It should have a "ratio" member of type TPar (or maybe just use double). If 
+//   ratio = 1.5, it should upsample the input on the fly by factor 1.5 and downsample the output
+//   of TProc by 1/1.5. So, it should basically work exactly like rsOverSampler just with 
+//   non-integers, so the API should probably be exactly the same except maybe that setOverSampling
+//   should be renamed to setResampleRatio or soemthing like that. Maybe the ratio could also be
+//   of a rational number type, e.g. rsFraction? Maybe try both. If we opt for using rsFraction,
+//   we may want to use continued fractions to find the best rational approximation to a given
+//   "double" variable. It is interesting to note that 441/480 = 0.91875 is nice in the sense that
+//   it has a finite decimal expansion but its reciprocal 480/441 = 1.08843537415... is ugly. It is
+//   interesting because it implies that in a roundtrip between sample rate fs1 to fs2 back to fs1 
+//   may have rounding problems in one direction but not in the other unless we use fractions.
 
 
 
