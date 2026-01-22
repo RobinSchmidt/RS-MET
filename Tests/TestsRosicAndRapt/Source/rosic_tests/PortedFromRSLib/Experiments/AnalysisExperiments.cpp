@@ -716,9 +716,9 @@ void peakSmoother()
   using AT   = rsArrayTools;
 
   // Setup:
-  int  numSamples  = 200;
+  int  numSamples  = 100;
   //Real smoothCoeff = 1.0;
-  int  numPasses   = 5;  // I think, to go higher than 5, we need more spacing between the peaks
+  int  numPasses   = 1;  // I think, to go higher than 5, we need more spacing between the peaks
 
   // Create smoothing kernel:
   //Real a = smoothCoeff / 3.0;
@@ -727,8 +727,8 @@ void peakSmoother()
   // Create input:
   int N = numSamples;
   Vec x(N);
-  x[ 80] = 1;
-  x[120] = x[121] = 0.5;
+  x[ 25] = 1;
+  x[ 75] = x[76] = 0.5;
 
   // Smooth it with the kernel:
   Vec y = x;
@@ -738,7 +738,7 @@ void peakSmoother()
     AT::movingAverage3pt(&y[0], N, &y[0]);
   }
 
-  Real ratio = y[100] / y[120];
+  Real ratio = y[25] / y[75];
 
   rsPlotVectors(x, y);
   int dummy = 0;
@@ -749,7 +749,7 @@ void peakSmoother()
   // - As expected, the relative peak height difference (i.e. the peak height ratio) between the 
   //   two peaks is equal to 2.0 for the unsmoothed peaks and much reduced by the smoothing. The 
   //   ratios seem to depend on numPasses as follows: 
-  //   1: 1/1, 2: 6/5, 3: 14/13, 4: 38/35, 5: 17/16, ... 
+  //   0: 2/1, 1: 1/1, 2: 6/5, 3: 14/13, 4: 38/35, 5: 17/16, ... 
   //   I found them by copying the floating point values into Wolfram Alpha to let it guess a 
   //   possible closed form. I think, we should expect rational numbers.
   // 
@@ -757,7 +757,13 @@ void peakSmoother()
   //   of equal height - but with one notable exception: For a single pass, the two peaks actually
   //   have the exact same height.
   //
-  //
+  // 
+  // Conclusions:
+  // 
+  // - A single pass of a 3 point MA filter actually seems to be ideal when the goal is to equalize
+  //   the peak heights of perfectly grid-aligned and "perfectly" misaligned peaks.
+  // 
+  // 
   // ToDo:
   //
   // - Maybe to get the exact fractions directly from the output, use Real = rsFraction<int>
@@ -765,6 +771,10 @@ void peakSmoother()
   // - Use a moving average kernel of the form: [c, 1-2*c, c] where c is between 0 and 1/3. With 
   //   c = 0, there is no smoothing at all, with c = 1/3, we get [1/3, 1/3, 1/3], i.e. the maximum
   //   amount of smoothing for a 3 point kernel.
+  // 
+  // - Try using a peak that is neither completely aliged nor misaligend. Maybe spread it like
+  //   [...,0.75,0.25,...], [...,0.2,0.8,...], ... Figure out if the 1 pass of a 2pt MA equalizes
+  //   them all. That would seem to be almost too good to be true!
   //
   // - Increase the peak spacing such that we can use at least up to 10 passes. I think, we need to
   //   space them by at least 20 samples to avoid the smoothed peaks to overlap. Each pass 
