@@ -1130,6 +1130,8 @@ protected:
 // From here are some experimental effects that are not yet used in Quadrifex and don't have their
 // own custom GUI editor. The format is a bit different due to using a different infrastructure.
 // It's more similar to the modules in jura_VariousGenerators.h
+//
+// OR: put them into the proper format to be used in Quadrifex (and(!) in ToolChain directly).
 
 class EnvyDriverModule : public jura::ModulatableAudioModule
 {

@@ -2454,8 +2454,30 @@ void QuadrifexModuleEditor::setupPopupEditors(int slotIndex)
 
 }
 
+//=================================================================================================
 /*
+
 Bugs:
--set the routing to 1+2+3+4 and mute effect 4 - some parts of the graphics turn red that shouldn't
+
+- Set the routing to 1+2+3+4 and mute effect 4 - some parts of the graphics turn red that shouldn't
+
+
+ToDo:
+
+
+Ideas:
+
+- Maybe let the modules have an "Off" state in addition to "Mute" and "Bypass". The "Off" state 
+  would set the module either into "Mute" or into "Bypass" depending on the context. When the 
+  effect is in a serial chain, "Off" would mean "Bypass". In a parallel setup, it would mean 
+  "Mute". But that may get complicated in more complex routings. For example, what would it mean in
+  a (1>2)+(3>4) configuration to turn effect 2 off? Maybe that should depend on the state of effect
+  1? If effect 1 is "On", then it should mean "Bypass" because effect 2 is inside (local) series 
+  setup. But if effect 1 is "Bypass" mode, effect 2 would be the only thing on the (1>2) branch, so
+  it may count to be in parallel with the (3>4) branch, so maybe in this context "Off" should mean 
+  "Mute"? But what if effect 1 is itself in "Mute" or "Off"? I think, if it is in "Mute", it 
+  wouldn't even matter because either way, the whole branch would be muted although interpreting 
+  "Off" as "Mute" still seems to make more sense for consistency reasons. But maybe this context 
+  dependency makes it too complicated so maybe it's not such a good idea after all.
 
 */

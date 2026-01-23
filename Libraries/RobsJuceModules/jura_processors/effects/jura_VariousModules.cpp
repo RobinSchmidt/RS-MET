@@ -5365,12 +5365,45 @@ void EnvyDriverModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<ED>(&core, &ED::setMakeUp);
 
-
-  // ToDo: HilbertLength
-
+  // ToDo: 
+  // 
+  // - HilbertLength or KernelLength
+  // 
+  // - StereoMode: Left/Right (process left and right channel with the same parameters separately),
+  //   Mid/Side (process mid and side channel with the same or different parameters separately - 
+  //   but for procesing them differently, we need to introduce even more parameters - we may need
+  //   separate Drive, Amount, MakeUp parameters for the two channels), Mono, Mid Only (process 
+  //   only mid channel), Side Only (process only side channel), Stereo Linked (multiply left and 
+  //   right channel with equal gain factors which are derived from the stereo sum))
+  //
+  // - Shape: Let the user select the waveshaping function (Tanh, Erf, Atan, Asinh, etc.). Maybe 
+  //   even allow entering a formula string later to make it work similar to FuncShaper. Or: Let
+  //   FuncShaper itself work in different wave-shaping modes: Direct, Hilbert, Stereo (apply 
+  //   shaping to stereo sum, convert to multiplication as xM = xL+xR; yM = shape(xM); s = yM/xM;
+  //   yL = s*xL; yR = s*xR  - verify, if the scaler s is right. Might also be xM/yM.)
 }
 
 void EnvyDriverModule::processStereoFrame(double* left, double* right)
 {
   core.getSampleFrameStereo(left, right);
 }
+
+
+// ToDo:
+//
+// - Add Hilbert filter based Phase Distortion. Maybe call it PhaseModulator/PhaseModulation. 
+// 
+// - Add a "Disperser" or "Dispersion" module (based on the algo used in FlatZapper)
+// 
+// - Then try to reproduce the first stage of cymbal synthesis algo:
+//   https://www.kvraudio.com/forum/viewtopic.php?t=627069
+//   in Quadrifex. It needs a SimpleDelay, Vibrato, Disperser, PhaseModulator. All in series, with 
+//   global feedback. As long as we don't yet have the Disperser, try using an allpass - maybe a 
+//   Phaser in 100% wet mode would do as well.
+// 
+// - The second stage of the cymbal algo my perhaps be done by CombBank. We can make a cymbal patch
+//   in ToolChain by using two instances of Quadrifex in series.
+//
+// - Maybe let the Vibrato (as well as all other modulation effects), have a noise-modulation mode. 
+//   We may use bandpass or lowpass noise as modulator. Maybe also sample-and-glide noise, maybe
+//   chaotic systems, etc.
