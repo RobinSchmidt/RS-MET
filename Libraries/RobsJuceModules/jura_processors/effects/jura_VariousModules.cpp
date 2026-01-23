@@ -5391,7 +5391,18 @@ void EnvyDriverModule::processStereoFrame(double* left, double* right)
 
 // ToDo:
 //
-// - Add Hilbert filter based Phase Distortion. Maybe call it PhaseModulator/PhaseModulation. 
+// - Add Hilbert filter based Phase Distortion. Maybe call it PhaseModulator/PhaseModulation. Maybe
+//   it should allow for the modulator input to come from a sidechain. Maybe have different modes:
+//   Call the parameter StereoMode or ChannelMode. Options: Stereo or LeftRight: Left and right 
+//   signal independently self-modulate themselves. We could also have MidSide. See Equalizer. I 
+//   guess in the Compressor, we have also these modes - if not, we totally should! 
+//   LeftCarRightMod: left input serves as carrier, right as modulator, RightCarLeftMod: the other 
+//   way around, Mono: Mix to mono, then self-modulate. It should also have a "Cutoff" parameter 
+//   for lowpass on the modulator. Maybe bandpass/highpass/peak/shelf/etc. could also make sense.
+//   Maybe give the full range of RBJ biquad modes plus 1st order LP,HP,LS,HS. So, instead of 
+//   having just a single "Tone" control that adjusts a 2st order lowpass cutoff, have a full 
+//   fledged 2nd order filter with params: Mode, Frequency, Bandwidth in octaves (or Q), Gain. Not
+//   sure if it makes sense but maybe let's have a DryWet or Blend fader, too.
 // 
 // - Add a "Disperser" or "Dispersion" module (based on the algo used in FlatZapper)
 // 
