@@ -159,18 +159,45 @@ Extension to 3D:
   between the projections allows us to work with (modulatable) Euler angles in the 3D domain. Maybe 
   the 4D to 3D projection can be parametrized in terms of rotations in pq-planes where p and q 
   independently traverse x,y,z,w (i.e. A.x, A.y, B.x, B.y). Maybe we can have separate filters for
-  the 4 signals.
+  the 4 signals. Maybe we could interpret the 4D signal as quaternion or some other type of 4D 
+  hypercomplex number and filter it as such?
 
 - Maybe try to convert x,y (cartesian) coordinates to r,p (polar) coordinates. Then either draw the
   waveform interpreting rp as x,y or use the intermediate representation for filtering the signals
   and then converting back. Or: just interpret the L-system output as r,p and convert these to x,y.
   Or the other way around.
 
-
-
 - Call the whole synthesis method Fractal Geometric Synthesis (FG-synthesis), the extended 
   Lindenmayer/Turtle grammar Fractal Definition Language (FDL) or maybe fractal geometric synthesis
   language (FGSL)...or maybe Fractal Pattern Synthesis
+
+- In order to be able to come up with my own L-system rules and seeds, it would be very helpful to 
+  derive mathematical conditions for when an L-system produces a periodic signal, i.e. comes back
+  to the starting point. Of course, one can always make it periodic artificially by just jumping 
+  back but that would introduce a discontinuity which may be undesirable. Some ideas: I think, in 
+  order to come back to the starting point (0,0) at time step n (assuming the angle to be 90°), we 
+  must have made the same enumber of upward steps as we did downward steps and - at the same insant 
+  - we must have made the same number of righward steps as we made leftward steps. At step n, the 
+  condition count(L,n) = count(R,n) _and_ count(U,n) = couns(D,n) must hold. Maybe try to figure it
+  out in the 1D case first and then try to generalize. Is it true that when the seed is periodic, 
+  then the whole shape must also be periodic? I think, an L-system that is not periodic must 
+  necessarily diverge to infinity (at least when the angle is 90° or some other rational fraction
+  of 360°). Is that true or could there be some bounded aperiodic curve? If the angle is 120°, we 
+  have 3 directions. Let's call them D1,D2,D3. In case of 90° we would have 4 and could in general
+  call them D1,D2,D3,D4 instead of L,U,R,D. I think, with 3 directions, we must have have some 
+  instant n such that count(D1,n) = count(D2,n) = count(D3,n). in case of 60°, we would have 6 
+  directions D1..D6. I think, to come back to (0,0) at intant n, we need to satisfy:
+  count(D1,n) = count(D3,n) = count(D5,n) _and_ count(D2,n) = count(D4,n) = count(D6,n). Try to 
+  verify that empirically! Then, we need to find a way to figure out how many steps into the 
+  various directions we have made based on the left and right turns and forward commands. The 
+  strings do not directly go the step into a particular direction. They always go into the 
+  "current" direction (which is a state variable). I think, these are the two ingredients that we
+  need to figure out before we can derive periodicity conditions. How do turn (L,R) and step (F,B)
+  commands map to the counts of D1,D2,... and then what are the conditions on the counts for a 
+  given trun angle.
+
+
+
 
 - Write a tutorial:
   1: Turtle Graphics

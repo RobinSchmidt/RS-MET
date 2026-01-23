@@ -109,12 +109,13 @@ In addition to the standard turtle graphics commands mentioned earlier, the impl
 
 ToDo:  
   
--support `g` as alternative for `f` and `B` for drawing a line backwards (maybe also `b` for going backwards without drawing)  
--support `+30` etc. to mean turn 30 degrees left, regardless what the global turn angle setting is  
--support `*` and `/` to mean multiply or divide step length by a factor (which is another global parameter)  
--support `*2`, `/2` etc to mean: multiply or divide step length by 2, regardless what the global multiplication factor is  
--support `F2` to mean: draw two line segments forward  
--until these are implemented, disallow these "reserved" characters    
+- support `g` as alternative for `f` and `B` for drawing a line backwards (maybe also `b` for going backwards without drawing)  
+- support `+30` etc. to mean turn 30 degrees left, regardless what the global turn angle setting is  
+- support `*` and `/` to mean multiply or divide step length by a factor (which is another global parameter)  
+- support `*2`, `/2` etc to mean: multiply or divide step length by 2, regardless what the global multiplication factor is  
+- support `F2` to mean: draw two line segments forward  
+- until these are implemented, disallow these "reserved" characters  
+- Or: Maybe use `|` instead of `F` for forward steps and allow the used to use all letters for variables. Then maybe `:` could stand for: walk without drawing. But how would we implement this? Jumping to the next position in no time (i.e. within one sample or within the same/current sample?)
 
 
 ### Extensions to Lindenmayer Syntax

@@ -398,6 +398,21 @@ Cosmetic GUI issues (layout, appearance, etc.):
 
 - PitchShifter: should show the detected pitch on the GUI
 
+---------------------------------------------------------------------------------------------------
+Other ideas
+
+- Start a chat with GitHub Copilot about various ways to implement polyphony. Ask it to analyze and
+  explain the ways it's done in JUCE and other frameworks (if they have such a feature) as well as 
+  in popular open source instruments such as Surge, ShortCircuit, Pure Data, etc. I want to figure 
+  out a general design pattern that can be used to turn any monophonic DSP algorithm into a
+  polyphonic one with minimum coding effort - but it should also be efficient in the sense that 
+  data that can be shared between the voices is not duplicated. Maybe Copilot Spaces is te right
+  way to have such conversations. See:
+  https://docs.github.com/en/copilot/how-tos/provide-context/use-copilot-spaces
+  https://docs.github.com/en/copilot/how-tos/provide-context/use-copilot-spaces/create-copilot-spaces
+  https://docs.github.com/en/copilot/concepts/context/spaces
+
+
 
 
 

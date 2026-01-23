@@ -4889,6 +4889,12 @@ protected:
 //   it has a finite decimal expansion but its reciprocal 480/441 = 1.08843537415... is ugly. It is
 //   interesting because it implies that in a roundtrip between sample rate fs1 to fs2 back to fs1 
 //   may have rounding problems in one direction but not in the other unless we use fractions.
+//
+// - Maybe a similar approach to wrap an object could be used to add polyphony to otherwise
+//   monophonic algorithms. I'm not sure if that makes sense or is even a good idea, though. We 
+//   would have to find a way to be able to share the data that can be shared between the voices 
+//   and have different data for data that should be different per voice. API-wise, we may need to
+//   pass the voice index to the processFrame call.
 
 
 
