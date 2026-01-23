@@ -192,7 +192,7 @@ Extension to 3D:
   various directions we have made based on the left and right turns and forward commands. The 
   strings do not directly go the step into a particular direction. They always go into the 
   "current" direction (which is a state variable). I think, these are the two ingredients that we
-  need to figure out before we can derive periodicity conditions. How do turn (L,R) and step (F,B)
+  need to figure out before we can derive periodicity conditions. How do turn (L,R) and step (F)
   commands map to the counts of D1,D2,... and then what are the conditions on the counts for a 
   given trun angle.
 
