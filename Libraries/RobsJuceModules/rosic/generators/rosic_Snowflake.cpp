@@ -151,6 +151,21 @@ Extension to 3D:
   for left/right (alternatively to +/-), I/O or into/out-of the screen (or F/B for 
   forward/backward - but no: F is already taken) and maybe U/D for up/down.
 
+- Maybe for the 3D mode, we could use 2 independent L-Systems, let's call them A and B, both with 
+  their own rules, seed, frequency, etc. They would produce 4 output signals which we denotes as
+  A.x, A.y, B.x, B.y. Now we have a 4D signal which we must somehow proejct down to 2D, maybe by
+  first projecting from 4D to 3D and then from 3D to 2D (at least conceptually - 
+  implementationally, the 4D to 2D projection can be done in one single step). The coneptual split
+  between the projections allows us to work with (modulatable) Euler angles in the 3D domain. Maybe 
+  the 4D to 3D projection can be parametrized in terms of rotations in pq-planes where p and q 
+  independently traverse x,y,z,w (i.e. A.x, A.y, B.x, B.y). Maybe we can have separate filters for
+  the 4 signals.
+
+- Maybe try to convert x,y (cartesian) coordinates to r,p (polar) coordinates. Then either draw the
+  waveform interpreting rp as x,y or use the intermediate representation for filtering the signals
+  and then converting back. Or: just interpret the L-system output as r,p and convert these to x,y.
+  Or the other way around.
+
 
 
 - Call the whole synthesis method Fractal Geometric Synthesis (FG-synthesis), the extended 
