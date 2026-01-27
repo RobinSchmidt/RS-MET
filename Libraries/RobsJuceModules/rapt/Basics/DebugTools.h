@@ -36,6 +36,20 @@ inline void rsError(const char *message = nullptr)
 // -Maybe have a stronger version rsFatalError that also triggers some action in release builds
 // -Maybe call the error function that only affects debug builds rsDebugError
 
+/** This function can be injected into stub functions, i.e. functions that are not yet implemented
+or not yet complete (i.e. under construction) in order to trigger debug breaks when it is getting 
+called as a reminder to finish the implementation before going into production. */
+inline void rsMarkAsStub()
+{
+  rsError("This function is a stub, i.e. not yet (fully) implelemented");
+}
+
+//inline void rsNotImplemented()
+//{
+//  rsError("Not yet implelemented");
+//}
+
+
 
 
 inline void rsWarning(const char* message = nullptr)

@@ -984,6 +984,7 @@ https://github.com/pierreguillot/FTS
 -Free Studio Technology (VST2 Replacement)
 
 RST:
+https://github.com/logos-maker/RST1.0
 https://github.com/logos-maker/RST-Framework
 -Replacement for VST2
 

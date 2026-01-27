@@ -86,6 +86,18 @@ int main(int argc, char* argv[])
   // 5d5e4a5ee809c57ddc0be24d6f30a3845ab295ac with comment "Give rsSparsePolynomial a second 
   // template parameter TTol and a member of..." from 2025/03/28 or some commit very near that
   // one.
+  // Done?
+
+  // See:
+  // Using Floating-point in C++: What Works, What Breaks, and Why - Egor Suvorov - CppCon 2025
+  // https://www.youtube.com/watch?v=m83TjrB6wYw  at 23:50
+  // for a possible way to fix the currently failing float-string-float roundtrip unit test. Use
+  // the constant std::numeric_limits<float>::max_digits10  ...and likewise for double. This 
+  // constant defines how many decimal digits we need for exact roundtrips. Dont's confuse it with
+  // digits10 which (I think) is the precision limit for exact string-float-string roundtrips.
+  // Also interesting: at around 53 min, he mentions that std::complex can be significantly slower
+  // than a handwritten class
+
 
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
   // of testing. 0: should be able to do all tests in 5 seconds, 1: 20 seconds, 2: 80 seconds etc.

@@ -271,12 +271,23 @@ void FuncShaper::calculateTable()
 
 ToDo:
 
--Let the user set up the range of the lookup-table. Maybe the resolution and interpolation method 
- also.
--Make the usage of the lookup table optional.
--Rationale: some distortion functions like (foldovers, i.e. sin, etc) may not play well with 
- tabulation...although, the different table range could be simulated by pre- and post scaling of 
- the signal, so maybe it's not really necessary introduce extra parameter for that
+- Let the user set up the range of the lookup-table. Maybe the resolution and interpolation method 
+  also.
+
+- Make the usage of the lookup table optional.
+
+- Rationale: some distortion functions like (foldovers, i.e. sin, etc) may not play well with 
+  tabulation...although, the different table range could be simulated by pre- and post scaling of 
+  the signal, so maybe it's not really necessary introduce extra parameter for that
+
+- Maybe introduce a "compensation" parameter that works as follows: When the waveshaping 
+  function is f(x) and the drive is d such that we produce f(d*x) as output, divide out the drive
+  by post-multiplying a scaler s. Produce y = s * f(d*x) where s = (1/f(d))^c where c is our new
+  "compensation" parameter. If c = 0, s is fixed at 1 such that we don't compensate at all. When
+  c = 1, s is 1/f(d) such that we compensate fully. The goal is to decouple the spectral bandwidth
+  from the overall amplitude. This is an instance of perceptual parameter decoupling. The nice thing
+  is that s can be precomputed and does not need to be evaluated per sample, so we can afford the 
+  somewhat expensive call to pow here.
 
  See: 
  https://www.youtube.com/watch?v=oIChUOV_0w4  Ivan Cohen - Fifty shades of distortion (ADC'17)
