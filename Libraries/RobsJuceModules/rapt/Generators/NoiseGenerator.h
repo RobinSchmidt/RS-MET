@@ -53,7 +53,15 @@ public:
     // occurs implicitly due to overflow, but when it's 64 bit we need to do it explicitly (on Mac
     // it is required). ToDo: either figure out at compile time, if it is required and use 
     // conditional compilation, or (better): make sure that it uses a 32 bit integer type (i.e. use 
-    // rsUint32 instead of unsigned long for the state).
+    // rsUint32 or uint32_t instead of unsigned long for the state). But when doing that, maybe 
+    // benchmark both versions. Maybe using 64 bit integers turns out to be faster because that's
+    // the natural word length of the CPU? But maybe that could depend on how the object is aligned
+    // in memory and what the type T is? Do the required tests and document the results! Create 
+    // also unit tests that test sizeof(rsNoiseGenerator<T>) for T = float and T = double and check
+    // there if the sizes are as expected. I think, for T = double, it should be 24 bytes (2 * 8 
+    // for each of the double values and 2 * 4 for each of the uint32 values) and for T = float, it
+    // should be 16 bytes (for 2 float and 2 uint32 values).
+
   }
 
   /** Produces one output sample at a time */
@@ -76,6 +84,12 @@ protected:
 
   unsigned long seed  = 0;
 	unsigned long state = 0;
+
+  // ToDo: maybe use:
+  // 
+  // static const T modulus = T(4294967296); 
+  // 
+  // and replace the occurences of the magic number by that constant.
 };
 
 //=================================================================================================
@@ -109,9 +123,13 @@ public:
     order = newOrder;
     updateCoeffs();
   }
-  // maybe assert that newOrder > 0
 
-  inline void setRange(T newMin, T newMax) { min = newMin; max = newMax; updateCoeffs(); }
+  inline void setRange(T newMin, T newMax) 
+  { 
+    min = newMin; 
+    max = newMax; 
+    updateCoeffs(); 
+  }
 
   inline T getSample()
   {
@@ -128,6 +146,8 @@ protected:
   {
     this->scale = T( (max-min) / (order*4294967296.0) );
     this->shift = min;
+    // The formula for  scale  is different than in the baseclass. Here, we divide by 
+    // order * modulus  rather than just by the  modulus.
   }
 
   unsigned long order = 1;
@@ -155,7 +175,7 @@ Ideas:
   "random" pattern would be a rather unique (and useful) feature. The prev button would be like an 
   "undo" button for a "randomize" function (realized by the "next" button) but we could do it 
   without actually implementing an expensive undo/redo infrastructure. See experiment 
-  noiseReverseMode() for some irst tests - it seems to work!
+  noiseReverseMode() for some first tests - it seems to work!
 
 - Maybe allow to create correlated noise by doing only one state-update per sample and
   doing the sum over the past N states, like:
@@ -177,14 +197,23 @@ Ideas:
        return randomVal + offset1;
      if(selector > thresh2)
        return randomVal + offset2;
-     return randomVal
+     return randomVal;
    thresh1,2 would determine the weights of the 3 modes, for example with thresh1 = 0.3,
    thresh2 = 0.7, we would have a 30% chance to get a sample of the low mode a 40% chance for the
    middle mode and again a 30% chance for the high mode - we could give the user parameters
    modeCenter, modeSpread, modeSkew...there is some prototype code for this in the experiments. 
    See noiseTriModal(). By the way: The term "mode" here refers to a maximum in the probability
    distribution (as in unimodal, bimodal etc.). It does not mean a mode in the sense of modal 
-   synsthesis.
+   synthesis. Maybe to realize different variances for the 3 modes, we could do:
+    getSampleTriModal
+     double selector = selectorGenerator.getSample(); // in 0..1
+     double randomVal = randomGenerator.getSample();
+     if(selector < thresh1)
+       return varLo * randomVal + meanLo;
+     if(selector > thresh2)
+       return varHi * randomVal + meanHi;
+     return varMid * randomVal + meanMid;
+
 
 - In the modal synthesizer, we could make these chances dependent on the output signal to
   establish a nonlinear, probabilistic feedback loop interaction between exciter and resonator.

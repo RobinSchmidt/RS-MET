@@ -1388,6 +1388,10 @@ https://github.com/webprofusion/OpenAudio
 
 https://studiorack.github.io/studiorack-site/
 
+Modular Environments:
+https://en.wikipedia.org/wiki/Comparison_of_audio_synthesis_environments
+-Comparison table of various (modular) audio processing environments (PD,Max,...)
+
 
 C++ Real-time Audio Programming with Bela:
 https://github.com/BelaPlatform/bela-online-course
