@@ -838,6 +838,13 @@ https://github.com/Photosounder/rouziclib
 -DSP library by Michel Rouzic that is used in Photosounder, Spiral, SplineEQ. 
  See:  https://photosounder.com/  for the products (which are themselves not open source, though)
 
+MTS-ESP:
+https://github.com/ODDSound/MTS-ESP
+-Library for adding microtuning support to audio and MIDI plugins. It allows for a single master 
+ plugin to simultaneously control the tuning of any number of connected client plugins across a DAW 
+ session
+-so maybe it doesn't really belong into the DSP-libraries section. It seems to be more something 
+ like a communication infrastructure library for plugin instances (with a specific goal in mind)
 
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:

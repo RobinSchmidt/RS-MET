@@ -248,6 +248,14 @@ inline bool rsEquals(const std::vector<T>& x, const std::vector<T>& y, T tol = T
       return false; }
   return true;
 }
+// ToDo:
+// The implementation should use the == operator for x[i] and y[i] and we should not use a 
+// tolerance here. For comparisons with tolerance, the function rsIsCloseTo() should be used. This 
+// change may break things, so it should be approached carefully. We need to adapt all call sites 
+// in all repos to use rsIsCloseTo() instead. Maybe after doing the change here, leave a comment to
+// document that the tol parameter was removed and that any code that uses the function with its
+// old signature should be changed to use rsIsCloseTo().
+
 
 template<class T>
 void rsFlatten(const std::vector<std::vector<T>>& v, std::vector<T>& f)
