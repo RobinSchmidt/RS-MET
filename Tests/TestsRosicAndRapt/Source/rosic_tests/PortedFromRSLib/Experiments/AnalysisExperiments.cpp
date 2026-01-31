@@ -705,7 +705,8 @@ void peakSmoother()
   // sample grid. What we want to achieve is to smooth the signal such that the two peaks have 
   // roughly the same height after smoothing such that a peak-detection algorithm wouldn't care
   // (i.e. would be insensitive to) the (mis)alignment of peaks with the sample grid. We want to 
-  // figure out, how to appropriately smooth a signal as pre-processing for a peak detector.
+  // figure out, how to appropriately smooth a signal as pre-processing for a peak detector or
+  // envelope follower with zero attack.
   //
   // Update: We now have also included a third peak which is partially aligned, i.e. it spreads
   // it values like [...,0,0,0.75,0.25,0,0,...]
@@ -725,12 +726,13 @@ void peakSmoother()
   //Real a = smoothCoeff / 3.0;
   //Vec h({a, 1-2*a, a});
 
-  // Create input:
+  // Create input signal. We place some peaks with various amount of misalignment at different 
+  // instants along the timeline:
   int N = numSamples;
   Vec x(N);
-  x[ 25] = 1;
-  x[ 75] = x[76] = 0.5;
-  x[125] = 0.75; x[126] = 0.25;
+  x[ 25] = 1;                     // Perfectly aligned peak at n = 25
+  x[ 75] = x[76] = 0.5;           // Perfectly misaligned peak at n = 75.5
+  x[125] = 0.75; x[126] = 0.25;   // Peak at n = 125.25
 
   // Smooth it with the kernel:
   Vec y = x;
@@ -740,8 +742,10 @@ void peakSmoother()
     AT::movingAverage3pt(&y[0], N, &y[0]);
   }
 
+  // Compute the height ratio of the 1-sample wide peak and the 2-sample wide after smoothing:
   Real ratio = y[25] / y[75];
 
+  // Plot the original peaks together with their smoothed versions.
   rsPlotVectors(x, y);
   int dummy = 0;
 
@@ -758,6 +762,9 @@ void peakSmoother()
   // - Generally, the trend is: The greater the number of passes, the more the two peaks tend to be
   //   of equal height - but with one notable exception: For a single pass, the two peaks actually
   //   have the exact same height.
+  // 
+  // - With a signle pass, the peak heights after smoothing are all at 0.5, i.e. all at the height
+  //   that the original peak that was spread over 2 samples had.
   //
   // 
   // Conclusions:
@@ -767,6 +774,12 @@ void peakSmoother()
   //   maximum sample value exactly equal. It even seems to work with other amounts of 
   //   (mis)alignment as well.
   // 
+  // - I think, a 3-point MA filter has a cutoff frequency that's roughly at 1/3 of the original 
+  //   Nyquist limit. So if we want to correctly estimate the height of the peaks withou smoothing,
+  //   we may need 3x oversampling. Or do we? Maybe we could just use a point MA at the original
+  //   sample rate and multiply the measured peak values by factor 2, because sample aligned peaks
+  //   of height 1 get smoothed down to 2-sample wide peaks of height 0.5.
+  //   
   // 
   // ToDo:
   //
@@ -784,11 +797,20 @@ void peakSmoother()
   // - Increase the peak spacing such that we can use at least up to 10 passes. I think, we need to
   //   space them by at least 20 samples to avoid the smoothed peaks to overlap. Each pass 
   //   increases the width of the peaks by one sample to the left and one sample to the right. 
-  //   Wait! No! It increases it by 2 samples, I think. Verify this!
+  //   Wait! No! It increases it by 2 samples, I think. Verify this! ..ok - I think, we have enough
+  //   separation between the peaks now.
   //
   // - I think, such a peak smoothing algorithm could be a good pre-processing step for FFT based
   //   polyphonic pitch detection that is based on searching for harmonic series in complex 
   //   spectra.
+  //
+  //
+  // See also:
+  // 
+  // - The Real Waveform Matters - The Samples Are Not Always What They Seem - Jamie Angus-Whiteoak - ADC
+  //   https://www.youtube.com/watch?v=8eEWK6Fez8c
+  //   Interesting talk about the topic of detecting and estimating intersample peaks and the 
+  //   problems that arise when failing to do so.
 }
 
 // convenience function to make the zero-crossing finding work for plain arrays (as required for

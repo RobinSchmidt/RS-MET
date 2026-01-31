@@ -421,7 +421,7 @@ int main(int argc, char* argv[])
   //maxShortTimeRMS();
   //arrayRMS();
   //peakFinder();                    // find peaks with subsample precision
-  //peakSmoother();
+  peakSmoother();
   //zeroCrossingFinder();
   //zeroCrossingFinder2();
   //zeroCrossingFinder3();
