@@ -780,10 +780,10 @@ void peakSmoother()
   //   (mis)alignment as well.
   // 
   // - I think, a 3-point MA filter has a cutoff frequency that's roughly at 1/3 of the original 
-  //   Nyquist limit. So if we want to correctly estimate the height of the peaks withou smoothing,
-  //   we may need 3x oversampling. Or do we? Maybe we could just use a point MA at the original
-  //   sample rate and multiply the measured peak values by factor 2, because sample aligned peaks
-  //   of height 1 get smoothed down to 2-sample wide peaks of height 0.5.
+  //   Nyquist limit (verify!). So if we want to correctly estimate the height of the peaks without
+  //   smoothing, we may need 3x oversampling. Or do we? Maybe we could just use a point MA at the 
+  //   original sample rate and multiply the measured peak values by factor 2, because sample 
+  //   aligned peaks of height 1 get smoothed down to 2-sample wide peaks of height 0.5.
   //   
   // 
   // ToDo:
@@ -793,6 +793,9 @@ void peakSmoother()
   // - Use a moving average kernel of the form: [c, 1-2*c, c] where c is between 0 and 1/3. With 
   //   c = 0, there is no smoothing at all, with c = 1/3, we get [1/3, 1/3, 1/3], i.e. the maximum
   //   amount of smoothing for a 3 point kernel.
+  // 
+  // - Try MA kernels of lengths other than 3. Like 2,4,5,... Maybe try to find kernels of these 
+  //   lengths that also lead to perfect equalization in one pass.
   // 
   // - Try using a peak that is neither completely aliged nor misaligend. Maybe spread it like
   //   [...,0.75,0.25,...], [...,0.2,0.8,...], ... Figure out if the 1 pass of a 2pt MA equalizes
@@ -822,6 +825,8 @@ void peakSmoother()
   //   signal above. But wait: We already know what the result must be from our [0.5, 0.5] test. 
   //   This signal still had a peak height of 0.5 after smoothing. So, [1, 1] should still have a
   //   peak height of 1 after smoothing. It 's the same situation just scaled by a factor of 2.
+  // 
+  // - Plot the frequency response of the MA smoothing filter.
   //
   //
   // See also:
