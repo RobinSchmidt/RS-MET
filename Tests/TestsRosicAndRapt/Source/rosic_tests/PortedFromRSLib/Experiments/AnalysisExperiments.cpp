@@ -803,6 +803,20 @@ void peakSmoother()
   // - I think, such a peak smoothing algorithm could be a good pre-processing step for FFT based
   //   polyphonic pitch detection that is based on searching for harmonic series in complex 
   //   spectra.
+  // 
+  // - Check what happens for a signal like [-1, +1]. I think, for such a signal, we would not get 
+  //   a good estimate for the true peak height because the positive and negative value would 
+  //   partially cancel in the averaging whereas the ttrue intersample peak would actually be above
+  //   1 because of the Gibbs overshoot that would occur when we would reconstruct a continuous 
+  //   time signal for these samples with an ideal brickwall filter. This may not be a problem in 
+  //   practice though because in amplitude detection scenarios, we would first take the absolute 
+  //   value (or maybe the square) of the signal anyway, so we would have no problems with the
+  //   cancellations between negative and positive values during smoothing.
+  // 
+  // - Check what happens for a signal like [1, 1] as would result from taking the abs of the 
+  //   signal above. But wait: We already know what the result must be from our [0.5, 0.5] test. 
+  //   This signal still had a peak height of 0.5 after smoothing. So, [1, 1] should still have a
+  //   peak height of 1 after smoothing. It 's the same situation just scaled by a factor of 2.
   //
   //
   // See also:
