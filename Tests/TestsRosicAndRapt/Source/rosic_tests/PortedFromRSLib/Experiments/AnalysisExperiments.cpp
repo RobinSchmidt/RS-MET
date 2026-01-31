@@ -763,8 +763,13 @@ void peakSmoother()
   //   of equal height - but with one notable exception: For a single pass, the two peaks actually
   //   have the exact same height.
   // 
-  // - With a signle pass, the peak heights after smoothing are all at 0.5, i.e. all at the height
-  //   that the original peak that was spread over 2 samples had.
+  // - With a siggle pass, the peak heights after smoothing are all at 0.5, i.e. all at the height
+  //   that the original peak that was spread over 2 samples had. That is a pretty good result! It
+  //   means that with a single pass 3-point MA filter, we should be able to make a peak detector 
+  //   invariant with respect to mis/alignments of the peaks with respect to the sample grid. 
+  //   That's better than what I expected. I expected that we would get closer and closer to 
+  //   invariance by making more and more passes. This actually does happen - but the single pass
+  //   case is an exception to this general trend.
   //
   // 
   // Conclusions:
