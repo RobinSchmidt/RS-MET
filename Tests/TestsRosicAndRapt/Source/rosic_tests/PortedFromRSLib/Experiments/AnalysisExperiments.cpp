@@ -827,6 +827,10 @@ void peakSmoother()
   //   peak height of 1 after smoothing. It 's the same situation just scaled by a factor of 2.
   // 
   // - Plot the frequency response of the MA smoothing filter.
+  // 
+  // - Figure out how smoothing would interact with peak finding by (e.g. parabolic) interpolation.
+  //   Compare the resulting peak values with and without smoothing. Does the smoothing mess things 
+  //   up?
   //
   //
   // See also:
