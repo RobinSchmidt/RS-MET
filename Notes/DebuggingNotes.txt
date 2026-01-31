@@ -14,7 +14,7 @@ To debug drawing/painting code, it's sometimes useful to temporarily switch to s
 elements.
 
 When a bug is discovered, it may be better to not just find and fix it but instead write a 
-unit-test that exposes the bug, i.e. fails successfully, and *then* find and fix the bug. The 
+unit-test that exposes the bug, i.e. fails successfully, and _then_ find and fix the bug. The 
 rationale is that the unit test may expose the bug in the simplemost scenario and with the new unit
 test in place, we are much safer from re-introducing the bug somehow later.
 
@@ -30,8 +30,8 @@ in:
 These folders and files are created and updated silently by the JUCE framework. I found the 
 location(s) with the search function of windows explorer (searching for "ToolChain"). Sometimes, 
 it's necessary to manually delete this file, for example when the app crashes on startup during the 
-state recall. When the file is missing, the app will start in a "blank" state and the file will be 
-re-created when closing the app.
+state recall. When the file is missing, the app will start in a "blank" state, i.e. we can avoid 
+auto-loading the state that leads to the crash. The file will be re-created when closing the app.
 
 
 I sometimes run into this problem when building ToolChain standalone and run it in the debugger:
@@ -42,3 +42,28 @@ https://forum.juce.com/t/juce-plugin-host-assert-in-midimessagecollector/6456
 ToDo: Figure out and document, how this problem can be solved! I can't tell for sure anymore, but if
 I remember correctly, deleting the .settings file can also help with this. But that doesn't seem to 
 make sense - what has MIDI to do with state-recall? ...but I may misremember this.
+
+
+
+
+Common Bugs:
+
+- Errors in conditionals (including loop conditions):
+
+  - Off-by-1 errors.
+ 
+  - Using "<" instead of "<=" or the other way around. The same goes for for ">" vs ">=".
+  
+  - Using an "if"-statement where actually a "while"-statement is required. For example, in certain 
+    oscillator wrap-around scenarios with extremely high oscillator frequencies (above the Nyquist 
+	limit)
+  
+- Memory errors:
+
+  - Array access out of bounds. Often caused by "off-by-1" error in loop condition.
+  
+  - Use after free. Dangling pointers. Remedies: Use a deleteAndNull(ptr) function for deallocation
+    that delets _and_ sets the pointe to a nullptr. This willturn invalid memeory access to nullptr
+	derefencing which is more easily caught in a debugger.
+  
+  - Memory leaks. Remedies: Use smart pointers. Use memory leak checkers. Use Valgrind?
