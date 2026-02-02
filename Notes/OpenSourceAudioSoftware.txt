@@ -425,13 +425,18 @@ https://github.com/ardura/Interleaf         Equalizer
 https://github.com/ardura/Canopy-Reverb     Reverb
 https://github.com/ardura/Duro-Console      Emulation of mixing console processing
 
-
 Linux Studio Plugins
 https://lsp-plug.in/
 https://github.com/lsp-plugins/lsp-plugins
 -Collection of open-source plugins currently compatible with CLAP, LADSPA, LV2, VST2/LinuxVST, VST3 
  and JACK standalone formats.
 -Linux only? 
+
+IEMPluginSuite
+https://plugins.iem.at/
+https://git.iem.at/audioplugins/IEMPluginSuite
+https://atmoky.com/
+
 
 Setekh:
 https://github.com/fullfxmedia/setekh

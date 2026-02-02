@@ -826,6 +826,15 @@ void peakSmoother()
   //   This signal still had a peak height of 0.5 after smoothing. So, [1, 1] should still have a
   //   peak height of 1 after smoothing. It 's the same situation just scaled by a factor of 2.
   // 
+  // - But what if we have longer plateaus of 1s like [1,1,1] or [1,1,1,1,1]? I guess, then we 
+  //   would see a difference indeed because for a longer plateau of 1s, the MA output will 
+  //   eventually (i.e. after 2 or 3 samples) also reach one. But maybe we can handle the effects
+  //   of plateaus by somehow combinine the 3pt MA with 3pt moving max or min filters in series 
+  //   and/or in parallel? Or maybe we can somehow build in a sort of plateau detection algorithm
+  //   and if we detect a plateau, do something else? A plateau is characterized by a vanishing
+  //   first derivative (and perhaps also vanishing higher order derivatives). Or maybe look at the
+  //   difference between the minimum and the maximum over the last 3 samples. 
+  //   
   // - Plot the frequency response of the MA smoothing filter.
   // 
   // - Figure out how smoothing would interact with peak finding by (e.g. parabolic) interpolation.
