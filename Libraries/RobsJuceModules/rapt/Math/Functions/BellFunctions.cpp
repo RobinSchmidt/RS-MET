@@ -146,5 +146,8 @@ More ideas:
 
 f(x) = x / sinh(x)  ...when scaled appropriately, it falls in between 1/cosh(x) and exp(-x^2)
 
+f(x) = e^x / (1 + e^x)^2. This is the derivative of the logistic map e^x / (1 + e^x). See:
+https://www.youtube.com/watch?v=DJ_uxBvGiZo  at 13:40
+...might actually be equal to the former? Verify!
 
 */

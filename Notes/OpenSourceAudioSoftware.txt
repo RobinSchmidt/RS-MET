@@ -447,6 +447,14 @@ https://github.com/drbafflegab/vbap
 -Surround panning plugin
 
 
+Polarity-MD
+https://polarity.productions/polarity-md/
+https://www.youtube.com/watch?v=sHRTu1yD5uU
+-Multiband Dynamics by Polarity
+-The source code seems to be not available yet but will probably be soon? Here are his other repos:
+ https://github.com/polarity
+
+
 ----------------------------------------------------------------------------------------------------
 Analysis plugins
 
@@ -651,6 +659,10 @@ cxx-juce:
 https://github.com/JamesHallowell/cxx-juce
 -Rust bindings for a subset of JUCE using cxx.
 -Includes the following juce modules: core, events, audio_basics, audi_devices, audio_processors.
+
+Faceplate:
+https://github.com/AllTheMachines/Faceplate
+-Visual editor for WebView GUIs for JUCE plugins. Has a kind of freemium licensing model.
 
 ----------------------------------------------------------------------------------------------------
 DSP Libraries
