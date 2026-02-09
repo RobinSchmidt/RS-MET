@@ -170,3 +170,22 @@ Fonts: to find a good font, go here: https://www.programmingfonts.org/, my favor
 Agave, B612 Mono, Bitstream Vera Sans Mono, Borg Sans Mono, BPmono, Bront DejaVu Sans Mono, 
 Bront Ubunutu Mono, Code New Roman, D2Coding, Envy Code R, Fantasque Sans Mono, Inconsolata, 
 Iosevka, Liberation Mono, Lilex, Mononoki, Share Tech Mono, Ubuntu Mono
+
+
+
+----------------------------------------------------------------------------------------------------
+Workflows using AI assistance:
+
+Coding:
+
+- To write a function with the help of Copilot, write a stub for the function and the documentation 
+  that explains what the function does (or rather is supposed to do). Then use autocomplete 
+  ("Alt" + ".") inside the stub. Copilot can often generate the code from the previously created 
+  documentation.
+
+
+Debugging:
+
+- What sometimes work to find a bug is to go into the code section where the bug might probably be 
+  and start writing a comment that explains the bug and then something like: "Maybe the problem 
+  is...", "It's likely that ...", .. and then using autocomplete to see what Copilot comes up with.
