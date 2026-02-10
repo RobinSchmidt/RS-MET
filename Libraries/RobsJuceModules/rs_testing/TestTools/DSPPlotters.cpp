@@ -614,8 +614,8 @@ template <class T>
 void SpectrumPlotter<T>::setupPlotterAndPlot()
 {
   if(logFreqAxis)
-    setLogScale("x");         // Uses decadic ticks. ToDo: Use octaves instead
-  setToDarkMode();
+    setLogScale("x");       // Uses decadic ticks. ToDo: Use octaves instead
+  //setToDarkMode();        // ToDo: Uncomment when we have implemented graph colors for dark mode
   setPixelSize(1600, 800);
   plot();
 }

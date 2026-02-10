@@ -290,6 +290,11 @@ https://github.com/alexmfink/compufart
 -Fart sound synthesizer written in Cmajor 
 -"Based on physically modeling wind passing through an asshole"
 
+Orbit:
+https://github.com/hugh-buntine/dumumub-0000006
+https://www.kvraudio.com/forum/viewtopic.php?t=627820
+-Granular synthesizer featuring physics-based orbital grain movement
+
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
 
@@ -454,6 +459,13 @@ https://www.youtube.com/watch?v=sHRTu1yD5uU
 -The source code seems to be not available yet but will probably be soon? Here are his other repos:
  https://github.com/polarity
 
+Nine Strip
+https://github.com/blablack/nine-strip
+https://www.kvraudio.com/forum/viewtopic.php?t=627806
+-Channel strip plugin using Airwindows DSP algorithms
+
+
+
 
 ----------------------------------------------------------------------------------------------------
 Analysis plugins
@@ -513,6 +525,14 @@ https://bitbucket.org/Mayae/ape/src/master/
  https://www.kvraudio.com/forum/viewtopic.php?t=560622
  https://www.kvraudio.com/forum/viewtopic.php?t=620258
  https://bitbucket.org/Mayae/ape-snippets/src/master/
+-Plugin for live coding in C++. Uses JIT compilation.
+
+Formula:
+https://soundspear.com/product/formula
+https://github.com/soundspear/formula
+https://www.kvraudio.com/product/formula-by-soundspear
+https://forum.juce.com/t/formula-an-ide-for-developing-inside-your-daw/52082
+-Plugin for live coding in C. Uses JIT compilation.
 
 Cmajor:
 https://github.com/cmajor-lang
