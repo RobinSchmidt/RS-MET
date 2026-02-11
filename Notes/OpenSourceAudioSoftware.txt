@@ -464,8 +464,13 @@ https://github.com/blablack/nine-strip
 https://www.kvraudio.com/forum/viewtopic.php?t=627806
 -Channel strip plugin using Airwindows DSP algorithms
 
-
-
+QDelay
+https://github.com/tiagolr/qdelay
+https://www.kvraudio.com/forum/viewtopic.php?t=626731
+-Quick Delay. 
+ ...there more more plugins:
+ https://www.kvraudio.com/developer/tilr
+ https://github.com/tiagolr
 
 ----------------------------------------------------------------------------------------------------
 Analysis plugins
