@@ -549,13 +549,18 @@ https://faust.grame.fr/
 -Faust (Functional Audio Stream) is a functional programming language for sound synthesis and audio 
  processing with a strong focus on the design of synthesizers, musical instruments, audio effects
 
+FaustVst:
+https://github.com/mikeoliphant/FaustVst
+https://www.kvraudio.com/forum/viewtopic.php?t=613142
+-VST3 plugin for Faust.
+
 SuperCollider:
 https://github.com/supercollider/supercollider
--platform for audio synthesis and algorithmic composition
+-Platform for audio synthesis and algorithmic composition
 
 CSound:
 https://csound.com/
--sound and music computing system
+-Sound and music computing system
 
 Pure Data (PD):
 https://puredata.info/downloads
@@ -771,7 +776,7 @@ https://github.com/drbaloney/audio-converter/tree/main
 Dr. Bafflegab's Audio Converter
 https://github.com/drbafflegab/audio-converter
 -C library for real-time sample rate conversion of audio streams
--...looks like Dr. Bafflegab is Dr. Baloney. The Dr. Baloney link above now redirecty to Bafflegab.
+-...looks like Dr. Bafflegab is Dr. Baloney. The Dr. Baloney link above now redirects to Bafflegab.
 
 ofxATK
 https://github.com/aaronaanderson/ofxATK
@@ -967,6 +972,9 @@ https://github.com/noel-lang/realtime_guitar_effects
 https://www.youtube.com/watch?v=L-sfcQ1PH-g
 -Super basic distortion command line app app in Rust. Shows how to do basic audio I/O
 
+Time-Varying Filters for Musical Applications
+https://github.com/iZotope/time_varying_filters_paper/tree/master
+-Code and data used by "Time-Varying Filters for Musical Applications" (DAFx-14 paper)
 
 ----------------------------------------------------------------------------------------------------
 Numerical Math and Algorithms Libraries
@@ -986,6 +994,14 @@ Ray Tracing
 https://github.com/jakubg05/Ray-Tracing
 https://www.youtube.com/watch?v=wzZJzyX0UkI
 
+Anti Grain Geometry (AGG)
+https://github.com/ghaerr/agg-2.6
+-Rasterization based 2D graphics rendering library.
+
+OpenCV
+https://opencv.org/
+https://github.com/opencv/opencv
+-Library for real-time image processing, computer vision, and machine learning
 
 ----------------------------------------------------------------------------------------------------
 Other Libraries
@@ -1002,10 +1018,6 @@ https://github.com/NativeInstruments/ni-media
 https://github.com/nothings/stb/
 -Single-file public domain (or MIT licensed) libraries for C/C++ for various tasks.
 -Has image (.png,etc.) read/write, .ttf-rendering
-
-Anti Grain Geometry
-https://github.com/ghaerr/agg-2.6
--Rasterization based 2D graphics rendering library.
 
 SIMD Everywhere
 https://github.com/simd-everywhere/simde
@@ -1101,17 +1113,50 @@ https://github.com/mhroth/tinywav
 -Minimal C library for reading and writing (32-bit float or 16-bit int) WAV audio files
 
 ----------------------------------------------------------------------------------------------------
+Audio Routing and System Wide Effects
+
+EqualizerAPO
+https://equalizerapo.com/
+https://sourceforge.net/projects/equalizerapo/
+-System wide equalizer for Windows. Allows hosting of VST plugins, too.
+
+StageConnect
+https://github.com/OpenMixerProject/StageConnect
+-Arduino-Library to create a StageConnect device. StageConnect is based on the automotive A2B audio 
+ bus which uses XLR connectors to transmit 32 channels of 48kHz 32bit audio.
+
+qpwgraph
+https://github.com/rncbc/qpwgraph
+-PipeWire Graph Qt GUI Interface
+
+Helvum
+https://gitlab.freedesktop.org/pipewire/helvum
+-GTK-based patchbay for pipewire, inspired by the JACK tool catia
+
+Easy Effects
+https://github.com/wwmm/easyeffects
+-Limiter, compressor, convolver, equalizer etc. plugins for PipeWire applications
+
+JamesDSP for Linux
+https://github.com/Audio4Linux/JDSP4Linux
+-Sound effects for PipeWire and PulseAudio
+
+RaySession
+https://github.com/Houston4444/RaySession
+-Linux session manager for audio programs such as Ardour, Carla, QTractor, Guitarix, Patroneo, 
+ Jack Mixer, etc. Load together audio programs, then save or close all documents together.
+
+coppwr 
+https://github.com/dimtpap/coppwr
+-Low level control GUI for PipeWire
+
+----------------------------------------------------------------------------------------------------
 Misc
 
 Tracktion Engine
 https://www.tracktion.com/develop/tracktion-engine
 https://github.com/Tracktion/tracktion_engine/
 -Audio engine of the Tracktion DAW
-
-EqualizerAPO:
-https://equalizerapo.com/
-https://sourceforge.net/projects/equalizerapo/
--System wide equalizer for Windows. Allows hosting of VST plugins, too.
 
 Avendish:
 https://github.com/celtera/avendish/
@@ -1142,15 +1187,11 @@ https://sourceforge.net/projects/guitarix/
 -"...virtual guitar amplifier for Linux running on Jack Audio Connection Kit..."
 -Supports loading of LV2 plugins but is itself not available as a plugin, it seems.
 
-StageConnect:
-https://github.com/OpenMixerProject/StageConnect
--Arduino-Library to create a StageConnect device. StageConnect is based on the automotive A2B audio 
- bus which uses XLR connectors to transmit 32 channels of 48kHz 32bit audio.
-
 Plugin Analyser:
 https://github.com/lucaromagnoli/plugin-analyser
 https://www.kvraudio.com/forum/viewtopic.php?t=625462
 -Plugin analysis tool focusing on batch processing (rather than interactive exploration)
+
 
 ----------------------------------------------------------------------------------------------------
 Audio AI projects and related stuff
@@ -1171,7 +1212,7 @@ https://github.com/revdotcom/reverb
 
 Orpheus-FASTAPI
 https://github.com/Lex-au/Orpheus-FastAPI
--Text-to-Speech server with OpenAI-compatible API,
+-Text-to-Speech server with OpenAI-compatible API
 
 Frechet Audio Distance
 https://github.com/gudgud96/frechet-audio-distance
@@ -1240,6 +1281,10 @@ https://github.com/cgzirim/seek-tune
 
 ----------------------------------------------------------------------------------------------------
 Unsorted:
+
+
+https://github.com/skngh/How-to-Make-a-Guitar-Pedal
+
 
 https://github.com/keithhearne/VSTPlugins/tree/master
 -A number of VST plugins developed using the JUCE framework and C++ in Xcode.
@@ -1415,6 +1460,10 @@ https://github.com/sudara/awesome-juce
 https://github.com/webprofusion/OpenAudio
 -List of open source audio software
 
+PipeWire Guide
+https://github.com/mikeroyal/PipeWire-Guide
+-A guide covering PipeWire including the applications and tools...
+
 http://ccrma.stanford.edu/planetccrma/software/ladspaworld.html
 -List of LADSPA plugins
 
@@ -1448,16 +1497,16 @@ https://github.com/BelaPlatform/bela-online-course
 The KeyVa programming language
 https://github.com/garyexplains/keyva-lang
 https://www.youtube.com/watch?v=yDI1dkImLok
-- Small programming language where every variable is an associative array (KeyVa probably stands 
-  for key-value pair?). It's main usefulness might be in the demonstration of how to write a minimal
-  interpreter.
+-Small programming language where every variable is an associative array (KeyVa probably stands 
+ for key-value pair?). It's main usefulness might be in the demonstration of how to write a minimal
+ interpreter.
 
 ExprEval:
 https://expreval.sourceforge.net/
 https://expreval.sourceforge.net/expreval.html
 https://sourceforge.net/projects/expreval/
 https://github.com/traviscross/expreval
-- Expression evaluator library. Used in RS-MET FuncShaper.
+-Expression evaluator library. Used in RS-MET FuncShaper.
 
 
 https://www.joehagenmusic.com/post/a-comprehensive-guide-to-high-quality-free-plugins-that-you-ll-actually-use

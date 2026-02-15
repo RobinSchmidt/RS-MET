@@ -79,17 +79,25 @@ public:
 
 protected:
 
+  // By default, we produce numbers in the interval -1..+1:
   T scale = T(2.0/4294967296.0);
   T shift = T(-1);
 
   unsigned long seed  = 0;
 	unsigned long state = 0;
 
-  // ToDo: maybe use:
+  // ToDo: 
   // 
-  // static const T modulus = T(4294967296); 
+  // - Maybe use:
   // 
-  // and replace the occurences of the magic number by that constant.
+  //     static const T modulus = T(4294967296); 
+  // 
+  //   and replace the occurences of the magic number by that constant.
+  // 
+  // - I think, with these default values for scale and shift, the interval of the random numbers 
+  //   that are produced is left closed and right open, i.e. the number is in the interval [0,1). 
+  //   Verify and document that! Maybe try to make it such that the default interval is closed to 
+  //   both sides, i.e. [-1,+1].
 };
 
 //=================================================================================================
