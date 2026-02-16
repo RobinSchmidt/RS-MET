@@ -98,6 +98,9 @@ protected:
   //   that are produced is left closed and right open, i.e. the number is in the interval [0,1). 
   //   Verify and document that! Maybe try to make it such that the default interval is closed to 
   //   both sides, i.e. [-1,+1].
+  //
+  // - Use uint32_t instead of unsigned long for the state and seed. Then get rid of the manual
+  //   bitmasking in updateState(). Maybe leave the old code as comment for reference.
 };
 
 //=================================================================================================
