@@ -43,3 +43,21 @@ void rsPitchDitherHelpers<T>::calcCycleDistribution(
   //   research repo. ToDo: clean the derivation up and put it into its own dedicated textfile here
   //   in the main repo!
 }
+
+//=================================================================================================
+/*
+
+ToDo:
+
+- Drag over the experiments and unit tests from the research repo into the main repo
+
+- Add unit test for rsNoiseGenerator, then factor out a class rsRandomGenerator that doesn't have
+  members for seed, shift and scale, then use that class here instead of rsNoiseGenerator.
+
+- Implement a class rsPitchDitherSuperSawOsc. See comments in the experiments in the reseatch repo
+  for how to approach this.
+
+- Clean up the derivations for the cycle distribution formulas and put them into a dedicated 
+  textfile. They are currently in TempSketchPad.txt in the research repo and are rather messy.
+
+*/
