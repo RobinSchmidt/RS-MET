@@ -25,6 +25,7 @@
 #include "RenderScriptTools.cpp"
 #include "FractalRenderer.cpp"
 #include "ReverbStuff.cpp"
+#include "Generators.cpp"
 
 //#include "SinusoidalModeling.cpp" // moved to rapt
 

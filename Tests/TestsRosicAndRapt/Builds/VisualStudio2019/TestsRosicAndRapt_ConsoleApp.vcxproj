@@ -855,6 +855,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\Oscillator3D.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\PhaseDitherOscs.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\RayBouncer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2667,6 +2670,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FractalRenderer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Generators.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Ideas.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2898,6 +2904,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\Generators.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\NoiseGenerator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\Oscillator3D.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\PhaseDitherOscs.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\RayBouncer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\VariousOscillators.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\BasicMathFunctions.h"/>
@@ -3547,6 +3554,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Drawing.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FiniteAutomaton.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FractalRenderer.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Generators.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Ideas.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\MeshStuff.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\ModalAnalyzer.h"/>

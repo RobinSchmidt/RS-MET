@@ -35,6 +35,7 @@ using namespace RAPT;
 #include "RenderScriptTools.h"
 #include "FractalRenderer.h"
 #include "ReverbStuff.h"
+#include "Generators.h"
 
 
 /** This file contains prototypical implementations of algorithms. These prototypes are not meant
