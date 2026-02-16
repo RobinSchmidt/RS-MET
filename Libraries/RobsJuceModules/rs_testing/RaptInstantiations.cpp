@@ -667,6 +667,7 @@ template class RAPT::rsTriSawOscillator<float>;
 template class RAPT::rsBouncillator<float>;
 template class RAPT::rsRayBouncer<float>;
 template class RAPT::rsNoiseGenerator<float>;
+template class RAPT::rsPitchDitherHelpers<float>;
 
 // Modulation:
 template class RAPT::rsBreakpointModulator<float>;
