@@ -796,6 +796,9 @@ template class rsPixelClassifier<float>;
 template class rsModalAnalyzer<double>;
 template class rsModalAnalyzer2<double>;
 
+template class rsPitchDitherProto<double>;
+template class rsPitchDitherProto<float>;
+
 //template class std::complex<rsSimdVector<float, 16>>;  
 // test - doesn't compile. the problem are things like _Isnan, _IsInf, etc. std::complex seems to 
 // assume the underlying real type to be float, double or long double and nothing else...what's the 
