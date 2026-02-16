@@ -101,6 +101,12 @@ protected:
   //
   // - Use uint32_t instead of unsigned long for the state and seed. Then get rid of the manual
   //   bitmasking in updateState(). Maybe leave the old code as comment for reference.
+  //
+  // - Factor out a class rsRandomGenerator that has only the state as member variable. To seed 
+  //   it, the user can use a function like setState(). It could have a member function 
+  //   getSampleInt() which returns the raw int value and getSampleFloat() which returns a numbe 
+  //   in the interval [0,1) or maybe [0,1]. Or maybe have both versions. The required scale and 
+  //   shift coeffs should be hardcoded such that they take up no space when creating objects.
 };
 
 //=================================================================================================
