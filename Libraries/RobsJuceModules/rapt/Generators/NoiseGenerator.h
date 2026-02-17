@@ -1,6 +1,36 @@
 ﻿#ifndef RAPT_NOISEGENERATOR_H_INCLUDED
 #define RAPT_NOISEGENERATOR_H_INCLUDED
 
+
+/** Implements a simple linear congruential pseudo random number generator. The coefficients are
+taken from Numerical Recipies in C, 2nd Ed, page 284.  */
+
+class rsRandomGenerator
+{
+
+public:
+
+  /** Sets the current state of the generator. */
+  inline void setState(uint32_t newState) { state = newState; }
+
+
+  /** Returns the current state of the generator. */
+  inline uint32_t getState() const { return state; }
+
+
+  /** Updates the internal state of the integer generator. */
+  inline void updateState() { state = 1664525 * state + 1013904223; }
+
+
+protected:
+
+  static const uint64_t modulus = 4294967296ull;  // Too big for uint32_t so we need uin64_t.
+
+	uint32_t state = 0;
+
+};
+
+
 /** A simple noise generator based on the linear congruential method. It generates uniformly
 distributed random number in the range that you can set up via setRange. By default, the range is
 between -1 and +1 (not 0 and 1 because this is meant for audio). The underlying integer pseudo
@@ -145,19 +175,10 @@ protected:
 
   // ToDo: 
   // 
-  // - Maybe use:
-  // 
-  //     static const T modulus = T(4294967296); 
-  // 
-  //   and replace the occurences of the magic number by that constant.
-  // 
   // - I think, with these default values for scale and shift, the interval of the random numbers 
-  //   that are produced is left closed and right open, i.e. the number is in the interval [0,1). 
+  //   that are produced is left closed and right open, i.e. the number is in the interval [-1,1). 
   //   Verify and document that! Maybe try to make it such that the default interval is closed to 
   //   both sides, i.e. [-1,+1].
-  //
-  // - Use uint32_t instead of unsigned long for the state and seed. Then get rid of the manual
-  //   bitmasking in updateState(). Maybe leave the old code as comment for reference.
   //
   // - Factor out a class rsRandomGenerator that has only the state as member variable. To seed 
   //   it, the user can use a function like setState(). It could have a member function 
