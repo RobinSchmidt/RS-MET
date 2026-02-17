@@ -32,10 +32,10 @@ public:
   // \name Setup
 
   /** Sets the seed (initial state) of the PRNG and sets the current state to the seed value. */
-  inline void setSeed(unsigned long newSeed) { state = seed = newSeed; }
+  inline void setSeed(uint32_t newSeed) { state = seed = newSeed; }
 
   /** Sets the seed without resetting the state. */
-  inline void setSeedWithoutReset(unsigned long newSeed) { seed = newSeed; }
+  inline void setSeedWithoutReset(uint32_t newSeed) { seed = newSeed; }
 
   /** Sets the range for the numbers to be produced. */
   inline void setRange(T min, T max)
@@ -59,14 +59,14 @@ public:
  
 
   /** Directly sets the current state of the underlying integer PRNG. */
-  inline void setState(unsigned long newState) { state = newState; }
+  inline void setState(uint32_t newState) { state = newState; }
 
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
   /** Returns the current state of the linear congruential generator. */
-  inline unsigned long getState() const { return state; }
+  inline uint32_t getState() const { return state; }
 
   inline T getMappedState() const { return scale * state + shift; }
 
@@ -87,7 +87,8 @@ public:
   /** Updates the internal state of the integer PRNG */
   inline void updateState()
   {
-    state = (1664525*state + 1013904223) & 4294967295;
+    //state = (1664525 * state + 1013904223) & 4294967295; // Old: Modulo by explicit masking
+    state = 1664525 * state + 1013904223;                  // New: Implicit modulo by overflow
     // These numbers are taken from Numerical Recipies in C, 2nd Ed, page 284. The bitmask performs
     // the modulo operation. When unsigned long is 32 bit, it's not necesarry because then the mod
     // occurs implicitly due to overflow, but when it's 64 bit we need to do it explicitly (on Mac
@@ -104,7 +105,7 @@ public:
 
   }
 
-  inline unsigned long getSampleRaw()
+  inline uint32_t getSampleRaw()
   {
     updateState();
     return getState();
@@ -119,9 +120,9 @@ protected:
   T scale = T(2.0/4294967296.0);
   T shift = T(-1);
 
-  unsigned long seed  = 0;
-	unsigned long state = 0;
-  // ToDo: Use uint32_t
+  uint32_t seed  = 0;
+	uint32_t state = 0;
+
 
   // ToDo: 
   // 
@@ -171,7 +172,7 @@ class rsNoiseGenerator2 : public rsNoiseGenerator<T>
 
 public:
 
-  inline void setOrder(unsigned long newOrder) 
+  inline void setOrder(uint32_t newOrder) 
   { 
     rsAssert(newOrder > 0);
     order = newOrder;
@@ -187,8 +188,9 @@ public:
 
   inline T getSample()
   {
-    unsigned long long accu = 0;
-    for(unsigned long i = 1; i <= order; i++) {
+    //unsigned long long accu = 0;
+    uint64_t accu = 0;                           // Accumulator needs extended range
+    for(uint32_t i = 1; i <= order; i++) {
       this->updateState();
       accu += this->state; }
     return this->scale * accu + this->shift;
@@ -198,13 +200,13 @@ protected:
 
   void updateCoeffs()
   {
-    this->scale = T( (max-min) / (order*4294967296.0) );
+    this->scale = T( (max-min) / (order * 4294967296.0) );
     this->shift = min;
     // The formula for  scale  is different than in the baseclass. Here, we divide by 
-    // order * modulus  rather than just by the  modulus.
+    // order * modulus  rather than just by the modulus.
   }
 
-  unsigned long order = 1;
+  uint32_t order = 1;
   T min = T(-1.0), max = T(+1.0);
 
 };
