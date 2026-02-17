@@ -49,7 +49,9 @@ public:
   /** Sets the range for the numbers to be produced. */
   inline void setRange(T min, T max)
   {
-    scale = T((max-min)/4294967296.0);
+    //scale = T((max-min)/4294967296.0);     // Old
+    scale = (max-min) / T(modulus);          // New
+    //scale = (max-min) * (T(1)/T(modulus)); // Maybe this could work too and be more efficient?
     shift = min;
   }
   // Maybe have an optional boolean parameter "maxIncluded" that controls if the max is included or
@@ -121,7 +123,6 @@ public:
   {
     updateState();
     return getState();
-    //return state;  // Maybe use "return getState();"
   }
 
 
