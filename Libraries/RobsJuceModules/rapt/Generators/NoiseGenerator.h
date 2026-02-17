@@ -28,6 +28,15 @@ public:
   //rsNoiseGenerator() = default;
 	//~rsNoiseGenerator() = default;
 
+  //static_assert(std::is_floating_point_v<T>, "rsNoiseGenerator requires floating-point T");
+  // We could use this to trigger compile-time errors when someone tries to instantiate the class
+  // with an integer type T. But I think, we currently may actually do have such an instantiation
+  // somewhere (probably using it with getSampleRaw()), so we can't do that at the moment. 
+  // Hmmm...but the TestsRosicAndRapt project seems to compile even when the line is not commented
+  // out. However, just in case, I leave it commented out for now. Maybe it can be uncommented 
+  // later. Or maybe someday we can switch to using a C++20 "float" concept for T. We'll see.
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
@@ -51,8 +60,11 @@ public:
   // guess. Worse: whether or not it works may depend on the actual values of min and max. Verify 
   // that! Currently we divide by the modulus itself, so we should get the half open interval 
   // because the maximum possible value for the state is modulus-1. Document all of these behaviors
-  // for T = float and T = double and write unit tests that verify these behaviors! The C++ 
-  // standard library produces numbers in an half-open interval. See:
+  // for T = float and T = double and write unit tests that verify these behaviors! Maybe try also
+  // to replace the division by a multiplication. Maybe some DSP algorithm wants to modulate the 
+  // range of a PRNG at sample rate so it may be worth to optimize this. But this change may also
+  // modify the behavior with respect to rounding and hence, half-open or closed interval. By the 
+  // way, the C++ standard library produces random numbers in an half-open interval. See:
   // 
   // https://en.cppreference.com/w/cpp/numeric/random/uniform_real_distribution.html
   // https://en.cppreference.com/w/cpp/numeric/random.html  (Not relevant here. Just for info.)
@@ -116,8 +128,14 @@ public:
 
 protected:
 
+
+  static const uint64_t modulus = 4294967296ull;  // Too big for uint32_t so we need uin64_t.
+  //static constexpr uint64_t modulus = uint64_t(1) << 32;
+
   // By default, we produce numbers in the interval -1..+1:
-  T scale = T(2.0/4294967296.0);
+  //T scale = T(2.0/4294967296.0);  // Old
+  //T scale = T(2) / T(modulus);      // New. Will not compile. Complains about div-by-zero.
+  T scale = T(2.0 / double(modulus));
   T shift = T(-1);
 
   uint32_t seed  = 0;
