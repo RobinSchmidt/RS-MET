@@ -43,8 +43,24 @@ public:
     scale = T((max-min)/4294967296.0);
     shift = min;
   }
+  // Maybe have an optional boolean parameter "maxIncluded" that controls if the max is included or
+  // not. For example with min = 0 and max = 1, true would mean that we produce numbers in the 
+  // closed interval [0,1] and false would mean that the numbers are in the half-open interval 
+  // [0,1). I think, to achieve both behaviors, we should divide either by the modulus as is or by 
+  // modulus-1. But: If T is single precision float, it may not work correctly due to rounding, I 
+  // guess. Worse: whether or not it works may depend on the actual values of min and max. Verify 
+  // that! Currently we divide by the modulus itself, so we should get the half open interval 
+  // because the maximum possible value for the state is modulus-1. Document all of these behaviors
+  // for T = float and T = double and write unit tests that verify these behaviors! The C++ 
+  // standard library produces numbers in an half-open interval. See:
+  // 
+  // https://en.cppreference.com/w/cpp/numeric/random/uniform_real_distribution.html
+  // https://en.cppreference.com/w/cpp/numeric/random.html  (Not relevant here. Just for info.)
+ 
 
-  // ToDo: setState()
+  /** Directly sets the current state of the underlying integer PRNG. */
+  inline void setState(unsigned long newState) { state = newState; }
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
@@ -52,15 +68,17 @@ public:
   /** Returns the current state of the linear congruential generator. */
   inline unsigned long getState() const { return state; }
 
+  inline T getMappedState() const { return scale * state + shift; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
-  /** Produces one output sample at a time */
+  /** Produces one output sample at a time. */
   inline T getSample()
   {
     updateState();
-    return scale * state + shift;
+    return getMappedState();
+    //return scale * state + shift;  // Maybe use "return getMappedState();"
   }
 
   /** Resets the internal state to the seed value. */
@@ -89,7 +107,8 @@ public:
   inline unsigned long getSampleRaw()
   {
     updateState();
-    return state;
+    return getState();
+    //return state;  // Maybe use "return getState();"
   }
 
 

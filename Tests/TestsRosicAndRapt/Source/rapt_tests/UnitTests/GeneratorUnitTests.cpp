@@ -25,12 +25,36 @@ bool noiseGeneratorUnitTest()
   ng.reset();
   ok &= ng.getState() == 1;
 
+  // Verify the first 5 raw values that are produced with the current seed of 1:
+  ok &= ng.getSampleRaw() == 1015568748;
+  ok &= ng.getSampleRaw() == 1586005467;
+  ok &= ng.getSampleRaw() == 2165703038;
+  ok &= ng.getSampleRaw() == 3027450565;
+  ok &= ng.getSampleRaw() == 217083232;
 
-
-
+  // Verify the first 5 mapped values that are produced with the current seed of 1:
+  ng.reset();
+  Real tol = 0.f;
+  Real r;
+  r = ng.getSample(); ok &= rsIsCloseTo(r, -0.527088940f,   tol);
+  //ok &= r == -0.527088940f;  // This would also pass!
+  //ok &= r == -0.527088940;   // ..but this would fail! The f suffix is important!
+  r = ng.getSample(); ok &= rsIsCloseTo(r, -0.261458635f,   tol);
+  r = ng.getSample(); ok &= rsIsCloseTo(r,  0.00848400593f, tol);
+  r = ng.getSample(); ok &= rsIsCloseTo(r,  0.409766555f,   tol);
+  r = ng.getSample(); ok &= rsIsCloseTo(r, -0.898912728f,   tol);
 
 
   return ok;
+
+  // ToDo:
+  // 
+  // - Test the updateState() function
+  //
+  // - Implement and test a downdateState() function
+  //
+  // - Verify that the default range is -1..+1. Maybe add a function getMappedState() that maps
+  //   the current state to the desired range without updating the state.
 }
 
 
