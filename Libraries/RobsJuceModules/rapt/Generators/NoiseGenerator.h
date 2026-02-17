@@ -57,9 +57,6 @@ public:
 
   using Base = rsRandomGenerator;
 
-  //rsNoiseGenerator() = default;
-	//~rsNoiseGenerator() = default;
-
   //static_assert(std::is_floating_point_v<T>, "rsNoiseGenerator requires floating-point T");
   // We could use this to trigger compile-time errors when someone tries to instantiate the class
   // with an integer type T. But I think, we currently may actually do have such an instantiation
@@ -67,7 +64,6 @@ public:
   // Hmmm...but the TestsRosicAndRapt project seems to compile even when the line is not commented
   // out. However, just in case, I leave it commented out for now. Maybe it can be uncommented 
   // later. Or maybe someday we can switch to using a C++20 "float" concept for T. We'll see.
-
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup
@@ -104,17 +100,12 @@ public:
   // https://en.cppreference.com/w/cpp/numeric/random.html  (Not relevant here. Just for info.)
  
 
-  /** Directly sets the current state of the underlying integer PRNG. */
-  inline void setState(uint32_t newState) { state = newState; }
-
-
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-  /** Returns the current state of the linear congruential generator. */
-  inline uint32_t getState() const { return state; }
-
   inline T getMappedState() const { return scale * state + shift; }
+  // Maybe we need to use this->state or Base::state. MSVC accepts it as is but GCC may not. Not 
+  // sure.
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
@@ -122,41 +113,21 @@ public:
   /** Produces one output sample at a time. */
   inline T getSample()
   {
-    updateState();
+    Base::updateState();
     return getMappedState();
-    //return scale * state + shift;  // Maybe use "return getMappedState();"
   }
 
   /** Resets the internal state to the seed value. */
   inline void reset() { state = seed; }
 
-  /** Updates the internal state of the integer PRNG */
-  inline void updateState()
-  {
-    //state = (1664525 * state + 1013904223) & 4294967295; // Old: Modulo by explicit masking
-    state = 1664525 * state + 1013904223;                  // New: Implicit modulo by overflow
-    // These numbers are taken from Numerical Recipies in C, 2nd Ed, page 284. The bitmask performs
-    // the modulo operation. When unsigned long is 32 bit, it's not necesarry because then the mod
-    // occurs implicitly due to overflow, but when it's 64 bit we need to do it explicitly (on Mac
-    // it is required). ToDo: either figure out at compile time, if it is required and use 
-    // conditional compilation, or (better): make sure that it uses a 32 bit integer type (i.e. use 
-    // rsUint32 or uint32_t instead of unsigned long for the state). But when doing that, maybe 
-    // benchmark both versions. Maybe using 64 bit integers turns out to be faster because that's
-    // the natural word length of the CPU? But maybe that could depend on how the object is aligned
-    // in memory and what the type T is? Do the required tests and document the results! Create 
-    // also unit tests that test sizeof(rsNoiseGenerator<T>) for T = float and T = double and check
-    // there if the sizes are as expected. I think, for T = double, it should be 24 bytes (2 * 8 
-    // for each of the double values and 2 * 4 for each of the uint32 values) and for T = float, it
-    // should be 16 bytes (for 2 float and 2 uint32 values).
-
-  }
-
+  /** Returns a raw integer random sample from the underlying integer linear congruential 
+  generator. Here, "raw" means that the mapping function is not yet applied such that the range is 
+  from 0 to the maximum value of uint32_t which is 2^32-1. */
   inline uint32_t getSampleRaw()
   {
-    updateState();
-    return getState();
+    Base::updateState();
+    return Base::getState();
   }
-
 
 
 protected:
@@ -165,7 +136,7 @@ protected:
   T scale = T(2.0 / double(modulus));
   T shift = T(-1);
 
-  uint32_t seed  = 0;
+  uint32_t seed = 0;
 
   // ToDo: 
   // 
@@ -173,12 +144,6 @@ protected:
   //   that are produced is left closed and right open, i.e. the number is in the interval [-1,1). 
   //   Verify and document that! Maybe try to make it such that the default interval is closed to 
   //   both sides, i.e. [-1,+1].
-  //
-  // - Factor out a class rsRandomGenerator that has only the state as member variable. To seed 
-  //   it, the user can use a function like setState(). It could have a member function 
-  //   getSampleInt() which returns the raw int value and getSampleFloat() which returns a numbe 
-  //   in the interval [0,1) or maybe [0,1]. Or maybe have both versions. The required scale and 
-  //   shift coeffs should be hardcoded such that they take up no space when creating objects.
 };
 
 //=================================================================================================
