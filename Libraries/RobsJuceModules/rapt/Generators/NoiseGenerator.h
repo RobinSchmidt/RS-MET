@@ -50,10 +50,12 @@ Numerical Recipies in C (2nd edition), page 284.
 */
 
 template<class T>
-class rsNoiseGenerator
+class rsNoiseGenerator : public rsRandomGenerator
 {
 
 public:
+
+  using Base = rsRandomGenerator;
 
   //rsNoiseGenerator() = default;
 	//~rsNoiseGenerator() = default;
@@ -159,19 +161,11 @@ public:
 
 protected:
 
-
-  static const uint64_t modulus = 4294967296ull;  // Too big for uint32_t so we need uin64_t.
-  //static constexpr uint64_t modulus = uint64_t(1) << 32;
-
   // By default, we produce numbers in the interval -1..+1:
-  //T scale = T(2.0/4294967296.0);  // Old
-  //T scale = T(2) / T(modulus);      // New. Will not compile. Complains about div-by-zero.
   T scale = T(2.0 / double(modulus));
   T shift = T(-1);
 
   uint32_t seed  = 0;
-	uint32_t state = 0;
-
 
   // ToDo: 
   // 
