@@ -24,8 +24,9 @@ bool runUnitTestsRapt()
   // the test for the code i'm currently working on to go first for faster edit/build/test cycles, 
   // because some of the test take longer to perfom. So this section is volatile:
   //ok &= runUnitTest(&testLinearAlgebra,       "rsLinearAlgebra");
-  ok &= runUnitTest(&allpassUnitTest,        "Allpass filters");
-  ok &= runUnitTest(&testPolynomial,         "rsPolynomial");
+  ok &= runUnitTest(&noiseGeneratorUnitTest, "rsNoiseGenerator");
+  //ok &= runUnitTest(&allpassUnitTest,        "Allpass filters");
+  //ok &= runUnitTest(&testPolynomial,         "rsPolynomial");
   //ok &= runUnitTest(&miscFiltersUnitTest,    "Misc filters");
   //ok &= runUnitTest(&basicFiltersUnitTests,  "Basic filters");
 
@@ -103,7 +104,8 @@ bool runUnitTestsRapt()
   // move down later
 
   // Generators:
-  ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine"); // Belongs in rosic tests!
+  ok &= runUnitTest(&noiseGeneratorUnitTest, "rsNoiseGenerator");
+  ok &= runUnitTest(&samplerEngineUnitTest,  "rsSamplerEngine"); // Belongs in rosic tests!
 
   // Misc:
   ok &= runUnitTest(&blepUnitTest,  "Blit/Blep/Blamp");  // move to generator unit tests

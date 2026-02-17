@@ -1,4 +1,42 @@
 
+
+bool noiseGeneratorUnitTest()
+{
+  bool ok = true;
+
+  using Real = float;
+  using Nat  = uint32_t;
+
+  // Create noise generator:
+  rsNoiseGenerator<Real> ng;
+
+  // Default initial state is zero:
+  ok &= ng.getState() == 0;
+
+  // Setting the seed also sets the state to the new seed value:
+  ng.setSeed(3);
+  ok &= ng.getState() == 3;
+
+  // Setting the seed without reset does not affect the state:
+  ng.setSeedWithoutReset(1);
+  ok &= ng.getState() == 3;
+
+  // Resetting sets the state to the seed:
+  ng.reset();
+  ok &= ng.getState() == 1;
+
+
+
+
+
+
+  return ok;
+}
+
+
+
+//=================================================================================================
+
 // Helper functions (todo: move them either into the library or into TestUtilities.cpp in the
 // rs_testing module):
 

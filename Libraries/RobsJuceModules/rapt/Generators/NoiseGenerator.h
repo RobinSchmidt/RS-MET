@@ -28,6 +28,9 @@ public:
   //rsNoiseGenerator() = default;
 	//~rsNoiseGenerator() = default;
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
   /** Sets the seed (initial state) of the PRNG and sets the current state to the seed value. */
   inline void setSeed(unsigned long newSeed) { state = seed = newSeed; }
 
@@ -39,6 +42,25 @@ public:
   {
     scale = T((max-min)/4294967296.0);
     shift = min;
+  }
+
+  // ToDo: setState()
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  /** Returns the current state of the linear congruential generator. */
+  inline unsigned long getState() const { return state; }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
+
+  /** Produces one output sample at a time */
+  inline T getSample()
+  {
+    updateState();
+    return scale * state + shift;
   }
 
   /** Resets the internal state to the seed value. */
@@ -64,18 +86,13 @@ public:
 
   }
 
-  /** Produces one output sample at a time */
-  inline T getSample()
-  {
-    updateState();
-    return scale * state + shift;
-  }
-
   inline unsigned long getSampleRaw()
   {
     updateState();
     return state;
   }
+
+
 
 protected:
 
@@ -85,6 +102,7 @@ protected:
 
   unsigned long seed  = 0;
 	unsigned long state = 0;
+  // ToDo: Use uint32_t
 
   // ToDo: 
   // 
