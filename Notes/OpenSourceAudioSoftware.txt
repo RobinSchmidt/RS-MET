@@ -295,6 +295,10 @@ https://github.com/hugh-buntine/dumumub-0000006
 https://www.kvraudio.com/forum/viewtopic.php?t=627820
 -Granular synthesizer featuring physics-based orbital grain movement
 
+OB-Xf:
+https://github.com/surge-synthesizer/OB-Xf
+-Continuation of the last open source version of OB-Xd by 2DaT and later discoDSP
+
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
 
@@ -893,6 +897,10 @@ https://github.com/ODDSound/MTS-ESP
 -so maybe it doesn't really belong into the DSP-libraries section. It seems to be more something 
  like a communication infrastructure library for plugin instances (with a specific goal in mind)
 
+gverb:
+https://github.com/highfidelity/gverb
+-Reverb in C
+
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:
 
@@ -1125,6 +1133,10 @@ https://equalizerapo.com/
 https://sourceforge.net/projects/equalizerapo/
 -System wide equalizer for Windows. Allows hosting of VST plugins, too.
 
+Peace equalizer
+https://sourceforge.net/projects/peace-equalizer-apo-extension/
+-Interface for Equalizer APO
+
 StageConnect
 https://github.com/OpenMixerProject/StageConnect
 -Arduino-Library to create a StageConnect device. StageConnect is based on the automotive A2B audio 
@@ -1140,6 +1152,7 @@ https://gitlab.freedesktop.org/pipewire/helvum
 
 Easy Effects
 https://github.com/wwmm/easyeffects
+-Seems to be system wide sound effects for Linux
 -Limiter, compressor, convolver, equalizer etc. plugins for PipeWire applications
 
 JamesDSP for Linux
@@ -1261,6 +1274,12 @@ https://github.com/hifiberry/hifiberry-os
 -Minimal Linux distribution optimized for audio playback.
 -Not maintained in this form anymore. But this seems to be the successor:
  https://github.com/hifiberry/hifiberry-os/tree/hbosng
+
+HiFiScan:
+https://github.com/erdewit/HiFiScan
+-Frequency response measurement tool to derive parameters for a compensation equalizer.
+-Has Python interface and can be used from a Jupyter notebook:
+ https://github.com/erdewit/HiFiScan/blob/master/chirp.ipynb
 
 ----------------------------------------------------------------------------------------------------
 Audio AI projects and related stuff
