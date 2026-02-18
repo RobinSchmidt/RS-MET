@@ -29,6 +29,7 @@ public:
     rangeSplitOdd,
     rangeSplitEven,
     linToExp            // morph between linear and exponential
+    //superSawJp8000
   };
 
 

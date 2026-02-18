@@ -1112,6 +1112,11 @@ TinyWav:
 https://github.com/mhroth/tinywav
 -Minimal C library for reading and writing (32-bit float or 16-bit int) WAV audio files
 
+FFmpeg:
+https://www.ffmpeg.org/download.html
+https://github.com/FFmpeg/FFmpeg
+-Widely used open source implementation of various video codecs.
+
 ----------------------------------------------------------------------------------------------------
 Audio Routing and System Wide Effects
 
@@ -1149,6 +1154,65 @@ https://github.com/Houston4444/RaySession
 coppwr 
 https://github.com/dimtpap/coppwr
 -Low level control GUI for PipeWire
+
+----------------------------------------------------------------------------------------------------
+Media Players
+
+mpv
+https://mpv.io/
+https://github.com/mpv-player/mpv
+-Media player for the command line. No real GUI, but a small controller on top of the video.
+-Supports a lot of file formats, audio and video codecs, and subtitle types.
+-Scripting capabilities
+
+VideoLAN (VLC Player)
+https://www.videolan.org/
+https://www.videolan.org/vlc/download-sources.html
+https://github.com/videolan/vlc
+-Most widely used FOSS video player.
+
+Media Player Classic - Home Cinema
+https://github.com/clsid2/mpc-hc
+-Video and audio player for Windows.
+-DirectShow player. 
+-Extensibility through third party filters.
+
+MPlayer (Movie Player):
+http://www.mplayerhq.hu/design7/dload.html
+https://github.com/pigoz/mplayer-svn
+
+SMPlayer
+https://www.smplayer.info/
+-Media player for Windows and Linux 
+-GUI for MPlayer:
+ http://www.mplayerhq.hu/design7/info.html
+ 
+Jellyfin Desktop:
+https://github.com/jellyfin/jellyfin-desktop
+-Client built with Qt WebEngine and libmpv. Supports audio passthrough, hardware decoding, and 
+ playback of more formats without transcoding.
+ 
+Plex:
+https://www.plex.tv/blog/introducing-the-plex-media-player/ 
+https://github.com/plexinc/plex-media-player
+-No longer maintained
+ 
+Kodi:
+https://kodi.tv/ 
+https://github.com/xbmc/xbmc
+https://kodi.tv/contribute/developers/
+https://kodi.wiki/view/Add-on_development
+https://kodi.wiki/view/Development 
+https://github.com/xbmc/repo-plugins/tree/matrix (not sure if this is the right branch)
+-Cross-Platform media player witha a Smart-TV like GUI.
+ 
+ReelVault 
+https://github.com/rabfulton/ReelVault 
+-Native GTK3 application for browsing and launching your local film collection
+ 
+VideoJS 
+https://videojs.org/
+
 
 ----------------------------------------------------------------------------------------------------
 Misc
@@ -1192,6 +1256,11 @@ https://github.com/lucaromagnoli/plugin-analyser
 https://www.kvraudio.com/forum/viewtopic.php?t=625462
 -Plugin analysis tool focusing on batch processing (rather than interactive exploration)
 
+HiFiBerryOS:
+https://github.com/hifiberry/hifiberry-os
+-Minimal Linux distribution optimized for audio playback.
+-Not maintained in this form anymore. But this seems to be the successor:
+ https://github.com/hifiberry/hifiberry-os/tree/hbosng
 
 ----------------------------------------------------------------------------------------------------
 Audio AI projects and related stuff
@@ -1217,6 +1286,10 @@ https://github.com/Lex-au/Orpheus-FastAPI
 Frechet Audio Distance
 https://github.com/gudgud96/frechet-audio-distance
 -Library to compute the Frechet Audio Distance (FAD) in PyTorch
+
+HiFi-GAN
+https://github.com/jik876/hifi-gan
+-Generative Adversarial Networks for Efficient and High Fidelity Speech Synthesis
 
 ----------------------------------------------------------------------------------------------------
 People
@@ -1282,6 +1355,8 @@ https://github.com/cgzirim/seek-tune
 ----------------------------------------------------------------------------------------------------
 Unsorted:
 
+
+https://github.com/bang-olufsen
 
 https://github.com/skngh/How-to-Make-a-Guitar-Pedal
 
