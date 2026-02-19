@@ -13,10 +13,8 @@ public:
   /** Sets the current state of the generator. */
   inline void setState(uint32_t newState) { state = newState; }
 
-
   /** Returns the current state of the generator. */
   inline uint32_t getState() const { return state; }
-
 
   /** Updates the internal state of the integer generator. */
   inline void updateState() { state = 1664525 * state + 1013904223; }
@@ -128,6 +126,9 @@ public:
     Base::updateState();
     return Base::getState();
   }
+  // Maybe move this to the baseclass. Add there also function getSample01() or 
+  // getSampleInUnitInterval() or getSampleUnitRange() that produces value in the range 0..1. Maybe
+  // we should have two versions of this function for the closed and half-open unit interval
 
 
 protected:
