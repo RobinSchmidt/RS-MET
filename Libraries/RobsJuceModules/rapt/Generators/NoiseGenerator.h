@@ -5,6 +5,7 @@
 /** Implements a simple linear congruential pseudo random number generator. The coefficients are
 taken from Numerical Recipies in C, 2nd Ed, page 284.  */
 
+template<class T>
 class rsRandomGenerator
 {
 
@@ -17,14 +18,11 @@ public:
   inline uint32_t getState() const { return state; }
 
 
-  template<class T>
   inline T getSampleUnitRange()
   {
     return T(getSampleRaw()) * (T(1)/T(modulus));
   }
-  // ToDo: Maybe make the template parameter T a parameter for the class because otherwise the
-  // calling syntax would be like prng.getSample<float>() or something. Although, maybe that's not
-  // a bad thing. Not sure yet.
+  // ToDo: Maybe rename to getSample()
 
   /** Returns a raw integer random sample from the underlying integer linear congruential 
   generator. Here, "raw" means that the mapping function is not yet applied such that the range is 
@@ -70,7 +68,7 @@ Numerical Recipies in C (2nd edition), page 284.
 */
 
 template<class T>
-class rsNoiseGenerator : public rsRandomGenerator
+class rsNoiseGenerator : public rsRandomGenerator<T>
 {
 
 public:
