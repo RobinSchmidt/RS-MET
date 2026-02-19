@@ -16,6 +16,28 @@ public:
   /** Returns the current state of the generator. */
   inline uint32_t getState() const { return state; }
 
+
+  template<class T>
+  inline T getSampleUnitRange()
+  {
+    return T(getSampleRaw()) * (T(1)/T(modulus));
+  }
+  // ToDo: Maybe make the template parameter T a parameter for the class because otherwise the
+  // calling syntax would be like prng.getSample<float>() or something. Although, maybe that's not
+  // a bad thing. Not sure yet.
+
+  /** Returns a raw integer random sample from the underlying integer linear congruential 
+  generator. Here, "raw" means that the mapping function is not yet applied such that the range is 
+  from 0 to the maximum value of uint32_t which is 2^32-1. */
+  inline uint32_t getSampleRaw()
+  {
+    updateState();
+    return getState();
+  }
+  // ToDo: Add a function getSample01() or getSampleInUnitInterval() or getSampleUnitRange() that 
+  // produces value in the range 0..1. Maybe we should have two versions of this function for the 
+  // closed and half-open unit interval
+
   /** Updates the internal state of the integer generator. */
   inline void updateState() { state = 1664525 * state + 1013904223; }
 
@@ -117,18 +139,6 @@ public:
 
   /** Resets the internal state to the seed value. */
   inline void reset() { state = seed; }
-
-  /** Returns a raw integer random sample from the underlying integer linear congruential 
-  generator. Here, "raw" means that the mapping function is not yet applied such that the range is 
-  from 0 to the maximum value of uint32_t which is 2^32-1. */
-  inline uint32_t getSampleRaw()
-  {
-    Base::updateState();
-    return Base::getState();
-  }
-  // Maybe move this to the baseclass. Add there also function getSample01() or 
-  // getSampleInUnitInterval() or getSampleUnitRange() that produces value in the range 0..1. Maybe
-  // we should have two versions of this function for the closed and half-open unit interval
 
 
 protected:

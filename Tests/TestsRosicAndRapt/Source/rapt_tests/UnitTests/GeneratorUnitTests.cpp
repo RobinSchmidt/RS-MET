@@ -45,6 +45,10 @@ bool noiseGeneratorUnitTest()
   r = ng.getSample(); ok &= rsIsCloseTo(r, -0.898912728f,   tol);
 
 
+  rsRandomGenerator rg;
+  r = rg.getSampleUnitRange<Real>();
+
+
   return ok;
 
   // ToDo:
