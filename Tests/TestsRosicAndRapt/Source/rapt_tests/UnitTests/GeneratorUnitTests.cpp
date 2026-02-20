@@ -47,7 +47,7 @@ bool noiseGeneratorUnitTest()
 
   // Test the lower level baseclass rsRandomGenerator:
   rsRandomGenerator<Real> rg;
-  r = rg.getSampleUnitRange();
+  r = rg.getSampleInUnitRange();
   // ...TBC...
 
 

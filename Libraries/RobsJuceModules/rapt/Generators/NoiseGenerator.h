@@ -18,11 +18,13 @@ public:
   inline uint32_t getState() const { return state; }
 
 
-  inline T getSampleUnitRange()
-  {
-    return T(getSampleRaw()) * (T(1)/T(modulus));
-  }
-  // ToDo: Maybe rename to getSample()
+  /** Returns a random value in the half-open unit interval [0,1). */
+  inline T getSampleInUnitRange() { return T(getSampleRaw()) * (T(1)/T(modulus)); }
+
+  // ToDo: Add getSampleInRange(T rangeMin, T rangeMax), getSampleInClosedUnitRange(). The latter
+  // should return T(getSampleRaw()) / T(modulus-1); In this case, we probably can't safely replace
+  // the division by a multiplication with the reciprocal because that may result in different
+  // rounding behavior at the upper edge case.
 
   /** Returns a raw integer random sample from the underlying integer linear congruential 
   generator. Here, "raw" means that the mapping function is not yet applied such that the range is 
