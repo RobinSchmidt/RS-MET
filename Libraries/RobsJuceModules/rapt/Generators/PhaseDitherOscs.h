@@ -117,8 +117,9 @@ public:
   void reset()
   {
     sampleCount = T(0);
-    prng.setState(seed);
-    //prng.reset();
+    //prng.reset();        // Old
+    prng.setState(seed);   // New
+    updateCycleLength();   // Also new. Not sure about that, though-
   }
 
 
