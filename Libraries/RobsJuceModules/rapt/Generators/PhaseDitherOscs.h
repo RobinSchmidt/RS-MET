@@ -49,7 +49,7 @@ public:
   variables that control the distribution of cycle lengths. */
   rsPitchDitherSawOsc()
   {
-    prng.setRange(T(0), T(1));             // We use random numbers in the interval [0,1).
+    //prng.setRange(T(0), T(1));             // We use random numbers in the interval [0,1).
     setPeriod(T(100.0));                   // Triggers computations to set up members.
     reset();                               // Assigns sampleCount.
   }
@@ -80,7 +80,8 @@ public:
   /** Sets the seed for the pseudo random number generator. */
   void setRandomSeed(uint32_t newSeed)
   {
-    prng.setSeed(newSeed);
+    seed = newSeed;
+    //prng.setSeed(newSeed);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -116,7 +117,8 @@ public:
   void reset()
   {
     sampleCount = T(0);
-    prng.reset();
+    prng.setState(seed);
+    //prng.reset();
   }
 
 
@@ -129,7 +131,8 @@ protected:
   for the next cycle. Called from getSample() after each cycle has been completed. */
   inline void updateCycleLength()
   {
-    T r = prng.getSample();                  // Random number in interval [0,1).
+    //T r = prng.getSample();                  // Random number in interval [0,1).
+    T r = prng.getSampleInUnitRange();       // Random number in interval [0,1).
     if(r < probShort)
       cycleLength = midLength - T(1);        // Next cycle is short.
     else if(r < probShort + probMid)
@@ -154,7 +157,9 @@ protected:
   T probMid;       // Probability to use midLength.
 
   // Embedded DSP objects:
-  rsNoiseGenerator<T> prng;
+  rsRandomGenerator<T> prng;
+  uint32_t seed = 0;
+  //rsNoiseGenerator<T> prng;
 
   // Notes:
   //
