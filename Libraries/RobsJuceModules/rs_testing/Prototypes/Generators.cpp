@@ -220,16 +220,19 @@ std::vector<T> rsPitchDitherProto<T>::getSaw(
   Vec cycleL3 = getSawCycle(cd.L3, amp);
 
   // Set up the pseudo random number generator:
-  rsNoiseGenerator<T> prng;
-  prng.setRange(0.0, 1.0);                        // The interval is half open: [0,1). (Verify!)
-  prng.setSeed(seed);
+  //rsNoiseGenerator<T> prng;
+  //prng.setRange(0.0, 1.0);                        // The interval is half open: [0,1). (Verify!)
+  //prng.setSeed(seed);
+  rsRandomGenerator<T> prng;
+  prng.setState(seed);
 
   // Create the sawtooth wave signal using one of the 3 prototype cycles for each cycle of the saw:
   Vec saw(N);
   size_t n = 0;
   while(n < (size_t) N)
   {
-    T r = prng.getSample();                       // Random number in interval [0,1)
+    //T r = prng.getSample();                       // Random number in interval [0,1)
+    T r = prng.getSampleInUnitRange();              // Random number in interval [0,1)
     if(r < cd.p1)
       n += rsWriteContentAt(cycleL1, saw, n);
     else if(r < cd.p1 + cd.p2)
