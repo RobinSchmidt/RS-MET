@@ -49,7 +49,6 @@ public:
   variables that control the distribution of cycle lengths. */
   rsPitchDitherSawOsc()
   {
-    //prng.setRange(T(0), T(1));             // We use random numbers in the interval [0,1).
     setPeriod(T(100.0));                   // Triggers computations to set up members.
     reset();                               // Assigns sampleCount.
   }
@@ -62,34 +61,27 @@ public:
   frequency is the desired oscillator frequency in Hz. This will immediately trigger a 
   recomputation of the probability distribution of the cycle lengths and update the currently used
   cycle length. */
-  void setPeriod(T newPeriod)
-  {
-    setPeriodNoUpdate(newPeriod);
-    updateCycleLength();
-  }
+  void setPeriod(T newPeriod) { setPeriodNoUpdate(newPeriod); updateCycleLength(); }
 
   /** Sets up a new period length just like setPeriod() does but without immediately updating the
   probability distribution and current cycle length. This results in the behavior that the new 
   period will not become effective immediately but only after finishing the currently running 
   cycle. */
   void setPeriodNoUpdate(T newPeriod)
-  { 
-    PDH::calcCycleDistribution(newPeriod, &midLength, &probShort, &probMid); 
-  }
+  { PDH::calcCycleDistribution(newPeriod, &midLength, &probShort, &probMid); }
 
   /** Sets the seed for the pseudo random number generator. */
-  void setRandomSeed(uint32_t newSeed)
-  {
-    seed = newSeed;
-    //prng.setSeed(newSeed);
-  }
+  void setRandomSeed(uint32_t newSeed) { seed = newSeed; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-  /** Returns the average length of the cycles that are being produced. If the 3 integer cycle 
-  lengths are given by L1,L2,L3 and cycles with these 3 lengths are produced with probabilities 
-  p1,p2,p3 respectively, then the average cycle length P will be: P = p1*L1 + p2*L2 + p3*L3. */
+  /** Returns the average length of the cycles that are being produced. In general, if we have 3 
+  integer cycle lengths given by L1,L2,L3 and cycles with these 3 lengths are produced with 
+  probabilities p1,p2,p3 respectively, then the average cycle length P will be: 
+  P = p1*L1 + p2*L2 + p3*L3. In our particular case here, we will have a given middle length L2 and
+  the short and long lengths L1,L3 are then given as L1 = L2-1, L3 = L2+1. And, of course, for the 
+  probabilities we will always have p1 + p2 + p3 = 1 such that p3 = 1 - (p1 + p2). */
   T getPeriod()
   {
     T probLong = T(1) - (probShort + probMid);
@@ -117,9 +109,8 @@ public:
   void reset()
   {
     sampleCount = T(0);
-    //prng.reset();        // Old
-    prng.setState(seed);   // New
-    updateCycleLength();   // Also new. Not sure about that, though-
+    prng.setState(seed);
+    updateCycleLength();                   // Important for correct initial cycleLength.
   }
 
 
@@ -160,7 +151,6 @@ protected:
   // Embedded DSP objects:
   rsRandomGenerator<T> prng;
   uint32_t seed = 0;
-  //rsNoiseGenerator<T> prng;
 
   // Notes:
   //
@@ -177,24 +167,6 @@ protected:
   //   initializations would require using some moderately complex formulas for a consistent, valid
   //   initial state. So we leave this member initialization to the constructor which calls some 
   //   functions to do the appropriate computations.
-  //  
-  // 
-  // ToDo:
-  //
-  // - Replace the rsNoiseGenerator<T> member by a rsRandomGenerator<T>. This class does not exist 
-  //   yet. It is supposed to factor out the integer random number generation from rsNoiseGenerator
-  //   such that the object doesn't need to maintain the shift and scale members. It could provide
-  //   a convience function for producing floating point outputs in the fixed range [0,1) but it 
-  //   will not provide a user adjustable range. It could have a convenience function 
-  //   getSampleFloat(T min, T max), though. But using that function in a hot loop is not 
-  //   recommended for production code because it will need a costly division. Maybe it should have
-  //   a normal getSample() function that produces floats in [0,1) and an additional getSampleRaw()
-  //   or getSampleInt() function that produces the raw integer value.
-  // 
-  // - setRandomSeed() should probably eventually be replaced by a setRandomState function. Or 
-  //   maybe complemented by it. We actually do want to have a setRandomSeed() function as well. 
-  //   But when we switch to a PRNG that has no built in seed member, we will need a randomSeed 
-  //   member variable here.
 };
 
 

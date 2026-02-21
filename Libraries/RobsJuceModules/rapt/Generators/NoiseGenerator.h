@@ -118,6 +118,19 @@ public:
   // 
   // https://en.cppreference.com/w/cpp/numeric/random/uniform_real_distribution.html
   // https://en.cppreference.com/w/cpp/numeric/random.html  (Not relevant here. Just for info.)
+  //
+  // I think, replacing the division by a multiplication by the reciprocal may in certain 
+  // situations get the actually produced maximum overshoot the range due to roundoff errors. I
+  // think, this can't happen if we actually do the division (verify!). Maybe the same goes for the
+  // minimum. So maybe we shouldn't expect the outputs to be _strictly_ limited to min...max but 
+  // rather to min-tol...max+tol for some tolerance. For an audio noise generator, that may be 
+  // acceptable but there may be situations where it isn't so this should be clearly documented
+  // and warnings should be given. But: I think that caveat applies only for a division by 
+  // modulus-1. For dividing by the modulus itself, it should be safe to replace the division by a
+  // multiplication because when the divisor is a power of two, it's reciprocal can be exactly 
+  // represented and the multiplication by an inverse power of two it is just an integer 
+  // subtraction of the exponents and the mantissa will be left alone - just like it would in a 
+  // division by a power of two. ...I think - verify that!
  
 
   //-----------------------------------------------------------------------------------------------
