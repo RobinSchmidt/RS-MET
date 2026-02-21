@@ -37,6 +37,15 @@ public:
     // and they may add some clarity.
   };
 
+  /** Produces a cycle distribution that minimizes the variance of the distribution of cycles for 
+  the given period. If the period is an exact integer, the distribution that minimizes the variance
+  is the one that always produces the cycle with that given period, i.e. with probability 1. The 
+  problem with this distribution is that waveforms with integer periods will sound very different
+  from those with non-integer periods. The latter one will sound noisier. The noise variance is 
+  greatest for half-integer periods. This distribution is not supposed to be useful in practice. 
+  It's just nice to have for reference in experiments. In practice, we want the noisiness of the 
+  waveform to be invariant with respect to the fractional part of the period. This is what the 
+  distributionEqualVariance() is made for. */
   static void distributionMinVariance(T period, CycleDistribution* cd);
 
   /** Produces a cycle distribution based on a geometrical overlap consideration. We imagine a 
@@ -59,7 +68,11 @@ public:
 
   /** Produces a cycle distribution that ensures that the expected squared error (i.e. the variance 
   of the error) of the length of the cycles is independent from the fractional part of the desired 
-  period. */
+  period. This distribution turned out experimentally to the right one if the goal is to make the
+  noisiness of the waveform invariant with respect to the fractional part of the period. That is: 
+  With this distributions, exact integer periods will sound the same as the worst case of 
+  half-integer periods. A period P = 100.0 will sound equally noisy as one of P = 100.5. The 
+  intermediate cases like 100.3 will of course also sound the same. */
   static void distributionEqualVariance(T period, CycleDistribution* cd);
 
   // Make a function distributionMinVariance that has always 0 for p1 (or maybe 0 for p3 can also
