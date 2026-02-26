@@ -398,7 +398,7 @@ public:
   /** Computes the weighted sum r = wp * p + wq * q of the polynomials p and q and stores the 
   result in r. */
   static void weightedSum(const SparsePoly& p, T wp, const SparsePoly& q, T wq, SparsePoly* r);
-  // ToDo: Document whether or not it can be used in place.
+  // ToDo: Document whether or not it can be used in place. Maybe pass wp and wq as const ref.
 
   /** Multiplies polynomials p and q and stores the result in r. It may be used in place, i.e. the
   result polynomial r can point to the memory location of the arguments p and/or q. */

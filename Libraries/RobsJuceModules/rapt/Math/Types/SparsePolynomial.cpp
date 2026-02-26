@@ -366,7 +366,12 @@ void rsSparsePolynomial<T, TTol>::weightedSum(
   // add(), subtract() and weightedSum() by just keeping the implementation of weightedSum() and
   // implementing add() and subtract() by calling the weightedSum() function with weights 1,1 and
   // 1,-1 respectively. However, from a performance perspective, that seems to be not such a good
-  // idea which is why I accept this code duplication here.
+  // idea which is why I accept this code duplication here. But maybe the performance advantag is 
+  // so miniscule that it is not worth it. ToDo: Implement some benchmarks to compare the 
+  // computational costs of using add()/subtract() vs using weightedSum() for different datatypes
+  // for T. Presumably, for T = float or double, there won't be much difference, for T = 
+  // std::complex, there may be a greater difference and for T = rsMatrix, the difference may 
+  // indeed be significant.
 }
 
 template<class T, class TTol>
