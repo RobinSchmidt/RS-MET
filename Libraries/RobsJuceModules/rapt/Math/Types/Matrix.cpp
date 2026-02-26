@@ -27,13 +27,20 @@ ToDo:
 
 
 
+
+
+
 Resources:
 
-This video:
-https://www.youtube.com/watch?v=PdxWhTX8aKo  Eigenvectors before Eigenvalues | solve(x)
-shows a method for computing the eigenvectors of a 2x2 matrix without computing the eigenvalues 
-first. May that could be useful when we are only interested in the eigenvectors but not in the 
-eigenvalues.
+- This video:
+  https://www.youtube.com/watch?v=PdxWhTX8aKo  Eigenvectors before Eigenvalues | solve(x)
+  shows a method for computing the eigenvectors of a 2x2 matrix without computing the eigenvalues 
+  first. May that could be useful when we are only interested in the eigenvectors but not in the 
+  eigenvalues.
 
+- This video:
+  https://www.youtube.com/watch?v=GHctcSBd6Z4
+  Matrix Multiplication Deep Dive || Cache Blocking, SIMD & Parallelization - Aliaksei Sala - CppCon
+  explains various ways of optimizing matrix multiplication.
 
 */

@@ -33,7 +33,8 @@ public:
 
   void setCoeff(T newCoeff)   { coeff = newCoeff; }
 
-  // ToDo: pass newCoeff by const ref
+  // ToDo: Pass newCoeff by const reference. Rationale: At some point we may want to use types T 
+  // that are expensive to copy such as arbitrary precision floating point numbers.
 
   void setPower(int newPower) { power = newPower; }
 
@@ -81,7 +82,8 @@ public:
   /** Multiplies two monomials. */
   rsMonomial<T> operator*(const rsMonomial<T>& q) const
   { return rsMonomial<T>(getCoeff() * q.getCoeff(), getPower() + q.getPower()); }
-  // Needs tests
+  // Needs tests. Maybe use coeff and power directly instead of using the getters. That makes the
+  // code a bit shorter.
 
   /** Divides two monomials. */
   rsMonomial<T> operator/(const rsMonomial<T>& q) const
@@ -89,6 +91,7 @@ public:
   // Needs tests. 
   // If q.power > this->power, this will lead to a negative power in the result. Should we do 
   // something about this like triggering an rsAssert? And what if q.getCoeff() returns zero?
+  // Maybe warn about this in the documentation and add assertions.
 
   // Addition and subtraction cannot be generally defined. These operations would only make sense
   // when both operands have the same power which is more an exceptional case rather than the rule
@@ -217,6 +220,12 @@ public:
   /** Makes the polynomial monic by dividing all coeffs by the leading coeff. A monic polynomial is
   a polynomial in which the leading coefficient is unity (aka one).*/
   void makeMonic() { _scaleCoeffs(T(1) / getLeadingCoeff()); }
+  // ToDo: Maybe we should now again apply the tolerance threshold to the coeffs? But it would 
+  // really be weird to remove coeffs in a makeMonic operation! Maybe we should treat the threshold
+  // as relative (to the largest coeff) anyway? Then, the relative size of the coeffs wouldn't 
+  // change due to scaling. A coeff that was above the relative threshold before scaling would 
+  // still be above the relative threshold after scaling. ...at least if we ignore possible 
+  // roundoff error changes.
 
   /** Shifts all powers by the given amount. If the amount is p, this corresponds to multiplying 
   the polynomial by a monomial factor with unit coefficient, i.e. by x^p. */
@@ -389,12 +398,14 @@ public:
   /** Computes the weighted sum r = wp * p + wq * q of the polynomials p and q and stores the 
   result in r. */
   static void weightedSum(const SparsePoly& p, T wp, const SparsePoly& q, T wq, SparsePoly* r);
-  // ToDo: document whether or not it can be used in place.
+  // ToDo: Document whether or not it can be used in place.
 
   /** Multiplies polynomials p and q and stores the result in r. It may be used in place, i.e. the
   result polynomial r can point to the memory location of the arguments p and/or q. */
   static void multiply(const SparsePoly& p, const SparsePoly& q, SparsePoly* r);
   // ToDo: document whether or not it can be used in place.
+  // ...Done... ToDo: Verify, if we have unit tests for in place usage. Maybe document that, too.
+  // But maybe not as part of the doxygen documentation
 
   /** Implements polynomial division with remainder. ...TBC... */
   static void divide(const SparsePoly& numerator, const SparsePoly& denominator,
@@ -517,12 +528,12 @@ public:
   /** Checks if this sparse polynomial is in canonical representation. A representation is 
   canonical if it has no zero coefficients (up to the roundoff tolerance) and if the powers are 
   strictly increasing (as function of array index) and if no power occurs more than once. The empty
-  polynomial is also accepted as a canonical epresentation. It represents the zero polynomial. */
+  polynomial is also accepted as a canonical representation. It represents the zero polynomial. */
   bool _isCanonical() const;
 
   /** Returns true iff the powers of our terms are strictly increasing as function of array index.
   This strict monotonicity also entails uniqueness of the powers. That means that this function 
-  serves two purposes at the same time: making sure that the terms are sorted by power and that no
+  serves two purposes at the same time: Making sure that the terms are sorted by power and that no
   power appears more than once. These are two of the requirements for a canonical 
   representation. */
   bool _areTermsStrictlySorted() const;

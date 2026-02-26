@@ -195,6 +195,8 @@ bool rsSparsePolynomial<T, TTol>::isCloseTo(const rsSparsePolynomial<T, TTol>& q
 
   return true;
 }
+// ToDo: Implement this as a free function. Rationale: It would be consistent with how we do it for
+// other classes. Or maybe add the free function additionally. 
 
 template<class T, class TTol>
 bool rsSparsePolynomial<T, TTol>::_isCanonical() const

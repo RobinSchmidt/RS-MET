@@ -299,6 +299,11 @@ OB-Xf:
 https://github.com/surge-synthesizer/OB-Xf
 -Continuation of the last open source version of OB-Xd by 2DaT and later discoDSP
 
+OpenWurli:
+https://github.com/hal0zer0/openwurli
+https://www.kvraudio.com/forum/viewtopic.php?t=628109
+-Physically-modeled Wurlitzer 200A electric piano
+
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
 
