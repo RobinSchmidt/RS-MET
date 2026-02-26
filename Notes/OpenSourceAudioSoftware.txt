@@ -366,6 +366,15 @@ Nepenthe
 https://amalgamatedsignals.com/nepenthe
 -Reverb based on the concept of velvet noise
 
+DF JPverb
+https://github.com/SpotlightKid/dfjpverb
+-built with DPF and based on re.jpverb from the FAUST standard library
+
+SG-323
+https://store.greyboxaudio.com/
+https://github.com/greyboxaudio/SG-323
+-Ursa Major Stargate 323 & Stargate 626 Emulation
+
 KlangFalter
 https://github.com/HiFi-LoFi/KlangFalter
 -Convolution reverb
@@ -594,6 +603,16 @@ https://www.kvraudio.com/forum/viewtopic.php?t=621583
 SAPF - Sound As Pure Form:
 https://github.com/lfnoise/sapf
 -"Forth-like language for audio synthesis using lazy lists and APL-like auto-mapping"
+
+
+----------------------------------------------------------------------------------------------------
+Scripts for the scripting languages:
+
+https://github.com/grame-cncm/faustlibraries
+https://faustlibraries.grame.fr/libs/reverbs/
+https://www.reddit.com/r/DSP/comments/1mopqsb/faust_dsp_reverb_code/
+
+
 
 ----------------------------------------------------------------------------------------------------
 Frameworks
