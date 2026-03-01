@@ -266,7 +266,9 @@ public:
       return rsMonomial<T>(T(0), 0);
     return terms[terms.size()-1];
   }
-  // Maybe move to .cpp file
+  // Maybe move to .cpp file. Maybe return a const reference. But that may not work when the terms
+  // array is empty. Maybe in this case, we can use the "null object" pattern and return a 
+  // reference to a static member that represents a zero monomial?
 
   /** Returns the leading coefficient of this polynomial, i.e. the coefficient in front of the 
   highest power of x. */
