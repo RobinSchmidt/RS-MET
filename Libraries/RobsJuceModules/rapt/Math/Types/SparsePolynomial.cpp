@@ -652,10 +652,16 @@ Notes:
 
 - I initially considered to add a tolerance to class rsPolynomial, too. But after some further 
   thought, I now think, it's fine without. Such a tolerance and automatic removal of values below
-  it is a beahvaior that should be resevred to sparse numeric data structures. It may make sense in
+  it is a behavior that should be resevred to sparse numeric data structures. It may make sense in
   rsSparseMatrix as well but not so much in dense matrices or dense polynomials. We may sometimes
   want to clean up a dense polynomial from trailing zero coeffs but in such cases, it's more 
   appropriate to just pass the tolerance as function parameter to the clean up function. We don't 
   need it as member variable.
+
+
+See also:
+
+https://en.wikipedia.org/wiki/Sparse_polynomial
+
 
 */

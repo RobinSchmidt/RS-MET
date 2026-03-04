@@ -921,6 +921,21 @@ inline std::vector<T> operator*(const std::vector<T>& x, const std::vector<T>& y
   return result;
 }
 
+
+/** Adds the elements in y to the elements in x and returns a reference to x. This implements the
++= operator for std::vector with the semantics that it works element-wise. */
+template<class T>
+std::vector<T>& operator+=(std::vector<T>& x, const std::vector<T>& y)
+{
+  rsAssert(x.size() == y.size());
+  for(size_t i = 0; i < x.size(); i++)
+    x[i] += y[i];
+  return x;
+}
+
+
+
+
 /*
 template<class T>
 inline bool operator==(const std::vector<T>& x, const std::vector<T>& y)
