@@ -921,7 +921,6 @@ inline std::vector<T> operator*(const std::vector<T>& x, const std::vector<T>& y
   return result;
 }
 
-
 /** Adds the elements in y to the elements in x and returns a reference to x. This implements the
 += operator for std::vector with the semantics that it works element-wise. */
 template<class T>
@@ -932,6 +931,7 @@ std::vector<T>& operator+=(std::vector<T>& x, const std::vector<T>& y)
     x[i] += y[i];
   return x;
 }
+// ToDo: Add  -=, *=, /=  in a similar way.
 
 
 
@@ -947,6 +947,11 @@ inline bool operator==(const std::vector<T>& x, const std::vector<T>& y)
       return false;
   return true;
 }
+// Why is this commented out? Is it superfluous because the standard library already implements it?
+// But maybe the standard library implements it with a different semantics, namely not comparing
+// x,y element-wise but rather checking for identity such that the pointers must match? No! I 
+// think, the standard library implementation does indeed have the right semantics. It seems to 
+// compare the two vectors element-wise.
 */
 
 
