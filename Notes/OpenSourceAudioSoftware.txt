@@ -281,6 +281,12 @@ https://github.com/giulioz/mini-jv880
 https://github.com/nukeykt/Nuked-SC55
 https://www.kvraudio.com/forum/viewtopic.php?t=620542
 
+Retromulator:
+https://www.discodsp.com/retromulator/
+https://github.com/reales/retromulator
+https://www.kvraudio.com/forum/viewtopic.php?t=628506
+-Wrapper built on top of the open-source emulation engines from Gearmulator by dsp56300.
+
 RD Piano:
 https://github.com/giulioz/rdpiano
 -Emulates SA-synthesis digital pianos, such as Roland MKS-20, RD1000, Rhodes MK-80 electric piano.
@@ -599,6 +605,11 @@ https://www.cockos.com/jsfx/
 https://forum.cockos.com/showthread.php?t=301147
 https://www.kvraudio.com/forum/viewtopic.php?t=621583
 -Reaper's FX scripting language
+
+YSFX:
+https://www.realinks.net/links/ysfx/
+https://github.com/JoepVanlier/ysfx
+-Plugin which allows to run JSFX scripts in any DAW
 
 SAPF - Sound As Pure Form:
 https://github.com/lfnoise/sapf
