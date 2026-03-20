@@ -138,7 +138,8 @@ inline bool isIndexPermutation(int* b, int L)
   return true;
 }
 // Returns true, iff b contains every number from 0 to L-1. Since b is of length L, this implies
-// that every number is contained exactly once, so b is a permutation of the numbers 0...L-1.
+// that every number is contained exactly once, so b is a permutation of the numbers 0...L-1. We do
+// not need to use a containsOnce() function (which would be even more expensive).
 // used here only for debug -  move elsewhere
 
 /** Applies the inner function to the value x and then the outer function to the result of that

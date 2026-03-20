@@ -440,7 +440,7 @@ void TurtleSource::reverseDirection()
   updateDirection();
 }
 
-bool rsXor(bool a, bool b) // move somewhere else
+bool rsXor(bool a, bool b) // move somewhere else - maybe to RAPT
 {
   return (a || b) && !(a && b); // can this be optimized?
 }

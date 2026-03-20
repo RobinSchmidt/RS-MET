@@ -310,6 +310,12 @@ https://github.com/hal0zer0/openwurli
 https://www.kvraudio.com/forum/viewtopic.php?t=628109
 -Physically-modeled Wurlitzer 200A electric piano
 
+Ultramaster KR-106:
+https://kayrock.org/kr106/
+https://github.com/kayrockscreenprinting/ultramaster_kr106
+https://www.kvraudio.com/forum/viewtopic.php?t=628716
+-Roland Juno-106 emulation
+
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
 
@@ -936,6 +942,14 @@ gverb:
 https://github.com/highfidelity/gverb
 -Reverb in C
 
+RNNoise:
+https://github.com/xiph/rnnoise
+-Noise suppression library based on a recurrent neural network
+
+LPCNet:
+https://github.com/xiph/LPCNet
+-Neural speech synthesis based on WaveRNN-based LPCNet algorithm
+
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:
 
@@ -1155,10 +1169,47 @@ TinyWav:
 https://github.com/mhroth/tinywav
 -Minimal C library for reading and writing (32-bit float or 16-bit int) WAV audio files
 
+FLAC:
+https://xiph.org/flac/
+https://github.com/xiph/flac
+https://github.com/xiph/flac-website
+-Free Lossless Audio Codec
+
+Ogg:
+https://github.com/xiph/ogg
+-Reference implementation of the Ogg media container.
+
+Vorbis:
+https://github.com/xiph/vorbis
+-Reference implementation of the Ogg Vorbis audio format.
+
+Opus Codec:
+https://opus-codec.org/
+https://github.com/xiph/opus
+https://github.com/xiph/libopusenc
+https://github.com/xiph/opus-tools
+https://github.com/xiph/opusfile
+-Opus codec for interactive speech and music transmission over the internet and storage.
+
+Speex:
+https://gitlab.xiph.org/xiph/speex
+https://gitlab.xiph.org/xiph/speexdsp
+-Voice codec
+-Mirror: https://github.com/xiph/speex https://github.com/xiph/speexdsp
+
+rav1e:
+https://github.com/xiph/rav1e
+-AV1 encoder
+
 FFmpeg:
 https://www.ffmpeg.org/download.html
 https://github.com/FFmpeg/FFmpeg
 -Widely used open source implementation of various video codecs.
+
+Daala:
+https://xiph.org/daala/
+https://github.com/xiph/daala
+-Video compression
 
 ----------------------------------------------------------------------------------------------------
 Audio Routing and System Wide Effects
@@ -1345,6 +1396,20 @@ HiFi-GAN
 https://github.com/jik876/hifi-gan
 -Generative Adversarial Networks for Efficient and High Fidelity Speech Synthesis
 
+Foundation-1:
+https://huggingface.co/RoyalCities/Foundation-1
+https://github.com/Saganaki22/ComfyUI-Foundation-1
+-Structured text-to-sample generation
+
+Stable Audio Tools:
+https://github.com/Stability-AI/stable-audio-tools
+-Generative models for conditional audio generation
+-Training and inference tools for generative audio models from Stability AI. 
+
+RC Stable Audio Tools:
+https://github.com/RoyalCities/RC-stable-audio-tools
+-Fork (of the above) with additional modifications to enhance functionality
+
 ----------------------------------------------------------------------------------------------------
 People
 
@@ -1409,6 +1474,9 @@ https://github.com/cgzirim/seek-tune
 ----------------------------------------------------------------------------------------------------
 Unsorted:
 
+
+https://github.com/xiph/libao
+-Portable audio output library
 
 https://github.com/bang-olufsen
 
