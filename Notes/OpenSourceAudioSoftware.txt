@@ -32,6 +32,7 @@ https://github.com/andremichelle/opendaw-studio
 https://github.com/andremichelle/opendaw-lib
 -Web-based DAW. No source code available yet but coming (soon?). Written in TypeScript with Web 
  Audio API. Runs in a web browser. Open-source under AGPL-3 
+-It seems like here: https://opendaw.studio/ we can use it directly online.
 
 Stargate DAW:
 https://github.com/stargatedaw/stargate
@@ -98,7 +99,7 @@ https://github.com/BirminghamConservatoire/IntegraLive
 
 Element:
 https://github.com/kushview/element
--A modular AU/LV2/VST/VST3 audio plugin host. Works standalone or as plugin. 
+-A modular AU/LV2/VST/VST3/CLAP audio plugin host. Works standalone or as plugin. 
 
 Carla:
 https://kx.studio/Applications:Carla
@@ -313,6 +314,7 @@ https://www.kvraudio.com/forum/viewtopic.php?t=628109
 Ultramaster KR-106:
 https://kayrock.org/kr106/
 https://github.com/kayrockscreenprinting/ultramaster_kr106
+https://www.kvraudio.com/forum/viewtopic.php?t=628710
 https://www.kvraudio.com/forum/viewtopic.php?t=628716
 -Roland Juno-106 emulation
 
@@ -501,6 +503,10 @@ https://www.kvraudio.com/forum/viewtopic.php?t=626731
  ...there more more plugins:
  https://www.kvraudio.com/developer/tilr
  https://github.com/tiagolr
+
+Sirial
+https://github.com/tiagolr/sirial
+-Rhythmic Delay where each tap can be placed and configured with different amplitudes and feedback.
 
 ----------------------------------------------------------------------------------------------------
 Analysis plugins
@@ -801,6 +807,32 @@ https://codeberg.org/soundtouch/soundtouch.git
 -There are various repos and I don't know, which is official and most recent
 -I think, the latest version is v2.3.2 
  -> figure that out before grabbing the library from somewhere
+-Port to JavaScript:  https://github.com/cutterbl/SoundTouchJS
+
+Kali:
+https://github.com/Infinity/Kali
+-Realtime time-stretching and pitch shifting in Javascript
+
+Phaze:
+https://github.com/olvb/phaze
+-Real-time pitch-shifter based on the phase vocoder method.
+
+VexWarp:
+https://github.com/0xfe/vexwarp
+-JavaScript implementation of the STFT and Phase Vocoder algorithms for audio time stretching and
+ pitch shifting.
+
+soundstretch-web:
+https://github.com/delude88/soundstretch-web
+-Using Soundstretch in web via WebAssembly
+
+Rubber Band:
+https://breakfastquay.com/rubberband/
+-C++ library for audio time-stretching and pitch-shifting
+
+rubberband-wasm:
+https://github.com/Daninet/rubberband-wasm
+-WebAssembly build of the audio time-stretching and pitch-shifting Rubber Band Library.
 
 Mesh2HRTF:
 https://mesh2hrtf.org/
@@ -1136,7 +1168,7 @@ https://github.com/justinfrankel/reaper-sdk
 DAWProject:
 https://github.com/bitwig/dawproject
 -Open standard format for DAW project files.
--Created by Bitwig (and Presonus?) and supported by: Bitwig, Studio One, Steinberg Cubase
+-Created by Bitwig (and Presonus?) and supported by: Bitwig, Studio One, Steinberg Cubase, openDAW
 -Converter tools are available for the following other formats: Reaper
  https://mossgrabers.de/Software/ProjectConverter/ProjectConverter.html
 -Ardour seems to be evaluating it: 
@@ -1474,6 +1506,13 @@ https://github.com/cgzirim/seek-tune
 ----------------------------------------------------------------------------------------------------
 Unsorted:
 
+SoX - Sound eXchange
+https://sourceforge.net/projects/sox/
+-Convert of audio file formats plus sound effects and filters.
+
+Zephyr:
+https://www.zephyrproject.org/
+-Real-Time Operating System (RTOS) for connected, resource-constrained embedded devices.
 
 https://github.com/xiph/libao
 -Portable audio output library

@@ -24,7 +24,8 @@ public:
   // ToDo: Add getSampleInRange(T rangeMin, T rangeMax), getSampleInClosedUnitRange(). The latter
   // should return T(getSampleRaw()) / T(modulus-1); In this case, we probably can't safely replace
   // the division by a multiplication with the reciprocal because that may result in different
-  // rounding behavior at the upper edge case.
+  // rounding behavior at the upper edge case. I discussed this with Claude here:
+  // https://claude.ai/share/4d6c2630-30d6-4010-94d4-27a7e0225391
 
   /** Returns a raw integer random sample from the underlying integer linear congruential 
   generator. Here, "raw" means that the mapping function is not yet applied such that the range is 
