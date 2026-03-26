@@ -30,8 +30,9 @@ https://opendaw.org/
 https://github.com/andremichelle/openDAW
 https://github.com/andremichelle/opendaw-studio
 https://github.com/andremichelle/opendaw-lib
--Web-based DAW. No source code available yet but coming (soon?). Written in TypeScript with Web 
- Audio API. Runs in a web browser. Open-source under AGPL-3 
+-Web-based DAW written in TypeScript with Web Audio API. Runs in a web browser. 
+-Open-source under AGPL-3.
+-Support .dawproject data format.
 -It seems like here: https://opendaw.studio/ we can use it directly online.
 
 Stargate DAW:
@@ -507,6 +508,12 @@ https://www.kvraudio.com/forum/viewtopic.php?t=626731
 Sirial
 https://github.com/tiagolr/sirial
 -Rhythmic Delay where each tap can be placed and configured with different amplitudes and feedback.
+
+QuasarEQ
+https://github.com/zalthyrexor/QuasarEQ
+https://www.kvraudio.com/forum/viewtopic.php?t=628854
+-Parametric equalizer. 
+-Modes: HighPass, HighShelf, LowPass, LowShelf, Peak, Tilt, Notch, BandPass
 
 ----------------------------------------------------------------------------------------------------
 Analysis plugins
@@ -1286,6 +1293,10 @@ coppwr
 https://github.com/dimtpap/coppwr
 -Low level control GUI for PipeWire
 
+FineTune
+https://github.com/ronitsingh10/FineTune
+-Volume control per app, routing, equalization and headphone correction for macOS.
+
 ----------------------------------------------------------------------------------------------------
 Media Players
 
@@ -1335,7 +1346,7 @@ https://kodi.tv/contribute/developers/
 https://kodi.wiki/view/Add-on_development
 https://kodi.wiki/view/Development 
 https://github.com/xbmc/repo-plugins/tree/matrix (not sure if this is the right branch)
--Cross-Platform media player witha a Smart-TV like GUI.
+-Cross-Platform media player with a Smart-TV like GUI.
  
 ReelVault 
 https://github.com/rabfulton/ReelVault 
@@ -1445,10 +1456,15 @@ https://github.com/RoyalCities/RC-stable-audio-tools
 ----------------------------------------------------------------------------------------------------
 People
 
+Andre Michelle:
+https://github.com/andremichelle
+-Author of openDAW.
+
 Giulio Zausa:
 https://giuliozausa.dev/
 https://github.com/giulioz
 https://www.youtube.com/@GiulioZausa
+-Author/(Main)Contributor (not sure) of JE-8086 (JP-8000/JP-8080 emulation)
 
 Cristian J. Steinmetz
 https://github.com/csteinmetz1
@@ -1471,7 +1487,7 @@ https://github.com/Signalsmith-Audio
 https://github.com/geraintluff
 https://gist.github.com/geraintluff/288080d44aaa7487de811887c8c6c499
 
-Paul:
+Paul Walker:
 https://github.com/baconpaul
 -Lots of repos, that I do not yet have listed above -> do it!
 

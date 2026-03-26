@@ -4,7 +4,10 @@
 #if defined(RS_NO_SIMD_FLOAT64X2)
 
 //=================================================================================================
-/**Fallback implementation to be used, if no SIMD instruction set is available */
+
+/** Fallback implementation of rsFloat64x2 which to be used, if no SIMD instruction set is 
+available. It just falls back to doing two scalar operations on the individual vector 
+components. */
 
 class rsFloat64x2
 {

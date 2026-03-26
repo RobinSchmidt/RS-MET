@@ -22,7 +22,15 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
     // If this happens, it means your biquad coeffs were unstable. We produce muted output in this 
     // case. It doesn't happen for all unstable biquads, though. For some unstable biquads, the 
     // formulas still work. In these cases, we'll just use them anyway and you'll get a 
-    // corresponding unstable SVF. I'm not sure, if that behavior is best, though.
+    // corresponding unstable SVF. I'm not sure, if that behavior is best, though. 
+    // 
+    // ToDo: Document what happens in the T == 0 case. We include it here in the if-statement such 
+    // when T == 0, we also mute the output but the comment only talks about the T > 0 case. We 
+    // have T = T1*T2 such that T == 0 implies T1 == 0 or T2 == 0 but below, we divide by T1,T2,
+    // so it does indeed seem to be important to include the T == 0 case in the if condition to
+    // avoid division by zero. Such a division by zero actually occurs above in the compuation of S
+    // and r, so they should be inf (or maybe nan) in this case. It doesn't really matter, though 
+    // because we then don't use these values for any further computations. ...TBC...
   }
 
   // Compute final coefficients:
@@ -121,6 +129,8 @@ ToDo:
 
 - Figure out how to morph between LP/BP/HP, LP/AP/HP, LS/PK/HS, ...
 
+- Add tilt mode. See: https://github.com/zalthyrexor/QuasarEQ/blob/main/Source/zlth_dsp_filter.h
+
 - Maybe add inquiry functions such as getIntegratorGain() = g, getOmega() = 2*atan(g), 
   getQualityFactor() = 1 / (gpr - g). But the Q formula is wrong for bell filters and the omega
   formula is wrong for shelf filters. But maybe we can infer in which mode we are and then dispatch
@@ -132,7 +142,7 @@ ToDo:
 
 - Figure out if there is a more direct way to evaluate the transfer function, i.e. one that 
   doesn't go through a conversion to a direct form biquad. Somewhere is a text file where I convert
-  between SVF and stats-space filter coeffs. Maybe that could be useful for evaluating the transfer
+  between SVF and state-space filter coeffs. Maybe that could be useful for evaluating the transfer
   function, too?
 
 - Add an experiment that looks at the DC-response when switching the cutoff freq. The Wishnick 
@@ -184,7 +194,7 @@ ToDo:
 - Maybe use inline or RS_INLINE also for the setup... functions. In the context of a synthesizer,
   they will typically be called at sample-rate due to envelope and LFO on the cutoff. However, in 
   other contexts (like an equalizer), the settings may be static - so I'm not sure if we really 
-  want to always inline them. It may bloat the code (although: verify if the produced assmbler code
+  want to always inline them. It may bloat the code (although: verify if the produced assembly code
   is actually bigger - the function call overhead might not be negligible in this case). It would 
   generally be really nice if we could control inlining at the call site. Figure out, if that is 
   possible with "modern" C++. If so, maybe use it.
