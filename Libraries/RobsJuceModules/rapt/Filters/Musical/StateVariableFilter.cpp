@@ -143,7 +143,15 @@ ToDo:
 - Figure out if there is a more direct way to evaluate the transfer function, i.e. one that 
   doesn't go through a conversion to a direct form biquad. Somewhere is a text file where I convert
   between SVF and state-space filter coeffs. Maybe that could be useful for evaluating the transfer
-  function, too?
+  function, too? See here:
+  https://github.com/zalthyrexor/QuasarEQ/blob/main/Source/zlth_dsp_filter.h
+  But this filter is based on mixing input with bandpass and lowpass rather than highpass with 
+  bandpass and lowpass. But for our structure here, a similar formula should be possible. Go back 
+  to the derivations here:
+  https://github.com/RobinSchmidt/RS-MET/blob/work/Notes/StateVariableFilter.txt
+  to figure out the formula for H(z) directly in terms of our SVF coeffs. The conversion from/to
+  biquad should be kept as a nice feature anyway but we shouldn't use it to compute the transfer
+  function anymore.
 
 - Add an experiment that looks at the DC-response when switching the cutoff freq. The Wishnick 
   paper says that this is a good test for modulation response.

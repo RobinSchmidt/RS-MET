@@ -319,6 +319,11 @@ https://www.kvraudio.com/forum/viewtopic.php?t=628710
 https://www.kvraudio.com/forum/viewtopic.php?t=628716
 -Roland Juno-106 emulation
 
+Elements:
+https://github.com/elements-synth/elements
+-Spectral Wavetable Synthesizer where light generates sound. Materials with optical properties 
+ shape harmonic spectra through physics simulation.
+
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
 
