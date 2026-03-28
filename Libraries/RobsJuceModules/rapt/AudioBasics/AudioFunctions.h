@@ -15,8 +15,7 @@ inline T rsAmpToDb(T amp)
 }
 
 /** Converts a raw amplitude value/factor to a value in decibels with a check, if the amplitude
-is close to zero (to avoid log-of-zero
-and related errors). */
+is close to zero (to avoid log-of-zero and related errors). */
 template<class T>
 inline T rsAmpToDbWithCheck(T amp, T lowAmplitude)
 {
@@ -24,6 +23,8 @@ inline T rsAmpToDbWithCheck(T amp, T lowAmplitude)
     return rsAmpToDb(amp);
   else
     return rsAmpToDb(lowAmplitude);
+  // ToDo: Maybe rename to rsAmpToDbSafe(). It's shorter. I like short names as long as the remain
+  // descriptive.
 }
 
 /** Returns true, if p1 and p2 are a multiple of 2*pi apart (within some given tolerance). */
@@ -43,6 +44,12 @@ template<class T>
 inline T rsDbToAmp(T dB)
 {
   return exp(dB * T(0.11512925464970228420089957273422));
+  // ToDo: Document where the magic number 0.115129... comes from. Entering this:
+  // N(0.05*log(10),100)  into SageMath gives  0.11512925464970228420089957273. It has to do with
+  // converting exponentials with different bases (here 10 vs e) together with the definition of 
+  // decibels. Maybe we could actually compute it at compile time with some constexpr function 
+  // rather that hardcoding it. Maybe use rsExp() instead of exp(). I think, it's because
+  // dB = 20 * log10(amp)  ->  amp = 10^(dB/20)  and  a^b = c^(log_c(b) * b)  (verify!)
 }
 
 /** Given a value x between 0 and 1, this function returns a value of a cubic polynomial that 

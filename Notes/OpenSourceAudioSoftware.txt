@@ -1531,6 +1531,11 @@ SoX - Sound eXchange
 https://sourceforge.net/projects/sox/
 -Convert of audio file formats plus sound effects and filters.
 
+Elk Audio OS:
+https://www.elk.audio/
+https://github.com/elk-audio
+-Embedded Linux distribution tailored for real-time audio applications. 
+
 Zephyr:
 https://www.zephyrproject.org/
 -Real-Time Operating System (RTOS) for connected, resource-constrained embedded devices.
