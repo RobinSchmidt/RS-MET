@@ -119,6 +119,19 @@ Visual Studio:
  https://marketplace.visualstudio.com/items?itemName=AustinStanding.vsthememidnightdeep
  https://marketplace.visualstudio.com/items?itemName=AustinStanding.vsthememidnightlights
 
+Visual Studio Code:
+-It has a configuration file taht sits on Windows in
+ [User]/AppData/Roaming/Code/User/settings.json
+-I set its content to (for copy-and-paste):
+{
+    "editor.fontSize": 13,
+    "editor.rulers": [100]
+} 
+ to get the desired font size and a vertical ruler at 100 characters (which is my standard maximum
+ number of character per line)
+-When editing .md files, I use two panes. On the left, I have the soucre text on the right I have 
+ the preview.
+
 XCode:
 
 Jupyter Notebook:
