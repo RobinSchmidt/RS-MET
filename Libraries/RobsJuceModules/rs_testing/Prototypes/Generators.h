@@ -74,6 +74,10 @@ public:
   half-integer periods. A period P = 100.0 will sound equally noisy as one of P = 100.5. The 
   intermediate cases like 100.3 will of course also sound the same. */
   static void distributionEqualVariance(T period, CycleDistribution* cd);
+  // This distribution is the one that produces the best results in the sense that the spectra are
+  // most consistent as function of the frcational part of the cycle length. In a production 
+  // implementation, we may only need to implement this one. Maybe write this into the 
+  // documentation as well.
 
   // Make a function distributionMinVariance that has always 0 for p1 (or maybe 0 for p3 can also
   // occur in an edge case? But I don't think so.)

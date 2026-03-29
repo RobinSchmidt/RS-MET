@@ -33,10 +33,10 @@
 - Figure out, why rsSinusoidalAnalyzer may produce negative values for the amplitude of the DC 
   component (and fix it)
 
-- Check, how the synthesis handles DC - i guess it creates just a cosine of 0 frequency? if so, we 
-  should perhaps encode a negative DC by using a phase of pi
+- Check, how the synthesis handles DC. I guess it creates just a cosine of 0 frequency? If so, we 
+  should perhaps encode a negative DC by using a phase of pi.
 
-- Check rsFourierTransformerRadix2<T>::getRealSignalMagnitudesAndPhases - there seems to be a bug
+- Check rsFourierTransformerRadix2<T>::getRealSignalMagnitudesAndPhases(). There seems to be a bug.
 
 - Fix the API inconsistency where we use different sign conventions for the feedback coefficients
   in direct form filters. This requires great(!) care because this is a (silent) breaking change 
@@ -53,7 +53,7 @@
   rsOnePoleFilter class is one example that uses the other and I think some of the RBJ-based 
   biquads also currently use the other convention. The implementations of the cookbook design 
   formulas also do, I think. Maybe there are more places. Usage of the other convention in the 
-  library is a historical accident. It may have been chosen because it (falsely?) assummed that 
+  library is a historical accident. It may have been chosen because I (falsely?) assummed that 
   having all plusses in the difference equation may be advantageous with regard to parallelization. 
   I also found it more straightforward as a beginner back in the day. Using plusses in the 
   difference equation is also the convention used in the (beginner friendly) book "The Scientist 
@@ -72,29 +72,54 @@
   instead of the somewhat inconsistent use of TOut getSample(), TOut getSample(TIn in), 
   getSampleFrameStereo(TSig* inOutL, TSig* inOutR), getSampleFrameStereo(TIn* inL, TIn* inR,
   TOut* outL, TOut* outR), etc. Rationale to have different template types for input and output:
-  There may eb processors with mono in and stereo out, etc. By using TIn, TOut in general, we can
+  There may be processors with mono in and stereo out, etc. By using TIn, TOut in general, we can
   express this by using e.g. float for TIn and rsStereoPair<float> for TOut, for example. Also 
   add procesBlock functions where it makes sense. Although, for mono-to-stereo processors, we could
   use the convention that the 1st parameter is an in/out parameter and the 2nd is an out parameter
   as we do in rsComplexifier. Maybe we could also have a processFrame() function that has a 
   consistent API in all DSP classes in addition to the getSample(), ...functions whose API may 
-  differ depending on what the concrete class does. Maybe processFarme should always work in 
+  differ depending on what the concrete class does. Maybe processFrame should always work in 
   place and always receive a pointer to the sample-frame. It could be single channel or multi 
   channel and if the number inputs and output is different, the size should just be 
-  max(numIns, numOuts)
+  max(numIns, numOuts). But maybe that's not such a great idea because it may force us to introduce
+  some temporary local variables inside the per sample processing functions and maybe the compiler
+  can optimize better when we don't have these? However, iff we provide separate input and output 
+  parameters, we should make sure that it is allowed for the output to point to the same memory 
+  location as the inputs, i.e. make it _possible_ to use the function in place.
 
 - Consistently use rsComplex rather than the current mix of rsComplex and std::complex. The reason
   for this mix is that I started out with my own class rsComplex, then discovered std::complex and
   used that for while with the intention to switch to it completely but then discovered that it
   doesn't work with custom data types (like SIMD, multi-precision, etc.). It only supports float, 
-  double and long double.
+  double and long double. So I reverted back to my own implementation (partially - where it 
+  mattered at the time).
 
-- For classes that contain self-check functions for debugging purposes, use a consitent naming
+- Use a consistent convention for (upper/lower) cases for enum entries. Currently, I mostly use
+  all-caps (as a reminder that these are just symbolic constants). In some places, I use lower 
+  CamelCase in some others, it's upper CamelCase. Check what JUCE uses and maybe mimick that. 
+  And/or check what is popular in other places. Plugin SDKs such as VST often use a "k" prefix.
+  Maybe consider that, too. Take code aesthetics into account. Try to justify the decision, 
+  whatever it may be and write the justification down into some documentation document.
+
+- Use consistent coventions for the names of enum entries. For example, in some filter classes, I
+  use the term "bandreject" while in others, it's "bandstop". Same for "peak" vs "bell" or "shelf""
+  vs "shelving. Also use consistent conventions for indicating slope. Sometimes I use "_12", "_24",
+  etc. whereas in other places, it's "12", "24", etc.
+
+- Try to consistently use "enum class" rather than "enum". It may be a bit more difficult to do 
+  this while maintaining compatibility with older client code that relies on entry order (such as 
+  when we have automatable filter mode parameters somewhere). I think, in those cases, we need to
+  provide mapping functions between the enum entries and the (old) integers that they boiled down 
+  to. This will require some additional code somewhere on the level of the plugin code.
+
+- For classes that contain self-check functions for debugging purposes, use a consistent naming
   convention for their names. Maybe use isStateConsistent(), isStateValid(), isValid(), isOk(), 
   etc. - although the latter names may be too vague. Maybe call it checkClassInvariants().
-  See rsQuantileFilterCore::isStateConsistent() for an example of such a self-test function.
+  See rsQuantileFilterCore::isStateConsistent() for an example of such a self-test function. I 
+  tend to think that among the suggestions above, the best is isStateValid(). It seems to be at 
+  the sweet spot between descriptiveness and shortness.
 
 - Maybe rename the libraries (and therefore, their namespaces). Maybe rosic should become RAMP
   which stands for Rob's Audio and Music Processors.
 
-- Implement a class rsOverSampler (see Prototypes.h for a draft)
+- Implement a class rsOverSampler (see Prototypes.h for a draft).

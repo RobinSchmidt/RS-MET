@@ -994,6 +994,15 @@ LPCNet:
 https://github.com/xiph/LPCNet
 -Neural speech synthesis based on WaveRNN-based LPCNet algorithm
 
+Oscillators:
+https://github.com/alexandrefrancois/Oscillators
+https://alexandrefrancois.org/Resonate/
+https://alexandrefrancois.org/Oscillators/
+https://github.com/alexandrefrancois/noFFT
+https://www.youtube.com/watch?v=bnvK5Nll4Sg  Tracking Spectrograms Demo - January 2026
+-Spectrogram analysis using a bank of resonator filters. In the advanced version, these resonators 
+ track the frequencies present in the input signal.
+
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:
 
@@ -1684,9 +1693,8 @@ Acidus Versio:
 https://github.com/abluenautilus/AcidusVersio
 -Open303 port for the Noise Engineering Versio platform
 
-
 https://librosa.org/
--audio and music processing in Python
+-Audio and music processing in Python
 
 pluginval
 https://github.com/Tracktion/pluginval

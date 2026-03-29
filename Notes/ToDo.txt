@@ -1,4 +1,34 @@
 
+Bring some order into the textfiles in "Notes"
+
+- Convert those textfiles that contain a somewhat finished and clean derivation into .md files and 
+  perhaps put them in a different place such that they are not intermingled with the more messy 
+  texts that are under construction. Maybe make a folder ResearchReports or Reports or Digests or
+  BlogPosts somewhere in the main repo (or research repo) and put documents there that explain 
+  results of personal reserach projects. Maybe sort the text files into: Scratch/Draft, Derivations, 
+  Reports/Digests, ... Back in the day, I also write up a whole bunch of LaTeX papers and converted 
+  them to pdf. Maybe that's another option
+
+- Write such .md files in a blog-like manner. Write up "blog posts" for the following topics:
+  -Pitch Dithering Oscillator
+  -Bassdrum via Allpass Chain
+  -Bassdrum Synthesis (where I analyzed the allpass chain result and recreated it with an osc)
+  -Allpass Comb Filters (and Sparse Polynomials, Sparse Rational Functions)
+  -Beating vs Amplitude Modulation
+  -Hilbert Filter (and effects with it: EnvyDriver, PhaseMod/FreqMod)
+  -Linear Fractional Interpolation (take text from GitHub discussion as basis)
+  -State Variable Filter (take existing .txt file as basis)
+  -Fractal Pattern Synthesis (already exists - can serve as template for the others)
+  -Peak Classification (Ropeway algorithm etc.)
+  -Transparent Oversampling
+  -Partial Fraction Expansion (take existing .txt file as basis)
+  -Sinusoidal Modeling
+  -Bidirectional Filter State Initialization (take BiDirectionalInitialStates.txt as basis)
+  -Filters for Non-Uniformly Sampled Data (take discussion on GitHub as basis)
+  -PotentialNumerical.txt
+
+
+
 Optimizations:
 
 - In RAPT, maybe try aligning the low-level algorithm template parameters of type TPar as the signal 
@@ -15,25 +45,35 @@ Optimizations:
 
 
 Clean up the Git Repo:
--The file Documentation/RAPT/LaTeX/UserManual/UserManual.pdf was accidentally added to the repo at 
- some point early on. It should never have been tracked, though. When learning Git, I made mistakes.
- It needs to be removed and purged from the history. I don't know Git well enough how to do that, 
- though. It's probably a dangerous thing to do. 
--Find out which files were deleted in the history of this repo. There might be some of them which 
- should also be purged from history. 
--But before doing such a history clean-up, definitely create a backup archive of the repo and store 
- it in some safe place!
+
+- The file Documentation/RAPT/LaTeX/UserManual/UserManual.pdf was accidentally added to the repo at 
+  some point early on. It should never have been tracked, though. When learning Git, I made 
+  mistakes. It needs to be removed and purged from the history. I don't know Git well enough how to 
+  do that, though. It's probably a dangerous thing to do. 
+  
+- Find out which files were deleted in the history of this repo. There might be some of them which 
+  should also be purged from history. 
+  
+- But before doing such a history clean-up, definitely create a backup archive of the repo and store 
+  it in some safe place!
+
 
 Create github projects for:
-DSP, DAW, rosic, Plugin Framework, Documentation, Library organization
-DSP: cols: synthesis, analysis, effects, modulation, 
- musical filters, technical filters, reverb (algo, convo), modulators, synthesis...maybe move
- snowflake as a card into there
-Documentation: user manuals for ToolChain modules, pdf doc for rapt/rosic rendered by doxygen
-Plugin Framework: parameters: modulation system, automation system
 
-in the research repo, we could have projects for:
-research papers, math book, tutorials ...maybe the latex source should go there
+- DSP, DAW, rosic, Plugin Framework, Documentation, Library organization
+
+- DSP: cols: synthesis, analysis, effects, modulation, 
+  musical filters, technical filters, reverb (algo, convo), modulators, synthesis...maybe move
+  snowflake as a card into there
+  
+- Documentation: user manuals for ToolChain modules, pdf doc for rapt/rosic rendered by doxygen
+  Plugin Framework: parameters: modulation system, automation system
+
+- In the research repo, we could have projects for: research papers, math book, tutorials ...maybe 
+  the latex source should go there
+
+
+
 
 -write a commandline tool that makes advanced textual replacements in a bunch of files
 -uses std::regex and std::filesystem to implement its functionality
