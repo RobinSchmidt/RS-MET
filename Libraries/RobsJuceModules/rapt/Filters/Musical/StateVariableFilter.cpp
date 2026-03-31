@@ -207,6 +207,13 @@ ToDo:
   generally be really nice if we could control inlining at the call site. Figure out, if that is 
   possible with "modern" C++. If so, maybe use it.
 
+- Add a setCoeffs() function where the user can directly set the parameters g,r,aL,aB,aH. Maybe
+  in certain contexts, this may open up opportunities for optimizations. For example, when 
+  designing shelving filters from a specification where the desired gain is given in dB, we could 
+  compute sA = sqrt(A) = rsDbToAmp(0.5*dB) and from that we can produce A = sA*sA thereby saving
+  the call to sqrt(). But with an API that expects A such as the current one, that is not possible.
+  There is some tension between API convenience and efficiency.
+
 - In setupFromBiquad(..):
 
   - Check what happens in the limit as T -> 0 from below. The T in the denominator of the 

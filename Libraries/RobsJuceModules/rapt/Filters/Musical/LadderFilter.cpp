@@ -319,66 +319,70 @@ void rsLadderFilter<TSig, TPar>::updateCoefficients()
   computeCoeffs(wc, resonance, s, &a, &k, &g, B1);
 }
 
-
+//=================================================================================================
 /*
+
 ToDo:
--Maybe make a version based on a cascade of 1st order highpasses and/or allpasses
- -the mixing coeffs will then be different for the modes
- -we don't need gain-compensation for lowpass anyore (but then we need it for highpass)
--Maybe make also versions based on a LP->HP->LP->HP chain
- -this may need a feedback factor with non-inverted sign
- -perhaps we should use BLT 1st order sections for this
- -maybe make a version based on 1st order allpass filters
--More generally, the stages could all have a different cutoff frequency and/or mode
- -Maybe more flexible response types can be created by this (maybe shelf, peak?). Maybe in such a
-  setup, the stages should be ordered by decreasing cutoff, i.e. the 1st stage has the highest 
-  cutoff. Ratiomale: this leaves more "to do" for the subsequent stages
--Try to get arbitrary frequency responses out of it by forming the feedback signal also via a 
- linear combination, like (maybe) so: 
-   y[0]  = in - (k[0]*y[0] + k[1]*y[1] + k[2]*y[2] + k[3]*y[3] + k[4]*y[4]);
- instead of:
-   y[0]  = in - k*y[4];
- the coeffs for the k-values are found by equating:
-           c0 + c1*s + c2*s^2 + c3*s^3 + c4*s^4
-   H(s) = --------------------------------------  (not sure, if that's the right formula)
-           k0 + k1*s + k2*s^2 + c3*s^3 + c4*s^4
- to some desired s-domain transfer function. But this would have to be a different design 
- procedure without the resonance parameter (i think). Or maybe it should be done in th z-domain.
- ...not yet sure
 
- -provide different morph modes:
-   MORPH_LP_FLAT_HP:  LP_24, LP_18, LP_12, LP_6, FLAT, HP_6, HP_12, HP_18, HP_24
-   MORPH_LP_BP_HP_24: LP_24, BP_6_18, BP_12_12, BP_18_6, HP_24
-   MORPH_LP_BP_HP_18: LP_18, BP_6_12, BP_12_6, HP_18
-   MORPH_LP_BP_HP_12: LP_12, BP_6_6, HP_12
-   MORPH_LP_BP_HP:    LP_24, LP_18, LP_12, BP_6_12, BP_12_12, BP_12_6, HP_12, HP_18, HP_24
+- Maybe make a version based on a cascade of 1st order highpasses and/or allpasses
+  -the mixing coeffs will then be different for the modes
+  -we don't need gain-compensation for lowpass anyore (but then we need it for highpass)
 
-  for a 15 dB/oct lowpass, the prototype would be 1 / (1 + s^2.5), maybe we can approximate it
-  resaonably by 1 / (1 + (s^2 + s^3)/2), see: https://www.desmos.com/calculator/gsbvrxiceb
-  or: always use a 4th order Taylor series of the s^x term
+- Maybe make also versions based on a LP->HP->LP->HP chain
+  -this may need a feedback factor with non-inverted sign
+  -perhaps we should use BLT 1st order sections for this
+  -maybe make a version based on 1st order allpass filters
 
--maybe rename to rsLadderFilterUDF and make a similar class for a ZDF ladder, maybe factor out
- a common baseclass
+- More generally, the stages could all have a different cutoff frequency and/or mode
+  -Maybe more flexible response types can be created by this (maybe shelf, peak?). Maybe in such a
+   setup, the stages should be ordered by decreasing cutoff, i.e. the 1st stage has the highest 
+   cutoff. Ratiomale: this leaves more "to do" for the subsequent stages
 
--Make the resonance adjustable in dB because this is what the .sfz format expects:
- https://sfzformat.com/tutorials/basic_sfz_file
- For this, we need a formula for the feedback-factor in terms of the resonance in dB. This should 
- take into account also the makeup gain, so there may be quite some algebra to churn through. At 
- the end, a formula should result that can be implemented as static member function just like
- resonanceDecayToFeedbackGain, maybe resonanceLevelToFeedbackGain
+- Try to get arbitrary frequency responses out of it by forming the feedback signal also via a 
+  linear combination, like (maybe) so: 
+    y[0]  = in - (k[0]*y[0] + k[1]*y[1] + k[2]*y[2] + k[3]*y[3] + k[4]*y[4]);
+  instead of:
+    y[0]  = in - k*y[4];
+  the coeffs for the k-values are found by equating:
+            c0 + c1*s + c2*s^2 + c3*s^3 + c4*s^4
+    H(s) = --------------------------------------  (not sure, if that's the right formula)
+            k0 + k1*s + k2*s^2 + c3*s^3 + c4*s^4
+  to some desired s-domain transfer function. But this would have to be a different design 
+  procedure without the resonance parameter (i think). Or maybe it should be done in th z-domain.
+  ...not yet sure
 
--Maybe provide a softReset(T amount) function. This should not reset the internal states to zero
- completely but rather to a linear combination of zero and the current state, i.e. basically just 
- multply the state variables by the amount. Maybe there could be different amounts for the 1-pole 
- stage states and the feedback state. I think that this could be useful for modeling motor noises. 
- It's just an ad hoc idea: We could feed the filter with an impulse train and use the impulse as 
- input signal and at the same time a (soft)-reset trigger. With full resets, this should give a 
- machine-gun sample-playback like effect using the filter's impulse response in place of the 
- sample. Such a feature could perhaps be useful for other filter types too (Butterworth, etc.).
- If the impulse train is anti-aliased (i.e. uses linear de-interpolation or something), the resets
- may be incomplete when an impulse is made up of two successive samples of value 0.5 instead of
- a single sample of 1.0. Maybe think about a way to fix this. Maybe use a non-anti-aliased 
- impulse train for the resets. Maybe it should have one sample advance or delay with respect to
- anti-aliased one. Maybe it could be fun to give it its own, independent frequency.
+ - Provide different morph modes:
+     MORPH_LP_FLAT_HP:  LP_24, LP_18, LP_12, LP_6, FLAT, HP_6, HP_12, HP_18, HP_24
+     MORPH_LP_BP_HP_24: LP_24, BP_6_18, BP_12_12, BP_18_6, HP_24
+     MORPH_LP_BP_HP_18: LP_18, BP_6_12, BP_12_6, HP_18
+     MORPH_LP_BP_HP_12: LP_12, BP_6_6, HP_12
+     MORPH_LP_BP_HP:    LP_24, LP_18, LP_12, BP_6_12, BP_12_12, BP_12_6, HP_12, HP_18, HP_24
+    for a 15 dB/oct lowpass, the prototype would be 1 / (1 + s^2.5), maybe we can approximate it
+   resaonably by 1 / (1 + (s^2 + s^3)/2), see: https://www.desmos.com/calculator/gsbvrxiceb
+   or: always use a 4th order Taylor series of the s^x term
+
+- Maybe rename to rsLadderFilterUDF and make a similar class for a ZDF ladder, maybe factor out
+  a common baseclass
+
+- Make the resonance adjustable in dB because this is what the .sfz format expects:
+  https://sfzformat.com/tutorials/basic_sfz_file
+  For this, we need a formula for the feedback-factor in terms of the resonance in dB. This should
+  take into account also the makeup gain, so there may be quite some algebra to churn through. At 
+  the end, a formula should result that can be implemented as static member function just like
+  resonanceDecayToFeedbackGain, maybe resonanceLevelToFeedbackGain
+
+- Maybe provide a softReset(T amount) function. This should not reset the internal states to zero
+  completely but rather to a linear combination of zero and the current state, i.e. basically just 
+  multply the state variables by the amount. Maybe there could be different amounts for the 1-pole 
+  stage states and the feedback state. I think that this could be useful for modeling motor noises. 
+  It's just an ad hoc idea: We could feed the filter with an impulse train and use the impulse as 
+  input signal and at the same time a (soft)-reset trigger. With full resets, this should give a 
+  machine-gun sample-playback like effect using the filter's impulse response in place of the 
+  sample. Such a feature could perhaps be useful for other filter types too (Butterworth, etc.).
+  If the impulse train is anti-aliased (i.e. uses linear de-interpolation or something), the resets
+  may be incomplete when an impulse is made up of two successive samples of value 0.5 instead of
+  a single sample of 1.0. Maybe think about a way to fix this. Maybe use a non-anti-aliased 
+  impulse train for the resets. Maybe it should have one sample advance or delay with respect to
+  anti-aliased one. Maybe it could be fun to give it its own, independent frequency.
 
 */

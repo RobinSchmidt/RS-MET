@@ -1,6 +1,9 @@
 
+Pitch Dithering
+===============
+
 Background
------------
+----------
 
 A naively implemented digital oscillator produces a lot of aliasing. Various methods exist to mitigate the problem. Some of the methods are: mip-mapping, bleps and oversampling. This document describes yet another one of those methods. In my explanations of the method, I will take a sawtooth wave as example but the method can be applied to other waveforms as well.  
 ...TBC...

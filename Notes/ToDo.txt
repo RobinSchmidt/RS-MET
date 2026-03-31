@@ -5,9 +5,12 @@ Bring some order into the textfiles in "Notes"
   perhaps put them in a different place such that they are not intermingled with the more messy 
   texts that are under construction. Maybe make a folder ResearchReports or Reports or Digests or
   BlogPosts somewhere in the main repo (or research repo) and put documents there that explain 
-  results of personal reserach projects. Maybe sort the text files into: Scratch/Draft, Derivations, 
-  Reports/Digests, ... Back in the day, I also write up a whole bunch of LaTeX papers and converted 
-  them to pdf. Maybe that's another option
+  results of personal research projects. Maybe sort the text files into: Scratch/Draft, Derivations, 
+  Reports/Digests, ... Maybe for some topics, we could keep a draft version and write up a final 
+  version in addition to it. Rationale: the drafts may contain additional information, more lengthy 
+  derivations etc. The final version should be clean and nice to read but may skip over some 
+  details. Back in the day, I also wrote up a whole bunch of LaTeX papers and converted them to pdf.
+  Maybe that's another option.
 
 - Write such .md files in a blog-like manner. Write up "blog posts" for the following topics:
   -Pitch Dithering Oscillator
