@@ -127,9 +127,15 @@ ToDo:
   for getting them. Try also to realize a 2-pole resonator. Maybe that's what the "peak" mode in 
   Andy Simper's SVF is?
 
-- Figure out how to morph between LP/BP/HP, LP/AP/HP, LS/PK/HS, ...
+- Figure out how to morph between LP/BP/HP, LP/AP/HP, LS/PK/HS, ... Maybe try this by manually 
+  setting the mixing coeffs for LP,BP,HP.
 
 - Add tilt mode. See: https://github.com/zalthyrexor/QuasarEQ/blob/main/Source/zlth_dsp_filter.h
+
+- Try to figure out how to translate the mixing coefficients between the SVF variation that mixes
+  input, bandpass and lowpass with the variation that mixes highpass, bandpass and lowpass (which 
+  is the variant implemented here). I think, we may need this to adapt the tilt mode above to this
+  filter. Maybe try first to get the input back from HP,BP,LP.
 
 - Maybe add inquiry functions such as getIntegratorGain() = g, getOmega() = 2*atan(g), 
   getQualityFactor() = 1 / (gpr - g). But the Q formula is wrong for bell filters and the omega

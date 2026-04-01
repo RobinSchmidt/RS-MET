@@ -158,4 +158,10 @@ Notes:
   also be produced by subtracting a highpass and applying an overall gain. In general, we could
   do  y = cI*x + cH*xH + cL*xL  where cI,cL,cH are scaling factors for input, highpass and lowpass.
 
+
+ToDo:
+
+- Try to figure out how to morph between Lowpass,Flat,Highpass and LowShelf,Flat,HighShelf. Maybe
+  naive mixing will work here.
+
 */

@@ -357,9 +357,11 @@ ToDo:
      MORPH_LP_BP_HP_18: LP_18, BP_6_12, BP_12_6, HP_18
      MORPH_LP_BP_HP_12: LP_12, BP_6_6, HP_12
      MORPH_LP_BP_HP:    LP_24, LP_18, LP_12, BP_6_12, BP_12_12, BP_12_6, HP_12, HP_18, HP_24
-    for a 15 dB/oct lowpass, the prototype would be 1 / (1 + s^2.5), maybe we can approximate it
+   for a 15 dB/oct lowpass, the prototype would be 1 / (1 + s^2.5), maybe we can approximate it
    resaonably by 1 / (1 + (s^2 + s^3)/2), see: https://www.desmos.com/calculator/gsbvrxiceb
-   or: always use a 4th order Taylor series of the s^x term
+   or: always use a 4th order Taylor series of the s^x term. Maybe create an APE project where we 
+   have 5 sliders to set the 5 mixing coeffs c0..c4 manually and use that to try to figure out an
+   appropriate mixing function empirically. Or maybe try to find it by numerical optimization.
 
 - Maybe rename to rsLadderFilterUDF and make a similar class for a ZDF ladder, maybe factor out
   a common baseclass
@@ -384,5 +386,12 @@ ToDo:
   a single sample of 1.0. Maybe think about a way to fix this. Maybe use a non-anti-aliased 
   impulse train for the resets. Maybe it should have one sample advance or delay with respect to
   anti-aliased one. Maybe it could be fun to give it its own, independent frequency.
+
+- Maybe introduce a "PoleSpread" parameter which adjusts spreading between the cutoffs of the 
+  individual 1st order stages. Maybe it should be adjusted in octaves and efault to zero. One means
+  that the 4th stage has its cutoff an octave above the 1st stage. Stages 2 and 3 are spread 
+  exponentially (or maybe lineraly?) in between. Maybe we should also automatically scale the 
+  overall cutoff frequency such that the resonance stays put. I guess, such a pole spread may 
+  affect the shape of the resonant peak?
 
 */

@@ -1424,15 +1424,18 @@ rsImage<rsPixelRGB> rsConvertImage(
 // -maybe wrap all this functions into a class rsImageConverter
 // -function above could then be static members with names: floatToChar
 
-
+//=================================================================================================
 /*
 
 
 Graphics coding resources:
-https://www.youtube.com/watch?v=ASAowY6yJII Quirky Quad Trees Part1: Static Spatial Acceleration
+https://www.youtube.com/watch?v=ASAowY6yJII  Quirky Quad Trees Part1: Static Spatial Acceleration
 https://github.com/OneLoneCoder/olcPixelGameEngine/blob/master/Videos/OneLoneCoder_PGE_QuadTree1.cpp
 https://github.com/OneLoneCoder/olcPixelGameEngine
 
+
+https://www.youtube.com/watch?v=yaG1fBNxjdE  Re-discovering 3D Graphics the Way Early Games Did
+https://www.youtube.com/watch?v=hQHBPFzNIUQ  From Triangles to Pixels - the magic behind 3D graphics
 
 
 */

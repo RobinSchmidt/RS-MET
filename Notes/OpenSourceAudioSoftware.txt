@@ -520,6 +520,10 @@ https://www.kvraudio.com/forum/viewtopic.php?t=628854
 -Parametric equalizer. 
 -Modes: HighPass, HighShelf, LowPass, LowShelf, Peak, Tilt, Notch, BandPass
 
+QuasarCompressor
+https://github.com/zalthyrexor/QuasarCompressor
+-Compressor. Under construction.
+
 ----------------------------------------------------------------------------------------------------
 Analysis plugins
 
