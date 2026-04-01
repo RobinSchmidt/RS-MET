@@ -167,6 +167,12 @@ protected:
   //   initializations would require using some moderately complex formulas for a consistent, valid
   //   initial state. So we leave this member initialization to the constructor which calls some 
   //   functions to do the appropriate computations.
+  //
+  // - Maybe factor out all the stuff that has to do with the pitch-dithering into a separate class
+  //   auch that we can re-use the code for other types of pitch-dithering oscillators like, for 
+  //   example, table lookup oscillators. Or maybe modify this class such that it can also produce
+  //   a sawtooth in the range [0,1) that other oscillators can use as phasor. Maybe have a 
+  //   function getPhase() and getSample() would just return 2*phase - 1.
 };
 
 

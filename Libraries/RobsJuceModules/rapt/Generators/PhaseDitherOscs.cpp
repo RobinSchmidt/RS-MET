@@ -39,7 +39,7 @@ void rsPitchDitherHelpers<T>::calcCycleDistribution(
   // - We don't have a probLong parameter because that would be redundant. It would always be given
   //   by 1 - (probShort + probMid).
   //
-  // - The derivation of these formulas can be found in the textfile TempSketchPad.txt in the 
+  // - The derivation of these formulas can be found in the textfile PitchDithering.txt in the 
   //   research repo. ToDo: clean the derivation up and put it into its own dedicated textfile here
   //   in the main repo!
 }
