@@ -15,7 +15,7 @@ public:
   static void calcCycleDistribution(T period, T* midLength, T* probShort, T* probMid);
   // Maybe rename to cycleDistribEqualVariance (or ..EqVar) and maybe add functions to compute the
   // other distributions as well, although, I think, the other distributions are not really useful.
-  // Not sure...maybe we shouldn't clutter the code with useless stuff. At leats not the production
+  // Not sure...maybe we shouldn't clutter the code with useless stuff. At least not the production
   // code. For research and prototype code, it's a different story. There, we may use the useless 
   // code to demonstrate in experiments that it is indeed useless.  
 
@@ -25,7 +25,7 @@ public:
   // - Add convenience functions to produce a whole signal vector of signals with various 
   //   waveforms. Maybe take the waveform as std::function or some callable template type F. 
   //
-  // - Maybe create functions to produce various wvaeforms, including additively syntehsized saw
+  // - Maybe create functions to produce various waveforms, including additively synthesized saw
   //   waves (maybe by using trig-recursions for an optimized implementation)
 };
 
@@ -123,7 +123,6 @@ protected:
   for the next cycle. Called from getSample() after each cycle has been completed. */
   inline void updateCycleLength()
   {
-    //T r = prng.getSample();                  // Random number in interval [0,1).
     T r = prng.getSampleInUnitRange();       // Random number in interval [0,1).
     if(r < probShort)
       cycleLength = midLength - T(1);        // Next cycle is short.
@@ -169,10 +168,40 @@ protected:
   //   functions to do the appropriate computations.
   //
   // - Maybe factor out all the stuff that has to do with the pitch-dithering into a separate class
-  //   auch that we can re-use the code for other types of pitch-dithering oscillators like, for 
+  //   such that we can re-use the code for other types of pitch-dithering oscillators like, for 
   //   example, table lookup oscillators. Or maybe modify this class such that it can also produce
   //   a sawtooth in the range [0,1) that other oscillators can use as phasor. Maybe have a 
-  //   function getPhase() and getSample() would just return 2*phase - 1.
+  //   function getPhase() and getSample() would just return 2*phase - 1. Check, if we currently 
+  //   produce a saw in [-1,+1] or in [-1,+1) and document that. Maybe allow for different modes.
+  //   Maybe the mode can be a compile-time parameter, i.e. a template parameter. Or maybe factor 
+  //   out the stuff that is common to all variants into a baseclass and realize the different 
+  //   variants as subclasses. The different subclasses need different implementations of 
+  //   getSample() and updateCycleLength() but most of the code in these functions will be the same
+  //   so maybe that should be factored out into functions. In getSample(), only the first line
+  //   T y = T(-1) + sawSlope * sampleCount;  will be different. In the the 0..1 case, the T(-1)
+  //   will be missing because we start at 0. In updateCycleLength(), only the last line 
+  //   sawSlope = T(2) / (cycleLength - T(1));  will be different. In the 0..1 case, we need to 
+  //   adapt the formula to T(1) / ... instead of T(2) / .... I think, if we want to produce closed
+  //   intervals rather than half-open ones, we need to get rid of the " - T(1)" in the 
+  //   denominator. ..but verify this! In general, it could make sense to have 4 variants with the 
+  //   ranges [-1,+1], [-1,+1), [0,1], [0,1). Maybe the [0,1) version is the most important one. 
+  //   This is the typical range for a phasor. This can be seen from what would happen if we would 
+  //   use a phasor with range [0,1] with a sine wave produced as y = sin(2*PI*phasor). With the 
+  //   closed interval, the 0 value would be repeated: Once it would occur at phasor = 0 and 
+  //   secondly at phasor = 2*PI. That's clearly wrong, so [0,1) is the correct range for a phasor.
+  //   To create a supersaw, it could actually be more efficient to just sum up the phasors and 
+  //   then subtract sumOfAmplitudes once from the whole supersaw instead of subtracting 1 from
+  //   each saw. So maybe it would be best to provide the two functions getPhasorSample() and 
+  //   getSawSample() and the latter is just implemented as: "return 2 * getPhasorSample() - 1".
+  //   Or maybe it should be called getSample(). But we could also rename this class to 
+  //   rsPitchDitherOsc without limiting it to saw waves. in this case, getSawSample() would make 
+  //   more sense. And then we could also have getSinSample(), getRectSample(), getTriSample(),
+  //   getPulseSample(T pw), getTriSawSample(..), etc. If we do this, we may also rename sawSlope
+  //   to phaseSlope. 
+  // 
+  // - Maybe that class can then also take the responsibility of rsPitchDitherHelpers which 
+  //   currently just has this single static member function and I don't really think that it will
+  //   need anything else (not sure, though). 
 };
 
 
