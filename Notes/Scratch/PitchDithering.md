@@ -76,10 +76,58 @@ $c$. If $c_f = 0.5$, we expect to be in an edge case where from the 3 lengths $c
 produce the values $c_1,c_2,c_3$ and $p_1,p_2,p_3$ for the other cases in such a way, that the noise
 has always the same characteristics. We will use $c_2$ as our middle cycle length and we will always
 have $c_1 = c_2 - 1$ and $c_3 = c_2 + 1$. In the case where $c_f < 0.5$, we will need to use
-$c_2 = floor(c)$ and in the case where $c_f > 0.5$ we will need $c_2 = floor(c) + 1$.
+$c_2 = floor(c)$ and in the case where $c_f > 0.5$ we will need $c_2 = floor(c) + 1$. That this is
+right can most easily be understood from an example. If we have a desired cycle length of 
+$c = 100.5$ samples, we would use cycles of $100$ and $101$ samples with equal probability, namely
+with probability $0.5$. When the mean cycle length is lower, say $c = 100.3$, then we would expect
+to additionally also use cycles of length $99$ samples and when the mean cycle length is higher, say
+$100.7$, then we would additionally have to use cycles of length $102$. To summarize, for the 3
+cycle lengths $c_1,c_2,c_3$ to be used, we use the following rule (in pseudocode):
+```
+ci = floor(c)         # Integer part of c
+cf = c - ci           # Fractional part of c
+
+if(cf < 0.5)
+  c2 = ci             # Mid length when cf < 0.5
+else
+  c2 = ci + 1         # Mid length when cf >= 0.5
+
+c1 = c2 - 1           # Short length
+c3 = c2 + 1           # Long length
+```
+Now that we have determined the 3 cycle lengths $c_1,c_2,c_3$ to use, the next step is to determine
+their associated probabilities $p_1,p_2,p_3$. To determine 3 values, we need 3 equations. The first
+equation can be obtained from the requirement that our $p$ values have to add up to $1$ if we want
+to interpret them as probabilities for 3 mutually exclusive events that together cover all the
+possibilities, so we requir: $p_1 + p_2 + p_3 = 1$. Next, we want to require that the mean cycle
+length is our prescribed $c$, so we could use $p_1 c_1 + p_2 c_2 + p_3 c_3 = c$. However, for the
+derivation, it turns out to be more convenient to express this equation in terms of the errors that
+we make with our 3 cycle lengths. That is, we define the 3 errors $e_1 = c_1 - c, e_2 = c_2 - c,
+e_3 = c_3 - c$ and require that the mean error is zero: $p_1 e_1 + p_2 e_2 + p_3 e_3 = 0$. The third
+equation is obtained from our desire to always have the same variance $v$. The variance is the
+expectation value of the squared errors, so we set $p_1 e_1^2 + p_2 e_2^2 + p_3 e_3^2 = v$. But what
+value is that $v$? To figure that out, we turn again to our reference case where $c_f = 0.5$. In
+that case, we know that we would only be dealing with two possible error values of $-0.5$ and $+0.5$
+which both would occur with a probability of $0.5$. This gives the variance 
+$v = 0.5 (-0.5)^2 + 0.5 (+0.5)^2 = 0.25$. We can give these 3 equations to the computer algebra
+system SageMath using the following code:
+```
+...something to do...
+```
+which gives the result:
+```
+...something to do...
+```
+
+
+
+
+To summarize, the pseudocode to compute the 3
+probabilities could look like:
 
 ...TBC...ToDo: Copy the solution formulas for the 3 probabilities $p_1, p_2, p_3$ from the code in
-the research repo into here. Maybe also copy the derivation.
+the research repo into here. Maybe also copy the derivation. Maybe try the pseudocode in Python. I
+guess it could even work.
 
 
 
