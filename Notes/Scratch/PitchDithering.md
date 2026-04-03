@@ -8,8 +8,7 @@ Background
 A naively implemented digital oscillator produces a lot of aliasing. Various methods exist to
 mitigate the problem. Some of the methods are: mip-mapping, bleps and oversampling. This document
 describes yet another one of those methods. In my explanations of the method, I will take a sawtooth
-wave as example but the method can be applied to other waveforms as well.  
-...TBC...
+wave as example but the method can be applied to other waveforms as well.  ...TBC...
 
 
 The Basic Idea
@@ -39,36 +38,25 @@ and cycles of length $c_2 = 101$ with a probability of $c_2 = 0.3$. As a general
 always use two different cycle lengths $c_1 = floor(c)$, $c_2 = c_1 + 1$, $c_f = c - c_1$, 
 $p_1 = 1 - c_f$, $p_2 = c_f$ where $c_f$ is the fractional part of $c$.
 
-...TBC...
-
-
+But there's a problem with this approach. With this rule as stated above, we would indeed always
+produce an average cycle length that is exactly as prescribed. But we have now introduced a new
+problem. Doing it like explained above does, of course, produce some sort of artifacts. Namely, we
+introduce a sort of frequency modulation by a random pulse wave signal. This random frequency
+modulation manifests itself as a sort of noise in the final output. The amount of this noise will
+depend on the particular setting of the desired cycle length $c$. If $c$ happens to be an exact integer, there will be no noise at all because the fractional part $c_f = 0$ is zero in this case
+and we will therefore produce cycles of length $c_1$ with probability $p_1 = 1$. Apparently, we will
+get the greatest amount of noise when $c$ happens to be halfway between two integers, i.e.
+$c = xxx.5$ and no noise at all when c is an exact integer $c = xxx.0$. To develop a solution strategy, let's assume that our desired cycle length is $c = 100.0$. With the basic algorithm above,
+we would get a clean signal with no noise modulation at all. 
 
 
 The Refined Idea
 ----------------
 
-With this rule as stated above, we would indeed always produce an average cycle length that is
-exactly as prescribed. But we have now introduced a new problem. Doing it like explained above does,
-of course, produce some sort of artifacts. Namely, we introduce a sort of frequency modulation by a
-random pulse wave signal. This random frequency modulation manifests itself as a sort of noise in
-the final output. The amount of this noise will depend on the particular setting of the desired
-cycle length $c$. If $c$ happens to be an exact integer, there will be no noise at all because the
-fractional part $c_f = 0$ is zero in this case and we will therefore produce cycles of length $c_1$
-with probability $p_1 = 1$. Apparently, we will get the greatest amount of noise when $c$ happens to
-be halfway between two integers, i.e. $c = xxx.5$ and no noise at all when c is an exact integer
-$c = xxx.0$. To develop a solution strategy, let's assume that our desired cycle length is
-$c = 100.0$. With the basic algorithm above, we would get a clean signal with no noise modulation at
-all. The idea is now to use cycles of the 3 lengths $c_1 = 99, c_2 = 100, c_3 = 101$ in such a way
+The new idea is now to use cycles of the 3 lengths $c_1 = 99, c_2 = 100, c_3 = 101$ in such a way
 that the mean cycle length is also exactly $100$ and the variance of the probability distribution
-matches the variance that we would get in the worst case scenario, i.e. at the half-integers. 
-...TBC...
-
-
-Derivation of the Probabilities
--------------------------------
-
-It is apparent by now that the main task to make this work is to derive a formula or algorithm to
-compute the 3 desired cycle lengths $c_1, c_2, c_3$ along with their associated probabilities
+matches the variance that we would get in the worst case scenario, i.e. at the half-integers. It is
+apparent by now that the main task to make this work is to derive a formula or algorithm to compute the 3 desired cycle lengths $c_1, c_2, c_3$ along with their associated probabilities
 $p_1, p_2, p_3$ of producing cycles of these lengths from the given desired mean cycle length $c$. 
 As before, let $c_f = c - floor(c)$ denote the fractional part of our desired (mean) cycle length 
 $c$. If $c_f = 0.5$, we expect to be in an edge case where from the 3 lengths $c_1,c_2,c_3$ are only
@@ -109,10 +97,14 @@ expectation value of the squared errors, so we set $p_1 e_1^2 + p_2 e_2^2 + p_3 
 value is that $v$? To figure that out, we turn again to our reference case where $c_f = 0.5$. In
 that case, we know that we would only be dealing with two possible error values of $-0.5$ and $+0.5$
 which both would occur with a probability of $0.5$. This gives the variance 
-$v = 0.5 (-0.5)^2 + 0.5 (+0.5)^2 = 0.25$. We can give these 3 equations to the computer algebra
+$v = 0.5 (-0.5)^2 + 0.5 (+0.5)^2 = 0.25$. So, our target value for $v$ is $1/4$. We can now give these 3 equations to the computer algebra
 system SageMath using the following code:
 ```
-...something to do...
+var("e1 e2 e3 p1 p2 p3")
+eq1 = 1   == p1       + p2       + p3
+eq2 = 0   == p1*e1    + p2*e2    + p3*e3
+eq3 = 1/4 == p1*e1*e1 + p2*e2*e2 + p3*e3*e3
+solve([eq1,eq2,eq3],[p1,p2,p3])
 ```
 which gives the result:
 ```
