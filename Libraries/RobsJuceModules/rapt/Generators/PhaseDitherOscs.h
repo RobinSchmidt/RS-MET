@@ -92,6 +92,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
+  /** Returns a sample of a phasor value, i.e.a value in the range 0..1 that can be used to create
+  various waveforms. ...TBC... */
   inline T getSamplePhasor()
   {
     T p = sawSlope * sampleCount;   // Compute output sample.
@@ -102,6 +104,13 @@ public:
       updateCycleLength();          // ..Compute cycleLength and sawSlope for next cycle.
     }
     return p;                       // Return output sample.
+
+    // ToDo:
+    //
+    // - Document, if the produced value is in the closed interval [0,1] or in the half-open 
+    //   interval [0,1). I think, it's the former and I also think that this might not really be
+    //   the right thing to do - at least not for producing sine-waves. For producing saws, it may
+    //   actually be appropriate, though. 
   }
 
   inline T getSampleSawUp() 
@@ -128,12 +137,6 @@ public:
     // that this would be compatible with clipping a saw-up waveform and I think, the "up" variant
     // is the default expectation in case of a saw wave. Check what popular synthesizers do (Surge,
     // Serum, Diva, JP-8000, ...) and maybe do the same.
-  }
-
-  // Deprecated. Just for compatibility with old API.
-  inline T getSample()
-  {
-    return getSampleSawUp();
   }
 
   /** Resets the internal state, i.e. the sample counter and the random generator. */
