@@ -64,25 +64,15 @@ public:
   // wrap-around point, we may want the closed interval and otherwise the half-open one.
 
 
+  /** Returns a sample of an upward sawtooth wave */
   inline T getSampleSawUp()   { return T(-1) + T(2) * getSamplePhasor(); }
 
+  /** Returns a sample of an downward sawtooth wave */
   inline T getSampleSawDown() { return T(+1) - T(2) * getSamplePhasor(); }
 
-  inline T getSamplePulse(T pw = T(0.5)) 
-  { 
-    T p = getSamplePhasor();
-    if(p < pw)
-      return T(-1);
-    else
-      return T(+1);
-
-    // ToDo: Verify that this formula is what the user would expect. Maybe we should swap -1 and
-    // +1? And/or maybe we should use if(p <= pw) rather than if(p < pw). Document these decsisions
-    // and the reasons behind them. One reason to prefer to have the negative half-cycle first is
-    // that this would be compatible with clipping a saw-up waveform and I think, the "up" variant
-    // is the default expectation in case of a saw wave. Check what popular synthesizers do (Surge,
-    // Serum, Diva, JP-8000, ...) and maybe do the same.
-  }
+  /** Returns a sample of a pulse wave with given pulse-width. The default value of 0.5 produces a 
+  square wave. */
+  inline T getSamplePulse(T pw = T(0.5));
 
   /** Resets the internal state, i.e. the sample counter and the random generator. */
   inline void reset();
@@ -106,7 +96,7 @@ protected:
   // \name Data
 
   // Members that are accessed per sample:
-  T sawSlope;      // Increase of output value per sample.         Rename to phaseSlope
+  T phaseSlope;    // Phase increment per sample.
   T sampleCount;   // Is always in interval [0, cycleLength).
   T cycleLength;   // Is midLength or midLength + 1 or midLength - 1.
 
@@ -127,27 +117,47 @@ protected:
 template<class T> 
 inline T rsPitchDitherOsc<T>::getSamplePhasor()
 {
-  T p = sawSlope * sampleCount;   // Compute output sample.
-  sampleCount += T(1);            // Update counter. We will have produced 1 sample.
-  if(sampleCount >= cycleLength)  // Is cycle finished?
-  {                               // If so..
-    sampleCount = T(0);           // ..Wrap around sample counter.
-    updateCycleLength();          // ..Compute cycleLength and sawSlope for next cycle.
+  T p = phaseSlope * sampleCount;  // Compute output sample.
+  sampleCount += T(1);             // Update counter. We will have produced 1 sample.
+  if(sampleCount >= cycleLength)   // Is cycle finished?
+  {                                // If so..
+    sampleCount = T(0);            // ..Wrap around sample counter.
+    updateCycleLength();           // ..Compute cycleLength and sawSlope for next cycle.
   }
-  return p;                       // Return output sample.
+  return p;                        // Return output sample.
 }
 
 template<class T> 
 inline void rsPitchDitherOsc<T>::updateCycleLength()
 {
-  T r = prng.getSampleInUnitRange();       // Random number in interval [0,1).
+  T r = prng.getSampleInUnitRange();         // Random number in interval [0,1).
   if(r < probShort)
-    cycleLength = midLength - T(1);        // Next cycle is short.
+    cycleLength = midLength - T(1);          // Next cycle is short.
   else if(r < probShort + probMid)
-    cycleLength = midLength;               // Next cycle is medium.
+    cycleLength = midLength;                 // Next cycle is medium.
   else
-    cycleLength = midLength + T(1);        // Next cycle is long.
-  sawSlope = T(1) / (cycleLength - T(1));  // Slope depends on cycle length.
+    cycleLength = midLength + T(1);          // Next cycle is long.
+  phaseSlope = T(1) / (cycleLength - T(1));  // Slope depends on cycle length.
+}
+
+template<class T> 
+inline T rsPitchDitherOsc<T>::getSamplePulse(T pw) 
+{ 
+  T p = getSamplePhasor();
+  if(p < pw)
+    return T(-1);
+  else
+    return T(+1);
+
+  // ToDo: Verify that this formula is what the user would expect. Maybe we should swap -1 and
+  // +1? And/or maybe we should use if(p <= pw) rather than if(p < pw). Document these decsisions
+  // and the reasons behind them. One reason to prefer to have the negative half-cycle first is
+  // that this would be compatible with clipping a saw-up waveform and I think, the "up" variant
+  // is the default expectation in case of a saw wave. Check what popular synthesizers do (Surge,
+  // Serum, Diva, JP-8000, ...) and maybe do the same. Maybe to gigure out if < or <= is correct,
+  // consider a square wave with an even integer cycle length. In such a case, we want the positive
+  // and negative half-wave to have exactly the same number of samples. This may also depend on 
+  // whether the phasor range is [0,1] or [0,1). 
 }
 
 template<class T> 
