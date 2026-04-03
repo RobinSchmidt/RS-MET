@@ -95,7 +95,12 @@ public:
   /** Produces one sample at a time. */
   inline T getSample()
   {
-    T y = T(-1) + sawSlope * sampleCount;  // Compute output sample.
+    // Old:
+    //T y = T(-1) + sawSlope * sampleCount;  // Compute output sample.
+
+    // New:
+    T y = T(-1) + T(2) * sawSlope * sampleCount;  // Compute output sample.
+
     sampleCount += T(1);                   // Update counter. We will have produced 1 sample.
     if(sampleCount >= cycleLength)         // Is cycle finished?
     {                                      // If so..
@@ -131,7 +136,11 @@ protected:
     else
       cycleLength = midLength + T(1);        // Next cycle is long.
 
-    sawSlope = T(2) / (cycleLength - T(1));  // Slope depends on cycle length.
+    // New:
+    sawSlope = T(1) / (cycleLength - T(1));  // Slope depends on cycle length.
+
+    // Old:
+    //sawSlope = T(2) / (cycleLength - T(1));  // Slope depends on cycle length.
   }
 
   //-----------------------------------------------------------------------------------------------
