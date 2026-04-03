@@ -3,7 +3,12 @@
 
 //=================================================================================================
 
-/** A realtime oscillator that produces pitch-dithered waveforms. ...TBC... */
+/** A realtime oscillator that produces pitch-dithered waveforms. ...TBC...
+
+ToDo: Explain the idea of pitch dithering
+
+Warning: This class is not yet well tested and should be considered rather preliminary. Some 
+details of the implementation may change. There may be bugs. */
 
 template<class T> 
 class rsPitchDitherOsc
@@ -42,9 +47,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-  /** Returns the average length of the cycles that are being produced.  */
+  /** Returns the average length of the cycles that are being produced. */
   T getPeriod();
-  // Needs tests. Maybe move explanation of the formula into implementation.
+  // Needs tests.
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
