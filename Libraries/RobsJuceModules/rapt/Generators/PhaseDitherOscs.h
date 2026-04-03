@@ -34,7 +34,7 @@ public:
 /** A realtime oscillator that produces pitch-dithered sawtooth waves. */
 
 template<class T> 
-class rsPitchDitherSawOsc
+class rsPitchDitherOsc
 {
 
 public:
@@ -47,7 +47,7 @@ public:
   /** Default constructor. It puts the object into a valid initial state by setting up a default
   period length of 100.0 samples and triggering the appropriate computations to set up our member
   variables that control the distribution of cycle lengths. */
-  rsPitchDitherSawOsc()
+  rsPitchDitherOsc()
   {
     setPeriod(T(100.0));                   // Triggers computations to set up members.
     reset();                               // Assigns sampleCount.
