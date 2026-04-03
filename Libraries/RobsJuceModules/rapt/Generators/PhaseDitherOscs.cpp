@@ -1,6 +1,17 @@
-// Maybe move this to .cpp file. But then we will need explicit instantiations.
 
+template<class T>
+rsPitchDitherOsc<T>::rsPitchDitherOsc()
+{
+  setPeriod(T(100.0));                   // Triggers computations to set up members.
+  reset();                               // Assigns sampleCount.
+}
 
+template<class T>  
+T rsPitchDitherOsc<T>::getPeriod()
+{
+  T probLong = T(1) - (probShort + probMid);
+  return probShort * (midLength - T(1)) + probMid * midLength + probLong * (midLength + T(1));
+}
 
 template<class T>
 void rsPitchDitherOsc<T>::calcCycleDistribution(

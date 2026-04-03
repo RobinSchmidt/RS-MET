@@ -17,11 +17,7 @@ public:
   /** Default constructor. It puts the object into a valid initial state by setting up a default
   period length of 100.0 samples and triggering the appropriate computations to set up our member
   variables that control the distribution of cycle lengths. */
-  rsPitchDitherOsc()
-  {
-    setPeriod(T(100.0));                   // Triggers computations to set up members.
-    reset();                               // Assigns sampleCount.
-  }
+  rsPitchDitherOsc();
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup
@@ -52,12 +48,8 @@ public:
   P = p1*L1 + p2*L2 + p3*L3. In our particular case here, we will have a given middle length L2 and
   the short and long lengths L1,L3 are then given as L1 = L2-1, L3 = L2+1. And, of course, for the 
   probabilities we will always have p1 + p2 + p3 = 1 such that p3 = 1 - (p1 + p2). */
-  T getPeriod()
-  {
-    T probLong = T(1) - (probShort + probMid);
-    return probShort * (midLength - T(1)) + probMid * midLength + probLong * (midLength + T(1));
-  }
-  // Needs tests. Maybe move out of the class. Maybe into .cpp file. Not sure though.
+  T getPeriod();
+  // Needs tests. Maybe move explanation of the formula into implementation.
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
@@ -72,15 +64,9 @@ public:
   // wrap-around point, we may want the closed interval and otherwise the half-open one.
 
 
-  inline T getSampleSawUp() 
-  { 
-    return T(-1) + T(2) * getSamplePhasor(); 
-  }
+  inline T getSampleSawUp()   { return T(-1) + T(2) * getSamplePhasor(); }
 
-  inline T getSampleSawDown() 
-  { 
-    return T(+1) - T(2) * getSamplePhasor(); 
-  }
+  inline T getSampleSawDown() { return T(+1) - T(2) * getSamplePhasor(); }
 
   inline T getSamplePulse(T pw = T(0.5)) 
   { 
@@ -99,12 +85,7 @@ public:
   }
 
   /** Resets the internal state, i.e. the sample counter and the random generator. */
-  void reset()
-  {
-    sampleCount = T(0);
-    prng.setState(seed);
-    updateCycleLength();                   // Important for correct initial cycleLength.
-  }
+  inline void reset();
 
   //-----------------------------------------------------------------------------------------------
   // \name Helpers
@@ -169,6 +150,13 @@ inline void rsPitchDitherOsc<T>::updateCycleLength()
   sawSlope = T(1) / (cycleLength - T(1));  // Slope depends on cycle length.
 }
 
+template<class T> 
+inline void rsPitchDitherOsc<T>::reset()
+{
+  sampleCount = T(0);
+  prng.setState(seed);
+  updateCycleLength();         // Important for correct initial cycleLength.  
+}
 
 
 #endif
