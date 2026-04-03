@@ -130,37 +130,11 @@ public:
     // Serum, Diva, JP-8000, ...) and maybe do the same.
   }
 
-
-
-
   // Deprecated. Just for compatibility with old API.
   inline T getSample()
   {
     return getSampleSawUp();
   }
-
-
-
-  // Obsolete:
-  /** Produces one sample at a time. */
-  /*
-  inline T getSample()
-  {
-    // Old:
-    //T y = T(-1) + sawSlope * sampleCount;  // Compute output sample.
-
-    // New:
-    T y = T(-1) + T(2) * sawSlope * sampleCount;  // Compute output sample.
-
-    sampleCount += T(1);                   // Update counter. We will have produced 1 sample.
-    if(sampleCount >= cycleLength)         // Is cycle finished?
-    {                                      // If so..
-      sampleCount = T(0);                  // ..Wrap around sample counter.
-      updateCycleLength();                 // ..Compute cycleLength and sawSlope for next cycle.
-    }
-    return y;                              // Return output sample.
-  }
-  */
 
   /** Resets the internal state, i.e. the sample counter and the random generator. */
   void reset()
@@ -187,12 +161,7 @@ protected:
       cycleLength = midLength;               // Next cycle is medium.
     else
       cycleLength = midLength + T(1);        // Next cycle is long.
-
-    // New:
     sawSlope = T(1) / (cycleLength - T(1));  // Slope depends on cycle length.
-
-    // Old:
-    //sawSlope = T(2) / (cycleLength - T(1));  // Slope depends on cycle length.
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -207,6 +176,9 @@ protected:
   T midLength;     // The middle one of the 3 cycle lengths to be produced.
   T probShort;     // Probability to use midLength - 1.
   T probMid;       // Probability to use midLength.
+  // Maybe rename cycleLength and midLength in lengthCurrent and lengthMid. Rationale: lengthMid 
+  // would be more consistent with probShort and probMid (the "Mid" would be the suffix). Maybe
+  // use lenCurrent (or lenNow) and lenMid. Maybe rename sawSlope to phaseSlope
 
   // Embedded DSP objects:
   rsRandomGenerator<T> prng;
