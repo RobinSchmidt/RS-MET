@@ -6,6 +6,7 @@
 /** A class that factors out some functionality that is common to all generators that make use of 
 pitch dithering. ...TBC... */
 
+/*
 template<class T>
 class rsPitchDitherHelpers
 {
@@ -28,6 +29,7 @@ public:
   // - Maybe create functions to produce various waveforms, including additively synthesized saw
   //   waves (maybe by using trig-recursions for an optimized implementation)
 };
+*/
 
 //=================================================================================================
 
@@ -39,7 +41,7 @@ class rsPitchDitherOsc
 
 public:
 
-  using PDH = rsPitchDitherHelpers<T>;     // Shorthand for convenience
+  //using PDH = rsPitchDitherHelpers<T>;     // Shorthand for convenience
 
   //-----------------------------------------------------------------------------------------------
   // \name Lifetime
@@ -68,7 +70,7 @@ public:
   period will not become effective immediately but only after finishing the currently running 
   cycle. */
   void setPeriodNoUpdate(T newPeriod)
-  { PDH::calcCycleDistribution(newPeriod, &midLength, &probShort, &probMid); }
+  { calcCycleDistribution(newPeriod, &midLength, &probShort, &probMid); }
 
   /** Sets the seed for the pseudo random number generator. */
   void setRandomSeed(uint32_t newSeed) { seed = newSeed; }
@@ -146,6 +148,11 @@ public:
     prng.setState(seed);
     updateCycleLength();                   // Important for correct initial cycleLength.
   }
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Helpers
+
+  static void calcCycleDistribution(T period, T* midLength, T* probShort, T* probMid);
 
 
 protected:
@@ -258,6 +265,9 @@ protected:
   //   corresponding to the (rounded) newPhase value such that in the very next call to 
   //   getSamplePhasor(), we will get exactly that (rounded) newPhase value. We need to round 
   //   because our sampleCounter is an integer.
+  //
+  // - Add convenience functions like setOmega(T newOmega), setFrequency(T newFreq, T sampleRate).
+  //   setFrequency should perhaps just call setPeriod(sampleRate/newFreq)
 
 };
 

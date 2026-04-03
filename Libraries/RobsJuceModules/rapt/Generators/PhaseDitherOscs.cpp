@@ -1,7 +1,9 @@
 // Maybe move this to .cpp file. But then we will need explicit instantiations.
 
+
+
 template<class T>
-void rsPitchDitherHelpers<T>::calcCycleDistribution(
+void rsPitchDitherOsc<T>::calcCycleDistribution(
   T period, T* midLength, T* probShort, T* probMid)
 {
   // Compute lengths:
