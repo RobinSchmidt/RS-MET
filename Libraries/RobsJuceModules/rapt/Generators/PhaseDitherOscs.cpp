@@ -11,6 +11,13 @@ T rsPitchDitherOsc<T>::getPeriod()
 {
   T probLong = T(1) - (probShort + probMid);
   return probShort * (midLength - T(1)) + probMid * midLength + probLong * (midLength + T(1));
+
+  // In general, if we have 3 integer cycle lengths given by L1,L2,L3 and cycles with these 3 
+  // lengths are produced with probabilities p1,p2,p3 respectively, then the average cycle length P
+  // will be: P = p1*L1 + p2*L2 + p3*L3. In our particular case here, we will have a given middle 
+  // length L2 and the short and long lengths L1,L3 are then given as L1 = L2-1, L3 = L2+1. And, of
+  // course, for the probabilities we will always have p1 + p2 + p3 = 1 such that 
+  // p3 = 1 - (p1 + p2).
 }
 
 template<class T>
