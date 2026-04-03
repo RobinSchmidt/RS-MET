@@ -162,4 +162,10 @@ ToDo:
 - Maybe create functions to produce various waveforms, including additively synthesized saw
   waves (maybe by using trig-recursions for an optimized implementation)
 
+- Maybe implement the functions that convert a phasor into an actual waveform into static member
+  functions. But maybe they should live in some other class like rsWaveForms. Somewhere, we already
+  have free functions like rsTriSaw(), rsSawWave(), rsTriWave(), etc. These should all get absorbed
+  into the class rsWaveForms. It should perhaps also provide some functions to create sums of sines
+  additively.
+
 */

@@ -1,5 +1,57 @@
 #pragma once
 
+
+//=================================================================================================
+
+template<class T>
+class rsWaveForms
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Conversions from phasor to waveform
+
+  static T sawUp(  T p) { return T(-1) + T(2) * p; }
+
+  static T sawDown(T p) { return T(+1) - T(2) * p; }
+
+  static T pulse(T p, T pw = T(0.5))
+  {
+    if(p < pw)
+      return T(-1);
+    else
+      return T(+1);
+  }
+
+  //static T sine(T p) { return rsSin(T(2 * PI) * p); }
+  // This is wrong when the phasor p is in the closed interval [0,1]. It would work for the 
+  // half-open interval [0,1), though.
+
+
+
+  // ToDo:
+  // 
+  // - triangle, sin, triSaw, 
+  // 
+  // - pulseNoDc(): Should subtract the DC that would otherwise be there. I think, we need to 
+  //   add or subtract (pw - 0.5) and maybe we need to scale it. We should then have a unit test 
+  //   that verifies that the DC is indeed zero for all pulse-widths in 0..1.
+  //
+  // - Create functions for realtime processing that take a phasor and covert it into a waveform
+  //   and also create functions that produce or manipule the whole waveform. Maynipulations could
+  //   be things like reversal, negation, circular shift, fractalization, etc. Maybe for things 
+  //   like fractalization, it could make sense to compute in double precision even when the type 
+  //   is float. fractalization should mix waveform of octaves above the original. These higher 
+  //   waweforms could themselves be manipulated with shifts, negation, reversal, etc. using 
+  //   alternating patterns.
+  //
+  // - Implement functions like reverse, shift, etc. also for phasors. I think, reverse would just
+  //   be 1-p, shift would be (p+s) % 1 where % 1 would be fmod - but maybe a special variant that
+  //   leaves 1 as is i.e. does not if(x >= 1) return x-1  but rather if(x > 1) return x-1. Maybe 
+  //   we could also "fractalize" a phasor value? Try it!
+};
+
 //=================================================================================================
 
 /** This class contains some prototypical implementations of the production of pitch-dithered 

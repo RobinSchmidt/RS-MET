@@ -154,7 +154,7 @@ inline T rsPitchDitherOsc<T>::getSamplePulse(T pw)
   // and the reasons behind them. One reason to prefer to have the negative half-cycle first is
   // that this would be compatible with clipping a saw-up waveform and I think, the "up" variant
   // is the default expectation in case of a saw wave. Check what popular synthesizers do (Surge,
-  // Serum, Diva, JP-8000, ...) and maybe do the same. Maybe to gigure out if < or <= is correct,
+  // Serum, Diva, JP-8000, ...) and maybe do the same. Maybe to figure out if < or <= is correct,
   // consider a square wave with an even integer cycle length. In such a case, we want the positive
   // and negative half-wave to have exactly the same number of samples. This may also depend on 
   // whether the phasor range is [0,1] or [0,1). 
