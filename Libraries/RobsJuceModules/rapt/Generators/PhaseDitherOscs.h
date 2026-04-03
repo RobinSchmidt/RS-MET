@@ -57,35 +57,20 @@ public:
     T probLong = T(1) - (probShort + probMid);
     return probShort * (midLength - T(1)) + probMid * midLength + probLong * (midLength + T(1));
   }
-  // Needs tests
+  // Needs tests. Maybe move out of the class. Maybe into .cpp file. Not sure though.
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
   /** Returns a sample of a phasor value, i.e. a value in the range 0..1 that can be used to create
   various waveforms. ...TBC... */
-  inline T getSamplePhasor()
-  {
-    T p = sawSlope * sampleCount;   // Compute output sample.
-    sampleCount += T(1);            // Update counter. We will have produced 1 sample.
-    if(sampleCount >= cycleLength)  // Is cycle finished?
-    {                               // If so..
-      sampleCount = T(0);           // ..Wrap around sample counter.
-      updateCycleLength();          // ..Compute cycleLength and sawSlope for next cycle.
-    }
-    return p;                       // Return output sample.
+  inline T getSamplePhasor();
+  // ToDo: Document, if the produced value is in the closed interval [0,1] or in the half-open 
+  // interval [0,1). I think, it's the former and I also think that this might not really be the 
+  // right thing to do - at least not for producing sine-waves. For producing saws, it may actually
+  // e appropriate, though. I think, in general, whenever there is a jump discontinuity at the 
+  // wrap-around point, we may want the closed interval and otherwise the half-open one.
 
-    // ToDo:
-    //
-    // - Document, if the produced value is in the closed interval [0,1] or in the half-open 
-    //   interval [0,1). I think, it's the former and I also think that this might not really be
-    //   the right thing to do - at least not for producing sine-waves. For producing saws, it may
-    //   actually be appropriate, though. I think, in general, whenever there is a jump 
-    //   discontinuity at the wrap-around point, we may want the closed interval and otherwise the
-    //   half-open one.
-    //
-    // - Maybe move implementation out of the class 
-  }
 
   inline T getSampleSawUp() 
   { 
@@ -134,19 +119,7 @@ protected:
 
   /** Updates our cycleLength member by computing a new (pseudo) random cycle length to be used 
   for the next cycle. Called from getSample() after each cycle has been completed. */
-  inline void updateCycleLength()
-  {
-    T r = prng.getSampleInUnitRange();       // Random number in interval [0,1).
-    if(r < probShort)
-      cycleLength = midLength - T(1);        // Next cycle is short.
-    else if(r < probShort + probMid)
-      cycleLength = midLength;               // Next cycle is medium.
-    else
-      cycleLength = midLength + T(1);        // Next cycle is long.
-    sawSlope = T(1) / (cycleLength - T(1));  // Slope depends on cycle length.
-
-    // ToDo: Maybe move implementation out of the class
-  }
+  inline void updateCycleLength();
 
   //-----------------------------------------------------------------------------------------------
   // \name Data
@@ -170,7 +143,31 @@ protected:
 
 };
 
+template<class T> 
+inline T rsPitchDitherOsc<T>::getSamplePhasor()
+{
+  T p = sawSlope * sampleCount;   // Compute output sample.
+  sampleCount += T(1);            // Update counter. We will have produced 1 sample.
+  if(sampleCount >= cycleLength)  // Is cycle finished?
+  {                               // If so..
+    sampleCount = T(0);           // ..Wrap around sample counter.
+    updateCycleLength();          // ..Compute cycleLength and sawSlope for next cycle.
+  }
+  return p;                       // Return output sample.
+}
 
+template<class T> 
+inline void rsPitchDitherOsc<T>::updateCycleLength()
+{
+  T r = prng.getSampleInUnitRange();       // Random number in interval [0,1).
+  if(r < probShort)
+    cycleLength = midLength - T(1);        // Next cycle is short.
+  else if(r < probShort + probMid)
+    cycleLength = midLength;               // Next cycle is medium.
+  else
+    cycleLength = midLength + T(1);        // Next cycle is long.
+  sawSlope = T(1) / (cycleLength - T(1));  // Slope depends on cycle length.
+}
 
 
 
