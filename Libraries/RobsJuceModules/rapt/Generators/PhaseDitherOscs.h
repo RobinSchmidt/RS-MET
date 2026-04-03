@@ -92,7 +92,58 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
+  inline T getSamplePhasor()
+  {
+    T p = sawSlope * sampleCount;   // Compute output sample.
+    sampleCount += T(1);            // Update counter. We will have produced 1 sample.
+    if(sampleCount >= cycleLength)  // Is cycle finished?
+    {                               // If so..
+      sampleCount = T(0);           // ..Wrap around sample counter.
+      updateCycleLength();          // ..Compute cycleLength and sawSlope for next cycle.
+    }
+    return p;                       // Return output sample.
+  }
+
+  inline T getSampleSawUp() 
+  { 
+    return T(-1) + T(2) * getSamplePhasor(); 
+  }
+
+  inline T getSampleSawDown() 
+  { 
+    return T(+1) - T(2) * getSamplePhasor(); 
+  }
+
+  inline T getSamplePulse(T pw = T(0.5)) 
+  { 
+    T p = getSamplePhasor();
+    if(p < pw)
+      return T(-1);
+    else
+      return T(+1);
+
+    // ToDo: Verify that this formula is what the user would expect. Maybe we should swap -1 and
+    // +1? And/or maybe we should use if(p <= pw) rather than if(p < pw). Document these decsisions
+    // and the reasons behind them. One reason to prefer to have the negative half-cycle first is
+    // that this would be compatible with clipping a saw-up waveform and I think, the "up" variant
+    // is the default expectation in case of a saw wave. Check what popular synthesizers do (Surge,
+    // Serum, Diva, JP-8000, ...) and maybe do the same.
+  }
+
+
+
+
+  // Deprecated. Just for compatibility with old API.
+  inline T getSample()
+  {
+    return getSampleSawUp();
+  }
+
+
+
+  // Obsolete:
   /** Produces one sample at a time. */
+  /*
   inline T getSample()
   {
     // Old:
@@ -109,6 +160,7 @@ public:
     }
     return y;                              // Return output sample.
   }
+  */
 
   /** Resets the internal state, i.e. the sample counter and the random generator. */
   void reset()
@@ -206,11 +258,32 @@ protected:
   //   rsPitchDitherOsc without limiting it to saw waves. in this case, getSawSample() would make 
   //   more sense. And then we could also have getSinSample(), getRectSample(), getTriSample(),
   //   getPulseSample(T pw), getTriSawSample(..), etc. If we do this, we may also rename sawSlope
-  //   to phaseSlope. 
+  //   to phaseSlope. ...BUT: I actually do thing that we produce the closed interval [0,1] here 
+  //   and in the case of sawtooth waves, it is actually sort of appropriate because in the case
+  //   of a jump discontinuity at the wrap around, it can make sense to return at the sample 
+  //   instant zero one value and at the sample instant at the end of cycle the other value. 
+  //   Hmmm...not sure what to do. Both variants have convincing arguments. Maybe we should 
+  //   implement both and let the user choose? Maybe at compile time? The devil is in the detail!
+  //   Maybe updateCycleLength could take a bool parameter closedInterval or something like that
+  //   and we could give the use two versions of getSamplePhasor() like getSamplePhasorClosed(),
+  //   getSamplePhasorHalfOpen(). Or maybe the "HalfOpen" version should go without qualification
+  //   to indicate that this is the default. But will this lead to detuning? Is the current 
+  //   implementation actually correctly tuned anyway? Maybe currently the cycles are one sample
+  //   too short or too long? Verify this!
   // 
   // - Maybe that class can then also take the responsibility of rsPitchDitherHelpers which 
   //   currently just has this single static member function and I don't really think that it will
   //   need anything else (not sure, though). 
+  //
+  // - Implement more waveforms: square, pulse, triangle, sine, trisaw, etc. Write into the 
+  //   documentation that these standard waveforms can be used as examples for client code to 
+  //   implement their own custom waveforms.
+  //
+  // - Add a setPhase(T newPhase) function. It should set the sampleCounter to a phase 
+  //   corresponding to the (rounded) newPhase value such that in the very next call to 
+  //   getSamplePhasor(), we will get exactly that (rounded) newPhase value. We need to round 
+  //   because our sampleCounter is an integer.
+
 };
 
 
