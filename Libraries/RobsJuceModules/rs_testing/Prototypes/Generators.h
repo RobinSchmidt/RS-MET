@@ -12,11 +12,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Conversions from phasor to waveform
 
-  static T sawUp(  T p) { return T(-1) + T(2) * p; }
+  static inline T sawUp(  T p) { return T(-1) + T(2) * p; }
 
-  static T sawDown(T p) { return T(+1) - T(2) * p; }
+  static inline T sawDown(T p) { return T(+1) - T(2) * p; }
 
-  static T pulse(T p, T pw = T(0.5))
+  static inline T pulse(T p, T pw = T(0.5))
   {
     if(p < pw)
       return T(-1);
@@ -24,9 +24,11 @@ public:
       return T(+1);
   }
 
-  //static T sine(T p) { return rsSin(T(2 * PI) * p); }
+  static inline T sine(T p) { return rsSin(T(2 * PI) * p); }
   // This is wrong when the phasor p is in the closed interval [0,1]. It would work for the 
-  // half-open interval [0,1), though.
+  // half-open interval [0,1), though. But maybe that should not be our problem here, i.e. we 
+  // should just implement the function like that and let client code worry about these problems. 
+  // We should warn about them in the documentation, though.
 
 
 
@@ -39,17 +41,31 @@ public:
   //   that verifies that the DC is indeed zero for all pulse-widths in 0..1.
   //
   // - Create functions for realtime processing that take a phasor and covert it into a waveform
-  //   and also create functions that produce or manipule the whole waveform. Maynipulations could
-  //   be things like reversal, negation, circular shift, fractalization, etc. Maybe for things 
-  //   like fractalization, it could make sense to compute in double precision even when the type 
-  //   is float. fractalization should mix waveform of octaves above the original. These higher 
-  //   waweforms could themselves be manipulated with shifts, negation, reversal, etc. using 
+  //   and also create functions that produce or manipulate the whole waveform. Maynipulations 
+  //   could be things like reversal, negation, circular shift, fractalization, etc. Maybe for 
+  //   things like fractalization, it could make sense to compute in double precision even when the
+  //   type is float. fractalization should mix waveform of octaves above the original. These 
+  //   higher waveforms could themselves be manipulated with shifts, negation, reversal, etc. using 
   //   alternating patterns.
   //
   // - Implement functions like reverse, shift, etc. also for phasors. I think, reverse would just
   //   be 1-p, shift would be (p+s) % 1 where % 1 would be fmod - but maybe a special variant that
   //   leaves 1 as is i.e. does not if(x >= 1) return x-1  but rather if(x > 1) return x-1. Maybe 
   //   we could also "fractalize" a phasor value? Try it!
+  //
+  // - Verify that the formula for pulse is what the user would expect. Maybe we should swap -1 and
+  //   +1? And/or maybe we should use if(p <= pw) rather than if(p < pw). Document these decsisions
+  //   and the reasons behind them. One reason to prefer to have the negative half-cycle first is
+  //   that this would be compatible with clipping a saw-up waveform and I think, the "up" variant
+  //   is the default expectation in case of a saw wave. Check what popular synthesizers do (Surge,
+  //   Serum, Diva, JP-8000, ...) and maybe do the same. Maybe to figure out if < or <= is correct,
+  //   consider a square wave with an even integer cycle length. In such a case, we want the
+  //   positive and negative half-wave to have exactly the same number of samples. This may also 
+  //   depend on whether the phasor range is [0,1] or [0,1). 
+  //
+  // - Add functions to produce various waveforms, including additively synthesized (brickwall 
+  //   lowpassed) saw and pulse waves (maybe by using trig-recursions for the sines of the various
+  //   frequencies for an optimized implementation)
 };
 
 //=================================================================================================

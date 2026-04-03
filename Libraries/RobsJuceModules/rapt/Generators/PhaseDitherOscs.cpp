@@ -18,6 +18,13 @@ T rsPitchDitherOsc<T>::getPeriod()
   // length L2 and the short and long lengths L1,L3 are then given as L1 = L2-1, L3 = L2+1. And, of
   // course, for the probabilities we will always have p1 + p2 + p3 = 1 such that 
   // p3 = 1 - (p1 + p2).
+  //
+  // ToDo:
+  // Make it more readable by splitting the computations into things like:
+  // lengthShort = lengthMid - 1;
+  // lengthLong  = lengthMid + 1;
+  // ...
+  // return probShort * lengthSort  +  probMid * lengthMid  +  problong * lengthLong;
 }
 
 template<class T>
@@ -83,7 +90,8 @@ Notes:
   initial state. So we leave this member initialization to the constructor which calls some 
   functions to do the appropriate computations.
 
-- Maybe factor out all the stuff that has to do with the pitch-dithering into a separate class
+- Partially done:
+  Maybe factor out all the stuff that has to do with the pitch-dithering into a separate class
   such that we can re-use the code for other types of pitch-dithering oscillators like, for 
   example, table lookup oscillators. Or maybe modify this class such that it can also produce
   a sawtooth in the range [0,1) that other oscillators can use as phasor. Maybe have a 
@@ -126,10 +134,6 @@ Notes:
   implementation actually correctly tuned anyway? Maybe currently the cycles are one sample
   too short or too long? Verify this!
 
-- Maybe that class can then also take the responsibility of rsPitchDitherHelpers which 
-  currently just has this single static member function and I don't really think that it will
-  need anything else (not sure, though). 
-
 - Implement more waveforms: square, pulse, triangle, sine, trisaw, etc. Write into the 
   documentation that these standard waveforms can be used as examples for client code to 
   implement their own custom waveforms.
@@ -147,25 +151,8 @@ ToDo:
 
 - Drag over the experiments and unit tests from the research repo into the main repo
 
-- Add unit test for rsNoiseGenerator, then factor out a class rsRandomGenerator that doesn't have
-  members for seed, shift and scale, then use that class here instead of rsNoiseGenerator.
-
-- Implement a class rsPitchDitherSuperSawOsc. See comments in the experiments in the reseatch repo
-  for how to approach this.
-
-- Clean up the derivations for the cycle distribution formulas and put them into a dedicated 
-  textfile. They are currently in TempSketchPad.txt in the research repo and are rather messy.
-
-- Add convenience functions to produce a whole signal vector of signals with various 
-  waveforms. Maybe take the waveform as std::function or some callable template type F. 
-
-- Maybe create functions to produce various waveforms, including additively synthesized saw
-  waves (maybe by using trig-recursions for an optimized implementation)
-
-- Maybe implement the functions that convert a phasor into an actual waveform into static member
-  functions. But maybe they should live in some other class like rsWaveForms. Somewhere, we already
-  have free functions like rsTriSaw(), rsSawWave(), rsTriWave(), etc. These should all get absorbed
-  into the class rsWaveForms. It should perhaps also provide some functions to create sums of sines
-  additively.
+- Implement a class rsPitchDitherSuperSawOsc. See comments in the experiments in the research repo
+  for how to approach this. ..ok: we now have a class for that somewhere in the prototypes or the
+  research repo.
 
 */

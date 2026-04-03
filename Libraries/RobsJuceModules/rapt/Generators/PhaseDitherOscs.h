@@ -106,7 +106,8 @@ protected:
   T probMid;       // Probability to use midLength.
   // Maybe rename cycleLength and midLength in lengthCurrent and lengthMid. Rationale: lengthMid 
   // would be more consistent with probShort and probMid (the "Mid" would be the suffix). Maybe
-  // use lenCurrent (or lenNow) and lenMid. Maybe rename sawSlope to phaseSlope
+  // use lenCurrent (or lenNow) and lenMid. Maybe rename sawSlope to phaseSlope. Yes -  I think
+  // lengthMid and lengthNow are the best choices.
 
   // Embedded DSP objects:
   rsRandomGenerator<T> prng;
@@ -122,7 +123,7 @@ inline T rsPitchDitherOsc<T>::getSamplePhasor()
   if(sampleCount >= cycleLength)   // Is cycle finished?
   {                                // If so..
     sampleCount = T(0);            // ..Wrap around sample counter.
-    updateCycleLength();           // ..Compute cycleLength and sawSlope for next cycle.
+    updateCycleLength();           // ..Compute cycleLength and phaseSlope for next cycle.
   }
   return p;                        // Return output sample.
 }
@@ -148,16 +149,6 @@ inline T rsPitchDitherOsc<T>::getSamplePulse(T pw)
     return T(-1);
   else
     return T(+1);
-
-  // ToDo: Verify that this formula is what the user would expect. Maybe we should swap -1 and
-  // +1? And/or maybe we should use if(p <= pw) rather than if(p < pw). Document these decsisions
-  // and the reasons behind them. One reason to prefer to have the negative half-cycle first is
-  // that this would be compatible with clipping a saw-up waveform and I think, the "up" variant
-  // is the default expectation in case of a saw wave. Check what popular synthesizers do (Surge,
-  // Serum, Diva, JP-8000, ...) and maybe do the same. Maybe to figure out if < or <= is correct,
-  // consider a square wave with an even integer cycle length. In such a case, we want the positive
-  // and negative half-wave to have exactly the same number of samples. This may also depend on 
-  // whether the phasor range is [0,1] or [0,1). 
 }
 
 template<class T> 
@@ -165,7 +156,7 @@ inline void rsPitchDitherOsc<T>::reset()
 {
   sampleCount = T(0);
   prng.setState(seed);
-  updateCycleLength();         // Important for correct initial cycleLength.  
+  updateCycleLength();                       // Important for correct initial cycleLength.  
 }
 
 
