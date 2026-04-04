@@ -32,8 +32,12 @@ public:
   frequency is the desired oscillator frequency in Hz. This will immediately trigger a 
   recomputation of the probability distribution of the cycle lengths and update the currently used
   cycle length. */
-  void setPeriod(T newPeriod) { setPeriodNoUpdate(newPeriod); updateCycleLength(); }
-  // Maybe it should take a bool parameter "closedPhasorInterval"
+  void setPeriod(T newPeriod, bool phasorRangeClosed) 
+  { 
+    setPeriodNoUpdate(newPeriod); 
+    updateCycleLength(phasorRangeClosed);
+  }
+  // Maybe it should take a bool parameter "phasorRangeClosed"
 
   /** Sets up a new period length just like setPeriod() does but without immediately updating the
   probability distribution and current cycle length. This results in the behavior that the new 
@@ -57,7 +61,7 @@ public:
 
   /** Returns a sample of a phasor value, i.e. a value in the range 0..1 that can be used to create
   various waveforms. ...TBC... */
-  inline T getSamplePhasor();
+  inline T getSamplePhasor(bool phasorRangeClosed);
   // ToDo: Document, if the produced value is in the closed interval [0,1] or in the half-open 
   // interval [0,1). I think, it's the former and I also think that this might not really be the 
   // right thing to do - at least not for producing sine-waves. For producing saws, it may actually
@@ -66,18 +70,17 @@ public:
 
 
   /** Returns a sample of an upward sawtooth wave */
-  inline T getSampleSawUp()   { return T(-1) + T(2) * getSamplePhasor(); }
+  inline T getSampleSawUp()   { return T(-1) + T(2) * getSamplePhasor(true); }
 
   /** Returns a sample of an downward sawtooth wave */
-  inline T getSampleSawDown() { return T(+1) - T(2) * getSamplePhasor(); }
+  inline T getSampleSawDown() { return T(+1) - T(2) * getSamplePhasor(true); }
 
   /** Returns a sample of a pulse wave with given pulse-width. The default value of 0.5 produces a 
   square wave. */
   inline T getSamplePulse(T pw = T(0.5));
 
   /** Resets the internal state, i.e. the sample counter and the random generator. */
-  void reset();
-  // Maybe it should take a bool parameter "closedPhasorInterval"
+  void reset(bool phasorRangeClosed);
 
   //-----------------------------------------------------------------------------------------------
   // \name Helpers
@@ -92,11 +95,11 @@ protected:
 
   /** Updates our sampleCount member and takes care of appropriate wrap around with recomputation 
   of the new cycle length. */
-  inline void updateSampleCount();
+  inline void updateSampleCount(bool phasorRangeClosed);
 
   /** Updates our cycleLength member by computing a new (pseudo) random cycle length to be used 
   for the next cycle. Called from updateSampleCount() after each cycle has been completed. */
-  inline void updateCycleLength();
+  inline void updateCycleLength(bool phasorRangeClosed);
 
   //-----------------------------------------------------------------------------------------------
   // \name Data
@@ -122,41 +125,48 @@ protected:
 };
 
 template<class T> 
-inline T rsPitchDitherOsc<T>::getSamplePhasor()
+inline T rsPitchDitherOsc<T>::getSamplePhasor(bool closed)
 {
   T p = phaseSlope * sampleCount;  // Compute output sample.
-  updateSampleCount();             // Update sample counter. Possibly wraps around.
+  updateSampleCount(closed);       // Update sample counter. Possibly wraps around.
   return p;                        // Return output sample.
 }
 
 template<class T> 
-inline void rsPitchDitherOsc<T>::updateSampleCount()
+inline void rsPitchDitherOsc<T>::updateSampleCount(bool closed)
 {
   sampleCount += T(1);             // Update counter. We produce 1 sample at each update.
   if(sampleCount >= cycleLength)   // Is cycle finished?
   {                                // If so..
     sampleCount = T(0);            // ..Wrap around sample counter.
-    updateCycleLength();           // ..Compute cycleLength and phaseSlope for next cycle.
+    updateCycleLength(closed);     // ..Compute cycleLength and phaseSlope for next cycle.
   }
 }
 
 template<class T> 
-inline void rsPitchDitherOsc<T>::updateCycleLength()
+inline void rsPitchDitherOsc<T>::updateCycleLength(bool closed)
 {
-  T r = prng.getSampleInUnitRange();         // Random number in interval [0,1).
+  T r = prng.getSampleInUnitRange();              // Random number in interval [0,1).
   if(r < probShort)
-    cycleLength = midLength - T(1);          // Next cycle is short.
+    cycleLength = midLength - T(1);               // Next cycle is short.
   else if(r < probShort + probMid)
-    cycleLength = midLength;                 // Next cycle is medium.
+    cycleLength = midLength;                      // Next cycle is medium.
   else
-    cycleLength = midLength + T(1);          // Next cycle is long.
-  phaseSlope = T(1) / (cycleLength - T(1));  // Slope depends on cycle length.
+    cycleLength = midLength + T(1);               // Next cycle is long.
+  phaseSlope = T(1) / (cycleLength - T(closed));  // Slope depends on cycle length.
+
+  // Maybe as an optimization, pass the "closed" parameter not as bool but as type T so we can 
+  // avoid the type conversion. Maybe we should assert that the value represents either T(0) or
+  // T(1). Maybe add a function rsIsBoolean(T x) to the library that returns true iff x is 0 or 1
+  // and use that function in a rsAssert here. Maybe have static const members phasorRangeClosed, 
+  // phasorRangeHalfOpen of type T that are fixed to 0 and 1 such that the caller can uses these
+  // as symbolic constants rather than having itself to make sure to only pass 0 or 1.
 }
 
 template<class T> 
 inline T rsPitchDitherOsc<T>::getSamplePulse(T pw) 
 { 
-  T p = getSamplePhasor();
+  T p = getSamplePhasor(true);
   if(p < pw)
     return T(-1);
   else
@@ -164,11 +174,11 @@ inline T rsPitchDitherOsc<T>::getSamplePulse(T pw)
 }
 
 template<class T> 
-void rsPitchDitherOsc<T>::reset()
+void rsPitchDitherOsc<T>::reset(bool closed)
 {
   sampleCount = T(0);
   prng.setState(seed);
-  updateCycleLength();                       // Important for correct initial cycleLength.  
+  updateCycleLength(closed);                 // Important for correct initial cycleLength.  
 }
 
 

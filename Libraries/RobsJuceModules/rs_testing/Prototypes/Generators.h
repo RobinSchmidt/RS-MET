@@ -66,6 +66,17 @@ public:
   // - Add functions to produce various waveforms, including additively synthesized (brickwall 
   //   lowpassed) saw and pulse waves (maybe by using trig-recursions for the sines of the various
   //   frequencies for an optimized implementation)
+  //
+  // - See also other places where we have implemented similar functionality, for example:
+  //     rsBlepReadyOscBase  in  rapt/Unfinished/MiscAudio/BlepBlampOscs
+  //     rsTriSawOscillator  in  rapt/Generators/VariousOscillators.h
+  //     rsTriSaw            in  rapt/AudioBasics/AudioFunctions.h
+  //     rsPulseWave, ...    in  rapt/Math/Functions/RealFunctions.h
+  //   This code should ideally all be consolidated in this new class rsWaveForms. There may be 
+  //   more places. I think in RealFunctions may also be some waveform-producing functions. Also,
+  //   somewhere in rosic in the waveform rendering functions. I think, there's also an enum for 
+  //   enumerating the waveforms. If the new class also gets such an enum, it should be compatible
+  //   with the old one. Then deprecate the old functions.
 };
 
 //=================================================================================================

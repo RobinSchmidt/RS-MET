@@ -2,6 +2,7 @@
 #define RAPT_VARIOUSOSCILLATORS_H_INCLUDED
 
 
+/** A naive implementation of a sinusoidal oscillator.  */
 
 template<class T>
 class rsSineOscillatorNaive
@@ -23,6 +24,12 @@ public:
     T y = amp * sin(phase);
     phase += omega;
     return y;
+
+    // Wait! What?! No phase wrap-around here? I mean, granted, the qualifier "Naive" may suggest
+    // that this is only a naive prototype implementation - but in that case, I think, we should 
+    // move this code to the prototypes and out of the library proper. ToDo: Figure out where this
+    // code is being used. Probably only in some unit test for creating reference signals. In that
+    // case, move it to the prototypes in the rs_testing module.
   }
 
   void reset(T startPhase = T(0))
@@ -36,6 +43,11 @@ protected:
   T phase = T(0);
   T omega = T(0);
 
+  // ToDo:
+  //
+  // - Maybe implement various fast approximations to the sine in functions like 
+  //   getSampleApprox1(), ... The normal getSample() function should be understood to produce the
+  //   exact reference sine shape.
 };
 
 

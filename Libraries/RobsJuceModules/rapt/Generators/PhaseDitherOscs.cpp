@@ -2,8 +2,8 @@
 template<class T>
 rsPitchDitherOsc<T>::rsPitchDitherOsc()
 {
-  setPeriod(T(100.0));                   // Triggers computations to set up members.
-  reset();                               // Assigns sampleCount.
+  setPeriod(T(100.0), true);             // Triggers computations to set up members.
+  reset(true);                           // Assigns sampleCount.
 }
 
 template<class T>  
@@ -154,5 +154,23 @@ ToDo:
 - Implement a class rsPitchDitherSuperSawOsc. See comments in the experiments in the research repo
   for how to approach this. ..ok: we now have a class for that somewhere in the prototypes or the
   research repo.
+
+- Maybe provide default values for the "phasorRangeClosed" parameter to make them optional. I 
+  think, it should probably default to false because true is mostly to make saws look nicer but 
+  they kinda also work with false whereas for a sine wave, using true will create audible 
+  artifacts. I think, a half-open range is more common for a phasor. Maybe start a KVR thread like:
+  Intervals for (normalized) osc-phases: Closed [0,1] or half-open [0,1)? It seems to me that the
+  correct choice depends on the waveform to produce. Sines like the half-open version, saws like 
+  the closed version. But that's awkward!
+
+- To free the client code from this awkwardness, maybe the class rsPitchDitherOsc should be renamed
+  to rsPitchDitherOscBase and we should provide a class rsPitchDitherOsc with an API containing a 
+  function setWaveForm with a waveform from some enum and all the getSamplePhasor(), 
+  getSampleSawUp(), etc. stuff should go away and we should just have the normal API with 
+  getSample(), reset(), etc. Having to handle this half-open/closed phasor business is low level 
+  stuff that client code should be able to tap in if needed but by default, that shouldn't be the 
+  case. The enum should probably exist inside some class liek rsWaveForms such that it can be 
+  re-used by other classes. Check the preliminary implementation of rsWaveForms in 
+  rs_testing/Prototypes/Generators.h. This could be used as basis.
 
 */
