@@ -33,6 +33,7 @@ public:
   recomputation of the probability distribution of the cycle lengths and update the currently used
   cycle length. */
   void setPeriod(T newPeriod) { setPeriodNoUpdate(newPeriod); updateCycleLength(); }
+  // Maybe it should take a bool parameter "closedPhasorInterval"
 
   /** Sets up a new period length just like setPeriod() does but without immediately updating the
   probability distribution and current cycle length. This results in the behavior that the new 
@@ -76,6 +77,7 @@ public:
 
   /** Resets the internal state, i.e. the sample counter and the random generator. */
   void reset();
+  // Maybe it should take a bool parameter "closedPhasorInterval"
 
   //-----------------------------------------------------------------------------------------------
   // \name Helpers
