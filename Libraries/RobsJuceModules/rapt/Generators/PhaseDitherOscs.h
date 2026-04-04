@@ -47,7 +47,7 @@ public:
   period will not become effective immediately but only after finishing the currently running 
   cycle. */
   void setPeriodNoUpdate(T newPeriod)
-  { calcCycleDistribution(newPeriod, &midLength, &probShort, &probMid); }
+  { calcCycleDistribution(newPeriod, &lenMid, &probShort, &probMid); }
 
   /** Sets the seed for the pseudo random number generator. */
   void setRandomSeed(uint32_t newSeed) { seed = newSeed; }
@@ -110,10 +110,10 @@ protected:
   // Members that are accessed per sample:
   T phaseSlope;    // Phase increment per sample.
   T sampleCount;   // Is always in interval [0, cycleLength).
-  T cycleLength;   // Is midLength or midLength + 1 or midLength - 1.
+  T cycleLength;   // Is midLength or midLength + 1 or midLength - 1.    Rename to lenNow
 
   // Members that are accessed per cycle:
-  T midLength;     // The middle one of the 3 cycle lengths to be produced.
+  T lenMid;        // The middle one of the 3 cycle lengths to be produced.
   T probShort;     // Probability to use midLength - 1.
   T probMid;       // Probability to use midLength.
   // Maybe rename cycleLength and midLength in lengthCurrent and lengthMid. Rationale: lengthMid 
@@ -151,11 +151,11 @@ inline void rsPitchDitherOsc<T>::updateCycleLength(bool closed)
 {
   T r = prng.getSampleInUnitRange();              // Random number in interval [0,1).
   if(r < probShort)
-    cycleLength = midLength - T(1);               // Next cycle is short.
+    cycleLength = lenMid - T(1);                  // Next cycle is short.
   else if(r < probShort + probMid)
-    cycleLength = midLength;                      // Next cycle is medium.
+    cycleLength = lenMid;                         // Next cycle is medium.
   else
-    cycleLength = midLength + T(1);               // Next cycle is long.
+    cycleLength = lenMid + T(1);                  // Next cycle is long.
   phaseSlope = T(1) / (cycleLength - T(closed));  // Slope depends on cycle length.
 
   // Maybe as an optimization, pass the "closed" parameter not as bool but as type T so we can 

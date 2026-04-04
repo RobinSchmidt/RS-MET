@@ -10,7 +10,7 @@ template<class T>
 T rsPitchDitherOsc<T>::getPeriod()
 {
   T probLong = T(1) - (probShort + probMid);
-  return probShort * (midLength - T(1)) + probMid * midLength + probLong * (midLength + T(1));
+  return probShort * (lenMid - T(1)) + probMid * lenMid + probLong * (lenMid + T(1));
 
   // In general, if we have 3 integer cycle lengths given by L1,L2,L3 and cycles with these 3 
   // lengths are produced with probabilities p1,p2,p3 respectively, then the average cycle length P
