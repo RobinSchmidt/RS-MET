@@ -75,7 +75,7 @@ public:
   inline T getSamplePulse(T pw = T(0.5));
 
   /** Resets the internal state, i.e. the sample counter and the random generator. */
-  inline void reset();
+  void reset();
 
   //-----------------------------------------------------------------------------------------------
   // \name Helpers
@@ -88,8 +88,12 @@ protected:
   //-----------------------------------------------------------------------------------------------
   // \name Internals
 
+  /** Updates our sampleCount member and takes care of appropriate wrap around with recomputation 
+  of the new cycle length. */
+  inline void updateSampleCount();
+
   /** Updates our cycleLength member by computing a new (pseudo) random cycle length to be used 
-  for the next cycle. Called from getSample() after each cycle has been completed. */
+  for the next cycle. Called from updateSampleCount() after each cycle has been completed. */
   inline void updateCycleLength();
 
   //-----------------------------------------------------------------------------------------------
@@ -119,13 +123,19 @@ template<class T>
 inline T rsPitchDitherOsc<T>::getSamplePhasor()
 {
   T p = phaseSlope * sampleCount;  // Compute output sample.
-  sampleCount += T(1);             // Update counter. We will have produced 1 sample.
+  updateSampleCount();             // Update sample counter. Possibly wraps around.
+  return p;                        // Return output sample.
+}
+
+template<class T> 
+inline void rsPitchDitherOsc<T>::updateSampleCount()
+{
+  sampleCount += T(1);             // Update counter. We produce 1 sample at each update.
   if(sampleCount >= cycleLength)   // Is cycle finished?
   {                                // If so..
     sampleCount = T(0);            // ..Wrap around sample counter.
     updateCycleLength();           // ..Compute cycleLength and phaseSlope for next cycle.
   }
-  return p;                        // Return output sample.
 }
 
 template<class T> 
@@ -152,7 +162,7 @@ inline T rsPitchDitherOsc<T>::getSamplePulse(T pw)
 }
 
 template<class T> 
-inline void rsPitchDitherOsc<T>::reset()
+void rsPitchDitherOsc<T>::reset()
 {
   sampleCount = T(0);
   prng.setState(seed);

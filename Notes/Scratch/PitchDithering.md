@@ -1,6 +1,6 @@
 
-Pitch Dithering
-===============
+Pitch Dithering (Draft)
+=======================
 
 Background
 ----------
@@ -22,7 +22,7 @@ annoying kind of artifact which in this method, we will accept. Of course, the p
 we can only produce sawtooths with those fundamental frequencies whose pitch period happens to be
 an integer number of samples. If we just round the cycle length to the nearest integer, we would get
 considerable mistuning which would get worse towards higher pitches. When we have a sampling rate of
-$f_s$ and we want to produce a frequency $f$, then realtion between the cycle length $c$ in samples
+$f_s$ and we want to produce a frequency $f$, then relation between the cycle length $c$ in samples
 and frequency $f$ is given by:
 
 $$\boxed{c = \frac{f_s}{f}, \quad f = \frac{f_s}{c}}$$
@@ -46,21 +46,22 @@ modulation manifests itself as a sort of noise in the final output. The amount o
 depend on the particular setting of the desired cycle length $c$. If $c$ happens to be an exact integer, there will be no noise at all because the fractional part $c_f = 0$ is zero in this case
 and we will therefore produce cycles of length $c_1$ with probability $p_1 = 1$. Apparently, we will
 get the greatest amount of noise when $c$ happens to be halfway between two integers, i.e.
-$c = xxx.5$ and no noise at all when c is an exact integer $c = xxx.0$. To develop a solution strategy, let's assume that our desired cycle length is $c = 100.0$. With the basic algorithm above,
-we would get a clean signal with no noise modulation at all. 
+$c = xxx.5$ and no noise at all when $c$ is an exact integer $c = xxx.0$. 
 
 
 The Refined Idea
 ----------------
 
-The new idea is now to use cycles of the 3 lengths $c_1 = 99, c_2 = 100, c_3 = 101$ in such a way
-that the mean cycle length is also exactly $100$ and the variance of the probability distribution
-matches the variance that we would get in the worst case scenario, i.e. at the half-integers. It is
-apparent by now that the main task to make this work is to derive a formula or algorithm to compute the 3 desired cycle lengths $c_1, c_2, c_3$ along with their associated probabilities
-$p_1, p_2, p_3$ of producing cycles of these lengths from the given desired mean cycle length $c$. 
-As before, let $c_f = c - floor(c)$ denote the fractional part of our desired (mean) cycle length 
-$c$. If $c_f = 0.5$, we expect to be in an edge case where from the 3 lengths $c_1,c_2,c_3$ are only
-2 actually used because one gets a probability of zero. This is our reference case and we need to
+To develop a solution strategy, let's assume that our desired cycle length is $c = 100.0$. With the
+basic algorithm above, we would get a clean signal with no noise modulation at all. The new idea is
+now to use cycles of the 3 lengths $c_1 = 99, c_2 = 100, c_3 = 101$ in such a way that the mean
+cycle length is also exactly $100$ and the variance of the probability distribution matches the
+variance that we would get in the worst case scenario, i.e. at the half-integers. It is apparent by
+now that the general task to make this work is to derive a formula or algorithm to compute the 3
+desired cycle lengths $c_1, c_2, c_3$ along with their associated probabilities $p_1, p_2, p_3$ of
+producing cycles of these lengths from the given desired mean cycle length $c$. As before, let
+$c_f = c - floor(c)$ denote the fractional part of our desired (mean) cycle length $c$. If
+$c_f = 0.5$, we expect to be in an edge case where from the 3 lengths $c_1,c_2,c_3$ are only 2 actually used because one gets a probability of zero. This is our reference case and we need to
 produce the values $c_1,c_2,c_3$ and $p_1,p_2,p_3$ for the other cases in such a way, that the noise
 has always the same characteristics. We will use $c_2$ as our middle cycle length and we will always
 have $c_1 = c_2 - 1$ and $c_3 = c_2 + 1$. In the case where $c_f < 0.5$, we will need to use
@@ -87,7 +88,7 @@ Now that we have determined the 3 cycle lengths $c_1,c_2,c_3$ to use, the next s
 their associated probabilities $p_1,p_2,p_3$. To determine 3 values, we need 3 equations. The first
 equation can be obtained from the requirement that our $p$ values have to add up to $1$ if we want
 to interpret them as probabilities for 3 mutually exclusive events that together cover all the
-possibilities, so we requir: $p_1 + p_2 + p_3 = 1$. Next, we want to require that the mean cycle
+possibilities, so we require: $p_1 + p_2 + p_3 = 1$. Next, we want to require that the mean cycle
 length is our prescribed $c$, so we could use $p_1 c_1 + p_2 c_2 + p_3 c_3 = c$. However, for the
 derivation, it turns out to be more convenient to express this equation in terms of the errors that
 we make with our 3 cycle lengths. That is, we define the 3 errors $e_1 = c_1 - c, e_2 = c_2 - c,
@@ -134,8 +135,10 @@ Experimental Results
 --------------------
 
 ToDo: Review the experimental results and maybe show some plots of spectra here. Maybe create audio
-examples and link them here. Maybe implement an interactive example implemenation using APE and
-produce a little demo video with it and link to it here.
+examples and link them here. Maybe implement an interactive example implementation using APE and
+produce a little demo video with it and link to it here. Apply it to the supersaw. I think, it 
+should be great for that because the introduced noise further thickens the spectrum and adds some
+element of random modulation to the signal while also anti-aliasing it.
 
 
 
