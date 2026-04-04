@@ -41,6 +41,7 @@ public:
     setPeriodNoUpdate(newPeriod); 
     updateCycleLength(phasorRangeClosed);
   }
+  // Maybe rename to setMeanPeriod()
 
   /** Sets up a new period length just like setPeriod() does but without immediately updating the
   probability distribution and current cycle length. This results in the behavior that the new 
@@ -48,6 +49,7 @@ public:
   cycle. */
   void setPeriodNoUpdate(T newPeriod)
   { calcCycleDistribution(newPeriod, &lenMid, &probShort, &probMid); }
+  // Maybe rename to setMeanPeriodNoUpdate()
 
   /** Sets the seed for the pseudo random number generator. */
   void setRandomSeed(uint32_t newSeed) { seed = newSeed; }
@@ -57,7 +59,7 @@ public:
 
   /** Returns the average length of the cycles that are being produced. */
   T getPeriod();
-  // Needs tests.
+  // Needs tests. Maybe rename to getMeanPeriod()
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
@@ -89,6 +91,8 @@ public:
   // \name Helpers
 
   static void calcCycleDistribution(T period, T* midLength, T* probShort, T* probMid);
+  // Maybe rename parameter midLength to lenMid to make it consistent with the name of our member.
+  // The variable plays the same role.
 
 
 protected:
@@ -109,17 +113,13 @@ protected:
 
   // Members that are accessed per sample:
   T phaseSlope;    // Phase increment per sample.
-  T sampleCount;   // Is always in interval [0, cycleLength).
-  T cycleLength;   // Is midLength or midLength + 1 or midLength - 1.    Rename to lenNow
+  T sampleCount;   // Is always in interval [0, lenNow).
+  T lenNow;        // Is lenMid or lenMid + 1 or lenMid - 1.
 
   // Members that are accessed per cycle:
   T lenMid;        // The middle one of the 3 cycle lengths to be produced.
-  T probShort;     // Probability to use midLength - 1.
-  T probMid;       // Probability to use midLength.
-  // Maybe rename cycleLength and midLength in lengthCurrent and lengthMid. Rationale: lengthMid 
-  // would be more consistent with probShort and probMid (the "Mid" would be the suffix). Maybe
-  // use lenCurrent (or lenNow) and lenMid. Maybe rename sawSlope to phaseSlope. Yes -  I think
-  // lengthMid and lengthNow are the best choices.
+  T probMid;       // Probability to use lenMid.
+  T probShort;     // Probability to use lenMid - 1.
 
   // Embedded DSP objects:
   rsRandomGenerator<T> prng;
@@ -139,24 +139,24 @@ template<class T>
 inline void rsPitchDitherOsc<T>::updateSampleCount(bool closed)
 {
   sampleCount += T(1);             // Update counter. We produce 1 sample at each update.
-  if(sampleCount >= cycleLength)   // Is cycle finished?
+  if(sampleCount >= lenNow)        // Is cycle finished?
   {                                // If so..
     sampleCount = T(0);            // ..Wrap around sample counter.
-    updateCycleLength(closed);     // ..Compute cycleLength and phaseSlope for next cycle.
+    updateCycleLength(closed);     // ..Compute lenNow and phaseSlope for next cycle.
   }
 }
 
 template<class T> 
 inline void rsPitchDitherOsc<T>::updateCycleLength(bool closed)
 {
-  T r = prng.getSampleInUnitRange();              // Random number in interval [0,1).
+  T r = prng.getSampleInUnitRange();         // Random number in interval [0,1).
   if(r < probShort)
-    cycleLength = lenMid - T(1);                  // Next cycle is short.
+    lenNow = lenMid - T(1);                  // Next cycle is short.
   else if(r < probShort + probMid)
-    cycleLength = lenMid;                         // Next cycle is medium.
+    lenNow = lenMid;                         // Next cycle is medium.
   else
-    cycleLength = lenMid + T(1);                  // Next cycle is long.
-  phaseSlope = T(1) / (cycleLength - T(closed));  // Slope depends on cycle length.
+    lenNow = lenMid + T(1);                  // Next cycle is long.
+  phaseSlope = T(1) / (lenNow - T(closed));  // Slope depends on cycle length.
 
   // Maybe as an optimization, pass the "closed" parameter not as bool but as type T so we can 
   // avoid the type conversion. Maybe we should assert that the value represents either T(0) or
@@ -181,7 +181,7 @@ void rsPitchDitherOsc<T>::reset(bool closed)
 {
   sampleCount = T(0);
   prng.setState(seed);
-  updateCycleLength(closed);                 // Important for correct initial cycleLength.  
+  updateCycleLength(closed);                 // Important for correct initial lenNow.  
 }
 
 

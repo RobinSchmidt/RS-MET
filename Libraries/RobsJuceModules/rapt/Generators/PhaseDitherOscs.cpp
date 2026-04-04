@@ -21,10 +21,10 @@ T rsPitchDitherOsc<T>::getPeriod()
   //
   // ToDo:
   // Make it more readable by splitting the computations into things like:
-  // lengthShort = lengthMid - 1;
-  // lengthLong  = lengthMid + 1;
+  // lenShort = lenMid - 1;
+  // lenLong  = lenMid + 1;
   // ...
-  // return probShort * lengthSort  +  probMid * lengthMid  +  problong * lengthLong;
+  // return probShort * lenSort  +  probMid * lenMid  +  probLong * lenLong;
 }
 
 template<class T>
