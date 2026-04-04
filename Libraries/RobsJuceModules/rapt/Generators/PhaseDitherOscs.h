@@ -5,10 +5,14 @@
 
 /** A realtime oscillator that produces pitch-dithered waveforms. ...TBC...
 
-ToDo: Explain the idea of pitch dithering
+ToDo: 
+Explain the idea of pitch dithering. Refer to the documents that I wrote up about the idea. They 
+are currently in draft state, though
 
-Warning: This class is not yet well tested and should be considered rather preliminary. Some 
-details of the implementation may change. There may be bugs. */
+Warning: 
+This class is not yet well tested and should be considered rather preliminary. Some 
+details of the implementation may change. The API may (and probably will) also change. And there
+may be bugs. */
 
 template<class T> 
 class rsPitchDitherOsc
@@ -37,7 +41,6 @@ public:
     setPeriodNoUpdate(newPeriod); 
     updateCycleLength(phasorRangeClosed);
   }
-  // Maybe it should take a bool parameter "phasorRangeClosed"
 
   /** Sets up a new period length just like setPeriod() does but without immediately updating the
   probability distribution and current cycle length. This results in the behavior that the new 
