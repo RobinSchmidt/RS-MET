@@ -29,7 +29,7 @@ T rsPitchDitherOsc<T>::getPeriod()
 
 template<class T>
 void rsPitchDitherOsc<T>::calcCycleDistribution(
-  T period, T* midLength, T* probShort, T* probMid)
+  T period, T* lenMid, T* probShort, T* probMid)
 {
   // Compute lengths:
   T floorLength = rsFloor(period);
@@ -56,7 +56,7 @@ void rsPitchDitherOsc<T>::calcCycleDistribution(
   T S  = T(1) / (e3*(m1-m2) - e2*(m1-m3) + e1*(m2-m3));
 
   // Compute outputs:
-  *midLength = L2;
+  *lenMid    = L2;
   *probShort = (M2*e3 - M3*e2) * S;
   *probMid   = (M3*e1 - M1*e3) * S;
   //*probLong  = (M1*e2 - M2*e1) * S;  // Would be redundant. See Notes
@@ -76,7 +76,7 @@ void rsPitchDitherOsc<T>::calcCycleDistribution(
 
 Notes:
 
-- The members sampleCount, cycleLength and midLength are actually integer numbers but we let 
+- The members sampleCount, lenNow and lenMid are actually integer numbers but we let 
   them be of type T (which is typically float or double) anyway for optimization purposes. We 
   want to avoid int-to-float conversions because they are costly. The other members are indeed
   true floating point values that are not restricted to integers.
@@ -132,7 +132,7 @@ Notes:
   getSamplePhasorHalfOpen(). Or maybe the "HalfOpen" version should go without qualification
   to indicate that this is the default. But will this lead to detuning? Is the current 
   implementation actually correctly tuned anyway? Maybe currently the cycles are one sample
-  too short or too long? Verify this!
+  too short or too long? Verify this! ...done! Nope - it's alright. The period length is correct.
 
 - Implement more waveforms: square, pulse, triangle, sine, trisaw, etc. Write into the 
   documentation that these standard waveforms can be used as examples for client code to 

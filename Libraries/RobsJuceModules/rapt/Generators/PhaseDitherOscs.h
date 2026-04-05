@@ -72,6 +72,8 @@ public:
   // right thing to do - at least not for producing sine-waves. For producing saws, it may actually
   // e appropriate, though. I think, in general, whenever there is a jump discontinuity at the 
   // wrap-around point, we may want the closed interval and otherwise the half-open one.
+  // ...ok...this can now be controlled by the caller via the parameter phasorRangeClosed. I think,
+  // this is a rather awkward API but it seems we really need to somehow support both variants.
 
 
   /** Returns a sample of an upward sawtooth wave */
@@ -90,9 +92,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Helpers
 
-  static void calcCycleDistribution(T period, T* midLength, T* probShort, T* probMid);
-  // Maybe rename parameter midLength to lenMid to make it consistent with the name of our member.
-  // The variable plays the same role.
+  static void calcCycleDistribution(T period, T* lenMid, T* probShort, T* probMid);
+
 
 
 protected:
@@ -112,14 +113,15 @@ protected:
   // \name Data
 
   // Members that are accessed per sample:
-  T phaseSlope;    // Phase increment per sample.
-  T sampleCount;   // Is always in interval [0, lenNow).
+  T phaseSlope;    // Increment per sample for phasor (which is in [0,1] or [0,1)).
+  T sampleCount;   // Is integer and always in the interval [0, lenNow-1].
   T lenNow;        // Is lenMid or lenMid + 1 or lenMid - 1.
 
   // Members that are accessed per cycle:
-  T lenMid;        // The middle one of the 3 cycle lengths to be produced.
-  T probMid;       // Probability to use lenMid.
-  T probShort;     // Probability to use lenMid - 1.
+  T lenMid;        // The middle one of the 3 integer cycle lengths to be produced.
+  T probMid;       // Probability for lenMid.
+  T probShort;     // Probability for lenMid - 1.
+  //T probLong;    // Probability for lenMid + 1. Redundant: 1 - probMid - probShort.
 
   // Embedded DSP objects:
   rsRandomGenerator<T> prng;
@@ -162,7 +164,7 @@ inline void rsPitchDitherOsc<T>::updateCycleLength(bool closed)
   // avoid the type conversion. Maybe we should assert that the value represents either T(0) or
   // T(1). Maybe add a function rsIsBoolean(T x) to the library that returns true iff x is 0 or 1
   // and use that function in a rsAssert here. Maybe have static const members phasorRangeClosed, 
-  // phasorRangeHalfOpen of type T that are fixed to 0 and 1 such that the caller can uses these
+  // phasorRangeHalfOpen of type T that are fixed to 0 and 1 such that the caller can use these
   // as symbolic constants rather than having itself to make sure to only pass 0 or 1.
 }
 

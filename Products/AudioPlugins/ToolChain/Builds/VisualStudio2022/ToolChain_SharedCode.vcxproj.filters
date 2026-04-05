@@ -3511,6 +3511,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\VariousOscillators.cpp">
       <Filter>JUCE Modules\rapt\Generators</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\WaveForms.cpp">
+      <Filter>JUCE Modules\rapt\Generators</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\BasicMathFunctions.cpp">
       <Filter>JUCE Modules\rapt\Math\Functions</Filter>
     </ClCompile>
@@ -8308,6 +8311,9 @@
       <Filter>JUCE Modules\rapt\Generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\VariousOscillators.h">
+      <Filter>JUCE Modules\rapt\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\WaveForms.h">
       <Filter>JUCE Modules\rapt\Generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\BasicMathFunctions.h">

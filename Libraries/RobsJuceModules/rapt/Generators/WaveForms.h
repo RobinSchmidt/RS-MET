@@ -1,0 +1,6 @@
+#ifndef RAPT_WAVEFORMS_H_INCLUDED
+#define RAPT_WAVEFORMS_H_INCLUDED
+
+
+
+#endif
