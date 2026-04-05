@@ -28,8 +28,7 @@ T rsPitchDitherOsc<T>::getPeriod()
 }
 
 template<class T>
-void rsPitchDitherOsc<T>::calcCycleDistribution(
-  T period, T* lenMid, T* probShort, T* probMid)
+void rsPitchDitherOsc<T>::calcCycleDistribution(T period, T* lenMid, T* probShort, T* probMid)
 {
   // Compute lengths:
   T floorLength = rsFloor(period);
