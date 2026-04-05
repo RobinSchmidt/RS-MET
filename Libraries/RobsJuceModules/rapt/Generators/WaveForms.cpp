@@ -97,4 +97,10 @@ ToDo:
   cases) and if it's all ok, add to the documentation that client code can reverse the waveforms in
   this way.
 
+- Maybe make an enum class with all the wave shapes and split it into two halfs based on whether
+  the wavform wants a phasor in [0,1] or in [0,1) and then provide a function 
+  wantsClosedPhasorRange() that takes a value from that enum. The implementation can then just 
+  compare the given value to some threshold to make the decision: If it's less than the 1st entry
+  that wants the closed range, return false, else return true. 
+
 */

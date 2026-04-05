@@ -78,49 +78,9 @@ Notes:
   initial state. So we leave this member initialization to the constructor which calls some 
   functions to do the appropriate computations.
 
-- Partially done:
-  Maybe factor out all the stuff that has to do with the pitch-dithering into a separate class
-  such that we can re-use the code for other types of pitch-dithering oscillators like, for 
-  example, table lookup oscillators. Or maybe modify this class such that it can also produce
-  a sawtooth in the range [0,1) that other oscillators can use as phasor. Maybe have a 
-  function getPhase() and getSample() would just return 2*phase - 1. Check, if we currently 
-  produce a saw in [-1,+1] or in [-1,+1) and document that. Maybe allow for different modes.
-  Maybe the mode can be a compile-time parameter, i.e. a template parameter. Or maybe factor 
-  out the stuff that is common to all variants into a baseclass and realize the different 
-  variants as subclasses. The different subclasses need different implementations of 
-  getSample() and updateCycleLength() but most of the code in these functions will be the same
-  so maybe that should be factored out into functions. In getSample(), only the first line
-  T y = T(-1) + sawSlope * sampleCount;  will be different. In the the 0..1 case, the T(-1)
-  will be missing because we start at 0. In updateCycleLength(), only the last line 
-  sawSlope = T(2) / (cycleLength - T(1));  will be different. In the 0..1 case, we need to 
-  adapt the formula to T(1) / ... instead of T(2) / .... I think, if we want to produce closed
-  intervals rather than half-open ones, we need to get rid of the " - T(1)" in the 
-  denominator. ..but verify this! In general, it could make sense to have 4 variants with the 
-  ranges [-1,+1], [-1,+1), [0,1], [0,1). Maybe the [0,1) version is the most important one. 
-  This is the typical range for a phasor. This can be seen from what would happen if we would 
-  use a phasor with range [0,1] with a sine wave produced as y = sin(2*PI*phasor). With the 
-  closed interval, the 0 value would be repeated: Once it would occur at phasor = 0 and 
-  secondly at phasor = 2*PI. That's clearly wrong, so [0,1) is the correct range for a phasor.
-  To create a supersaw, it could actually be more efficient to just sum up the phasors and 
+- To create a supersaw, it could actually be more efficient to just sum up the phasors and 
   then subtract sumOfAmplitudes once from the whole supersaw instead of subtracting 1 from
-  each saw. So maybe it would be best to provide the two functions getPhasorSample() and 
-  getSawSample() and the latter is just implemented as: "return 2 * getPhasorSample() - 1".
-  Or maybe it should be called getSample(). But we could also rename this class to 
-  rsPitchDitherOsc without limiting it to saw waves. in this case, getSawSample() would make 
-  more sense. And then we could also have getSinSample(), getRectSample(), getTriSample(),
-  getPulseSample(T pw), getTriSawSample(..), etc. If we do this, we may also rename sawSlope
-  to phaseSlope. ...BUT: I actually do thing that we produce the closed interval [0,1] here 
-  and in the case of sawtooth waves, it is actually sort of appropriate because in the case
-  of a jump discontinuity at the wrap around, it can make sense to return at the sample 
-  instant zero one value and at the sample instant at the end of cycle the other value. 
-  Hmmm...not sure what to do. Both variants have convincing arguments. Maybe we should 
-  implement both and let the user choose? Maybe at compile time? The devil is in the detail!
-  Maybe updateCycleLength could take a bool parameter closedInterval or something like that
-  and we could give the use two versions of getSamplePhasor() like getSamplePhasorClosed(),
-  getSamplePhasorHalfOpen(). Or maybe the "HalfOpen" version should go without qualification
-  to indicate that this is the default. But will this lead to detuning? Is the current 
-  implementation actually correctly tuned anyway? Maybe currently the cycles are one sample
-  too short or too long? Verify this! ...done! Nope - it's alright. The period length is correct.
+  each saw. 
 
 - Implement more waveforms: square, pulse, triangle, sine, trisaw, etc. Write into the 
   documentation that these standard waveforms can be used as examples for client code to 

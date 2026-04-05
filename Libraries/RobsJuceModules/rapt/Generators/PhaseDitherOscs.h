@@ -68,15 +68,14 @@ public:
   // \name Processing
 
   /** Returns a sample of a phasor value, i.e. a value in the range 0..1 that can be used to create
-  various waveforms. ...TBC... */
+  various waveforms. Via the parameter "phasorRangeClosed", callers can decide if they want the 
+  phasor to be produced in the closed interval [0,1] or in the half-open interval [0,1). See the
+  documentation of class rsWaveForms for some discussion in which circumtances one may want to opt
+  for one or the other variant. */
   inline T getSamplePhasor(bool phasorRangeClosed);
-  // ToDo: Document, if the produced value is in the closed interval [0,1] or in the half-open 
-  // interval [0,1). I think, it's the former and I also think that this might not really be the 
-  // right thing to do - at least not for producing sine-waves. For producing saws, it may actually
-  // e appropriate, though. I think, in general, whenever there is a jump discontinuity at the 
-  // wrap-around point, we may want the closed interval and otherwise the half-open one.
-  // ...ok...this can now be controlled by the caller via the parameter phasorRangeClosed. I think,
-  // this is a rather awkward API but it seems we really need to somehow support both variants.
+  // I think, having this bool parameter is a rather awkward API but it seems we really need to 
+  // somehow support both variants. Can we do better? Maybe the default should be half-open and 
+  // maybe we could have another function getSamplePhasorClosed()
 
   // Abbreviation for convenience in the functions below:
   using WF = rsWaveForms<T>;
