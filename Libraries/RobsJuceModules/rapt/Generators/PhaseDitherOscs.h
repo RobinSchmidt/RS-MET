@@ -91,6 +91,7 @@ public:
     return WF::sawDown(getSamplePhasor(true)); // New
     //return T(+1) - T(2) * getSamplePhasor(true); // Old
   }
+  // Maybe get rid and rename ...sawUp() to just saw()
 
   /** Returns a sample of a pulse wave with given pulse-width. The default value of 0.5 produces a 
   square wave. */
@@ -98,6 +99,8 @@ public:
   {
     return WF::pulse(getSamplePhasor(true), pw);
   }
+
+  // ToDo: Add getSampleSine(). It should use getSamplePhasor(false)
 
   /** Resets the internal state, i.e. the sample counter and the random generator. */
   void reset(bool phasorRangeClosed);
