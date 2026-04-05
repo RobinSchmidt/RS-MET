@@ -42,6 +42,7 @@ public:
   the cycle lengths and update the currently used cycle length. */
   void setMeanPeriod(T newPeriod, bool phasorRangeClosed)
   { setMeanPeriodNoUpdate(newPeriod); updateCycleLength(phasorRangeClosed); }
+  // Maybe rename to setMeanCycleLength
 
   /** Sets up a new period length just like setPeriod() does but without immediately updating the
   probability distribution and current cycle length. This results in the behavior that the new 
@@ -84,7 +85,9 @@ public:
   square wave. */
   inline T getSamplePulse(T pw = T(0.5)) { return WF::pulse(getSamplePhasor(true), pw); }
 
-  // ToDo: Add getSampleSine(). It should use getSamplePhasor(false)
+  /** Returns a sample of a sine wave. */
+  inline T getSampleSine() { return WF::sine(getSamplePhasor(false)); }
+  // Needs tests
 
   /** Resets the internal state, i.e. the sample counter and the random generator. */
   void reset(bool phasorRangeClosed);

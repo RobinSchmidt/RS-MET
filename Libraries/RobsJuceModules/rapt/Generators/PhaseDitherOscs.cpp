@@ -12,7 +12,7 @@ T rsPitchDitherOsc<T>::getMeanPeriod()
   T lenShort = lenMid - T(1);
   T lenLong  = lenMid + T(1);
   T probLong = T(1) - (probShort + probMid);
-  return probShort * lenShort  +  probMid * lenMid  +  probLong * lenLong;
+  return probShort*lenShort + probMid*lenMid + probLong*lenLong;
 
   // In general, if we have 3 integer cycle lengths given by L1,L2,L3 and cycles with these 3 
   // lengths are produced with probabilities p1,p2,p3 respectively, then the average cycle length P
@@ -48,7 +48,7 @@ void rsPitchDitherOsc<T>::calcCycleDistribution(T period, T* lenMid, T* probShor
   T m3 = e3*e3;
   T M  = T(0.25);
   T M1 = M - m1;
-  T M2 = M - m2; 
+  T M2 = M - m2;
   T M3 = M - m3;
   T S  = T(1) / (e3*(m1-m2) - e2*(m1-m3) + e1*(m2-m3));
 
@@ -65,7 +65,10 @@ void rsPitchDitherOsc<T>::calcCycleDistribution(T period, T* lenMid, T* probShor
 
   // ToDo: Rename m1,m2,m3 to v1,v2,v3 and L1,L2,L3 to c1,c2,c3 to be consistent with the .md file.
   // Maybe we also need to rename M,M1,M2,M3,S. Maybe also use c instead of "period" and ci,cf like
-  // in the .md file.
+  // in the .md file. Maybe m should become v and M1,M2,M3 become d1,d2,d3 (for deviation)
+  // 
+  // Maybe document that this calculation is really the heart and soul of this idea and the 
+  // embodiment main result of the research effort.
 }
 
 //=================================================================================================
@@ -145,6 +148,8 @@ Notes:
 
 
 ToDo:
+
+- Add getSampleTriangle(), getSampleTriSaw(p, shape)
 
 - Drag over the experiments and unit tests from the research repo into the main repo. Implement 
   some unit tests here.
