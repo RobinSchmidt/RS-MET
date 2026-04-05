@@ -75,16 +75,29 @@ public:
   // ...ok...this can now be controlled by the caller via the parameter phasorRangeClosed. I think,
   // this is a rather awkward API but it seems we really need to somehow support both variants.
 
+  // Abbreviation for convenience in the functions below:
+  using WF = rsWaveForms<T>;
 
   /** Returns a sample of an upward sawtooth wave */
-  inline T getSampleSawUp()   { return T(-1) + T(2) * getSamplePhasor(true); }
+  inline T getSampleSawUp()
+  { 
+    return WF::sawUp(getSamplePhasor(true)); // New
+    //return T(-1) + T(2) * getSamplePhasor(true); // Old
+  }
 
   /** Returns a sample of an downward sawtooth wave */
-  inline T getSampleSawDown() { return T(+1) - T(2) * getSamplePhasor(true); }
+  inline T getSampleSawDown() 
+  { 
+    return WF::sawDown(getSamplePhasor(true)); // New
+    //return T(+1) - T(2) * getSamplePhasor(true); // Old
+  }
 
   /** Returns a sample of a pulse wave with given pulse-width. The default value of 0.5 produces a 
   square wave. */
-  inline T getSamplePulse(T pw = T(0.5));
+  inline T getSamplePulse(T pw = T(0.5))
+  {
+    return WF::pulse(getSamplePhasor(true), pw);
+  }
 
   /** Resets the internal state, i.e. the sample counter and the random generator. */
   void reset(bool phasorRangeClosed);
@@ -168,6 +181,8 @@ inline void rsPitchDitherOsc<T>::updateCycleLength(bool closed)
   // as symbolic constants rather than having itself to make sure to only pass 0 or 1.
 }
 
+// Old:
+/*
 template<class T> 
 inline T rsPitchDitherOsc<T>::getSamplePulse(T pw) 
 { 
@@ -177,6 +192,7 @@ inline T rsPitchDitherOsc<T>::getSamplePulse(T pw)
   else
     return T(+1);
 }
+*/
 
 template<class T> 
 void rsPitchDitherOsc<T>::reset(bool closed)

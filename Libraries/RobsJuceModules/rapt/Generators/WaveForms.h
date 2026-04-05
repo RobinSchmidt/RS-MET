@@ -34,6 +34,8 @@ public:
   // instead will fall one sample short of reaching it. It's still a reasonable saw, though
 
   static inline T sawDown(T p) { return T(+1) - T(2) * p; }
+  // Maybe remove and then rename sawUp to just saw. The "down" version can be obtained by simply
+  // negating so it seems unnecessary to provide a separate function for it.
 
   static inline T pulse(T p, T pw = T(0.5))
   {
@@ -42,6 +44,9 @@ public:
     else
       return T(+1);
   }
+  // Maybe rename to pulseUp and add pulseDown that starts at +1 and goes down to -1. But maybe 
+  // it's not really a good idea to have seprate functions to produce waveforms that can be 
+  // trivially obtained from other by simple negation.
 
   static inline T sine(T p) { return rsSin(T(2 * PI) * p); }
   // ToDo: Document that it is mandatory to use a phasor in the half-open interval [0,1) for this.
