@@ -26,36 +26,36 @@ T rsPitchDitherOsc<T>::getMeanPeriod()
 }
 
 template<class T>
-void rsPitchDitherOsc<T>::calcCycleDistribution(T period, T* lenMid, T* probShort, T* probMid)
+void rsPitchDitherOsc<T>::calcCycleDistribution(T c, T* lenMid, T* probShort, T* probMid)
 {
   // Compute lengths:
-  T floorLength = rsFloor(period);
-  T fracLength  = period - floorLength;
-  T L1, L2, L3;
-  if(fracLength < T(0.5))
-    L1 = floorLength - T(1);
+  T ci = rsFloor(c);
+  T cf = c - ci;
+  T c1, c2, c3;
+  if(cf < T(0.5))
+    c1 = ci - T(1);
   else
-    L1 = floorLength;
-  L2 = L1 + T(1);
-  L3 = L2 + T(1);
+    c1 = ci;
+  c2 = c1 + T(1);
+  c3 = c2 + T(1);
 
   // Compute intermediates:
-  T e1 = L1 - period;
-  T e2 = L2 - period;
-  T e3 = L3 - period;
-  T m1 = e1*e1;
-  T m2 = e2*e2;
-  T m3 = e3*e3;
-  T M  = T(0.25);
-  T M1 = M - m1;
-  T M2 = M - m2;
-  T M3 = M - m3;
-  T S  = T(1) / (e3*(m1-m2) - e2*(m1-m3) + e1*(m2-m3));
+  T e1 = c1 - c;
+  T e2 = c2 - c;
+  T e3 = c3 - c;
+  T v1 = e1 * e1;
+  T v2 = e2 * e2;
+  T v3 = e3 * e3;
+  T v  = T(0.25);
+  T d1 = v - v1;
+  T d2 = v - v2;
+  T d3 = v - v3;
+  T s  = T(1) / (e3*(v1-v2) - e2*(v1-v3) + e1*(v2-v3));
 
   // Compute outputs:
-  *lenMid    = L2;
-  *probShort = (M2*e3 - M3*e2) * S;
-  *probMid   = (M3*e1 - M1*e3) * S;
+  *lenMid    = c2;
+  *probShort = (d2*e3 - d3*e2) * s;
+  *probMid   = (d3*e1 - d1*e3) * s;
   //*probLong  = (M1*e2 - M2*e1) * S;  // Would be redundant. See below.
   
   // We don't have a probLong parameter because that would be redundant. It would always be given
@@ -65,7 +65,11 @@ void rsPitchDitherOsc<T>::calcCycleDistribution(T period, T* lenMid, T* probShor
 
   // ToDo: Rename m1,m2,m3 to v1,v2,v3 and L1,L2,L3 to c1,c2,c3 to be consistent with the .md file.
   // Maybe we also need to rename M,M1,M2,M3,S. Maybe also use c instead of "period" and ci,cf like
-  // in the .md file. Maybe m should become v and M1,M2,M3 become d1,d2,d3 (for deviation)
+  // in the .md file. Maybe m should become v and M1,M2,M3 become d1,d2,d3 (for deviation). Maybe 
+  // compute the lengths starting with c2 and set c1 = c2-1; c3 = c2+1; because that's how explain
+  // it in the md file.
+  // 
+  // 
   // 
   // Maybe document that this calculation is really the heart and soul of this idea and the 
   // embodiment main result of the research effort.
