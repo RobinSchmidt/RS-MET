@@ -3,6 +3,9 @@
 /*
 
 ToDo:
+
+- Maybe add an enum class to enumerate the different waveforms. But maybe that should belong to
+  rosic
  
 - Document the functions sawUp(), sawDown(), etc. The documentation should tell if the phasor is
   expected in the interval [0,1) or [0,1). I think, the default should be [0,1).

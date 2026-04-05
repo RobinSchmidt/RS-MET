@@ -79,7 +79,7 @@ public:
   using WF = rsWaveForms<T>;
 
   /** Returns a sample of an upward sawtooth wave */
-  inline T getSampleSawUp() { return WF::sawUp(getSamplePhasor(true)); }
+  inline T getSampleSaw() { return WF::sawUp(getSamplePhasor(true)); }
 
   /** Returns a sample of a pulse wave with given pulse-width. The default value of 0.5 produces a 
   square wave. */

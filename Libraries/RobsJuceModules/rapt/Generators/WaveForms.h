@@ -33,7 +33,7 @@ public:
   // the half-open interval [0,1) will have the effect that the saw will not actually hit +1 but 
   // instead will fall one sample short of reaching it. It's still a reasonable saw, though
 
-  static inline T sawDown(T p) { return T(+1) - T(2) * p; }
+  //static inline T sawDown(T p) { return T(+1) - T(2) * p; }
   // Maybe remove and then rename sawUp to just saw. The "down" version can be obtained by simply
   // negating so it seems unnecessary to provide a separate function for it.
 
