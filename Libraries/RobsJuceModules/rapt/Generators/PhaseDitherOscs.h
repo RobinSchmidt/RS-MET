@@ -1,6 +1,8 @@
 #ifndef RAPT_PHASEDITHEROSCS_H_INCLUDED
 #define RAPT_PHASEDITHEROSCS_H_INCLUDED
 
+// The filename and #define is WRONG! It should be PitchDitherOsc not PhaseDitherOsc!
+
 //=================================================================================================
 
 /** A realtime oscillator that produces pitch-dithered waveforms. ...TBC...
@@ -107,7 +109,7 @@ protected:
   // \name Internals
 
   /** Updates our sampleCount member and takes care of appropriate wrap around with recomputation 
-  of the new cycle length. */
+  of the new cycle length if needed (which is the case when a cycle was just finished). */
   inline void updateSampleCount(bool phasorRangeClosed);
 
   /** Updates our cycleLength member by computing a new (pseudo) random cycle length to be used 
@@ -137,15 +139,15 @@ protected:
 template<class T> 
 inline T rsPitchDitherOsc<T>::getSamplePhasor(bool closed)
 {
-  T p = phaseSlope * sampleCount;  // Compute output sample.
-  updateSampleCount(closed);       // Update sample counter. Possibly wraps around.
-  return p;                        // Return output sample.
+  T p = phaseSlope * sampleCount;  // Compute phasor output sample.
+  updateSampleCount(closed);       // Increment with possible wraparound.
+  return p;                        // Return phasor output sample.
 }
 
 template<class T> 
 inline void rsPitchDitherOsc<T>::updateSampleCount(bool closed)
 {
-  sampleCount += T(1);             // Update counter. We produce 1 sample at each update.
+  sampleCount += T(1);             // We produce 1 sample at each update.
   if(sampleCount >= lenNow)        // Is cycle finished?
   {                                // If so..
     sampleCount = T(0);            // ..Wrap around sample counter.
