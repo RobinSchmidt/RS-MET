@@ -56,7 +56,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-  /** Returns the average length of the cycles that are being produced. */
+  /** Returns the average length of the cycles that are being produced. It is given by a weighted
+  sum of the 3 integer cycle lengths that are produced where the weights are given by their 
+  respective probabilities. The formula is cM = p1*c1 + p2*c2 + p3*c3 where cM is the mean cycle
+  length, c1,c2,c3 are the actually produced integer cycle lengths and p1,p2,p3 are their
+  associated probabilities. */
   T getMeanCycleLength();
   // Needs tests.
 
@@ -101,11 +105,11 @@ public:
   the case that c1 = c2 - 1, c3 = c2 + 1, p3 = 1 - (p1 + p2), so we have output parameters only for 
   c2 (= "lenMid"), p1 (= "probShort") and p2 (= "probMid"). Computing the rest, if really needed 
   (which it usually isn't), is up to the caller because this function is meant to be as efficient
-  as possible because it's supposed to be called in a realtime context. This calculation is really
-  the heart and soul of the pitch dithering idea that makes this oscillator tick. That's why it has
-  been made static and given output parameters rather than just operating directly on our member
-  variables because we want to make the implementation re-usable by other oscillator code that also
-  wants to implement pitch dithering. */
+  as possible because it's supposed to be called in a realtime context. The calculation implemented
+  by this function is really the heart and soul of the pitch dithering idea that makes this 
+  oscillator tick. That's why it has been made static and given output parameters rather than just
+  operating directly on our member variables because we want to make the implementation re-usable
+  by other oscillator code that also wants to implement pitch dithering. */
   static void calcCycleDistribution(T meanCycleLength, T* lenMid, T* probShort, T* probMid);
 
 

@@ -14,15 +14,11 @@ T rsPitchDitherOsc<T>::getMeanCycleLength()
   T probLong = T(1) - (probShort + probMid);
   return probShort*lenShort + probMid*lenMid + probLong*lenLong;
 
-  // In general, if we have 3 integer cycle lengths given by L1,L2,L3 and cycles with these 3 
-  // lengths are produced with probabilities p1,p2,p3 respectively, then the average cycle length P
-  // will be: P = p1*L1 + p2*L2 + p3*L3. In our particular case here, we will have a given middle 
-  // length L2 and the short and long lengths L1,L3 are then given as L1 = L2-1, L3 = L2+1. And, of
-  // course, for the probabilities we will always have p1 + p2 + p3 = 1 such that 
-  // p3 = 1 - (p1 + p2).
-
-  // ToDo: Rename L1,L2,L3 to c1,c2,c3 and P to c or cAvg or cMean in the comment to be consistent
-  // with the .md and .h file.
+  // In general, if we have 3 integer cycle lengths given by c1,c2,c3 and cycles with these 3 
+  // lengths are produced with probabilities p1,p2,p3 respectively, then the mean cycle length cM
+  // will be: cM = p1*c1 + p2*c2 + p3*c3. In our particular case here, we will have a given middle 
+  // length c2 and the short and long lengths c1,c3 are then given as c1 = c2-1, c3 = c2+1. And, of
+  // course, for the probabilities we will always have p1+p2+p3 = 1 such that p3 = 1 - (p1 + p2).
 }
 
 template<class T>
@@ -31,16 +27,15 @@ void rsPitchDitherOsc<T>::calcCycleDistribution(T c, T* lenMid, T* probShort, T*
   // Compute cycle lengths c1,c2,c3:
   T ci = rsFloor(c);                   // Integer part of desired cycle length c
   T cf = c - ci;                       // Fractional part of it
-  T c1, c2, c3;                        // Our 3 integer cycle lengths to be used
-  c2 = ci;                             // Length of the medium length cycle
+  T c2 = ci;                           // Length of the middle length cycle
   if(cf >= T(0.5))                     // If fractional part of c is >= 0.5...
-    c2 += T(1);                        // ..it must be one sample longer
-  c1 = c2 - T(1);                      // Length of the short cycle
-  c3 = c2 + T(1);                      // Length of the long cycle
+    c2 += T(1);                        // ..the mid length must be one sample longer
+  T c1 = c2 - T(1);                    // Short cycles are one sample shorter than mid
+  T c3 = c2 + T(1);                    // Long cycles are one sample longer than mid
 
   // Compute intermediates:
   T e1 = c1 - c;                       // Length error of short cycle
-  T e2 = c2 - c;                       // Length error of medium cycle
+  T e2 = c2 - c;                       // Length error of mid cycle
   T e3 = c3 - c;                       // Length error of long cycle
   T v1 = e1 * e1;                      // Variance contribution from short cycles
   T v2 = e2 * e2;                      // Variance contribution from mid cycles
@@ -54,14 +49,14 @@ void rsPitchDitherOsc<T>::calcCycleDistribution(T c, T* lenMid, T* probShort, T*
   // Compute and assign outputs:
   *lenMid    = c2;
   *probShort = (d2*e3 - d3*e2) * s;    // Probability p1 to use short cycle with length c1
-  *probMid   = (d3*e1 - d1*e3) * s;    // Probability p2 to use medium cycle with length c2
+  *probMid   = (d3*e1 - d1*e3) * s;    // Probability p2 to use middle cycle with length c2
   //*probLong  = (d1*e2 - d2*e1) * s;  // That would be redundant. See below.
   
   // We don't have a probLong output parameter because that would be redundant. It would always be
   // given by 1 - (probShort + probMid). The derivation of these formulas can be found in the
   // textfile PitchDithering.txt in the research repo. ToDo: clean the derivation up and put it
   // into its own dedicated textfile here in the main repo! We actually already have now an .md
-  // file but it's not yet finished.
+  // file but it's not yet finished. When it's done, reference it here.
 }
 
 //=================================================================================================
