@@ -34,22 +34,21 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  /** Sets the mean period, i.e. the desired length (in samples) of one cycle of the waveform. The
-  actually produced periods will be integers that straddle the desired mean period by following a
-  suitable probability distribution. The mean period is a floating point value and it can be 
-  computed as  meanPeriod = sampleRate / frequency  where frequency is the desired oscillator 
-  frequency in Hz. This will immediately trigger a recomputation of the probability distribution of
-  the cycle lengths and update the currently used cycle length. */
-  void setMeanPeriod(T newPeriod, bool phasorRangeClosed)
-  { setMeanPeriodNoUpdate(newPeriod); updateCycleLength(phasorRangeClosed); }
-  // Maybe rename to setMeanCycleLength
+  /** Sets the mean period (aka cycle length), i.e. the desired length (in samples) of one cycle of
+  the waveform. The actually produced periods will be integers that straddle the desired mean
+  period by following a suitable probability distribution. The mean period is a floating point value
+  and it can be computed as  meanPeriod = sampleRate / frequency  where frequency is the desired
+  oscillator frequency in Hz. This will immediately trigger a recomputation of the probability
+  distribution of the cycle lengths and update the currently used cycle length. */
+  void setMeanCycleLength(T newLength, bool phasorRangeClosed)
+  { setMeanCycleLengthNoUpdate(newLength); updateCycleLength(phasorRangeClosed); }
 
   /** Sets up a new period length just like setPeriod() does but without immediately updating the
   probability distribution and current cycle length. This results in the behavior that the new 
   period will not become effective immediately but only after finishing the currently running 
   cycle. */
-  void setMeanPeriodNoUpdate(T newPeriod)
-  { calcCycleDistribution(newPeriod, &lenMid, &probShort, &probMid); }
+  void setMeanCycleLengthNoUpdate(T newLength)
+  { calcCycleDistribution(newLength, &lenMid, &probShort, &probMid); }
 
   /** Sets the seed for the pseudo random number generator. */
   void setRandomSeed(uint32_t newSeed) { seed = newSeed; }
@@ -58,7 +57,7 @@ public:
   // \name Inquiry
 
   /** Returns the average length of the cycles that are being produced. */
-  T getMeanPeriod();
+  T getMeanCycleLength();
   // Needs tests.
 
   //-----------------------------------------------------------------------------------------------
@@ -96,14 +95,18 @@ public:
   // \name Helpers
 
   /** Calculates the required probability distribution of the cycle lengths for the given desired
-  mean period length given by the input parameter "meanPeriod". In general, a cycle distribution is
-  determined by the 3 cycle lengths c1,c2,c3 to be produced along with their associated 
-  probabilities p1,p2,p3. However, in this setting here, it is always the case that c1 = c2 - 1, 
-  c3 = c2 + 1, p3 = 1 - (p1 + p2), so we have output parameters only for c2 (= "lenMid"), 
-  p1 (= "probShort") and p2 (= "probMid"). Computing the rest, if needed, is up to the caller 
-  because this function is meant to be as efficient as poosible because it's supposed to be called
-  in a realtime context. */
-  static void calcCycleDistribution(T meanPeriod, T* lenMid, T* probShort, T* probMid);
+  mean cycle length given by the input parameter "meanCycleLength". In general, a cycle
+  distribution for pitch dithering is determined by the 3 cycle lengths c1,c2,c3 to be produced
+  along with their associated probabilities p1,p2,p3. However, in this setting here, it is always
+  the case that c1 = c2 - 1, c3 = c2 + 1, p3 = 1 - (p1 + p2), so we have output parameters only for 
+  c2 (= "lenMid"), p1 (= "probShort") and p2 (= "probMid"). Computing the rest, if really needed 
+  (which it usually isn't), is up to the caller because this function is meant to be as efficient
+  as possible because it's supposed to be called in a realtime context. This calculation is really
+  the heart and soul of the pitch dithering idea that makes this oscillator tick. That's why it has
+  been made static and given output parameters rather than just operating directly on our member
+  variables because we want to make the implementation re-usable by other oscillator code that also
+  wants to implement pitch dithering. */
+  static void calcCycleDistribution(T meanCycleLength, T* lenMid, T* probShort, T* probMid);
 
 
 protected:
@@ -138,6 +141,9 @@ protected:
   uint32_t seed = 0;
 
 };
+
+//-------------------------------------------------------------------------------------------------
+// Possibly inlined function implementations
 
 template<class T> 
 inline T rsPitchDitherOsc<T>::getSamplePhasor(bool closed)

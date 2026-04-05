@@ -2,12 +2,12 @@
 template<class T>
 rsPitchDitherOsc<T>::rsPitchDitherOsc()
 {
-  setMeanPeriod(T(100.0), true);         // Triggers computations to set up members.
+  setMeanCycleLength(T(100.0), true);    // Triggers computations to set up members.
   reset(true);                           // Assigns sampleCount.
 }
 
 template<class T>  
-T rsPitchDitherOsc<T>::getMeanPeriod()
+T rsPitchDitherOsc<T>::getMeanCycleLength()
 {
   T lenShort = lenMid - T(1);
   T lenLong  = lenMid + T(1);
@@ -28,48 +28,40 @@ T rsPitchDitherOsc<T>::getMeanPeriod()
 template<class T>
 void rsPitchDitherOsc<T>::calcCycleDistribution(T c, T* lenMid, T* probShort, T* probMid)
 {
-  // Compute lengths:
-  T ci = rsFloor(c);
-  T cf = c - ci;
-  T c1, c2, c3;
-  c2 = ci;
-  if(cf >= T(0.5))
-    c2 += T(1);
-  c1 = c2 - T(1);
-  c3 = c2 + T(1);
+  // Compute cycle lengths c1,c2,c3:
+  T ci = rsFloor(c);                   // Integer part of desired cycle length c
+  T cf = c - ci;                       // Fractional part of it
+  T c1, c2, c3;                        // Our 3 integer cycle lengths to be used
+  c2 = ci;                             // Length of the medium length cycle
+  if(cf >= T(0.5))                     // If fractional part of c is >= 0.5...
+    c2 += T(1);                        // ..it must be one sample longer
+  c1 = c2 - T(1);                      // Length of the short cycle
+  c3 = c2 + T(1);                      // Length of the long cycle
 
   // Compute intermediates:
-  T e1 = c1 - c;
-  T e2 = c2 - c;
-  T e3 = c3 - c;
-  T v1 = e1 * e1;
-  T v2 = e2 * e2;
-  T v3 = e3 * e3;
-  T v  = T(0.25);
-  T d1 = v - v1;
-  T d2 = v - v2;
-  T d3 = v - v3;
-  T s  = T(1) / (e3*(v1-v2) - e2*(v1-v3) + e1*(v2-v3));
+  T e1 = c1 - c;                       // Length error of short cycle
+  T e2 = c2 - c;                       // Length error of medium cycle
+  T e3 = c3 - c;                       // Length error of long cycle
+  T v1 = e1 * e1;                      // Variance contribution from short cycles
+  T v2 = e2 * e2;                      // Variance contribution from mid cycles
+  T v3 = e3 * e3;                      // Variance contribution from long cycles
+  T v  = T(0.25);                      // Target variance determined by the cf = 0.5 "worst case"
+  T d1 = v - v1;                       // Deviation from target variance of short cycles
+  T d2 = v - v2;                       // Deviation from target variance of mid cycles
+  T d3 = v - v3;                       // Deviation from target variance of long cycles
+  T s  = T(1) / (e3*(v1-v2) - e2*(v1-v3) + e1*(v2-v3));  // Common scaler for probabilities
 
-  // Compute outputs:
+  // Compute and assign outputs:
   *lenMid    = c2;
-  *probShort = (d2*e3 - d3*e2) * s;
-  *probMid   = (d3*e1 - d1*e3) * s;
-  //*probLong  = (d1*e2 - d2*e1) * s;  // Would be redundant. See below.
+  *probShort = (d2*e3 - d3*e2) * s;    // Probability p1 to use short cycle with length c1
+  *probMid   = (d3*e1 - d1*e3) * s;    // Probability p2 to use medium cycle with length c2
+  //*probLong  = (d1*e2 - d2*e1) * s;  // That would be redundant. See below.
   
-  // We don't have a probLong parameter because that would be redundant. It would always be given
-  // by 1 - (probShort + probMid). The derivation of these formulas can be found in the textfile 
-  // PitchDithering.txt in the research repo. ToDo: clean the derivation up and put it into its own
-  // dedicated textfile here in the main repo!
-
-  // ToDo: Rename m1,m2,m3 to v1,v2,v3 and L1,L2,L3 to c1,c2,c3 to be consistent with the .md file.
-  // Maybe we also need to rename M,M1,M2,M3,S. Maybe also use c instead of "period" and ci,cf like
-  // in the .md file. Maybe m should become v and M1,M2,M3 become d1,d2,d3 (for deviation). Maybe 
-  // compute the lengths starting with c2 and set c1 = c2-1; c3 = c2+1; because that's how explain
-  // it in the md file. ...done
-  //
-  // Maybe document that this calculation is really the embodiment main result of the research 
-  // effort. It's what's make this oscillator tick.
+  // We don't have a probLong output parameter because that would be redundant. It would always be
+  // given by 1 - (probShort + probMid). The derivation of these formulas can be found in the
+  // textfile PitchDithering.txt in the research repo. ToDo: clean the derivation up and put it
+  // into its own dedicated textfile here in the main repo! We actually already have now an .md
+  // file but it's not yet finished.
 }
 
 //=================================================================================================
@@ -185,5 +177,9 @@ ToDo:
   can use these as symbolic constants rather than having itself to make sure to only pass 0 or 1.
 
 - Drag over the code for the pitch-dithered supersaw oscillator.
+
+- When other oscillator classes that use that functions are added to the library, mention them 
+  in the documentation of calcCycleDistribution(). For example, later we want to add the 
+  pitch-dithered supersaw osc. We may also want to add pitchdithering to table lookup oscillators.
 
 */
