@@ -94,6 +94,7 @@ public:
   // \name Helpers
 
   static void calcCycleDistribution(T period, T* lenMid, T* probShort, T* probMid);
+  // Maybe rename period to meanPeriod or targetPeriod, Add documentation.
 
 
 
@@ -122,7 +123,7 @@ protected:
   T lenMid;        // The middle one of the 3 integer cycle lengths to be produced.
   T probMid;       // Probability for lenMid.
   T probShort;     // Probability for lenMid - 1.
-  //T probLong;    // Probability for lenMid + 1. Redundant: 1 - probMid - probShort.
+                   // Probability for lenMid + 1:  probLong = 1 - (probMid + probShort).
 
   // Embedded DSP objects:
   rsRandomGenerator<T> prng;
@@ -161,12 +162,6 @@ inline void rsPitchDitherOsc<T>::updateCycleLength(bool closed)
     lenNow = lenMid + T(1);                  // Next cycle is long.
   phaseSlope = T(1) / (lenNow - T(closed));  // Slope depends on cycle length.
 
-  // Maybe as an optimization, pass the "closed" parameter not as bool but as type T so we can 
-  // avoid the type conversion. Maybe we should assert that the value represents either T(0) or
-  // T(1). Maybe add a function rsIsBoolean(T x) to the library that returns true iff x is 0 or 1
-  // and use that function in a rsAssert here. Maybe have static const members phasorRangeClosed, 
-  // phasorRangeHalfOpen of type T that are fixed to 0 and 1 such that the caller can use these
-  // as symbolic constants rather than having itself to make sure to only pass 0 or 1.
 }
 
 template<class T> 

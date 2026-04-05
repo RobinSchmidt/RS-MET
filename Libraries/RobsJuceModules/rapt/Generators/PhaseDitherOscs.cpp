@@ -9,8 +9,10 @@ rsPitchDitherOsc<T>::rsPitchDitherOsc()
 template<class T>  
 T rsPitchDitherOsc<T>::getPeriod()
 {
+  T lenShort = lenMid - T(1);
+  T lenLong  = lenMid + T(1);
   T probLong = T(1) - (probShort + probMid);
-  return probShort * (lenMid - T(1)) + probMid * lenMid + probLong * (lenMid + T(1));
+  return probShort * lenShort  +  probMid * lenMid  +  probLong * lenLong;
 
   // In general, if we have 3 integer cycle lengths given by L1,L2,L3 and cycles with these 3 
   // lengths are produced with probabilities p1,p2,p3 respectively, then the average cycle length P
@@ -18,13 +20,6 @@ T rsPitchDitherOsc<T>::getPeriod()
   // length L2 and the short and long lengths L1,L3 are then given as L1 = L2-1, L3 = L2+1. And, of
   // course, for the probabilities we will always have p1 + p2 + p3 = 1 such that 
   // p3 = 1 - (p1 + p2).
-  //
-  // ToDo:
-  // Make it more readable by splitting the computations into things like:
-  // lenShort = lenMid - 1;
-  // lenLong  = lenMid + 1;
-  // ...
-  // return probShort * lenSort  +  probMid * lenMid  +  probLong * lenLong;
 }
 
 template<class T>
@@ -58,16 +53,12 @@ void rsPitchDitherOsc<T>::calcCycleDistribution(T period, T* lenMid, T* probShor
   *lenMid    = L2;
   *probShort = (M2*e3 - M3*e2) * S;
   *probMid   = (M3*e1 - M1*e3) * S;
-  //*probLong  = (M1*e2 - M2*e1) * S;  // Would be redundant. See Notes
+  //*probLong  = (M1*e2 - M2*e1) * S;  // Would be redundant. See below.
   
-  // Notes:
-  // 
-  // - We don't have a probLong parameter because that would be redundant. It would always be given
-  //   by 1 - (probShort + probMid).
-  //
-  // - The derivation of these formulas can be found in the textfile PitchDithering.txt in the 
-  //   research repo. ToDo: clean the derivation up and put it into its own dedicated textfile here
-  //   in the main repo!
+  // We don't have a probLong parameter because that would be redundant. It would always be given
+  // by 1 - (probShort + probMid). The derivation of these formulas can be found in the textfile 
+  // PitchDithering.txt in the research repo. ToDo: clean the derivation up and put it into its own
+  // dedicated textfile here in the main repo!
 }
 
 //=================================================================================================
@@ -171,5 +162,12 @@ ToDo:
   case. The enum should probably exist inside some class liek rsWaveForms such that it can be 
   re-used by other classes. Check the preliminary implementation of rsWaveForms in 
   rs_testing/Prototypes/Generators.h. This could be used as basis.
+
+- Maybe as an optimization, pass the "closed" parameter not as bool but as type T so we can avoid 
+  the type conversion. Maybe we should assert that the value represents either T(0) or T(1). Maybe 
+  add a function rsIsBoolean(T x) to the library that returns true iff x is 0 or 1 and use that 
+  function in a rsAssert here. Maybe have static const members phasorRangeClosed, 
+  phasorRangeHalfOpen of type T that are fixed to 0 and 1 such that the caller can use these as 
+  symbolic constants rather than having itself to make sure to only pass 0 or 1.
 
 */
