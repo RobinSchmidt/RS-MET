@@ -7,7 +7,8 @@
 
 ToDo: 
 Explain the idea of pitch dithering. Refer to the documents that I wrote up about the idea. They 
-are currently in draft state, though
+are currently in draft state, though. Document the phasorRangeClosed parameters that occur in 
+various places.
 
 Warning: 
 This class is not yet well tested and should be considered rather preliminary. Some 
@@ -31,25 +32,21 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  /** Sets the period, i.e. the desired length (in samples) of one cycle of the waveform. This is 
-  a floating point value and it can be computed as  period = sampleRate / frequency  where 
-  frequency is the desired oscillator frequency in Hz. This will immediately trigger a 
-  recomputation of the probability distribution of the cycle lengths and update the currently used
-  cycle length. */
-  void setPeriod(T newPeriod, bool phasorRangeClosed) 
-  { 
-    setPeriodNoUpdate(newPeriod); 
-    updateCycleLength(phasorRangeClosed);
-  }
-  // Maybe rename to setMeanPeriod()
+  /** Sets the mean period, i.e. the desired length (in samples) of one cycle of the waveform. The
+  actually produced periods will be integers that straddle the desired mean period by following a
+  suitable probability distribution. The mean period is a floating point value and it can be 
+  computed as  meanPeriod = sampleRate / frequency  where frequency is the desired oscillator 
+  frequency in Hz. This will immediately trigger a recomputation of the probability distribution of
+  the cycle lengths and update the currently used cycle length. */
+  void setMeanPeriod(T newPeriod, bool phasorRangeClosed)
+  { setMeanPeriodNoUpdate(newPeriod); updateCycleLength(phasorRangeClosed); }
 
   /** Sets up a new period length just like setPeriod() does but without immediately updating the
   probability distribution and current cycle length. This results in the behavior that the new 
   period will not become effective immediately but only after finishing the currently running 
   cycle. */
-  void setPeriodNoUpdate(T newPeriod)
+  void setMeanPeriodNoUpdate(T newPeriod)
   { calcCycleDistribution(newPeriod, &lenMid, &probShort, &probMid); }
-  // Maybe rename to setMeanPeriodNoUpdate()
 
   /** Sets the seed for the pseudo random number generator. */
   void setRandomSeed(uint32_t newSeed) { seed = newSeed; }
@@ -58,8 +55,8 @@ public:
   // \name Inquiry
 
   /** Returns the average length of the cycles that are being produced. */
-  T getPeriod();
-  // Needs tests. Maybe rename to getMeanPeriod()
+  T getMeanPeriod();
+  // Needs tests.
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
@@ -93,9 +90,15 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Helpers
 
-  static void calcCycleDistribution(T period, T* lenMid, T* probShort, T* probMid);
-  // Maybe rename period to meanPeriod or targetPeriod, Add documentation.
-
+  /** Calculates the required probability distribution of the cycle lengths for the given desired
+  mean period length given by the input parameter "meanPeriod". In general, a cycle distribution is
+  determined by the 3 cycle lengths c1,c2,c3 to be produced along with their associated 
+  probabilities p1,p2,p3. However, in this setting here, it is always the case that c1 = c2 - 1, 
+  c3 = c2 + 1, p3 = 1 - (p1 + p2), so we have output parameters only for c2 (= "lenMid"), 
+  p1 (= "probShort") and p2 (= "probMid"). Computing the rest, if needed, is up to the caller 
+  because this function is meant to be as efficient as poosible because it's supposed to be called
+  in a realtime context. */
+  static void calcCycleDistribution(T meanPeriod, T* lenMid, T* probShort, T* probMid);
 
 
 protected:
@@ -161,7 +164,6 @@ inline void rsPitchDitherOsc<T>::updateCycleLength(bool closed)
   else
     lenNow = lenMid + T(1);                  // Next cycle is long.
   phaseSlope = T(1) / (lenNow - T(closed));  // Slope depends on cycle length.
-
 }
 
 template<class T> 

@@ -2,12 +2,12 @@
 template<class T>
 rsPitchDitherOsc<T>::rsPitchDitherOsc()
 {
-  setPeriod(T(100.0), true);             // Triggers computations to set up members.
+  setMeanPeriod(T(100.0), true);         // Triggers computations to set up members.
   reset(true);                           // Assigns sampleCount.
 }
 
 template<class T>  
-T rsPitchDitherOsc<T>::getPeriod()
+T rsPitchDitherOsc<T>::getMeanPeriod()
 {
   T lenShort = lenMid - T(1);
   T lenLong  = lenMid + T(1);
@@ -20,6 +20,9 @@ T rsPitchDitherOsc<T>::getPeriod()
   // length L2 and the short and long lengths L1,L3 are then given as L1 = L2-1, L3 = L2+1. And, of
   // course, for the probabilities we will always have p1 + p2 + p3 = 1 such that 
   // p3 = 1 - (p1 + p2).
+
+  // ToDo: Rename L1,L2,L3 to c1,c2,c3 and P to c or cAvg or cMean in the comment to be consistent
+  // with the .md and .h file.
 }
 
 template<class T>
@@ -59,6 +62,10 @@ void rsPitchDitherOsc<T>::calcCycleDistribution(T period, T* lenMid, T* probShor
   // by 1 - (probShort + probMid). The derivation of these formulas can be found in the textfile 
   // PitchDithering.txt in the research repo. ToDo: clean the derivation up and put it into its own
   // dedicated textfile here in the main repo!
+
+  // ToDo: Rename m1,m2,m3 to v1,v2,v3 and L1,L2,L3 to c1,c2,c3 to be consistent with the .md file.
+  // Maybe we also need to rename M,M1,M2,M3,S. Maybe also use c instead of "period" and ci,cf like
+  // in the .md file.
 }
 
 //=================================================================================================
@@ -139,7 +146,8 @@ Notes:
 
 ToDo:
 
-- Drag over the experiments and unit tests from the research repo into the main repo
+- Drag over the experiments and unit tests from the research repo into the main repo. Implement 
+  some unit tests here.
 
 - Implement a class rsPitchDitherSuperSawOsc. See comments in the experiments in the research repo
   for how to approach this. ..ok: we now have a class for that somewhere in the prototypes or the
@@ -163,11 +171,13 @@ ToDo:
   re-used by other classes. Check the preliminary implementation of rsWaveForms in 
   rs_testing/Prototypes/Generators.h. This could be used as basis.
 
-- Maybe as an optimization, pass the "closed" parameter not as bool but as type T so we can avoid 
-  the type conversion. Maybe we should assert that the value represents either T(0) or T(1). Maybe 
-  add a function rsIsBoolean(T x) to the library that returns true iff x is 0 or 1 and use that 
-  function in a rsAssert here. Maybe have static const members phasorRangeClosed, 
-  phasorRangeHalfOpen of type T that are fixed to 0 and 1 such that the caller can use these as 
-  symbolic constants rather than having itself to make sure to only pass 0 or 1.
+- Maybe as an optimization, pass the "phasorRangeClosed" parameter not as bool but as type T so we
+  can avoid the type conversion in updateCycleLength(). Maybe we should assert that the value 
+  represents either T(0) or T(1). Maybe add a function rsIsBoolean(T x) to the library that returns
+  true iff x is 0 or 1 and use that function in a rsAssert here. Maybe have static const members 
+  phasorRangeClosed, phasorRangeHalfOpen of type T that are fixed to 0 and 1 such that the caller 
+  can use these as symbolic constants rather than having itself to make sure to only pass 0 or 1.
+
+- Drag over the code for the pitch-dithered supersaw oscillator.
 
 */
