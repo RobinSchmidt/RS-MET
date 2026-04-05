@@ -32,11 +32,10 @@ void rsPitchDitherOsc<T>::calcCycleDistribution(T c, T* lenMid, T* probShort, T*
   T ci = rsFloor(c);
   T cf = c - ci;
   T c1, c2, c3;
-  if(cf < T(0.5))
-    c1 = ci - T(1);
-  else
-    c1 = ci;
-  c2 = c1 + T(1);
+  c2 = ci;
+  if(cf >= T(0.5))
+    c2 += T(1);
+  c1 = c2 - T(1);
   c3 = c2 + T(1);
 
   // Compute intermediates:
@@ -56,7 +55,7 @@ void rsPitchDitherOsc<T>::calcCycleDistribution(T c, T* lenMid, T* probShort, T*
   *lenMid    = c2;
   *probShort = (d2*e3 - d3*e2) * s;
   *probMid   = (d3*e1 - d1*e3) * s;
-  //*probLong  = (M1*e2 - M2*e1) * S;  // Would be redundant. See below.
+  //*probLong  = (d1*e2 - d2*e1) * s;  // Would be redundant. See below.
   
   // We don't have a probLong parameter because that would be redundant. It would always be given
   // by 1 - (probShort + probMid). The derivation of these formulas can be found in the textfile 
@@ -67,12 +66,10 @@ void rsPitchDitherOsc<T>::calcCycleDistribution(T c, T* lenMid, T* probShort, T*
   // Maybe we also need to rename M,M1,M2,M3,S. Maybe also use c instead of "period" and ci,cf like
   // in the .md file. Maybe m should become v and M1,M2,M3 become d1,d2,d3 (for deviation). Maybe 
   // compute the lengths starting with c2 and set c1 = c2-1; c3 = c2+1; because that's how explain
-  // it in the md file.
-  // 
-  // 
-  // 
-  // Maybe document that this calculation is really the heart and soul of this idea and the 
-  // embodiment main result of the research effort.
+  // it in the md file. ...done
+  //
+  // Maybe document that this calculation is really the embodiment main result of the research 
+  // effort. It's what's make this oscillator tick.
 }
 
 //=================================================================================================
