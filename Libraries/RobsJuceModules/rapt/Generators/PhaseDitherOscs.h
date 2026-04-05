@@ -79,26 +79,11 @@ public:
   using WF = rsWaveForms<T>;
 
   /** Returns a sample of an upward sawtooth wave */
-  inline T getSampleSawUp()
-  { 
-    return WF::sawUp(getSamplePhasor(true)); // New
-    //return T(-1) + T(2) * getSamplePhasor(true); // Old
-  }
-
-  /** Returns a sample of an downward sawtooth wave */
-  inline T getSampleSawDown() 
-  { 
-    return WF::sawDown(getSamplePhasor(true)); // New
-    //return T(+1) - T(2) * getSamplePhasor(true); // Old
-  }
-  // Maybe get rid and rename ...sawUp() to just saw()
+  inline T getSampleSawUp() { return WF::sawUp(getSamplePhasor(true)); }
 
   /** Returns a sample of a pulse wave with given pulse-width. The default value of 0.5 produces a 
   square wave. */
-  inline T getSamplePulse(T pw = T(0.5))
-  {
-    return WF::pulse(getSamplePhasor(true), pw);
-  }
+  inline T getSamplePulse(T pw = T(0.5)) { return WF::pulse(getSamplePhasor(true), pw); }
 
   // ToDo: Add getSampleSine(). It should use getSamplePhasor(false)
 
@@ -183,19 +168,6 @@ inline void rsPitchDitherOsc<T>::updateCycleLength(bool closed)
   // phasorRangeHalfOpen of type T that are fixed to 0 and 1 such that the caller can use these
   // as symbolic constants rather than having itself to make sure to only pass 0 or 1.
 }
-
-// Old:
-/*
-template<class T> 
-inline T rsPitchDitherOsc<T>::getSamplePulse(T pw) 
-{ 
-  T p = getSamplePhasor(true);
-  if(p < pw)
-    return T(-1);
-  else
-    return T(+1);
-}
-*/
 
 template<class T> 
 void rsPitchDitherOsc<T>::reset(bool closed)
