@@ -100,6 +100,8 @@ ToDo:
 
 - Add getSampleTriangle(), getSampleTriSaw(p, shape)
 
+- Maybe abbreviate calcCycleDistribution() as calcCycleDistrib().
+
 - Drag over the experiments and unit tests from the research repo into the main repo. Implement 
   some unit tests here.
 

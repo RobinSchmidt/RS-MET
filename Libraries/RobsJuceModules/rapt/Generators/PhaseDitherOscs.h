@@ -107,7 +107,6 @@ public:
   operating directly on our member variables because we want to make the implementation re-usable
   by other oscillator code that also wants to implement pitch dithering. */
   static void calcCycleDistribution(T meanCycleLength, T* lenMid, T* probShort, T* probMid);
-  // Maybe abbreviate "Distribution". Maybe use "Dist", "Distrib" or "Distri" or "Distro"
 
 
 protected:
@@ -178,9 +177,9 @@ inline void rsPitchDitherOsc<T>::updateCycleLength(bool closed)
   phaseSlope = T(1) / (lenNow - T(closed));  // Slope depends on cycle length.
 
   // ToDo: Explain the " - T(closed)" thing. I think, for the half-open interval (i.e. when 
-  // "closed" is false and therefore converts to 0), we get the range [0, 1 - 1/lenNew] which we
+  // "closed" is false and therefore converts to 0), we get the range [0, 1 - 1/lenNow] which we
   // interpret more vaguely as [0,1). For the closed interval (i.e. when closed is "true" and
-  // therefore converts to 1), we get the range [0,1]. Maybe introduce anothe variable
+  // therefore converts to 1), we get the range [0,1]. Maybe introduce another variable
   // maxCount = lenNow - T(closed); and then do phaseSlope = T(1) / maxCount; I think, maxCount is
   // the right name - but verify this!
 }

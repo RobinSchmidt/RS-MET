@@ -390,7 +390,9 @@ ToDo
    It almost appears like compound words in English fall on a continuous spectrum between "should be
    considered one word" and "should be considered two words". Words like lowpass would be at the 
    "one word" end and words like "sample rate" more near the "two words" end. That makes it 
-   difficult to opt for one single consistent rule.
+   difficult to opt for one single consistent rule. Up to now, I kinda was just winging it and 
+   decided on a case by case basis but it seems like having a consistent rule in place may be a good
+   idea.
 
 
 Ideas for abbreviations:
@@ -436,7 +438,7 @@ Modulation:      Mod  ,
 Module:          Mod  ,
 Modulus:         Mod  ,
 Octave:          Oct  ,
-Oscillator:      Osc
+Oscillator:      Osc  ,
 Parameter:       Par, Param  ,
 Phase:           Phs  ,
 Release:         Rel  ,
@@ -451,15 +453,16 @@ Tensor:          Tens, Tns  ,
 Value:           Val  ,
 Vector:          Vec  ,
 
-Aim for 1 or 2 syllables. Try to make the abbreviations unique. When writing code and trying to find
-a suitable abbreviation, we should really first look up this dictionary to see, if ther already is
-an abbreviation used for that somewhere else in the library. We should maintain this dictionary for
-this purpose
+Aim for 1 or 2 syllables. Try to make the abbreviations unique - not like with "Comp". When writing
+code and trying to find a suitable abbreviation, we should really first look up this dictionary to
+see, if ther already is an abbreviation used for that somewhere else in the library. We should
+maintain a dictionary somewhere for this purpose.
 
 Acronyms:
 
 Amplitude Modulation:               Am  ,
 Attack Decay Sustain Relase:        Adsr  ,
+Beats per Minute                    Bpm  ,
 Digital Signal Processing:          Dsp  ,
 Fast Fourier Transform:             Fft  ,
 Finite Impulse Response:            Fir  ,
