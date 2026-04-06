@@ -53,7 +53,18 @@ we need to reload the script in APE (using File -> Open recent). APE does not au
 recognize external changes.
 
 
+----------------------------------------------------------------------------------------------------
+Adding a module to ToolChain:
 
+Step 1: 
+Implement the module as subclass of jura::AudioModule or a suitable subclass thereof (like 
+AudioModuleWithMidiIn). (1a) Create the class. (1b) Add the required boilerplate code to the class
+for the glue and plumbing.
+
+Step 2:
+Add an entry for the new module in ToolChain::populateModuleFactory() in a suitable category.
+
+Done! That's all there is to it!
 
 ----------------------------------------------------------------------------------------------------
 Testing ToolChain:

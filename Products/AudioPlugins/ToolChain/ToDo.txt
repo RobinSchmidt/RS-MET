@@ -224,7 +224,14 @@ we build up our suite of unit tests along the way.
   precision for adjustment but the slider only goes in 0.1 ms steps. We should perhaps only show
   1 digit after the dot. But: that would make it incosistent with the attack and lookahead which 
   indeed allow adjustments in 0.01 ms steps. So we should perhaps change the resolution of the
-  release slider to 0.01 ms, too. 
+  release slider to 0.01 ms, too.
+
+- [Q] BreakpointModulator: When wiring it up to a monophonic module (like the Amplitude parameter
+  of PitchDitherOsc), then hitting a note, then another note while holding the first, then 
+  releasing the first, the envelope goes into release. It should really go into release only when
+  the received note off matches the _last_ received note on. Apparently, it currently goes into 
+  release when receiving any note off. ToDo: Check, if other envelopes behave the same way, i.e. if
+  it is a general problem with how the midi implementation works. I guess so.
 
 ---------------------------------------------------------------------------------------------------
 Features

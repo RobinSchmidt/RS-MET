@@ -214,9 +214,8 @@ protected:
 
 //=================================================================================================
 
-/** Under construction. Not yet available in ToolChain.
-
-Realizes a pitch dithering oscillator. */
+/** Wraps RAPT::rsPitchDitherOsc<double> into a jura::AudioModule to make it available in 
+ToolChain. It's mainly meant as a demonstrator for the algorithm. */
 
 class JUCE_API PitchDitherOscModule : public jura::AudioModuleWithMidiIn
 {
@@ -225,7 +224,7 @@ public:
 
   PitchDitherOscModule(
     CriticalSection *lockToUse, 
-    MetaParameterManager* metaManagerToUse = nullptr, 
+    MetaParameterManager* metaManagerToUse = nullptr,
     ModulationManager* modManagerToUse = nullptr);
   
   virtual void createParameters();
@@ -238,6 +237,8 @@ public:
 
   // Parameter callback targets:
   void setAmplitude(double newAmplitude) { amplitude = newAmplitude; }
+  void setTune(     double newTune)      { tune      = newTune;      }
+
 
 protected:
 
@@ -249,6 +250,7 @@ protected:
   double sampleRate = 44100.0;    // Set by host
   double frequency  =   440.0;    // Set by MIDI note
   double amplitude  =     1.0;    // Set by a slider on the GUI
+  double tune       =     0.0;    // ..dito
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PitchDitherOscModule)

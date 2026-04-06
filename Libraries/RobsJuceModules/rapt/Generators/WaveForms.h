@@ -30,7 +30,8 @@ public:
   // \name Conversions from phasors in [0,1] to waveforms
 
   /** Converts a phasor value into an upward sawtooth wave starting at -1 and ramping up to +1. */
-  static inline T saw(T p) { return T(-1) + T(2) * p; }
+  //static inline T saw(T p) { return T(-1) + T(2) * p; }  // Old.
+  static inline T saw(T p) { return T(2) * p - T(1); }     // New. May save a unary negation?
 
   /** Converts a phasor value p into a pulse wave with adjustable pulse width given by pw. */
   static inline T pulse(T p, T pw = T(0.5)) { return p < pw ? T(-1) : T(+1); }

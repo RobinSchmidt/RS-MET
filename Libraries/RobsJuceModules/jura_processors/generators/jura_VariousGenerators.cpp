@@ -432,6 +432,20 @@ void PitchDitherOscModule::createParameters()
   p = new Param("Amplitude", -2.0, 2.0, 1.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<PitchDitherOscModule>(this, &PitchDitherOscModule::setAmplitude);
+
+  p = new Param("Tune", -36.0, 36.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PitchDitherOscModule>(this, &PitchDitherOscModule::setTune);
+
+
+  // ToDo:
+  //
+  // - Add parameter for WaveForm with options for Saw, Pulse, Triangle, Sine
+  //
+  // - Add parameter for Detune in semitones. Maybe the range should be +-12 for the start. It can
+  //   be increased later. Or maybe look up what we do in other scenarios that are similar, i.e. 
+  //   where we have oscillators with a detune parameter. Straightliner's oscillators have a Tune
+  //   parameter that goes from -36 to +36 semitones. Maybe use that here, too 
 }
 
 void PitchDitherOscModule::processStereoFrame(double *left, double *right)
@@ -452,8 +466,12 @@ void PitchDitherOscModule::reset()
 
 void PitchDitherOscModule::noteOn(int noteNumber, int velocity)
 {
-  frequency = RAPT::rsPitchToFreq(noteNumber);
+  // Wrap into updateFrequency() and call from here as well as setTune(). But maybe we should use
+  // setMeanCycleLengthNoUpdate() instead? Try both!
+  frequency = RAPT::rsPitchToFreq(noteNumber + tune);
   oscCore.setMeanCycleLength(sampleRate / frequency, true);
+
+
   oscCore.reset(true);  // To retrigger osc and re-init PRNG
 }
 

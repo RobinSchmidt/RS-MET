@@ -79,9 +79,44 @@ Notes:
   initial state. So we leave this member initialization to the constructor which calls some 
   functions to do the appropriate computations.
 
+- Performance analysis: The per sample code when we call getSampleSaw() consists of the code in
+  rsPitchDitherOsc::getSamplePhasor() and rsWaveForms::saw(). The former has 1 mul, 1 add, 1 if
+  and the latter has 1 mul, 1 sub. So, in total, we have 2 mul, 1 add, 1 sub, 1 if per sample. To
+  produce optimized code for a saw, it may be better to not first produce a phasor in 0..1 and 
+  then converting it to -1..+1 but instead directly producing it in the range -1..+1. That would
+  require to use  phaseSlope = T(2) / maxCount;  instead of  phaseSlope = T(1) / maxCount;  in 
+  updateCycleLength(). But we really want the flexibility of having a phasor to be able to produce
+  arbitrary waveforms so we accept this slight suboptimality. The per cycle calculations are:
+  1 assign, 1 PRNG-evaluation, 3 add, 1 3-way branch (with 2 compares), 1 div. The nice thing is
+  that when we use oversampling, the per-cycle calculations will be rarer when time is measured in
+  terms of samples. The calling frequency will be constant when time is measured in absolute time.
+  So only the per-sample calculations (2 mul, 1 add, 1 sub, 1 if) will have to be done at the 
+  oversampled rate so pitch dithering should play really nice with oversampling. The calculations 
+  in calcCycleDistribution() are only called when the user sets up a new frequency via 
+  setMeanCycleLength() which could potentially be a thing that is getting called per sample when
+  we have a pitch envelope or LFO or even frequency modulation. The somewhat high cost of pitch
+  modulation could be mitigated by using setMeanCycleLengthNoUpdate() instead which would postpone
+  the recalculation until the end of the currently running cycle. This seems to be a reasonable 
+  thing to do.
+
 - To create a supersaw, it could actually be more efficient to just sum up the phasors and 
   then subtract sumOfAmplitudes once from the whole supersaw instead of subtracting 1 from
-  each saw. 
+  each saw. We would bypass the per-saw conversion from phasor to the actual saw and would instead
+  just add up the phasors and then do the conversion for all of them at once. This is equivalent
+  because everything is linear (Verify! Maybe it's not exactly linear but rather linear-with-shift
+  aka affine - but that's something we can work with, too).
+
+- Sound: At a sample rate of 44.1 kHz the low octaves sound pretty clean and the sound gets 
+  progressively more noisy towards the higher octaves which is the behavior we expect. We can sense
+  a clear pitch up to a fundamental around XXXX ...above that, it sounds more like high frequency
+  noise without much tonality. With a highpass, it can make nice "mosquito" sounds. It's 
+  interesting to feed it into a harsh waveshaper (hard-clip, fold, quantize, ...), cranking up the
+  drive and and then applying an amplitude envelope. The great thing about this is that this 
+  doesn't produce any new aliasing frequencies. They will again line up with the already existing 
+  spectrum. We still get a perfectly pitch dithered waveform
+
+
+ToDo:
 
 - Implement more waveforms: square, pulse, triangle, sine, trisaw, etc. Write into the 
   documentation that these standard waveforms can be used as examples for client code to 
@@ -94,9 +129,6 @@ Notes:
 
 - Add convenience functions like setOmega(T newOmega), setFrequency(T newFreq, T sampleRate).
   setFrequency should perhaps just call setPeriod(sampleRate/newFreq)
-
-
-ToDo:
 
 - Add getSampleTriangle(), getSampleTriSaw(p, shape)
 
@@ -142,12 +174,32 @@ ToDo:
   in the documentation of calcCycleDistribution(). For example, later we want to add the 
   pitch-dithered supersaw osc. We may also want to add pitch dithering to table lookup oscillators.
 
+
+Ideas:
+
 - Combine pitch dithering with waveshaping. I think, when we waveshape a pitch-dithered waveform,
   we will not introduce aliasing. Instead, we will probably modify the noise spectrum. I think that
   because all that wvaeshaping does is to modify the instantaneous signal value. The output will 
   again be a pitch dithered signal with a new waveform. Verify that experimentally!
 
+- Maybe try combining oversampled pitch-dithering with (non-oversampled) waveshaping. My guess is 
+  that we may get aliasing but restrict it to subharmonics. For an oversampling factor of 2, I 
+  would expect to see a suboctave, for a factor of 3 a subharmonic at 1/3 of the fundamental. Try
+  that!
+
 - Combine pitch dithering with hard-sync. I think, when the master osc is pitch dithered, we may 
   also get some results that don't show obvious aliasing. Try it!
+
+- Currently, low notes sound cleaner than high notes. Maybe we could create a more complicated
+  version of the idea in which we artificially dirtify the low notes by using a broader cycle 
+  distribution that spans more that 3 integer cycle lengths. Maybe we should pick some high note as
+  reference at which we use 3 lengths and then double the width of the distribution for each octave
+  that we go down. If we use 3 lengths at 1 kHz, we could use 5 at 500 Hz, 9 at 250 Hz, 17 at 125
+  Hz etc. The idea is that we use numbers of the from 2^k + 1 where the base case of 3 corresponds 
+  to k = 1. The idea is that the effective width is actually 2 samples rather than 3 when we also 
+  consider the probabilities as weights. At c = xxx.5, we do indeed only use 2 integer lengths 
+  (both with probability 0.5). We could also say that we use 2 neighbors around the middle length.
+
+
 
 */
