@@ -307,7 +307,11 @@ Features
 - GUI: The numbers for the slots in ToolChain are small for values of 6 upwards. Apparently, the 
   font doesn't have large enough glyphs.
 
-- Add PitchWheel as modulation source
+- Add PitchWheel as modulation source. Add also midi controllers as modulators. Maybe having them
+  as modulators solves the problem of possibly conflicting midi control data and automation. We 
+  would then just use both. Automation would be independent from modulation. The user could 
+  automate the parameter via DAW-automation as well as modulate via midi cc - even at the same 
+  time!
 
 ---------------------------------------------------------------------------------------------------
 Modules
