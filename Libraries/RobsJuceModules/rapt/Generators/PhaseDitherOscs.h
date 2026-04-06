@@ -73,9 +73,6 @@ public:
   documentation of class rsWaveForms for some discussion in which circumtances one may want to opt
   for one or the other variant. */
   inline T getSamplePhasor(bool phasorRangeClosed);
-  // I think, having this bool parameter is a rather awkward API but it seems we really need to 
-  // somehow support both variants. Can we do better? Maybe the default should be half-open and 
-  // maybe we could have another function getSamplePhasorClosed()
 
   // Abbreviation for convenience in the functions below:
   using WF = rsWaveForms<T>;

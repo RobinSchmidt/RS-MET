@@ -26,6 +26,19 @@ ToDo:
   keep that as prototype implementation and use it in unit tests to render reference signals for 
   the optimized implementations.
 
+- We could also additively add phasor based waveforms by summing waves with phasors values 
+  1*p,2*p,3*p,4*p,... with amplitudes a1,a2,a3,a4,... That would work for arbitrary waveforms.
+
+- Maybe give the standard waveforms all the same API, in particular, the same number of parameters.
+  Currently, the saw has no parameters but the pulse has one. Maybe we should settle for two
+  parameters per waveform because (1) I do have waveform generation code that requires two (the
+  rounded TriSaw) but I don't think that I have any that require more. (2) Two parameters can
+  nicely be controlled on an XY-vector pad. For the sine, of the params could be the phase. But
+  nah: That's too generic (i.e. it could apply to all waveforms) and something that client code
+  can do this itself. Maybe it could be some geometric parameter that would turn the circle
+  obtained from sine and cosine (i.e. 90° phase-shifted sine) into some other shape (like a 
+  square or diamond). Look up superellipse.
+
 - See also other places where we have implemented similar functionality, for example:
 
     rsBlepReadyOscBase  in  rapt/Unfinished/MiscAudio/BlepBlampOscs

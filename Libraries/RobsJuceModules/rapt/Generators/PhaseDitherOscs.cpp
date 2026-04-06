@@ -50,11 +50,12 @@ void rsPitchDitherOsc<T>::calcCycleDistribution(T c, T* lenMid, T* probShort, T*
   *lenMid    = c2;
   *probShort = (d2*e3 - d3*e2) * s;    // Probability p1 to use short cycle with length c1
   *probMid   = (d3*e1 - d1*e3) * s;    // Probability p2 to use middle cycle with length c2
-  //*probLong  = (d1*e2 - d2*e1) * s;  // That would be redundant. See below.
+  //*probLong  = (d1*e2 - d2*e1) * s;  // Would be redundant: p3 = 1 - (p1 + p2). See below.
   
   // We don't have a probLong output parameter because that would be redundant. It would always be
-  // given by 1 - (probShort + probMid). The derivation of these formulas can be found in the
-  // textfile PitchDithering.txt in the research repo. ToDo: clean the derivation up and put it
+  // given by probLong = 1 - (probShort + probMid). We will also always have: 
+  // lenShort = lenMid + 1, lenLong = lenMid + 1. The derivation of these formulas can be found in
+  // the textfile PitchDithering.txt in the research repo. ToDo: clean the derivation up and put it
   // into its own dedicated textfile here in the main repo! We actually already have now an .md
   // file but it's not yet finished. When it's done, reference it here.
 }
@@ -109,10 +110,12 @@ ToDo:
 - Maybe provide default values for the "phasorRangeClosed" parameter to make them optional. I 
   think, it should probably default to false because true is mostly to make saws look nicer but 
   they kinda also work with false whereas for a sine wave, using true will create audible 
-  artifacts. I think, a half-open range is more common for a phasor. Maybe start a KVR thread like:
-  Intervals for (normalized) osc-phases: Closed [0,1] or half-open [0,1)? It seems to me that the
-  correct choice depends on the waveform to produce. Sines like the half-open version, saws like 
-  the closed version. But that's awkward!
+  artifacts. I think, a half-open range is more common for a phasor. Maybe have two functions:
+  getSamplePhasor() and getSamplerPhasorClosed() where the former implementes the (standard, 
+  default) half-open interval. Maybe start a KVR thread like: "Intervals for (normalized)
+  osc-phases: Closed [0,1] or half-open [0,1)?" It seems to me that the correct choice depends on
+  the waveform to produce. Sines like the half-open version, saws like the closed version. But
+  that's awkward!
 
 - To free the client code from this awkwardness, maybe the class rsPitchDitherOsc should be renamed
   to rsPitchDitherOscBase and we should provide a class rsPitchDitherOsc with an API containing a 
