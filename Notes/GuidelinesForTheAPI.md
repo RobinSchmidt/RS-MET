@@ -89,9 +89,9 @@ Interface Considerations
    Maybe the classes for Params, Coeffs, State should be dragged out into classes in their own right 
    like rsBiquadParams, rsBiquadCoeffs, rsBiquadState. But that increases the surface area of the 
    library so it may be better to avoid it. Also: when templatizing, coeffs and params may need to 
-   have a different template parameter than tse state (for example: Params/Coeffs use float and State
-   uses rsFloat32x4), so we can't just propagate down temaplte params from rsBiquad to state...unless
-   rsBiquad has two templated params TSig, TPar - which it probably should have anyway.
+   have a different template parameter than tse state (for example: Params/Coeffs use float and
+   State uses rsFloat32x4), so we can't just propagate down temaplte params from rsBiquad to state -
+   unless rsBiquad has two templated params TSig, TPar - which it probably should have anyway.
  
 - Maybe preferably use `/**< ... */` instead of `/** ... */` for the doxygen stuff for member
   functions. It's just nicer when the function name appears as "headline" above the docstring in the
@@ -101,36 +101,66 @@ Interface Considerations
   even demand) inlining)
  
 
-## Interface Consistency
+### Interface Consistency
 
-- Make the following things consistent:
+- Template parameter names: 
 
-  - Interface:
+  - Use `TSig` for the signal type. May later be replaced by a concept "Signal"
 
-    - Class names (use prefix rs everywhere)
+  - Use `TPar` for the parameter type. May later be replaced by a concept "Parameter" or "Param".
 
-    - Function names:
-      - Have a getSample and processBlock function consistently in all DSP classes
-      - If the module produces stereo samples, use processFrame - getSample is only
-        for mono stuff ...maybe that makes it redundant but it is nice to be able to
-        write things like:  
-        `out = env.getSample() * filter.getSample(osc.getSample());`
+  - Some other names: `TPix` for pixels, `TCoef` for coefficients, `TVal` for values, `TArg` for
+    function arguments, `Tx`, `Ty` for input and output types of functions  ...
 
-    - Consistently use pointers (not references) for output variables. It makes it visible in client
-      code, what is an output
+- Class names 
 
-     - The argument order should be consistent for functions that do similar things - especially in
-       rsArrayTools (dangerous change)
+  - Use `UpperCamelCase` with lower case prefix `rs` everywhere. Example: `rsLadderFilter`. 
+  
+  - Rationale for `CamelCase`: My rationale for prefering `CamelCase` over `snake_case` is that the
+    names tend to be shorter while the word separation via the capitalization is still obviuous enough. The main argument for snake case is typically that the words are more clearly separated
+    which is true but in my opionion, the separation in camel case is clear enough such that this
+    marginal improvement does not justify the lengthening. Also, JUCE uses it as well although that
+    had nothing to do with my decision. I made that long before even knowing JUCE. 
+    
+  - Rationale for `rs`-prefixing: My rationale for prefixing everything with `rs` is to avoid name
+    clashes. Yes, I know - that's what namespaces are there for but sometimes it is really
+    inconvenient to always use `RAPT::someFunction()` instead of `rsSomeFunction()` and also I
+    sometimes need my own versions of standard functions like `rsSin()` instead of `sin()` because
+    the templatized nature of RAPT sometimes requires that I'm able to provide custom
+     implementations of standard functions. Think, for example, a `sin()` function for SIMD vectors.
+    If a class needs to compute a sine for some type `T`, I would just let it call `rsSin()` and
+    provide a suitable explicit specialization of `rsSin()` for that type `T` and the templatized
+    code of the class would the compile just fine when the class template is insteantiated for type
+    `T`. ...TBC...
 
-    - The units (seconds, milliseconds) for parameters should be the same in all classes (dangerous
-      change)
+- Function names and signatures:
 
-   - In rapt, we should probably not deal with physical units at all and instead 
-     use normalized units (samples, omega = 2*pi*f/fs, etc.)
+  - For free functions, also use CamelCase. Example `rsExp()`, `rsSin()`.
 
-  - Consistent use of enum class for choices
+  - For member functions of classes use lowerCamelCase. Example: `setCutoff()`
 
-  - (Maybe) avoid free functions. Wrap them into namespaces. Maybe use sub-namespaces
+  - Have a `getSample()` and `processBlock()` member functions consistently in all DSP classes
+
+  - If the module produces stereo samples, use processFrame - getSample is only
+    for mono stuff ...maybe that makes it redundant but it is nice to be able to
+    write things like:  
+    `out = env.getSample() * filter.getSample(osc.getSample());`
+
+  - Consistently use pointers (not references) for output variables. It makes it visible in client
+    code, what is an output
+
+  - The argument order should be consistent for functions that do similar things - especially in
+    rsArrayTools (dangerous change)
+
+  - The units (seconds, milliseconds) for parameters should be the same in all classes (dangerous
+    change)
+
+  - In rapt, we should probably not deal with physical units at all and instead 
+    use normalized units (samples, omega = 2*pi*f/fs, etc.)
+
+- Consistent use of enum class for choices
+
+- (Maybe) avoid free functions. Wrap them into namespaces. Maybe use sub-namespaces
     (RAPT::Filters, RAPT::Generators, etc.). Or maybe (ab)use classes for collections of functions.
     The functions can then be static member functions. For some reason, I do not really like deeply
     nested namespaces. But maybe these are two separate things. Creating a sub-namespace just for a
@@ -175,6 +205,17 @@ Interface Considerations
  
   - See also: https://github.com/RobinSchmidt/RS-MET/wiki/Standards
 
+
+### Use of Abbreviations and Acronyms
+
+Generally we want names to be descriptive such code readers can correctly guess their meaning but we
+also want them to be short in order to not blow up the verbosity of the code (which is bad for
+ readibility). By their nature, descriptive names tend to be longer so we must strike a tradeoff
+between descriptiveness and brevity. One way to do this is to introduce abbreviations and acronyms.
+If these things are used in the API, they should be used consistently throughout the library. When
+acronyms are used in the context of CamelCase
+
+...TBC...
 
 
 Implementation Considerations
@@ -334,4 +375,11 @@ ToDo
 - Re-organize the document. Maybe sections about: "Interface Consistency", "Implementation 
   Consistency", "Documentation Consistency", "Performance Considerations", "Safety Considerations", ....
 
- - Check use of std::list<> in rosic::PolymorphicIntrumentVoice
+ - Check use of std::list<> in rosic::PolymorphicInstrumentVoice
+
+ - Define a consistent strategy for CameCasing words that can be seen as compound words or as two
+   words like "sample rate" vs "samplerate" or "wave shape" vs "wave shape". I currently just 
+   capitalize every part of a word that "could" be seen as a word in its own right. That is, I use
+   things like WaveForm, WaveShape, SampleRate, OverSampling although some of them have become 
+   single words already in common language use (like "oversampling" - nobody writes "over 
+   sampling"). I'm not yet sure how to handle this best.
