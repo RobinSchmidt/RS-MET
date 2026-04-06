@@ -434,8 +434,27 @@ void PitchDitherOscModule::createParameters()
   p->setValueChangeCallback<PitchDitherOscModule>(this, &PitchDitherOscModule::setAmplitude);
 }
 
+void PitchDitherOscModule::processStereoFrame(double *left, double *right)
+{
+  *left = *right = amplitude * oscCore.getSampleSaw();
+}
 
+void PitchDitherOscModule::setSampleRate(double newSampleRate)
+{
+  sampleRate = newSampleRate;
+  oscCore.setMeanCycleLength(sampleRate / frequency, true);
+}
 
+void PitchDitherOscModule::reset()
+{
+  oscCore.reset(true);
+}
+
+void PitchDitherOscModule::noteOn(int noteNumber, int velocity)
+{
+  frequency = RAPT::rsPitchToFreq(noteNumber);
+  oscCore.setMeanCycleLength(sampleRate / frequency, true);
+}
 
 //=================================================================================================
 

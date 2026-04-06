@@ -231,10 +231,10 @@ public:
   virtual void createParameters();
 
   // Overriden from AudioModule baseclass:
-  //virtual void processStereoFrame(double *left, double *right) override;
-  //virtual void setSampleRate(double newSampleRate) override;
-  //virtual void reset() override;
-  //virtual void noteOn(int noteNumber, int velocity) override;
+  virtual void processStereoFrame(double *left, double *right) override;
+  virtual void setSampleRate(double newSampleRate) override;
+  virtual void reset() override;
+  virtual void noteOn(int noteNumber, int velocity) override;
 
   // Parameter callback targets:
   void setAmplitude(double newAmplitude) { amplitude = newAmplitude; }
@@ -246,7 +246,10 @@ protected:
   // Explicit instantiation is in rosic/basics/rosic_TemplateInstantiations.cpp
 
   // Parameters:
-  float amplitude = 1.f;
+  double sampleRate = 44100.0;    // Set by host
+  double frequency  =   440.0;    // Set by MIDI note
+  double amplitude  =     1.0;    // Set by a slider on the GUI
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PitchDitherOscModule)
 };
