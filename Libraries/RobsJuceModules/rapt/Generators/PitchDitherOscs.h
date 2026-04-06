@@ -5,15 +5,16 @@
 
 /** A realtime oscillator that produces pitch-dithered waveforms. ...TBC...
 
-ToDo: 
-Explain the idea of pitch dithering. Refer to the documents that I wrote up about the idea. They 
-are currently in draft state, though. Document the phasorRangeClosed parameters that occur in 
-various places.
+ToDo:
 
-Warning: 
-This class is not yet well tested and should be considered rather preliminary. Some 
-details of the implementation may change. The API may (and probably will) also change. And there
-may be bugs. */
+- Explain the idea of pitch dithering. Refer to the documents that I wrote up about the idea. They
+  are currently in draft state, though. Document the phasorRangeClosed parameters that occur in 
+  various places.
+
+- Document what makes sense for the type T. I think, only scalar floating point types (i.e. 
+  float, double, long double, etc.) are meaningful.
+
+*/
 
 template<class T> 
 class rsPitchDitherOsc
@@ -38,15 +39,13 @@ public:
   and it can be computed as  meanPeriod = sampleRate / frequency  where frequency is the desired
   oscillator frequency in Hz. This will immediately trigger a recomputation of the probability
   distribution of the cycle lengths and update the currently used cycle length. */
-  void setMeanCycleLength(T newLength, bool phasorRangeClosed)
-  { setMeanCycleLengthNoUpdate(newLength); updateCycleLength(phasorRangeClosed); }
+  void setMeanCycleLength(T newLength, bool phasorRangeClosed);
 
   /** Sets up a new period length just like setPeriod() does but without immediately updating the
   probability distribution and current cycle length. This results in the behavior that the new 
   period will not become effective immediately but only after finishing the currently running 
   cycle. */
-  void setMeanCycleLengthNoUpdate(T newLength)
-  { calcCycleDistribution(newLength, &lenMid, &probShort, &probMid); }
+  void setMeanCycleLengthNoUpdate(T newLength);
 
   /** Sets the seed for the pseudo random number generator. */
   void setRandomSeed(uint32_t newSeed) { seed = newSeed; }
@@ -144,6 +143,19 @@ protected:
 // Possibly inlined function implementations
 
 template<class T> 
+void rsPitchDitherOsc<T>::setMeanCycleLength(T newLength, bool closed)
+{
+  setMeanCycleLengthNoUpdate(newLength); 
+  updateCycleLength(closed); 
+}
+
+template<class T> 
+void rsPitchDitherOsc<T>::setMeanCycleLengthNoUpdate(T newLength)
+{ 
+  calcCycleDistribution(newLength, &lenMid, &probShort, &probMid); 
+}
+
+template<class T> 
 inline T rsPitchDitherOsc<T>::getSamplePhasor(bool closed)
 {
   T p = phaseSlope * sampleCount;      // Compute phasor output sample.
@@ -174,20 +186,6 @@ inline void rsPitchDitherOsc<T>::updateCycleLength(bool closed)
     lenNow = lenMid + T(1);            // Next cycle is long.
   T maxCount = lenNow - T(closed);     // Maximum sample count until wrap around.
   phaseSlope = T(1) / maxCount;        // Phasor increment per sample.
-
-  // Old:
-  //phaseSlope = T(1) / (lenNow - T(closed));  // Slope depends on cycle length.
-
-  // Done
-  // ToDo: Explain the " - T(closed)" thing. I think, for the half-open interval (i.e. when 
-  // "closed" is false and therefore converts to 0), we get the range [0, 1 - 1/lenNow] which we
-  // interpret more vaguely as [0,1). For the closed interval (i.e. when closed is "true" and
-  // therefore converts to 1), we get the range [0,1]. Maybe introduce another variable
-  // maxCount = lenNow - T(closed); and then do phaseSlope = T(1) / maxCount; I think, maxCount is
-  // the right name - but verify this! Do we really count up to this value? Or is it one less? Aha!
-  // In getSamplePhasor(), we only observe value up to maxCount-1 but inside updateSampleCount(),
-  // we do indeed observe values up to maxCount.
-
 }
 
 template<class T> 
@@ -195,7 +193,7 @@ void rsPitchDitherOsc<T>::reset(bool closed)
 {
   sampleCount = T(0);
   prng.setState(seed);
-  updateCycleLength(closed);                 // Important for correct initial lenNow.
+  updateCycleLength(closed);           // Important for correct initial lenNow.
 }
 
 

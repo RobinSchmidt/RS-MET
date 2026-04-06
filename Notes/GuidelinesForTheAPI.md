@@ -26,14 +26,21 @@ Interface Considerations
   remain C++17 compatible for a while), but organize the structure in a way that 
   makes it easy to switch to using modules later  
   https://www.modernescpp.com/index.php/c-20-open-questions-to-modules  
-  https://vector-of-bool.github.io/2019/01/27/modules-doa.html
+  https://vector-of-bool.github.io/2019/01/27/modules-doa.html  
+  Maybe the code can remain as is and the modules can be implemented on top of it rather similar
+  like we now create the "JUCE module"? I'm not sure how modules interact with templates, though. 
+  Maybe for a module definition, we need to commit to a specific type? In this case, we could
+  perhaps create a reference module for RAPT using explicit instantiations with the types that make
+  the most sense. That would also serve as documentation for the intended use.
 
 - Anticipate using C++20 concepts at some point. It turns out that the following two concepts could
   make sense to define: Signal and Parameter. Observe the prevalence of the use of TSig and TPar
   throughout RAPT. These concepts are intertwined and should be defined in such a way that it is
-  possible to perform arithemtic operations between signals and parameters, the result of which
+  possible to perform arithmetic operations between signals and parameters, the result of which
   should be a signal. Rationale: Singals might be SIMD vectors and parameters the corresponding
-  scalar type.
+  scalar type. Typically, both types represent continuous (i.e. real) numbers such as float, double,
+  maybe also fixed point or multiprecision (I didn't try, though). Sometimes SIMD vectors make sense
+  for signals _and_ parameters, sometimes only for signals.
 
 - Maybe we should rename rosic to ramp (Rob's Audio and Music Processors)
 
@@ -225,11 +232,11 @@ Implementation Considerations
 -----------------------------
 
 - Whether algo parameters are updated directly in setCutoff, setResonance, etc. or are updated in
-  getSample based on an "upToDate" flag should be consistent. Maybe that can be decided on a
-  case-by-case basis. It currently is. But maybe it shouldn't. But enforced consistency may make it
+  getSample based on an "upToDate" flag should be consistent. Or maybe that can be decided on a
+  case-by-case basis? It currently is. But maybe it shouldn't. But enforced consistency may make it
   harder to optimize cases individually.
 
-- What about thread safety? Ahould probably be completely abolished, at least in RAPT. 
+- What about thread safety? Should probably be completely abolished, at least in RAPT. 
   Synchronization should be dealt with on a higher level. Maybe in rosic, but probably jura.
 
 - How polyphony can be handled: Each DSP class may have a simple, monophonic  implementation and
