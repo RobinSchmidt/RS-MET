@@ -140,6 +140,14 @@ ToDo:
 
 - When other oscillator classes that use that functions are added to the library, mention them 
   in the documentation of calcCycleDistribution(). For example, later we want to add the 
-  pitch-dithered supersaw osc. We may also want to add pitchdithering to table lookup oscillators.
+  pitch-dithered supersaw osc. We may also want to add pitch dithering to table lookup oscillators.
+
+- Combine pitch dithering with waveshaping. I think, when we waveshape a pitch-dithered waveform,
+  we will not introduce aliasing. Instead, we will probably modify the noise spectrum. I think that
+  because all that wvaeshaping does is to modify the instantaneous signal value. The output will 
+  again be a pitch dithered signal with a new waveform. Verify that experimentally!
+
+- Combine pitch dithering with hard-sync. I think, when the master osc is pitch dithered, we may 
+  also get some results that don't show obvious aliasing. Try it!
 
 */

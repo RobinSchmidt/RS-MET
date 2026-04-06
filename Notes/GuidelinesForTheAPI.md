@@ -399,7 +399,10 @@ ToDo
    "one word" end and words like "sample rate" more near the "two words" end. That makes it 
    difficult to opt for one single consistent rule. Up to now, I kinda was just winging it and 
    decided on a case by case basis but it seems like having a consistent rule in place may be a good
-   idea.
+   idea. Maybe to captitalize consistently anything that could be regarded a word in its own right
+   may be the way to go. It may be slightly "wrong" in some cases with regard to the English
+   language but I think, it may be wrong in an acceptable way. It may remind the reader of the
+   respective etymology of the word and thereby increase descriptiveness.
 
 
 Ideas for abbreviations:
@@ -412,7 +415,7 @@ Bandwidth:       Bw (in Hz: BwHz, in octaves: BwOct)  ,
 Calculate:       Calc  ,
 Coefficient:     Coeff  ,
 Compare:         Comp  ,
-Compartment      Comp  ,
+Compartment:     Comp  ,
 Complex:         Comp  ,
 Component:       Comp  ,
 Compression:     Comp  ,
@@ -462,14 +465,17 @@ Vector:          Vec  ,
 
 Aim for 1 or 2 syllables. Try to make the abbreviations unique - not like with "Comp". When writing
 code and trying to find a suitable abbreviation, we should really first look up this dictionary to
-see, if ther already is an abbreviation used for that somewhere else in the library. We should
+see, if there already is an abbreviation used for that somewhere else in the library. We should
 maintain a dictionary somewhere for this purpose.
 
 Acronyms:
 
+I think, we may capitalize only the first letter in an acronym, e.g. write Fft rather than FFT.
+Examples:
+
 Amplitude Modulation:               Am  ,
 Attack Decay Sustain Relase:        Adsr  ,
-Beats per Minute                    Bpm  ,
+Beats per Minute:                   Bpm  ,
 Digital Signal Processing:          Dsp  ,
 Fast Fourier Transform:             Fft  ,
 Finite Impulse Response:            Fir  ,
@@ -481,11 +487,13 @@ Lowpass filter:                     Lpf  ,
 Linear Predictive Coding:           Lpc  ,
 Multi Segment Envelope Generator:   Mseg  ,
 Phase Modulation:                   Pm, PhaseMod  ,
+Pulse Width Modulation:             Pwm  , 
 Ring Modulation:                    Rm, RingMod  ,
+Reverb Time 60:                     Rt60  ,
 Semitone:                           St  ,
 
 
 Symbols:
 
-Normalized Radian Frequency:      Omega  ,
-Time Constant:                    Tau  ,
+Normalized Radian Frequency:      omega: $\omega$  ,
+Time Constant:                    tau: $\tau$  ,
