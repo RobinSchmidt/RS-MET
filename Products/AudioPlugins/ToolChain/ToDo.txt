@@ -307,6 +307,8 @@ Features
 - GUI: The numbers for the slots in ToolChain are small for values of 6 upwards. Apparently, the 
   font doesn't have large enough glyphs.
 
+- Add PitchWheel as modulation source
+
 ---------------------------------------------------------------------------------------------------
 Modules
 

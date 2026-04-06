@@ -466,13 +466,22 @@ void PitchDitherOscModule::reset()
 
 void PitchDitherOscModule::noteOn(int noteNumber, int velocity)
 {
-  // Wrap into updateFrequency() and call from here as well as setTune(). But maybe we should use
-  // setMeanCycleLengthNoUpdate() instead? Try both!
-  frequency = RAPT::rsPitchToFreq(noteNumber + tune);
-  oscCore.setMeanCycleLength(sampleRate / frequency, true);
+  currentKey = noteNumber;
+  updateOscFrequency();
+  oscCore.reset(true);       // To retrigger osc and re-init PRNG
+}
 
+void PitchDitherOscModule::updateOscFrequency()
+{
+  frequency = RAPT::rsPitchToFreq(currentKey + tune);
+  oscCore.setMeanCycleLengthNoUpdate(sampleRate / frequency);
+  //oscCore.setMeanCycleLength(sampleRate / frequency, true);
 
-  oscCore.reset(true);  // To retrigger osc and re-init PRNG
+  // Notes:
+  //
+  // - Using setMeanCycleLengthNoUpdate() rather than setMeanCycleLength() postpones the update 
+  //   calculations until the end of the current cycle. This may be more efficient when there is a
+  //   lot of modulation going one.
 }
 
 //=================================================================================================

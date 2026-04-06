@@ -236,11 +236,18 @@ public:
   virtual void noteOn(int noteNumber, int velocity) override;
 
   // Parameter callback targets:
-  void setAmplitude(double newAmplitude) { amplitude = newAmplitude; }
-  void setTune(     double newTune)      { tune      = newTune;      }
+  void setAmplitude(double newAmplitude) { amplitude = newAmplitude;                  }
+
+  void setTune(     double newTune)      { tune      = newTune; updateOscFrequency(); }
+  // Maybe wrap it into if(if newTune != tune). It could perhaps save us some CPU when setTune()
+  // gets called repeatedly with the same value. But does that actually happen or have we already
+  // taken care of this in the modulation system? Look it up! If not, we probably should do it 
+  // there - once and for all.
 
 
 protected:
+
+  void updateOscFrequency();
 
   // DSP Core:
   RAPT::rsPitchDitherOsc<double> oscCore;
@@ -251,6 +258,8 @@ protected:
   double frequency  =   440.0;    // Set by MIDI note
   double amplitude  =     1.0;    // Set by a slider on the GUI
   double tune       =     0.0;    // ..dito
+
+  int    currentKey =    -1;      // Set by MIDI
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PitchDitherOscModule)
