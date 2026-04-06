@@ -1,26 +1,30 @@
 API Guidelines (Draft)
 ======================
 
+This document is still quite messy and unordered and the current API follows these guidelines that
+are laid out here only partially. It is more like an aspirational document at the moment. I'm still
+working on it.
+
 
 ToDo
 ----
 
 - Make the API consistent with regard to 
-  - Naming conventions  
+  - Naming conventions (including use of abbreviations and acronyms)
   - Parameter ordering (for functions with similar parameter lists)
-  - Coefficient updating strategy (see below)
+  - Coefficient updating strategies (see below)
 
 - Maybe use nested namespaces like RAPT::Data, RAPT::Math, RAPT::Filters, etc. 
   to get the functionality more ordered and also to render a better doxygen 
-  documentation
+  documentation.
 
-- Anticipate using the C++20 module feature - don't use it just yet (we want to 
-  remain C++11 compatible for a while), but organize the structure in a way that 
+- Anticipate using the C++20 module feature. Don't use it just yet (we want to 
+  remain C++17 compatible for a while), but organize the structure in a way that 
   makes it easy to switch to using modules later  
   https://www.modernescpp.com/index.php/c-20-open-questions-to-modules  
   https://vector-of-bool.github.io/2019/01/27/modules-doa.html
 
-- Maybe rename rosic to ramp (Rob's audio and music processors)
+- Maybe rename rosic to ramp (Rob's Audio and Music Processors)
 
 - In rapt (but maybe not in rosic) consistently use omega = 2*pi*freq/sampleRate 
   in filters instead of frequency and sampleRate which is a redundant and 
@@ -81,39 +85,52 @@ ToDo
    uses rsFloat32x4), so we can't just propagate down temaplte params from rsBiquad to state...unless
    rsBiquad has two templated params TSig, TPar - which it probably should have anyway.
  
+- Maybe preferably use `/**< ... */` instead of `/** ... */` for the doxygen stuff for member
+  functions. It's just nicer when the function name appears as "headline" above the docstring in the
+  code. But check, if intellisense still displays the docstrings when doing so. It also may not be
+  so suitable for in-class function definitions (but maybe we should avoid them anyway unless they
+  are one-liners we can still put them in the header file after the class declaration to allow (or
+  even demand) inlining)
  
--maybe preferably use /**< ... */ instead of /** ... */ for the doxygen stuff
- for member functions. It's just nicer when the function name appears as 
- "headline" above the docstring in the code. but check, if intellisense still 
- displays the docstrings when doing so. It also may not be so suitable for
- in-class function definitions (but maybe we should avoid them anyway unless
- they are one-liners - we can still put them in the header file after the class
- declaration to allow (or even demand) inlining)
- 
-Make the following things consistent:
+- Make the following things consistent:
 
-Interface:
--class names (use prefix rs everywhere)
--function names:
- -have a getSample and processBlock function consistently in all DSP classes
- -if the module produces stereo samples, use processFrame - getSample is only
-  for mono stuff ...maybe that makes it redundant but it is nice to be able to
-  write things like:
-    out = env.getSample() * filter.getSample(osc.getSample());
--consistently use pointers (not references) for output variables - makes it 
- visible in client code, what is an output
--the argument order should be consistent for functions that do similar things
- -especially in rsArray (dangerous change)
--the units (seconds, milliseconds) for parameters should be the same in all 
- classes (dangerous change)
- -in rapt, we should probably not deal with physical units at all and instead 
-  use normalized units (samples, omega = 2*pi*f/fs, etc.)
--consistent use of enum class for choices  
--(maybe) avoid free functions - wrap them into namespaces - maybe use 
- sub-namespaces (RAPT::Filters, RAPT::Generators, etc.)
--i've been thinking about using std::vector for all i/o of the the non-realtime
- classes - but some client code may use something else, so plain arrays is most
- flexible - anyone can use it
+  - Interface:
+
+    - Class names (use prefix rs everywhere)
+
+    - Function names:
+      - Have a getSample and processBlock function consistently in all DSP classes
+      - If the module produces stereo samples, use processFrame - getSample is only
+        for mono stuff ...maybe that makes it redundant but it is nice to be able to
+        write things like:  
+        `out = env.getSample() * filter.getSample(osc.getSample());`
+
+    - Consistently use pointers (not references) for output variables. It makes it visible in client
+      code, what is an output
+
+     - The argument order should be consistent for functions that do similar things - especially in
+       rsArrayTools (dangerous change)
+
+    - The units (seconds, milliseconds) for parameters should be the same in all classes (dangerous
+      change)
+
+   - In rapt, we should probably not deal with physical units at all and instead 
+     use normalized units (samples, omega = 2*pi*f/fs, etc.)
+
+  - Consistent use of enum class for choices
+
+  - (Maybe) avoid free functions. Wrap them into namespaces. Maybe use sub-namespaces
+    (RAPT::Filters, RAPT::Generators, etc.). Or maybe (ab)use classes for collections of functions.
+    The functions can then be static member functions. For some reason, I do not really like deeply
+    nested namespaces. But maybe these are two separate things. Creating a sub-namespace just for a
+    function collection may be "overkill" (I think of namespaces as big things) but for the bigger
+    compartements of the library like "Filters", "Generators", etc., namespaces may actually be 
+    appropriate.
+
+  - I've been thinking about using std::vector for all i/o of the the non-realtime classes but some
+    client code may use something else, so suing plain arrays is most flexible. Anyone can use it.
+    So, the low-level number crunching code should be based on passing around C-style arrays.
+
 -consistently make embedded objects accessible either via having them as public 
  members or by providing getters ...the former seems better - simpler client-side 
  syntax and does the exact same  thing
@@ -235,8 +252,10 @@ Resources:
   functions. The disadvantage might be discoverability and generated documentation - it may not list
   the non-member function.
 
----------------------------------------------------------------------------------------------------
-Updating strategies:
+
+
+Updating strategies
+-------------------
 
 When a DSP algorithm has many parameters with corresponding setters, the question arises how to 
 trigger the recalculation of the internal coefficients. Take, for example, a filter that has 
