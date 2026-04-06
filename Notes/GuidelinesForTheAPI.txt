@@ -119,6 +119,10 @@ Interface:
 -use nouns like "getProduct" when the function returns an object (numbers qualify 
  as well) but a verb like "multiply" when the function performs some action on 
  passed inputs like multiplying array element-wise
+-Use abbreviations consistently in function names and their parameters. Use: Dist: Distortion, 
+ Distro: Distribution, Freq: Frequency, Calc: Calculate, Coeff: Coefficient, Reso: Resonance, 
+ Cyc: Cycle, Oct: Octave, Sec: Second,
+ 
 
 See also:
  https://github.com/RobinSchmidt/RS-MET/wiki/Standards

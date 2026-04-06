@@ -107,6 +107,7 @@ public:
   operating directly on our member variables because we want to make the implementation re-usable
   by other oscillator code that also wants to implement pitch dithering. */
   static void calcCycleDistribution(T meanCycleLength, T* lenMid, T* probShort, T* probMid);
+  // Maybe abbreviate "Distribution". Maybe use "Dist", "Distrib" or "Distri" or "Distro"
 
 
 protected:
@@ -189,7 +190,7 @@ void rsPitchDitherOsc<T>::reset(bool closed)
 {
   sampleCount = T(0);
   prng.setState(seed);
-  updateCycleLength(closed);                 // Important for correct initial lenNow.  
+  updateCycleLength(closed);                 // Important for correct initial lenNow.
 }
 
 

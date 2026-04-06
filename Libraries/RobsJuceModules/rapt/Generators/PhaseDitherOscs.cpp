@@ -25,31 +25,31 @@ template<class T>
 void rsPitchDitherOsc<T>::calcCycleDistribution(T c, T* lenMid, T* probShort, T* probMid)
 {
   // Compute cycle lengths c1,c2,c3:
-  T ci = rsFloor(c);                   // Integer part of desired cycle length c
-  T cf = c - ci;                       // Fractional part of it
-  T c2 = ci;                           // Length of the middle length cycle
+  T ci = rsFloor(c);                   // Integer part of desired cycle length c.
+  T cf = c - ci;                       // Fractional part of it.
+  T c2 = ci;                           // Length of the middle length cycle.
   if(cf >= T(0.5))                     // If fractional part of c is >= 0.5...
-    c2 += T(1);                        // ..the mid length must be one sample longer
-  T c1 = c2 - T(1);                    // Short cycles are one sample shorter than mid
-  T c3 = c2 + T(1);                    // Long cycles are one sample longer than mid
+    c2 += T(1);                        // ..the mid length must be one sample longer.
+  T c1 = c2 - T(1);                    // Short cycles are one sample shorter than mid.
+  T c3 = c2 + T(1);                    // Long cycles are one sample longer than mid.
 
   // Compute intermediates:
-  T e1 = c1 - c;                       // Length error of short cycle
-  T e2 = c2 - c;                       // Length error of mid cycle
-  T e3 = c3 - c;                       // Length error of long cycle
-  T v1 = e1 * e1;                      // Variance contribution from short cycles
-  T v2 = e2 * e2;                      // Variance contribution from mid cycles
-  T v3 = e3 * e3;                      // Variance contribution from long cycles
-  T v  = T(0.25);                      // Target variance determined by the cf = 0.5 "worst case"
-  T d1 = v - v1;                       // Deviation from target variance of short cycles
-  T d2 = v - v2;                       // Deviation from target variance of mid cycles
-  T d3 = v - v3;                       // Deviation from target variance of long cycles
-  T s  = T(1) / (e3*(v1-v2) - e2*(v1-v3) + e1*(v2-v3));  // Common scaler for probabilities
+  T e1 = c1 - c;                       // Length error of short cycle.
+  T e2 = c2 - c;                       // Length error of mid cycle.
+  T e3 = c3 - c;                       // Length error of long cycle.
+  T v1 = e1 * e1;                      // Variance contribution from short cycles.
+  T v2 = e2 * e2;                      // Variance contribution from mid cycles.
+  T v3 = e3 * e3;                      // Variance contribution from long cycles.
+  T v  = T(0.25);                      // Target variance determined by the cf = 0.5 "worst case".
+  T d1 = v - v1;                       // Deviation from target variance of short cycles.
+  T d2 = v - v2;                       // Deviation from target variance of mid cycles.
+  T d3 = v - v3;                       // Deviation from target variance of long cycles.
+  T s  = T(1) / (e3*(v1-v2) - e2*(v1-v3) + e1*(v2-v3));  // Common scaler for probabilities.
 
   // Compute and assign outputs:
   *lenMid    = c2;
-  *probShort = (d2*e3 - d3*e2) * s;    // Probability p1 to use short cycle with length c1
-  *probMid   = (d3*e1 - d1*e3) * s;    // Probability p2 to use middle cycle with length c2
+  *probShort = (d2*e3 - d3*e2) * s;    // Probability p1 to use short cycle with length c1.
+  *probMid   = (d3*e1 - d1*e3) * s;    // Probability p2 to use middle cycle with length c2.
   //*probLong  = (d1*e2 - d2*e1) * s;  // Would be redundant: p3 = 1 - (p1 + p2). See below.
   
   // We don't have a probLong output parameter because that would be redundant. It would always be
