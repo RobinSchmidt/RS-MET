@@ -112,51 +112,54 @@ Interface Considerations
   - Some other names: `TPix` for pixels, `TCoef` for coefficients, `TVal` for values, `TArg` for
     function arguments, `Tx`, `Ty` for input and output types of functions  ...
 
+- I use of camel case: My rationale for prefering `CamelCase` over `snake_case` is that the names
+  tend to be shorter while the word separation via the capitalization is still obvious enough. The
+  main argument for snake case is typically that the words are more clearly separated which is true
+  but in my opionion, the separation in camel case is clear enough such that this marginal
+  improvement does not justify the lengthening. Also, JUCE uses it as well although that had nothing
+  to do with my decision. I made that long before even knowing JUCE. 
+    
+- I use `rs`-prefixing for class and function names. My rationale for prefixing everything with `rs`
+  is to avoid name clashes. Yes, I know - that's what namespaces are there for but sometimes it is
+  really inconvenient to always use `RAPT::someFunction()` instead of `rsSomeFunction()` and also I
+  sometimes need my own versions of standard functions like `rsSin()` instead of `sin()` because
+  the templatized nature of RAPT sometimes requires that I'm able to provide custom
+  implementations of standard functions. Think, for example, a `sin()` function for SIMD vectors.
+  If a class needs to compute a sine for some type `T`, I would just let it call `rsSin()` and
+  provide a suitable explicit specialization of `rsSin()` for that type `T` and the templatized
+  code of the class would the compile just fine when the class template is instantiated for type
+  `T`. ...TBC...
+
 - Class names 
 
-  - Use `UpperCamelCase` with lower case prefix `rs` everywhere. Example: `rsLadderFilter`. 
+  - I use `UpperCamelCase` with lower case prefix `rs` for classes. Example: `rsLadderFilter`. 
   
-  - Rationale for `CamelCase`: My rationale for prefering `CamelCase` over `snake_case` is that the
-    names tend to be shorter while the word separation via the capitalization is still obviuous enough. The main argument for snake case is typically that the words are more clearly separated
-    which is true but in my opionion, the separation in camel case is clear enough such that this
-    marginal improvement does not justify the lengthening. Also, JUCE uses it as well although that
-    had nothing to do with my decision. I made that long before even knowing JUCE. 
-    
-  - Rationale for `rs`-prefixing: My rationale for prefixing everything with `rs` is to avoid name
-    clashes. Yes, I know - that's what namespaces are there for but sometimes it is really
-    inconvenient to always use `RAPT::someFunction()` instead of `rsSomeFunction()` and also I
-    sometimes need my own versions of standard functions like `rsSin()` instead of `sin()` because
-    the templatized nature of RAPT sometimes requires that I'm able to provide custom
-     implementations of standard functions. Think, for example, a `sin()` function for SIMD vectors.
-    If a class needs to compute a sine for some type `T`, I would just let it call `rsSin()` and
-    provide a suitable explicit specialization of `rsSin()` for that type `T` and the templatized
-    code of the class would the compile just fine when the class template is insteantiated for type
-    `T`. ...TBC...
-
 - Function names and signatures:
 
-  - For free functions, also use CamelCase. Example `rsExp()`, `rsSin()`.
+  - For free functions, also use camel case. Example `rsExp()`, `rsSin()`. It's actually supposed to
+    be `lowerCamelCase` but the `rs`-prefix requires me to captitalize the function name anyway.
 
-  - For member functions of classes use lowerCamelCase. Example: `setCutoff()`
+  - For member functions of classes I use bona fide `lowerCamelCase`. Example: `setCutoff()`.
 
-  - Have a `getSample()` and `processBlock()` member functions consistently in all DSP classes
+  - ToDo: Have a `getSample()` and `processBlock()` member functions consistently in all DSP 
+    classes.
 
-  - If the module produces stereo samples, use processFrame - getSample is only
-    for mono stuff ...maybe that makes it redundant but it is nice to be able to
-    write things like:  
+  - If the module produces stereo samples, use processFrame because `getSample()` is only suitable
+    for single channel (i.e. mono) processing. Maybe that makes it redundant but it is nice to be
+    able to write things like:  
     `out = env.getSample() * filter.getSample(osc.getSample());`
 
-  - Consistently use pointers (not references) for output variables. It makes it visible in client
-    code, what is an output
+  - ToDo: Consistently use pointers (not references) for output variables. It makes it visible at
+    the call site, what is an output that may be (over)written.
 
   - The argument order should be consistent for functions that do similar things - especially in
-    rsArrayTools (dangerous change)
+    rsArrayTools (potentially dangerous (i.e. quietly breaking) change!)
 
   - The units (seconds, milliseconds) for parameters should be the same in all classes (dangerous
     change)
 
-  - In rapt, we should probably not deal with physical units at all and instead 
-    use normalized units (samples, omega = 2*pi*f/fs, etc.)
+  - In rapt, we should probably not deal with physical units at all and instead use normalized units
+    like samples or omega: $\omega = 2 \pi f / f_s$,  etc.
 
 - Consistent use of enum class for choices
 
@@ -378,8 +381,101 @@ ToDo
  - Check use of std::list<> in rosic::PolymorphicInstrumentVoice
 
  - Define a consistent strategy for CameCasing words that can be seen as compound words or as two
-   words like "sample rate" vs "samplerate" or "wave shape" vs "wave shape". I currently just 
+   words like "sample rate" vs "samplerate" or "wave shape" vs "waveshape". I currently just 
    capitalize every part of a word that "could" be seen as a word in its own right. That is, I use
    things like WaveForm, WaveShape, SampleRate, OverSampling although some of them have become 
    single words already in common language use (like "oversampling" - nobody writes "over 
-   sampling"). I'm not yet sure how to handle this best.
+   sampling"). I'm not yet sure how to handle this best. Other examples: BandWidth, EigenValue,
+   EigenVector, EigenSpace, EigenFunction ..what about LowPass, HighPass, BandPass, BandStop, etc.?
+   It almost appears like compound words in English fall on a continuous spectrum between "should be
+   considered one word" and "should be considered two words". Words like lowpass would be at the 
+   "one word" end and words like "sample rate" more near the "two words" end. That makes it 
+   difficult to opt for one single consistent rule.
+
+
+Ideas for abbreviations:
+
+Amplitude:       Amp  ,
+Argument:        Arg  ,
+Analog:          Ana  ,
+Attack:          Att  ,
+Bandwidth:       Bw (in Hz: BwHz, in octaves: BwOct)  ,
+Calculate:       Calc  ,
+Coefficient:     Coeff  ,
+Compare:         Comp  ,
+Compartment      Comp  ,
+Complex:         Comp  ,
+Component:       Comp  ,
+Compression:     Comp  ,
+Compute:         Comp  ,
+Context:         Ctx  ,
+Cycle:           Cyc  ,
+Damping:         Damp  ,
+Decay:           Dec  ,
+Decibel:         Db  ,
+Digital:         Digi  ,
+Distance:        Dist  , 
+Distortion:      Dist, Distort  ,
+Distribution:    Dist, Distri, Distrib, Distro  ,
+Eigenvalue:      EigVal  ,
+Eigenvector:     EigVec  ,
+Envelope:        Env  ,
+Frequency:       Freq  ,
+Filter:          Flt, Filt  ,
+Function:        Fun, Func  ,
+Hertz:           Hz  ,
+Histogram:       Hist, Histo  ,
+Index:           Idx  ,
+Instance:        Inst  ,
+Instantaneous:   Inst, Insta, Instant  ,
+Instrument:      Inst, Instrum  ,
+Matrix:          Mat  ,
+Millisecond:     Ms  ,
+Modifier:        Mod  ,
+Modulation:      Mod  ,
+Module:          Mod  ,
+Modulus:         Mod  ,
+Octave:          Oct  ,
+Oscillator:      Osc
+Parameter:       Par, Param  ,
+Phase:           Phs  ,
+Release:         Rel  ,
+Resolution:      Res, Reso, Resol  ,
+Resonance:       Res, Reso, Reson  ,
+Second:          Sec  ,
+Singal:          Sig  ,
+Spectrum:        Spec  ,
+Specification:   Spec  ,
+Sustain:         Sus  ,
+Tensor:          Tens, Tns  ,
+Value:           Val  ,
+Vector:          Vec  ,
+
+Aim for 1 or 2 syllables. Try to make the abbreviations unique. When writing code and trying to find
+a suitable abbreviation, we should really first look up this dictionary to see, if ther already is
+an abbreviation used for that somewhere else in the library. We should maintain this dictionary for
+this purpose
+
+Acronyms:
+
+Amplitude Modulation:               Am  ,
+Attack Decay Sustain Relase:        Adsr  ,
+Digital Signal Processing:          Dsp  ,
+Fast Fourier Transform:             Fft  ,
+Finite Impulse Response:            Fir  ,
+Frequency Modulation:               Fm, FreqMod  ,
+Graphical User Interface:           Gui  ,
+Infinite Impulse Response:          Iir  ,
+Low Frequency Oscillator:           Lfo, LowFreqOsc  ,
+Lowpass filter:                     Lpf  ,
+Linear Predictive Coding:           Lpc  ,
+Multi Segment Envelope Generator:   Mseg  ,
+Phase Modulation:                   Pm, PhaseMod  ,
+Ring Modulation:                    Rm, RingMod  ,
+Semitone:                           St  ,
+
+
+Symbols:
+
+Normalized Radian Frequency:      Omega  ,
+Time Constant:                    Tau  ,
