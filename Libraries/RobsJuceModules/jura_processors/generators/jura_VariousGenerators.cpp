@@ -454,6 +454,7 @@ void PitchDitherOscModule::noteOn(int noteNumber, int velocity)
 {
   frequency = RAPT::rsPitchToFreq(noteNumber);
   oscCore.setMeanCycleLength(sampleRate / frequency, true);
+  oscCore.reset(true);  // To retrigger osc and re-init PRNG
 }
 
 //=================================================================================================

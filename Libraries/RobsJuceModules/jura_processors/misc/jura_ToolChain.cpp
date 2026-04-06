@@ -759,6 +759,7 @@ void ToolChain::populateModuleFactory()
   f.registerModuleType([](CS cs)->AM { return new SineOscAudioModule(cs);            }, s, "SineOscillator");
   f.registerModuleType([](CS cs)->AM { return new SineOscAudioModulePoly(cs);        }, s, "SineOscillatorPoly");
   f.registerModuleType([](CS cs)->AM { return new TriSawOscModule(cs);               }, s, "TriSawOscillator");
+  f.registerModuleType([](CS cs)->AM { return new PitchDitherOscModule(cs);          }, s, "PitchDitherOscillator");
   f.registerModuleType([](CS cs)->AM { return new EllipseOscillatorAudioModule(cs);  }, s, "EllipseOscillator");
   f.registerModuleType([](CS cs)->AM { return new RotationOscillatorAudioModule(cs); }, s, "Oscillator3D");
   f.registerModuleType([](CS cs)->AM { return new RayBouncerAudioModule(cs);         }, s, "RayBouncer");
