@@ -1,73 +1,85 @@
-ToDo:
--make the API consistent with regard to 
- -naming conventions  
- -parameter ordering (for functions with similar parameter lists)
- -coefficient updating strategy (see below)
--maybe use nested namespaces like RAPT::Data, RAPT::Math, RAPT::Filters, etc. 
- to get the functionality more ordered and also to render a better doxygen 
- documentation
--anticipate using the C++20 module feature - don't use it just yet (we want to 
- remain C++11 compatible for a while), but organize the structure in a way that 
- makes it easy to switch to using modules later
- https://www.modernescpp.com/index.php/c-20-open-questions-to-modules
- https://vector-of-bool.github.io/2019/01/27/modules-doa.html
--maybe rename rosic to ramp (Rob's audio and music processors)
--in rapt (but maybe not in rosic) consistently use omega = 2*pi*freq/sampleRate 
- in filters instead of frequency and sampleRate which is a redundant and 
- inefficient parametrization (typically requires more computations to eventually 
- get the coeffs). in rosic, a freq-and-sampleRate parameterization can be kept as 
- convenience feature, but rapt is supposed to be more low-level and performance 
- oriented
--maybe split the member variables of filter implementations into a "state" and
- "coeffs" part to allow for easier optimization of memory usage on higher 
- levels. That may make a big difference especially when many filters with equal
- settings are used. Maybe even hae a 3rd class: Params for the user parameters. 
- Example:
+API Guidelines (Draft)
+======================
+
+
+ToDo
+----
+
+- Make the API consistent with regard to 
+  - Naming conventions  
+  - Parameter ordering (for functions with similar parameter lists)
+  - Coefficient updating strategy (see below)
+
+- Maybe use nested namespaces like RAPT::Data, RAPT::Math, RAPT::Filters, etc. 
+  to get the functionality more ordered and also to render a better doxygen 
+  documentation
+
+- Anticipate using the C++20 module feature - don't use it just yet (we want to 
+  remain C++11 compatible for a while), but organize the structure in a way that 
+  makes it easy to switch to using modules later  
+  https://www.modernescpp.com/index.php/c-20-open-questions-to-modules  
+  https://vector-of-bool.github.io/2019/01/27/modules-doa.html
+
+- Maybe rename rosic to ramp (Rob's audio and music processors)
+
+- In rapt (but maybe not in rosic) consistently use omega = 2*pi*freq/sampleRate 
+  in filters instead of frequency and sampleRate which is a redundant and 
+  inefficient parametrization (typically requires more computations to eventually 
+  get the coeffs). in rosic, a freq-and-sampleRate parameterization can be kept as 
+  convenience feature, but rapt is supposed to be more low-level and performance 
+  oriented
+
+- Maybe split the member variables of filter implementations into a "state" and
+  "coeffs" part to allow for easier optimization of memory usage on higher 
+  levels. That may make a big difference especially when many filters with equal
+  settings are used. Maybe even hae a 3rd class: Params for the user parameters. 
+  Example:
+  ```
+  class rsBiquad
+  {
  
- class rsBiquad
- {
+  public:
+   
+    struct Params
+    {
+      enum Type
+      {
+	      bypass = 0,
+	      lowpass,
+	      highpass,
+	      // ...
+	      numModes
+	    };
+   
+      double sampleRate = 44100, frequency = 1000, quality = 1/sqrt(2);
+	    Type type = bypass;
+    };
+   
+    struct Coeffs
+    {
+      double b0, b1, b2, a1, a2;
+    };
+   
+    struct StateDF1
+    {
+      double x1, x2, y1, y2;
+    };
+   
+   
+  protected:
+   
+    Coeffs   coeffs;
+    StateDF1 state;
  
-   public:
-   
-   struct Params
-   {
-     enum Type
-	 {
-	   bypass = 0,
-	   lowpass,
-	   highpass,
-	   // ...
-	   numModes
-	 };
-   
-     double sampleRate = 44100, frequency = 1000, quality = 1/sqrt(2);
-	 Type type = bypass;
    };
-   
-   struct Coeffs
-   {
-     double b0, b1, b2, a1, a2;
-   };
-   
-   struct StateDF1
-   {
-     double x1, x2, y1, y2;
-   };
-   
-   
-   protected:
-   
-   Coeffs   coeffs;
-   StateDF1 state;
+   ```
  
- };
- 
- Maybe the classes for Params, Coeffs, State should be dragged out into classes in their own right 
- like rsBiquadParams, rsBiquadCoeffs, rsBiquadState. But that increases the surface area of the 
- library so it may be better to avoid it. Also: when templatizing, coeffs and params may need to 
- have a different template parameter than tse state (for example: Params/Coeffs use float and State
- usesd rsFloat32x4), so we can't just propagate down temaplte params from rsBiquad to state...unless
-rsBiquad has two templated params TSig, TPar - which it probably should have anyway.
+   Maybe the classes for Params, Coeffs, State should be dragged out into classes in their own right 
+   like rsBiquadParams, rsBiquadCoeffs, rsBiquadState. But that increases the surface area of the 
+   library so it may be better to avoid it. Also: when templatizing, coeffs and params may need to 
+   have a different template parameter than tse state (for example: Params/Coeffs use float and State
+   uses rsFloat32x4), so we can't just propagate down temaplte params from rsBiquad to state...unless
+   rsBiquad has two templated params TSig, TPar - which it probably should have anyway.
  
  
 -maybe preferably use /**< ... */ instead of /** ... */ for the doxygen stuff
