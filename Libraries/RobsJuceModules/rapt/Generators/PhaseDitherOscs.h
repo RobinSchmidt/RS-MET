@@ -175,6 +175,13 @@ inline void rsPitchDitherOsc<T>::updateCycleLength(bool closed)
   else
     lenNow = lenMid + T(1);                  // Next cycle is long.
   phaseSlope = T(1) / (lenNow - T(closed));  // Slope depends on cycle length.
+
+  // ToDo: Explain the " - T(closed)" thing. I think, for the half-open interval (i.e. when 
+  // "closed" is false and therefore converts to 0), we get the range [0, 1 - 1/lenNew] which we
+  // interpret more vaguely as [0,1). For the closed interval (i.e. when closed is "true" and
+  // therefore converts to 1), we get the range [0,1]. Maybe introduce anothe variable
+  // maxCount = lenNow - T(closed); and then do phaseSlope = T(1) / maxCount; I think, maxCount is
+  // the right name - but verify this!
 }
 
 template<class T> 
