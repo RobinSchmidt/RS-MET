@@ -410,6 +410,35 @@ void TriSawOscModule::updateBending()
 
 //=================================================================================================
 
+PitchDitherOscModule::PitchDitherOscModule(CriticalSection *lockToUse, 
+  MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
+  : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse)
+{
+  ScopedLock scopedLock(*lock);
+  setModuleTypeName("PitchDitherOscillator");
+  createParameters();
+}
+
+void PitchDitherOscModule::createParameters()
+{
+  ScopedLock scopedLock(*lock);
+
+  typedef RAPT::rsPitchDitherOsc<double> PDO;
+  PDO* pdo = &oscCore;
+
+  typedef ModulatableParameter Param;
+  Param* p;
+
+  p = new Param("Amplitude", -2.0, 2.0, 1.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PitchDitherOscModule>(this, &PitchDitherOscModule::setAmplitude);
+}
+
+
+
+
+//=================================================================================================
+
 FlatZapperModule::FlatZapperModule(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
   : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse)

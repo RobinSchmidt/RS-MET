@@ -231,10 +231,10 @@ public:
   virtual void createParameters();
 
   // Overriden from AudioModule baseclass:
-  virtual void processStereoFrame(double *left, double *right) override;
-  virtual void setSampleRate(double newSampleRate) override;
-  virtual void reset() override;
-  virtual void noteOn(int noteNumber, int velocity) override;
+  //virtual void processStereoFrame(double *left, double *right) override;
+  //virtual void setSampleRate(double newSampleRate) override;
+  //virtual void reset() override;
+  //virtual void noteOn(int noteNumber, int velocity) override;
 
   // Parameter callback targets:
   void setAmplitude(double newAmplitude) { amplitude = newAmplitude; }
@@ -242,7 +242,8 @@ public:
 protected:
 
   // DSP Core:
-  RAPT::rsPitchDitherOsc<float> oscCore;
+  RAPT::rsPitchDitherOsc<double> oscCore;
+  // Explicit instantiation is in rosic/basics/rosic_TemplateInstantiations.cpp
 
   // Parameters:
   float amplitude = 1.f;

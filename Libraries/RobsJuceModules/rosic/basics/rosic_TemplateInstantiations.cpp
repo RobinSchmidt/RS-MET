@@ -255,14 +255,17 @@ template class RAPT::rsBreakpointModulator<double>;
 template class RAPT::rsAttackDecayEnvelope<double>;
 
 
+// Generators:
 template class RAPT::rsBouncillator<double>;
 template class RAPT::rsRayBouncer<double>;
 template class RAPT::rsRayBouncerDriver<double>;
 template class RAPT::rsLissajousOscillator3D<double>;
 template class RAPT::rsEllipseOscillator<double>;
 template class RAPT::rsTriSawOscillator<double>;
+template class RAPT::rsPitchDitherOsc<double>;
 template class RAPT::rsOscArray<double>;
 template class RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>, RAPT::rsPolyBlep1<double, double>>;
+
 
 template class RAPT::rsHalfWaveSaturator<double, double>;
 template class RAPT::rsSaturator<double, double>;
