@@ -168,22 +168,24 @@ class JUCE_API TriSawOscModule : public jura::AudioModuleWithMidiIn
 
 public:
 
-  TriSawOscModule(CriticalSection *lockToUse,
-    MetaParameterManager* metaManagerToUse = nullptr, ModulationManager* modManagerToUse = nullptr);
+  TriSawOscModule(
+    CriticalSection *lockToUse, 
+    MetaParameterManager* metaManagerToUse = nullptr,
+    ModulationManager* modManagerToUse = nullptr);
   // maybe make a constructor without the managers
 
   /** Creates the static parameters for this module (i.e. parameters that are not created
   dynamically and are thus always there). */
   virtual void createParameters();
 
-  // overriden from AudioModule baseclass:
+  // Overriden from AudioModule baseclass:
   //virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void processStereoFrame(double *left, double *right) override;
   virtual void setSampleRate(double newSampleRate) override;
   virtual void reset() override;
   virtual void noteOn(int noteNumber, int velocity) override;
 
-  // parameter callback targets:
+  // Parameter callback targets:
   void setAmplitude(double newAmplitude) { amplitude = newAmplitude; }
   void setBend(double newBend);
   void setBendAsym(double newAsym);
@@ -198,15 +200,54 @@ protected:
 
   void updateBending();
 
-  RAPT::rsTriSawOscillator<double> oscCore;
+  RAPT::rsTriSawOscillator<double> oscCore;   // Maybe use float rather than double
 
-  // parameters:
+  // Parameters:
   double freq = 0, sampleRate = 44100;
   double bend = 0, bendAsym = 0;
   double sigmoid = 0, sigmoidAsym = 0;
   double amplitude = 1;
+  // Maybe use float here also.
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TriSawOscModule)
+};
+
+//=================================================================================================
+
+/** Under construction. Not yet available in ToolChain.
+
+Realizes a pitch dithering oscillator. */
+
+class JUCE_API PitchDitherOscModule : public jura::AudioModuleWithMidiIn
+{
+
+public:
+
+  PitchDitherOscModule(
+    CriticalSection *lockToUse, 
+    MetaParameterManager* metaManagerToUse = nullptr, 
+    ModulationManager* modManagerToUse = nullptr);
+  
+  virtual void createParameters();
+
+  // Overriden from AudioModule baseclass:
+  virtual void processStereoFrame(double *left, double *right) override;
+  virtual void setSampleRate(double newSampleRate) override;
+  virtual void reset() override;
+  virtual void noteOn(int noteNumber, int velocity) override;
+
+  // Parameter callback targets:
+  void setAmplitude(double newAmplitude) { amplitude = newAmplitude; }
+
+protected:
+
+  // DSP Core:
+  RAPT::rsPitchDitherOsc<float> oscCore;
+
+  // Parameters:
+  float amplitude = 1.f;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PitchDitherOscModule)
 };
 
 //=================================================================================================
