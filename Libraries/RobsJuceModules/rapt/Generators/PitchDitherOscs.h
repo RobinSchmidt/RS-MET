@@ -1,7 +1,5 @@
-#ifndef RAPT_PHASEDITHEROSCS_H_INCLUDED
-#define RAPT_PHASEDITHEROSCS_H_INCLUDED
-
-// The filename and #define is WRONG! It should be PitchDitherOsc not PhaseDitherOsc!
+#ifndef RAPT_PITCHDITHEROSCS_H_INCLUDED
+#define RAPT_PITCHDITHEROSCS_H_INCLUDED
 
 //=================================================================================================
 
@@ -148,40 +146,48 @@ protected:
 template<class T> 
 inline T rsPitchDitherOsc<T>::getSamplePhasor(bool closed)
 {
-  T p = phaseSlope * sampleCount;  // Compute phasor output sample.
-  updateSampleCount(closed);       // Increment with possible wraparound.
-  return p;                        // Return phasor output sample.
+  T p = phaseSlope * sampleCount;      // Compute phasor output sample.
+  updateSampleCount(closed);           // Increment with possible wraparound.
+  return p;                            // Return phasor output sample.
 }
 
 template<class T> 
 inline void rsPitchDitherOsc<T>::updateSampleCount(bool closed)
 {
-  sampleCount += T(1);             // We produce 1 sample at each update.
-  if(sampleCount >= lenNow)        // Is cycle finished?
-  {                                // If so..
-    sampleCount = T(0);            // ..Wrap around sample counter.
-    updateCycleLength(closed);     // ..Compute lenNow and phaseSlope for next cycle.
+  sampleCount += T(1);                 // We produce 1 sample at each update.
+  if(sampleCount >= lenNow)            // Is cycle finished?
+  {                                    // If so..
+    sampleCount = T(0);                // ..Wrap around sample counter.
+    updateCycleLength(closed);         // ..Compute new lenNow and phaseSlope for next cycle.
   }
 }
 
 template<class T> 
 inline void rsPitchDitherOsc<T>::updateCycleLength(bool closed)
 {
-  T r = prng.getSampleInUnitRange();         // Random number in interval [0,1).
+  T r = prng.getSampleInUnitRange();   // Random number in interval [0,1).
   if(r < probShort)
-    lenNow = lenMid - T(1);                  // Next cycle is short.
+    lenNow = lenMid - T(1);            // Next cycle is short.
   else if(r < probShort + probMid)
-    lenNow = lenMid;                         // Next cycle is medium.
+    lenNow = lenMid;                   // Next cycle is medium.
   else
-    lenNow = lenMid + T(1);                  // Next cycle is long.
-  phaseSlope = T(1) / (lenNow - T(closed));  // Slope depends on cycle length.
+    lenNow = lenMid + T(1);            // Next cycle is long.
+  T maxCount = lenNow - T(closed);     // Maximum sample count until wrap around.
+  phaseSlope = T(1) / maxCount;        // Phasor increment per sample.
 
+  // Old:
+  //phaseSlope = T(1) / (lenNow - T(closed));  // Slope depends on cycle length.
+
+  // Done
   // ToDo: Explain the " - T(closed)" thing. I think, for the half-open interval (i.e. when 
   // "closed" is false and therefore converts to 0), we get the range [0, 1 - 1/lenNow] which we
   // interpret more vaguely as [0,1). For the closed interval (i.e. when closed is "true" and
   // therefore converts to 1), we get the range [0,1]. Maybe introduce another variable
   // maxCount = lenNow - T(closed); and then do phaseSlope = T(1) / maxCount; I think, maxCount is
-  // the right name - but verify this!
+  // the right name - but verify this! Do we really count up to this value? Or is it one less? Aha!
+  // In getSamplePhasor(), we only observe value up to maxCount-1 but inside updateSampleCount(),
+  // we do indeed observe values up to maxCount.
+
 }
 
 template<class T> 
