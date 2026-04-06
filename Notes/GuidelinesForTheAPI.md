@@ -500,3 +500,11 @@ Symbols:
 
 Normalized Radian Frequency:      omega: $\omega$  ,
 Time Constant:                    tau: $\tau$  ,
+
+
+Class member variable names:
+
+I think, I use names like key, currentKey, receivedKey, currentNote, lastNote, etc. Pick one and use
+that consitently. Maybe midiKey is best because it's short and avoids ambiguity. A "key" could mean
+something else in some contexts (for example, in key-value trees, etc.). Also use midiVel then for
+velocity.
