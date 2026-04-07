@@ -367,7 +367,10 @@ Improvements
   something similar. The required math formula is fully worked out there. It can even support 
   different underlying sigmoid shapes (e.g. tanh, atan, erf, etc.). Maybe the softQuantToBits could 
   have an additional "mode" parameter. Maybe it could be a string-type parameter? If that's not 
-  possible, we need to encode the different shapes as integers in an enum style approach.
+  possible, we need to encode the different shapes as integers in an enum style approach. Maybe 
+  let the user switch to a direct-evaluation algorithm bypassing the creation of a lookup table.
+  That may be better for modulating the parameters a,b,c,d and it would also solve the potential
+  problems that the table based approach adds (interpolation noise and and range clipping).
 
 - The preset section could show a right-click context menu with options Load, Save, Copy, Paste. 
   Then the permanently visible load, Save buttons could be made optional

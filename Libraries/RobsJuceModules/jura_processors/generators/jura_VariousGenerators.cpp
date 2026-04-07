@@ -458,16 +458,26 @@ void PitchDitherOscModule::createParameters()
 
 void PitchDitherOscModule::processStereoFrame(double *left, double *right)
 {
-  double out = amplitude * oscCore.getSampleSaw();
-
+  // New:
+  using WF = RAPT::rsWaveForms<double>;
+  double phasor = oscCore.getSamplePhasor(phasorClosed);
+  double out = amplitude * WF::saw(phasor);
   *left = *right = out;
+
+  // Old:
+  //double out = amplitude * oscCore.getSampleSaw();
+  //*left = *right = out;
 
   // ToDo: 
   //
   // - Instead of using oscCore.getSamplesaw(), we should first generate the phasor value and then
   //   convert it manually to the sawtooth wave. Reason: getSampleSaw() will always prodcue the
   //   saw int the closed range [-1,+1] using an underlying phasor in [0,1] which ignores our
-  //   phasorClosed setting here.
+  //   phasorClosed setting here. ...ok - done!
+  //
+  // - Allow for different waveforms. It's easier now that we already have the phasor here. We 
+  //   could create a switch statement with cases for the different wavforms calling different
+  //   functions like WF::saw(), WF::pulse(), WF::sine(), etc.
 }
 
 void PitchDitherOscModule::setSampleRate(double newSampleRate)
