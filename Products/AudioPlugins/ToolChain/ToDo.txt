@@ -458,6 +458,9 @@ Cosmetic GUI issues (layout, appearance, etc.):
 - When scrolling down in a context menu TreeView like for the modules in liberty, the entries 
   shift left as soon as their parent node is being scrolled out of the view.
 
+- The lowercase letter "y" looks bad. Change it. I think, I may have some variation of it that is
+  currently commented out.
+
 ---------------------------------------------------------------------------------------------------
 Other ideas
 

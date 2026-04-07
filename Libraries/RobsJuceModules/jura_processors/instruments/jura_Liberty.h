@@ -208,6 +208,13 @@ public:
 
   virtual void reset() override { wrappedLiberty->reset(); }
 
+
+  void setOutAmplitude( double newAmp) { outGain  = newAmp; }
+  void setThruAmplitude(double newAmp) { passGain = newAmp; }
+  // Maybe rename to setOutAmp, setThruAmp
+
+
+
 protected:
 
   void createParameters();
@@ -217,8 +224,9 @@ protected:
   romos::Liberty *wrappedLiberty;
   bool wrappedLibertyIsOwned = false;
 
-  double outGain  = 1.0;   // Gain factor for our output signal
-  double passGain = 1.0;   // Gain factor for the passed through input signal
+  double outGain  = 1.0;   // Gain factor for our output signal.
+  double passGain = 1.0;   // Gain factor for the passed through input signal. 
+  // Maybe rename passGain to thruGain
   // ToDo: Create parameter objects for these values and let the GUI have sliders for them. Or 
   // maybe have a single InOutMix slider that acts like a DryWet slider but insteade of going 
   // through 100/0..50/50..0/100 it goes through 100/0..100/100..0/100. Or maybe an equal power

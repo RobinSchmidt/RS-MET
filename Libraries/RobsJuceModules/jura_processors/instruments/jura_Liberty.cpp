@@ -51,10 +51,48 @@ AudioModuleEditor* LibertyAudioModule::createEditor(int type)
 
 void LibertyAudioModule::createParameters()
 {
-  // ToDo: Create parameter objects for outGain, passGain and connect them to callbacks setOutGain(), 
-  // setPassGain(), which will have to be added - they should set the values of the outGain, passGain
-  // members. But how should these parameters be scaled? Do we have some similar situation somewhere 
-  // else where we can mimick the strategy?
+  ScopedLock scopedLock(*lock);
+
+  typedef ModulatableParameter ModPar;
+  ModPar* mp;
+
+  mp = new ModPar("OutAmp", -1.0, 1.0, 1.0, Parameter::LINEAR);
+  addObservedParameter(mp);
+  mp->setValueChangeCallback<LibertyAudioModule>(this, &LibertyAudioModule::setOutAmplitude);
+
+  mp = new ModPar("ThruAmp", -1.0, 1.0, 1.0, Parameter::LINEAR);
+  addObservedParameter(mp);
+  mp->setValueChangeCallback<LibertyAudioModule>(this, &LibertyAudioModule::setThruAmplitude);
+
+
+  // ToDo: Create parameter objects for outGain, passGain and connect them to callbacks 
+  // setOutGain(), setPassGain(), which will have to be added - they should set the values of the 
+  // outGain, passGain members. But how should these parameters be scaled? Do we have some similar 
+  // situation somewhere else where we can mimick the strategy? EchoLab has WetLevel. But that's
+  // not exactly what we want. FlatZapper has Level, Input, Exciter. SweepKicker has Amplitude
+  // and PassThrough. That is actually pretty close. It's actually exactly what we want. But maybe
+  // we want to use some other kind of scaling function. Maybe sinh-based is best for a bipolar, 
+  // through-zero amplitude parameter. Maybe create a predefined parameter class for that such 
+  // that just need to do: p = new Params::Amplitude(..).
+
+  // Maybe instead of OutAmp, ThruAmp, we should have OutLevel and ThruLevel in dB. Maybe the 
+  // slider should go from -100 to +20 and switch to "Off" at -100. Maybe SweepKicker should also
+  // replace Amplitude and PassThrough with such "Level" parameters. ...and we should add such 
+  // "ThruLevel" parameters to Straightliner and AcidDevil, too. Maybe "OutLevel" should be renamed
+  // to "Level" or maybe "Volume". And maybe the pass-through level should be named ThruVol.
+  // FuncShaper has its output level named "Volume". Yeah - I think "Volume" for the global volume
+  // and "ThruVol" for the pass-through volume makes the most sense. Maybe the "Level" parameters
+  // in AcidDevil and Straightliner could also be renamed to Volume at some point. But we must be 
+  // careful to maintain compatibility with old states.
+  //
+  // Maybe to convert from the parameter value to the amplitude scaler, write a function
+  // rsDbToAmpWithThresh(double dB, double threshDb) that does:
+  // if(dB <= thresh) return 0.0 else return rsDbToAmp(dB);
+  // The slider should also switch to "Off" when the value is at the lower limit of -100 dB.
+  // Or maybe the range going down to -100 is too much. Maybe cut off at -60. ...Maybe -60..0
+  // is a good range. It's what I use in AcidDevil, too. Or maybe use -60..+20. Or maybe use
+  // -80..+20 with cutoff at -80 for ThruVol. That gives the slider a total dynamic range of 100 dB
+  // which seems to be a good value.
 }
 
 

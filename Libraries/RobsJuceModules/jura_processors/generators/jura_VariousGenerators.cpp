@@ -432,7 +432,7 @@ void PitchDitherOscModule::createParameters()
   typedef ModulatableParameter ModPar;
   ModPar* mp;
 
-  mp = new ModPar("Amplitude", -2.0, 2.0, 1.0, Parameter::LINEAR);
+  mp = new ModPar("Amplitude", -1.0, 1.0, 1.0, Parameter::LINEAR);
   addObservedParameter(mp);
   mp->setValueChangeCallback<PitchDitherOscModule>(this, &PitchDitherOscModule::setAmplitude);
 
