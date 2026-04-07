@@ -206,8 +206,10 @@ Coding:
   To write a function with the help of Copilot, write a stub for the function and the documentation 
   that explains what the function does (or rather is supposed to do). Then use autocomplete 
   ("Alt" + ".") inside the stub. Copilot can often generate the code from the previously created 
-  documentation. Maybe if autocomplete is not enough, prompt Copilot to generate the code for the 
-  implementation.
+  documentation. Maybe also write a unit test for it to further document its expected behavior (in 
+  test driven development (TDD) style: Write the test first and let it fail successfully, then 
+  work on the feature until the test passes). Maybe if autocomplete is not enough, prompt Copilot to
+  generate the code for the implementation.
 
 - "Glorified Find-and-Replace" or "Natural Language Batch Processor"
   Not yet tried - just and idea that could plausibly work well:
@@ -222,10 +224,13 @@ Coding:
   "#pragma once" by old school C-style include guards using the format 
   "#ifndef RAPT_FILENAME_INCLUDED #define RAPT_FILENAME_INCLUDED  ...  #endif" where "FILENAME" 
   should be infered from the name of the .h file. Or: prefix all class names in the "jura" namespace
-  with "rs" and do all the required updates in client code. Maybe do the change manually in one 
-  place and point the AI to that place to use it as template. Or maybe create a "before - after" 
-  template/example in the prompt. Maybe a few more examples with some variations that are likely to 
-  be encountered.
+  with "rs" and do all the required updates in client code. Or: "Fix all compiler warnings about 
+  unused local variables by commenting their declarations out". Or: "Fix all compiler warnings about
+  unused function parameters by commenting their declarations out". Or: "Make this optional function
+  parameter mandatory and find call sites and pass the former default value there". Maybe do the 
+  change manually in one place and point the AI to that place to use it as template. Or maybe create
+  a "before - after" template/example in the prompt. Maybe a few more examples with some variations 
+  that are likely to be encountered.
 
 - More ideas: Use AI to clean up unneeded #includes. It sometimes happens that we include more than 
   we need, for example, when we need some library at one point in time but later get rid of the 
