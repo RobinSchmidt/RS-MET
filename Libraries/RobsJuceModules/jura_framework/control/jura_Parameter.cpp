@@ -502,6 +502,13 @@ void Parameter::callValueChangeCallbacks(double argument)
     valueChangeCallbackInt->call(juce::roundToInt(argument));
   if( valueChangeCallbackBool != nullptr )
     valueChangeCallbackBool->call(argument >= 0.5);
+
+  // ToDo:
+  //
+  // - Get rid of the various callbacks and keep only the one for "double" and rename ot to 
+  //   valueChangeCallback. If we need to use callbacks to set int, choice or bool parameters, we
+  //   should implement a callback target that takes a double nevertheless just for the plumbing,
+  //   which then internally call the setter that takes an int or a bool.
 }
 
 double Parameter::restrictValueToParameterRange(double valueToRestrict)

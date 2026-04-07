@@ -562,6 +562,7 @@ protected:
   /** Restricts the value, defaultValue, and automation limits to the range of the parameter, makes sure that max = min, makes sure that
   values > 0 for exponential scaling, etc.. */
   virtual void valueSanityCheck();
+  // ToDo: Maybe rename to sanitizeValue()
 
   double  normalizedValue;       // normalized value in the range 0..1
   double  value;                 // actual value of the parameter

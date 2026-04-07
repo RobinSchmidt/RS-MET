@@ -442,6 +442,7 @@ void PitchDitherOscModule::createParameters()
 
   fp = new FixPar("PhasorClosed", 0.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(fp);
+  // ToDo: Plumb the parameter to a callback!
 
 
   // ToDo:
@@ -450,7 +451,7 @@ void PitchDitherOscModule::createParameters()
   //
   // - Add boolean parameter PhasorClosed for producing phasor values in the closed interval. I 
   //   think The artifacts that we see in _TestPitchDitherOscSawToSin at the wrap-around may be due
-  //   to using the closed interval. Try uisng the half-open interval in this patch.
+  //   to using the closed interval. Try uisng the half-open interval in this patch. 
   //
   // - Use "using" instead of "typedef" for PDO, ModPar, etc.
 }
