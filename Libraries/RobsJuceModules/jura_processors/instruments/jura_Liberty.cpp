@@ -2674,8 +2674,16 @@ LibertyEditor::LibertyEditor(CriticalSection *newPlugInLock, LibertyAudioModule*
 //: PolyphonicInstrumentEditor(newPlugInLock, newLibertyAudioModule)
   : AudioModuleEditor(newLibertyAudioModule)
 {
-  ScopedLock scopedLock(*lock); 
+  ScopedLock scopedLock(*lock);
+
   setHeadlineStyle(MAIN_HEADLINE);
+  setHeadlinePosition(TOP_CENTER);
+  // This makes the headline visible but it's ugly. It's only preliminary.
+
+  //setHeadlineStyle(SUB_HEADLINE);
+  //setHeadlinePosition(TOP_LEFT);
+  // When doing it like that, the headline is covered by the preset section
+
 
   jassert(newLibertyAudioModule != NULL ); // you must pass a valid module here
 

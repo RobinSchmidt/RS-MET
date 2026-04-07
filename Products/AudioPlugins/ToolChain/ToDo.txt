@@ -109,6 +109,8 @@ we build up our suite of unit tests along the way.
    Maybe it could also make sense to have a global "Gain" or "Volume" or "OutGain" parameter as 
    well in some sort of performance section of the GUI.
 
+  -[5] The "Poly" switch doesn't seem to have any effect.
+
 - [4] Quadrifex: load preset NonLinearReverb002. We hit a jassert in getParameterByName with a 
   Parameter name DryWetRatio. It may be the Harmonics and/or the Reverb algo
 
@@ -452,6 +454,9 @@ Cosmetic GUI issues (layout, appearance, etc.):
   change the color which is ugly. Maybe they should have some sort of semi-transparent indicator
   overlay. Maybe some sort of triangle that sits at the end of the filled section of the slider and
   maybe it could even move when the modulated value changes
+
+- When scrolling down in a context menu TreeView like for the modules in liberty, the entries 
+  shift left as soon as their parent node is being scrolled out of the view.
 
 ---------------------------------------------------------------------------------------------------
 Other ideas

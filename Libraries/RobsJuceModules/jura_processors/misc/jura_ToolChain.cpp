@@ -255,11 +255,11 @@ void ToolChain::processBlock(double **inOutBuffer, int numChannels, int numSampl
   else {
     // we have to iterate through all the samples and for each sample, update all the modulators 
     // and then compute a sample-frame from each non-modulator module:
-    for(int n = 0; n < numSamples; n++) 
+    for(int n = 0; n < numSamples; n++)
     {
-      if(needsSmoothing)   
+      if(needsSmoothing)
         smoothingManager->updateSmoothedValuesNoLock();
-      if(needsModulation)  
+      if(needsModulation)
         modManager->applyModulationsNoLock();
       for(size_t i = 0; i < modules.size(); i++)
         modules[i]->processStereoFrame(&inOutBuffer[0][n], &inOutBuffer[1][n]);
