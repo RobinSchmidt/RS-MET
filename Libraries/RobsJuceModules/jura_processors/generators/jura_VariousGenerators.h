@@ -236,13 +236,32 @@ public:
   virtual void noteOn(int noteNumber, int velocity) override;
 
   // Parameter callback targets:
-  void setAmplitude(double newAmplitude) { amplitude = newAmplitude;                  }
-
-  void setTune(     double newTune)      { tune      = newTune; updateOscFrequency(); }
+  void setAmplitude(double newAmplitude) 
+  { 
+    amplitude = newAmplitude;
+  }
+  void setTune(double newTune)
+  { 
+    if(newTune != tune)
+    {
+      tune = newTune;
+      updateOscFrequency();
+    }
+  }
   // Maybe wrap it into if(if newTune != tune). It could perhaps save us some CPU when setTune()
   // gets called repeatedly with the same value. But does that actually happen or have we already
   // taken care of this in the modulation system? Look it up! If not, we probably should do it 
-  // there - once and for all.
+  // there - once and for all. Hmm - it doesn't seem to be the case and when thinking about it,
+  // I'm not so sure anymore if that should be done in the mod-system because it would be an 
+  // addiitional check that would _always_ be done so it may slow down the whole system a little
+  // bit. When thinking about it, I think, the likelihood that a modulated value remains exactly
+  // the same over an extended period of time is not likely enough to optimize for this specific
+  // circumstance. I mean, yes, in a sustain phase of an envelope and when the respective parameter
+  // is not modulated by anything else, we actually do have that situation, so it's also not 
+  // totally uncommon. Not sure... For the time being, let's stay with doing this optimization on
+  // a case-by-case basis, if at all.
+  // ToDo: Move this note into some text document where I ponder about design decisions Some sort
+  // of "architecture documentation" file (or set of files).
 
 
 protected:

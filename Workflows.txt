@@ -207,9 +207,21 @@ Coding:
   ("Alt" + ".") inside the stub. Copilot can often generate the code from the previously created 
   documentation.
 
+- Not yet tried - just and idea that could plausibly work well:
+  Use AI as a sort of natural language batch processor to do the same kind of code change in a whole
+  bunch of source files (maybe in a whole codebase). It would be like a glorified "find and replace"
+  that can do more complex changes than regular "find and replace" (even with regex) but which are
+  still just tedious and boring grunt work. Things like "Find all "typedef" declarations and replace
+  them by the corresponding "using" declaration.". Well, that change could probably still be done
+  with regex but I really wouldn't want to work out how (maybe ask AI to do the translation! ;-)).
+  Maybe do the change manually in one place and point the AI to that place to use it as template. Or
+  maybe create a "before - after" template/example in the prompt. Maybe a few more examples with
+  some variations that are likely to be encountered.
+  
 
 Debugging:
 
-- What sometimes work to find a bug is to go into the code section where the bug might probably be 
+- What sometimes works to find a bug is to go into the code section where the bug might probably be 
   and start writing a comment that explains the bug and then something like: "Maybe the problem 
   is...", "It's likely that ...", .. and then using autocomplete to see what Copilot comes up with.
+  It sometimes actually gets it right and correctly explains what is wrong.

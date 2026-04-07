@@ -293,9 +293,11 @@ public:
   virtual void doModulationUpdate(double modulatedValue)
   {
     // We need an empty baseclass implementation because in the destructor of a plugin, 
-    // doModulationUpdate would otherwise (in case of a purely virtual function) get called with a 
-    // null-reference (or something), in ModulationManager::removeConnection when the modulateble 
-    // parameter deletes itself. ToDo: figure out and document why this is the case
+    // doModulationUpdate() would otherwise (in case of a purely virtual function) get called with
+    // a null-reference (or something), in ModulationManager::removeConnection() when the 
+    // modulatable parameter deletes itself. ToDo: Figure out and document why this is the case. It
+    // may be cleaner to have this to be a purely virtual method but if that's not possible then so
+    // be it.
   }
 
   /** Like doModulationUpdate, but for polyphonic modulations. Overriden in 
@@ -933,11 +935,12 @@ class JUCE_API ModulatableParameter2 : public ModulatableParameter
     valueChangeCallbackFunction(modulatedValue);
   }
 };
-// Elan uses this - eventually, i should probably switch to this too and get rid of all the other
+// Elan uses this - eventually, I should probably switch to this too and get rid of all the other
 // callback types in class Parameter, but the current mechanism may actually be more performant 
 // than std::function. Benchmark this first by setting up a realistically complex configuration of
 // modulators and parameters with ModulatableParameter and ModulatableParameter2 and compare their
-// performances.
+// performances. Otherwise I would consider this code cruft and it should probably be removed or 
+// at least moved into a special section for client-specific variations.
 
 
 //#################################################################################################
