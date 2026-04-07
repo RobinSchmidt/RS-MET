@@ -2676,14 +2676,8 @@ LibertyEditor::LibertyEditor(CriticalSection *newPlugInLock, LibertyAudioModule*
 {
   ScopedLock scopedLock(*lock);
 
-  setHeadlineStyle(MAIN_HEADLINE);
-  setHeadlinePosition(TOP_CENTER);
-  // This makes the headline visible but it's ugly. It's only preliminary.
-
-  //setHeadlineStyle(SUB_HEADLINE);
-  //setHeadlinePosition(TOP_LEFT);
-  // When doing it like that, the headline is covered by the preset section
-
+  setHeadlineStyle(SUB_HEADLINE);
+  setHeadlinePosition(TOP_LEFT);
 
   jassert(newLibertyAudioModule != NULL ); // you must pass a valid module here
 
@@ -2748,20 +2742,26 @@ void LibertyEditor::resized()
 {
   ScopedLock scopedLock(*lock);
   AudioModuleEditor::resized();
+
   int x, y, w, h;
 
+  // Set up bounds for the state widget set. This is subsequently used as reference to aling the
+  // other elements:
   x = 0;
-  y = stateWidgetSet->getBottom() - 8;
-  w = getWidth()/4 ;
-  h = 240;
-  stateWidgetSet->setBounds(0, 4, getWidth()/4, 32);
+  y = getHeadlineBottom() + 8;
+  w = getWidth()/4;
+  h = 32;
+  stateWidgetSet->setBounds(x, y, w, h);
 
+  // Set up bounds for module tree view and area for module editor:
+  y = stateWidgetSet->getBottom() - 4;   // Why do we need the - 4?
+  h = 240;
   structureTreeView->setBounds(x, y, w, h);
   x += w - RWidget::outlineThickness; 
   w  = getWidth() - x ;
   moduleEditorHolder->setBounds(x, y, w, h);
 
-
+  // Set up bounds for block diagram editor:
   x = 0;
   y = moduleEditorHolder->getBottom();
   w = getWidth();
