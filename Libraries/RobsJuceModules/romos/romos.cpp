@@ -43,6 +43,7 @@ namespace romos
 #include "Modules/romos_InfrastructuralModules.cpp"
 #include "Modules/romos_ModulationModules.cpp"
 #include "Modules/romos_SoundGeneratorModules.cpp"
+#include "Modules/romos_UnfinishedModules.cpp"
 
 #include "Framework/romos_Liberty.cpp"
 }

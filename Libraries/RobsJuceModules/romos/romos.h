@@ -61,6 +61,7 @@ namespace romos
 #include "Modules/romos_InfrastructuralModules.h"
 #include "Modules/romos_ModulationModules.h"
 #include "Modules/romos_SoundGeneratorModules.h"
+#include "Modules/romos_UnfinishedModules.h"
 
 #include "Framework/romos_Liberty.h"  // should not be in the framework folder - maybe top-level
 

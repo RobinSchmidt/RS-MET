@@ -87,7 +87,9 @@ Adding a module
 To add a new (atomic) module to the modular synthesis engine, the following steps are required:
 
 - In the folder romos/Modules find a suitable pair of .h/cpp files where you want to add your 
-  module. Example: romos_FilterModules.h/cpp
+  module. Example: romos_FilterModules.h/cpp. Or maybe you want to first create the module in
+  romos_UnfinishedModules.h/cpp while you are working on it and only move it over to its final
+  destination when it's finished. Maybe that's a better idea.
 
 - Add your module class by following the examples of the already existing modules.
 

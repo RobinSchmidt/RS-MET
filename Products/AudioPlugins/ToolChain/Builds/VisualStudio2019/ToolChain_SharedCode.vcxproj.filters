@@ -3898,6 +3898,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\romos\Modules\romos_SoundGeneratorModules.cpp">
       <Filter>JUCE Modules\romos\Modules</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\romos\Modules\romos_UnfinishedModules.cpp">
+      <Filter>JUCE Modules\romos\Modules</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\romos\TestSuite\AutomaticTests.cpp">
       <Filter>JUCE Modules\romos\TestSuite</Filter>
     </ClCompile>
@@ -8722,6 +8725,9 @@
       <Filter>JUCE Modules\romos\Modules</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\romos\Modules\romos_SoundGeneratorModules.h">
+      <Filter>JUCE Modules\romos\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\romos\Modules\romos_UnfinishedModules.h">
       <Filter>JUCE Modules\romos\Modules</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\romos\TestSuite\AutomaticTests.h">
