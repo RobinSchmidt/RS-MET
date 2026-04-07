@@ -221,11 +221,15 @@ Coding:
   required updates of the code that uses these entries. Or: Replace all occurrences of 
   "#pragma once" by old school C-style include guards using the format 
   "#ifndef RAPT_FILENAME_INCLUDED #define RAPT_FILENAME_INCLUDED  ...  #endif" where "FILENAME" 
-  should be infered from the name of the .h file. Maybe do the change manually in one place and 
-  point the AI to that place to use it as template. Or maybe create a "before - after" 
+  should be infered from the name of the .h file. Or: prefix all class names in the "jura" namespace
+  with "rs" and do all the required updates in client code. Maybe do the change manually in one 
+  place and point the AI to that place to use it as template. Or maybe create a "before - after" 
   template/example in the prompt. Maybe a few more examples with some variations that are likely to 
   be encountered.
-  
+
+- More ideas: Use AI to clean up unneeded #includes. It sometimes happens that we include more than 
+  we need, for example, when we need some library at one point in time but later get rid of the 
+  dependency without even realizing it due to code changes.
 
 Debugging:
 

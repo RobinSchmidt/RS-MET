@@ -1,3 +1,9 @@
+// ToDo: Figure out if we still need this file anywhere. If not, delete it. If yes, try to change
+// the places where we need it such that it's not needed there anymore - and then delete it.
+// Or: Document why this file is still here. Maybe it should serve as a reminder for how a
+// library include file could look like if we don't need to adhere to the JUCEs module definition
+// format? That may make sense. But it should then be documented.
+
 /**
 
 This is the main include file for the RoSiC (Robin's Signal Processing 
