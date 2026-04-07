@@ -277,8 +277,10 @@ void ToolChain::processBlock(double **inOutBuffer, int numChannels, int numSampl
     }
   }
 
-  // todo: all instrument and source modules should pass through the incoming audio and add their 
-  // own signal (unless the use it inside for their own signal processing) -> allows for layering
+  // ToDo: All instrument and source modules should pass through the incoming audio and add their 
+  // own signal (unless the use it inside for their own signal processing) -> allows for layering.
+  // Apparently, Liberty already does this. But why? And what about others? Check Straightliner 
+  // and AcidDevil.
 }
 
 void ToolChain::setSampleRate(double newSampleRate)

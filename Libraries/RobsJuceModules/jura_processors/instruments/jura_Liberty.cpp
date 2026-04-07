@@ -2484,7 +2484,8 @@ juce::Line<float> ModularBlockDiagramPanel::getLineForConnection(romos::AudioCon
   return Line<float>((float) xs, (float) ys, (float) xt, (float) yt);
 }
 
-std::vector<romos::Module*> ModularBlockDiagramPanel::getModulesInRectangle(juce::Rectangle<int> rectangle) const
+std::vector<romos::Module*> ModularBlockDiagramPanel::getModulesInRectangle(
+  juce::Rectangle<int> rectangle) const
 {
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
   std::vector<romos::Module*> result;
@@ -2520,14 +2521,40 @@ std::vector<romos::Module*> ModularBlockDiagramPanel::getModulesInRectangle(juce
   // ->done ->commented code may be deleted ...hopefully - but check that it works before
 
   return result;
+
+  // ToDo:
+  //
+  // - Document why the code for the loops over inputs and outputs is commented out. We probably 
+  //   don't want to select them for containerization when creating a lasso rectangle or something?
 }
 
 romos::Module* ModularBlockDiagramPanel::getModuleAtPixels(int x, int y, bool considerPins) const
 {
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
 
-  // loop through the modules, return the first which is found to include the point:
-  // todo: maybe use a local variable for getInterfaceMediator()->getContainerShownInDiagram() as abbreviation
+  // New:
+  // Loop through the modules, return the first which is found to include the point:
+  auto cont = getInterfaceMediator()->getContainerShownInDiagram();
+  unsigned int i;
+  for(i = 0; i < cont->getNumInputPins(); i++)
+  {
+    if( getRectangleForModuleInPixels(cont->getAudioInputModule(i), considerPins).contains(x, y) )
+      return cont->getAudioInputModule(i);
+  }
+  for(i = 0; i < cont->getNumChildModules(); i++)
+  {
+    if( getRectangleForModuleInPixels(cont->getChildModule(i), considerPins).contains(x, y) )
+      return cont->getChildModule(i);
+  }
+  for(i = 0; i < cont->getNumOutputPins(); i++)
+  {
+    if( getRectangleForModuleInPixels(cont->getAudioOutputModule(i), considerPins).contains(x, y) )
+      return cont->getAudioOutputModule(i);
+  }
+
+  /*
+  // Old:
+  // Loop through the modules, return the first which is found to include the point:
   unsigned int i;
   for(i = 0; i < getInterfaceMediator()->getContainerShownInDiagram()->getNumInputPins(); i++)
   {
@@ -2544,8 +2571,17 @@ romos::Module* ModularBlockDiagramPanel::getModuleAtPixels(int x, int y, bool co
     if( getRectangleForModuleInPixels(getInterfaceMediator()->getContainerShownInDiagram()->getAudioOutputModule(i), considerPins).contains(x, y) )
       return getInterfaceMediator()->getContainerShownInDiagram()->getAudioOutputModule(i);
   }
+  */
+  
 
-  return NULL;
+  return nullptr;
+
+  // ToDo:
+  //
+  // - Maybe use a local variable for getInterfaceMediator()->getContainerShownInDiagram() as 
+  //   abbreviation. 
+  // 
+  // - Maybe also define an abbreviation for getRectangleForModuleInPixels(). Maybe getRectFor().
 }
 
 romos::AudioConnection ModularBlockDiagramPanel::getConnectionAtPixels(int x, int y) const
@@ -2733,11 +2769,28 @@ void LibertyEditor::updateWidgetsAccordingToState()
   // the mediator will take care to update all panels
 }
 
-
+//=================================================================================================
 /*
 
+ToDo:
+
+- Let the GUI have a global/performance section where we can adjust global settings like a global
+  volume level, number of voices, maybe oversampling, pass-through gain (maybe called PassGain) or
+  maybe realized as a Dry/Wet slider
+
+- When a container is selected in the TreeView and NodeGraph, the context dependent GUI area is
+  currently empty. We could use it to display some information about the container such as the 
+  number of sub-modules (maybe classified as number of polyphonic modules, monophonic modules,
+  infrastrcutural modules, etc.
+
+- Maybe in the function names, remove the "...InPixels". It should be self evident that we are
+  talking about pixels. What other unit could it possibly be? Ah! We seem to have some distance
+  measurements in terms of pin-distances. See function "int inPinDistances(int pixels)". So maybe
+  it's better to keep the "...InPixels"
+
 Bugs:
--The Poly switch on the GUI seems to have no effect
+
+- The Poly switch on the GUI seems to have no effect
 
 
 */

@@ -462,22 +462,28 @@ void PitchDitherOscModule::processStereoFrame(double *left, double *right)
   using WF = RAPT::rsWaveForms<double>;
   double phasor = oscCore.getSamplePhasor(phasorClosed);
   double out = amplitude * WF::saw(phasor);
+  //double out = amplitude * WF::sine(phasor);
   *left = *right = out;
 
   // Old:
   //double out = amplitude * oscCore.getSampleSaw();
   //*left = *right = out;
 
+  // Notes:
+  //
+  // - When converting the phasor to a sine by using  out = amplitude * WF::sine(phasor);  instead
+  //   of  out = amplitude * WF::saw(phasor);  we get a nice clean(ish) sine wave when the 
+  //   phasorClosed option is turned off - as expected. But: The preset 
+  //   _TestPitchDitherSawToSin.xml which also attempts to do that conversion using FuncShaper
+  //   produces artifacts. Why? When changing the function form sin() to cos() in FuncShaper, the
+  //   artifacts change. Maybe try replacing FuncShaper with a Liberty using the Formula module. 
+  //   The formula should be y = sin(pi * x)
+  //
+  //
   // ToDo: 
   //
-  // - Instead of using oscCore.getSamplesaw(), we should first generate the phasor value and then
-  //   convert it manually to the sawtooth wave. Reason: getSampleSaw() will always prodcue the
-  //   saw int the closed range [-1,+1] using an underlying phasor in [0,1] which ignores our
-  //   phasorClosed setting here. ...ok - done!
-  //
-  // - Allow for different waveforms. It's easier now that we already have the phasor here. We 
-  //   could create a switch statement with cases for the different wavforms calling different
-  //   functions like WF::saw(), WF::pulse(), WF::sine(), etc.
+  // - Allow for different waveforms. Create a switch statement with cases for the different 
+  //   waveforms calling different functions like WF::saw(), WF::pulse(), WF::sine(), etc.
 }
 
 void PitchDitherOscModule::setSampleRate(double newSampleRate)

@@ -102,6 +102,12 @@ we build up our suite of unit tests along the way.
    same can be done multiple times. When relaoding the liberty preset, all notes work again. 
    Apparently, the state of the voice manager has been cleaned up after the reload.
 
+  -[Q] Liberty passes the input signal through even when the AudioIns are not connected to the
+   AudioOuts. I think, it follows the convention for instruments to just layer their output on top
+   of what's already there. This behavior is unexpected when Liberty should be used as effect. 
+   Possible soultions: Introduce a "PassGain" parameter globally for the whole Liberty module. 
+   Maybe it could also make sense to have a global "Gain" or "Volume" or "OutGain" parameter as 
+   well in some sort of performance section of the GUI.
 
 - [4] Quadrifex: load preset NonLinearReverb002. We hit a jassert in getParameterByName with a 
   Parameter name DryWetRatio. It may be the Harmonics and/or the Reverb algo
@@ -420,6 +426,12 @@ Code Quality
   the jura_framework module. Maybe it could also be in rosic. Maybe the smart-pointer member 
   variables in the AudioModule should be consistently called something like "dspCore" to establish
   an idiomatic way to do this.
+
+- In jura, also use the "rs" prefix consistently like in rapt and rosic. Some widget classes 
+  currently use an "R" prefix (RSlider, RButton,  etc.). This should be replaced by "rs" as well. 
+  Rename some things in jura:
+    ColourSchemeComponent::updateWidgetsAccordingToState()  ->  updateWidgetsFromState()
+    ColourSchemeComponent  ->   ColorSchemeComponent
 
 ---------------------------------------------------------------------------------------------------
 Cosmetic GUI issues (layout, appearance, etc.):

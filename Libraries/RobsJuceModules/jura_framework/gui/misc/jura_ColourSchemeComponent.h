@@ -123,6 +123,8 @@ public:
 
   /** Updates the widgets according to the state of the assignedParameter (if any). */
   virtual void updateWidgetsAccordingToState();
+  // Maybe rename to updateWidgetsFromState() to make it shorter. We then need to update the code
+  // in all subclasses as well.
 
 protected:
 

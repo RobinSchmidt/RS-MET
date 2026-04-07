@@ -427,6 +427,7 @@ Damping:         Damp  ,
 Decay:           Dec  ,
 Decibel:         Db  ,
 Digital:         Digi  ,
+Display:         Disp  ,
 Distance:        Dist  , 
 Distortion:      Dist, Distort  ,
 Distribution:    Dist, Distri, Distrib, Distro  ,
@@ -520,3 +521,10 @@ something else in some contexts (for example, in key-value trees, etc.). A "note
 something different in a different context (it could be a text snippet, for example). Also use
 midiVel then for velocity. Somewhere, there's a function setNoteKey. Maybe change that to
 setMidiKey.
+
+
+Some general renaming plans:
+
+updateWidgetsAccordingToState()  ->   updateWidgetsFromState()
+ColourSchemeComponent            ->   ColorSchemeComponent
+

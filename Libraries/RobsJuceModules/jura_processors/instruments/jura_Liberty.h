@@ -140,29 +140,50 @@ public:
     if(wrappedLiberty->isSilent())
       return;
 
+    //// Old:
+    //double tmpL, tmpR;
+    //for(int n = 0; n < numSamples; n++)
+    //{
+    //  wrappedLiberty->getSampleFrameStereo(&tmpL, &tmpR);
+    //  inOutBuffer[0][n] += tmpL; 
+    //  inOutBuffer[1][n] += tmpR;
+    //}
+
+    // New:
     double tmpL, tmpR;
     for(int n = 0; n < numSamples; n++)
     {
       wrappedLiberty->getSampleFrameStereo(&tmpL, &tmpR);
-      inOutBuffer[0][n] += tmpL; 
-      inOutBuffer[1][n] += tmpR;
+      inOutBuffer[0][n] = passGain * inOutBuffer[0][n]  +  outGain * tmpL;
+      inOutBuffer[1][n] = passGain * inOutBuffer[1][n]  +  outGain * tmpR;
     }
   }
 
   virtual void processStereoFrame(double *left, double *right) override
   {
+    //// Old:
+    //double tmpL, tmpR;
+    //wrappedLiberty->getSampleFrameStereo(&tmpL, &tmpR);
+    //*left  += tmpL;
+    //*right += tmpR;
+
+    // New:
     double tmpL, tmpR;
     wrappedLiberty->getSampleFrameStereo(&tmpL, &tmpR);
-    *left  += tmpL;
-    *right += tmpR;
+    *left  = passGain * *left   +  outGain * tmpL;
+    *right = passGain * *right  +  outGain * tmpR;
   }
 
   /*
+  // Old API?
   virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
   {
     wrappedLiberty->getSampleFrameStereo(inOutL, inOutR);
   }
+  */
 
+  /*
+  // Single precision floating point callback:
   virtual void processBlockStereo(float *left, float *right, int numSamples)
   {
     if(wrappedLiberty->isSilent())
@@ -188,10 +209,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // others:
 
-  virtual void reset() override
-  {
-    wrappedLiberty->reset();
-  }
+  virtual void reset() override { wrappedLiberty->reset(); }
 
 protected:
 
@@ -199,9 +217,19 @@ protected:
   romos::Liberty *wrappedLiberty;
   bool wrappedLibertyIsOwned = false;
 
-  LibertyInterfaceState interfaceState; // maintains info about open panels, scroll-positions, etc.
+  double outGain  = 1.0;   // Gain factor for our output signal
+  double passGain = 1.0;   // Gain factor for the passed through input signal
+  // ToDo: Create parameter objects for these values and let the GUI have sliders for them. Or 
+  // maybe have a single InOutMix slider that acts like a DryWet slider but insteade of going 
+  // through 100/0..50/50..0/100 it goes through 100/0..100/100..0/100. Or maybe an equal power
+  // crossfade would be most suitable? Well - maybe just implement it like a Dry/Wet slider. But
+  // actually, in the context of automation, it is usually more convenient to have separate volume
+  // sliders for dry and wet.
 
-  juce::File macroDirectory;
+
+  LibertyInterfaceState interfaceState; // Maintains info about open panels, scroll-positions, etc.
+
+  juce::File macroDirectory;            // Directory where container macros are stored?
 
   juce_UseDebuggingNewOperator;
 };

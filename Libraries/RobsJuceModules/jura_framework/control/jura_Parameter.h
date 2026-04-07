@@ -572,7 +572,7 @@ protected:
   bool    saveAndRecall = true;  // used for locking params on preset switch?
   juce::String name;             // string for the parameter name
   juce::String displayName = ""; // a possibly different name for gui/display purposes (if empty
-                                 // the regular name will be used)
+                                 // the regular name will be used). Maybe rename to guiName.
 
 
   static bool storeDefaultValues; 
