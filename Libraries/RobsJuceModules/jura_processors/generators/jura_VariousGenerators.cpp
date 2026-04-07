@@ -443,7 +443,6 @@ void PitchDitherOscModule::createParameters()
   fp = new FixPar("PhasorClosed", 0.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(fp);
   fp->setValueChangeCallback<PitchDitherOscModule>(this, &PitchDitherOscModule::setPhasorClosed);
-  // ToDo: Plumb the parameter to a callback!
 
 
   // ToDo:
@@ -459,32 +458,41 @@ void PitchDitherOscModule::createParameters()
 
 void PitchDitherOscModule::processStereoFrame(double *left, double *right)
 {
-  *left = *right = amplitude * oscCore.getSampleSaw();
+  double out = amplitude * oscCore.getSampleSaw();
+
+  *left = *right = out;
+
+  // ToDo: 
+  //
+  // - Instead of using oscCore.getSamplesaw(), we should first generate the phasor value and then
+  //   convert it manually to the sawtooth wave. Reason: getSampleSaw() will always prodcue the
+  //   saw int the closed range [-1,+1] using an underlying phasor in [0,1] which ignores our
+  //   phasorClosed setting here.
 }
 
 void PitchDitherOscModule::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;
-  oscCore.setMeanCycleLength(sampleRate / frequency, true);
+  oscCore.setMeanCycleLength(sampleRate / frequency, phasorClosed);
 }
 
 void PitchDitherOscModule::reset()
 {
-  oscCore.reset(true);
+  oscCore.reset(phasorClosed);
 }
 
 void PitchDitherOscModule::noteOn(int noteNumber, int velocity)
 {
   currentKey = noteNumber;
   updateOscFrequency();
-  oscCore.reset(true);       // To retrigger osc and re-init PRNG
+  oscCore.reset(phasorClosed);       // To retrigger osc and re-init PRNG
 }
 
 void PitchDitherOscModule::updateOscFrequency()
 {
   frequency = RAPT::rsPitchToFreq(currentKey + tune);
   oscCore.setMeanCycleLengthNoUpdate(sampleRate / frequency);
-  //oscCore.setMeanCycleLength(sampleRate / frequency, true);
+  //oscCore.setMeanCycleLength(sampleRate / frequency, phasorClosed);
 
   // Notes:
   //

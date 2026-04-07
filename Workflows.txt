@@ -237,7 +237,9 @@ Coding:
 
 - More ideas: Use AI to clean up unneeded #includes. It sometimes happens that we include more than 
   we need, for example, when we need some library at one point in time but later get rid of the 
-  dependency without even realizing it due to code changes.
+  dependency without even realizing it due to code changes. AI should also we well suited for 
+  generating and modifying(!) boilerplate code. Especially the modification of large amounts of 
+  existing boilerplate is often a big pile of grunt work which should be automated by AI.
 
 Debugging:
 
