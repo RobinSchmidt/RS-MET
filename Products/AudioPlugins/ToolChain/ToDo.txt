@@ -257,6 +257,12 @@ Features
   left. Maybe auto-freeze when the scanning has reached the end and auto-unfreeze when a new 
   trigger is received.
 
+- AcidDevil: We want an export feature for the patterns as midi file. Maybe AI can help to to 
+  convert from the internal sequence format to midi? I would manually implement the feature as 
+  skeleton which calls a function stub that should convert from rosic::AcidPattern to 
+  juce::MidiMessageSequence and let Copilot generate a (preliminary) implementation for that 
+  function. The code would need to be carefully reviewed, though.
+
 - Global:
   - It would be nice, if all modules could also serve as (audio-rate) modulators. This is 
     complicated by the fact that modulators have only one output whereas the audio modules have two
@@ -339,7 +345,7 @@ Improvements
 - AcidDevil: The cutoff frequency needs an extended range - especially the lower limit needs to be
   extended. Maybe use the standard range of 20 Hz to 20 kHz. The upper limit is currently 10 kHz.
   But I think there are some problems in the filter code that limits the range and there may be a
-  reason for that. Check that thoroughly before changing anything!
+  reason for that. Check that thoroughly before changing anything! 
 
 - Quadrifex: the patches always contain for each slot a patch for every possible effect that 
   *could be* in the slot, regardless whether ot not it actually *is* in the slot. That's wasteful.
