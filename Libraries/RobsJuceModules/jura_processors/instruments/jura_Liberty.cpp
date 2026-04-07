@@ -34,6 +34,7 @@ LibertyAudioModule::LibertyAudioModule(CriticalSection *newPlugInLock)
 void LibertyAudioModule::init()
 {
   setModuleTypeName("Liberty");
+  createParameters();;
   macroDirectory = getPresetDirectory() + "/Macros";
 }
 
@@ -47,6 +48,15 @@ AudioModuleEditor* LibertyAudioModule::createEditor(int type)
 {
   return new jura::LibertyEditor(lock, this); // get rid of passing the lock
 }
+
+void LibertyAudioModule::createParameters()
+{
+  // ToDo: Create parameter objects for outGain, passGain and connect them to callbacks setOutGain(), 
+  // setPassGain(), which will have to be added - they should set the values of the outGain, passGain
+  // members. But how should these parameters be scaled? Do we have some similar situation somewhere 
+  // else where we can mimick the strategy?
+}
+
 
 //-------------------------------------------------------------------------------------------------
 // persistence:
@@ -2670,7 +2680,8 @@ bool ModularBlockDiagramPanel::getPinPropertiesAtPixels(int x, int y, romos::Mod
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-LibertyEditor::LibertyEditor(CriticalSection *newPlugInLock, LibertyAudioModule* newLibertyAudioModule) 
+LibertyEditor::LibertyEditor(CriticalSection *newPlugInLock, 
+  LibertyAudioModule* newLibertyAudioModule) 
 //: PolyphonicInstrumentEditor(newPlugInLock, newLibertyAudioModule)
   : AudioModuleEditor(newLibertyAudioModule)
 {
@@ -2709,6 +2720,7 @@ LibertyEditor::LibertyEditor(CriticalSection *newPlugInLock, LibertyAudioModule*
   //isTopLevelEditor      = true;
   stateWidgetSet->setLayout(StateLoadSaveWidgetSet::LABEL_AND_BUTTONS_ABOVE);
 
+  createWidgets();
   updateWidgetsAccordingToState();
 
   setSize(600, 400);
@@ -2725,6 +2737,14 @@ LibertyEditor::~LibertyEditor()
   delete diagramScrollContainer;
   delete interfaceMediator;
 }
+
+void LibertyEditor::createWidgets()
+{
+  // ToDo:
+  //
+  // - Create the sliders for the OutGain and PassGain parameters of Liberty
+}
+
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // callbacks:

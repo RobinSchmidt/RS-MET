@@ -48,7 +48,7 @@ class LibertyAudioModule : public PolyphonicInstrumentAudioModule, public Action
 public:
 
   //-----------------------------------------------------------------------------------------------
-  // construction/destruction:
+  // \name Lifetime
 
   /** Constructor. */
   //LibertyAudioModule(CriticalSection *newPlugInLock, romos::Liberty *modularSynthToWrap);
@@ -62,7 +62,7 @@ public:
   AudioModuleEditor* createEditor(int type) override;
 
   //-----------------------------------------------------------------------------------------------
-  // parameter settings:
+  // \name Setup
 
   virtual void setSampleRate(double newSampleRate) override
   {
@@ -70,7 +70,7 @@ public:
   }
 
   //-----------------------------------------------------------------------------------------------
-  // persistence:
+  // \name State Persistence (aka Serialization)
 
   /** Adds module-type specific state data to an existing xml-element, if any. For example, a 
   constant-module may have its value stored here, or a multi-stage equalizer may store the number 
@@ -123,7 +123,7 @@ public:
   //LibertyInterfaceState* getInterfaceState() { return &interfaceState; }
 
   //-----------------------------------------------------------------------------------------------
-  // event-handling
+  // \name Event Handling
 
   /** Triggers a note-on event. */
   virtual void noteOn(int noteNumber, int velocity) override;
@@ -133,7 +133,7 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  // audio processing:
+  // \name Audio Processing
 
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
@@ -206,12 +206,12 @@ public:
   }
   */
 
-  //-----------------------------------------------------------------------------------------------
-  // others:
-
   virtual void reset() override { wrappedLiberty->reset(); }
 
 protected:
+
+  void createParameters();
+
 
   /** Pointer to the underlying object which is wrapped. */
   romos::Liberty *wrappedLiberty;
@@ -999,6 +999,8 @@ public:
   virtual void updateWidgetsAccordingToState();
 
 protected:
+
+  virtual void createWidgets();
 
   /** Creates the proprties editor for the currently selected module. */
   //virtual void createPropertiesEditorForSelectedModule();
