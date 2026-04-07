@@ -94,6 +94,14 @@ we build up our suite of unit tests along the way.
    toDouble (in jura_StringTools), 
    RTextEntryField::keyPressed()
 
+- Liberty:
+
+  -[5] Load the preset TestTriSaw. Play a note and then a second while holding the first. Release
+   both notes. Trying to trigger the 2nd note again will not work. It's as if the note is somehow
+   blacklisted in the voice manager or something after attempting a legato/slide towards it. The
+   same can be done multiple times. When relaoding the liberty preset, all notes work again. 
+   Apparently, the state of the voice manager has been cleaned up after the reload.
+
 
 - [4] Quadrifex: load preset NonLinearReverb002. We hit a jassert in getParameterByName with a 
   Parameter name DryWetRatio. It may be the Harmonics and/or the Reverb algo

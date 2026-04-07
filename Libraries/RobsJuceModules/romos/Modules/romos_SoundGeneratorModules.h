@@ -79,8 +79,8 @@ public:
     hasHeader = false;
   }
 };
-// todo: let it have a 2nd output that is 0 most of the time, but 1.f at samples, when a reset
-// has occurred. the fractional part f (in 0..1) can be used to indicate the exact sub-sample
+// ToDo: Let it have a 2nd output that is 0 most of the time, but 1.f at samples, when a reset
+// has occurred. The fractional part f (in 0..1) can be used to indicate the exact sub-sample
 // time-instant at which the reset occurred (is there a convention, how to interpret this in
 // max/msp, reaktor, etc? figure out)
 
@@ -153,7 +153,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-// helper class - not actuall a Module
+// Helper class. Not actually a Module.
 
 class BlitIntegratorInitialStates
 {
@@ -255,7 +255,10 @@ public:
   }
 };
 
+
+
 //-------------------------------------------------------------------------------------------------
+// Ideas:
 
 // DigitalNoise (randomly switch between 1 and -1) Ins: MeanSwitchFrequency
 // SyncModOsc: oscillator is synced to a master-osc and has it's start-phase modulated by another osc 
@@ -272,5 +275,7 @@ public:
 // SineOscBank, QuadratureOscBank -> let user enter relative frequencies on the GUI
 
 // PHASE_MODULATION_2OPS, PHASE_MODULATION_3OPS, PHASE_MODULATION_4OPS, 
+
+
 
 #endif 

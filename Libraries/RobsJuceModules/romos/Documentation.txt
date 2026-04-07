@@ -80,3 +80,24 @@ std::vector<AudioInputPinData> inputPins
 -to create code for a new atomic module, use one of the macros
  CREATE_COMMON_DECLARATIONS_X where X stands for the number of inputs
 
+
+Adding a module
+---------------
+
+To add a new (atomic) module to the modular synthesis engine, the following steps are required:
+
+- In the folder romos/Modules find a suitable pair of .h/cpp files where you want to add your 
+  module. Example: romos_FilterModules.h/cpp
+
+- Add your module class by following the examples of the already existing modules.
+
+- In the file romos/Framework/romos_ModuleFactory.cpp there is a function
+  ModuleFactory::registerStandardModules(). To this function, you need to add a line 
+  corresponding to you newly created module class
+
+- ...TBC... is there anything else to to? 
+
+
+
+
+

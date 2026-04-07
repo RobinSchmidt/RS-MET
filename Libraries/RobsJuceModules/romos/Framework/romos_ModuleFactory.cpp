@@ -116,8 +116,7 @@ void ModuleFactory::removeModuleType(const std::string& fullTypeName)
 
 void ModuleFactory::registerStandardModules()
 {
-
-  // todo: remove the "Module" from the class names where it appears
+  // ToDo: Remove the "Module" from the class names where it appears
 
   // Arithmetic:
   registerModuleType(new ConstantModuleTypeInfo); // constant value
@@ -185,12 +184,21 @@ void ModuleFactory::registerStandardModules()
 
   //registerModuleType(new TopLevelTypeInfo); // nope - should not be user creatable
 
-
   // Modulation:
   registerModuleType(new EnvelopeADSRTypeInfo);
 
   // before starting using this, compare if the new names match the old ones (full and short)
   // register also programatically built containers...but maybe do this in liberty
+
+  // ToDo: 
+  // 
+  // - Maybe rename to registerAtomicModules(). But maybe at some stage we want to also add
+  //   some commonly used non-atomic modules as "standard" modules? The existence of the function
+  //   registerPreBuiltContainers() suggests that. In this case the current name seems a better 
+  //   choice. But maybe in this case we should still split the function into two calls:
+  //   registerStandardModules()
+  //     calls registerAtomicModules()
+  //     calls registerPreBuiltContainers()
 }
 
 void ModuleFactory::registerPreBuiltContainers()
@@ -220,17 +228,21 @@ void ModuleFactory::ensureTypeInfoArrayAllocated()
 void ModuleFactory::setupModule(romos::Module* module, const std::string& name,
   int x, int y, bool polyphonic) const
 {
-  // copied from the old ModuleFactory::createModule
+  // Copied from the old ModuleFactory::createModule
+  // ...? ...What am I supposed to do with this information?
 
-  module->initialize(); // this should set up the number of pins needed, etc.
+  module->initialize();
   module->setPositionXY(x, y);
   module->setPolyphonic(polyphonic);
   module->allocateMemory();
-
   module->setModuleName(name);
-  // must be called after allocateMemory because the Constant fills its output arrays with the
-  // corresponding value
-
   module->assignProcessingFunctions();
   module->resetStateForAllVoices();
+
+  // Notes:
+  // 
+  // - module->initialize() should set up the number of pins needed, etc.
+  //
+  // - module->setModuleName(name) must be called _after_ module->allocateMemory() because the 
+  //   Constant module fills its output arrays with the corresponding value.
 }
