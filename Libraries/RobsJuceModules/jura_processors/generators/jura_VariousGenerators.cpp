@@ -426,26 +426,33 @@ void PitchDitherOscModule::createParameters()
   typedef RAPT::rsPitchDitherOsc<double> PDO;
   PDO* pdo = &oscCore;
 
-  typedef ModulatableParameter Param;
-  Param* p;
+  typedef Parameter FixPar;
+  FixPar* fp;
 
-  p = new Param("Amplitude", -2.0, 2.0, 1.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<PitchDitherOscModule>(this, &PitchDitherOscModule::setAmplitude);
+  typedef ModulatableParameter ModPar;
+  ModPar* mp;
 
-  p = new Param("Tune", -36.0, 36.0, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<PitchDitherOscModule>(this, &PitchDitherOscModule::setTune);
+  mp = new ModPar("Amplitude", -2.0, 2.0, 1.0, Parameter::LINEAR);
+  addObservedParameter(mp);
+  mp->setValueChangeCallback<PitchDitherOscModule>(this, &PitchDitherOscModule::setAmplitude);
+
+  mp = new ModPar("Tune", -36.0, 36.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(mp);
+  mp->setValueChangeCallback<PitchDitherOscModule>(this, &PitchDitherOscModule::setTune);
+
+  fp = new FixPar("PhasorClosed", 0.0, 1.0, 0.0, Parameter::BOOLEAN);
+  addObservedParameter(fp);
 
 
   // ToDo:
   //
   // - Add parameter for WaveForm with options for Saw, Pulse, Triangle, Sine
   //
-  // - Add parameter for Detune in semitones. Maybe the range should be +-12 for the start. It can
-  //   be increased later. Or maybe look up what we do in other scenarios that are similar, i.e. 
-  //   where we have oscillators with a detune parameter. Straightliner's oscillators have a Tune
-  //   parameter that goes from -36 to +36 semitones. Maybe use that here, too 
+  // - Add boolean parameter PhasorClosed for producing phasor values in the closed interval. I 
+  //   think The artifacts that we see in _TestPitchDitherOscSawToSin at the wrap-around may be due
+  //   to using the closed interval. Try uisng the half-open interval in this patch.
+  //
+  // - Use "using" instead of "typedef" for PDO, ModPar, etc.
 }
 
 void PitchDitherOscModule::processStereoFrame(double *left, double *right)

@@ -433,11 +433,14 @@ Distribution:    Dist, Distri, Distrib, Distro  ,
 Eigenvalue:      EigVal  ,
 Eigenvector:     EigVec  ,
 Envelope:        Env  ,
+Exponential:     Exp  ,
 Frequency:       Freq  ,
 Filter:          Flt, Filt  ,
 Function:        Fun, Func  ,
 Hertz:           Hz  ,
 Histogram:       Hist, Histo  ,
+Hyperbolic:      Hyp  ,
+Hypothenuse:     Hyp, Hypot  ,
 Index:           Idx  ,
 Instance:        Inst  ,
 Instantaneous:   Inst, Insta, Instant  ,
@@ -456,11 +459,14 @@ Release:         Rel  ,
 Resolution:      Res, Reso, Resol  ,
 Resonance:       Res, Reso, Reson  ,
 Second:          Sec  ,
-Singal:          Sig  ,
+Signal:          Sig  ,
 Spectrum:        Spec  ,
 Specification:   Spec  ,
 Sustain:         Sus  ,
+Tangent:         Tan  ,
 Tensor:          Tens, Tns  ,
+Trigger:         Trig  ,
+Trigonometric:   Trig  ,
 Value:           Val  ,
 Vector:          Vec  ,
 
@@ -468,6 +474,8 @@ Aim for 1 or 2 syllables. Try to make the abbreviations unique - not like with "
 code and trying to find a suitable abbreviation, we should really first look up this dictionary to
 see, if there already is an abbreviation used for that somewhere else in the library. We should
 maintain a dictionary somewhere for this purpose.
+
+To resolve some ambiguities: Use Reso for Resonance and Res for Resolution.
 
 Acronyms:
 
@@ -506,5 +514,7 @@ Class member variable names:
 
 I think, I use names like key, currentKey, receivedKey, currentNote, lastNote, etc. Pick one and use
 that consitently. Maybe midiKey is best because it's short and avoids ambiguity. A "key" could mean
-something else in some contexts (for example, in key-value trees, etc.). Also use midiVel then for
-velocity.
+something else in some contexts (for example, in key-value trees, etc.). A "note" could also mean
+something different in a different context (it could be a text snippet, for example). Also use
+midiVel then for velocity. Somewhere, there's a function setNoteKey. Maybe change that to
+setMidiKey.

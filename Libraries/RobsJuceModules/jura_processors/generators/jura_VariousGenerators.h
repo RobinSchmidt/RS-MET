@@ -248,6 +248,7 @@ public:
 protected:
 
   void updateOscFrequency();
+  // Maybe rename to updateCoreFreq()
 
   // DSP Core:
   RAPT::rsPitchDitherOsc<double> oscCore;
@@ -258,7 +259,7 @@ protected:
   double frequency  =   440.0;    // Set by MIDI note
   double amplitude  =     1.0;    // Set by a slider on the GUI
   double tune       =     0.0;    // ..dito
-  int    currentKey =    -1;      // Set by MIDI note
+  int    currentKey =    -1;      // Set by MIDI note. Maybe rename to midiKey
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PitchDitherOscModule)

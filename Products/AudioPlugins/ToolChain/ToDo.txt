@@ -311,7 +311,7 @@ Features
   as modulators solves the problem of possibly conflicting midi control data and automation. We 
   would then just use both. Automation would be independent from modulation. The user could 
   automate the parameter via DAW-automation as well as modulate via midi cc - even at the same 
-  time!
+  time! The two modifiers would then just be combined.
 
 ---------------------------------------------------------------------------------------------------
 Modules
@@ -338,6 +338,8 @@ Improvements
 
 - AcidDevil: The cutoff frequency needs an extended range - especially the lower limit needs to be
   extended. Maybe use the standard range of 20 Hz to 20 kHz. The upper limit is currently 10 kHz.
+  But I think there are some problems in the filter code that limits the range and there may be a
+  reason for that. Check that thoroughly before changing anything!
 
 - Quadrifex: the patches always contain for each slot a patch for every possible effect that 
   *could be* in the slot, regardless whether ot not it actually *is* in the slot. That's wasteful.
@@ -355,6 +357,12 @@ Improvements
 
 - The preset section could show a right-click context menu with options Load, Save, Copy, Paste. 
   Then the permanently visible load, Save buttons could be made optional
+
+- In jura::AudioModule maybe would could add a moduleTypeGuiName or moduleTypeDisplayName and a 
+  function getModuleTypeDisplayName() that is used the GUI. Some module names are rather long and 
+  should perhaps be shortened on the GUI. The field could be empty by default and the getter could
+  fall back to returning the moduleTypeName if moduleTypeDisplayName is empty. Then it would be 
+  optional to fill out that field.
 
 ---------------------------------------------------------------------------------------------------
 Installation
@@ -410,6 +418,11 @@ Cosmetic GUI issues (layout, appearance, etc.):
 - Quadrifex: the routing menu is partially obscured by the routing graphics
 
 - PitchShifter: should show the detected pitch on the GUI
+
+- Parameters that have modulations assigned should be shown differently. At the moment, we just 
+  change the color which is ugly. Maybe they should have some sort of semi-transparent indicator
+  overlay. Maybe some sort of triangle that sits at the end of the filled section of the slider and
+  maybe it could even move when the modulated value changes
 
 ---------------------------------------------------------------------------------------------------
 Other ideas

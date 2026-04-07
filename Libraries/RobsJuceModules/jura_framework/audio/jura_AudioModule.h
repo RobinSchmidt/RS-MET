@@ -375,7 +375,7 @@ protected:
   juce::String moduleName;         // name of this AudioModule, like "Filter1"
   juce::String moduleNameAppendix; // string to be appended to the name on the GUI (such as 
                                    // Demo-Version, etc.) todo: factor into some subclass - only 
-                                   // top-level modules actually use this
+                                   // top-level modules actually use this. Maybe rename to ..Suffix
 
   friend class AudioModuleEditor;  // the editor must access our plugInLock member
 
