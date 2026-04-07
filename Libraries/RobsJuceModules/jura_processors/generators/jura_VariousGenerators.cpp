@@ -442,6 +442,7 @@ void PitchDitherOscModule::createParameters()
 
   fp = new FixPar("PhasorClosed", 0.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(fp);
+  fp->setValueChangeCallback<PitchDitherOscModule>(this, &PitchDitherOscModule::setPhasorClosed);
   // ToDo: Plumb the parameter to a callback!
 
 

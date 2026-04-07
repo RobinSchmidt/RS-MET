@@ -438,6 +438,13 @@ Other ideas
   https://docs.github.com/en/copilot/how-tos/provide-context/use-copilot-spaces/create-copilot-spaces
   https://docs.github.com/en/copilot/concepts/context/spaces
 
+- Currently, when I integrate a new DSP algorithm into ToolChain for demonstration and 
+  experimentation purposes, I tend to define a subclass of jura::AudioModule for it and then make
+  it available withing the semi-modular framework of ToolChain and then play around with it. But
+  this habit will lead to an unreasonable proliferation of modules in ToolChain. A better approach
+  may be to integrate the new DSP algorithm as a module in the node based modular synthesizer 
+  Liberty. I think, there, it may even automatically become polyphonic. Maybe try it with the 
+  pitch dithered oscillator.
 
 
 

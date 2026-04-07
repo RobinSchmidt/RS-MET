@@ -905,6 +905,12 @@ public:
       valueChangeCallbackDouble->call(modulatedValue);
     if( valueChangeCallbackInt != nullptr )
       valueChangeCallbackInt->call((int)modulatedValue);
+
+    // ToDo: Try to get rid of the various different callback mechanisms and keep only the 
+    // valueChangeCallbackDouble (which can then be renamed to valueChangeCallback). Then we can 
+    // get rid of one of the conditionals, We could also get rid of both by using the "null object"
+    // pattern, i.e. just ensure that it's always not actually a nullptr but when we want to leave
+    // it unassigned, we assign an empty dummy function.
   }
 
   /** Overriden to call our callback function with the modulated value. */

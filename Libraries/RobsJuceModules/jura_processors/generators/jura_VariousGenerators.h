@@ -263,6 +263,19 @@ public:
   // ToDo: Move this note into some text document where I ponder about design decisions Some sort
   // of "architecture documentation" file (or set of files).
 
+  void setPhasorClosed(bool shouldBeClosed)
+  {
+    phasorClosed = shouldBeClosed;
+    // Maybe let this function take a double parameter and do
+    //   rsAssert(rsIsInClosedInterval(shouldBeClosed, 0.0, 1.0));
+    //   phasorClosed = shouldBeClosed >= 0.5;
+    // Rationale: At some point, we want to get rid of the cruft in jura::Parameter with all its
+    // different callbacks. We want to uniformly use the callback that expects a double and so we
+    // need to accept a double here, too, if we want to use it as callback target. This can then be
+    // used as example code to do the change everywhere else.
+  }
+
+
 
 protected:
 
