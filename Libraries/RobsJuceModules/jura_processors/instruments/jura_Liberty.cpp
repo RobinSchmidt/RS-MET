@@ -10,6 +10,10 @@ LibertyInterfaceState::LibertyInterfaceState()
 
 //=================================================================================================
 // class LibertyAudioModule:
+
+const double LibertyAudioModule::volumeGateThresh = -80.0;
+const double LibertyAudioModule::volumeMaxBoost   = +20.0;
+
 /*
 LibertyAudioModule::LibertyAudioModule(CriticalSection *newPlugInLock, 
   romos::Liberty *modularSynthToWrap)
@@ -56,13 +60,14 @@ void LibertyAudioModule::createParameters()
   typedef ModulatableParameter ModPar;
   ModPar* mp;
 
-  mp = new ModPar("OutAmp", -1.0, 1.0, 1.0, Parameter::LINEAR);
+  mp = new ModPar("Volume", volumeGateThresh, volumeMaxBoost, 0.0, Parameter::LINEAR);
   addObservedParameter(mp);
-  mp->setValueChangeCallback<LibertyAudioModule>(this, &LibertyAudioModule::setOutAmplitude);
+  mp->setValueChangeCallback<LibertyAudioModule>(this, &LibertyAudioModule::setOutVolume);
 
-  mp = new ModPar("ThruAmp", -1.0, 1.0, 1.0, Parameter::LINEAR);
+  mp = new ModPar("ThruVolume", volumeGateThresh, volumeMaxBoost, 0.0, Parameter::LINEAR);
   addObservedParameter(mp);
-  mp->setValueChangeCallback<LibertyAudioModule>(this, &LibertyAudioModule::setThruAmplitude);
+  mp->setValueChangeCallback<LibertyAudioModule>(this, &LibertyAudioModule::setThruVolume);
+
 
 
   // ToDo: Create parameter objects for outGain, passGain and connect them to callbacks 

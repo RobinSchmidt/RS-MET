@@ -154,8 +154,8 @@ public:
     for(int n = 0; n < numSamples; n++)
     {
       wrappedLiberty->getSampleFrameStereo(&tmpL, &tmpR);
-      inOutBuffer[0][n] = passGain * inOutBuffer[0][n]  +  outGain * tmpL;
-      inOutBuffer[1][n] = passGain * inOutBuffer[1][n]  +  outGain * tmpR;
+      inOutBuffer[0][n] = thruAmp * inOutBuffer[0][n]  +  outAmp * tmpL;
+      inOutBuffer[1][n] = thruAmp * inOutBuffer[1][n]  +  outAmp * tmpR;
     }
   }
 
@@ -170,8 +170,8 @@ public:
     // New:
     double tmpL, tmpR;
     wrappedLiberty->getSampleFrameStereo(&tmpL, &tmpR);
-    *left  = passGain * *left   +  outGain * tmpL;
-    *right = passGain * *right  +  outGain * tmpR;
+    *left  = thruAmp * *left   +  outAmp * tmpL;
+    *right = thruAmp * *right  +  outAmp * tmpR;
   }
 
   /*
@@ -209,10 +209,22 @@ public:
   virtual void reset() override { wrappedLiberty->reset(); }
 
 
-  void setOutAmplitude( double newAmp) { outGain  = newAmp; }
-  void setThruAmplitude(double newAmp) { passGain = newAmp; }
+  // Obsolete:
+  //void setOutAmplitude( double newAmp) { outAmp  = newAmp; }
+  //void setThruAmplitude(double newAmp) { thruAmp = newAmp; }
   // Maybe rename to setOutAmp, setThruAmp
 
+  void setOutVolume( double newVol) { outAmp  = RAPT::rsDbToAmp(     newVol);                   }
+  void setThruVolume(double newVol) { thruAmp = RAPT::rsDbToAmpGated(newVol, volumeGateThresh); }
+  // The pass-through signal should be completely switched off at the lowest value of the 
+  // ThruVolume slider. We don't do this cutting off for the normal output, though because for
+  // his, it doesn't really seem to make that much sense. Or does it? We'll see. The rationale for
+  // wanting to be able to completely cut off the pass-through signal is that Liberty may be used
+  // s instrument or as effect and when we use it as effect, we may want to be able to completely
+  // prevent the input signal from "leaking through" to the output. For pure instruments which just
+  // produce their own output independently from the input audio, that may be not so important
+  // because in these cases, we could just as well turn the input signal off at its source or even
+  // remove the source. But for an effect, we obviously need the source signal to come in.
 
 
 protected:
@@ -224,10 +236,16 @@ protected:
   romos::Liberty *wrappedLiberty;
   bool wrappedLibertyIsOwned = false;
 
-  static const double ampGateThresh = -80.0;
+  static const double volumeGateThresh; // -80 dB. Threshold to switch off signal.
+  static const double volumeMaxBoost;   // +20 dB. Maximum boost for signal.
+  // Maybe these can be defined in a more central place to facilitate that these values can be
+  // uniformly used across many modules for consistency. They may make sense for other instruments.
+  // Maybe create a class that contains such constants. It could also have values for 
+  // filtFreqMin = 20; filtFreqMax = 20000; etc. The class could be called ParamRanges or something
+  // like that and be part of the jura framework..
 
-  double outGain  = 1.0;   // Gain factor for our output signal.
-  double passGain = 1.0;   // Gain factor for the passed through input signal. 
+  double outAmp  = 1.0;   // Gain factor for our output signal.
+  double thruAmp = 1.0;   // Gain factor for the passed through input signal. 
   // Maybe rename passGain to thruGain or thruAmp
   // ToDo: Create parameter objects for these values and let the GUI have sliders for them. Or 
   // maybe have a single InOutMix slider that acts like a DryWet slider but insteade of going 

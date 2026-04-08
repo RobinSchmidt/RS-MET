@@ -62,9 +62,9 @@ inline T rsDbToAmpGated(T dB, T gateDb)
   if(dB <= gateDb)
     return T(0);
   return rsDbToAmp(dB);
-
   // It's important here to use <= and not < because slider ranges are typically closed intervals
-  // and we want to turn off the output amplitude exactly _at_ the threshold and not just below it.
+  // and we want to turn off the output amplitude exactly _at_ the threshold (i.e. at the slider's 
+  // lowest value) and not just below it.
 }
 // Needs tests
 
