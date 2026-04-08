@@ -140,17 +140,6 @@ public:
     if(wrappedLiberty->isSilent())
       return;
 
-    //// Old:
-    //double tmpL, tmpR;
-    //for(int n = 0; n < numSamples; n++)
-    //{
-    //  wrappedLiberty->getSampleFrameStereo(&tmpL, &tmpR);
-    //  inOutBuffer[0][n] += tmpL; 
-    //  inOutBuffer[1][n] += tmpR;
-    //}
-
-    // New:
-    //double tmpL, tmpR;
     for(int n = 0; n < numSamples; n++)
     {
       double tmpL = inOutBuffer[0][n];
@@ -160,23 +149,21 @@ public:
       inOutBuffer[1][n] = thruAmp * inOutBuffer[1][n]  +  outAmp * tmpR;
     }
   }
+  // Maybe move to .cpp
 
   virtual void processStereoFrame(double *left, double *right) override
   {
-    //// Old:
-    //double tmpL, tmpR;
-    //wrappedLiberty->getSampleFrameStereo(&tmpL, &tmpR);
-    //*left  += tmpL;
-    //*right += tmpR;
-
-    // New:
-    //double tmpL, tmpR;
     double tmpL = *left;
     double tmpR = *right;
     wrappedLiberty->getSampleFrameStereo(&tmpL, &tmpR);
     *left  = thruAmp * *left   +  outAmp * tmpL;
     *right = thruAmp * *right  +  outAmp * tmpR;
   }
+  // Maybe move to .cpp
+
+  // ToDo: Override processBlock() and processStereoFrame() for single precision float. When we 
+  // don't do this, we rely on the baseclass implementation which converts the input buffers to 
+  // double, calls the double precision callbacks and then converts back to float, I think. Verify!
 
   /*
   // Old API?
@@ -186,37 +173,8 @@ public:
   }
   */
 
-  /*
-  // Single precision floating point callback:
-  virtual void processBlockStereo(float *left, float *right, int numSamples)
-  {
-    if(wrappedLiberty->isSilent())
-    {
-      rosic::fillWithZeros(left, numSamples);
-      rosic::fillWithZeros(right, numSamples);
-    }
-    else
-    {
-      wrappedLiberty->getBlockOfSampleFramesStereo(left, right, numSamples);
-      //for(int n = 0; n < numSamples; n++)
-      //{
-      //  double dL = (double) left[n];
-      //  double dR = (double) right[n];
-      //  wrappedLiberty->getSampleFrameStereo(&dL, &dR);
-      //  left[n]  = (float) dL;
-      //  right[n] = (float) dR;
-      //}
-    }
-  }
-  */
 
   virtual void reset() override { wrappedLiberty->reset(); }
-
-
-  // Obsolete:
-  //void setOutAmplitude( double newAmp) { outAmp  = newAmp; }
-  //void setThruAmplitude(double newAmp) { thruAmp = newAmp; }
-  // Maybe rename to setOutAmp, setThruAmp
 
   void setOutVolume( double newVol) { outAmp  = RAPT::rsDbToAmp(     newVol);                   }
   void setThruVolume(double newVol) { thruAmp = RAPT::rsDbToAmpGated(newVol, volumeGateThresh); }
@@ -229,7 +187,7 @@ public:
   // produce their own output independently from the input audio, that may be not so important
   // because in these cases, we could just as well turn the input signal off at its source or even
   // remove the source. But for an effect, we obviously need the source signal to come in.
-
+  // ToDo: Move this explanation somewhere else. Maybe into a separate .md documentation file.
 
 protected:
 
@@ -250,14 +208,6 @@ protected:
 
   double outAmp  = 1.0;   // Gain factor for our output signal.
   double thruAmp = 1.0;   // Gain factor for the passed through input signal. 
-  // Maybe rename passGain to thruGain or thruAmp
-  // ToDo: Create parameter objects for these values and let the GUI have sliders for them. Or 
-  // maybe have a single InOutMix slider that acts like a DryWet slider but insteade of going 
-  // through 100/0..50/50..0/100 it goes through 100/0..100/100..0/100. Or maybe an equal power
-  // crossfade would be most suitable? Well - maybe just implement it like a Dry/Wet slider. But
-  // actually, in the context of automation, it is usually more convenient to have separate volume
-  // sliders for dry and wet.
-
 
   LibertyInterfaceState interfaceState; // Maintains info about open panels, scroll-positions, etc.
 
