@@ -13,6 +13,7 @@ LibertyInterfaceState::LibertyInterfaceState()
 
 const double LibertyAudioModule::volumeGateThresh = -80.0;
 const double LibertyAudioModule::volumeMaxBoost   = +20.0;
+// A range of -80 to +20 dB for a volume
 
 /*
 LibertyAudioModule::LibertyAudioModule(CriticalSection *newPlugInLock, 
@@ -64,11 +65,18 @@ void LibertyAudioModule::createParameters()
   addObservedParameter(mp);
   mp->setValueChangeCallback<LibertyAudioModule>(this, &LibertyAudioModule::setOutVolume);
 
-  mp = new ModPar("ThruVolume", volumeGateThresh, volumeMaxBoost, 0.0, Parameter::LINEAR);
+  //mp = new ModPar("ThruVolume", volumeGateThresh, volumeMaxBoost, 0.0, Parameter::LINEAR);
+  mp = new ModPar("ThruVolume", volumeGateThresh, volumeMaxBoost, volumeGateThresh, 
+    Parameter::LINEAR);
   addObservedParameter(mp);
   mp->setValueChangeCallback<LibertyAudioModule>(this, &LibertyAudioModule::setThruVolume);
 
-
+  // ToDo: Maybe use default values other than 0 dB. Maybe the ThruVolume should default to
+  // volumeGateThresh such that the pass-through is switched off by default. And a default Volume
+  // of 0 dB may be rather loud. Check what Straightliner and AcidDevil use and maybe use that 
+  // value here, too. AcidDevil has -12 dB. ...but that also seems to be rather arbitrary. Maybe
+  // we should indeed use 0 dB as default value for any sort of Volume parameter and introduce a
+  // global volume paramter to ToolChain which we can set to some reasonable value like -12.
 
   // ToDo: Create parameter objects for outGain, passGain and connect them to callbacks 
   // setOutGain(), setPassGain(), which will have to be added - they should set the values of the 

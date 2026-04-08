@@ -723,7 +723,11 @@ void SweepKickerModule::createParameters()
   mp = new ModPar("Amplitude", -1.0, +1.0, 1.0, Parameter::LINEAR);
   addObservedParameter(mp);
   mp->setValueChangeCallback<SKM>(this, &SKM::setAmplitude);
-  // Modulatable to get away without having a built-in amp-env.
+  // Modulatable to get away without having a built-in amp-env. The idea to modulate this with an
+  // amp-env is also the reason why we have a raw amplitude parameter rather than a "Level" or 
+  // "Volume" parameter in dB. This would not make for a good modulation target. Maybe we could 
+  // have such a volume parameter in addition though. That would be a bit redundant but perhaps 
+  // also convenient.
 
   fp = new FixPar("FadeOut", 0.0, 500.0, 100.0, Parameter::LINEAR);
   addObservedParameter(fp);
@@ -732,6 +736,8 @@ void SweepKickerModule::createParameters()
   fp = new FixPar("PassThrough", -1.0, +1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(fp);
   fp->setValueChangeCallback<SKM>(this, &SKM::setPassThroughAmplitude);
+  // ToDo: Replace this with a (gated) dB-scaled "ThruVolume" parameter like we have in 
+  // LibertyAudioModule.
 
 
   // Frequency parameters. We use them as is when the incoming note is on the reference key (which

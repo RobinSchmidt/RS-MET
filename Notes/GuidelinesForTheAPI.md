@@ -571,6 +571,15 @@ something different in a different context (it could be a text snippet, for exam
 midiVel then for velocity. Somewhere, there's a function setNoteKey. Maybe change that to
 setMidiKey.
 
+When making decisions about how to parameterize a subclass of jura::AudioModule, we need to consider
+the following aspects which may be in conflict with one another: (1) Convenience for the user for
+setting it up on the GUI and automating it. For example, a parameter to control the volume should be
+scaled in dB because that gives a perceptually linear scaling. (2) Suitability as modulation target. For example, a raw amplitude parameter may be more suitable as modulation target for routing an 
+amplitude envelope to it (if that envelope is to be applied multiplicatively which is the typical
+case). So, these two desiderata favor different decisions. So what should we do? Maybe provide two
+parameters. That would be redundant but it may indeed be an option. Maybe we could also apply a
+(linear) envelope to the dB-scaled volume. That may also work. ...Hmmm...
+
 
 Some general renaming plans:
 
