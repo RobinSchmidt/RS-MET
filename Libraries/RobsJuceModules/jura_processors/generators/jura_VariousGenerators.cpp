@@ -444,14 +444,9 @@ void PitchDitherOscModule::createParameters()
   addObservedParameter(fp);
   fp->setValueChangeCallback<PitchDitherOscModule>(this, &PitchDitherOscModule::setPhasorClosed);
 
-
   // ToDo:
   //
   // - Add parameter for WaveForm with options for Saw, Pulse, Triangle, Sine
-  //
-  // - Add boolean parameter PhasorClosed for producing phasor values in the closed interval. I 
-  //   think The artifacts that we see in _TestPitchDitherOscSawToSin at the wrap-around may be due
-  //   to using the closed interval. Try uisng the half-open interval in this patch. 
   //
   // - Use "using" instead of "typedef" for PDO, ModPar, etc.
 }
@@ -462,12 +457,8 @@ void PitchDitherOscModule::processStereoFrame(double *left, double *right)
   using WF = RAPT::rsWaveForms<double>;
   double phasor = oscCore.getSamplePhasor(phasorClosed);
   double out = amplitude * WF::saw(phasor);
-  //double out = amplitude * WF::sine(phasor);
+  //double out = amplitude * WF::sine(phasor);  // Just for test
   *left = *right = out;
-
-  // Old:
-  //double out = amplitude * oscCore.getSampleSaw();
-  //*left = *right = out;
 
   // Notes:
   //
@@ -475,9 +466,15 @@ void PitchDitherOscModule::processStereoFrame(double *left, double *right)
   //   of  out = amplitude * WF::saw(phasor);  we get a nice clean(ish) sine wave when the 
   //   phasorClosed option is turned off - as expected. But: The preset 
   //   _TestPitchDitherSawToSin.xml which also attempts to do that conversion using FuncShaper
-  //   produces artifacts. Why? When changing the function form sin() to cos() in FuncShaper, the
-  //   artifacts change. Maybe try replacing FuncShaper with a Liberty using the Formula module. 
-  //   The formula should be y = sin(pi * x)
+  //   produces artifacts that seem to be related to the wrap-around (not sure - verify!). Why? 
+  //   When changing the function form sin() to cos() in FuncShaper, the artifacts change. Using
+  //   Liberty with the Formula module, we do indeed get a much cleaner sine output. The problem 
+  //   must have something to do with FuncShaper. But what is going on there. I could understand 
+  //   if it's slightly dirtier due to the table-lookup. But that cannot explain these wrap-around
+  //   problems. At least, I don't know how that could explain it. Maybe set up a unit test using 
+  //   only the pure DSP code of the pitch dithering oscillator (used in half-open phasor mode) and
+  //   FuncShaper (using sin(pi*x) as formula). Could it be the oversampling? Or the pre-filtering?
+  //   Aha! Indeed! The oversampling was set to 4. When setting it to 1, the artifacts go away!
   //
   //
   // ToDo: 
