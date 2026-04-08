@@ -1038,16 +1038,14 @@ protected:
 
   LibertyInterfaceMediator *interfaceMediator;
 
-  ModularStructureTreeView     *structureTreeView;   
+  ModularStructureTreeView     *structureTreeView;
   ModularBlockDiagramPanel     *blockDiagramPanel;
   ComponentScrollContainer     *diagramScrollContainer;
   ModulePropertiesEditorHolder *moduleEditorHolder;
 
-  //rsAutomatableSlider *volumeSlider, *thruVolSlider;
-  rsModulatableSlider *volumeSlider, *thruVolSlider;
-
-
   //ModulePropertiesEditor   *modulePropertiesEditor;
+
+  rsModulatableSlider *volumeSlider, *thruVolSlider;
 
   //RRadioButton  *structureButton, *interfaceButton; // *hybridButton;
   //RRadioButtonGroup radioButtonGroup;

@@ -27,9 +27,13 @@ LibertyAudioModule::LibertyAudioModule(CriticalSection *newPlugInLock,
   init();
 }
 */
-LibertyAudioModule::LibertyAudioModule(CriticalSection *newPlugInLock) 
+LibertyAudioModule::LibertyAudioModule(
+  CriticalSection *newPlugInLock) 
   : PolyphonicInstrumentAudioModule(newPlugInLock)
 {
+  // ToDo: Pass the modulation and automation managers! This code seems to still follow the old
+  // style where we didn't have automation and modulation yet.
+
   wrappedLiberty = new romos::Liberty;
   //underlyingRosicInstrument = wrappedLiberty;
   wrappedLibertyIsOwned = true;
@@ -51,7 +55,7 @@ LibertyAudioModule::~LibertyAudioModule()
 
 AudioModuleEditor* LibertyAudioModule::createEditor(int type)
 {
-  return new jura::LibertyEditor(lock, this); // get rid of passing the lock
+  return new jura::LibertyEditor(lock, this); // ToDo: Get rid of passing the lock
 }
 
 void LibertyAudioModule::createParameters()
@@ -65,54 +69,14 @@ void LibertyAudioModule::createParameters()
   addObservedParameter(mp);
   mp->setValueChangeCallback<LibertyAudioModule>(this, &LibertyAudioModule::setOutVolume);
 
-  //mp = new ModPar("ThruVolume", volumeGateThresh, volumeMaxBoost, 0.0, Parameter::LINEAR);
   mp = new ModPar("ThruVolume", volumeGateThresh, volumeMaxBoost, volumeGateThresh, 
     Parameter::LINEAR);
   addObservedParameter(mp);
   mp->setValueChangeCallback<LibertyAudioModule>(this, &LibertyAudioModule::setThruVolume);
-
-  // ToDo: Maybe use default values other than 0 dB. Maybe the ThruVolume should default to
-  // volumeGateThresh such that the pass-through is switched off by default. And a default Volume
-  // of 0 dB may be rather loud. Check what Straightliner and AcidDevil use and maybe use that 
-  // value here, too. AcidDevil has -12 dB. ...but that also seems to be rather arbitrary. Maybe
-  // we should indeed use 0 dB as default value for any sort of Volume parameter and introduce a
-  // global volume paramter to ToolChain which we can set to some reasonable value like -12.
-
-  // ToDo: Create parameter objects for outGain, passGain and connect them to callbacks 
-  // setOutGain(), setPassGain(), which will have to be added - they should set the values of the 
-  // outGain, passGain members. But how should these parameters be scaled? Do we have some similar 
-  // situation somewhere else where we can mimick the strategy? EchoLab has WetLevel. But that's
-  // not exactly what we want. FlatZapper has Level, Input, Exciter. SweepKicker has Amplitude
-  // and PassThrough. That is actually pretty close. It's actually exactly what we want. But maybe
-  // we want to use some other kind of scaling function. Maybe sinh-based is best for a bipolar, 
-  // through-zero amplitude parameter. Maybe create a predefined parameter class for that such 
-  // that just need to do: p = new Params::Amplitude(..).
-
-  // Maybe instead of OutAmp, ThruAmp, we should have OutLevel and ThruLevel in dB. Maybe the 
-  // slider should go from -100 to +20 and switch to "Off" at -100. Maybe SweepKicker should also
-  // replace Amplitude and PassThrough with such "Level" parameters. ...and we should add such 
-  // "ThruLevel" parameters to Straightliner and AcidDevil, too. Maybe "OutLevel" should be renamed
-  // to "Level" or maybe "Volume". And maybe the pass-through level should be named ThruVol.
-  // FuncShaper has its output level named "Volume". Yeah - I think "Volume" for the global volume
-  // and "ThruVol" for the pass-through volume makes the most sense. Maybe the "Level" parameters
-  // in AcidDevil and Straightliner could also be renamed to Volume at some point. But we must be 
-  // careful to maintain compatibility with old states.
-  //
-  // Maybe to convert from the parameter value to the amplitude scaler, write a function
-  // rsDbToAmpWithThresh(double dB, double threshDb) that does:
-  // if(dB <= thresh) return 0.0 else return rsDbToAmp(dB);
-  // or maybe call it rsAmpToDbWithGate or rsAmpToDbGated
-  // The slider should also switch to "Off" when the value is at the lower limit of -100 dB.
-  // Or maybe the range going down to -100 is too much. Maybe cut off at -60. ...Maybe -60..0
-  // is a good range. It's what I use in AcidDevil, too. Or maybe use -60..+20. Or maybe use
-  // -80..+20 with cutoff at -80 for ThruVol. That gives the slider a total dynamic range of 100 dB
-  // which seems to be a good value. Maybe check what the typical range for a fader in a DAW mixer 
-  // is and use that or something close to it.
 }
 
-
 //-------------------------------------------------------------------------------------------------
-// persistence:
+// Persistence:
 
 void LibertyAudioModule::writeModuleTypeSpecificStateDataToXml(romos::Module *module, 
   XmlElement* xmlState)
@@ -224,14 +188,17 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
   std::map<std::string, std::string> moduleState = getAttributesAsMap(xmlState);
   module->setState(moduleState);
 
-  if(  module->isContainerModule() || module->isTopLevelModule() ) {
+  if(  module->isContainerModule() || module->isTopLevelModule() ) 
+  {
     romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (module);
-    for(int i=0; i<xmlState.getNumChildElements(); i++) {
+    for(int i=0; i<xmlState.getNumChildElements(); i++) 
+    {
       XmlElement* childState = xmlState.getChildElement(i);
       rosic::rsString moduleTypeName = juceToRosic(childState->getTagName()); // get rid of that intermediate format
 
       int typeIdentifier = romos::moduleFactory.getModuleId(moduleTypeName.asStdString());
-      if( typeIdentifier != -1 ) {
+      if( typeIdentifier != -1 ) 
+      {
 
         // verify that this is useless and then delete this old code:
         //if(  module->isTopLevelModule() 
@@ -240,7 +207,8 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
            // noo - this is wrong - we are not interested in whethere the "module" is I/O but rather
            // the child to be added should be I/O
 
-        if( module->isTopLevelModule() && (moduleTypeName == "AudioInput" || moduleTypeName == "AudioOutput") ) {
+        if( module->isTopLevelModule() && (moduleTypeName == "AudioInput" || moduleTypeName == "AudioOutput") ) 
+        {
           // do nothing when this is the top-level module and the to-be-added child is an I/O module
         }
         else {
@@ -424,7 +392,8 @@ void LibertyAudioModule::noteOff(int noteNumber)
 //ModulePropertiesEditor::ModulePropertiesEditor(CriticalSection *newPlugInLock, 
 //  romos::Module* newModuleToEdit)
 
-ModulePropertiesEditor::ModulePropertiesEditor(LibertyAudioModule *newLiberty, romos::Module* newModuleToEdit)
+ModulePropertiesEditor::ModulePropertiesEditor(LibertyAudioModule *newLiberty, 
+  romos::Module* newModuleToEdit)
 {
 
   //plugInLock   = newPlugInLock;  // old
@@ -795,8 +764,8 @@ void ModulePropertiesEditorHolder::createPropertiesEditorForSelectedModule()
   removeChildColourSchemeComponent(currentEditor, true);
 
   /*
-  // old:
-  // this switch statement sucks - use std::map or something - maybe when this object is created, 
+  // Old:
+  // This switch statement sucks - use std::map or something - maybe when this object is created, 
   // create a map that uses the module-id as key and the creator function (pointer) as value
   switch( moduleToShowEditorFor->getTypeIdentifierOld() )
   {
@@ -830,11 +799,11 @@ void ModulePropertiesEditorHolder::createPropertiesEditorForSelectedModule()
   }
   */
 
-  // new:
-  // abbreviations for convenience:
-  LibertyAudioModule* lbrtyMd = getInterfaceMediator()->modularSynthModuleToEdit;
-  romos::Module* mdl = moduleToShowEditorFor;
-  std::string type = mdl->getTypeName();
+  // New:
+  // Abbreviations for convenience:
+  LibertyAudioModule* lbrtyMd = getInterfaceMediator()->modularSynthModuleToEdit;  // ToDo: Use lam
+  romos::Module* mdl = moduleToShowEditorFor;                                      // ToDo: use rm
+  std::string type = mdl->getTypeName();                                           // ToDo: Use tp
   if(     type == "Parameter")      currentEditor = new ParameterModuleEditor(lbrtyMd, mdl);
   else if(type == "Container")      currentEditor = new ContainerModuleEditor(lbrtyMd, mdl);
   else if(type == "TopLevelModule") currentEditor = new TopLevelModuleEditor(lbrtyMd, mdl);
@@ -846,12 +815,12 @@ void ModulePropertiesEditorHolder::createPropertiesEditorForSelectedModule()
   //else if(type == "Formula_N_1")    currentEditor = new LibertyFormula_N_1ModuleEditor(lbrtyMd, mdl);
   else if(type == "Formula")        currentEditor = new LibertyFormula_N_MModuleEditor(lbrtyMd, mdl);
   else                              currentEditor = new ModulePropertiesEditor(lbrtyMd, mdl); // generic
-  // todo: optimize away all these string-comparisons
-  // maybe make a map from type-id to creator-function
+  // ToDo: optimize away all these string-comparisons. Maybe make a map from type-id to 
+  // creator-function.
 
   currentEditor->setDescriptionField(descriptionField, true );
   addChildColourSchemeComponent(currentEditor, true, true);
-  resized();  // will set the bounds of the child
+  resized();  // Will set the bounds of the child
 }
 
 //=================================================================================================
@@ -891,9 +860,9 @@ ModularBlockDiagramPanel::ModularBlockDiagramPanel(LibertyInterfaceMediator *int
   selectionOffsetY  = 0;
   availableWidth    = 0;
   availableHeight   = 0;
-  //gridStyle       = DOTTED_GRID;
+  gridStyle       = DOTTED_GRID;
   //gridStyle       = GRID_LINES;
-  gridStyle         = NO_GRID;
+  //gridStyle         = NO_GRID;
 
   // define metric:
   m  = 2;                    // margin between text and outlines ...use later 2 here - maybe
@@ -2042,7 +2011,9 @@ void ModularBlockDiagramPanel::drawGrid(Graphics &g)
   int numHorizontalLines = inPinDistances(getHeight())+1;
 
   //g.setColour(Colours::black);  // preliminary
-  g.setColour(getPlotColourScheme().coarseGrid);  
+  //g.setColour(getPlotColourScheme().coarseGrid);
+  g.setColour(getPlotColourScheme().fineGrid);
+
 
   if( gridStyle == GRID_LINES )
   {
@@ -2833,7 +2804,7 @@ void LibertyEditor::resized()
 
   int x, y, w, h;
 
-  // Set up bounds for the state widget set. This is subsequently used as reference to aling the
+  // Set up bounds for the state widget set. This is subsequently used as reference to align the
   // other elements:
   x = 0;
   y = getHeadlineBottom() + 8;
@@ -2857,7 +2828,7 @@ void LibertyEditor::resized()
   diagramScrollContainer->setBounds(x, y, w, h);
   blockDiagramPanel->setAvailabeSizeForCanvas(w, h);
 
-  // Set up the widgets in the global area:
+  // Set up bounds for the widgets in the global area:
   x = stateWidgetSet->getRight() + 6;
   y = 6;
   w = 160;

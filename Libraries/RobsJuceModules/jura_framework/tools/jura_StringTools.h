@@ -80,7 +80,8 @@ JUCE_API juce::String valueToStringWithSign1(double value);
 // ToDo: Remove the ..WithUnit suffixes. That there will be a unit is already obvious from the
 // other parts of the name. Maybe the decibelsToString... functions should always show the sign,
 // i.e. instead of writing e.g. 6.02 dB, it should write +6.02 dB. They could use a 
-// doubleToStringWithSign() function internally.
+// doubleToStringWithSign() function internally. Maybe the same should be done for cents, octaves,
+// etc.
 
 // Functions that take a value and a maxValue to display resource usgae such as 13/64 when 13 of 64
 // available objects are used up
