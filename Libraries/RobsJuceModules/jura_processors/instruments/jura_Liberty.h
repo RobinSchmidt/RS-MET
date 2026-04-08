@@ -150,9 +150,11 @@ public:
     //}
 
     // New:
-    double tmpL, tmpR;
+    //double tmpL, tmpR;
     for(int n = 0; n < numSamples; n++)
     {
+      double tmpL = inOutBuffer[0][n];
+      double tmpR = inOutBuffer[1][n];
       wrappedLiberty->getSampleFrameStereo(&tmpL, &tmpR);
       inOutBuffer[0][n] = thruAmp * inOutBuffer[0][n]  +  outAmp * tmpL;
       inOutBuffer[1][n] = thruAmp * inOutBuffer[1][n]  +  outAmp * tmpR;
@@ -168,7 +170,9 @@ public:
     //*right += tmpR;
 
     // New:
-    double tmpL, tmpR;
+    //double tmpL, tmpR;
+    double tmpL = *left;
+    double tmpR = *right;
     wrappedLiberty->getSampleFrameStereo(&tmpL, &tmpR);
     *left  = thruAmp * *left   +  outAmp * tmpL;
     *right = thruAmp * *right  +  outAmp * tmpR;

@@ -111,6 +111,9 @@ we build up our suite of unit tests along the way.
 
   -[5] The "Poly" switch doesn't seem to have any effect.
 
+  -[1] When hovering over the patch structure, there isn't any info in the info line.
+
+
 - [4] Quadrifex: load preset NonLinearReverb002. We hit a jassert in getParameterByName with a 
   Parameter name DryWetRatio. It may be the Harmonics and/or the Reverb algo
 
