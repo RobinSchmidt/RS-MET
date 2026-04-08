@@ -387,6 +387,17 @@ ToDo
 
  - Check use of std::list<> in rosic::PolymorphicInstrumentVoice
 
+ - Maybe be a bit more protective about member variable access. I typically use only public and
+   protected sections with the rationale that it sometimes makes sense to subclass a certain DSP 
+   class and then have direct access to the members and I do indeed have a couple of cases where I
+   do subclass DSP classes internally within the library. However, having the members only protected
+   rather than private would also allow external client code (outside the library) to subclass and
+   access the protected members which makes it harder to change them later without breaking client
+   code because they have now become part of a "semi-public" API, so to speak. On the other hand, it
+   can sometimes also be useful for (white-box) testing purposes to be able to subclass a DSP class
+   and access the protected members. Hmm...not sure. Both ways have pros and cons - as is often the
+   case. 
+
  - Define a consistent strategy for CameCasing words that can be seen as compound words or as two
    words like "sample rate" vs "samplerate" or "wave shape" vs "waveshape". I currently just 
    capitalize every part of a word that "could" be seen as a word in its own right. That is, I use
@@ -414,7 +425,7 @@ Analog:          Ana  ,
 Attack:          Att  ,
 Bandwidth:       Bw (in Hz: BwHz, in octaves: BwOct)  ,
 Calculate:       Calc  ,
-Coefficient:     Coeff  ,
+Coefficient:     Coeff, Coef  ,
 Compare:         Comp  ,
 Compartment:     Comp  ,
 Complex:         Comp  ,
@@ -423,7 +434,7 @@ Compression:     Comp  ,
 Compute:         Comp  ,
 Context:         Ctx  ,
 Cycle:           Cyc  ,
-Damping:         Damp  ,
+Damping:         Damp, Dmp  ,
 Decay:           Dec  ,
 Decibel:         Db  ,
 Digital:         Digi  ,
@@ -435,11 +446,11 @@ Eigenvalue:      EigVal  ,
 Eigenvector:     EigVec  ,
 Envelope:        Env  ,
 Exponential:     Exp  ,
-Frequency:       Freq  ,
-Filter:          Flt, Filt  ,
-Function:        Fun, Func  ,
+Frequency:       Freq, Frq  ,
+Filter:          Filt, Flt  ,
+Function:        Func, Fun  ,
 Hertz:           Hz  ,
-Histogram:       Hist, Histo  ,
+Histogram:       Histo, Hist  ,
 Hyperbolic:      Hyp  ,
 Hypothenuse:     Hyp, Hypot  ,
 Index:           Idx  ,
@@ -459,7 +470,7 @@ Phase:           Phs  ,
 Release:         Rel  ,
 Resolution:      Res, Reso, Resol  ,
 Resonance:       Res, Reso, Reson  ,
-Sample:          Samp  ,
+Sample:          Samp, Smp  ,
 Second:          Sec  ,
 Signal:          Sig  ,
 Spectrum:        Spec  ,
@@ -468,7 +479,9 @@ Sustain:         Sus  ,
 Synthesizer:     Synth  ,
 Tangent:         Tan  ,
 Tensor:          Tens, Tns  ,
-Trigger:         Trig  ,
+Threshold:       Thresh, Thr  ,
+Through:         Thru  ,
+Trigger:         Trig, Trg  ,
 Trigonometric:   Trig  ,
 Value:           Val  ,
 Vector:          Vec  ,
@@ -476,7 +489,7 @@ Vector:          Vec  ,
 Aim for 1 or 2 syllables. Try to make the abbreviations unique - not like with "Comp". When writing
 code and trying to find a suitable abbreviation, we should really first look up this dictionary to
 see, if there already is an abbreviation used for that somewhere else in the library. We should
-maintain a dictionary somewhere for this purpose.
+maintain a dictionary somewhere for this purpose to facilitate consistent use of abbreviations.
 
 To resolve some ambiguities: Use Reso for Resonance and Res for Resolution.
 
@@ -516,7 +529,7 @@ Time Constant:                    tau: $\tau$  ,
 Class member variable names:
 
 I think, I use names like key, currentKey, receivedKey, currentNote, lastNote, etc. Pick one and use
-that consitently. Maybe midiKey is best because it's short and avoids ambiguity. A "key" could mean
+that consistently. Maybe midiKey is best because it's short and avoids ambiguity. A "key" could mean
 something else in some contexts (for example, in key-value trees, etc.). A "note" could also mean
 something different in a different context (it could be a text snippet, for example). Also use
 midiVel then for velocity. Somewhere, there's a function setNoteKey. Maybe change that to

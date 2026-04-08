@@ -88,11 +88,13 @@ void LibertyAudioModule::createParameters()
   // Maybe to convert from the parameter value to the amplitude scaler, write a function
   // rsDbToAmpWithThresh(double dB, double threshDb) that does:
   // if(dB <= thresh) return 0.0 else return rsDbToAmp(dB);
+  // or maybe call it rsAmpToDbWithGate or rsAmpToDbGated
   // The slider should also switch to "Off" when the value is at the lower limit of -100 dB.
   // Or maybe the range going down to -100 is too much. Maybe cut off at -60. ...Maybe -60..0
   // is a good range. It's what I use in AcidDevil, too. Or maybe use -60..+20. Or maybe use
   // -80..+20 with cutoff at -80 for ThruVol. That gives the slider a total dynamic range of 100 dB
-  // which seems to be a good value.
+  // which seems to be a good value. Maybe check what the typical range for a fader in a DAW mixer 
+  // is and use that or something close to it.
 }
 
 

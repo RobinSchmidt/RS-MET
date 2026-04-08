@@ -224,9 +224,11 @@ protected:
   romos::Liberty *wrappedLiberty;
   bool wrappedLibertyIsOwned = false;
 
+  static const double ampGateThresh = -80.0;
+
   double outGain  = 1.0;   // Gain factor for our output signal.
   double passGain = 1.0;   // Gain factor for the passed through input signal. 
-  // Maybe rename passGain to thruGain
+  // Maybe rename passGain to thruGain or thruAmp
   // ToDo: Create parameter objects for these values and let the GUI have sliders for them. Or 
   // maybe have a single InOutMix slider that acts like a DryWet slider but insteade of going 
   // through 100/0..50/50..0/100 it goes through 100/0..100/100..0/100. Or maybe an equal power

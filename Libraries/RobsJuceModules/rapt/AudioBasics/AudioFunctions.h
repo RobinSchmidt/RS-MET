@@ -52,6 +52,22 @@ inline T rsDbToAmp(T dB)
   // dB = 20 * log10(amp)  ->  amp = 10^(dB/20)  and  a^b = c^(log_c(b) * b)  (verify!)
 }
 
+/** Like rsDbToAmp() but with the additional tweak that it "turns off" the amplitude (i.e. returns
+zero) completely when the dB value reaches or falls below a given gate threshold in dB. This is 
+useful for certain GUI sliders like, for example, a fader in a DAW mixer. When they are at their
+bottommost position, they often switch the channel completely "Off" or to "-Inf". */
+template<class T>
+inline T rsDbToAmpGated(T dB, T gateDb)
+{
+  if(dB <= gateDb)
+    return T(0);
+  return rsDbToAmp(dB);
+
+  // It's important here to use <= and not < because slider ranges are typically closed intervals
+  // and we want to turn off the output amplitude exactly _at_ the threshold and not just below it.
+}
+// Needs tests
+
 /** Given a value x between 0 and 1, this function returns a value of a cubic polynomial that 
 can be used as fade-in function. The polynomial satisfies: y(0)=0, y'(0)=pi/2, y(1)=1, y'(1)=0.
 Together with rsCubicFadeOut, the curve approximates a constant power (cross)fade. */
