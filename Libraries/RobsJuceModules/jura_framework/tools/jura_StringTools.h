@@ -39,6 +39,7 @@ JUCE_API juce::String midiNoteToString(double midiNoteNumber);
 JUCE_API juce::String decibelsToStringWithUnit(double value);
 JUCE_API juce::String decibelsToStringWithUnit1(double value);
 JUCE_API juce::String decibelsToStringWithUnit2(double value);
+JUCE_API juce::String decibelsToString1GatedAt80(double value);
 JUCE_API juce::String decibelsPerOctaveToString(double value);
 JUCE_API juce::String decibelsPerOctaveToString2(double value);
 JUCE_API juce::String degreesToStringWithUnit0(double value);
@@ -77,7 +78,9 @@ JUCE_API juce::String valueToStringWithSign0(double value);
 JUCE_API juce::String valueToStringWithSign1(double value);
 
 // ToDo: Remove the ..WithUnit suffixes. That there will be a unit is already obvious from the
-// other parts of the name. 
+// other parts of the name. Maybe the decibelsToString... functions should always show the sign,
+// i.e. instead of writing e.g. 6.02 dB, it should write +6.02 dB. They could use a 
+// doubleToStringWithSign() function internally.
 
 // Functions that take a value and a maxValue to display resource usgae such as 13/64 when 13 of 64
 // available objects are used up

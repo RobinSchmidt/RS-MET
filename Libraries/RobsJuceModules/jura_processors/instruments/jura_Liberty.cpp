@@ -2810,9 +2810,8 @@ void LibertyEditor::createWidgets()
   s->assignParameter( lam->getParameterByName("ThruVolume") );
   s->setSliderName("ThruVol");
   s->setItemDescription("Pass-through volume from input to output");
-  s->setStringConversionFunction(decibelsToStringWithUnit1);
+  s->setStringConversionFunction(decibelsToString1GatedAt80);
   s->setDescriptionField(infoField);
-  // ToDo: Use setStringConversionFunction(decibelsToStringGatedAt80);
 }
 
 //-------------------------------------------------------------------------------------------------

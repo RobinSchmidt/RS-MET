@@ -156,6 +156,13 @@ String decibelsToStringWithUnit2(double value)
   return String(value, 2) + String(" dB");
 }
 
+String decibelsToString1GatedAt80(double value)
+{
+  if(value <= -80.0)
+    return String("Off");
+  return String(value, 1) + String(" dB");
+}
+
 String degreesToStringWithUnit0(double value)
 {
   return String(value, 2) + String(" deg");
