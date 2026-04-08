@@ -31,6 +31,12 @@ public:
 
   int activePanel;
 
+  // Notes:
+  //
+  // - This class seems to be a stub that is not yet really fleshed out and not yet used? What's 
+  //   the purpose of it? Maybe it's a provision to store in the state which GUI page was open when
+  //   saving the state? But currently there's only a single GUI page anyway. But that may change 
+  //   at some point. ToDo: Document the purpose of this class!
 };
 
 //=================================================================================================
@@ -55,7 +61,7 @@ public:
 
   LibertyAudioModule(CriticalSection *newPlugInLock);
 
-  void init(); // called from constructors, encapsulates their common code
+  void init(); // Called from constructors, encapsulates their common code
 
   virtual ~LibertyAudioModule();
 
@@ -64,7 +70,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  virtual void setSampleRate(double newSampleRate) override
+  void setSampleRate(double newSampleRate) override
   {
     wrappedLiberty->setSampleRate(newSampleRate);
   }
@@ -104,10 +110,10 @@ public:
   static void createConnectionsFromXml(const XmlElement& xmlState, romos::Module *module);
 
   /** Returns the state of the whole instrument as XmlElement. */
-  virtual XmlElement* getStateAsXml(const juce::String &stateName, bool markAsClean) override;
+  XmlElement* getStateAsXml(const juce::String &stateName, bool markAsClean) override;
 
   /** Restores the state of the whole instrument from the passed XmlElement. */
-  virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
+  void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
     bool markAsClean) override;
 
   /** Calling this functions inside setStateFromXml is a quick and dirty ad-hoc solution to restore 
@@ -126,16 +132,16 @@ public:
   // \name Event Handling
 
   /** Triggers a note-on event. */
-  virtual void noteOn(int noteNumber, int velocity) override;
+  void noteOn(int noteNumber, int velocity) override;
 
   /** Triggers a note-off event. */
-  virtual void noteOff(int noteNumber) override;
+  void noteOff(int noteNumber) override;
 
 
   //-----------------------------------------------------------------------------------------------
   // \name Audio Processing
 
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
     if(wrappedLiberty->isSilent())
       return;
@@ -151,7 +157,7 @@ public:
   }
   // Maybe move to .cpp
 
-  virtual void processStereoFrame(double *left, double *right) override
+  void processStereoFrame(double *left, double *right) override
   {
     double tmpL = *left;
     double tmpR = *right;
@@ -165,16 +171,9 @@ public:
   // don't do this, we rely on the baseclass implementation which converts the input buffers to 
   // double, calls the double precision callbacks and then converts back to float, I think. Verify!
 
-  /*
-  // Old API?
-  virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
-  {
-    wrappedLiberty->getSampleFrameStereo(inOutL, inOutR);
-  }
-  */
+  
 
-
-  virtual void reset() override { wrappedLiberty->reset(); }
+  void reset() override { wrappedLiberty->reset(); }
 
   void setOutVolume( double newVol) { outAmp  = RAPT::rsDbToAmp(     newVol);                   }
   void setThruVolume(double newVol) { thruAmp = RAPT::rsDbToAmpGated(newVol, volumeGateThresh); }
