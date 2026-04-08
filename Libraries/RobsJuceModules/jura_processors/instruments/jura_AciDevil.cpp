@@ -200,7 +200,7 @@ void AciDevilModuleEditor::createWidgets()
   typedef rsAutomatableSlider Sld;
   typedef rsAutomatableComboBox Box;
   //typedef rsAutomatableButton Btn;
-  typedef RTextField Lbl;
+  typedef RTextField Lbl;             // "Label"
   Sld* s;
   Box* c;
   //Btn* b;

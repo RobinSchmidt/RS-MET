@@ -76,6 +76,9 @@ JUCE_API juce::String valueToStringTotal5(double value);
 JUCE_API juce::String valueToStringWithSign0(double value);
 JUCE_API juce::String valueToStringWithSign1(double value);
 
+// ToDo: Remove the ..WithUnit suffixes. That there will be a unit is already obvious from the
+// other parts of the name. 
+
 // Functions that take a value and a maxValue to display resource usgae such as 13/64 when 13 of 64
 // available objects are used up
 JUCE_API juce::String portionToString(double value, double maxValue);

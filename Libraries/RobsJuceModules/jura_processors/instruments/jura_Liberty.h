@@ -1043,6 +1043,10 @@ protected:
   ComponentScrollContainer     *diagramScrollContainer;
   ModulePropertiesEditorHolder *moduleEditorHolder;
 
+  //rsAutomatableSlider *volumeSlider, *thruVolSlider;
+  rsModulatableSlider *volumeSlider, *thruVolSlider;
+
+
   //ModulePropertiesEditor   *modulePropertiesEditor;
 
   //RRadioButton  *structureButton, *interfaceButton; // *hybridButton;

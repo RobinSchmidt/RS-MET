@@ -2727,10 +2727,10 @@ bool ModularBlockDiagramPanel::getPinPropertiesAtPixels(int x, int y, romos::Mod
 }
 
 
-//=========================================================================================================================================
+//=================================================================================================
 // class LibertyEditor:
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 LibertyEditor::LibertyEditor(CriticalSection *newPlugInLock, 
@@ -2743,7 +2743,7 @@ LibertyEditor::LibertyEditor(CriticalSection *newPlugInLock,
   setHeadlineStyle(SUB_HEADLINE);
   setHeadlinePosition(TOP_LEFT);
 
-  jassert(newLibertyAudioModule != NULL ); // you must pass a valid module here
+  jassert(newLibertyAudioModule != nullptr ); // You must pass a valid module here
 
   modularSynthAudioModule = newLibertyAudioModule;
 
@@ -2781,7 +2781,8 @@ LibertyEditor::LibertyEditor(CriticalSection *newPlugInLock,
 
 LibertyEditor::~LibertyEditor()
 {
-  // for the mediated components, we must take care to delete them  before the mediator is deleted, so we do it manually here:
+  // For the mediated components, we must take care to delete them _before_ the mediator is 
+  // deleted, so we do it manually here:
   removeChildComponent(structureTreeView);
   removeChildComponent(moduleEditorHolder);
   removeChildComponent(diagramScrollContainer);
@@ -2793,14 +2794,29 @@ LibertyEditor::~LibertyEditor()
 
 void LibertyEditor::createWidgets()
 {
-  // ToDo:
-  //
-  // - Create the sliders for the OutGain and PassGain parameters of Liberty
+  typedef rsModulatableSlider Sld;
+  Sld* s;
+
+  LibertyAudioModule* lam = modularSynthAudioModule;  // Shorthand
+
+  addWidget( volumeSlider = s = new Sld );
+  s->assignParameter( lam->getParameterByName("Volume") );
+  s->setSliderName("Volume");
+  s->setItemDescription("Master volume level in decibels");
+  s->setStringConversionFunction(decibelsToStringWithUnit1);
+  s->setDescriptionField(infoField);
+
+  addWidget( thruVolSlider = s = new Sld );
+  s->assignParameter( lam->getParameterByName("ThruVolume") );
+  s->setSliderName("ThruVol");
+  s->setItemDescription("Pass-through volume from input to output");
+  s->setStringConversionFunction(decibelsToStringWithUnit1);
+  s->setDescriptionField(infoField);
+  // ToDo: Use setStringConversionFunction(decibelsToStringGatedAt80);
 }
 
-
-//-----------------------------------------------------------------------------------------------------------------------------------------
-// callbacks:
+//-------------------------------------------------------------------------------------------------
+// Callbacks:
 
 /*
 void LibertyEditor::rButtonClicked(RButton *buttonThatWasClicked)
@@ -2841,13 +2857,22 @@ void LibertyEditor::resized()
   h = infoField->getY() - y;
   diagramScrollContainer->setBounds(x, y, w, h);
   blockDiagramPanel->setAvailabeSizeForCanvas(w, h);
+
+  // Set up the widgets in the global area:
+  x = stateWidgetSet->getRight() + 6;
+  y = 6;
+  w = 160;
+  h = 20;
+  volumeSlider->setBounds(x, y, w, h);
+  y += h + 4;
+  thruVolSlider->setBounds(x, y, w, h);
 }
 
 void LibertyEditor::updateWidgetsAccordingToState()
 {
   ScopedLock scopedLock(*lock);
   structureTreeView->getInterfaceMediator()->setContainerToShowInDiagram(structureTreeView->getInterfaceMediator()->getTopLevelModule());
-  // the mediator will take care to update all panels
+  // The mediator will take care to update all panels
 }
 
 //=================================================================================================
