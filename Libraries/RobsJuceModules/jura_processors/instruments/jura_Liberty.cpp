@@ -73,6 +73,9 @@ void LibertyAudioModule::createParameters()
     Parameter::LINEAR);
   addObservedParameter(mp);
   mp->setValueChangeCallback<LibertyAudioModule>(this, &LibertyAudioModule::setThruVolume);
+
+  // ToDo: Add NumVoices, OverSample, maybe MIDI status display (num playing voices, active 
+  // notes, etc.), output level meters
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2747,7 +2750,7 @@ LibertyEditor::LibertyEditor(CriticalSection *newPlugInLock,
   createWidgets();
   updateWidgetsAccordingToState();
 
-  setSize(600, 400);
+  setSize(640, 480);
 }
 
 LibertyEditor::~LibertyEditor()
@@ -2808,7 +2811,8 @@ void LibertyEditor::resized()
   // other elements:
   x = 0;
   y = getHeadlineBottom() + 8;
-  w = getWidth()/4;
+  //w = getWidth()/4;          // Old
+  w = 5*getWidth()/16;         // New: bigger tree view, smaller module params editor
   h = 32;
   stateWidgetSet->setBounds(x, y, w, h);
 
@@ -2836,6 +2840,8 @@ void LibertyEditor::resized()
   volumeSlider->setBounds(x, y, w, h);
   y += h + 4;
   thruVolSlider->setBounds(x, y, w, h);
+
+  // ToDo: Maybe the width of the TreeView should be wider.
 }
 
 void LibertyEditor::updateWidgetsAccordingToState()
