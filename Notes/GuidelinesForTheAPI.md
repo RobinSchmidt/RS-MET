@@ -24,12 +24,12 @@ Interface Considerations
 
 - We should anticipate using the C++20 module feature. Don't use it just yet (we want to 
   remain C++17 compatible for a while), but organize the structure in a way that 
-  makes it easy to switch to using modules later  
+  makes it easy to switch to using modules later. See:  
   https://www.modernescpp.com/index.php/c-20-open-questions-to-modules  
   https://vector-of-bool.github.io/2019/01/27/modules-doa.html  
   Maybe the code can remain as is and the modules can be implemented on top of it rather similar
   like we now create the "JUCE module"? I'm not sure how modules interact with templates, though. 
-  Maybe for a module definition, we need to commit to a specific type? In this case, we could
+  Maybe for a module definition, we need to commit to a specific data type? In this case, we could
   perhaps create a reference module for RAPT using explicit instantiations with the types that make
   the most sense. That would also serve as documentation for the intended use.
 
@@ -44,14 +44,23 @@ Interface Considerations
 
 - Maybe we should rename rosic to ramp (Rob's Audio and Music Processors)
 
-- In rapt (but maybe not in rosic) consistently use omega = 2*pi*freq/sampleRate  in filters instead
+- In rapt (but maybe not in rosic) consistently use omega = 2 pi freq/sampleRate  in filters instead
   of frequency and sampleRate which is a redundant and inefficient parametrization (typically
   requires more computations to eventually get the coeffs). in rosic, a freq-and-sampleRate parameterization can be kept as convenience feature, but rapt is supposed to be more low-level
   and performance oriented.
 
+- When there are different variations of a class or function, I usually put a _qualifier as suffix_
+  rather than  as a prefix. For example: `rsAmpToDb()` and `rsAmpToDbGated()` and _not_ 
+  `rsGatedAmpToDb()`. This may sometimes disimprove the flow of reading because in English,
+  qualifying adjectives are usually placed before the noun to which they apply. However, in the
+  context of source code, we want the different variations of a function or class to be easily
+  _discovarable_ and for this, it really helps a lot to place the adjectives as suffix because in a
+  _lexicographically_ ordered list, the different variations of one thing will then appear
+  _clustered_ rather than randomly spread out. And such lists are common: For example, Doxygen renders its documentation with lexicographic order, Visual Studio's "Class View" orders the list lexicographically, etc.
+
 - Maybe split the member variables of filter implementations into a "state" and "coeffs" part to
   allow for easier optimization of memory usage on higher levels. That may make a big difference
-  especially when many filters with equal settings are used. Maybe even hae a 3rd class: Params for
+  especially when many filters with equal settings are used. Maybe even have a 3rd class: Params for
   the user parameters. Example:
   ```
   class rsBiquad
@@ -96,8 +105,8 @@ Interface Considerations
    Maybe the classes for Params, Coeffs, State should be dragged out into classes in their own right 
    like rsBiquadParams, rsBiquadCoeffs, rsBiquadState. But that increases the surface area of the 
    library so it may be better to avoid it. Also: when templatizing, coeffs and params may need to 
-   have a different template parameter than tse state (for example: Params/Coeffs use float and
-   State uses rsFloat32x4), so we can't just propagate down temaplte params from rsBiquad to state -
+   have a different template parameter than the state (for example: Params/Coeffs use float and
+   State uses rsFloat32x4), so we can't just propagate down template params from rsBiquad to state -
    unless rsBiquad has two templated params TSig, TPar - which it probably should have anyway.
  
 - Maybe preferably use `/**< ... */` instead of `/** ... */` for the doxygen stuff for member
@@ -119,12 +128,13 @@ Interface Considerations
   - Some other names: `TPix` for pixels, `TCoef` for coefficients, `TVal` for values, `TArg` for
     function arguments, `Tx`, `Ty` for input and output types of functions  ...
 
-- I use of camel case: My rationale for prefering `CamelCase` over `snake_case` is that the names
-  tend to be shorter while the word separation via the capitalization is still obvious enough. The
-  main argument for snake case is typically that the words are more clearly separated which is true
-  but in my opionion, the separation in camel case is clear enough such that this marginal
-  improvement does not justify the lengthening. Also, JUCE uses it as well although that had nothing
-  to do with my decision. I made that long before even knowing JUCE. 
+- I use `CamelCase`. My rationale for prefering `CamelCase` over `snake_case` is that the names tend
+  to be shorter while the word separation via the capitalization is still obvious enough. The main
+  argument for snake case is typically that the words are more clearly separated which is true but
+  in my opionion, the word separation in camel case is still clear enough such that this marginal
+  improvement does not justify the lengthening. Also, JUCE uses it as well and it's kinda nice to
+  be consistent with it although that had nothing  to do with my decision. I made that long before
+  even knowing JUCE. 
     
 - I use `rs`-prefixing for class and function names. My rationale for prefixing everything with `rs`
   is to avoid name clashes. Yes, I know - that's what namespaces are there for but sometimes it is
@@ -134,7 +144,7 @@ Interface Considerations
   implementations of standard functions. Think, for example, a `sin()` function for SIMD vectors.
   If a class needs to compute a sine for some type `T`, I would just let it call `rsSin()` and
   provide a suitable explicit specialization of `rsSin()` for that type `T` and the templatized
-  code of the class would the compile just fine when the class template is instantiated for type
+  code of the class would then compile just fine when the class template is instantiated for type
   `T`. ...TBC...
 
 - Class names 
@@ -143,8 +153,8 @@ Interface Considerations
   
 - Function names and signatures:
 
-  - For free functions, also use camel case. Example `rsExp()`, `rsSin()`. It's actually supposed to
-    be `lowerCamelCase` but the `rs`-prefix requires me to captitalize the function name anyway.
+  - For free functions, also use camel case. Examples: `rsExp()`, `rsSin()`. It's actually supposed
+    to be `lowerCamelCase` but the `rs`-prefix requires me to captitalize the function name anyway.
 
   - For member functions of classes I use bona fide `lowerCamelCase`. Example: `setCutoff()`.
 
@@ -154,21 +164,28 @@ Interface Considerations
   - If the module produces stereo samples, use processFrame because `getSample()` is only suitable
     for single channel (i.e. mono) processing. Maybe that makes it redundant but it is nice to be
     able to write things like:  
-    `out = env.getSample() * filter.getSample(osc.getSample());`
+    `out = env.getSample() * filter.getSample(osc.getSample());`  
+    and for that, we need an API where DSP functions produce their outputs as return values rather
+    than in output parameters.
 
-  - ToDo: Consistently use pointers (not references) for output variables. It makes it visible at
-    the call site, what is an output that may be (over)written.
+  - ToDo: Consistently use pointers (not references) for output parameters. It makes it visible at
+    the call site what is an output that may be (over)written.
 
   - The argument order should be consistent for functions that do similar things - especially in
     rsArrayTools (potentially dangerous (i.e. quietly breaking) change!)
 
-  - The units (seconds, milliseconds) for parameters should be the same in all classes (dangerous
-    change)
+  - The units (seconds, milliseconds, samples, Hertz, normalized radian freq omega) for parameters
+    should be the same in all classes (dangerous change)
 
-  - In rapt, we should probably not deal with physical units at all and instead use normalized units
-    like samples or omega: $\omega = 2 \pi f / f_s$,  etc.
+  - In rapt, we should probably not deal with nay physical units at all and instead use normalized
+    units like samples or omega: $\omega = 2 \pi f / f_s$,  etc.
 
-- Consistent use of enum class for choices
+- Consistent use of `enum class` for choices. But that's kinda difficult for historic and 
+  infrastructural reasons. Some mappings between choice parameter values and user facing 
+  (automatable) parameters may rely on specific mappings to integers. We'll see. This should be
+  approached with great caution, if at all. Maybe new code should by deafult use an enum class and
+  we'll get some experience with how that works with automation and dropdown menus and when the data
+  is in, we may make a decision about changing the older code as well.
 
 - (Maybe) avoid free functions. Wrap them into namespaces. Maybe use sub-namespaces
     (RAPT::Filters, RAPT::Generators, etc.). Or maybe (ab)use classes for collections of functions.
@@ -178,9 +195,10 @@ Interface Considerations
     compartements of the library like "Filters", "Generators", etc., namespaces may actually be 
     appropriate.
 
-  - I've been thinking about using std::vector for all i/o of the the non-realtime classes but some
-    client code may use something else, so suing plain arrays is most flexible. Anyone can use it.
-    So, the low-level number crunching code should be based on passing around C-style arrays.
+  - I've been thinking about using std::vector for all I/O of the the non-realtime classes but some
+    client code may use something else (like JUCE::AudioBuffer), so using plain arrays is most
+    flexible. Anyone can use it. So, the low-level number crunching code should be based on passing
+    around C-style arrays even when use of std::vector would seem to be the natural choice.
 
   - Consistently make embedded objects accessible either via having them as public members or by
     providing getters. The former seems better - simpler client-side syntax and does the exact
@@ -192,14 +210,18 @@ Interface Considerations
     better - but then we need a convention other than -1 to indicate things like "not found" in
     functions like findIndex - perhaps N would be the most obvious convention (N = length of array).
     That would also be consistent with STL conventions:  
-    https://github.com/fish-shell/fish-shell/issues/3493
-
+    https://github.com/fish-shell/fish-shell/issues/3493  
+    But we have so much code written already that uses the "-1 for not-found" convention that such a
+    change would be really hard and dangerous. Maybe using signed integers has other advantages as
+    well. For example, we could use different negative numbers for different error codes. Sometimes
+    they are also more convenient when doing index arithmetic with them. Unsigned integers could
+    underflow and produce huge values when a subtraction can produce a negative result.
 
   - Use get/set consistently. Bad: Matrix::eigenvalues, Good: Matrix::getEigenvalues
     ...but only for non-static member functions - for static ones -> no get
 
-  - Avoid heap allocations for temporary arrays - use workspace parameters instead but keep the
-    functions that do heap allocations for convenience - but document all heap-allocations, i.e.
+  - Avoid heap allocations for temporary arrays. Use workspace parameters instead but keep the
+    functions that do heap allocations for convenience. But document all heap-allocations, i.e.
     write a warning. Annotate all functions that do heap allocation. Or maybe more generally:
     Annotate all functions that are unsafe to call in a relatime context. But maybe the default
     assumption should be that the function is unsafe and we should annotate those that are
@@ -207,13 +229,12 @@ Interface Considerations
 
   - Use nouns like "getProduct" when the function returns an object (numbers qualify as well) but a
     verb like "multiply" when the function performs some action on passed inputs like multiplying
-    array element-wise
+    array element-wise.
 
-  - Use abbreviations consistently in function names and their parameters. Use: Dist: Distortion, 
-    Distro: Distribution, Freq: Frequency, Calc: Calculate, Coeff: Coefficient, Reso: Resonance, 
-    Cyc: Cycle, Oct: Octave, Sec: Second,
+  - Use abbreviations consistently in function names and their parameters. See below for a
+    preliminary dictionary of used abbreviations and acronyms.
  
-  - See also: https://github.com/RobinSchmidt/RS-MET/wiki/Standards
+
 
 
 ### Use of Abbreviations and Acronyms
@@ -223,9 +244,7 @@ also want them to be short in order to not blow up the verbosity of the code (wh
  readibility). By their nature, descriptive names tend to be longer so we must strike a tradeoff
 between descriptiveness and brevity. One way to do this is to introduce abbreviations and acronyms.
 If these things are used in the API, they should be used consistently throughout the library. When
-acronyms are used in the context of CamelCase
-
-...TBC...
+acronyms are used in the context of CamelCase ...TBC...
 
 
 Implementation Considerations
@@ -237,13 +256,14 @@ Implementation Considerations
   harder to optimize cases individually.
 
 - What about thread safety? Should probably be completely abolished, at least in RAPT. 
-  Synchronization should be dealt with on a higher level. Maybe in rosic, but probably jura.
+  Synchronization should be dealt with on a higher level. Maybe in rosic, but probably jura. RAPT is
+  only about low level number crunching. Thread sync should be taken care of on a higher level.
 
 - How polyphony can be handled: Each DSP class may have a simple, monophonic  implementation and
   some may optionally have a polyphonic version (maybe as subclass with suffix "Poly"). It would certainly be nice to have some sort of automatic way to turn monophonic DSP algorithms into 
-  polyphonic ones. But that may lead to suboptimal implementation because typically, the settings
-  and parts of the state can be shared among the voices. But which parts can and which can't be
-  shared depends on the particluar algorithm
+  polyphonic ones. But that may often lead to suboptimal implementations (especially memory wise)
+  because typically, the settings and parts of the state can be shared among the voices. But which
+  parts can and which can't be shared depends on the particluar algorithm.
  
 
 Performance Considerations
@@ -251,11 +271,15 @@ Performance Considerations
 
 - Use const and constexpr whereever possible
 
-- Always declare members in order of descencing size (reduces padding)
+- Always declare members in order of descending size (reduces padding). But: Sometimes padding can
+  actually be beneficial because variables that are _aligned_ in certain ways may be faster to
+  access. So - use common sense. Maybe document such decisions especially when they appear strange.
 
 - Use workspaces for operations on arrays that need auxiliary memory to avoid heap allocations for
   temporary buffers. Maybe have convenience functions that allocate a workspace internally (e.g. 
-  by declaring a local std::vector) and then calling the workspace based function with that.
+  by declaring a local std::vector) and then calling the workspace based function with that. This
+  would create a 2-level API: One convenient high-level API for prototyping and experimentation and
+  one more cumbersome but realtime safe low-level API for production ready code.
 
 - In low level DSP classes, try to avoid virtual functions as much as possible, especially in small
   objects (like 1st or 2nd order filters) where the vtable would significantly increase the size
@@ -286,7 +310,7 @@ true, the recomputation is triggered there. Advantages: It solves the efficiency
 additionally make the setters thread-safe because the recomputation is deferred to the audio-thread 
 whenever the setters are called from a different thread (such as a GUI thread). The disadvantage is 
 that after calling a setter, the coeffs do not reflect the user settings and we have one thing more 
-to do in getSample. This overhead may not matter for complex algorithms - but for very simple ones, 
+to do in getSample(). This overhead may not matter for complex algorithms - but for very simple ones, 
 it may.
 
 
@@ -419,6 +443,7 @@ ToDo
 
 Ideas for abbreviations:
 
+Algorithm:       Algo  ,
 Amplitude:       Amp  ,
 Argument:        Arg  ,
 Analog:          Ana  ,
@@ -433,11 +458,13 @@ Component:       Comp  ,
 Compression:     Comp  ,
 Compute:         Comp  ,
 Context:         Ctx  ,
+Continuous:      Cont  ,
 Cycle:           Cyc  ,
 Damping:         Damp, Dmp  ,
 Decay:           Dec  ,
 Decibel:         Db  ,
 Digital:         Digi  ,
+Discrete:        Disc  ,
 Display:         Disp  ,
 Distance:        Dist  , 
 Distortion:      Dist, Distort  ,
@@ -457,16 +484,23 @@ Index:           Idx  ,
 Instance:        Inst  ,
 Instantaneous:   Inst, Insta, Instant  ,
 Instrument:      Inst, Instrum  ,
+Linear:          Lin  ,
 Matrix:          Mat  ,
+Memory:          Mem  ,
 Millisecond:     Ms  ,
 Modifier:        Mod  ,
 Modulation:      Mod  ,
 Module:          Mod  ,
 Modulus:         Mod  ,
+Number:          Num  ,
 Octave:          Oct  ,
 Oscillator:      Osc  ,
 Parameter:       Par, Param  ,
 Phase:           Phs  ,
+Polygon:         Poly  ,
+Polynomial:      Poly  ,
+Polyphonic:      Poly  ,
+Rational:        Rat  ,
 Release:         Rel  ,
 Resolution:      Res, Reso, Resol  ,
 Resonance:       Res, Reso, Reson  ,
@@ -481,15 +515,17 @@ Tangent:         Tan  ,
 Tensor:          Tens, Tns  ,
 Threshold:       Thresh, Thr  ,
 Through:         Thru  ,
+Transformation:  Transform, Trafo  ,
 Trigger:         Trig, Trg  ,
 Trigonometric:   Trig  ,
 Value:           Val  ,
 Vector:          Vec  ,
 
-Aim for 1 or 2 syllables. Try to make the abbreviations unique - not like with "Comp". When writing
-code and trying to find a suitable abbreviation, we should really first look up this dictionary to
-see, if there already is an abbreviation used for that somewhere else in the library. We should
-maintain a dictionary somewhere for this purpose to facilitate consistent use of abbreviations.
+Aim for 1 or 2 syllables. Try to make the abbreviations unique if possible. Sometimes that's not
+so easy. See "Comp", for example. When writing code and trying to find a suitable abbreviation, we
+should really first look up this dictionary to see, if there already is an abbreviation used for
+that somewhere else in the library. We should maintain a dictionary somewhere for this purpose to
+facilitate consistent use of abbreviations.
 
 To resolve some ambiguities: Use Reso for Resonance and Res for Resolution.
 
@@ -538,6 +574,10 @@ setMidiKey.
 
 Some general renaming plans:
 
-updateWidgetsAccordingToState()  ->   updateWidgetsFromState()
+updateWidgetsAccordingToState()  ->   updateWidgetsFromState()  
 ColourSchemeComponent            ->   ColorSchemeComponent
 
+
+
+
+See also: https://github.com/RobinSchmidt/RS-MET/wiki/Standards
