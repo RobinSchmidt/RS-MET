@@ -99,7 +99,7 @@ public:
   c2 (= "lenMid"), p1 (= "probShort") and p2 (= "probMid"). Computing the rest, if really needed 
   (which it usually isn't), is up to the caller because this function is meant to be as efficient
   as possible because it's supposed to be called in a realtime context. The calculation implemented
-  by this function is really the heart and soul of the pitch dithering idea that makes this 
+  by this function is really the heart and soul of the pitch dithering method that makes this 
   oscillator tick. That's why it has been made static and given output parameters rather than just
   operating directly on our member variables because we want to make the implementation re-usable
   by other oscillator code that also wants to implement pitch dithering. */

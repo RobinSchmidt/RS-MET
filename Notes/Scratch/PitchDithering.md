@@ -5,19 +5,23 @@ Pitch Dithering (Draft)
 Background
 ----------
 
-A naively implemented digital oscillator produces a lot of aliasing. Various methods exist to
-mitigate the problem. Some of the methods are: mip-mapping, bleps and oversampling. This document
-describes yet another one of those methods. In my explanations of the method, I will take a sawtooth
-wave as example but the method can be applied to other waveforms as well.  ...TBC...
+A naively implemented digital sawtooth oscillator produces a lot of aliasing. Various methods exist 
+to mitigate the problem. Some of the methods are: mip-mapping, bleps and oversampling. This document
+describes yet another one of those methods that I recently came up with. It's a way to trade the
+annoying aliasing artifacts for a much more palatable kind of noise. In my explanations of the 
+method, I will take a sawtooth wave as example but the method can be applied to other waveforms as 
+well. ...TBC...
 
 
-The Basic Idea
---------------
+The Initial Idea
+----------------
 
 When the length of the cycles that we want to produce happens to be an integer number of samples,
 the aliasing frequencies happen to line up with the harmonics that are already there. In this case,
-the presence of aliasing frequencies does not introduce any undesired additional frequencies into
-the signal but instead just changes the amplitudes of the existing harmonics. This is a much less
+the resulting waveform will be prefectly periodic even in the discrete time sense such that 
+`x[n] = x[n+P]` where P is the integer(!) period in samples. In this particular scenario, aliasing
+is still present but the aliasing does not introduce any undesired additional frequencies into the
+signal but instead just changes the amplitudes of the existing harmonics. This is a much less 
 annoying kind of artifact which in this method, we will accept. Of course, the problem now is that
 we can only produce sawtooths with those fundamental frequencies whose pitch period happens to be
 an integer number of samples. If we just round the cycle length to the nearest integer, we would get
@@ -43,10 +47,14 @@ produce an average cycle length that is exactly as prescribed. But we have now i
 problem. Doing it like explained above does, of course, produce some sort of artifacts. Namely, we
 introduce a sort of frequency modulation by a random pulse wave signal. This random frequency
 modulation manifests itself as a sort of noise in the final output. The amount of this noise will
-depend on the particular setting of the desired cycle length $c$. If $c$ happens to be an exact integer, there will be no noise at all because the fractional part $c_f = 0$ is zero in this case
+depend on the particular setting of the desired cycle length $c$. If $c$ happens to be an exact
+ integer, there will be no noise at all because the fractional part $c_f = 0$ is zero in this case
 and we will therefore produce cycles of length $c_1$ with probability $p_1 = 1$. Apparently, we will
 get the greatest amount of noise when $c$ happens to be halfway between two integers, i.e.
-$c = xxx.5$ and no noise at all when $c$ is an exact integer $c = xxx.0$. 
+$c = xxx.5$ and no noise at all when $c$ is an exact integer $c = xxx.0$. The amount of noise would
+vary as function of the fractional part of our desired cycle length. To have a consistent sound 
+character of the oscillator, we don't want this. The amount of added noise should be the same
+regardless of how close to an integer our requested cycle length $c$ happens to be.
 
 
 The Refined Idea
@@ -59,8 +67,8 @@ cycle length is also exactly $100$ and the variance of the probability distribut
 variance that we would get in the worst case scenario, i.e. at the half-integers. It is apparent by
 now that the general task to make this work is to derive a formula or algorithm to compute the 3
 desired cycle lengths $c_1, c_2, c_3$ along with their associated probabilities $p_1, p_2, p_3$ of
-producing cycles of these lengths from the given desired mean cycle length $c$. As before, let
-$c_f = c - floor(c)$ denote the fractional part of our desired (mean) cycle length $c$. If
+producing cycles of these lengths. The input is the given desired mean cycle length $c$. As before,
+let $c_f = c - floor(c)$ denote the fractional part of our desired (mean) cycle length $c$. If
 $c_f = 0.5$, we expect to be in an edge case where from the 3 lengths $c_1,c_2,c_3$ are only 2 actually used because one gets a probability of zero. This is our reference case and we need to
 produce the values $c_1,c_2,c_3$ and $p_1,p_2,p_3$ for the other cases in such a way, that the noise
 has always the same characteristics. We will use $c_2$ as our middle cycle length and we will always

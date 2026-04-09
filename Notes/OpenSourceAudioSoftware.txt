@@ -803,6 +803,12 @@ https://reuk.github.io/wayverb/
 https://github.com/reuk/wayverb
 -Raytracing based impulse response generator
 
+Seiche:
+https://seicheacoustics.github.io/
+https://github.com/SeicheAcoustics/Seiche
+-Application for rendering and analyzing acoustical properties of 3D spaces via design meshes.
+ Inspired by pyroomacoustics.
+
 AudioDSPTools, NeuralAmpModeler
 https://github.com/sdatkinson/AudioDSPTools
 https://github.com/sdatkinson/NeuralAmpModelerCore
@@ -1540,6 +1546,10 @@ https://github.com/cgzirim/seek-tune
 
 ----------------------------------------------------------------------------------------------------
 Unsorted:
+
+Eclipsa Audio:
+https://github.com/google/eclipsa-audio-plugin
+-Multichannel audio format for spatial audio. Open alternative to DTS, THX, Dolby Atmos, etc.
 
 SoX - Sound eXchange
 https://sourceforge.net/projects/sox/

@@ -54,7 +54,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // Audio processing:
 
-  /** Calculates the output-samples for both channels and stores them at the adresses of *outL and 
+  /** Calculates the output-samples for both channels and stores them at the addresses of *outL and 
   *outR. */
   template <class SampleType>
   INLINE void getSampleFrameStereo(SampleType *inOutL, SampleType *inOutR)

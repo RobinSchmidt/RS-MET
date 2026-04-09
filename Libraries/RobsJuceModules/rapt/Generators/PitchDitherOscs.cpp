@@ -157,7 +157,7 @@ ToDo:
   getSampleSawUp(), etc. stuff should go away and we should just have the normal API with 
   getSample(), reset(), etc. Having to handle this half-open/closed phasor business is low level 
   stuff that client code should be able to tap in if needed but by default, that shouldn't be the 
-  case. The enum should probably exist inside some class liek rsWaveForms such that it can be 
+  case. The enum should probably exist inside some class like rsWaveForms such that it can be 
   re-used by other classes. Check the preliminary implementation of rsWaveForms in 
   rs_testing/Prototypes/Generators.h. This could be used as basis.
 
@@ -179,7 +179,7 @@ Ideas:
 
 - Combine pitch dithering with waveshaping. I think, when we waveshape a pitch-dithered waveform,
   we will not introduce aliasing. Instead, we will probably modify the noise spectrum. I think that
-  because all that wvaeshaping does is to modify the instantaneous signal value. The output will 
+  because all that waveshaping does is to modify the instantaneous signal value. The output will 
   again be a pitch dithered signal with a new waveform. Verify that experimentally!
 
 - Maybe try combining oversampled pitch-dithering with (non-oversampled) waveshaping. My guess is 
