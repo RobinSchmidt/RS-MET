@@ -15,6 +15,7 @@ INLINE void PhasorPitchDithered::process(Module* module, double* in1, double* in
   //updatePhase(phasor, *in1, voiceIndex);
 }
 
+/*
 INLINE void PhasorPitchDithered::updatePhase(PhasorPitchDithered* phasor, double freq, 
   int voiceIndex)
 {
@@ -25,21 +26,32 @@ INLINE void PhasorPitchDithered::updatePhase(PhasorPitchDithered* phasor, double
   //while(phasor->phases[voiceIndex] <  0.0)
   //  phasor->phases[voiceIndex] += 1.0;
 }
+*/
+
+
 void PhasorPitchDithered::resetVoiceState(int voiceIndex)
 {
   AtomicModule::resetVoiceState(voiceIndex);
-  phases[voiceIndex] = 0.0;  // Introduce a startphase later (as GUI parameter)
+
+  oscs[voiceIndex].reset(rangeClosed);
+  //phases[voiceIndex] = 0.0;  // Introduce a startphase later (as GUI parameter)
 }
 void PhasorPitchDithered::allocateMemory()
 {
   AtomicModule::allocateMemory();
-  phases = new double[getNumVoices()];
+
+  oscs = new RAPT::rsPitchDitherOsc<double>[getNumVoices()];
+  //phases = new double[getNumVoices()];
 }
 void PhasorPitchDithered::freeMemory()
 {
   AtomicModule::freeMemory();
-  delete[] phases;
-  phases = nullptr;
+
+  delete[] oscs;
+  oscs = nullptr;
+
+  //delete[] phases;
+  //phases = nullptr;
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_3(PhasorPitchDithered);
 
