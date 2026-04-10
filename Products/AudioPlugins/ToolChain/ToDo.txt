@@ -109,7 +109,18 @@ we build up our suite of unit tests along the way.
    Maybe it could also make sense to have a global "Gain" or "Volume" or "OutGain" parameter as 
    well in some sort of performance section of the GUI.
 
+  -[5] Insert a Formula module. In the entry field y = x, click into it and try to prepend a 2
+   to the x. Crash in the expression evaluator! In FormulaModule_1_1::isFormulaValid(), we have
+   formulatoTest = "y=2x" and in the call to trialEvaluator.setExpressionString(), we trigger
+   the crash! Interestingly, it doesn't happen when we first insert the * before the x and _then_
+   the 2 before it. Maybe we should put the call to trialEvaluator.setExpressionString() into a 
+   try-catch block. Unfortunately, ExprEval uses exceptions for error handling. I would very much
+   prefer error codes.
+
   -[5] The "Poly" switch doesn't seem to have any effect.
+
+  -[2] When changing the number of inputs of a formula module, the node in the graph updates only
+   after we leave the "Inputs" text entry field _and_ click on some point in the graph view.
 
   -[1] When hovering over the patch structure, there isn't any info in the info line.
 

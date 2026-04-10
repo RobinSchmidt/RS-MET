@@ -12,6 +12,7 @@ protected:
   virtual void allocateMemory();
   virtual void freeMemory();
   RAPT::rsPitchDitherOsc<double>* oscs = nullptr;
+  double *freqs = nullptr;
   bool rangeClosed = false;                            // ToDo: Make a GUI switch for that
 };
 class PhasorPitchDitheredTypeInfo : public ModuleTypeInfo
