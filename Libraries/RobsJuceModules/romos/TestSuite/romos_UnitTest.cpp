@@ -21,7 +21,8 @@ UnitTest::~UnitTest()
 
 bool UnitTest::runTestAndPrintResultToConsole()
 {
-  printf("%s %s %s", "Running ", name, "...\n");
+  //printf("%s %s %s", "Running ", name, "...\n");
+  printf("%s %s %s", "Running ", name, "...");
   bool testPassed = runTest();
   if(testPassed)
     printf("%s", " passed.\n");

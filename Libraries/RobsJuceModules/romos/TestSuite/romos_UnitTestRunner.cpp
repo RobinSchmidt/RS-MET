@@ -44,11 +44,14 @@ bool UnitTestRunner::runProcessingTests()
   const char* testName = "ProcessingTests";
   printf("%s %s", testName, ":\n");
 
+
+  /*
+  // Old:
+
   UnitTest* test;
   bool testsPassed = true;
 
   test = new Formula_N_1Test();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
-
   test = new IdentityTest();                   testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new AdderTest();                      testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new Adder3Test();                     testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
@@ -74,12 +77,66 @@ bool UnitTestRunner::runProcessingTests()
   test = new MonoToPolyTest();                 testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new VoiceCombinerTest();              testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new Formula1In1OutTest();             testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
-
   //test = new PolyBlipStereoTest();             testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   //test = new GateAndKillTest();  testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
 
   printTestResultToConsole(testsPassed, testName);
   return testsPassed;
+  */
+
+
+  // New:
+
+  auto run = [](ProcessingTest* test)
+  {
+    bool passed = test->runTestAndPrintResultToConsole();
+    delete test;
+    return passed;
+  };
+
+  bool ok = true;
+  ok &= run(new Formula_N_1Test());
+  ok &= run(new IdentityTest());
+  ok &= run(new AdderTest());
+  ok &= run(new Adder3Test());
+  ok &= run(new Adder4Test());
+  ok &= run(new Adder5Test());
+  ok &= run(new SubtractorTest());
+  ok &= run(new UnitDelayTest());
+  ok &= run(new NoiseGeneratorTest());
+  ok &= run(new WrappedAdderTest());
+  ok &= run(new SumDiffProdTest());
+  ok &= run(new WrappedSumDiffProdTest());
+  ok &= run(new WrappedAdderNTest());
+  ok &= run(new SummedDiffsTest());
+  ok &= run(new MovingAverageTest());
+  ok &= run(new DelayedConnectionTest());
+  ok &= run(new LeakyIntegratorTest());
+  ok &= run(new LeakyIntegratorDoubleDelayTest());
+  ok &= run(new TestFilter1Test());
+  ok &= run(new BiquadMacroTest());
+  ok &= run(new BiquadAtomicTest());
+  ok &= run(new BiquadFormulaTest());
+  ok &= run(new BlipTest());
+  ok &= run(new MonoToPolyTest());
+  ok &= run(new VoiceCombinerTest());
+  ok &= run(new Formula1In1OutTest());
+  //ok &= run(new PolyBlipStereoTest());
+  //ok &= run(new GateAndKillTest());
+
+  printTestResultToConsole(ok, testName);
+  return ok;
+
+  // ToDo: 
+  //
+  // - Get rid of the verbosity by:
+  //    - Renaming "testsPassed" to "ok"
+  //    - Create a helper function "run()" that takes a pointer to ProcessingTest and returns a 
+  //      bool such that we can call it like:
+  // 
+  //        ok &= run( new Formula_N_1Test() );
+  //        ok &= run( new IdentityTest() );
+  //        // ...
 }
 
 bool UnitTestRunner::runContainerManipulationTests()
