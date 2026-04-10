@@ -82,7 +82,25 @@ void FormulaModule_1_1::freeMemory()
 
 bool FormulaModule_1_1::isFormulaValid(const std::string& formulaToTest)
 {
-  return trialEvaluator.setExpressionString(formulaToTest.c_str());
+  // Old:
+  //return trialEvaluator.setExpressionString(formulaToTest.c_str());
+
+  // New:
+  try 
+  {
+    bool ok = trialEvaluator.setExpressionString(formulaToTest.c_str());
+    return ok;
+  }
+  catch(...)
+  {
+    return false;
+  }
+
+
+  // ToDo: We should put this call to setExpressionString() into a try-catch block. It sometimes 
+  // throws exceptions and when we don't cathc them, we get a crash! ...ok...done. But we still 
+  // get the crash. It seems to be an out-of-bounds access to a std::vector inside ExprEval. It
+  // occurs even before the execption is thrown!
 }
 
 bool FormulaModule_1_1::setFormula(const std::string& newFormula)
