@@ -223,23 +223,29 @@ Coding:
   declarations and replace them by the corresponding "using" declaration.". Well, that change could 
   probably still be done with regex but I really wouldn't want to work out how (maybe ask AI to do 
   the translation! ;-)). Other example: Change all enum entries to use lowerCamelCase and do all the
-  required updates of the code that uses these entries. Or: Replace all occurrences of 
+  required updates of the codebase that uses these entries. Or: Replace all occurrences of 
   "#pragma once" by old school C-style include guards using the format 
   "#ifndef RAPT_FILENAME_INCLUDED #define RAPT_FILENAME_INCLUDED  ...  #endif" where "FILENAME" 
   should be infered from the name of the .h file. Or: prefix all class names in the "jura" namespace
   with "rs" and do all the required updates in client code. Or: "Fix all compiler warnings about 
   unused local variables by commenting their declarations out". Or: "Fix all compiler warnings about
   unused function parameters by commenting their declarations out". Or: "Make this optional function
-  parameter mandatory and find call sites and pass the former default value there". Maybe do the 
+  parameter mandatory and find all call sites and pass the former default value there". Maybe do the 
   change manually in one place and point the AI to that place to use it as template. Or maybe create
   a "before - after" template/example in the prompt. Maybe a few more examples with some variations 
   that are likely to be encountered.
 
 - More ideas: Use AI to clean up unneeded #includes. It sometimes happens that we include more than 
   we need, for example, when we need some library at one point in time but later get rid of the 
-  dependency without even realizing it due to code changes. AI should also we well suited for 
+  dependency without even realizing it due to code changes. AI should also be well suited for 
   generating and modifying(!) boilerplate code. Especially the modification of large amounts of 
-  existing boilerplate is often a big pile of grunt work which should be automated by AI.
+  existing boilerplate is often a big pile of grunt work which should be automated by AI. Chatting
+  with an AI can also be great for brainstorming as in generating and refining ideas, weeding out 
+  the bad ideas, etc. For this, I just go to a chatbot and start a conversation by asking a 
+  (technical) question with possible follow-up questions. It often makes sense to then save the 
+  conversation for later reference. It seems like Claude Sonnet is currently (in 2026) regarded as 
+  one of the best models for this purpose when it's about math, algorithms and programming.
+  
 
 Debugging:
 

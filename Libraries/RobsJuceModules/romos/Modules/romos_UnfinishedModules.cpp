@@ -30,3 +30,10 @@ void PhasorPitchDithered::freeMemory()
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(PhasorPitchDithered);
 
+// ToDo:
+//
+// - It currently doesn't make use of the "Freq" input. I think, we should maintain a "freq" member
+//   and in process, compare the freq member against the input and when they differ, we need to
+//   update the freq member and call setMeanCycleLength() on the embedded DSP object. The purpose 
+//   of maintaining the freq member is to avoid calling setMeanCycleLength() for every sample even
+//   when the freq didn't change because a call to it is costly.
