@@ -29,6 +29,7 @@ public:
 
   /** Resets the system into a default state. */
   void reset();
+  // Should got into Event Handling section
 
   //-----------------------------------------------------------------------------------------------
   // Inquiry:
@@ -38,6 +39,7 @@ public:
 
 
   INLINE bool isSilent() { return false; }
+  // Not yet implemented
 
   //-----------------------------------------------------------------------------------------------
   // Event handling:
@@ -75,12 +77,23 @@ protected:
 
   TopLevelModule* topLevelModule;
 
-  int oversampling = 1; // not yet used - for later - it would be nice to be able to select
-                        // oversampling on a per-container basis - maybe later, it's complicated
+  // Stuff for oversampling:
+  //using SubBandFilter = RAPT::rsEllipticSubBandFilter<double, double>;
+  //SubBandFilter upSamplerL, upSamplerR, downSamplerL, downSamplerR;
+  int overSampling = 1;
+  // Not yet used. For later. It would be nice to be able to select oversampling on a per-container
+  // basis in ToolChain itself. Maybe later. It's complicated.
+  // Maybe later use rsOverSampler. And/or maybe try to use SIMD for the up- and downsampling 
+  // filters by using rsEllipticSubBandFilter<rsFloat64x2, double>. Maybe later we can also use 
+  // other kind of subband filters
 
-  // under construction:
-  //void populateModuleTypeRegistry();      // not yet used - rename to addCustomModulesToFactory
-  //ModuleFactory moduleTypeRegistry; // not yet used 
+  // Under construction:
+  //void populateModuleTypeRegistry();  // not yet used - rename to addCustomModulesToFactory
+  //ModuleFactory moduleTypeRegistry;   // not yet used 
+  // ToDo: Document what this was supposed to be good for. I don't remember. Ah! I think, the idea
+  // was that Liberty can add some more modules to the library of available built-in modules on 
+  // top of what's already there in romos::TopLevelModule or something like that. Maybe even 
+  // pre-built non-atomic modules, i.e. pre-defined containers. Verify and document this!
 
 };
 

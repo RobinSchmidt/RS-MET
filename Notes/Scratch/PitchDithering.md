@@ -7,8 +7,8 @@ Background
 
 A naively implemented digital sawtooth oscillator produces a lot of aliasing. Various methods exist 
 to mitigate the problem. Some of the methods are: mip-mapping, bleps and oversampling. This document
-describes yet another one of those methods that I recently came up with. It's a way to trade the
-annoying aliasing artifacts for a much more palatable kind of noise. In my explanations of the 
+describes yet another one of those methods that I recently came up with. It's a way to replace the
+annoying aliasing artifacts with a much more palatable kind of noise. In my explanations of the 
 method, I will take a sawtooth wave as example but the method can be applied to other waveforms as 
 well. ...TBC...
 
@@ -43,43 +43,56 @@ always use two different cycle lengths $c_1 = floor(c)$, $c_2 = c_1 + 1$, $c_f =
 $p_1 = 1 - c_f$, $p_2 = c_f$ where $c_f$ is the fractional part of $c$.
 
 But there's a problem with this approach. With this rule as stated above, we would indeed always
-produce an average cycle length that is exactly as prescribed. But we have now introduced a new
-problem. Doing it like explained above does, of course, produce some sort of artifacts. Namely, we
-introduce a sort of frequency modulation by a random pulse wave signal. This random frequency
-modulation manifests itself as a sort of noise in the final output. The amount of this noise will
-depend on the particular setting of the desired cycle length $c$. If $c$ happens to be an exact
- integer, there will be no noise at all because the fractional part $c_f = 0$ is zero in this case
-and we will therefore produce cycles of length $c_1$ with probability $p_1 = 1$. Apparently, we will
-get the greatest amount of noise when $c$ happens to be halfway between two integers, i.e.
-$c = xxx.5$ and no noise at all when $c$ is an exact integer $c = xxx.0$. The amount of noise would
-vary as function of the fractional part of our desired cycle length. To have a consistent sound 
-character of the oscillator, we don't want this. The amount of added noise should be the same
-regardless of how close to an integer our requested cycle length $c$ happens to be.
+produce an average cycle length that is exactly as prescribed. So we have solved the mistuning 
+problem. But we have now introduced a new problem. It's arguably a less severe problem, so we 
+actually did make some progress but it's still not good enough. Doing it like explained above does,
+of course, produce some sort of artifacts. Namely, we introduce a sort of frequency modulation by a 
+random pulse wave signal. This random frequency modulation manifests itself as a sort of noise in 
+the final output. This noise in itself is something we are going to accept in this method. But what 
+we don't want to accept is that the amount of this noise currently depends on the particular setting
+of the desired cycle length $c$. If $c$ happens to be an exact integer, there will be no noise at 
+all because the fractional part $c_f = 0$ is zero in this case and we will therefore produce cycles 
+of length $c_1$ with probability $p_1 = 1$. Apparently, we will get the greatest amount of noise 
+when $c$ happens to be halfway between two integers, i.e. $c = xxx.5$ and no noise at all when $c$ 
+is an exact integer $c = xxx.0$. The amount of noise would vary as function of the fractional part 
+of our desired cycle length. To have a consistent sound character of the oscillator, we don't want 
+this. The amount of added noise should be the same regardless of how close to an integer our 
+requested cycle length $c$ happens to be. We now want to equalize the noise, i.e. make it sound the 
+same regardless of our value of $c_f$.
 
 
 The Refined Idea
 ----------------
 
 To develop a solution strategy, let's assume that our desired cycle length is $c = 100.0$. With the
-basic algorithm above, we would get a clean signal with no noise modulation at all. The new idea is
-now to use cycles of the 3 lengths $c_1 = 99, c_2 = 100, c_3 = 101$ in such a way that the mean
-cycle length is also exactly $100$ and the variance of the probability distribution matches the
-variance that we would get in the worst case scenario, i.e. at the half-integers. It is apparent by
-now that the general task to make this work is to derive a formula or algorithm to compute the 3
-desired cycle lengths $c_1, c_2, c_3$ along with their associated probabilities $p_1, p_2, p_3$ of
-producing cycles of these lengths. The input is the given desired mean cycle length $c$. As before,
-let $c_f = c - floor(c)$ denote the fractional part of our desired (mean) cycle length $c$. If
-$c_f = 0.5$, we expect to be in an edge case where from the 3 lengths $c_1,c_2,c_3$ are only 2 actually used because one gets a probability of zero. This is our reference case and we need to
-produce the values $c_1,c_2,c_3$ and $p_1,p_2,p_3$ for the other cases in such a way, that the noise
-has always the same characteristics. We will use $c_2$ as our middle cycle length and we will always
-have $c_1 = c_2 - 1$ and $c_3 = c_2 + 1$. In the case where $c_f < 0.5$, we will need to use
-$c_2 = floor(c)$ and in the case where $c_f > 0.5$ we will need $c_2 = floor(c) + 1$. That this is
-right can most easily be understood from an example. If we have a desired cycle length of 
-$c = 100.5$ samples, we would use cycles of $100$ and $101$ samples with equal probability, namely
-with probability $0.5$. When the mean cycle length is lower, say $c = 100.3$, then we would expect
-to additionally also use cycles of length $99$ samples and when the mean cycle length is higher, say
-$100.7$, then we would additionally have to use cycles of length $102$. To summarize, for the 3
-cycle lengths $c_1,c_2,c_3$ to be used, we use the following rule (in pseudocode):
+basic algorithm above, we would get a clean signal with no noise modulation at all. We ask ourselves
+how we would voluntarily introduce a noise into this signal that is statistically and sonically
+similar to the noise in the $c = 100.5$ case. This is the worst case that would produce the greatest
+amount of noise with the initial idea described above. It is "worst" because at the half integers, 
+we are the farthest away possible from the "clean" case where $c$ is an exact integer. The new idea 
+is now to also use random cycle lengths, even though we don't have to if the only goal would be to 
+get the (average) cycle length right. Of course, we want to maintain an average cycle length of 
+$100$. In order to achieve that, it is clear that we additionally need to use cycle lengths above 
+_and_ below $100.0$. We need to use cycles of the 3 lengths $c_1 = 99, c_2 = 100, c_3 = 101$ in such
+a way that the mean cycle length is also exactly $100$ and the variance of the probability 
+distribution matches the variance that we would get in the worst case scenario, i.e. at the 
+half-integers. It is apparent by now that the general task to make this work is to derive a formula 
+or algorithm to compute the 3 desired cycle lengths $c_1, c_2, c_3$ along with their associated 
+probabilities $p_1, p_2, p_3$ of producing cycles of these lengths. The input is the given desired 
+mean cycle length $c$. As before, let $c_f = c - floor(c)$ denote the fractional part of our desired
+(mean) cycle length $c$. If$c_f = 0.5$, we expect to be in an edge case where from the 3 lengths 
+$c_1,c_2,c_3$ are only 2 actually used because one gets a probability of zero. This is our reference
+case and we need to produce the values $c_1,c_2,c_3$ and $p_1,p_2,p_3$ for the other cases in such a
+way, that the noise has always the same characteristics. We will use $c_2$ as our middle cycle 
+length and we will always have $c_1 = c_2 - 1$ and $c_3 = c_2 + 1$. In the case where $c_f < 0.5$, 
+we will need to use $c_2 = floor(c)$ and in the case where $c_f > 0.5$ we will need 
+$c_2 = floor(c) + 1$. That this is right can most easily be understood from an example. If we have a
+desired cycle length of $c = 100.5$ samples, we would use cycles of $100$ and $101$ samples with 
+equal probability, namely with probability $0.5$. When the mean cycle length is lower, say 
+$c = 100.3$, then we would expect to additionally also use cycles of length $99$ samples and when 
+the mean cycle length is higher, say $100.7$, then we would additionally have to use cycles of 
+length $102$. To summarize, for the 3 cycle lengths $c_1,c_2,c_3$ to be used, we use the following 
+rule (in pseudocode):
 ```
 ci = floor(c)         # Integer part of c
 cf = c - ci           # Fractional part of c

@@ -4896,6 +4896,21 @@ protected:
 //   would have to find a way to be able to share the data that can be shared between the voices 
 //   and have different data for data that should be different per voice. API-wise, we may need to
 //   pass the voice index to the processFrame call.
+//
+// - Maybe a better API would be allow the user to pass a callable object via a template parameter
+//   F which can be assigned to a "processFrame()" function
+//
+// - We may also want to have a function to process a whole block of samples rather than just a 
+//   single frame. This function may need an internal buffer. Maybe an implementation could look 
+//   like:
+//
+//     void processBlock(T* samples, int blockSize)
+//     {
+//        static const int bufSize = 8192;
+//        T buf[bufSize];
+//        int chunkSize = min(bufSize, blockSize * overSampleFactor);
+//        int numChunks = (blockSize * overSampleFactor) / chunkSize;
+//        ...
 
 
 

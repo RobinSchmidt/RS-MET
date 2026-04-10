@@ -66,8 +66,8 @@ int main(int argc, char* argv[])
   // Unit Tests:
 
   bool ok = true;
-  ok &= runUnitTestsRapt();
-  ok &= runUnitTestsRosic();
+  //ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
 
   // The allpass unit test currently fails because I changed the implementation of 
@@ -418,7 +418,7 @@ int main(int argc, char* argv[])
   //maxShortTimeRMS();
   //arrayRMS();
   //peakFinder();                    // find peaks with subsample precision
-  peakSmoother();
+  //peakSmoother();
   //zeroCrossingFinder();
   //zeroCrossingFinder2();
   //zeroCrossingFinder3();
@@ -643,7 +643,7 @@ int main(int argc, char* argv[])
   //sigmoidPrototypes();
   //sigmoidConvergenceRates();
   //sixticPositive();
-  hilbertDistortion();
+  //hilbertDistortion();
   //adHocTapeEmuIdeas();
   //tapeEmulation();                  // Jatin Chowdhury's tape hysteresis algorithm
 
@@ -704,7 +704,7 @@ int main(int argc, char* argv[])
   // Move them to a better place. Maybe to DelayExperiments.h/cpp
 
   // feedbackDelayNetwork();            // writes wave file
-  algoVerb();                        // writes wave file
+  //algoVerb();                        // writes wave file
 
 
 
@@ -771,8 +771,8 @@ int main(int argc, char* argv[])
 
   // Modal:
   //createInsertionSortSound();  // move somewhere else
-  createModalFilterExamples();
-  createModalFilterBankExamples(); // takes long
+  //createModalFilterExamples();
+  //createModalFilterBankExamples(); // takes long
   //createPiano1();
 
   // The new renering scripts for creating sample content for the sfz engine:
@@ -781,7 +781,7 @@ int main(int argc, char* argv[])
   //createSamplerWaveforms();
 
   // Older sample-map creations based on modal synthesis (they take long):
-  createBass1();
+  //createBass1();
   //createGong1();
   //createBell1();
   //createPluck1();
@@ -794,17 +794,18 @@ int main(int argc, char* argv[])
   //===============================================================================================
   // Modular:
 
-  //runModularUnitTests();             // MUST run before performance tests (or access violation)
-  //runModularPerformanceTests(true);  // produces a memleak unless we call clearRegisteredTypes() 
+  runModularUnitTests();             // MUST run before performance tests (or access violation)
+  //runModularPerformanceTests(true);  // Produces a memleak unless we call clearRegisteredTypes() 
   //testModularCodeGenerator();
-  //runModularInteractiveTests();  // triggers assert due to plotting code
-  romos::moduleFactory.clearRegisteredTypes(); // avoids memleak in unit tests
+  //runModularInteractiveTests();              // Triggers assert due to plotting code
+  romos::moduleFactory.clearRegisteredTypes(); // Avoids memleak in unit tests
 
   // important atomic modules for performance tests:
   // Biquad: pure code, atomic module, wired model
   // Phasor
 
   //runModularTests(); // we need to make a .h file with the declarations
+
 
 
   //DEBUG_HOOK;

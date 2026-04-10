@@ -323,6 +323,12 @@ Elements:
 https://github.com/elements-synth/elements
 -Spectral Wavetable Synthesizer where light generates sound. Materials with optical properties 
  shape harmonic spectra through physics simulation.
+ 
+RVRSE:
+https://github.com/SamuFL/rverse
+https://www.youtube.com/watch?v=1OWs-DZPdDo
+-Rise & Hit Designer
+-Seems to be built with AI
 
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
@@ -523,6 +529,13 @@ https://www.kvraudio.com/forum/viewtopic.php?t=628854
 QuasarCompressor
 https://github.com/zalthyrexor/QuasarCompressor
 -Compressor. Under construction.
+
+Scream:
+https://cure.audio/pages/scream
+https://github.com/Cure-Audio/Scream
+-"..distortion plugin inspired by the iconic 2010 era “Scream” sound..". 
+-I think, it emulates some filter/distortion unit called Scream from NI Massive that is good for 
+ creating dubstep like sounds. See: https://www.youtube.com/watch?v=gc467FHPEgE
 
 ----------------------------------------------------------------------------------------------------
 Analysis plugins

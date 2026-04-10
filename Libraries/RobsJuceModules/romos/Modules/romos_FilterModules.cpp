@@ -352,3 +352,16 @@ void LadderFilter::freeMemory()
   oldParameters = NULL;
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_4(LadderFilter);
+
+
+//=================================================================================================
+/*
+
+ToDo:
+
+- Add state variable filter and state variable filter designer paralleling the corresponding biquad
+  filter classes. Maybe the short name could be StVarFlt
+
+
+
+*/
