@@ -88,6 +88,8 @@ protected:
   virtual void connectTestModuleToInputFeederModules() { } // do nothing - avoid to connect the seed input
 };
 
+
+/*
 // Under construction:
 class PhasorPitchDitheredTest : public ProcessingTest
 {
@@ -96,6 +98,7 @@ public:
 protected:
   virtual void fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic);
 };
+*/
 
 
 

@@ -69,7 +69,7 @@ INLINE void Phasor::updatePhase(Phasor* phasor, double freq, int voiceIndex)
 void Phasor::resetVoiceState(int voiceIndex)
 {
   AtomicModule::resetVoiceState(voiceIndex);
-  phases[voiceIndex] = 0.0;  // introduce a startphase later (as GUI parameter)
+  phases[voiceIndex] = 0.0;  // ToDo: Introduce a startphase later (as GUI parameter)
 }
 void Phasor::allocateMemory()
 {

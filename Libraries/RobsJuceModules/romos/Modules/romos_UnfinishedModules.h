@@ -5,7 +5,7 @@
 // Under construction:
 class PhasorPitchDithered : public AtomicModule
 {
-  CREATE_COMMON_DECLARATIONS_3(PhasorPitchDithered);   // Ins: Freq, Min, Max
+  CREATE_COMMON_DECLARATIONS_1(PhasorPitchDithered);   // Ins: Freq
 public:
   virtual void resetVoiceState(int voiceIndex);
 protected:

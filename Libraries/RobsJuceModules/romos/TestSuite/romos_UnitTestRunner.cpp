@@ -44,9 +44,8 @@ bool UnitTestRunner::runProcessingTests()
   const char* testName = "ProcessingTests";
   printf("%s %s", testName, ":\n");
 
-
   /*
-  // Old:
+  // Old - can be removed at some (soon'ish) point:
 
   UnitTest* test;
   bool testsPassed = true;
@@ -85,8 +84,9 @@ bool UnitTestRunner::runProcessingTests()
   */
 
 
-  // New:
+  // New implementation. Should do the same thing in a much less verbose way:
 
+  // Helper function to run the test and then delete it and report the result to the caller:
   auto run = [](ProcessingTest* test)
   {
     bool passed = test->runTestAndPrintResultToConsole();
@@ -104,7 +104,7 @@ bool UnitTestRunner::runProcessingTests()
   ok &= run(new SubtractorTest);
   ok &= run(new UnitDelayTest);
   ok &= run(new NoiseGeneratorTest);
-  ok &= run(new PhasorPitchDitheredTest);           // Under construction
+  //ok &= run(new PhasorPitchDitheredTest);  // Test class under construction and currently commented out
   ok &= run(new WrappedAdderTest);
   ok &= run(new SumDiffProdTest);
   ok &= run(new WrappedSumDiffProdTest);

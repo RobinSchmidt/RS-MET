@@ -142,6 +142,7 @@ void NoiseGeneratorTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphon
 }
 
 
+/*
 // Under construction:
 PhasorPitchDitheredTest::PhasorPitchDitheredTest() : ProcessingTest("PhasorPitchDitheredTest")
 {
@@ -155,6 +156,7 @@ void PhasorPitchDitheredTest::fillDesiredOutputSignalArrays(bool testModuleIsPol
     // Not yet implemented
   }
 }
+*/
 
 
 

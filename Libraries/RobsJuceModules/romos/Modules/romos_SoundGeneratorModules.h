@@ -79,10 +79,22 @@ public:
     hasHeader = false;
   }
 };
-// ToDo: Let it have a 2nd output that is 0 most of the time, but 1.f at samples, when a reset
-// has occurred. The fractional part f (in 0..1) can be used to indicate the exact sub-sample
-// time-instant at which the reset occurred (is there a convention, how to interpret this in
-// max/msp, reaktor, etc? figure out)
+// ToDo: 
+// 
+// - Let it have a 2nd output that is 0 most of the time, but 1.f at samples, when a reset
+//   has occurred. The fractional part f (in 0..1) can be used to indicate the exact sub-sample
+//   time-instant at which the reset occurred (is there a convention, how to interpret this in
+//   max/msp, reaktor, etc? figure out)
+//
+// - Maybe it should have a "Reset" input that works as follows: Whenever it's in put is 1, reset
+//   the phase. When it's 0, do nothing. Maybe it could be a soft reset:For numbers between 0 and 1
+//   it resets partially. Basically, it would multiply it's phase state variable by 1-reset.
+//
+// - Maybe get rid of the Min, Max inputs and always produce the nomralized range 0..1. Requiring
+//   other ranges is not common enough to warrant inputs on an atomic module. If a user really 
+//   needs it, they can do the mapping themselves.
+//
+// - Document why SineOscillator is a friend or better yet: Maybe try to get rid of that.
 
 //-------------------------------------------------------------------------------------------------
 

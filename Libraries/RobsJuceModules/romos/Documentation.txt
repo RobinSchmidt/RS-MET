@@ -97,7 +97,15 @@ To add a new (atomic) module to the modular synthesis engine, the following step
   ModuleFactory::registerStandardModules(). To this function, you need to add a line 
   corresponding to you newly created module class
 
-- ...TBC... is there anything else to to? 
+- Maybe add a unit test for the new module to the test suite. This requires the following:
+
+  - Implement a suitable subclass of romos::ProcessingTest. See:
+    RS-MET/Libraries/RobsJuceModules/romos/TestSuite/romos_ConcreteProcessingTests.h
+
+  - Add a corresponding call to UnitTestRunner::runProcessingTests() in:
+    RS-MET/Libraries/RobsJuceModules/romos/TestSuite/romos_UnitTestRunner.cpp
+
+- ...TBC... is there anything else to to? Maybe we could optionally add a performance test?
 
 
 
