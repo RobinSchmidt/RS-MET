@@ -9,19 +9,10 @@ class PhasorPitchDithered : public AtomicModule
 public:
   virtual void resetVoiceState(int voiceIndex);
 protected:
-
-  //inline static void updatePhase(PhasorPitchDithered* phasor, double freq, int voiceIndex);
-
   virtual void allocateMemory();
   virtual void freeMemory();
-
-  //double *phases;
-  //friend class SineOscillator;
-  // ToDo: Maybe embedd a RAPT::rsPhasorPitchDithered<double> object. Or maybe we need an array of
-  // them? 
-
   RAPT::rsPitchDitherOsc<double>* oscs = nullptr;
-  bool rangeClosed = false;
+  bool rangeClosed = false;                            // ToDo: Make a GUI switch for that
 };
 class PhasorPitchDitheredTypeInfo : public ModuleTypeInfo
 {
