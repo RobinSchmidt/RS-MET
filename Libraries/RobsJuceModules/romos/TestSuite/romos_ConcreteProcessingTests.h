@@ -88,6 +88,16 @@ protected:
   virtual void connectTestModuleToInputFeederModules() { } // do nothing - avoid to connect the seed input
 };
 
+// Under construction:
+class PhasorPitchDitheredTest : public ProcessingTest
+{
+public:
+  PhasorPitchDitheredTest();
+protected:
+  virtual void fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic);
+};
+
+
 
 
 /** A container with 2 inputs and 3 outputs, computing the sum, difference and product of the 

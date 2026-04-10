@@ -130,8 +130,7 @@ void UnitDelayTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 
 
 
-NoiseGeneratorTest::NoiseGeneratorTest()
-  : ProcessingTest("NoiseGeneratorTest")
+NoiseGeneratorTest::NoiseGeneratorTest() : ProcessingTest("NoiseGeneratorTest")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::WHITE_NOISE);
   moduleToTest = romos::moduleFactory.createModule("WhiteNoise");
@@ -141,6 +140,23 @@ void NoiseGeneratorTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphon
   for(int v = 0; v < numVoicesToUse; v++)
     GenerateDesiredOutput::forWhiteNoiseUniform(numFramesToProcess, desiredOutputs[v][0], 0);
 }
+
+
+// Under construction:
+PhasorPitchDitheredTest::PhasorPitchDitheredTest() : ProcessingTest("PhasorPitchDitheredTest")
+{
+  moduleToTest = romos::moduleFactory.createModule("PhasorPitchDithered");
+}
+void PhasorPitchDitheredTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
+{
+  for(int v = 0; v < numVoicesToUse; v++)
+  {
+    //GenerateDesiredOutput::forPhasorPitchDithered(numFramesToProcess, desiredOutputs[v][0], 0);
+    // Not yet implemented
+  }
+}
+
+
 
 
 

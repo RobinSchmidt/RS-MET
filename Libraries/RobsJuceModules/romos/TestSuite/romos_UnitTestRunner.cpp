@@ -104,6 +104,7 @@ bool UnitTestRunner::runProcessingTests()
   ok &= run(new SubtractorTest);
   ok &= run(new UnitDelayTest);
   ok &= run(new NoiseGeneratorTest);
+  ok &= run(new PhasorPitchDitheredTest);           // Under construction
   ok &= run(new WrappedAdderTest);
   ok &= run(new SumDiffProdTest);
   ok &= run(new WrappedSumDiffProdTest);
@@ -129,14 +130,10 @@ bool UnitTestRunner::runProcessingTests()
 
   // ToDo: 
   //
-  // - Get rid of the verbosity by:
-  //    - Renaming "testsPassed" to "ok"
-  //    - Create a helper function "run()" that takes a pointer to ProcessingTest and returns a 
-  //      bool such that we can call it like:
+  // - Figure out and document for which atomic modules we do have a unit test and for which we 
+  //   don't. It seems to be incomplete. I don't see a test for the Phasor, SineOscillator, etc.
   // 
-  //        ok &= run( new Formula_N_1Test() );
-  //        ok &= run( new IdentityTest() );
-  //        // ...
+  // - Maybe sort the tests by category
 }
 
 bool UnitTestRunner::runContainerManipulationTests()

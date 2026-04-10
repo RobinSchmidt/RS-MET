@@ -1001,6 +1001,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\romos\Modules\romos_SoundGeneratorModules.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\romos\Modules\romos_UnfinishedModules.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\romos\TestSuite\AutomaticTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2797,6 +2800,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\romos\Modules\romos_ModulationModules.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\romos\Modules\romos_ModuleDefinitionMacros.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\romos\Modules\romos_SoundGeneratorModules.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\romos\Modules\romos_UnfinishedModules.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\romos\TestSuite\AutomaticTests.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\romos\TestSuite\InteractiveTests.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\romos\TestSuite\MiscTests.h"/>
