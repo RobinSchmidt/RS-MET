@@ -83,22 +83,22 @@ void FormulaModule_1_1::freeMemory()
 bool FormulaModule_1_1::isFormulaValid(const std::string& formulaToTest)
 {
   // Old:
-  //return trialEvaluator.setExpressionString(formulaToTest.c_str());
+  return trialEvaluator.setExpressionString(formulaToTest.c_str());
   // This code was used before discovering the crash in Liberty when using the formula "y=2x". 
   // Maybe we can revert to it someday when we figure out and fix what goes wrong there.
 
-  // New:
-  try 
-  {
-    bool ok = trialEvaluator.setExpressionString(formulaToTest.c_str());
-    return ok;
-  }
-  catch(...)
-  {
-    return false;
-  }
-  // This code was introduced to avoid the crash and recover from encountering the (invalid)
-  // formula "y=2x" more reasonably, i.e. without crashing.
+  //// New:
+  //try 
+  //{
+  //  bool ok = trialEvaluator.setExpressionString(formulaToTest.c_str());
+  //  return ok;
+  //}
+  //catch(...)
+  //{
+  //  return false;
+  //}
+  //// This code was introduced to avoid the crash and recover from encountering the (invalid)
+  //// formula "y=2x" more reasonably, i.e. without crashing.
 
   // ToDo:
   // 
