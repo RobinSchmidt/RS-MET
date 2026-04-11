@@ -330,6 +330,12 @@ https://www.youtube.com/watch?v=1OWs-DZPdDo
 -Rise & Hit Designer
 -Seems to be built with AI
 
+MonkSynth
+https://github.com/JonET/monksynth
+https://github.com/JonET/monksynth/releases
+-Monophonic vocal synthesizer that sounds like a monk chanting. Built using formant-wave-function 
+ (FOF) synthesis, inspired by the classic Delay Lama.
+
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
 
@@ -502,6 +508,9 @@ https://www.youtube.com/watch?v=sHRTu1yD5uU
 -Multiband Dynamics by Polarity
 -The source code seems to be not available yet but will probably be soon? Here are his other repos:
  https://github.com/polarity
+-...hmm - I think, initially he mentioned that should be open source, but it seems, he changed his
+ mind on this. ...too bad! :'-(
+
 
 Nine Strip
 https://github.com/blablack/nine-strip
@@ -536,6 +545,11 @@ https://github.com/Cure-Audio/Scream
 -"..distortion plugin inspired by the iconic 2010 era “Scream” sound..". 
 -I think, it emulates some filter/distortion unit called Scream from NI Massive that is good for 
  creating dubstep like sounds. See: https://www.youtube.com/watch?v=gc467FHPEgE
+
+Bilinear Audio:
+https://github.com/russellmcc/bilinear-audio
+https://www.russellmcc.com/bilinear-audio/
+-Collection of plug-ins written in Rust and TypeScript using the Conformal framework.
 
 ----------------------------------------------------------------------------------------------------
 Analysis plugins

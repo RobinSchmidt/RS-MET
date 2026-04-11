@@ -17,7 +17,6 @@ public:
   /** Returns the current state of the generator. */
   inline uint32_t getState() const { return state; }
 
-
   /** Returns a random value in the half-open unit interval [0,1). */
   inline T getSampleInUnitRange() { return T(getSampleRaw()) * (T(1)/T(modulus)); }
 
@@ -51,6 +50,7 @@ protected:
 
 };
 
+//=================================================================================================
 
 /** A simple noise generator based on the linear congruential method. It generates uniformly
 distributed random number in the range that you can set up via setRange. By default, the range is

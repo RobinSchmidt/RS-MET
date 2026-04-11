@@ -33,8 +33,9 @@ In addition to the priorities 1-5, we also use the following tags:
 
 [Q]  Questionable behavior which might in fact be correct/intended/expected and therefore not 
      strictly a bug but might be perceived as such. Maybe it's a design mistake.
-[F]  Fixed, not verified
-[V]  Fixed and verified
+[F]  Fixed, not yet verified, Maybe use F,U for fixed, unverified
+[V]  Fixed and verified, maybe use F,V for fixed, verified
+[W]  Workaround implemented. Maybe also use U- and V-versions of it
 
 For fixing a bug, the preferable workflow is to first write a unit test in the TestAppJURA project 
 that triggers and checks the buggy behavior programmatically and only *then* fixing it. This way, 
@@ -109,13 +110,22 @@ we build up our suite of unit tests along the way.
    Maybe it could also make sense to have a global "Gain" or "Volume" or "OutGain" parameter as 
    well in some sort of performance section of the GUI.
 
-  -[5] Insert a Formula module. In the entry field y = x, click into it and try to prepend a 2
+  -[W] Insert a Formula module. In the entry field y=x, click into it and try to prepend a 2
    to the x. Crash in the expression evaluator! In FormulaModule_1_1::isFormulaValid(), we have
    formulatoTest = "y=2x" and in the call to trialEvaluator.setExpressionString(), we trigger
    the crash! Interestingly, it doesn't happen when we first insert the * before the x and _then_
-   the 2 before it. Maybe we should put the call to trialEvaluator.setExpressionString() into a 
-   try-catch block. Unfortunately, ExprEval uses exceptions for error handling. I would very much
-   prefer error codes. 
+   the 2 before it. This situation throws an exception that is handled in
+   rosic::ExpressionEvaluator::parseExpression() by just reporting to the caller that the parsing
+   failed via the boolean return value. ..well - I now do have a work-around: In 
+   ExprEval::Parser::ParseRegion(), I now check the "pos" variable for being out of bounds and if 
+   it is, skip the "e.SetStart(m_tokens[pos].GetStart()); e.SetEnd(m_tokens[pos].GetEnd());" calls.
+   I think, this may be acceptable for the moment. I think, the worst thing to happen is that the 
+   exception handler will receive a somewhat misconfigured exception object. But since we currently
+   do not even look at this object anyway, this should have no effect. So, for the time being, I 
+   think we can live with that. It's a bit dirty but it should (hopefully) be safe. At some point,
+   we may want to investigate more thoroughly why the "pos" variable is out of bounds in the first 
+   place (and hopefully fix it). Maybe there is some deeper problem lurking. ..That's quiete likely
+   actually
 
   -[5] The "Poly" switch doesn't seem to have any effect.
 
