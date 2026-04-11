@@ -10,12 +10,7 @@ Inputs:
  none
 Outputs:
  0: the noise signal
-
-\todo
--include a shape parameter (number of added noise-gens - 2: triangular, etc.)
--include min/max parameters
--include (boolean) variance-normalization parameter (if true, divide output by sqrt(shape) before
-scaling and offsetting) */
+ */
 
 class WhiteNoise : public ModuleWithParameters
 {
@@ -41,6 +36,21 @@ public:
     hasHeader = false;
   }
 };
+// ToDo:
+//
+// - Maybe include a shape parameter (number of added noise-gens - 2: triangular, etc.). But maybe
+//   we should do that with a more spohisticated noise generator and keep this one here as simple
+//   as possible.
+// 
+// - Include min/max parameters...or maybe not.
+// 
+// - Include (boolean) variance-normalization parameter (if true, divide output by sqrt(shape) 
+//   before scaling and offsetting)
+//
+// - Maybe use RAPT::rsRandomGenerator.
+//
+// - Inttroduce a seed member variable. But not per voice - just one value. This should be a GUI
+//   parameter, not an input pin.
 
 //-------------------------------------------------------------------------------------------------
 

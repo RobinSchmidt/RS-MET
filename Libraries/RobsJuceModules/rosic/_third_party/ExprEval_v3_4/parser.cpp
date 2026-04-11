@@ -126,6 +126,7 @@ Node *Parser::ParseRegion(Parser::size_type start, Parser::size_type end)
   // Scan through tokens
   for(pos = start; pos <= end; pos++)
   {
+
     switch(m_tokens[pos].GetType())
     {
     case Token::TypeOpenParenthesis:
@@ -239,10 +240,15 @@ Node *Parser::ParseRegion(Parser::size_type start, Parser::size_type end)
       break;
     }
 
-    default: break;
+    default: 
+      break;
 
     }
   }
+
+  // Added by Robin Schmidt for debugging:
+  //RAPT::rsAssert(pos >= start && pos <= end);
+  // Hmm - this seems to occur often, so it's probably of.
 
 // plevel should be 0
   if(plevel != 0)
@@ -433,6 +439,22 @@ Node *Parser::ParseRegion(Parser::size_type start, Parser::size_type end)
   {
   // Unknown, syntax
     SyntaxException e;
+
+
+    // !!! BUG !!!
+    // Added by Robin Schmidt for debugging:
+    //RAPT::rsAssert(pos >= start && pos <= end);
+    RAPT::rsAssert(pos >= 0 && pos < m_tokens.size());
+    if(pos >= m_tokens.size())
+    {
+      throw(e);
+      return nullptr;
+    }
+    // This is a work-around, not a proper fix! We encounter this situation, when entering the 
+    // (invalid) formula "y=2x" in the formula module in Liberty. In this case, the index "pos" is
+    // apparently out of range, namely 1 position after the end of the m_tokens vector. We have
+    // pos=4 (with start=2, end=3).
+
 
     e.SetStart(m_tokens[pos].GetStart());
     e.SetEnd(m_tokens[pos].GetEnd());

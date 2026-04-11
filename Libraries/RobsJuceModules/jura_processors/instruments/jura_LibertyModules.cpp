@@ -560,13 +560,21 @@ void LibertyFormulaModuleEditor::rTextEditorTextChanged(RTextEditor& editor)
   ScopedLock scopedLock(*plugInLock);
   if(&editor == formulaEditor) {
     std::string newFormula = formulaEditor->getText().toStdString();
-    if(formula1In1OutModule->isFormulaValid(newFormula))    {
+    if(formula1In1OutModule->isFormulaValid(newFormula))
+    {
       formula1In1OutModule->setFormula(newFormula);
-      //formulaEditor->markTextAsInvalid(false);
+      //formulaEditor->markTextAsInvalid(false);  // Use a markTextAsValid() function
     }
     //else
     //  formulaEditor->markTextAsInvalid(true);
   }
+
+  // ToDo:
+  //
+  // - Uncomment the markTextAsInvalid() calls and verify their implementations. If the user has
+  //   entered an invalid formula, we want to somehow convey this by an alert. In FuncShaper,
+  //   the background of the text-entry field turns red. But maybe a red border would look better
+  //   and we should change that in FuncShaper, too? 
 }
 
 void LibertyFormulaModuleEditor::updateWidgetsFromModuleState()

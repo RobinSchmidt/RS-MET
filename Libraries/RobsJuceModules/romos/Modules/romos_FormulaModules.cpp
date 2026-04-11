@@ -84,6 +84,8 @@ bool FormulaModule_1_1::isFormulaValid(const std::string& formulaToTest)
 {
   // Old:
   //return trialEvaluator.setExpressionString(formulaToTest.c_str());
+  // This code was used before discovering the crash in Liberty when using the formula "y=2x". 
+  // Maybe we can revert to it someday when we figure out and fix what goes wrong there.
 
   // New:
   try 
@@ -95,12 +97,23 @@ bool FormulaModule_1_1::isFormulaValid(const std::string& formulaToTest)
   {
     return false;
   }
+  // This code was introduced to avoid the crash and recover from encountering the (invalid)
+  // formula "y=2x" more reasonably, i.e. without crashing.
 
-
-  // ToDo: We should put this call to setExpressionString() into a try-catch block. It sometimes 
-  // throws exceptions and when we don't cathc them, we get a crash! ...ok...done. But we still 
-  // get the crash. It seems to be an out-of-bounds access to a std::vector inside ExprEval. It
-  // occurs even before the execption is thrown!
+  // ToDo:
+  // 
+  // - We should put this call to setExpressionString() into a try-catch block. It sometimes 
+  //   throws exceptions and when we don't catch them, we get a crash! ...ok...done. But we still 
+  //   get the crash. It seems to be an out-of-bounds access to a std::vector inside ExprEval. It
+  //   occurs even before the execption is thrown! When entering "y=2x" in Liberty, in 
+  //   ExprEval::Parser::ParseRegion() it tries to access m_tokens[pos] with pos=4 but m_tokens has
+  //   only a length of 4, so it tries to access 1 position beyond the end.
+  //
+  // - It seems like even in the event that call to trialEvaluator.setExpressionString() throws,
+  //   we do _not_ end up in th catch block! Is the exception caught and handled at a lower level?
+  //   If so, we may get rid of the try/catch block again and revert to the (simpler and prettier)
+  //   "Old" code. Aha! Yes! the exception actually is handled already in 
+  //   rosic::ExpressionEvaluator::parseExpression()
 }
 
 bool FormulaModule_1_1::setFormula(const std::string& newFormula)

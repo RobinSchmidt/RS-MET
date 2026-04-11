@@ -115,7 +115,7 @@ we build up our suite of unit tests along the way.
    the crash! Interestingly, it doesn't happen when we first insert the * before the x and _then_
    the 2 before it. Maybe we should put the call to trialEvaluator.setExpressionString() into a 
    try-catch block. Unfortunately, ExprEval uses exceptions for error handling. I would very much
-   prefer error codes.
+   prefer error codes. 
 
   -[5] The "Poly" switch doesn't seem to have any effect.
 

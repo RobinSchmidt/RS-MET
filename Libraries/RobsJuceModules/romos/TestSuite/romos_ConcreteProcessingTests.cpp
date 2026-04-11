@@ -440,6 +440,14 @@ bool Formula_N_1Test::runTest()
   //formulaModule->setInputVariables("x: input, a: slope, b: y-intercept");
 
   return result;
+
+  // ToDo:
+  // 
+  // - Try to use the formula "y=2x". This causes a crash in ToolChain with Liberty. It's an 
+  //   invalid formula, so the desired behavior should be...yeah...what actually? Muted output? Or
+  //   maybe keep using the last valid formula that we encountered? Specify the desired behavior 
+  //   and test it here. Maybe using the last valid one would be more convenient for the user while
+  //   just muting the output may be easier to implement.
 }
 
 //void Formula_N_1Test::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)

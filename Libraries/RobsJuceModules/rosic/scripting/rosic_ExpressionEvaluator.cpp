@@ -122,14 +122,20 @@ bool ExpressionEvaluator::parseExpression()
   }
   catch( ExprEval::Exception &theException )
   {
-    theException.GetValue(); // dummy instruction to suppress 'unreferenced local variable' warning
+    theException.GetValue(); // Dummy instruction to suppress 'unreferenced local variable' warning
     mutex.unlock();
     return false;
   }
 
-  // no exception was caught, so the parsing was successful:
+  // No exception was caught, so the parsing was successful:
   mutex.unlock();
   return true;
+
+  // ToDo:
+  //
+  // - Try to get rid of the "dummy instruction". Maybe by just using a catch all block, i.e. one 
+  //   without a variable like catch(...). Or maybe use catch(ExprEval::Exception&).
+
 }
 
 double ExpressionEvaluator::evaluateExpression()
@@ -237,4 +243,16 @@ const char* ExpressionEvaluator::getExpressionString()
 {
   return expressionString;
 }
+*/
+
+//=================================================================================================
+/*
+
+ToDo:
+
+- Instead of using mutex.lock()/unlock, use scoped locks. The ExprEval engine may throw exceptions
+  and I think, we should take care to unlock the mutex in these cases, too. ToDo: Figure out and 
+  document what happens if we don't! Maybe we could get hangs in situations when exceptions are 
+  thrown?
+
 */
