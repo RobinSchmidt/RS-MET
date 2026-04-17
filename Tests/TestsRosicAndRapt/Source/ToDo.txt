@@ -119,6 +119,13 @@
   tend to think that among the suggestions above, the best is isStateValid(). It seems to be at 
   the sweet spot between descriptiveness and shortness.
 
+- For classes that can be parametrized with callables (like function pointers), use a consistent
+  scheme to name the setters. For example, in class rsBinaryTree, there are setters
+  setCompareFunction(), setSwapFunction(). Maybe the ...Function is a bit long. Maybe abbrevaite 
+  with Func. or maybe use naming conventions like setCompare(), setSwap() - but that may be 
+  ambiguous. Maybe setComparator(), setComparson(), setLess() and setSwapper() may be better. 
+  Hmm - maybe setLessFunc(), setSwapFunc() would be nice?
+
 - Maybe rename the libraries (and therefore, their namespaces). Maybe rosic should become RAMP
   which stands for Rob's Audio and Music Processors.
 

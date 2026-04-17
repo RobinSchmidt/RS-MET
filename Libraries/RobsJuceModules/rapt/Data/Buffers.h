@@ -389,6 +389,8 @@ ToDo:
  size_t searchFromFront...this may become relevant for optimizing the moving maximum filter
 -maybe factor out an rsDoubleEndedQueueView that just stores a pointer to an array somewhere
  ..but may that's not so useful after all
+-Document what happens when the user tries to push data into a full queue. 
+-Maybe allow to re-allocate at runtime by a setCapacity() (or similar) function.
 */
 
 // maybe make convenience subclasses rsQueue and rsStack - both datastructures have different
