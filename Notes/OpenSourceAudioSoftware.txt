@@ -539,6 +539,10 @@ QuasarCompressor
 https://github.com/zalthyrexor/QuasarCompressor
 -Compressor. Under construction.
 
+Spectral Compressor:
+https://github.com/robbert-vdh/spectral-compressor
+-FFT based compressor, I think
+
 Scream:
 https://cure.audio/pages/scream
 https://github.com/Cure-Audio/Scream

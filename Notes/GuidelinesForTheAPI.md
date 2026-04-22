@@ -19,7 +19,7 @@ Interface Considerations
     an interface consideration.
 
 - Maybe we should use nested namespaces like RAPT::Data, RAPT::Math, RAPT::Filters, etc. 
-  to get the functionality more ordered and also to render a better doxygen 
+  to get the functionality more ordered and also to render a better (more structured) doxygen 
   documentation.
 
 - We should anticipate using the C++20 module feature. Don't use it just yet (we want to 
@@ -126,7 +126,7 @@ Interface Considerations
   - Use `TPar` for the parameter type. May later be replaced by a concept "Parameter" or "Param".
 
   - Some other names: `TPix` for pixels, `TCoef` for coefficients, `TVal` for values, `TArg` for
-    function arguments, `Tx`, `Ty` for input and output types of functions  ...
+    function arguments, `Tx`, `Ty` or `TIn`, `TOut` for input and output types of functions  ...
 
 - I use `CamelCase`. My rationale for prefering `CamelCase` over `snake_case` is that the names tend
   to be shorter while the word separation via the capitalization is still obvious enough. The main
@@ -145,7 +145,8 @@ Interface Considerations
   If a class needs to compute a sine for some type `T`, I would just let it call `rsSin()` and
   provide a suitable explicit specialization of `rsSin()` for that type `T` and the templatized
   code of the class would then compile just fine when the class template is instantiated for type
-  `T`. ...TBC...
+  `T`. Of ocurse, I could also just overload `sin` but somehow it feels wrong to me to overload
+  standard function names with my own cutom implementations. ...TBC...
 
 - Class names 
 
@@ -177,13 +178,13 @@ Interface Considerations
   - The units (seconds, milliseconds, samples, Hertz, normalized radian freq omega) for parameters
     should be the same in all classes (dangerous change)
 
-  - In rapt, we should probably not deal with nay physical units at all and instead use normalized
-    units like samples or omega: $\omega = 2 \pi f / f_s$,  etc.
+  - In rapt, we should probably not deal with any physical units at all and instead use normalized
+    units like samples for time or omega: $\omega = 2 \pi f / f_s$ for frequencies,  etc.
 
 - Consistent use of `enum class` for choices. But that's kinda difficult for historic and 
   infrastructural reasons. Some mappings between choice parameter values and user facing 
   (automatable) parameters may rely on specific mappings to integers. We'll see. This should be
-  approached with great caution, if at all. Maybe new code should by deafult use an enum class and
+  approached with great caution, if at all. Maybe new code should by default use an enum class and
   we'll get some experience with how that works with automation and dropdown menus and when the data
   is in, we may make a decision about changing the older code as well.
 
@@ -215,7 +216,15 @@ Interface Considerations
     change would be really hard and dangerous. Maybe using signed integers has other advantages as
     well. For example, we could use different negative numbers for different error codes. Sometimes
     they are also more convenient when doing index arithmetic with them. Unsigned integers could
-    underflow and produce huge values when a subtraction can produce a negative result.
+    underflow and produce huge values when a subtraction can produce a negative result. Alhtough,
+    there is an idiom how to write decrementing for-loops with size_t at 5:13:
+    Why do Senior C++ Engineers use size_t over int?
+    https://www.youtube.com/watch?v=eEOdDECwlKM  
+    It goes: for(size_t i = v.size(); i-- > 0;) { /* Do Stuff */ }
+    ...But wait: Shouldn't we use --i or does that not matter? However, this idiom is certainly less
+    readable than for(int i = (int)v.size()-1; i >= 0; i--) { /* Do Stuff */ }
+    See also:
+    https://www.youtube.com/watch?v=GhtNQoo8XEA
 
   - Use get/set consistently. Bad: Matrix::eigenvalues, Good: Matrix::getEigenvalues
     ...but only for non-static member functions - for static ones -> no get
@@ -227,9 +236,9 @@ Interface Considerations
     assumption should be that the function is unsafe and we should annotate those that are
     realtime-safe.
 
-  - Use nouns like "getProduct" when the function returns an object (numbers qualify as well) but a
-    verb like "multiply" when the function performs some action on passed inputs like multiplying
-    array element-wise.
+  - Use nouns like `getProduct()` with "get" when the function returns an object (numbers qualify as
+    well) but a verb like `multiply()` when the function performs some action on passed inputs like
+    multiplying array element-wise.
 
   - Use abbreviations consistently in function names and their parameters. See below for a
     preliminary dictionary of used abbreviations and acronyms.
@@ -459,6 +468,7 @@ Component:       Comp  ,
 Compression:     Comp  ,
 Compute:         Comp  ,
 Context:         Ctx  ,
+Constant:        Const ,
 Continuous:      Cont  ,
 Cycle:           Cyc  ,
 Damping:         Damp, Dmp  ,
@@ -600,3 +610,8 @@ ColourSchemeComponent            ->   ColorSchemeComponent
 
 
 See also: https://github.com/RobinSchmidt/RS-MET/wiki/Standards
+
+
+Some other style guides:
+
+https://element.readthedocs.io/en/latest/developers/code-style.html
