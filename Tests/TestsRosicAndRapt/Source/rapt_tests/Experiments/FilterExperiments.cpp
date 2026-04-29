@@ -3402,8 +3402,30 @@ void shelfFilters()
   // from EngineersFilter. There, we can create Butterworth, elliptic, etc. shelvers.
 
   using Real = double;
+  using Vec  = std::vector<Real>;
+  using OPF  = rsOnePoleFilter<Real, Real>;
+  using SVF  = rsStateVariableFilter<Real, Real>;
+
+  // Setup:
+  Real sampleRate  = 44100.0;
+  Real shelfFreq   =  5000.0;
+  Real shelfGainDb =   +25.0;
+  int  numSamples  =    21;
+
+  // Intermediates:
+  Real shelfGain = rsDbToAmp(shelfGainDb);
+  int  N = numSamples;
+
+  // Create and set up 1st order high-shelf and obtain its impulse response:
+  OPF hs1;                                 // hs1 stands for high-shelf, 1st order
+  hs1.setMode(OPF::modes::HIGHSHELV_BLT);
+  hs1.setCutoff(shelfFreq);
+  hs1.setShelvingGain(shelfGain);
+  Vec h_hs1 = impulseResponse(hs1, N, 1.0);
 
 
+  // Plot results:
+  rsPlotVectors(h_hs1);
 }
 
 

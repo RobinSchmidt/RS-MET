@@ -70,7 +70,7 @@ Interface Considerations
    
     struct Params
     {
-      enum Type
+      enum Mode
       {
 	      bypass = 0,
 	      lowpass,
@@ -599,6 +599,24 @@ amplitude envelope to it (if that envelope is to be applied multiplicatively whi
 case). So, these two desiderata favor different decisions. So what should we do? Maybe provide two
 parameters. That would be redundant but it may indeed be an option. Maybe we could also apply a
 (linear) envelope to the dB-scaled volume. That may also work. ...Hmmm...
+
+Maybe enums and enum classes should start with uppercase, be singular and the entries should
+be lowercase. For example:
+
+enum class Mode 
+{ 
+  bypass = 0, 
+  lowpass, 
+  highpass,
+
+  // ... 
+  
+  numModes 
+};
+
+Rationale: We use upper camel case for class names (although the rs-prefix kind of hides it). 
+Class names are names for data types. In this sense, enum classes and enums are also data types, so
+they should follow this convention, I think.
 
 
 Some general renaming plans:

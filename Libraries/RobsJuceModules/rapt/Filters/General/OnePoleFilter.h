@@ -384,9 +384,20 @@ class rsOnePoleFilter : public rsFirstOrderFilterBase<TSig, TPar>
 public:
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Construction/Destruction */
+
+  /** Constructor. */
+  rsOnePoleFilter();
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Sets the sample-rate. */
+  void setSampleRate(TPar newSampleRate);
 
   /** This is an enumeration of the available filter modes. */
-  enum modes          // ToDo: rename to Mode
+  enum modes          // ToDo: Rename to Mode. Maybe turn into an enum class.
   {
     BYPASS = 0,
     LOWPASS_IIT,      // lowpass via impulse invariant transform
@@ -406,24 +417,13 @@ public:
   };
   // NMM maybe can also be called PMM for pointwise magnitude match
 
-
-  //-----------------------------------------------------------------------------------------------
-  /** \name Construction/Destruction */
-
-  /** Constructor. */
-  rsOnePoleFilter();
-
-  //-----------------------------------------------------------------------------------------------
-  /** \name Setup */
-
-  /** Sets the sample-rate. */
-  void setSampleRate(TPar newSampleRate);
-
   /** Chooses the filter mode. See the enumeration for available modes. */
   void setMode(int newMode);
+  // ToDo: Take a "Mode" rather than an int
 
   /** Sets the cutoff-frequency for this filter in Hz. */
   void setCutoff(TPar newCutoff);
+  // Maybe rename to setFrequency(). The term cutoff makes sense only for ...pass filters.
 
   /** This will set the time constant 'tau' for the case, when lowpass mode is chosen. This is
   the time, it takes for the impulse response to die away to 1/e = 0.368... or equivalently, the
@@ -433,9 +433,11 @@ public:
 
   /** Sets the gain factor for the shelving modes (this is not in decibels). */
   void setShelvingGain(TPar newGain);
+  // Rename to setShelfGain() or just setGain() or maybe setGainFactor()
 
   /** Sets the gain for the shelving modes in decibels. */
   void setShelvingGainInDecibels(TPar newGain);
+  // Rename to setGainDb
 
 
   //-----------------------------------------------------------------------------------------------
