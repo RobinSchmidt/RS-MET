@@ -3415,7 +3415,10 @@ void shelfFilters()
 
   // Intermediates:
   Real shelfGain = rsDbToAmp(shelfGainDb);
+  Real w = 2*PI*shelfFreq/sampleRate;
+  Real Q = sqrt(0.5);
   int  N = numSamples;
+
 
   //OPF ls1;
 
@@ -3436,8 +3439,20 @@ void shelfFilters()
   ls1.setShelvingGain(1.0/shelfGain);              // Invert gain for low-shelf
   Vec h_ls1 = impulseResponse(ls1, N, shelfGain);  // Compensate for gain inversion by global gain
 
+
+  // Now with the 2nd order shelfs implemented using the SVF:
+  Real A = sqrt(shelfGain);                        // Why the sqrt? That's not a good API! It
+  SVF hs2;                                         // violates the least astonishment principle!
+  hs2.setupHighShelf(w, Q, A);
+  Vec h_hs2 = impulseResponse(hs2, N, 1.0);
+
+  SVF ls2;
+  ls2.setupLowShelf(w, Q, 1.0/A);
+  Vec h_ls2 = impulseResponse(ls2, N, A*A);
+
   // Plot results:
-  rsPlotVectors(h_hs1, h_ls1);
+  //rsPlotVectors(h_hs1, h_ls1);
+  rsPlotVectors(h_hs2, h_ls2);
 
   SP sp;
   sp.setFftSize(2048);
@@ -3445,7 +3460,8 @@ void shelfFilters()
   sp.setNormalizationMode(SP::NormalizationMode::impulse);
   sp.setFreqAxisUnit(SP::FreqAxisUnits::hertz);
   sp.setLogFreqAxis(true);
-  sp.plotSpectra(N, &h_hs1[0], &h_ls1[0]);
+  //sp.plotSpectra(N, &h_hs1[0], &h_ls1[0]);
+  sp.plotSpectra(N, &h_hs2[0], &h_ls2[0]);
   // ToDo: Make a convenience function for that!
 
   
@@ -3460,6 +3476,10 @@ void shelfFilters()
   //   the low shelf filter. That required freq-scaling factor depends on the setting of shelfGain.
   //   If we there use 15 instead of 25, the factor doesn't work anymore.
   //
+  // - For the 2nd order SVF filters, we need to use A = sqrt(shelfGain). That's unexpected! I 
+  //   thought that A = shelfGain. That's an inconvenient API! Also, we need to use A*A rather than
+  //   just A itself for the renormalization of the low-shelf. That's also weird!
+  // 
   // 
   // Conclusions:
   // 
@@ -3474,7 +3494,12 @@ void shelfFilters()
   //
   // ToDo:
   // 
-  // - Try the SVF implementation.
+  // - Figure out why the gain for the SVF does not meet the expectation. Compare the results to 
+  //   the Cookbook RBJ implementation. Check the bell filter as well. Maybe change the API. Or 
+  //   maybe rename the A parameter to sqrtA. It's a less convenient parametrization, though. But 
+  //   maybe passing in A itself while changing the behavior to the desired one requires us to do
+  //   more computations in setup...() which would be not good! Maybe also compare it to the old 
+  //   SVF implementation.
   // 
   // - Try to achieve a bypass behavior by setting the shelving gain to zero.
   // 
@@ -3483,7 +3508,6 @@ void shelfFilters()
   //   Udo Zoelzer. Then we can also use RBJ for Robert Bristow Johnson, JOS for Julius Orion 
   //   Smith, etc.
 }
-
 
 
 template void simdFilter<float, 4>();
