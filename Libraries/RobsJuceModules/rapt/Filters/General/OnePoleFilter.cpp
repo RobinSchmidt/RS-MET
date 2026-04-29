@@ -3,10 +3,16 @@
 template<class TSig, class TPar>
 rsOnePoleFilter<TSig, TPar>::rsOnePoleFilter()
 {
-  shelvingGain = 1.0;
-  setSampleRate(44100.0);  // sampleRate = 44100 Hz by default
-  setMode      (0);        // bypass by default
-  setCutoff    (20000.0);  // cutoff = 20000 Hz by default
+  // New:
+  //calcCoeffs();
+  // ToDo: Maybe assign them directly instead of triggering a (pseudo) calculation
+  // ...actually, we don't need this at all.
+
+  //// Old:
+  //shelvingGain = 1.0;
+  //setSampleRate(44100.0);  // sampleRate = 44100 Hz by default
+  //setMode      (0);        // bypass by default
+  //setCutoff    (20000.0);  // cutoff = 20000 Hz by default
 }
 
 // Setup:

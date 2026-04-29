@@ -463,11 +463,11 @@ protected:
 
   /** \name Data */
 
-  // filter parameters:
-  TPar cutoff;
-  TPar shelvingGain;
-  TPar freqToOmega; // = 2*PI/sampleRate, conversion factor from physical to digital frequency
-  int  mode;
+  // Filter parameters:
+  TPar cutoff       = TPar(1000);       // 1 kHz cutoff.
+  TPar shelvingGain = TPar(1);          // Neutral gain.
+  TPar freqToOmega  = TPar(2*PI/44100); // 2*PI/sampleRate. Conversion factor from Hz to omega.
+  int  mode         = modes::BYPASS;
 
   //TPar sampleRate;
   //TPar sampleRateRec;  // reciprocal of the sampleRate 

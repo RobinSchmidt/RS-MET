@@ -3441,6 +3441,7 @@ void shelfFilters()
   rsPlotVectors(h_hs1, h_ls1);
   // Weird BUG! When we comment this plotting command out, we trigger a debug assertion in the code
   // _above_(!), namely in the constructor of ls1. That is absolutely crazy!
+  // ..FIXED!
 
   SP sp;
   sp.setFftSize(2048);
