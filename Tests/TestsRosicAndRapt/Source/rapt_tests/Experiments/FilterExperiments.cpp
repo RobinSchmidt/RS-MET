@@ -3405,16 +3405,19 @@ void shelfFilters()
   using Vec  = std::vector<Real>;
   using OPF  = rsOnePoleFilter<Real, Real>;
   using SVF  = rsStateVariableFilter<Real, Real>;
+  using SP   = SpectrumPlotter<Real>;
 
   // Setup:
   Real sampleRate  = 44100.0;
-  Real shelfFreq   =  5000.0;
+  Real shelfFreq   =  1000.0;
   Real shelfGainDb =   +25.0;
-  int  numSamples  =    21;
+  int  numSamples  =   101;
 
   // Intermediates:
   Real shelfGain = rsDbToAmp(shelfGainDb);
   int  N = numSamples;
+
+  //OPF ls1;
 
   // Create and set up 1st order high-shelf and obtain its impulse response:
   OPF hs1;                                 // hs1 stands for high-shelf, 1st order
@@ -3423,9 +3426,48 @@ void shelfFilters()
   hs1.setShelvingGain(shelfGain);
   Vec h_hs1 = impulseResponse(hs1, N, 1.0);
 
+  // Create and set up a 1st order low-shelf with which we try to replicate the output of the 
+  // high-shelf:
+  Real frqScl = 0.1;
+  OPF ls1;
+  ls1.setMode(OPF::modes::LOWSHELV_BLT);
+  ls1.setCutoff(frqScl * shelfFreq);
+  ls1.setShelvingGain(1.0/shelfGain);              // invert gain for low-shelf
+  Vec h_ls1 = impulseResponse(ls1, N, shelfGain);  // compensate for gain inversion by global gain
+
 
   // Plot results:
-  rsPlotVectors(h_hs1);
+  rsPlotVectors(h_hs1, h_ls1);
+
+  SP sp;
+  sp.setFftSize(2048);
+  sp.setSampleRate(sampleRate);
+  sp.setNormalizationMode(SP::NormalizationMode::impulse);
+  sp.setFreqAxisUnit(SP::FreqAxisUnits::hertz);
+  sp.setLogFreqAxis(true);
+  //sp.plotSpectra(N, &h_hs1[0], &h_ls1[0]);
+  // ToDo: Make a convenience function for that!
+
+  
+
+
+  // Observations:
+  //
+  // - The impulse responses h_hs1 and h_ls1 are very different even though we tried to set up the
+  //   high- and low-shelf filters in such a way that the magnitude response is supposed to be the
+  //   same.
+  //
+  //
+  // ToDo:
+  //
+  // - Plot magnitude responses of h_hs1 and h_ls1 to verify that they are indeed the same.
+  //   ...done. Nope! They are not! It looks like they have different frequencies. I think this may
+  //   be because the used design formulas do not define the frequency at the half-gain point. 
+  //   This is actually a pretty bad API design choice! I think, I have just blindly copied the
+  //   formulas from the DAFX book which uses bad conventions! ToDo: Maybe rename the enum entries
+  //   to something like HIGHSHELV_DAFX, etc. and introduce new entries with better conventions.
+  //   Maybe highShelfZoelzer etc. could be used or maybe UZ for Udo Zoelzer. Then we can also use
+  //   RBJ for Robert Bristow Johnson, JOS for Julius Orion Smith, etc.
 }
 
 
