@@ -131,6 +131,8 @@ ToDo:
   setting the mixing coeffs for LP,BP,HP.
 
 - Add tilt mode. See: https://github.com/zalthyrexor/QuasarEQ/blob/main/Source/zlth_dsp_filter.h
+  ...although, I think, it may be just a shelf together with a compensation gain that is minus half
+  the shelf's gain (in dB)
 
 - Try to figure out how to translate the mixing coefficients between the SVF variation that mixes
   input, bandpass and lowpass with the variation that mixes highpass, bandpass and lowpass (which 
@@ -252,6 +254,7 @@ ToDo:
     useful as sinusoidal oscillators. Maybe set up some tests with bandpasses with very high Q.
     Check what happens to the coefficients. Using setupBandpassSkirt(TPar w, TPar Q) with 
     infinite Q should lead to r = 0; c = g; s = 1/(1+g^2); That looks reasonable. Try it! Maybe
-    try also lowpass and highpass with infinite Q.
+    try also lowpass and highpass with infinite Q. Document what happens when the user passes 
+    infinite values for Q.
 
 */

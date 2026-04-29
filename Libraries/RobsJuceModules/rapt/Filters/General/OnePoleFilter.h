@@ -143,7 +143,9 @@ public:
   // It seems to create a (nontrivial) allpass for g == 1. Verify and document this! I would have
   // expected an identity filter. Are there any shelving designs that become a neutral filter when 
   // the gain is 0 dB? How about adding a scaled lowpass version of the signal to the original for 
-  // a low shelver and a scaled highpass version for a high shelver?
+  // a low shelver and a scaled highpass version for a high shelver? Maybe try to realize a 
+  // low-shelf with neutral behavior at 0 dB gain as a high-shelf (with inverted gain) together 
+  // with a global gain. Not sure, if that works - try it and document it!
 
   template<class T>
   static inline void coeffsHighShelfBLT(T w, T g, T* b0, T* b1, T* a1)
