@@ -3413,14 +3413,13 @@ void shelfFilters()
   Real shelfGainDb =   +25.0;
   int  numSamples  =   501;
 
+  //shelfGainDb = 0.0; // Test
+
   // Intermediates:
   Real shelfGain = rsDbToAmp(shelfGainDb);
   Real w = 2*PI*shelfFreq/sampleRate;
   Real Q = sqrt(0.5);
   int  N = numSamples;
-
-
-  //OPF ls1;
 
   // Create and set up 1st order high-shelf and obtain its impulse response:
   OPF hs1;                                 // hs1 stands for high-shelf, 1st order
@@ -3457,11 +3456,10 @@ void shelfFilters()
 
 
 
-
   // Plot results:
-  //rsPlotVectors(h_hs1, h_ls1);
-  //rsPlotVectors(h_hs2, h_ls2);
-  rsPlotVectors(h_hs2, h_ls2, h_bl2);
+  rsPlotVectors(h_hs1, h_ls1);
+  rsPlotVectors(h_hs2, h_ls2);
+  //rsPlotVectors(h_hs2, h_ls2, h_bl2);
 
   SP sp;
   sp.setFftSize(2048);
@@ -3469,9 +3467,9 @@ void shelfFilters()
   sp.setNormalizationMode(SP::NormalizationMode::impulse);
   sp.setFreqAxisUnit(SP::FreqAxisUnits::hertz);
   sp.setLogFreqAxis(true);
-  //sp.plotSpectra(N, &h_hs1[0], &h_ls1[0]);
-  //sp.plotSpectra(N, &h_hs2[0], &h_ls2[0]);
-  sp.plotSpectra(N, &h_hs2[0], &h_ls2[0], &h_bl2[0]);
+  sp.plotSpectra(N, &h_hs1[0], &h_ls1[0]);
+  sp.plotSpectra(N, &h_hs2[0], &h_ls2[0]);
+  //sp.plotSpectra(N, &h_hs2[0], &h_ls2[0], &h_bl2[0]);
   // ToDo: Make a convenience function for that!
 
   
@@ -3489,8 +3487,19 @@ void shelfFilters()
   // - For the 2nd order SVF filters, we need to use A = sqrt(shelfGain). That's unexpected! I 
   //   thought that A = shelfGain. That's an inconvenient API! Also, we need to use A*A rather than
   //   just A itself for the renormalization of the low-shelf. That's also weird!
-  // 
-  // 
+  //
+  // - When setting shelfGain = 0, the impulse responses are indeed perfect unit impulses for both
+  //   1st and 2nd order shelf filters. That seems to contradict my previous observation that a 
+  //   high shelf with zero gain produces a nontrivial allpass. What's going on? Figure out where
+  //   we observed that allpass behavior! It was in the context of using the high shelfs as 
+  //   damping filters in the context of the MultiCombAllpass experiments. If I remember correctly,
+  //   I wondered why the impulse response (of the whole loop) changed after inserting damping 
+  //   filters based on 1st order shelvers into the feedback loop while leaving them at neutral 
+  //   settings, i.e. zero gain. Investigating this, I found that at zero gain, they become allpass
+  //   rather than neutral - which surprised me a lot. I wrote a comment about this near
+  //   rsFirstOrderFilterBase::coeffsLowShelfBLT()
+  //
+  //
   // Conclusions:
   // 
   // - For the first order shelving filter designs implemented in rsOnePoleFilter, we cannot simply
@@ -3519,7 +3528,7 @@ void shelfFilters()
   //   Smith, etc.
   //
   // - Verify in the unit tests that the old and new SVF and the old cookbook biquad filters
-  //   produce the same results.
+  //   produce the same results. Look at stateVariableFilterUnitTest() and perhaps augment it.
 }
 
 
