@@ -3411,7 +3411,7 @@ void shelfFilters()
   Real sampleRate  = 44100.0;
   Real shelfFreq   =  1000.0;
   Real shelfGainDb =   +25.0;
-  int  numSamples  =   101;
+  int  numSamples  =   501;
 
   // Intermediates:
   Real shelfGain = rsDbToAmp(shelfGainDb);
@@ -3450,9 +3450,18 @@ void shelfFilters()
   ls2.setupLowShelf(w, Q, 1.0/A);
   Vec h_ls2 = impulseResponse(ls2, N, A*A);
 
+  // In addition, we ant to look at a bell filter SVF:
+  SVF bl2;
+  bl2.setupBell(w, Q, A);
+  Vec h_bl2 = impulseResponse(bl2, N, 1.0);
+
+
+
+
   // Plot results:
   //rsPlotVectors(h_hs1, h_ls1);
-  rsPlotVectors(h_hs2, h_ls2);
+  //rsPlotVectors(h_hs2, h_ls2);
+  rsPlotVectors(h_hs2, h_ls2, h_bl2);
 
   SP sp;
   sp.setFftSize(2048);
@@ -3461,7 +3470,8 @@ void shelfFilters()
   sp.setFreqAxisUnit(SP::FreqAxisUnits::hertz);
   sp.setLogFreqAxis(true);
   //sp.plotSpectra(N, &h_hs1[0], &h_ls1[0]);
-  sp.plotSpectra(N, &h_hs2[0], &h_ls2[0]);
+  //sp.plotSpectra(N, &h_hs2[0], &h_ls2[0]);
+  sp.plotSpectra(N, &h_hs2[0], &h_ls2[0], &h_bl2[0]);
   // ToDo: Make a convenience function for that!
 
   
@@ -3499,7 +3509,7 @@ void shelfFilters()
   //   maybe rename the A parameter to sqrtA. It's a less convenient parametrization, though. But 
   //   maybe passing in A itself while changing the behavior to the desired one requires us to do
   //   more computations in setup...() which would be not good! Maybe also compare it to the old 
-  //   SVF implementation.
+  //   SVF implementation. 
   // 
   // - Try to achieve a bypass behavior by setting the shelving gain to zero.
   // 
@@ -3507,6 +3517,9 @@ void shelfFilters()
   //   entries with better conventions. Maybe highShelfZoelzer etc. could be used or maybe UZ for 
   //   Udo Zoelzer. Then we can also use RBJ for Robert Bristow Johnson, JOS for Julius Orion 
   //   Smith, etc.
+  //
+  // - Verify in the unit tests that the old and new SVF and the old cookbook biquad filters
+  //   produce the same results.
 }
 
 

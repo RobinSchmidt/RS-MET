@@ -145,7 +145,7 @@ void rsStateVariableFilter<TSig, TPar>::setupMuted()
 template<class TSig, class TPar>
 void rsStateVariableFilter<TSig, TPar>::setupBypass()
 {
-  // H(s) = 1 
+  // H(s) = 1
 
   g  = 0;
   c  = 0;
@@ -161,7 +161,7 @@ void rsStateVariableFilter<TSig, TPar>::setupLowpass(TPar w, TPar Q)
   // H(s) = 1 / (s^2 + s/Q + 1)
 
   TPar r = 1/Q;
-  g  = tan(0.5*w); 
+  g  = tan(0.5*w);
   c  = g + r;
   s  = 1 / (1 + g*c);
   aL = 1;
@@ -175,7 +175,7 @@ void rsStateVariableFilter<TSig, TPar>::setupHighpass(TPar w, TPar Q)
   // H(s) = s^2 / (s^2 + s/Q + 1)
 
   TPar r = 1/Q;
-  g  = tan(0.5*w); 
+  g  = tan(0.5*w);
   c  = g + r;
   s  = 1 / (1 + g*c);
   aL = 0;
@@ -203,7 +203,7 @@ void rsStateVariableFilter<TSig, TPar>::setupBandpassPeak(TPar w, TPar Q)
   // H(s) = (s/Q) / (s^2 + s/Q + 1)   (constant 0 dB peak gain)
 
   TPar r = 1/Q;
-  g  = tan(0.5*w); 
+  g  = tan(0.5*w);
   c  = g + r;
   s  = 1 / (1 + g*c);
   aL = 0;
@@ -217,7 +217,7 @@ void rsStateVariableFilter<TSig, TPar>::setupBandstop(TPar w, TPar Q)
   // H(s) = (s^2 + 1) / (s^2 + s/Q + 1)
 
   TPar r = 1/Q;
-  g  = tan(0.5*w); 
+  g  = tan(0.5*w);
   c  = g + r;
   s  = 1 / (1 + g*c);
   aL = 1;
@@ -231,7 +231,7 @@ void rsStateVariableFilter<TSig, TPar>::setupAllpass(TPar w, TPar Q)
   // H(s) = (s^2 - s/Q + 1) / (s^2 + s/Q + 1)
 
   TPar r = 1/Q;
-  g  = tan(0.5*w); 
+  g  = tan(0.5*w);
   c  = g + r;
   s  = 1 / (1 + g*c);
   aL = 1;
@@ -245,7 +245,7 @@ void rsStateVariableFilter<TSig, TPar>::setupBell(TPar w, TPar Q, TPar A)
   // H(s) = (s^2 + s*(A/Q) + 1) / (s^2 + s/(A*Q) + 1)
 
   TPar r = 1/(Q*A);
-  g  = tan(0.5*w); 
+  g  = tan(0.5*w);
   c  = g + r;
   s  = 1 / (1 + g*c);
   aL = 1;
