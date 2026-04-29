@@ -3428,13 +3428,13 @@ void shelfFilters()
 
   // Create and set up a 1st order low-shelf with which we try to replicate the output of the 
   // high-shelf:
-  Real frqScl = 0.056;
+  //Real frqScl = 1.0;
+  Real frqScl = 0.056;  // Found by trial and error. Needed to match high-shelf.
   OPF ls1;
   ls1.setMode(OPF::modes::LOWSHELV_BLT);
   ls1.setCutoff(frqScl * shelfFreq);
-  ls1.setShelvingGain(1.0/shelfGain);              // invert gain for low-shelf
-  Vec h_ls1 = impulseResponse(ls1, N, shelfGain);  // compensate for gain inversion by global gain
-
+  ls1.setShelvingGain(1.0/shelfGain);              // Invert gain for low-shelf
+  Vec h_ls1 = impulseResponse(ls1, N, shelfGain);  // Compensate for gain inversion by global gain
 
 
   // Plot results:
@@ -3458,19 +3458,35 @@ void shelfFilters()
   //
   // - The impulse responses h_hs1 and h_ls1 are very different even though we tried to set up the
   //   high- and low-shelf filters in such a way that the magnitude response is supposed to be the
-  //   same.
+  //   same. With sampleRate = 44100, shelfFreq = 1000, shelfGain = 25, we need to introduce a
+  //   frqScl frequency-scaling factor of around 0.056 to get a close mathc between the high- and 
+  //   the low shelf filter. That required freq-scaling factor depends on the setting of shelfGain.
+  //   If we there use 15 instead of 25, the factor doesn't work anymore.
   //
-  //
-  // ToDo:
-  //
-  // - Plot magnitude responses of h_hs1 and h_ls1 to verify that they are indeed the same.
-  //   ...done. Nope! They are not! It looks like they have different frequencies. I think this may
+  // 
+  // Conclusions:
+  // 
+  // - For the first order shelving filter designs implemented in rsOnePoleFilter, we cannot simply
+  //   invert the gain and apply an overall compensation gain in order to turn a low-shelf into a
+  //   high-shelf and vice versa. It looks like they have different frequencies. I think this may
   //   be because the used design formulas do not define the frequency at the half-gain point. 
   //   This is actually a pretty bad API design choice! I think, I have just blindly copied the
-  //   formulas from the DAFX book which uses bad conventions! ToDo: Maybe rename the enum entries
-  //   to something like HIGHSHELV_DAFX, etc. and introduce new entries with better conventions.
-  //   Maybe highShelfZoelzer etc. could be used or maybe UZ for Udo Zoelzer. Then we can also use
-  //   RBJ for Robert Bristow Johnson, JOS for Julius Orion Smith, etc.
+  //   formulas from the DAFX book which uses bad conventions! 
+  // 
+  // 
+  //
+  // ToDo:
+  // 
+  // - Try the SVF implementation.
+  // 
+  // - Try to achieve a bypass behavior by setting the shelving gain to zero.
+  // 
+  // - Figure out what's up with the weird bug. Document the findings.
+  // 
+  // - Maybe rename the enum entries to something like HIGHSHELV_DAFX, etc. and introduce new 
+  //   entries with better conventions. Maybe highShelfZoelzer etc. could be used or maybe UZ for 
+  //   Udo Zoelzer. Then we can also use RBJ for Robert Bristow Johnson, JOS for Julius Orion 
+  //   Smith, etc.
 }
 
 
