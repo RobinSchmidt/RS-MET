@@ -3374,11 +3374,42 @@ void simdFilter()
   int dummy = 0;
 }
 
+void shelfFilters()
+{
+  // Under construction.
+
+  // We plot impulse-, magnitude- and phase responses of various shelving filter implementations 
+  // of different orders. Of interest are the following questions:
+  //
+  //   (1) Can a high-shelf be expressed as low-shelf together with an overall compensation gain 
+  //       and vice versa or are the (impulse- and phase-) responses different?
+  //
+  //   (2) Is a shelving filter with 0 dB gain equivalent to a wire, i.e. does nothing at all, 
+  //       or will it be an allpass and/or introduce a polarity switch?
+  //
+  // 
+  // Motivations:
+  // 
+  // I have previously noticed that a 1st order high-shelving filter with zero gain is actually 
+  // not neutral but rather imposes a nontrivial allpass response onto the signal. See comments
+  // rapt/Filters/General/OnePoleFilter.h/cpp. I want to figure out if we can use a low-shelf 
+  // instead (with inverted shelf-gain and renormalization via global gain) to solve this problem.
+  // This unwanted allpass character was discovered when I inserted a 1st order high-shelf as 
+  // damping filter into a feedback path of a Karplus-Strong like feedback loop. I expected it to
+  // do nothing when I leave the gain at 0. But it did something. I also want to figure this out 
+  // for the 2nd order RBJ shelving filters. I want to try the old cookbook biquad implementation 
+  // as well as the new SVF implementation. Later, we may also try this with higher order shelvers
+  // from EngineersFilter. There, we can create Butterworth, elliptic, etc. shelvers.
+
+  using Real = double;
+
+
+}
+
+
+
 template void simdFilter<float, 4>();
 // What is this?
-
-
-
 
 void subBandFilter()
 {

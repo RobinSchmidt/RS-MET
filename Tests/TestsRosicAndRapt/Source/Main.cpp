@@ -240,7 +240,8 @@ int main(int argc, char* argv[])
   //quantileFilter();
   //hilbertFilter();
   //simdFilter<float, 4>();  // doesn't work
-  //subBandFilter();
+  shelfFilters();            // Responses of low- and high-shelf filters
+  subBandFilter();
 
   // Physics:
   //doublePendulum(); // takes long

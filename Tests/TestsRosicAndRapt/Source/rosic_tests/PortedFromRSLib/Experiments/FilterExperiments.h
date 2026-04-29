@@ -81,6 +81,7 @@ void hilbertFilter();
 
 template<class T, int N> void simdFilter();
 
+void shelfFilters();
 void subBandFilter();
 
 
