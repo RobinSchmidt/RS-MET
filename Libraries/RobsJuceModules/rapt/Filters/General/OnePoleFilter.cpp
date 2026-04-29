@@ -1,19 +1,3 @@
-// Construction/Destruction:
-
-template<class TSig, class TPar>
-rsOnePoleFilter<TSig, TPar>::rsOnePoleFilter()
-{
-  // New:
-  //calcCoeffs();
-  // ToDo: Maybe assign them directly instead of triggering a (pseudo) calculation
-  // ...actually, we don't need this at all.
-
-  //// Old:
-  //shelvingGain = 1.0;
-  //setSampleRate(44100.0);  // sampleRate = 44100 Hz by default
-  //setMode      (0);        // bypass by default
-  //setCutoff    (20000.0);  // cutoff = 20000 Hz by default
-}
 
 // Setup:
 
@@ -169,5 +153,14 @@ ToDo:
 
 - Try to figure out how to morph between Lowpass,Flat,Highpass and LowShelf,Flat,HighShelf. Maybe
   naive mixing will work here.
+
+- Deprecate the class rsOnePoleFilter and replace it with a class rsFirstOrderFilter or 
+  rsOnePoleOneZero that avoids some of the mistakes of API design mistakes of rsOnePoleFilter.
+  It should be parametrized in terms of omega and possibly a linear gain. For shelvers, the omega
+  frequency should be the half-gain point rather than this weird Zoelzer/DAFX definition that we 
+  currently apparently use.
+
+- Maybe we should also implement a DF2 or TDF2 rather than a DF1 to get rid of one of the state
+  variables.
 
 */

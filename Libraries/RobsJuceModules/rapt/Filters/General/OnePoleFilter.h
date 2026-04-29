@@ -383,13 +383,6 @@ class rsOnePoleFilter : public rsFirstOrderFilterBase<TSig, TPar>
 
 public:
 
-
-  //-----------------------------------------------------------------------------------------------
-  /** \name Construction/Destruction */
-
-  /** Constructor. */
-  rsOnePoleFilter();
-
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 

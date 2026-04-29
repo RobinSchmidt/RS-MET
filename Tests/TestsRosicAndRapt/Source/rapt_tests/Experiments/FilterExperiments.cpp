@@ -3436,12 +3436,8 @@ void shelfFilters()
   ls1.setShelvingGain(1.0/shelfGain);              // Invert gain for low-shelf
   Vec h_ls1 = impulseResponse(ls1, N, shelfGain);  // Compensate for gain inversion by global gain
 
-
   // Plot results:
   rsPlotVectors(h_hs1, h_ls1);
-  // Weird BUG! When we comment this plotting command out, we trigger a debug assertion in the code
-  // _above_(!), namely in the constructor of ls1. That is absolutely crazy!
-  // ..FIXED!
 
   SP sp;
   sp.setFftSize(2048);
@@ -3481,8 +3477,6 @@ void shelfFilters()
   // - Try the SVF implementation.
   // 
   // - Try to achieve a bypass behavior by setting the shelving gain to zero.
-  // 
-  // - Figure out what's up with the weird bug. Document the findings.
   // 
   // - Maybe rename the enum entries to something like HIGHSHELV_DAFX, etc. and introduce new 
   //   entries with better conventions. Maybe highShelfZoelzer etc. could be used or maybe UZ for 
