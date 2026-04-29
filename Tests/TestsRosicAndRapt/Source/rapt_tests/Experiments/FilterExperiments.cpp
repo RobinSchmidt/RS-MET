@@ -3428,7 +3428,7 @@ void shelfFilters()
 
   // Create and set up a 1st order low-shelf with which we try to replicate the output of the 
   // high-shelf:
-  Real frqScl = 0.1;
+  Real frqScl = 0.056;
   OPF ls1;
   ls1.setMode(OPF::modes::LOWSHELV_BLT);
   ls1.setCutoff(frqScl * shelfFreq);
@@ -3436,8 +3436,11 @@ void shelfFilters()
   Vec h_ls1 = impulseResponse(ls1, N, shelfGain);  // compensate for gain inversion by global gain
 
 
+
   // Plot results:
   rsPlotVectors(h_hs1, h_ls1);
+  // Weird BUG! When we comment this plotting command out, we trigger a debug assertion in the code
+  // _above_(!), namely in the constructor of ls1. That is absolutely crazy!
 
   SP sp;
   sp.setFftSize(2048);
@@ -3445,7 +3448,7 @@ void shelfFilters()
   sp.setNormalizationMode(SP::NormalizationMode::impulse);
   sp.setFreqAxisUnit(SP::FreqAxisUnits::hertz);
   sp.setLogFreqAxis(true);
-  //sp.plotSpectra(N, &h_hs1[0], &h_ls1[0]);
+  sp.plotSpectra(N, &h_hs1[0], &h_ls1[0]);
   // ToDo: Make a convenience function for that!
 
   
