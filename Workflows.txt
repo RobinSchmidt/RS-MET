@@ -244,7 +244,8 @@ Coding:
   the bad ideas, etc. For this, I just go to a chatbot and start a conversation by asking a 
   (technical) question with possible follow-up questions. It often makes sense to then save the 
   conversation for later reference. It seems like Claude Sonnet is currently (in 2026) regarded as 
-  one of the best models for this purpose when it's about math, algorithms and programming.
+  one of the best models for this purpose when it's about math, algorithms and programming. See:
+  https://claude.ai/share/4d6c2630-30d6-4010-94d4-27a7e0225391  for an example
   
 
 Debugging:
@@ -260,3 +261,12 @@ Debugging:
   compile errors with error messages that leave me totally dumbfounded. In such cases, it often 
   helps to explain Copilot what I'm trying to achieve, what error messages I get and to ask for the
   correct C++ syntax for what I'm trying to do.
+  
+- Ask AI to look over some segment of code and find suspicious looking things. Can also be used to 
+  find wrong formulas in math papers and books
+  
+  
+Resources:  
+
+- Was ich nach 900 Stunden KI-Coding komplett anders mache
+  https://www.youtube.com/watch?v=V_pfdrvwh5w  

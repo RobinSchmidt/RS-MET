@@ -43,11 +43,11 @@ public:
   /** Enumeration of the available filter modes. */
   enum Mode
   {
-    FLAT = 0, 
+    FLAT = 0,                                             // Bypass (when reso is zero)
     LP_6, LP_12, LP_18, LP_24,                            // Lowpasses
     HP_6, HP_12, HP_18, HP_24,                            // Highpasses
     BP_6_6, BP_6_12, BP_6_18, BP_12_6, BP_12_12, BP_18_6, // Bandpasses
-    NUM_MODES
+    NUM_MODES                                             // Sentinel value
   };
   // ToDo:
   // -Add more modes: allpass1/2/3/4, notch(es), maybe peak if possible (perhaps requires gain 
