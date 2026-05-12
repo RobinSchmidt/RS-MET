@@ -35,6 +35,29 @@ code in this project is trivial because all the actual code is in the library.
 The other projects that can be built are mostly for development and testing.
 
 
+## Repository structure
+
+```
+RS-MET/
+├── Libraries/                # My own and 3rd party libraries.
+│   ├── JUCE/                 # Complete copy of the JUCE source tree.
+│   └── RobsJuceModules/      # My own libraries in the JUCE module format.
+│       ├── jura-framework/   # JUCE-based GUI and plugin framework.
+│       ├── jura-processors/  # Audio plugin components with GUI and infrastructure.
+│       ├── rapt/             # Rob's Audio Processing Templates. Low level DSP/math/algorithms.
+│       └── rosic/            # Rob's Signal Processing Classes. Higher level plugin DSP components.
+├── Products/
+│   ├── Applications/         # Standalone Apps
+│   │   └── TestAppJURA/      # App containing unit tests for the jura-... stuff.
+│   └── AudioPlugins/         # VST/AU/... plugins
+│       └── ToolChain/        # An all-in-one plugin. This is the MAIN GIG in this repo!
+└── Tests/
+    └── TestsRosicAndRapt/    # Tests for the algorithmic code in rapt and rosic.
+```
+
+
+
+
 Disclaimer:
 
 I'm currently in the process of restructuring the codebase, merging code from
