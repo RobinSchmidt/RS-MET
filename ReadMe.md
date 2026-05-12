@@ -46,13 +46,13 @@ RS-MET/                       # Root folder of the repo
 │       ├── jura-processors/  # My audio plugin components with GUI and infrastructure
 │       ├── rapt/             # Rob's Audio Processing Templates. Low level DSP/math/algorithms
 │       └── rosic/            # Rob's Signal Processing Classes. Higher level plugin DSP components
-├── Products/                 # JUCE based buildable targets. Most are for internal use
-│   ├── Applications/         # Standalone Apps
+├── Products/                 # JUCE-based buildable targets. Most are for internal use
+│   ├── Applications/         # Standalone GUI apps
 │   │   └── TestAppJURA/      # App containing unit tests for the jura-... stuff
 │   └── AudioPlugins/         # VST/AU/... plugins
 │       └── ToolChain/        # 👈 An all-in-one plugin. This is the MAIN GIG in this repo!
 └── Tests/                    # Tests for the algorithms (unit tests, benchmarks, experiments, ...)
-    └── TestsRosicAndRapt/    # Tests for rapt and rosic
+    └── TestsRosicAndRapt/    # Command line app with tests for rapt and rosic
 ```
 
 
