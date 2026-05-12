@@ -42,11 +42,11 @@ RS-MET/                       # Root folder of the repo
 ├── Libraries/                # My own and 3rd party libraries
 │   ├── JUCE/                 # Complete copy of the JUCE source tree
 │   └── RobsJuceModules/      # My own libraries in the JUCE module format
-│       ├── jura-framework/   # JUCE-based GUI and plugin framework
-│       ├── jura-processors/  # Audio plugin components with GUI and infrastructure
+│       ├── jura-framework/   # My JUCE-based GUI and plugin framework
+│       ├── jura-processors/  # My audio plugin components with GUI and infrastructure
 │       ├── rapt/             # Rob's Audio Processing Templates. Low level DSP/math/algorithms
 │       └── rosic/            # Rob's Signal Processing Classes. Higher level plugin DSP components
-├── Products/                 # JUCE based products / buildable targets
+├── Products/                 # JUCE based buildable targets. Most are for internal use
 │   ├── Applications/         # Standalone Apps
 │   │   └── TestAppJURA/      # App containing unit tests for the jura-... stuff
 │   └── AudioPlugins/         # VST/AU/... plugins
