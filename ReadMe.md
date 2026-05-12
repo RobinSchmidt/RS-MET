@@ -45,11 +45,11 @@ and rosic with the jura_framework based GUI code into actual plugins or sub-modu
 as oscillators, filters, effects, etc.).
 
 The most important project that can actually be built by itself is ToolChain. It is a plugin that is
-actually many plugins in one. You can create a chain of several sound processors (which i internally
+actually many plugins in one. You can create a chain of several sound processors (which I internally
 call AudioModules) that were previously distributed as plugins in their own right. Project
 management is just sooo much easier when everything is lumped into a single project. The code in
 this project is trivial because all the actual code is in the library. The other projects that can
-be built are mostly for development and testing.
+be built are mostly for internal use, i.e. research, development, testing, debugging, etc..
 
 
 Disclaimer
@@ -64,8 +64,3 @@ yet - i'm still working on it (we are pre version 1.0 at the moment). ...and if 
 special requirement that the library does not yet support - consider to hire me to add it. I'm
 generally available for freelance work on audio DSP algorithms with special interest in musical DSP.
 
-For a quick overview for what i'm planning for rapt library, you may take a 
-look at this horribly incomplete, outdated, skeletal document:
-https://github.com/RobinSchmidt/RS-MET/blob/master/Documentation/RAPT/LaTeX/UserManual/UserManual.pdf
-
-[<img src="https://api.gitsponsors.com/api/badge/img?id=71872950" height="20">](https://api.gitsponsors.com/api/badge/link?p=mvreueobscQU3dFsdnPYZk6pm7gpoXEvOxyq7Mk7DtAvagsBJAAs+ljXDz32zTf9)
