@@ -38,21 +38,21 @@ The other projects that can be built are mostly for development and testing.
 ## Repository structure
 
 ```
-RS-MET/                       # Root folder of the repo
-├── Libraries/                # My own and 3rd party libraries
-│   ├── JUCE/                 # Complete copy of the JUCE source tree
-│   └── RobsJuceModules/      # My own libraries in the JUCE module format
-│       ├── jura-framework/   # My JUCE-based GUI and plugin framework
-│       ├── jura-processors/  # My audio plugin components with GUI and infrastructure
-│       ├── rapt/             # Rob's Audio Processing Templates. Low level DSP/math/algorithms
-│       └── rosic/            # Rob's Signal Processing Classes. Higher level plugin DSP components
-├── Products/                 # JUCE-based buildable targets. Most are for internal use
-│   ├── Applications/         # Standalone GUI apps
-│   │   └── TestAppJURA/      # App containing unit tests for the jura-... stuff
-│   └── AudioPlugins/         # VST/AU/... plugins
-│       └── ToolChain/        # 👈 An all-in-one plugin. This is the MAIN GIG in this repo!
-└── Tests/                    # Tests for the algorithms (unit tests, benchmarks, experiments, ...)
-    └── TestsRosicAndRapt/    # Command line app with tests for rapt and rosic
+RS-MET/                        # Root folder of the repo
+├── Libraries/                 # My own and 3rd party libraries
+│   ├── JUCE/                  # Complete copy of the JUCE source tree
+│   └── RobsJuceModules/       # My own libraries in the JUCE module format
+│       ├── jura-framework/    # My JUCE-based GUI and plugin framework
+│       ├── jura-processors/   # My audio plugin components with GUI and infrastructure
+│       ├── rapt/              # Rob's Audio Processing Templates. Low level DSP/math/algorithms
+│       └── rosic/             # Rob's Signal Processing Classes. Higher level plugin DSP components
+├── Products/                  # JUCE-based buildable targets. Most are for internal use
+│   ├── Applications/          # Standalone GUI apps
+│   │   └── TestAppJURA/       # App containing unit tests for the jura-... stuff
+│   └── AudioPlugins/          # VST/AU/... plugins
+│       └── ToolChain/         # 👈 An all-in-one plugin. This is the MAIN GIG in this repo!
+└── Tests/                     # Tests for the algorithms (unit tests, benchmarks, experiments, ...)
+    └── TestsRosicAndRapt/     # Command line app with tests for rapt and rosic
 ```
 
 
