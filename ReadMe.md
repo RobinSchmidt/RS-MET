@@ -50,7 +50,7 @@ RS-MET/
 │   ├── Applications/         # Standalone Apps
 │   │   └── TestAppJURA/      # App containing unit tests for the jura-... stuff.
 │   └── AudioPlugins/         # VST/AU/... plugins
-│       └── ToolChain/        # An all-in-one plugin. This is the MAIN GIG in this repo!
+│       └── ToolChain/        # 👈 An all-in-one plugin. This is the MAIN GIG in this repo!
 └── Tests/
     └── TestsRosicAndRapt/    # Tests for the algorithmic code in rapt and rosic.
 ```
