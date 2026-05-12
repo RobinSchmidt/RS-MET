@@ -36,13 +36,14 @@ The "Libraries" folder contains a "RobsJuceModules" subfolder which contains a c
 Processing Templates) is a template based library with rather low level code for math, number 
 crunching and signal processing. It has no dependencies whatsoever (not even on juce_core). The
 rosic module (Rob's Signal Processing Classes), which depends only on rapt, is a bit more high-level
-and more convenient to use and even includes some framework'ish stuff (like thread-synchronization, 
-polyphonic voice-management, etc.) to facilitate easy integration of the code into plugins. rapt and
-rosic, although conforming to juce's module organization, do not depend in any way on juce. They can
-be used in their own right and/or combined with other frameworks. jura_framework is my juce-based
-GUI and plugin framework and jura_processors is the glue that ties together the DSP code from rapt
-and rosic with the jura_framework based GUI code into actual plugins or sub-modules of plugins (such
-as oscillators, filters, effects, etc.).
+and more convenient to use and even includes some framework'ish stuff that is out of the scope of 
+rapt (such as thread-synchronization, polyphonic voice-management, etc.) to facilitate easy
+integration of the code into plugins. The rapt and rosic libraries, although conforming to juce's
+module organization, do not depend in any way on juce. They can be used in their own right and/or
+combined with other frameworks. jura_framework is my juce-based GUI and plugin framework and
+jura_processors is the glue that ties together the DSP code from rapt and rosic with the
+jura_framework based GUI code into actual plugins or sub-modules of plugins (such as oscillators,
+filters, effects, etc.).
 
 The most important project that can actually be built by itself is ToolChain. It is a plugin that is
 actually many plugins in one. You can create a chain of several sound processors (which I internally

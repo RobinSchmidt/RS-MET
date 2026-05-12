@@ -10,7 +10,7 @@ to mitigate the problem. Some of the methods are: mip-mapping, bleps and oversam
 describes yet another one of those methods that I recently came up with. It's a way to replace the
 annoying aliasing artifacts with a much more palatable kind of noise. In my explanations of the 
 method, I will take a sawtooth wave as example but the method can be applied to other waveforms as 
-well. ...TBC...
+well.
 
 
 The Initial Idea
@@ -80,7 +80,7 @@ half-integers. It is apparent by now that the general task to make this work is 
 or algorithm to compute the 3 desired cycle lengths $c_1, c_2, c_3$ along with their associated 
 probabilities $p_1, p_2, p_3$ of producing cycles of these lengths. The input is the given desired 
 mean cycle length $c$. As before, let $c_f = c - floor(c)$ denote the fractional part of our desired
-(mean) cycle length $c$. If$c_f = 0.5$, we expect to be in an edge case where from the 3 lengths 
+(mean) cycle length $c$. If $c_f = 0.5$, we expect to be in an edge case where from the 3 lengths 
 $c_1,c_2,c_3$ are only 2 actually used because one gets a probability of zero. This is our reference
 case and we need to produce the values $c_1,c_2,c_3$ and $p_1,p_2,p_3$ for the other cases in such a
 way, that the noise has always the same characteristics. We will use $c_2$ as our middle cycle 
