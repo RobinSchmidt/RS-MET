@@ -49,7 +49,8 @@ actually many plugins in one. You can create a chain of several sound processors
 call AudioModules) that were previously distributed as plugins in their own right. Project
 management is just sooo much easier when everything is lumped into a single project. The code in
 this project is trivial because all the actual code is in the library. The other projects that can
-be built are mostly for internal use, i.e. research, development, testing, debugging, etc..
+be built are mostly for internal use, i.e. research, development, testing, debugging, etc. and
+should probably be ignored by people that are just interested in the ToolChain plugin.
 
 
 Disclaimer
