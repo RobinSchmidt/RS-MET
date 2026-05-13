@@ -1,11 +1,12 @@
 Welcome to the RS-MET Codebase
 ==============================
 
-This is the codebase on which RS-MET products are based. My main and most important codebase. If you
-want to use the code in an open source project, feel free to do so (but please notify me and give 
-proper credits and if you use any of the JUCE based code, be sure to adhere to its licensing scheme,
- too). For closed source projects, you may purchase a commercial license. I negotiate the conditions
-individually, based on the size of the product/company, the role of my code within it, etc.
+This is the codebase on which RS-MET (Robin Schmidt's Music Engineering Tools) products are based. 
+My main and most important codebase. If you want to use the code in an open source project, feel
+free to do so (but please notify me and give proper credits and if you use any of the JUCE based
+code, be sure to adhere to its licensing scheme, too). For closed source projects, you may purchase
+a commercial license. I negotiate the conditions individually, based on the size of the product 
+and/or company, the role of my code within it, etc.
 
 
 Repository Structure
