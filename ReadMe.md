@@ -68,3 +68,11 @@ yet - i'm still working on it (we are pre version 1.0 at the moment). ...and if 
 special requirement that the library does not yet support - consider to hire me to add it. I'm
 generally available for freelance work on audio DSP algorithms with special interest in musical DSP.
 
+
+<br><br><br><br>
+----------------------------------------------------------------------------------------------------
+
+#### ToDo
+
+- Maybe make a section about ToolChain (with 2nd order headline) with some screenshots. They could
+  be stored in a discussion thread in the GitHub repo in order to not bloat the repo itself.
