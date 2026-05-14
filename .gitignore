@@ -40,6 +40,7 @@
 *.7z
 *.DS_Store
 
+
 #---------------------------------------------------------------------------------------------------
 # Ignored folders:
 
@@ -50,17 +51,10 @@ Products/AudioPlugins/ToolChain/Builds/MacOSX/ToolChain.xcodeproj/project.xcwork
 Products/AudioPlugins/ToolChain/Builds/MacOSX/ToolChain.xcodeproj/xcuserdata/rob.xcuserdatad/xcschemes/xcschememanagement.plist
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2015/x64/
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/
-
-
-
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/enc_temp_folder/
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/.vs/
-
-
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2022/.vs/
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2022/x64/
-
-
 
 Products/Applications/AudioPluginHost/Builds/MacOSX/build/
 
@@ -69,7 +63,7 @@ Products/Applications/TestAppJURA/Builds/VisualStudio2019/x64/
 Tests/TestsRosicAndRapt/Builds/MacOSX/build/
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/enc_temp_folder/
-
+Tests/TestsRosicAndRapt/Builds/VisualStudio2019/Win32/
 Tests/TestsRosicAndRapt/Builds/VisualStudio2022/.vs/
 Tests/TestsRosicAndRapt/Builds/VisualStudio2022/x64/
 Tests/TestsRosicAndRapt/Builds/VisualStudio2022/enc_temp_folder/
@@ -83,27 +77,13 @@ Temp/
 #---------------------------------------------------------------------------------------------------
 # Ignored files:
 
-
-
-
-
-
-
-
-
-
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/testTextFile.txt
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/testTextFile2.txt
 
-Tests/TestsRosicAndRapt/Builds/VisualStudio2019/Win32/Debug x86-32Bit/ConsoleApp/TestsRosicAndRapt_ConsoleApp.vcxproj.FileListAbsolute.txt
-Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/Debug/ConsoleApp/TestsRosicAndRapt_ConsoleApp.vcxproj.FileListAbsolute.txt
 Tests/TestsRosicAndRapt/Builds/VisualStudio2022/testTextFile2.txt
 Tests/TestsRosicAndRapt/Builds/VisualStudio2022/testTextFile.txt
-
-
 
 
 #---------------------------------------------------------------------------------------------------
 # Unsorted (probably added via GitHub desktop GUI):
 
-# ToDo: Remove redundancies like files and folders whose enclosing folder is already ignored
