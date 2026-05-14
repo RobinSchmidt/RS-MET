@@ -514,11 +514,7 @@ void sinCosPerformance()
   dontOptimize(&ySinD);
   dontOptimize(&yCosD);
 
-
-
-  int dummy = 0;
-
-
+  //int dummy = 0;
 
   // Conclusions:
   // -rsSinCos1 is slower than using std::sin/cos, and the table gives results that can't be real

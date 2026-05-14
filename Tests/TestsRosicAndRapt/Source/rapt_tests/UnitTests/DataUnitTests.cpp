@@ -1180,20 +1180,11 @@ bool binaryHeapUnitTest()
   i = D2.replace(i, 2); // this brings it back to the small heap again
 
 
-
-
-
-
-
-
   // test the binary search tree:
 
   // maybe test with the small array 1,2,3 in all permutations, test also 1,2,2 and 1,1,2 in all
   // possible permuations ...and 1,1,1
   rsBinarySearchTree<int> T;
-
-
-
 
   A = Vec({50,20,80,10,30,60,100,5,15,25,40,55,70});
   T.setData(A);
@@ -1215,11 +1206,12 @@ bool binaryHeapUnitTest()
   A = Vec({50,20,80,10,30,60,100,5,15,25,40,55,70});
   T.setData(A);
   r &= T.isSearchTree();
-  for(int i = 1; i <= numTests; i++)
+  for(int n = 1; n <= numTests; n++)
   {
     int newIndex = ng.getSampleRaw() % H.getSize();
     int newValue = ng.getSampleRaw() % 100;
-    int k = T.replace(newIndex, newValue);
+    //int k = T.replace(newIndex, newValue);
+    int m = T.replace(newIndex, newValue);
     r &= T.isSearchTree();
     // does not work yet - i think the first thing that needs to be done after replacement is to
     // compare and possibly swap with the sibling? but no, if we replace a right node, and its

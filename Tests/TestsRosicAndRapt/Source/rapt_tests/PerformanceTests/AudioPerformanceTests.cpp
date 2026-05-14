@@ -150,7 +150,7 @@ void ladderPerformance()
   cycles = (double) counter.getNumCyclesSinceInit();
   printPerformanceTestResult("rsLadderFilter<rsFloat64x2, rsFloat64x2>", cycles/numSamples);
 
-  int dummy = 0;
+  // int dummy = 0;
 
   // Results:
   // double: with 1 / (1 + x^2) nonlinearity: 88 cycles, linear: 58 cycles, softClipHexic: 102
@@ -570,7 +570,5 @@ void samplerEnginePerformance()
   //  implemented block processing. Maybe it beahves differently in this case and block-processing 
   //  will be the relevant mode of operation in practice.
 
-
-
-  int dummy = 0;
+  //int dummy = 0;
 }
