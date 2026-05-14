@@ -43,18 +43,19 @@
 #---------------------------------------------------------------------------------------------------
 # Ignored folders:
 
-
 Misc/UnusedCode/RSLibAndTests/RSLibTests/GeneratedFiles/
 
-Products/AudioPlugins/ToolChain/Builds/VisualStudio2015/x64/Debug/
+Products/AudioPlugins/ToolChain/Builds/VisualStudio2015/x64/
 Products/AudioPlugins/ToolChain/Builds/MacOSX/build/
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/enc_temp_folder/
+Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/.vs/
+Products/AudioPlugins/ToolChain/Builds/VisualStudio2022/.vs/
+Products/AudioPlugins/ToolChain/Builds/VisualStudio2022/x64/
 
 Products/Applications/AudioPluginHost/Builds/MacOSX/build/
-Products/Applications/TestAppJURA/Builds/VisualStudio2019/x64/Debug/App/StateFileManagerTest/
-Products/Applications/TestAppJURA/Builds/VisualStudio2019/x64/Release/App/StateFileManagerTest/
 
+Products/Applications/TestAppJURA/Builds/VisualStudio2019/x64/
 
 Tests/TestsRosicAndRapt/Builds/MacOSX/build/
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/
@@ -64,8 +65,9 @@ Tests/TestsRosicAndRapt/Builds/VisualStudio2022/x64/
 Tests/TestsRosicAndRapt/Builds/VisualStudio2022/enc_temp_folder/
 
 
-Tests/Optimization/VS2019/x64/Debug/
-Tests/Optimization/VS2019/x64/Release/
+
+
+Tests/Optimization/VS2019/x64/
 
 # A folder that I sometimes create locally for some temporary throw-away files:
 Temp/
@@ -75,18 +77,9 @@ Temp/
 # Ignored files:
 
 
-Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/.vs/ToolChain/v16/Solution.VC.db-shm
-Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/.vs/ToolChain/v16/Solution.VC.db-wal
-Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/Debug/Standalone Plugin/Drums.xml
-Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/Release/Shared Code/ToolChain_SharedCode.vcxproj.FileListAbsolute.txt
-Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/Release/Standalone Plugin/ToolChain_StandalonePlugin.vcxproj.FileListAbsolute.txt
-Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/Release/VST/ToolChain_VST.vcxproj.FileListAbsolute.txt
-Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/Release/VST3/ToolChain_VST3.vcxproj.FileListAbsolute.txt
-Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/Debug/Shared Code/ToolChain_SharedCode.vcxproj.FileListAbsolute.txt
-Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/Debug/Standalone Plugin/ToolChain_StandalonePlugin.vcxproj.FileListAbsolute.txt
-Products/AudioPlugins/ToolChain/Builds/VisualStudio2022/.vs
-Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/.vs
-Products/AudioPlugins/ToolChain/Builds/VisualStudio2022/x64
+
+
+
 
 Products/Applications/TestAppJURA/Builds/VisualStudio2019/x64/Debug/App/TestAppJURA_App.vcxproj.FileListAbsolute.txt
 Products/AudioPlugins/ToolChain/Builds/MacOSX/ToolChain.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
