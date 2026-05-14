@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
   bool ok = true;
   ok &= runUnitTestsRapt();
   ok &= runUnitTestsRosic();
-  ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
+  //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
 
   // The allpass unit test currently fails because I changed the implementation of 
   // rsSparsePolynomial to accomodate for coming new infrastruture to handle inexact floating 
@@ -240,8 +240,8 @@ int main(int argc, char* argv[])
   //quantileFilter();
   //hilbertFilter();
   //simdFilter<float, 4>();  // doesn't work
-  shelfFilters();            // Responses of low- and high-shelf filters
-  subBandFilter();
+  //shelfFilters();            // Responses of low- and high-shelf filters
+  //subBandFilter();
 
   // Physics:
   //doublePendulum(); // takes long

@@ -265,9 +265,9 @@ Ty rsInterpolateLinear(Tx x1, Tx x2, Ty y1, Ty y2, Tx x)
 template<class T>
 void rsInterpolateLinear(const T *x, const T *y, int N, const T *xi, T *yi, int Ni)
 {
-  int n = 0;  // index into input data
-  int i = 0;  // index into interpolated data
-  T a, b;     // parameters of the line y = a*x + b
+  int n = 0;     // Index into input data
+  int i = 0;     // Index into interpolated data
+  T a(0), b(0);  // Parameters of the line y = a*x + b
 
   while(n < N-1)                        // Loop over the input datapoints
   {
@@ -332,7 +332,7 @@ void rsInterpolateSpline(const Tx *x, const Ty *y, Ty **yd, int N, int M,
   int n = 0;              // index into input data
   int i = 0;              // index into interpolated data
   int m;                  // index of the derivative
-  Tx scale, shift;        // scaler and shifter for the input value for the polynomial
+  Tx scale(1), shift(0);  // scaler and shifter for the input value for the polynomial
   Ty *a  = new Ty[2*M+2]; // polynomial coefficients
   Ty *y0 = new Ty[M+1];   // y0 values and derivatives passed to getHermiteCoeffsM
   Ty *y1 = new Ty[M+1];   // y1 values and derivatives passed to getHermiteCoeffsM
