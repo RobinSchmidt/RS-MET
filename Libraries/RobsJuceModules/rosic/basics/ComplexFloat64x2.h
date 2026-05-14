@@ -89,7 +89,13 @@ inline std::complex<rsFloat64x2> operator/(
 
   return std::complex<rsFloat64x2>(rsFloat64x2(re0, re1), rsFloat64x2(im0, im1));
 }
-// \todo: provide optimized versions when left or right operand is real
+// ToDo:
+// 
+// - Provide optimized versions when left or right operand is real
+// 
+// - Maybe switch to using rsComplex instead of std::complex because std::complex produces a
+//   compiler warning (std::complex is undefined for any type T except float, double, long double
+
 
 #ifdef _MSC_VER // doesn't compile with gcc
 /** Divides a complex number in place by another complex number. */

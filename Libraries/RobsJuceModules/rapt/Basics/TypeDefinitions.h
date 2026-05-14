@@ -85,12 +85,12 @@ struct rsEmptyType
 
   // An empty object is always equal to another empty object - and therefore also less-or-equal and
   // greater-or-equal. But is is never less, greater or unequal:
-  bool operator==(const rsEmptyType& b) const { return true;  }
-  bool operator!=(const rsEmptyType& b) const { return false; }
-  bool operator< (const rsEmptyType& b) const { return false; }
-  bool operator<=(const rsEmptyType& b) const { return true;  }
-  bool operator> (const rsEmptyType& b) const { return false; }
-  bool operator>=(const rsEmptyType& b) const { return true;  }
+  bool operator==(const rsEmptyType&) const { return true;  }
+  bool operator!=(const rsEmptyType&) const { return false; }
+  bool operator< (const rsEmptyType&) const { return false; }
+  bool operator<=(const rsEmptyType&) const { return true;  }
+  bool operator> (const rsEmptyType&) const { return false; }
+  bool operator>=(const rsEmptyType&) const { return true;  }
 
 };
 // The constructors are meant to be able to define default arguments for function calls and make
