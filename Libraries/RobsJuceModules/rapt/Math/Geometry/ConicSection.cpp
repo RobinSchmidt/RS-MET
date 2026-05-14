@@ -35,7 +35,7 @@ void rsConicSection<T>::getTangentCoeffs(T x, T y, T* a, T* b, T* c) const
 /*
 
 see this video for conics that go through given points or touch given lines and more:
-https://www.youtube.com/watch?v=X83vac2uTUs
+https://www.youtube.com/watch?v=X83vac2uTUs  Extraordinary Conics: The Most Difficult Math Problem I Ever Solved
 https://github.com/HackerPoet/Conics   code to accompany the video
 
 */
