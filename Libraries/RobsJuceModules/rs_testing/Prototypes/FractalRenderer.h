@@ -48,8 +48,10 @@ public:
   { stoppingCriterion = newFunc; }
 
   /** Sets the range for the x- and y-coordinates. */
-  void setCoordinateRange(double xMin, double xMax, double yMin, double yMax)
-  { this->xMin = xMin; this->xMax = xMax; this->yMin = yMin; this->yMax = yMax; }
+  void setCoordinateRange(double _xMin, double _xMax, double _yMin, double _yMax)
+  { this->xMin = _xMin; this->xMax = _xMax; this->yMin = _yMin; this->yMax = _yMax; }
+  // ToDo: Get rid of the underscores. Find better names for the parameters or members. Just 
+  // deleting the underscores gives compiler warnings. Maybe use newMinX, ... or just minX
 
   /** Sets the size (width and height) of the image to be rendered in pixels. */
   void setImageSize(int width, int height) { w = width; h = height; }
