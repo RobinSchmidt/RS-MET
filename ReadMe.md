@@ -30,7 +30,7 @@ RS-MET/                        # Root folder of the repo
 │   └── AudioPlugins/          # VST/AU/... plugins
 │       └── ToolChain/         # 👈 An all-in-one plugin. This is the MAIN GIG in this repo!
 └── Tests/                     # Tests for the algorithms (unit tests, benchmarks, experiments, ...)
-    └── TestsRosicAndRapt/     # Command line app with tests for rapt and rosic
+    └── TestsRosicAndRapt/     # Console app with tests for rapt and rosic
 ```
 
 The "Libraries" folder contains a "RobsJuceModules" subfolder which contains a couple of my own JUCE modules, conforming to the way, JUCE itself is organized into modules. The rapt module (Rob's Audio 
