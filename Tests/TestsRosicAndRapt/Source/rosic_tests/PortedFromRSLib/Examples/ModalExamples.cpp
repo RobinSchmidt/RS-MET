@@ -382,7 +382,7 @@ void createModalFilterBankExamples()
 
   // global parameters:
   double sampleRate      = 44100.0;
-  double phaseRandomness =     1.0;
+  //double phaseRandomness =     1.0;
   double truncationLevel =   -60.0;
   double fadeCycles      =     5.0;
 
@@ -616,7 +616,7 @@ void createPiano1()
 
   // ...
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -770,7 +770,7 @@ void createBell1()
   double timeScale = 0.07;
 
 
-  int N = (int) ceil(length * fs);  // number of samples;
+  //int N = (int) ceil(length * fs);  // number of samples;
   int numPartials = 12;
 
 
@@ -816,10 +816,7 @@ void createBell1()
   g.setTruncationLevel(-80);
   g.generateSampleMap(true);
 
-
-
-
-  int dummy = 0;
+  //int dummy = 0;
 
   // ToDo:
   // -Find the scale factor to convert to the attack/decay time constants as used by the modal bank

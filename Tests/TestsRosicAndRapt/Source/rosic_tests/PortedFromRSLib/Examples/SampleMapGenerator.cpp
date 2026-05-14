@@ -47,7 +47,7 @@ void rsCreateDirectoryIfNonExistent(const RSLib::rsString &path)
   }
 
   delete[] cString;
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 // move to RSLib, write UnitTests:
@@ -284,18 +284,18 @@ void SampleMapGenerator::generateSampleForKey(int key)
       // copy signal into temporary FFT buffer:
       rsAudioBuffer tmpBuf;
       tmpBuf.setSize(1, fftSize);
-      int n;
+      //int n;
       if( buffer.numChannels == 2 )
       {
-        for(n = 0; n < RAPT::rsMin(fftSize, buffer.numFrames); n++)
+        for(int n = 0; n < RAPT::rsMin(fftSize, buffer.numFrames); n++)
           tmpBuf.data[0][n] = SQRT2_INV * (buffer.data[0][n] + buffer.data[1][n]);
       }
       else
       {
-        for(n = 0; n < RAPT::rsMin(fftSize, buffer.numFrames); n++)
+        for(int n = 0; n < RAPT::rsMin(fftSize, buffer.numFrames); n++)
           tmpBuf.data[0][n] = buffer.data[0][n];
       }
-      for(n = RAPT::rsMin(fftSize, buffer.numFrames); n < fftSize; n++)
+      for(int n = RAPT::rsMin(fftSize, buffer.numFrames); n < fftSize; n++)
           tmpBuf.data[0][n] = 0.0;
       if( fftSize < buffer.numFrames )
       {
