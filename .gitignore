@@ -1,44 +1,73 @@
 #---------------------------------------------------------------------------------------------------
 # Ignored file formats:
 
-*.aux
-*.bbl
-*.blg
+# Media:
+*.pdf
+*.png
+*.ppm
+*.sfz
+*.wav
+
+# Build products:
+*.app
+*.component
 *.dll
 *.exe
+*.lib
+*.so
+
+# Build intermediates (C++):
+*.o
+*.obj
+
+# Build intermediates (LaTeX):
+*.aux
+*.auxlock
+*.bbl
+*.figlist
+*.log
+*.md5
+*.out
+*.toc
+
+# IDE generated (by Visual Studio):
 *.exp
 *.idb
 *.ilk
-*.lib
+*.ipch
 *.lastbuildstate
 *.layout
-*.log
-*.o
-*.obj
+*.opendb
 *.opensdf
 *.pdb
-*.ppm
 *.res
 *.sdf
-*.so
 *.suo
 *.tlog
 *.user
-*.wav
-*.pdf
-*.pk
-*.ipch
-*.opendb
-*.db
-*.png
-*.sfz
+
+# IDE generated (by XCode):
 *.xcworkspacedata
 *.xcuserstate
 *.xcscheme
 *.xcsettings
 *.xcbkptlist
-*.7z
+
+# Preview acceleration:
+*.db
 *.DS_Store
+*.pk
+
+# Misc/Unknown:
+*.blg
+*.layout
+*.7z
+
+# Temporary 
+*.synctex(busy)
+# These files appear only during (LaTeX?) builds and are automatically deleted when the build is 
+# finished. When comitting during a build phase they might get accidently added which we want to 
+# avoid.
 
 
 #---------------------------------------------------------------------------------------------------
@@ -47,8 +76,7 @@
 Misc/UnusedCode/RSLibAndTests/RSLibTests/GeneratedFiles/
 
 Products/AudioPlugins/ToolChain/Builds/MacOSX/build/
-Products/AudioPlugins/ToolChain/Builds/MacOSX/ToolChain.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
-Products/AudioPlugins/ToolChain/Builds/MacOSX/ToolChain.xcodeproj/xcuserdata/rob.xcuserdatad/xcschemes/xcschememanagement.plist
+
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2015/x64/
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/enc_temp_folder/
@@ -76,6 +104,13 @@ Temp/
 
 #---------------------------------------------------------------------------------------------------
 # Ignored files:
+
+Products/AudioPlugins/ToolChain/Builds/MacOSX/ToolChain.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+Products/AudioPlugins/ToolChain/Builds/MacOSX/ToolChain.xcodeproj/xcuserdata/rob.xcuserdatad/xcschemes/xcschememanagement.plist
+# ToDo: Check if we can ignore the whole folders:
+# ...ToolChain.xcodeproj/project.xcworkspace/
+# ...ToolChain.xcodeproj/xcuserdata/
+# I think that all subfolders of ..ToolChain.xcodeproj/ can be ignored. Check that and if so, do it.
 
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/testTextFile.txt
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/testTextFile2.txt
