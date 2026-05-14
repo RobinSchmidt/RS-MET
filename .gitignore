@@ -1,3 +1,6 @@
+#---------------------------------------------------------------------------------------------------
+# Ignored file formats:
+
 *.aux
 *.bbl
 *.blg
@@ -24,16 +27,45 @@
 *.wav
 *.pdf
 *.pk
-Misc/UnusedCode/RSLibAndTests/RSLibTests/GeneratedFiles
-Products/AudioPlugins/ToolChain/Builds/VisualStudio2015/x64/Debug/
-Temp/
-
 *.ipch
 *.opendb
 *.db
-Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/Debug/ConsoleApp/TestsRosicAndRapt_ConsoleApp.vcxproj.FileListAbsolute.txt
 *.png
 *.sfz
+*.xcworkspacedata
+*.xcuserstate
+*.xcscheme
+*.xcsettings
+*.xcbkptlist
+*.7z
+
+#---------------------------------------------------------------------------------------------------
+# Ignored folders:
+
+
+Misc/UnusedCode/RSLibAndTests/RSLibTests/GeneratedFiles/
+
+Products/AudioPlugins/ToolChain/Builds/VisualStudio2015/x64/Debug/
+Products/AudioPlugins/ToolChain/Builds/MacOSX/build/
+Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/
+Products/Applications/AudioPluginHost/Builds/MacOSX/build/
+
+Temp/
+
+Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/
+Tests/TestsRosicAndRapt/Builds/MacOSX/build/
+
+
+
+
+#---------------------------------------------------------------------------------------------------
+# Ignored files:
+
+
+.DS_Store
+
+Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/Debug/ConsoleApp/TestsRosicAndRapt_ConsoleApp.vcxproj.FileListAbsolute.txt
+
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/.vs/ToolChain/v16/Solution.VC.db-shm
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/.vs/ToolChain/v16/Solution.VC.db-wal
 Products/.DS_Store
@@ -43,35 +75,28 @@ Products/AudioPlugins/TestPluginJUCE/.DS_Store
 Products/AudioPlugins/ToolChain/.DS_Store
 Products/AudioPlugins/ToolChain/Builds/.DS_Store
 Products/AudioPlugins/TestPluginJUCE/Builds/.DS_Store
-Products/AudioPlugins/ToolChain/Builds/MacOSX/build/
-*.xcworkspacedata
-*.xcuserstate
-*.xcscheme
-*.xcsettings
-*.xcbkptlist
+
 Products/AudioPlugins/ToolChain/Builds/MacOSX/.DS_Store
 Tests/.DS_Store
 Tests/TestsRosicAndRapt/.DS_Store
 Tests/TestsRosicAndRapt/Builds/.DS_Store
 Tests/TestsRosicAndRapt/Builds/MacOSX/.DS_Store
-Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/
-Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/
-.DS_Store
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/testTextFile.txt
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/testTextFile2.txt
-Tests/TestsRosicAndRapt/Builds/MacOSX/build/
+
+
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/Debug/Standalone Plugin/Drums.xml
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/Release/Shared Code/ToolChain_SharedCode.vcxproj.FileListAbsolute.txt
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/Release/Standalone Plugin/ToolChain_StandalonePlugin.vcxproj.FileListAbsolute.txt
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/Release/VST/ToolChain_VST.vcxproj.FileListAbsolute.txt
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/Release/VST3/ToolChain_VST3.vcxproj.FileListAbsolute.txt
-Products/Applications/AudioPluginHost/Builds/MacOSX/build/
+
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/Debug/Shared Code/ToolChain_SharedCode.vcxproj.FileListAbsolute.txt
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/Debug/Standalone Plugin/ToolChain_StandalonePlugin.vcxproj.FileListAbsolute.txt
 Products/Applications/TestAppJURA/Builds/VisualStudio2019/x64/Debug/App/TestAppJURA_App.vcxproj.FileListAbsolute.txt
 Products/AudioPlugins/ToolChain/Builds/MacOSX/ToolChain.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
 Products/AudioPlugins/ToolChain/Builds/MacOSX/ToolChain.xcodeproj/xcuserdata/rob.xcuserdatad/xcschemes/xcschememanagement.plist
-*.7z
+
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/Release/ConsoleApp/TestsRosicAndRapt_ConsoleApp.vcxproj.FileListAbsolute.txt
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/Release/ConsoleApp/TestsRosicAndRapt_ConsoleApp.vcxproj.FileListAbsolute.txt
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/Release/ConsoleApp/TestsRosicAndRapt_ConsoleApp.vcxproj.FileListAbsolute.txt
@@ -96,3 +121,7 @@ Products/AudioPlugins/ToolChain/Builds/VisualStudio2022/x64/Debug/Standalone Plu
 Tests/TestsRosicAndRapt/Builds/VisualStudio2022/testTextFile2.txt
 Tests/TestsRosicAndRapt/Builds/VisualStudio2022/testTextFile.txt
 /Tests/TestsRosicAndRapt/Builds/VisualStudio2022/enc_temp_folder
+
+
+#---------------------------------------------------------------------------------------------------
+# Unsorted (probably added via GitHub desktop GUI):
