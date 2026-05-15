@@ -267,8 +267,8 @@ void SampleMapGenerator::generateSampleForKey(int key)
   rsScale(buffer.dataFlat, buffer.getSize(), 1.0/max);
 
   // write buffer to wave-file:
-  RSLib::rsString path = outputDirectory + getSampleRelativePath(key);
-  rsWriteToWaveFile(path, buffer, (int) sampleRate, numBits);
+  RSLib::rsString smpPath = outputDirectory + getSampleRelativePath(key);
+  rsWriteToWaveFile(smpPath, buffer, (int) sampleRate, numBits);
 
 
 
@@ -335,8 +335,8 @@ void SampleMapGenerator::generateSampleForKey(int key)
       rsScale(tmpBuf.dataFlat, tmpBuf.getSize(), 1.0/max);
 
       // write ambience buffer to wave-file:
-      RSLib::rsString path = outputDirectory + getAmbienceRelativePath(key);
-      rsWriteToWaveFile(path, tmpBuf, (int) sampleRate, numBits);
+      RSLib::rsString ambPath = outputDirectory + getAmbienceRelativePath(key);
+      rsWriteToWaveFile(ambPath, tmpBuf, (int) sampleRate, numBits);
 
       delete[] mag;
       delete[] phs;

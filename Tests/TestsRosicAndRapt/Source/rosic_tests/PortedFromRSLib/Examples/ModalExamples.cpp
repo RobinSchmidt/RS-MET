@@ -764,9 +764,9 @@ void createBell1()
 {
 
 
-  int    fs        = 44100;   // sample rate
+  //int    fs        = 44100;   // sample rate
   int    key       = 74;      // D5 = 74 as MIDI note number
-  double length    = 3.0;     // length in seconds
+  //double length    = 3.0;     // length in seconds
   double timeScale = 0.07;
 
 

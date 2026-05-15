@@ -101,7 +101,7 @@ void romos::AtomicModule::setNumAudioOutputs(int newNumber)
 //-----------------------------------------------------------------------------------------------------------------------------------------    
 // inquiry about pins:
 
-rosic::rsString AtomicModule::getPinName(int kind, int direction, int pinIndex) const
+rosic::rsString AtomicModule::getPinName(int /*kind*/, int direction, int pinIndex) const
 {
   if( direction == romos::INCOMING )
     return audioInputNames.at(pinIndex);
@@ -115,8 +115,10 @@ rosic::rsString AtomicModule::getPinName(int kind, int direction, int pinIndex) 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // others:
 
-void AtomicModule::addAudioInput(const char* shortName, const char* longName, 
-  const char* description)
+void AtomicModule::addAudioInput(
+  const char* shortName, 
+  const char* /*longName*/,
+  const char* /*description*/)
 {
   rosic::appendElement(audioInputNames,        rosic::rsString(shortName));
   //rosic::appendElement(audioInputLongNames,    rosic::rsString(longName));
@@ -166,7 +168,7 @@ void romos::AtomicModule::deleteAudioInput(int index)
   */
 }
 
-void AtomicModule::deleteAudioOutput(int index)
+void AtomicModule::deleteAudioOutput(int /*index*/)
 {
   DEBUG_BREAK;
 
@@ -320,7 +322,7 @@ void ModuleProxy::mapApparentSourceToProcessingSource(Module * &sourceModule, in
     sourceModule         = inputPins[0].sourceModule;
     sourceOutputPinIndex = inputPins[0].outputIndex;
     sourceModule->mapApparentSourceToProcessingSource(sourceModule, sourceOutputPinIndex);
-    int dummy = 0;
+    //int dummy = 0;
   }
   else
   {
@@ -328,7 +330,9 @@ void ModuleProxy::mapApparentSourceToProcessingSource(Module * &sourceModule, in
   }
 }
  
-void ModuleProxy::mapProcessingSourceToSourceApparent(Module * &sourceModule, int &sourceOutputPinIndex)
+void ModuleProxy::mapProcessingSourceToSourceApparent(
+  Module*& /*sourceModule*/,
+  int& /*sourceOutputPinIndex*/)
 {
   DEBUG_BREAK; // not yet implemented
 }
