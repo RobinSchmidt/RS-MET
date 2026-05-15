@@ -71,11 +71,7 @@ double getCyclesPerSampleBlockWise(T &module,
   return minCycles / numSamples;
 }
 
-
-
-
-
-void testModalFilter3(std::string &reportString)
+void testModalFilter3(std::string& /*reportString*/)
 {
   double fs  = 44100;  // samplerate in Hz
   double ta  = 0.1;    // decay time in seconds
@@ -141,7 +137,7 @@ void testModalFilter3(std::string &reportString)
   */
 }
 
-void testModalFilterBank(std::string &reportString)
+void testModalFilterBank(std::string& /*reportString*/)
 {
   double sampleRate = 44100.0;  // samplerate in Hz
   double decay      = 0.5;      // decay time constant in seconds
@@ -178,6 +174,5 @@ void testModalFilterBank(std::string &reportString)
     getCyclesPerSampleBlockWise(mfb, numSamples, 5, blockSize) / numPartials;
   printPerformanceTestResult("  blockwise:", cyclesPerSampleBlockWise);
 
-
-  int dummy = 0;
+ // int dummy = 0;
 }

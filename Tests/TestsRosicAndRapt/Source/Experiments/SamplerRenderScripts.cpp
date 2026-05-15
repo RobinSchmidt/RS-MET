@@ -332,7 +332,7 @@ void renderSweepBassdrums(int sampleRate)
   render("SweepBassdrum3_2.wav", 2.0, 0.2);
 
 
-  int dummy = 0;
+  //int dummy = 0;
 
   // ToDo:
   // -Add an envelope for the quantization, use functionrsQuantize (or was it rsQuant)...hmmm...
@@ -535,7 +535,7 @@ void createMiscSamples()
   //  comb-filtering artifacts when layering several shifted copies.
 
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 // maybe rename to renderBrownZap
@@ -735,5 +735,5 @@ void createSamplerWaveforms()
   // -[Done?] Write the different rendered levels to wavefiles with a meaningfully formatted way, 
   //  such as Saw_K21 for the w2048 wave.
 
-  int dummy = 0;
+  //int dummy = 0;
 }

@@ -7,7 +7,7 @@ std::string toString(int n)
 }
 */
 
-void testSincInterpolator(std::string &reportString, double ratio, int sincLength)
+void testSincInterpolator(std::string& /*reportString*/, double ratio, int sincLength)
 {
   int    xN = 10000;                // number of samples in input signal
   int    yN = (int) ceil(xN/ratio); // number of output samples

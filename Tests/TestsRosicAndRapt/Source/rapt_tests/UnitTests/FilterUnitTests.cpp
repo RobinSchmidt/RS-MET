@@ -261,7 +261,8 @@ bool filterSpecUnitTest()
 
   // digital transfer function computation:
   for(i = 0; i < numValues; i++) {
-    Complex z = Complex(prng.getSample(), prng.getSample());
+    //Complex z = Complex(prng.getSample(), prng.getSample());
+    z = Complex(prng.getSample(), prng.getSample());
     H_zpk = zpk32.transferFunctionAt(z);
     H_ba  = ba32.transferFunctionAt( z);
     d     = H_zpk - H_ba;
@@ -274,7 +275,8 @@ bool filterSpecUnitTest()
   //ba32.sampleRate  = inf; // this doesn't work because it doesn't reverse the coeff-arrays
   ba32 = zpk32.toBA();
   for(i = 0; i < numValues; i++) {
-    Complex z = Complex(prng.getSample(), prng.getSample());
+    //Complex z = Complex(prng.getSample(), prng.getSample());
+    z = Complex(prng.getSample(), prng.getSample());
     H_zpk = zpk32.transferFunctionAt(z);
     H_ba  = ba32.transferFunctionAt( z);
     d     = H_zpk - H_ba;

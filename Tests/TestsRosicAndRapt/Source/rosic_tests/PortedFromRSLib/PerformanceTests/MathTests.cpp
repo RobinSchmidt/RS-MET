@@ -230,7 +230,7 @@ void runMatrixTest(std::string& /*reportString*/, int numRows, int numColumns, i
     A = 2.0 * ((A*trans(A))*A + A);  // A := 2 * ((A*A^T)*A + A)
   double cycles = (double) counter.getNumCyclesSinceInit();
 
-  double cyclesPerElement = cycles / (numRows*numColumns*numRuns);
+  //double cyclesPerElement = cycles / (numRows*numColumns*numRuns);
 
   rsAssert(false); // printing below doesn't compile
   //printPerformanceTestResult(matrixString(A), cyclesPerElement);
@@ -244,7 +244,7 @@ void testMatrix(std::string &reportString)
   runMatrixTest(reportString, 60, 90); //         |         | 2000    |  7000
 }
 
-void testMatrixAddressing(std::string &reportString)
+void testMatrixAddressing(std::string& /*reportString*/)
 {
   // Compares two matrix addressing schemes: using a flat array with pointer arithmetic vs. using
   // an pointer-to-pointer array. The test is to copy matrix values from one matrix into another.
