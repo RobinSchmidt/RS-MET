@@ -1090,7 +1090,8 @@ bool binaryHeapUnitTest()
   {
     int newIndex = ng.getSampleRaw() % H.getSize();
     int newValue = ng.getSampleRaw() % 100;
-    int k = H.replace(newIndex, newValue);
+    //int k = H.replace(newIndex, newValue);
+    H.replace(newIndex, newValue);
     r &= H.isMaxHeap();
   }
 
@@ -1102,7 +1103,8 @@ bool binaryHeapUnitTest()
   for(int i = 1; i <= numTests; i++)
   {
     int newValue = ng.getSampleRaw() % 100;
-    int k = H.insert(newValue);              // index where the value ended up
+    //int k = H.insert(newValue);              // index where the value ended up
+    H.insert(newValue);
     r &= H.getSize() == N + i;
     r &= H.isMaxHeap();
   }
@@ -1211,7 +1213,8 @@ bool binaryHeapUnitTest()
     int newIndex = ng.getSampleRaw() % H.getSize();
     int newValue = ng.getSampleRaw() % 100;
     //int k = T.replace(newIndex, newValue);
-    int m = T.replace(newIndex, newValue);
+    //int m = T.replace(newIndex, newValue);
+    T.replace(newIndex, newValue);
     r &= T.isSearchTree();
     // does not work yet - i think the first thing that needs to be done after replacement is to
     // compare and possibly swap with the sibling? but no, if we replace a right node, and its

@@ -2,7 +2,7 @@
 
 typedef std::complex<double> rsComplexDbl;
 
-void testFourierTransformer(std::string &reportString)
+void testFourierTransformer(std::string& /*reportString*/)
 {
   static const int bufferSize = 4096;
   static const int numBuffers = 32;
@@ -34,7 +34,7 @@ void testFourierTransformer(std::string &reportString)
 
 }
 
-void testAutoCorrelationPitchDetector2(std::string &reportString)
+void testAutoCorrelationPitchDetector2(std::string& /*reportString*/)
 {
   static const int bufferSize     = 2048;
   static const int updateInterval = 256;

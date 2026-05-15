@@ -10,7 +10,7 @@ inline double absFast(double x)
 }
 // in the performance test, it turned out that standard-fabs is actually faster.
 
-void testAbsAndSign2(std::string &reportString)
+void testAbsAndSign2(std::string& /*reportString*/)
 {
   // Compares the performance of the standard library functions fabs(double x) and
   // rsAbsFast(double x)
@@ -47,7 +47,7 @@ void testAbsAndSign2(std::string &reportString)
   printPerformanceTestResult("rsSign", cycles / N);           // 0.43 cycles
 }
 
-void testMultinomialCoefficients2(std::string &reportString)
+void testMultinomialCoefficients2(std::string& /*reportString*/)
 {
   static const rsUint32 mMax = 5;  // maximum number of indices for the k-values
   static const rsUint32 nMax = 12; // maximum value for the sum of the k-values to be tested
@@ -148,7 +148,7 @@ void segmented_sieve(rsInt64 limit, int segment_size = L1D_CACHE_SIZE)
     for (; n <= high; n += 2)
       if (segment[n - low])
       {
-        int p = (int)n; // added by robin schmidt - this is how the primes are retrieved
+        //int p = (int)n; // added by robin schmidt - this is how the primes are retrieved
         count++;
       }
   }
@@ -157,7 +157,7 @@ void segmented_sieve(rsInt64 limit, int segment_size = L1D_CACHE_SIZE)
 // this prime sieve outperforms mine by a factor 2 - but i'm confused how to use it to actually
 // pass the generated primes as return value.
 
-void testPrimeSieves(std::string &reportString)
+void testPrimeSieves(std::string& /*reportString*/)
 {
   //static const rsUint64 maxPrime = 100000000;
   static const rsUint64 maxPrime = 10000000;
@@ -219,7 +219,7 @@ std::string matrixString(const rsMatrixDbl& A)
   s += "):";
   return s;
 }
-void runMatrixTest(std::string &reportString, int numRows, int numColumns, int numRuns = 20)
+void runMatrixTest(std::string& /*reportString*/, int numRows, int numColumns, int numRuns = 20)
 {
   rsMatrixDbl A(numRows, numColumns);
   A.randomizeElements(-1.0, 1.0);

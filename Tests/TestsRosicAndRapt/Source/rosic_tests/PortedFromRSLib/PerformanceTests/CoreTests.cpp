@@ -1,6 +1,6 @@
 #include "CoreTests.h"
 
-void testFlagArray(std::string &reportString)
+void testFlagArray(std::string& /*reportString*/)
 {
   static const rsUint32 numFlags = 1000000;
 
@@ -14,7 +14,7 @@ void testFlagArray(std::string &reportString)
   printPerformanceTestResult("rsFlagArray, Creation", cyclesPerFlag);
 
   counter.init();
-  rsUint64 dummy = a.getNumTrueFlags();
+  //rsUint64 dummy = a.getNumTrueFlags();
   cyclesPerFlag = (double) counter.getNumCyclesSinceInit() / numFlags;
   printPerformanceTestResult("rsFlagArray, Count true flags", cyclesPerFlag);
 

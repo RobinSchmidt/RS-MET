@@ -191,7 +191,7 @@ void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
   // https://www.youtube.com/watch?v=dknbNrr4EDo&list=RDQM6d8Vubj1zMg&start_radio=1
 
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 std::vector<double> renderAlternatingSquareSweep(int N=2048)
@@ -254,7 +254,7 @@ void renderSweepBassdrums(int sampleRate)
   // Helper function to apply time variying quantization (experimental - doesn't seem to sound 
   // good):
   auto quantize = [](std::vector<double>& xL, std::vector<double>& xR, 
-    double amount, double attack, double decay)
+    double amount, double /*attack*/, double /*decay*/)
   {
     int N = (int) xL.size();
     for(int n = 0; n < N; n++)

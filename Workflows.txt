@@ -270,3 +270,26 @@ Resources:
 
 - Was ich nach 900 Stunden KI-Coding komplett anders mache
   https://www.youtube.com/watch?v=V_pfdrvwh5w  
+  
+  
+ToDo:
+
+- Maybe make a directory "Workflows" and add one textfile per workflow. Rationale: These textfiles
+  can then be referenced in a prompt for an AI agent.
+  
+- Add workflows for: 
+
+  - Lifting a class from rosic to rapt:
+    - Copy the .h/.cpp file pair into an appropriate folder of rapt. Adapt the #ifdef #include 
+	  guards. Update the affected higher level .h files to include the new file.
+	- Remove the original file from rosic by moving it into the "legacy" folder. Also update the 
+	  files that included it.
+	- Templatize the file in rapt. Typically, we'll have a TSig and TPar template parameter but 
+	  sometimes, a single T may be sufficient and in some cases we may need something else.
+	- Update all code that used the rosic class to now use an appropriate instantiation the rapt 
+	  class tempate (typically with <double, double> template params) instead. OR: Add such an
+	  instantiation to rosic in rosic/basics/rosic_TemplateInstantiations.cpp maybe along with 
+	  a corresponding typedef in rosic_TemplateInstantiations.h and then change all occurences of
+	  MyClass to MyClassDD, for example. This needs to be done in the TestsRosicAndRapt project as
+	  well as in ToolChain.
+	- Run unit tests to make sure nothing broke.
