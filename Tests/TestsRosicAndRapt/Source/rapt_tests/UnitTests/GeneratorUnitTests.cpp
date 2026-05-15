@@ -1011,7 +1011,7 @@ bool samplerBusModeTest()
   // values - but they are slightly wrong and this messes up also another test
 
 
-  int dummy = 0;
+  //int dummy = 0;
 
 
   // ToDo: 
@@ -3274,7 +3274,7 @@ bool samplerLoopTest()
 
   // Settings:
   float fs  = 44100.f;  // Playback sample rate
-  float f   = 440.f;    // Frequency of sinewave to generate
+  //float f   = 440.f;    // Frequency of sinewave to generate
   float tol = 1.e-3f;   // Tolerance (we expect some interpolation error)
   int   N   = 2000;     // Number of samples to generate
 
@@ -3460,8 +3460,8 @@ bool samplerNoteOffTest()
   using OC   = Opcode;
 
   // Test parameters:
-  int N    = 1200;  // Number of samples to produce
-  int nOff =  500;  // Sample of noteOff event
+  //int N    = 1200;  // Number of samples to produce
+  //int nOff =  500;  // Sample of noteOff event
   int key  =   60;  // Key to play, also keyCenter for the DC sample
   float fs = 1.0f;  // sample rate = 1  ->  no need to convert between seconds and samples
 
@@ -4159,7 +4159,7 @@ bool samplerFilterLfoTest()
 
   // Test parameters:
   int N     = 1500;         // Number of samples to produce
-  int keyDC =   60;         // Rootkey of the DC sample
+  //int keyDC =   60;         // Rootkey of the DC sample
   float key =   57.f;       // Key to play
   float vel =   64.f;       // Velocity to play
   float fs  = 40000.f;      // Sample rate

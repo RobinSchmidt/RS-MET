@@ -544,7 +544,7 @@ bool testNullSpace()
 
   using Matrix = rsMatrix<double>;
   using LA     = rsLinearAlgebraNew;
-  double tol   = 1.e-14;
+  //double tol   = 1.e-14;
 
   // maybe it makes sense to work with rational numbers rather than floating point
 

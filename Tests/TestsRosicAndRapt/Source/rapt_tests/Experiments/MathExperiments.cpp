@@ -5859,7 +5859,7 @@ void arithmeticDerivative()
     x[i] = i;
     d[i] = numDeriv(i);
   }
-  int dummy = 0;
+  //int dummy = 0;
 }
 /*
 https://oeis.org/A003415/list

@@ -11,7 +11,7 @@
 void derivativeFormulas1D()
 {
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void derivativeFormulas()
@@ -87,7 +87,7 @@ void vertexMeshGradient1()
 
   // distance functions (constant, 1/Manhattan, 1/Euclidean)
   std::function<float(Vec2, Vec2)> d0, d1, d2;
-  d0 = [&](Vec2 a, Vec2 b)->float { return 1.f; };
+  d0 = [&](Vec2 /*a*/, Vec2 /*b*/)->float { return 1.f; };
   d1 = [&](Vec2 a, Vec2 b)->float { Vec2 d = b-a; return 1.f / (rsAbs(d.x) + rsAbs(d.y)); };
   d2 = [&](Vec2 a, Vec2 b)->float { return 1.f / rsNorm(b-a); };
 
@@ -118,7 +118,7 @@ void vertexMeshGradient1()
   // degrees. For horizontale or vertical edges, the max-error may go to infinity? Division by 
   // zero? ...figure out...
 
-  int dummy = 0;
+  //int dummy = 0;
 
   // Observations: 
   // -The accuracy seems to be best with using the (inverse) Manhattan distance as weights. 
@@ -486,7 +486,7 @@ void meshGradientErrorVsDistance()
         + a(3, 0)*vi.x*vi.x + a(4, 0)*vi.y*vi.y + a(5, 0)*vi.x*vi.y;
     }
     Vec taylorValueError = taylorValues - u;  // should be zero up to roundoff -> yep, is zero
-    int dummy = 0;
+    //int dummy = 0;
   }
   Vec errorOrderTaylor(h.size()-1);
   for(int j = 0; j < (int)h.size()-1; j++)
@@ -517,7 +517,7 @@ void meshGradientErrorVsDistance()
   // at boundary points) or having some going into opposite directions (at least with respect to 
   // the error order...i think -> verify that...).
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 /*
@@ -665,7 +665,7 @@ void meshGradientErrorVsWeight()  // rename to vertexMeshGradientWeighting
   //  neighbor with respect to all other neighbors, maybe using correlations and/or mutual 
   //  distances.
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void meshGradientErrorVsAngle()
@@ -791,7 +791,7 @@ void meshGradientErrorVsAngle()
   //  appropriate weighting function, which is what we are trying to figure out). Maybe try this 
   //  with 4 fixed and 1 rotating neighbor.
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void meshGradientErrorVsIrregularity()
@@ -889,7 +889,7 @@ void meshGradientErrorVsIrregularity()
   // -Compare the gradient estimation via directional derivatives to a full 2D fit of 6 points 
   //  (2D quadratic approximation)
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void vertexMeshGradient()
@@ -1031,7 +1031,7 @@ void meshHessianErrorVsDistance()
   plotMatrixRows(errorOrder, &hLog[0]);
 
 
-  int dummy = 0;
+  //int dummy = 0;
 
   // Observations:
   // -We see similar plots as in meshGradientErrorVsDistance, as expected.
@@ -1238,7 +1238,7 @@ void meshHessianViaTaylorErrorVsDistance()
       eMax = rsMax(rsAbs(e_xx), rsAbs(e_xy), rsAbs(e_yy));
       err2(numSides-minNumSides, j) = log10(eMax);
 
-      int dummy = 0;
+      //int dummy = 0;
     }
   }
 
@@ -1280,7 +1280,7 @@ void meshHessianViaTaylorErrorVsDistance()
   //  respect to error reduction. But is it more or less costly. It takes more memory, but what
   //  about CPU cycles?
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -1311,9 +1311,9 @@ void testHessianRectangularMesh()
   f    = [&](Real x, Real y)->Real { return A + B*x + C*y +   D*x*x +   E*y*y + F*x*y; };
   f_x  = [&](Real x, Real y)->Real { return     B         + 2*D*x             + F*y  ; };
   f_y  = [&](Real x, Real y)->Real { return           C             + 2*E*y   + F*x  ; };
-  f_xx = [&](Real x, Real y)->Real { return                   2*D                    ; };
-  f_xy = [&](Real x, Real y)->Real { return                                   + F    ; };
-  f_yy = [&](Real x, Real y)->Real { return                           2*E            ; };
+  f_xx = [&](Real  , Real  )->Real { return                   2*D                    ; };
+  f_xy = [&](Real  , Real  )->Real { return                                   + F    ; };
+  f_yy = [&](Real  , Real  )->Real { return                           2*E            ; };
 
   // For convenience:
   using Vec  = std::vector<Real>;
@@ -1411,7 +1411,7 @@ void testHessianRectangularMesh()
   // ToDo: 
   // -randomize the vertex positions and check, if it still works
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void vertexMeshHessian()
