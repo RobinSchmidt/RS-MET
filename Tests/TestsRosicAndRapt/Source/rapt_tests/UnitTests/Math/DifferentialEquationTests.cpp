@@ -87,7 +87,7 @@ public:
     x = 0.0;
   }
 
-  virtual rsVector<double> f( const double &x, const rsVector<double> &y)
+  virtual rsVector<double> f(const double & /*x*/, const rsVector<double> &y)
   {
     rsVector<double> v(1);
     v[0] = y[0];
@@ -124,14 +124,14 @@ public:
     c   = newC;
   }
 
-  virtual rsVector<double> f( const double &x, const rsVector<double> &y)
+  virtual rsVector<double> f(const double & _x, const rsVector<double> & _y)
   {
     rsVector<double> v(1);
 
-    if( fabs(x) < EPS )
-      v[0] = -(y[0]-c)/tau;  // avoid division by zero (use limit)
+    if( fabs(_x) < EPS )
+      v[0] = -(_y[0]-c)/tau;  // avoid division by zero (use limit)
     else
-      v[0] = n*((y[0]-c)/x) - (y[0]-c)/tau;
+      v[0] = n*((_y[0]-c)/_x) - (_y[0]-c)/tau;
 
     return v;
   }
