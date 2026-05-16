@@ -1657,9 +1657,9 @@ void meshLaplacianAlgorithms1()
 
   // Compute true value and errors:
   double L  = f_xx(x0.x, x0.y) + f_yy(x0.x, x0.y);  // true value
-  double e1 = L - u_L1[0];                          // error of first estimate
-  double e2 = L - u_L2[0];                          // error of second estimate
-  double e3 = L - u_L3[0];                          // same as e1 as it should be
+  //double e1 = L - u_L1[0];                          // error of first estimate
+  //double e2 = L - u_L2[0];                          // error of second estimate
+  //double e3 = L - u_L3[0];                          // same as e1 as it should be
 
   // Observations:
   // -u_L2[0] is more accurate than u_L1[0], so the more efficient algo is also more accurate
@@ -1679,7 +1679,7 @@ void meshLaplacianAlgorithms1()
 
   // see: https://en.wikipedia.org/wiki/Discrete_Laplace_operator
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -1729,7 +1729,7 @@ void meshLaplacianAlgorithms2()
   fillMeshValues(mesh, f, u);
   ND::laplacian2D_2(mesh, u, u_L);
   //laplacian2D(mesh, u, u_L);
-  double eh1 = L - u_L[0];          // -0.00010707162148965166, -0.00010707162149820038
+  //double eh1 = L - u_L[0];          // -0.00010707162148965166, -0.00010707162149820038
 
   // Compute error for neighborhood at distance 2*h:
   mesh.clear();
@@ -1739,7 +1739,7 @@ void meshLaplacianAlgorithms2()
   fillMeshValues(mesh, f, u);
   ND::laplacian2D_2(mesh, u, u_L);
   //laplacian2D(mesh, u, u_L);
-  double eh2 = L - u_L[0];          // -0.00042702273039024741, -0.00042702273038902616
+  //double eh2 = L - u_L[0];          // -0.00042702273039024741, -0.00042702273038902616
   // eh2 is roughly 4 times eh1 for numSides = 6...seems like the error increases with h^2.
   // shouldn't we expect the error to increase by h^4 = h^(numSides-2)?
 
@@ -1756,7 +1756,7 @@ void meshLaplacianAlgorithms2()
   fillMeshValues(mesh, f, u);
   ND::laplacian2D_2(mesh, u, u_L);
   //laplacian2D(mesh, u, u_L);
-  double eh12 = L - u_L[0];   // -0.012610446761559257  ...way too high! something is wrong!
+  //double eh12 = L - u_L[0];   // -0.012610446761559257  ...way too high! something is wrong!
   // could it be that the error is (roughly) equal to taking only the inner neighbors into account?
   // ..hmm...not really - but the order of magnitude seems to fit
 
@@ -1780,23 +1780,23 @@ void meshLaplacianAlgorithms2()
 
   // try it with the new, experimental implementations:
   laplacian2D_1(mesh, u, u_L);
-  double eh12_1 = L - u_L[0]; 
+  //double eh12_1 = L - u_L[0]; 
 
   laplacian2D_2(mesh, u, u_L);
-  double eh12_2 = L - u_L[0];    // much better than the 1st
+  //double eh12_2 = L - u_L[0];    // much better than the 1st
 
   laplacian2D_3(mesh, u, u_L);
-  double eh12_3 = L - u_L[0];    // doesn't seem to work
+  //double eh12_3 = L - u_L[0];    // doesn't seem to work
 
   laplacian2DViaTaylor(mesh, u, u_L);
-  double eh12_T = u_L[0] - L;    // large error :-O
+  //double eh12_T = u_L[0] - L;    // large error :-O
 
 
   // shouldn't the error be u_L[0] - L, i.e. estimate minus true?
 
   //double ratio = L / u_L[0]; // why is this relevant?
 
-  int dummy = 0;
+  //int dummy = 0;
 
   // -maybe instead of trying to estimate the Laplacian directly, try first to estimate the 
   //  diagonal elements of the Hessian u_xx and u_yy - can we do this via directional derivatives?

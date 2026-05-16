@@ -345,7 +345,7 @@ void bandpassAndNotch()
   // -Maybe try to somehow split off the highpass part first and investigate, what difference that
   //  makes
 
-  int dummmy = 0;
+  //int dummmy = 0;
 }
 
 void bandSplittingTwoWay()
@@ -505,7 +505,7 @@ void bandSplittingThreeWay()
   //  Linkwitz-Riely filters. Or maybe request an exp(-w^n) response. For n=2 that would be a
   //  Gaussian. https://www.desmos.com/calculator/mmu5ryfgwz
 
-  int dummmy = 0;
+  //int dummmy = 0;
 }
 
 template<class T>
@@ -606,7 +606,7 @@ void bandSplittingThreeWay2p2z()
   //  coeffs according to the constraints like in Martin Vicanek's paper. 
 
 
-  int dummmy = 0;
+  //int dummmy = 0;
 }
 
 
@@ -707,7 +707,7 @@ void bandSplittingTreeAlgo()
 
   int numBands = 8; // algo currently assumes a power of 2
   std::vector<std::string> str1(numBands);
-  int numCalls = updateBandSplitStrings(str1, 0, numBands); 
+  //int numCalls = updateBandSplitStrings(str1, 0, numBands); 
     // numCalls should be 2*numBands-1 (for numBands a power of two)
 
   // ok, the recursive function seems to work - now let's try to convert it into an iterative algo

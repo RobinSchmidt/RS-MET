@@ -1731,7 +1731,7 @@ bool testBivariatePolynomial2()
   //BiPolyR Q = getHarmonicConjugate(P);
   //ok &= areHarmonicConjugates(P, Q);
 
-  Real r = 1.5;
+  //Real r = 1.5;
   //plotBivariatePolynomial(P, -r, +r, 31, -r, +r, 31);
 
   u = BiPolyR(2,2,{0,0,1, 0,0,0, -1,0,0}); // -x^2 + y^2
@@ -1918,8 +1918,8 @@ bool testTrivariatePolynomial()
   tmp = p.derivativeY(); val1 = tmp.evaluate(1,2,3); ok &= val1 == 9;
   tmp = p.derivativeZ(); val1 = tmp.evaluate(1,2,3); ok &= val1 == 6;
 
-  // todo: test fluxIntegral
-  double u0 = -1, u1 = 1, v0 = -1, v1 = 1;
+  // ToDo: test fluxIntegral
+  //double u0 = -1, u1 = 1, v0 = -1, v1 = 1;
   TriPoly fx(2,2,2), fy(2,2,2), fz(2,2,2);  // the vector field
   fx.fillRandomly(-3.0, +3.0, 0, true);
   fy.fillRandomly(-3.0, +3.0, 1, true);     // we need to use different seeds
