@@ -1656,7 +1656,7 @@ void meshLaplacianAlgorithms1()
   // ToDo: compute Laplacian via Taylor
 
   // Compute true value and errors:
-  double L  = f_xx(x0.x, x0.y) + f_yy(x0.x, x0.y);  // true value
+  //double L  = f_xx(x0.x, x0.y) + f_yy(x0.x, x0.y);  // true value
   //double e1 = L - u_L1[0];                          // error of first estimate
   //double e2 = L - u_L2[0];                          // error of second estimate
   //double e3 = L - u_L3[0];                          // same as e1 as it should be
@@ -1714,7 +1714,7 @@ void meshLaplacianAlgorithms2()
   f_xx = [&](double x, double y)->double { return -a*a*sin(a*x) *     exp(b*y); };
   f_yy = [&](double x, double y)->double { return      sin(a*x) * b*b*exp(b*y);  };
   Vec2 x0(1, 1);
-  double L = f_xx(x0.x, x0.y) + f_yy(x0.x, x0.y);  // true value of Laplacian at x0
+  //double L = f_xx(x0.x, x0.y) + f_yy(x0.x, x0.y);  // true value of Laplacian at x0
 
   rsGraph<Vec2, double> mesh;
   GraphPlotter<double> meshPlotter;

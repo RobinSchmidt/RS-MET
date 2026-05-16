@@ -1,5 +1,5 @@
 
-bool testExponentialCurveFitting(std::string &reportString)
+bool testExponentialCurveFitting(std::string& /*reportString*/)
 {
   std::string testName = "ExponentialCurveFitting";
   bool testResult = true;
@@ -27,7 +27,7 @@ bool testExponentialCurveFitting(std::string &reportString)
   return testResult;
 }
 
-bool testRootFinding(std::string &reportString)
+bool testRootFinding(std::string& /*reportString*/)
 {
   std::string testName = "RootFinding";
   bool testResult = true;
@@ -58,7 +58,7 @@ bool testRootFinding(std::string &reportString)
   return testResult;
 }
 
-bool testGradientBasedOptimization(std::string &reportString)
+bool testGradientBasedOptimization(std::string& /*reportString*/)
 {
   std::string testName = "GradientBasedOptimization";
   bool testResult = true;

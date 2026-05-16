@@ -230,7 +230,7 @@ ContainerizationAddedConstantsTest::ContainerizationAddedConstantsTest()
 {
   moduleToTest = TestModuleBuilder::createAddedConstants("AddedConstants", 0, 0, false);
 }
-void ContainerizationAddedConstantsTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
+void ContainerizationAddedConstantsTest::fillDesiredOutputSignalArrays(bool /*testModuleIsPolyphonic*/)
 {
   RAPT::rsArrayTools::fillWithValue(desiredOutputs[0][0], numFramesToProcess, 136.0);
 }
@@ -258,7 +258,7 @@ bool ContainerizationAddedConstantsTest::runTest()
     return false;
 
   static const int numIterations = 50;
-  bool verboseOutput = false;
+  //bool verboseOutput = false;
   for(int i = 1; i <= numIterations; i++)
   {
     randomizeContainment();
@@ -329,7 +329,7 @@ PinSortingTest::PinSortingTest()
 {
   moduleToTest = TestModuleBuilder::createPinSortTest("PinSorting", 0, 0, false);
 }
-void PinSortingTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
+void PinSortingTest::fillDesiredOutputSignalArrays(bool /*testModuleIsPolyphonic*/)
 {
   processModuleInFrames();
   RAPT::rsArrayTools::copy(outputs[0][0], desiredOutputs[0][0], numFramesToProcess);

@@ -1735,7 +1735,7 @@ bool testBivariatePolynomial2()
   //plotBivariatePolynomial(P, -r, +r, 31, -r, +r, 31);
 
   u = BiPolyR(2,2,{0,0,1, 0,0,0, -1,0,0}); // -x^2 + y^2
-  bool harm = u.isHarmonic();
+  //bool harm = u.isHarmonic();
 
 
   // Arithmetic operators:
@@ -2620,7 +2620,7 @@ bool testSparsePolynomial()
   // Test evaluation:
   Real x = 1.5;                         // Don't use an integer here! See below.
   Real y1, y2;
-  Real d;
+  //Real d;
   y1 = pd.evaluate(x);
   y2 = p(x);
   //d  = y2-y1;

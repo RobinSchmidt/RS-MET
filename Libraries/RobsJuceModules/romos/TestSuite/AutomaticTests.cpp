@@ -103,7 +103,7 @@ bool testModuleTypeRegistry()
   return false;
 }
 
-bool testGain(bool verboseOutput)
+bool testGain(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createGain("Gain", 0, 0, false);
   RAPT::rsArrayTools::multiply(x[0][0], x[0][1], d[0][0], N);  // create desired output
@@ -114,7 +114,7 @@ bool testGain(bool verboseOutput)
   return checkAndPrintResult(py0, pd0, 1, N, "Gain", 0.0);
 }
 
-bool testSumDiff(bool verboseOutput)
+bool testSumDiff(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createSumDiff("SumDiff", 0, 0, false);
   RAPT::rsArrayTools::add(x[0][0], x[0][1], d[0][0], N);
@@ -125,7 +125,7 @@ bool testSumDiff(bool verboseOutput)
   return checkAndPrintResult(py0, pd0, 2, N, "SumDiff", 0.0);
 }
 
-bool testWrappedSumDiff(bool verboseOutput)
+bool testWrappedSumDiff(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createSumDiff("WrappedSumDiff", 0, 0, false);
   RAPT::rsArrayTools::add(x[0][0], x[0][1], d[0][0], N);
@@ -136,7 +136,7 @@ bool testWrappedSumDiff(bool verboseOutput)
   return checkAndPrintResult(py0, pd0, 2, N, "WrappedSumDiff", 0.0);
 }
 
-bool testSummedDiffs(bool verboseOutput)
+bool testSummedDiffs(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createSummedDiffs("SummedDiffs", 0, 0, false);
   getDesiredOutputForSummedDiffs(N, px0, pd0);
@@ -146,7 +146,7 @@ bool testSummedDiffs(bool verboseOutput)
   return checkAndPrintResult(py0, pd0, 4, N, "SummedDiffs", 0.0);
 }
 
-bool testMovingAverage(bool verboseOutput)
+bool testMovingAverage(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createMovingAverage("MovingAverage", 0, 0, false);
   getDesiredOutputForMovingAverage(N, x[0][0], x[0][1], x[0][2], d[0][0]);
@@ -156,7 +156,7 @@ bool testMovingAverage(bool verboseOutput)
   return checkAndPrintResult(py0, pd0, 1, N, "MovingAverage", 0.0);
 }
 
-bool testLeakyIntegrator(bool verboseOutput)
+bool testLeakyIntegrator(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createLeakyIntegrator("LeakyIntegrator", 0, 0, false);
   getDesiredOutputForLeakyIntegrator(N, x[0][0], x[0][1], d[0][0]);
@@ -166,7 +166,7 @@ bool testLeakyIntegrator(bool verboseOutput)
   return checkAndPrintResult(py0, pd0, 1, N, "LeakyIntegrator", 0.0);
 }
 
-bool testLeakyIntegratorDoubleDelay(bool verboseOutput)
+bool testLeakyIntegratorDoubleDelay(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createLeakyIntegrator("LeakyIntegratorDoubleDelay", 0, 0, false);
   getDesiredOutputForLeakyIntegratorDoubleDelay(N, x[0][0], x[0][1], d[0][0]);
@@ -179,7 +179,7 @@ bool testLeakyIntegratorDoubleDelay(bool verboseOutput)
   return checkAndPrintResult(py0, pd0, 1, N, "LeakyIntegratorDoubleDelay", 0.0);
 }
 
-bool testTestFilter1(bool verboseOutput)
+bool testTestFilter1(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createTestFilter1("TestFilter1", 0, 0, false);
   getDesiredOutputForTestFilter1(N, x[0][0], x[0][1], x[0][2], x[0][3], d[0][0], d[0][1], d[0][2]);
@@ -189,7 +189,7 @@ bool testTestFilter1(bool verboseOutput)
   return checkAndPrintResult(py0, pd0, 3, N, "TestFilter1", 0.0);
 }
 
-bool testBiquadMacro(bool verboseOutput)
+bool testBiquadMacro(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createBiquadMacro("BiquadMacro", 0, 0, false);
   getDesiredOutputForBiquad(N, x[0][0], x[0][1], x[0][2], x[0][3], x[0][4], x[0][5], d[0][0]);
@@ -199,7 +199,7 @@ bool testBiquadMacro(bool verboseOutput)
   return checkAndPrintResult(py0, pd0, 1, N, "BiquadMacro", 0.0);
 }
 
-bool testBiquadAtomic(bool verboseOutput)
+bool testBiquadAtomic(bool /*verboseOutput*/)
 {
   //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD);
   romos::Module* testModule = romos::moduleFactory.createModule("Biquad");
@@ -242,7 +242,7 @@ bool testContainerizationAddedConstants(bool verboseOutput)
   return true;
 }
 
-bool testPinSorting(bool verboseOutput)
+bool testPinSorting(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createPinSortTest("PinSorting", 0, 0, false);
 
@@ -309,7 +309,7 @@ bool testPinSorting(bool verboseOutput)
   return result;
 }
 
-bool testAdderBlock(bool verboseOutput)
+bool testAdderBlock(bool /*verboseOutput*/)
 {
   //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::ADDER);
   romos::Module* testModule = romos::moduleFactory.createModule("Adder");
@@ -319,7 +319,7 @@ bool testAdderBlock(bool verboseOutput)
   return result;
 }
 
-bool testBiquadAtomicBlock(bool verboseOutput)
+bool testBiquadAtomicBlock(bool /*verboseOutput*/)
 {
   //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD);
   romos::Module* testModule = romos::moduleFactory.createModule("Biquad");
@@ -330,7 +330,7 @@ bool testBiquadAtomicBlock(bool verboseOutput)
   return result;
 }
 
-bool testBlip(bool verboseOutput)
+bool testBlip(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createBlip("Blip", 0, 0, false);
 
@@ -532,7 +532,7 @@ bool testGatedNoteFrequency(int numVoicesToCheck)
   romos::ContainerModule* testModule =
     (romos::ContainerModule*) TestModuleBuilder::createGatedNoteFrequency("GatedNoteFrequency", 0, 0, true);
 
-  int noteLengthInFrames = 20;
+  //int noteLengthInFrames = 20;
   std::vector<romos::NoteEvent> events = generateSimultaneousNotes(81, 64, 0, 20, numVoicesToCheck, 12);
 
   bool result = false;

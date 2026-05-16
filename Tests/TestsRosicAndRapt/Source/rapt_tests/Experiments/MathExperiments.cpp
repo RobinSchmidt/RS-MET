@@ -3466,11 +3466,11 @@ void probabilityLogic()
   //double cor = correlation(&A[0], &B[0], N);
 
   // compute empirical probabilities (by relative frequencies):
-  double pa  = RAPT::rsArrayTools::sum(&A[0], N) / N;        // P(A), empirical prob of event A
-  double pb  = RAPT::rsArrayTools::sum(&B[0], N) / N;        // P(B), empricial prob of event B
+  //double pa  = RAPT::rsArrayTools::sum(&A[0], N) / N;        // P(A), empirical prob of event A
+  //double pb  = RAPT::rsArrayTools::sum(&B[0], N) / N;        // P(B), empricial prob of event B
   //double cab = conditionalProbability(&A[0], &B[0], N); // P(A|B), empirical prob of A given B
   //double cba = conditionalProbability(&B[0], &A[0], N); // P(B|A), empirical prob of B given A
-  double jab = jointProbability(      &A[0], &B[0], N); // P(A,B), empirical prob of A and B
+  //double jab = jointProbability(      &A[0], &B[0], N); // P(A,B), empirical prob of A and B
 
   // compute joint probability by formulas via conditional probability:
   //double jab1 = cab * pb;   // P(A,B) = P(A|B) * P(B)
@@ -3983,7 +3983,7 @@ void expBipolar()
   double c = y0 - a;
 
   // compute values at the endpoints for test:
-  double f0  = a * exp(b * 0) + c; // f0 is wrong
+  //double f0  = a * exp(b * 0) + c; // f0 is wrong
   //double f1  = a * exp(b * 1) + c;
   //double fp0 = a * b;
 

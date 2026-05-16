@@ -730,8 +730,8 @@ void bandSplittingTreeAlgo()
   // input and then run exactly that type of iteration using y[pos] as input to the two-way 
   // splitters, y[pos] (also) as lowpass output and y[pos+inc/2] as highpass output
 
-  bool ok = (str2 == str1);
-  // return ok;  // todo: make function return a bool
+  //bool ok = (str2 == str1);
+  //return ok;  // ToDo: make function return a bool
 }
 
 void bandSplitFreqResponses()
@@ -1377,7 +1377,7 @@ void engineersFilterFreqRespsMeasured()
 
 
 
-  int dummy = 0;
+  //int dummy = 0;
 
   // Observations:
   // -With freq = 1000, bwOct = 6, order = 20, mode = bandpass, method = halpern, we can clearly 
@@ -2181,7 +2181,7 @@ void nonUniformBiquad()
   int oversampling = 10;   // oversampling factor for pseudo-continuous signal
 
 
-  int Nc = Nf * oversampling; // number of samples for oversampled signal
+  //int Nc = Nf * oversampling; // number of samples for oversampled signal
 }
 
 // todo: for testing the complex bandpass filters later, maybe try to separate two sinusoids of
