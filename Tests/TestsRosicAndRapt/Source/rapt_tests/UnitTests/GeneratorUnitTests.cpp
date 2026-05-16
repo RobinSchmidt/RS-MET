@@ -1332,7 +1332,7 @@ bool samplerSaveLoadTest()
   se2.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
   ok &= se2.getNumIdleLayers()   == maxLayers-1;
   ok &= se2.getNumActiveLayers() == 1;
-  for(int n = 0; n < N; n++)
+  for(n = 0; n < N; n++)
     se2.processFrame(&outL2[n], &outR2[n]);
   ok &= rsIsAllZeros(outL2);
   ok &= outR2 == outR;
@@ -1348,7 +1348,7 @@ bool samplerSaveLoadTest()
   se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
   ok &= se.getNumIdleLayers()   == maxLayers-1;
   ok &= se.getNumActiveLayers() == 1;
-  for(int n = 0; n < N; n++)
+  for(n = 0; n < N; n++)
     se.processFrame(&outL2[n], &outR2[n]);
   ok &= se.getNumIdleLayers()   == maxLayers;
   ok &= se.getNumActiveLayers() == 0;
@@ -3300,7 +3300,8 @@ bool samplerLoopTest()
     // Produce output and return error:
     Vec outL(N), outR(N);
     se.reset();
-    se.handleNoteOn(key, 127);
+    //se.handleNoteOn(key, 127);
+    se.handleNoteOn((unsigned char)key, 127);
     for(int n = 0; n < N; n++)
       se.processFrame(&outL[n], &outR[n]);
     rsAssert(outR == outL);

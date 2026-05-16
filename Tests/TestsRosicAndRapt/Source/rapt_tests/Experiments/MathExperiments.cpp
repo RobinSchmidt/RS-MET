@@ -3447,28 +3447,29 @@ void probabilityLogic()
       B[n] = 0;
   }
 
-  // compute relative frequencies of events A and B (should approximate their probabilities):
+  // Compute relative frequencies of events A and B (should approximate their probabilities):
   //double fA = RAPT::rsArrayTools::sum(&A[0], N) / N;
   //double fB = RAPT::rsArrayTools::sum(&B[0], N) / N;
-  // are actually the mean values
+  // ...are actually the mean values. Is this code obsolete, i.e. superseded by the computation of
+  // mA, mB below? Check this. If so, delete it.
 
   // compute sample mean values for event A and B:
-  double mA = RAPT::rsArrayTools::mean(&A[0], N);
-  double mB = RAPT::rsArrayTools::mean(&B[0], N);
+  //double mA = RAPT::rsArrayTools::mean(&A[0], N);
+  //double mB = RAPT::rsArrayTools::mean(&B[0], N);
 
   // compute sample variances:
-  double vA = variance(&A[0], N);
-  double vB = variance(&B[0], N);
+  //double vA = variance(&A[0], N);
+  //double vB = variance(&B[0], N);
 
   // compute sample covariance and correlation:
-  double cov = covariance( &A[0], &B[0], N);
-  double cor = correlation(&A[0], &B[0], N);
+  //double cov = covariance( &A[0], &B[0], N);
+  //double cor = correlation(&A[0], &B[0], N);
 
   // compute empirical probabilities (by relative frequencies):
   double pa  = RAPT::rsArrayTools::sum(&A[0], N) / N;        // P(A), empirical prob of event A
   double pb  = RAPT::rsArrayTools::sum(&B[0], N) / N;        // P(B), empricial prob of event B
-  double cab = conditionalProbability(&A[0], &B[0], N); // P(A|B), empirical prob of A given B
-  double cba = conditionalProbability(&B[0], &A[0], N); // P(B|A), empirical prob of B given A
+  //double cab = conditionalProbability(&A[0], &B[0], N); // P(A|B), empirical prob of A given B
+  //double cba = conditionalProbability(&B[0], &A[0], N); // P(B|A), empirical prob of B given A
   double jab = jointProbability(      &A[0], &B[0], N); // P(A,B), empirical prob of A and B
 
   // compute joint probability by formulas via conditional probability:
@@ -3485,7 +3486,7 @@ void probabilityLogic()
   // Corr(A,B) = (P(A,B) - P(A)*P(B)) / sqrt( P(A)*(1-P(A)) * P(B)*(1-P(B)) )
 
   // let's try it:
-  double cor2 = (jab-pa*pb) / sqrt(pa*(1-pa)*pb*(1-pb));
+  //double cor2 = (jab-pa*pb) / sqrt(pa*(1-pa)*pb*(1-pb));
   // yes, looks good
 
   // from this, we may build a general continuous "and" formula that incorporates correlation
@@ -3734,7 +3735,7 @@ void ratioGenerator()
   //std::vector<double> a = intervalSplittingProto(100, 1.0/GOLDEN_RATIO, 1);
   //std::vector<double> a = intervalSplittingProto(100, 0.9, 2);
   std::vector<double> a = intervalSplittingProto(16, 0.75, 1);
-  double mean = rsMean(a);;
+  //double mean = rsMean(a);
   //rsPlotMarkers(&a[0], (int) a.size());
   // on the gui for the supersaw audio module, we should visualize the spread in a similar way
   // maybe with vertical lines instead of + markers - the visualization may or may not use a 
@@ -3983,8 +3984,8 @@ void expBipolar()
 
   // compute values at the endpoints for test:
   double f0  = a * exp(b * 0) + c; // f0 is wrong
-  double f1  = a * exp(b * 1) + c;
-  double fp0 = a * b;
+  //double f1  = a * exp(b * 1) + c;
+  //double fp0 = a * b;
 
   //int dummy = 0;
 }
@@ -4110,7 +4111,7 @@ void mathErrorsTest()
   // But when we assign variables, it works
 
   //int numI = 2;
-  int denI = 0;
+  //int denI = 0;
   //int fracI = 1 / denI;
   // This actually throws an exception. If we don't handle it, we cannot get passed this point in
   // the debugger. When clicking "continue", it just throws the execption again. What will happen 
@@ -4361,7 +4362,7 @@ void unitIntervalMap()
   //  (0.3, 0.7) etc. Or maybe let the user just freely pick an intermediate point (x,y) without
   //  any restrictions (other than 0 < x,y < 1, of course.)
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void numberTheoreticTrafo()
@@ -4423,7 +4424,7 @@ void numberTheoreticTrafo()
 
   // Try it with the (first five) numbers from rsModularIntegerNTT_64
   uint numRoots     = 5;
-  uint maxN         = 32;                      // = 2^5 = 2^numRoots, maximum supported trafo size
+  //uint maxN         = 32;                      // = 2^5 = 2^numRoots, maximum supported trafo size
   uint modulus      = 3221225473;
   uint roots[5]     = { 3221225472, 2207278994, 2607818977, 2831384513, 3154294145 };
   uint rootsInv[5]  = { 3221225472, 1013946479, 2190011530, 1626607911,  122509875 }; 
@@ -4560,7 +4561,7 @@ void numberTheoreticTrafoModuli()
 
   using ModInt = RAPT::rsModularInteger<rsUint64>;
 
-  auto findRoot = [](rsUint64 N, rsUint64 M, int k) // N: N-th root of unity, M: modulus
+  auto findRoot = [](rsUint64 /*N*/, rsUint64 M, int k) // N: N-th root of unity, M: modulus
   {
     for(rsUint64 x = M-1; x > 0; x--) 
     {
@@ -4634,7 +4635,7 @@ void numberTheoreticTrafoModuli()
   // break, when N *= R would lead to overflow.
 
 
-  int dummy = 0;
+  //int dummy = 0;
   // I think, it would make more sense to run the loop from high to low values, too, because if 
   // a root for a high power is found, i think, we can be sure that the other roots also exist and 
   // we may obtain them by multiplying by some power of R
@@ -5044,7 +5045,7 @@ void expPolyIterator()
   //  cubic envelope for the instantaneous phase. Compare result to directly calculated values, in
   //  particular, pay attention to roundoff accumulation
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -5653,8 +5654,8 @@ bool groupString()
   // distributivity with the concat-delete operation ...hmm - this addition actually allows
   // pairs of equal characters - which is a good thing
 
-  bool asso = isAssociative(&add2, s2314, s3613, s546);
-  bool distri = isDistributive(&add2, &mul3, s2314, s3613, s546);
+  //bool asso = isAssociative(&add2, s2314, s3613, s546);
+  //bool distri = isDistributive(&add2, &mul3, s2314, s3613, s546);
 
 
 

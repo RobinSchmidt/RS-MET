@@ -1440,10 +1440,7 @@ bool stateVariableFilterUnitTest4()
   ok &= runBiquadConversionTest(Mode::HighShelf, 1000, 8.0, 6.0, tol);
 
 
-
-
-
-  int dummy = 0;
+  //int dummy = 0;
 
   // Helper function to design a cookbook biquad. We need this to produce the reference magnitude 
   // responses
@@ -2028,7 +2025,7 @@ bool delayLineUnitTest()
     else
       ok &= y == double(i-readDelay);
 
-    int dummy = 0;
+    //int dummy = 0;
   }
 
   return ok;
