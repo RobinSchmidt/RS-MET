@@ -3,8 +3,10 @@
 // move to PerformanceTestTools:
 template<class TMod, class TSig>
 double getCyclesPerSample(TMod &module, int numSamples = 1000, int numTests = 5, 
-  TSig dummy = 1.0) // the dummy is to let the compiler determine the signal type
-{  
+  TSig dummy = TSig(1)) // the dummy is to let the compiler determine the signal type
+{ 
+  dummy += TSig(0);  // To get rid of "unused parameter" compiler warning. ToDo: Try to do better!
+
   ::PerformanceCounterTSC counter;
   //::PerformanceCounterQPC counter;
   //::PerformanceCounterPMC counter;  // requires privileged instructions

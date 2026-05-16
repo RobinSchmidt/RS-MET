@@ -163,7 +163,7 @@ void ladderPerformance()
 // maybe generalize this function for use with any kind of filter - we just need to factor out
 // the class-specific setup code:
 template<class TSig, class TPar>
-double getStateVectorFilterCyclesPerSample(TSig sig, TPar par, int numSamples, int numTests)
+double getStateVectorFilterCyclesPerSample(TSig /*sig*/, TPar /*par*/, int numSamples, int numTests)
 {
   rsStateVectorFilter<TSig, TPar> flt;
   flt.setupFromBiquad(TPar(1), TPar(2), TPar(0.5), TPar(-0.5), TPar(0.25));

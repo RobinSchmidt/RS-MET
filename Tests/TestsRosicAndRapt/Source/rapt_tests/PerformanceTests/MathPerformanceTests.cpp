@@ -132,7 +132,7 @@ void matrixAdressingTest()
 //}
 
 template<class TScalar, class TVector>
-void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
+void simdPerformance(TScalar /*scl*/, TVector /*vec*/, const char* dataTypeName)
 {
   static const int N = 1000;  // number of vector operations
   // maybe we should somehow make sure that the compiler doesn't know this, so it can't unroll
@@ -149,7 +149,7 @@ void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
   //  times
   // -maybe write the data into a file and/or draw some plots
 
-  TScalar zeroS(0);
+  //TScalar zeroS(0);
   TScalar oneS(1);
   TScalar accuS(0);
   TVector zeroV(0);

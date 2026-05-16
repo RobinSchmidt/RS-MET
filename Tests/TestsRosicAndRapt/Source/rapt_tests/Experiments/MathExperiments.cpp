@@ -724,7 +724,7 @@ void orthogonalizedPowerIteration()
   Vec  p2  = A*u2;
   Real q12 = rsDot(w1, p2);  // -0.42857142857126318
   Real q22 = rsDot(w2, p2);  //  2 == 2nd eigenvalue
-  Real r12 = q12/q22;        // -0.21428571428564130
+  //Real r12 = q12/q22;        // -0.21428571428564130
   // ...hmmm - nope! but can it somehow help us to reconstruct the projection coeff of v2 onto v1?
   // -q12 and therfore r12 grows with growing largest eigenvalue s1
   // -todo: 
@@ -754,8 +754,8 @@ void orthogonalizedPowerIteration()
     Vec  p2  = A*u2;
     Real q12 = rsDot(w1, p2);
     Real q22 = rsDot(w2, p2);       // always(?) equals the smaller eigenvalue
-    Real r12 = q12/q22;
-    Real r21 = q22/q12;
+    //Real r12 = q12/q22;
+    //Real r21 = q22/q12;
     //return r21;
     //return r12;
     return q12;
@@ -770,7 +770,7 @@ void orthogonalizedPowerIteration()
   // This is our target value, that we want to find - the projection of the 2nd eigenvector onto 
   // the 1st. If we know that projection coeff, we should be able to reconstriuct v2 from the 
   // available information (i hope):
-  Real t12 = rsDot(v1, v2);  // 0.96
+  //Real t12 = rsDot(v1, v2);  // 0.96
 
 
   Real minAngle = 0.05;  // avoid singularity at 0
@@ -795,7 +795,7 @@ void orthogonalizedPowerIteration()
 
 
 
-  int dummy = 0;
+  //int dummy = 0;
 
 
   // Now try it with a 3x3 matrix with orthogonal eigenvectors (6,8,0),(-8,6,0),(0,0,10):
@@ -1180,7 +1180,7 @@ void iterativeLinearSolvers()
   // ToDo:
   // -implement a function transProduct which computes A^T * x for rsMatrix, rsSparseMatrix
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -2164,7 +2164,7 @@ void monotonicInterpolation2()
 
 
 
-  int dummy = 0;
+  //int dummy = 0;
 
   // Observations:
   // -For the Runge function with shift = 0, which has a derivative of zero at zero, we need to 

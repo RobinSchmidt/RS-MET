@@ -228,8 +228,7 @@ void runMatrixTest(std::string& /*reportString*/, int numRows, int numColumns, i
   counter.init();
   for(int i = 1; i <= numRuns; i++)
     A = 2.0 * ((A*trans(A))*A + A);  // A := 2 * ((A*A^T)*A + A)
-  double cycles = (double) counter.getNumCyclesSinceInit();
-
+  //double cycles = (double) counter.getNumCyclesSinceInit();
   //double cyclesPerElement = cycles / (numRows*numColumns*numRuns);
 
   rsAssert(false); // printing below doesn't compile
