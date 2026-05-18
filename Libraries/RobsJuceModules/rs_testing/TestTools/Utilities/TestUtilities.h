@@ -246,9 +246,6 @@ bool isAllpass(const std::vector<T>& h, T tol)
     maxErr = rsMax(maxErr, rsAbs(T(1) - mags[k]));
   bool ok = maxErr <= tol;
 
-  if(!ok)
-      // For setting a debug breakpoint here
-
   //// This can be uncommented in debug sessions to investigate problems when the test fails:
   //if(!ok)
   //{
@@ -258,7 +255,7 @@ bool isAllpass(const std::vector<T>& h, T tol)
 
   return ok;
 }
-// rename to rsAllpass
+// rename to rsIsAllpass()
 
 
 /** Tests if the given signal x is a unit impulse. This can be useful when checking pairs of 
