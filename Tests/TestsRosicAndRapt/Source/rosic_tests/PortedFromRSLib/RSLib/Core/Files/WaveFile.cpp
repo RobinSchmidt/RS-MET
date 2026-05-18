@@ -126,7 +126,7 @@ void rsOutputWaveFile::createPreliminaryHeader(const rsUint32 sampleRate, const 
   memcpy(&(header.formatSubChunk.subChunk1ID), expectedSubChunk1ID, 4); // subChunk1ID = 'fmt '
   header.formatSubChunk.subChunk1Size       = 0x10;
   //header.formatSubChunk.sampleFormat        = PCM_LINEAR;
-  header.formatSubChunk.sampleFormat        = sampleFormat;
+  header.formatSubChunk.sampleFormat        = (short) sampleFormat;
   header.formatSubChunk.numChannels         = (short) channels;
   header.formatSubChunk.sampleRate          = sampleRate;
   header.formatSubChunk.bitsPerSample       = (short) bits;

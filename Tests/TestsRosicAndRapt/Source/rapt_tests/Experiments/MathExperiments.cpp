@@ -3968,7 +3968,7 @@ void expBipolar()
 
   double y0 = 0.2;
   double y1 = 8.0;
-  double s  = 1.0;
+  //double s  = 1.0;
 
   // compute coeffs:
   //double dy  = y0 - y1;
@@ -3976,7 +3976,7 @@ void expBipolar()
   //tmp = productLog(tmp);
   //double a = s*dy / (-dy * tmp + s); // nope - formula must be wrong 
 
-  double d = y1 - y0;
+  //double d = y1 - y0;
   //double w = productLog(- (exp(-s/d)*s) / d);
   //double a = -d*s / (d*w+s);
   //double b = s  / a;

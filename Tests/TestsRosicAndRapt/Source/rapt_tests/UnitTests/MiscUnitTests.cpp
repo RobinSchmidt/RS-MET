@@ -612,7 +612,8 @@ bool testSingleSineFormulas()
 
     // try to reconstruct w,p,a from signal samples using the various formulas:
 
-    double w2, p2, a2;
+    //double w2, p2, a2;
+    double w2;
     w2 = ssm.freqFormula(yL, y0, yR);
     r &= rsIsCloseTo(w, w2, tol);
 
