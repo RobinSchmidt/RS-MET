@@ -1589,7 +1589,7 @@ void syncSweep()
   double masterFreq     = 100 * GOLDEN_RATIO;  // master osc freq
   double slaveStartFreq = 20 * masterFreq;     // start freq of slave osc 
   double slaveEndFreq   = 1  * masterFreq;     // end   freq of slave osc 2
-  double amplitude      = 0.25;                // amplitude
+  //double amplitude      = 0.25;                // amplitude
   double length         = 5.0;                 // length in seconds
   int    overSampling   = 16;                  // oversampling factor
 
@@ -2817,8 +2817,6 @@ void shepardTone()
   //  -it seems like the phase jumps suddenly - maybe it's not a good idea to multiply the phase
   //   itself by the factor?
   // -what about using using an actual filter instead of the pseudo-filter?
-
-  int dummy = 0;
 }
 
 void additiveEngine1()
@@ -2836,7 +2834,7 @@ void additiveEngine1()
 
   // User parameters:
   int    maxPartials = 40;     // maximum number of partials, the engine should admit
-  int    numPartials = 20;     // actual number of harmonics produced (not yet used)
+  //int    numPartials = 20;     // actual number of harmonics produced (not yet used)
   double sampleRate  = 44100;  // use 4410 for plot, 44100 or more for wavefile write
   double length      = 0.6;    // signal length in seconds
   bool   smoothAmp   = false;  // match fade values at breakpoints (or not)...causes problems
@@ -2985,9 +2983,6 @@ void additiveEngine1()
   // contiguous, pre-allocated memory...maybe they should be named PatchEditable and PatchPlayable
   // ...yes, we need that anyway because we need to organize the breakpoint data in simd-groups,
   // too
-
-
-  int dummy = 0;
 }
 
 
@@ -3440,9 +3435,6 @@ void pulseWidthModulationViaTwoSaws()
   //  not so useful for generalizing PWM after all. Maybe we should just do the more obvious thing:
   //  pass through the 1st half of the waveform faster and through the 2nd half slower, so as to 
   //  maintain the overall periodicity, i.e. do some sort of phase-shaping/distortion/modulation.
-
-
-  int dummy = 0;
 }
 
 
@@ -3915,10 +3907,6 @@ void showRedZapsInstFreqs()
 
   //ND::derivative(&x[0]
 
-
-
-
-  int dummy = 0;
 
   // Observations:
   // -The row-wise pitch differences do indeed look almost flat, i.e. constant, which indicates 

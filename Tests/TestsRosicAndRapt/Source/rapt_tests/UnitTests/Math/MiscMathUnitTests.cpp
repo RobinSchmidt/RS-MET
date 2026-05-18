@@ -646,7 +646,7 @@ bool testVectorFieldDerivatives()
 
   Mat C(N,N);
   curl(f, &v[0], C.getDataPointer(), h);
-  double c = Ja(1,0) - Ja(0,1);  // df2/dx - df1/dy
+  //double c = Ja(1,0) - Ja(0,1);  // df2/dx - df1/dy
   // ok - it's anti-symmetric - figure out, if the signs are right
   // maybe try it for a 3x3 Jacobian...maybe the element C(i,j) should give the element of the curl
   // that has the dfi/dxj - dfj/dxi formula
@@ -701,7 +701,7 @@ bool testCurl()
 
 
 
-bool testMultiLayerPerceptronOld(std::string &reportString)
+bool testMultiLayerPerceptronOld(std::string& /*reportString*/)
 {
   std::string testName = "MultiLayerPerceptron";
   bool testResult = true;
@@ -762,9 +762,6 @@ bool testMultiLayerPerceptronOld(std::string &reportString)
   rsVectorDbl w = mlpTrainer.minimizeFunction(&mlpError, mlp.getWeightsAsVector());
   mlp.setWeightVector(w);
 
-  int dummy = 0;
-
-
   //double *test = new double[0];
   //test[0] = 1.0;
 
@@ -799,7 +796,6 @@ bool testMultiLayerPerceptronOld(std::string &reportString)
     xTest[n] = rsLinToLin(xTest[n], 0.0, 1.0, -6.0, 6.0);
     mlp.computeNetworkOutput(&xTest[n], &yTest[n]);
     rsVectorDbl yVec = mlp.getOutput();
-    int dummy = 0;
   }
   //Plotter::plotData(N, xTest, yTest);
     
@@ -832,7 +828,7 @@ rsVectorDbl randomVector(int numDimensions, double min, double max)
     x[i] = rsRandomUniform(min, max);
   return x;
 }
-bool testMultiLayerPerceptron(std::string &reportString)
+bool testMultiLayerPerceptron(std::string& /*reportString*/)
 {
   std::string testName = "MultiLayerPerceptron";
   bool testResult = true;
@@ -1136,9 +1132,9 @@ bool testMeshDerivatives()
   f    = [&](Real x, Real y) { return A + B*x + C*y +   D*x*x +   E*y*y + F*x*y; };
   f_x  = [&](Real x, Real y) { return     B         + 2*D*x             + F*y  ; };
   f_y  = [&](Real x, Real y) { return           C             + 2*E*y   + F*x  ; };
-  f_xx = [&](Real x, Real y) { return                   2*D                    ; };
-  f_xy = [&](Real x, Real y) { return                                   + F    ; };
-  f_yy = [&](Real x, Real y) { return                           2*E            ; };
+  f_xx = [&](Real  , Real  ) { return                   2*D                    ; };
+  f_xy = [&](Real  , Real  ) { return                                   + F    ; };
+  f_yy = [&](Real  , Real  ) { return                           2*E            ; };
 
   // Create some objects for later use:
   Mesh mesh;               // for our mesh
@@ -1261,7 +1257,7 @@ bool testNumericIntegration()
   rsNumericIntegral(&x[0], &y[0], &yi[0], N+1);
   //rsPlotVectorsXY(x, y, yi);
   Real A1 = yi[N];                            // area estimate 1
-  Real d1 = A1 - A;                           // error 1
+  //Real d1 = A1 - A;                           // error 1
 
   // Compute the area directly and compare results. They should be the same up to numerical 
   // roundoff:
