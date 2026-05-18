@@ -725,7 +725,10 @@ void rsSingleSineModeler<T>::unreflectPhase2(const T* w, T* p, int N)
     p[n] = adjustPhase(p[n], p[n-1], 0.5*(w[n-1]+w[n]));
   return;
 
+  // The code below is commented out to avoid "unreachable code" compiler warning. ToDo: Document
+  // what's up with this.
 
+  /*
   double pi = PI;
 
   for(int n = 1; n < N; n++)
@@ -774,6 +777,7 @@ void rsSingleSineModeler<T>::unreflectPhase2(const T* w, T* p, int N)
   //  if(p[n] < -2*PI)
   //    p[n] += 2*PI; }
 
+  */
 }
 // maybe try the same approach but without using the w-array by estimating w from p[n] and p[n-1]
 // as w = p[n] - p[n-1]...with some care about wrapping...or maybe we need p[n-1] - p[n-2] because
