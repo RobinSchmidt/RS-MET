@@ -51,8 +51,6 @@ void triSaw()
   GNUPlotter plt;
   plt.addDataArrays(N, t, y, z);
   plt.plot();
-
-  int dummy = 0;
 }
 
 void phaseShapeCoeffsXY4(double x, double y, double s, double *a1, double *a2, double *a3, double *a4)
@@ -311,7 +309,6 @@ void phaseShaping()
   //plt.plot();
   // Plotting phase does not make sense for a full signal
 
-  int dummy = 0;
 
   // Ideas:
   //
@@ -459,7 +456,6 @@ void phaseShapingSkew()
   //  saw - not this highpassed looking one. Just like the ZDF-FM experiment. There, the phase 
   //  looks more like maximal slope is 2 rather than 1? -> figure that out!
 
-  int dummy = 0;
 }
 
 void phaseShapingLinFrac()
@@ -517,9 +513,6 @@ void phaseShapingLinFrac()
     plt.addDataArrays(N, &x[0], &y[0]);
   }
   plt.plot();
-
-  int dummy = 0;
-
 
 
 
@@ -651,7 +644,6 @@ void zeroDelayFeedbackPhaseMod()
   //rsPlotVectors(y);  // only UDF signal
   rsPlotVectors(q);    // only the phase
   rsPlotVectors(y, z, z-y, q);
-  int dummy = 0;
 
   // Observations:
   // -The phase looks qualitatively similar to what is produced in the phaseShapingCurvesRational

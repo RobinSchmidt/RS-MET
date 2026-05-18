@@ -1551,8 +1551,8 @@ void onePoleFilterSimper()
   // Setup:
   //int  N          =  4096;    // Number of samples to produce
   //Real sawFreq    =   100;    // Frequency of input sawtooth wave
-  Real sampleRate = 44100;    // Sample rate for the numerical test.
-  Real cutoff     =  1000;    // Cutoff frequency of the filter
+  //Real sampleRate = 44100;    // Sample rate for the numerical test.
+  //Real cutoff     =  1000;    // Cutoff frequency of the filter
 
   rsOnePoleFilterSimper<Real> flt;
   //Real w = 2*PI*cutoff/sampleRate;
@@ -2741,7 +2741,7 @@ void ringingTime()
   double fc        = fs/16;
   double Ap        =     1.0;  // passband ripple in dB
   double As        =    50.0;  // stopband rejection in dB
-  double threshold =     0.01; // threshold amplitude
+  //double threshold =     0.01; // threshold amplitude
   int    order     =     5;    // filter order
   //int    method    = rsPrototypeDesigner::BUTTERWORTH; // approximation method
   int    method    = PTD::ELLIPTIC;
@@ -5040,7 +5040,7 @@ void fakeResonance()
   int    N     = 2000;        // number of samples
   double fs    = 44100;       // samplerate
   double fi    = 50;          // input signal frequency
-  double ai    = 1.0;         // input amplitude
+  //double ai    = 1.0;         // input amplitude
   double fc    = 500;         // lowpass cutoff
   double fh    = 20000;       // highpass cutoff (maybe use a differencer as highpass later)
   double shift = 0.0;         // resonance pitch shift in semitones

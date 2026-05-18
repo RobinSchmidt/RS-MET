@@ -324,7 +324,7 @@ void rotes::testLinLogEquationSolverOld()
 
   static const int N = 1000;
   double c = +0.001;
-  double k = -0.5;
+  //double k = -0.5;
   double xMin = 0.01;
   double xMax = 10.0;
   int n;
@@ -373,7 +373,6 @@ void rotes::testLinLogEquationSolverOld()
   Plotter::plotData(N, x, y, yLin, yLog);
   */
 
-  int dummy = 0;
 }
 
 bool rotes::testLinearSystemSolver()

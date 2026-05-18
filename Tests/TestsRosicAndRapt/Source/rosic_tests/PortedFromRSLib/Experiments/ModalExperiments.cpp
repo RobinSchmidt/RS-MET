@@ -14,7 +14,7 @@ void twoPoleFilter()
   flt.setFrequencyAndAbsoluteBandwidth(w, s*bw);
 
   double g  = flt.getMagnitudeAt(w);
-  double dB = rsAmp2dB(g);
+  //double dB = rsAmp2dB(g);
 
   plotImpulseResponse(flt, 500, 1.0);
   plotFrequencyResponse(flt, 1001, 50.0, 20000.0, fs, true);
@@ -83,7 +83,6 @@ void attackDecayFilter()
   double h[N];
   getImpulseResponse(mf, h, N);
   plotData(N, 0, 1/fs, h);
-  int dummy = 0;
 }
 
 
@@ -267,9 +266,6 @@ void dampedSineFilterDesign()
   double ww, AA, dd, pp;
   rsDampedSineFilterAnalysis( b0, b1, a1, a2, &ww, &AA, &dd, &pp);
   rsDampedSineFilterAnalysis2(b0, b1, a1, a2, &ww, &AA, &dd, &pp);
-
-
-  int dummy = 0;
 }
 
 void dampedSineFilterImpResp()
@@ -514,7 +510,6 @@ void modalBankTransient()
   // nice plots - figure also out, how the responses depend on attack
   //
 
-  int dummy = 0;
 }
 
 /** Energy of the envelope given by a weighted sum of 4 exponential decays:
@@ -916,8 +911,8 @@ void modalDecayFit2()
   //   which makes the result less susceptible to cutting off the tail
 
   int i = AT::maxIndex(&x[0], N);
-  double att2 = t[i];  // todo: refine by quadratic interpolation (maybe)
-  double amp2 = x[i];
+  //double att2 = t[i];  // todo: refine by quadratic interpolation (maybe)
+  //double amp2 = x[i];
 
   // for estimating dec, there are several possibilities:
   // -use the total area under the curve (from 0 to the end)
@@ -945,17 +940,17 @@ void modalDecayFit2()
   // todo: get rid of the tmp array - write a numerical integration routine that just returns a 
   // single value instead of filling an array - we only need the final value here
 
-  double dec2_Ap = A_p / amp;
+  //double dec2_Ap = A_p / amp;
   // not that bad! 0.5025... correct value is 0.5 - only 5% error
 
-  double dec2_At = A_t / amp;
+  //double dec2_At = A_t / amp;
   // this is actually the wrong area formula - if we use the total energy, we should use a formula 
   // that takes into account the nonzero attack - the result is far too big
 
-  double dec2_Ep = 2*E_p / (amp*amp);
+  //double dec2_Ep = 2*E_p / (amp*amp);
   // this is very wrong - check derivation - it should be better, i think
 
-  double dec2_Et = 2*E_t / (amp*amp);
+  //double dec2_Et = 2*E_t / (amp*amp);
   // again, this is actually the wrong formula - use one that takes into account the attack - this
   // result is even more off
 
@@ -1004,7 +999,7 @@ void modalAnalysis1()
   p.att   = 0.02;
   p.dec   = 0.2;
 
-  double peak = p.att * fs; // time-instant of the peak
+  //double peak = p.att * fs; // time-instant of the peak
 
   typedef std::vector<double> Vec;
 
@@ -1237,7 +1232,6 @@ void modalAnalysisGloriosa()
 
   // Write output files:
   rosic::writeToMonoWaveFile("GloriosaModalOriginal.wav", &x[0], (int)x.size(), (int)sampleRate);
-  int dummy = 0;
 
   // ToDo: 
   // -Refactor createModalBellGloriosa into a function that provides the modal parameters and one
@@ -1495,15 +1489,15 @@ void modalReverb()
   // Compute some of the first mode frequencies with the two formulas. The actual correct formula
   // and the surrogate formula with the cbrt:
   //                                            // Values for Lx = Ly = Lz = 5
-  Real f111 = rsModeFreqRectBox(1/L, 1/L, 1/L); // f(1,1,1) =  59.409 = freqs[0]
-  Real f222 = rsModeFreqRectBox(2/L, 2/L, 2/L); // f(2,2,2) = 118.818 = freqs[10]
-  Real f333 = rsModeFreqRectBox(3/L, 3/L, 3/L); // f(3,3,3) = 178.228 = freqs[44..47]
-  Real f1   = 1 * (sqrt(3) * c) / (2 * L);      // == f111,  f(n,n,n) = n * k
-  Real f2   = 2 * (sqrt(3) * c) / (2 * L);      // == f222
-  Real f3   = 3 * (sqrt(3) * c) / (2 * L);      // == f333
-  Real g1   = a + b * cbrt( 1);                 // g(1)           ~ f(1,1,1)
+  //Real f111 = rsModeFreqRectBox(1/L, 1/L, 1/L); // f(1,1,1) =  59.409 = freqs[0]
+  //Real f222 = rsModeFreqRectBox(2/L, 2/L, 2/L); // f(2,2,2) = 118.818 = freqs[10]
+  //Real f333 = rsModeFreqRectBox(3/L, 3/L, 3/L); // f(3,3,3) = 178.228 = freqs[44..47]
+  //Real f1   = 1 * (sqrt(3) * c) / (2 * L);      // == f111,  f(n,n,n) = n * k
+  //Real f2   = 2 * (sqrt(3) * c) / (2 * L);      // == f222
+  //Real f3   = 3 * (sqrt(3) * c) / (2 * L);      // == f333
+  //Real g1   = a + b * cbrt( 1);                 // g(1)           ~ f(1,1,1)
   Real g8   = a + b * cbrt( 8);                 // g(8)  = g(2^3) ~ f(2,2,2)
-  Real g27  = a + b * cbrt(27);                 // g(27) = g(3^3) ~ f(3,3,3)
+  //Real g27  = a + b * cbrt(27);                 // g(27) = g(3^3) ~ f(3,3,3)
   // We want a match at the 1st mode such that we require g(1) = f(1,1,1). We may also want a match
   // at the f(2,2,2) mode. I think, we want g(8) to match f(2,2,2) not g(2) because
   // g(2) corresponds to f(1,1,2). Also, g(3) ~ f(1,2,1), g(4) ~ f(1,2,2), g(5) ~ f(2,1,1),
@@ -1646,8 +1640,6 @@ void modalReverb()
   Vec h = impulseResponse(mfb, N, Real(1));
   rsArrayTools::normalize(&h[0], N);
   rosic::writeToMonoWaveFile("RectRoomModes.wav", &h[0], N, (int)sampleRate);
-
-  int dummy = 0;
 
 
   // Observations:

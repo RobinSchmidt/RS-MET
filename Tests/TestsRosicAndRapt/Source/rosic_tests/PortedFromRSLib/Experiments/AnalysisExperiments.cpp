@@ -89,11 +89,11 @@ void autoCorrelation()
   double offset = 0.0;
   if( a[2] != 0.0 )
     offset = -0.5*a[1]/a[2];
-  double exactIndex = (maxIndex-1)+offset;
-  //exactIndex -= 0.5; // -0.5 takes the MA filter into account
+  //double exactIndex = (maxIndex-1)+offset;
+  ////exactIndex -= 0.5; // -0.5 takes the MA filter into account
 
   //double cOpt = acf[2*k+1] / acf[k];
-  double cOpt = uacf[2*k+1] / uacf[k];
+  //double cOpt = uacf[2*k+1] / uacf[k];
 
   double c;
   //c = double (bufferSize) / (double) (bufferSize*(1+k));
@@ -259,9 +259,9 @@ void autoCorrelationPitchDetector()
   }
 
   // get the maximum error between true and estimated frequency:
-  //double maxError = maxDeviation(ft, fe, numBlocks);
-  double maxError = RAPT::rsArrayTools::maxDeviation(&ft[10], &fe[10], numBlocks-10);
-  double bias     = RAPT::rsArrayTools::mean(&fs[100], numBlocks-100) - ft[0];
+  ////double maxError = maxDeviation(ft, fe, numBlocks);
+  //double maxError = RAPT::rsArrayTools::maxDeviation(&ft[10], &fe[10], numBlocks-10);
+  //double bias     = RAPT::rsArrayTools::mean(&fs[100], numBlocks-100) - ft[0];
 
   // plot the true frequency, the instantaneous estimate and the running mean of the current
   // estimate:
@@ -337,7 +337,7 @@ void crossCorrelationBestMatch()
   int N = rsMin(N1, N2);
   double lag     = rsGetShiftForBestMatch(x1, x2, N, deBias);
   double lagTrue = (p2-p1)/w;
-  double error   = (lag-lagTrue)/lagTrue;
+  //double error   = (lag-lagTrue)/lagTrue;
 
   // shift the 2nd signal so as to match the 1st:
   double y2[N2];
@@ -353,7 +353,6 @@ void crossCorrelationBestMatch()
   // frequency. Put another way: lower frequency require longer lengths for a given amount of
   // precision hwich is intuitive
 
-  int dummy = 0;
 }
 
 
@@ -530,12 +529,12 @@ void instantaneousFrequency()
     e3[n]  = (f[n] - fm3[n]) / f[n];
   }
 
-  double maxError = RAPT::rsArrayTools::maxAbs(e3, N);
+  //double maxError = RAPT::rsArrayTools::maxAbs(e3, N);
     // c = 0.76: 3.6285047484070877e-005
     // c = 0.75: 3.4832150523579422e-005
     // c = 0.72: 3.0473459643206141e-005
 
-  double meanError = RAPT::rsArrayTools::mean(e3, N);
+  //double meanError = RAPT::rsArrayTools::mean(e3, N);
     // c = 0.66: -1.2387131128786400e-006
     // c = 0.666: -2.4751832800983252e-007
 
@@ -562,7 +561,6 @@ void instantaneousFrequency()
   // the average should be a weighted average, weighted by the distances to the peaks (maybe
   // we can even use subsample-precision peak locations)
 
-  int dummy = 0;
 }
 
 void instantaneousPhase()
@@ -628,24 +626,20 @@ void instantaneousPhase()
   //plotData(N, 0, 1, pe1, pe2);       // phase error
   plotData(N-3, 0, 1, pe1, pe2);   // last 3 are outliers - need to be cosidered as special case later
 
-
-  int dummy = 0;
 }
 
 void maxShortTimeRMS()
 {
   int N = 100000;
   std::vector<double> x = createSineWave(N, 1000.0, 48000.0);
-  double maxRms = RAPT::getMaxShortTimeRMS(&x[0], N, 4800); // 48 samples = 1 cycle, rms = 1/sqrt(2)
-  int dummy = 0;
+  //double maxRms = RAPT::getMaxShortTimeRMS(&x[0], N, 4800); // 48 samples = 1 cycle, rms = 1/sqrt(2)
 }
 
 void arrayRMS()
 {
   int N = 100000;
   std::vector<double> x = createSineWave(N, 1000.0, 48000.0);
-  double rms = RAPT::rsArrayTools::rootMeanSquare(&x[0], N); // 48 samples = 1 cycle, rms = 1/sqrt(2)
-  int dummy = 0;
+  //double rms = RAPT::rsArrayTools::rootMeanSquare(&x[0], N); // 48 samples = 1 cycle, rms = 1/sqrt(2)
 }
 
 void peakFinder()
@@ -743,11 +737,10 @@ void peakSmoother()
   }
 
   // Compute the height ratio of the 1-sample wide peak and the 2-sample wide after smoothing:
-  Real ratio = y[25] / y[75];
+  //Real ratio = y[25] / y[75];
 
   // Plot the original peaks together with their smoothed versions.
   rsPlotVectors(x, y);
-  int dummy = 0;
 
 
   // Observations:
@@ -942,9 +935,9 @@ void zeroCrossingFinder()
 
   // compute error ratios - these are the precision improvement factors by which choosing a higher
   // precision value actually affects the precision
-  double e10 = eMax0/eMax1;
-  double e21 = eMax1/eMax2;
-  double e32 = eMax2/eMax3;
+  //double e10 = eMax0/eMax1;
+  //double e21 = eMax1/eMax2;
+  //double e32 = eMax2/eMax3;
 
   // plot:
   //plotData(N, 0, 1, x);
@@ -996,7 +989,7 @@ void zeroCrossingFinder2()
   // find zero crossings:
   std::vector<double> z = rsZeroCrossingFinder::upwardCrossings(x, N, p);
    // z should be: 0.5, 8.5
-  int dummy = 0;
+
 }
 
 void zeroCrossingFinder3()
@@ -1061,7 +1054,7 @@ void cycleMarkFinder()
   //fs = 44700;
   //fs = 45000;
 
-  double period = fs/f;
+  //double period = fs/f;
 
   // create test input signal:
   vector<double> x;
@@ -1386,8 +1379,6 @@ void zeroCrossingPitchDetectorTwoTones()
   plotData(N, 0.0, 1.0/fs, f);  // measured frequency
   //plotData(N, 0.0, 1.0/fs, r);  // reliability
 
-
-  int dummy = 0;
 }
 
 
@@ -1827,7 +1818,7 @@ std::vector<T> peakSmoothabilities(
 
 void peakPicker()
 {
-  bool peakPickerWorks = testPeakPicker();  // unit test
+  //bool peakPickerWorks = testPeakPicker();  // unit test
 
   typedef std::vector<double> VecD;
   typedef std::vector<int>    VecI;
@@ -2249,8 +2240,6 @@ void singleSineModelForSineSweep()
   // -Compare estimate to target values
 
 
-  int dummy = 0;
-
 
   // ToDo: 
   // -Maybe wrap the original synthesis phase. This may also be numerically better.
@@ -2393,8 +2382,6 @@ void singleSineModelForResoSweep()
 
   //rosic::writeToMonoWaveFile("ResoSweep.wav", &y[0], N, fs);
 
-
-  int dummy = 0;
 
   // Observations:
   // -When using the anti-aliased impulse-train, we get very strange results even for the exact 

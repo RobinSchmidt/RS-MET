@@ -7,8 +7,6 @@ void centroid()
   double c; 
   c = rsCentroid(x, 10);         // should be 3.5
   c = rsCentroidOfEnergy(x, 10); // should still be 3.5
-
-  int dummy = 0;
 }
 
 // functions are now part of the library
@@ -481,7 +479,6 @@ void ringModNoise()
   // K=9,f0=1000,a=1,b=0.5,r=5.0: it sounds a bit like vinyl crackling noise
   // ...it sounds a lot like crackling anyway.
 
-  int dummy = 0;
 }
 
 void slewRateLimiterLinear()
@@ -661,7 +658,6 @@ void slewRateLimiterPolynomial()
   //  between previous output y[n-1] and current input x[n]. When that becomes zero, we are done.
   // -Maybe apply the differentiate -> limit -> integrate to that difference?
 
-  int dummy = 0;
 }
 
 void stretchedCorrelation()
@@ -748,7 +744,7 @@ void taperedFourierSeries()
     }
   }
 
-  double peak = RAPT::rsArrayTools::maxAbs(x, numSamples);
+  //double peak = RAPT::rsArrayTools::maxAbs(x, numSamples);
 
   //plotData(numHarmonics+1, f, aL, aF);
   plotData(numSamples, t, x, xL, xF);
@@ -808,14 +804,7 @@ void transientModeling()
   // store and transform them in a sample-rate independent way. using oversampling in the 
   // estimation in order to obtain more "analog" coefficients might fail because a lot of coeffs
   // might then be used to model the bandlimitation of the oversampled signal.
-
-  int dummy = 0;
 }
-
-
-
-
-
 
 
 void windowFunctionsContinuous()
@@ -960,7 +949,7 @@ void hannPoissonWindow(double* w, int N, double a)
   rsArrayTools::normalizeMean(w, N);  
 }
 
-void cosSumPoissonWindow5(double* w, int N, double a)
+void cosSumPoissonWindow5(double* w, int N, double /*a*/)
 {
   cosSumWindow5(w, N);  // we need an NN version here - i think, it produces a ZN version
   //int M = N-1;
@@ -1383,7 +1372,7 @@ void waveMorph()
         // todo: maybe try to use diagonal neighbours in the average as well (with weight 
         // 1/sqrt(2))
 
-        double delta = z(i,j) - avg;
+        //double delta = z(i,j) - avg;
 
         z(i, j) = avg;
         // maybe we need a temporary buffer in order to not overwrite values that will still be
@@ -1423,8 +1412,8 @@ void waveMorph2()
   int n = 100;          // number of spatial samples
   int m = 1000;         // number of temporal samples, m should be > n
 
-  double h = 1. / (n+1);  // spatial stepsize
-  double k = 1. / (m+1);  // temporal stepsize
+  //double h = 1. / (n+1);  // spatial stepsize
+  //double k = 1. / (m+1);  // temporal stepsize
 
 
 
@@ -1498,7 +1487,7 @@ void squareToSaw()
   lpf.setSampleRate(sampleRate);
 
   // Compute the desired gain:
-  Real ratio = cutoff / squareFreq;
+  //Real ratio = cutoff / squareFreq;
   Real fudge = 1 / 1.5;              // Empirical fudge factor to give saw same peak amp as sqr
 
   //Real gain  = fudge / ratio;
@@ -1596,6 +1585,4 @@ void squareToSaw()
   //  between a constant and the measured mean.
   // -Build a weird distortion algorithm from that idea.
 
-
-  int dummy = 0;
 }
