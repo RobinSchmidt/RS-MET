@@ -73,7 +73,7 @@ INLINE void IdentityModule::process(Module *module, double *ins, double *outs, i
   outs[0] = ins[0];
 
 
-  int dummy = 0;
+  
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(IdentityModule);
 

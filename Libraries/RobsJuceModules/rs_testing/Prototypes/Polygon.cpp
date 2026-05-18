@@ -75,7 +75,7 @@ void clipAgainstEdge(const std::vector<rsVector2DF>& in, std::vector<rsVector2DF
   //    }
   //    else                         // case 3 - add no vertex
   //    {
-  //      int dummy = 0;
+  //      
   //    }
   //  }
   //  s = p;
@@ -107,7 +107,7 @@ std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p,
   for(size_t i = 0; i < c.size()-1; i++)
   {
     clipAgainstEdge(p, r, c[i], c[i+1]);
-    //int dummy = 0;
+    
   }
   return r;
 }
@@ -355,7 +355,7 @@ float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
   }
 
 
-  //int dummy = 0;
+  
 
 
 

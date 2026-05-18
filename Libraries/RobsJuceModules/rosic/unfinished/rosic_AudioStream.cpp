@@ -75,7 +75,7 @@ bool AudioFileStreamPreloaded<T>::setData(
 /*
 void AudioFileStreamPreloaded::setNumOutputChannels(int newNumChannels)
 {
-  int dummy = 0;
+  
 }
 */
 

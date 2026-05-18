@@ -256,7 +256,7 @@ INLINE void TopLevelModule::getBlockOfSampleFramesStereo(SampleType *inOutL,
     }
 
     blockStart += blockSize;
-    int dummy = 0;
+    
   }
 }
 

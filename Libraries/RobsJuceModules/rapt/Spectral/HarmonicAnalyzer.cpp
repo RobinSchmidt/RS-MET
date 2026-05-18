@@ -292,12 +292,12 @@ void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
     phase  = rsWrapToInterval(phase, -PI, PI);
     mdl.setData(k, i+1, endTime, freq, T(0), phase);
     //mdl.setData(k, i+1, endTime, freq, params.gain, phase);  // test - nope - may make end artifacts worse
-    int dummy = 0;
+    
     // todo: check, if last datapoint is correct - there is an artifact in the resynthesized signal
     // at the end
   }
 
-  int dummy = 0;
+  
 
   // the distance of the very first marker from the time origin t=0 should probably used for 
   // determining the start phase - don't assume an additional "ghost" marker at t=0 - instead, let

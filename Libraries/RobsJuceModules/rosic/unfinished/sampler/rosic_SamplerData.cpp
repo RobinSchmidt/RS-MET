@@ -301,7 +301,7 @@ void SfzInstrument::HierarchyLevel::connectAmpEnv()
     RAPT::rsAssert(numAmpEnvs == 1, "Number of AmpEns should be zero or one");
     setAmpEnvDepth(100.f); }
 
-  int dummy = 0;
+  
 }
 
 void SfzInstrument::HierarchyLevel::copyDataFrom(const HierarchyLevel* lvl)
@@ -396,7 +396,7 @@ void SfzInstrument::Region::copyDataFrom(const Region* src)
   hiKey = src->hiKey;
   loVel = src->loVel;
   hiVel = src->hiVel;
-  int dummy = 0;
+  
 }
 
 bool SfzInstrument::Region::operator==(const SfzInstrument::Region& rhs) const

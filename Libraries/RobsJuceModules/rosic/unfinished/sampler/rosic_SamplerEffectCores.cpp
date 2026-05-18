@@ -280,7 +280,7 @@ void AmplifierCore::setup(float amplitude, float volume, float pan, float width,
   gRR = amplitude*M.d;
 
 
-  int dummy = 0;
+  
 
   // ToDo: 
   // -Verify, if the formulas are implemented correctly, i.e. correctly resemble the behavior

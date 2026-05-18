@@ -77,7 +77,7 @@ bool isComplementary(const rsFilterSpecificationBA<double>& lpfBA)
 
 
     //rsAssert(result);
-    //int dummy = 0;
+    
   }
 
   return result;

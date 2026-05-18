@@ -409,7 +409,7 @@ void rsQuantumComputer<T>::applyGate(const QGate& g, int t)
 
     qbits[a] = g.a * tmp[a] + g.b * tmp[b];
     qbits[b] = g.c * tmp[a] + g.d * tmp[b];
-    int dummy = 0;
+    
   }
 
   // see also https://quantum-journal.org/papers/q-2018-01-31-49/pdf/?

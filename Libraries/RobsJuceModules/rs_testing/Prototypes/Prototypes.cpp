@@ -1066,7 +1066,7 @@ std::vector<double> solvePentaDiagonalSystem(
     L[i+1] -= k*U[i];
     D[i+2] -= k*V[i];
     B[i+2] -= k*B[i];
-    //int dummy = 0;
+    
   }
   piv[i]  = D[i];
   k       = L[i]/D[i];     // a final partial step outside the loop

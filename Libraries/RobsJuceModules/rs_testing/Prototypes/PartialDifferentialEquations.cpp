@@ -480,7 +480,7 @@ void rsRectangularRoom<T>::updateState()
   // update the pressures by adding a fraction of the "velocities":
   rsArrayTools::addWithWeight(u.getDataPointer(), N, u_t.getDataPointer(), k); // is k the right scaler?
 
-  int dummy = 0;
+  
 }
 
 template<class T>

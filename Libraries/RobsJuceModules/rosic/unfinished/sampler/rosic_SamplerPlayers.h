@@ -116,7 +116,7 @@ private:
 
   PlayStatus()
   {
-    int dummy = 0;
+    
     ampN_veltrack.resize(5);  // preliminary: ToDo: in SamplerEngine::preAllocateDspMemory, allocate
     // as many as needed in the maximum case defined by the region/group/instrument that uses the 
     // largest number of amplifiers

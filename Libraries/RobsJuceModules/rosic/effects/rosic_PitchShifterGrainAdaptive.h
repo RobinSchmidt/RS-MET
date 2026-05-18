@@ -157,7 +157,7 @@ namespace rosic
     if( formantPreserve == true )
     {
       //formantPreserver.removeFormants(inL, inR, outL, outR);
-      //int dummy = 0;
+      
       double whiteL, whiteR;
       formantPreserver.removeFormants(inOutL, inOutR, &whiteL, &whiteR);
       PitchShifter::getSampleFrameStereo(&whiteL, &whiteR);

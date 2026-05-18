@@ -256,7 +256,7 @@ void getSamplerNotes(rosic::Sampler::rsSamplerEngine* se,
     se->processFrame(&outL[n], &outR[n]);
   }
 
-  int dummy = 0;
+  
 }
 
 void getSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
@@ -276,7 +276,7 @@ void getSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
     se->processFrame(&outL[n], &outR[n]);
   }
 
-  int dummy = 0;
+  
 }
 
 void generateTestSamples()  // rename to gerenrateSamplerTestSamples
@@ -303,7 +303,7 @@ void generateTestSamples()  // rename to gerenrateSamplerTestSamples
   rosic::writeToMonoWaveFile(name.c_str(), &sample[0], N, (int)fs, 16);
 
 
-  int dummy = 0;
+  
 }
 
 int convertEnumMode_RBJ_to_SVF(int rbjMode)

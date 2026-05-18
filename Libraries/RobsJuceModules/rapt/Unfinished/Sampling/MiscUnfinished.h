@@ -1197,7 +1197,7 @@ public:
 
   rsEnvelopeExtractor()
   {
-    int dummy = 0;
+    
   }
 
 

@@ -666,7 +666,7 @@ void testTimeWarping1(const std::vector<double>& x, double fs, double f0)
   //rsPitchFlattener<double, double> pf;
 
 
-  int dummy = 0;
+  
 }
 
 

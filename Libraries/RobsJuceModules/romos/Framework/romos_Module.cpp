@@ -695,7 +695,7 @@ void retrieveModuleState(void *moduleAsVoid)
   double timeAxis[maxNumFrames];
   RAPT::rsArrayTools::fillWithIndex(timeAxis, maxNumFrames);
   //Plotter::plotData(numFrames, timeAxis, outs[0][0]);
-  //int dummy = 0;
+  
 }
 
 void triggerRuntimeError(const char* /*errorMessage*/)

@@ -675,7 +675,7 @@ ContainerModule* ContainerModule::containerizeModules(std::vector<Module*> modul
               int tmpOutIndex = targetModule->inputPins[targetInputIndex].outputIndex;
               outputModule->connectInputPinTo(0, module, tmpOutIndex);
               targetModule->connectInputPinTo(targetInputIndex, container, numContainerOutputs-1);
-              //int dummy = 0;
+              
             }
           }
         }
@@ -835,7 +835,7 @@ void ContainerModule::minimizeNumberOfAudioInputs()
 
           // ...
 
-          int dummy = 0;
+          
         }
       }
       */
@@ -853,7 +853,7 @@ void ContainerModule::minimizeNumberOfAudioInputs()
         {
 
 
-          int dummy = 0;
+          
         }
       }
       */
@@ -1127,13 +1127,13 @@ void ContainerModule::moduleMoved(Module* moduleThatHasMoved)
 void ContainerModule::numAudioInputsChanged(Module* moduleThatHasChanged)
 {
   // \todo: possibly remove some audio-connections
-  int dummy = 0;
+  
 }
 
 void ContainerModule::numAudioOutputsChanged(Module* moduleThatHasChanged)
 {
   // \todo: possibly remove some audio-connections
-  int dummy = 0;
+  
 }
 
 void ContainerModule::numEventInputsChanged(Module* moduleThatHasChanged)
@@ -1171,7 +1171,7 @@ void ContainerModule::resetVoiceState(int voiceIndex)
   for(unsigned int i = 0; i < childModules.size(); i++)
     childModules[i]->resetVoiceState(voiceIndex);
 
-  //int dummy = 0;
+  
 }
 
 void romos::ContainerModule::freeMemory()
@@ -1413,7 +1413,7 @@ void ContainerModule::sortChildModuleArray()
         {
           if( targetModule->inputPins[pinIndex].outputIndex == oldIndex )
             targetModule->connectInputPinTo(pinIndex, this, newIndex);
-          //int dummy = 0;
+          
         }
       }
     }

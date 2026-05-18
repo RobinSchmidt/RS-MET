@@ -2271,7 +2271,7 @@ void rsEnvelopeExtractor<T>::fillSparseAreasNew(const T* rawEnvTime, const T* ra
   // plot peaks (plus artificially densified) after densification:
   rsPlotArraysXYWithMarks(rawEnvTime, rawEnvValue, rawEnvLength, peaks);  // debug
 
-  int dummy = 0;
+  
 
   // maybe fillSparseAreas should work as follows:
   // -the area between two datapoints at indices n0,n1 is filled/densified with more datapoints 
@@ -2413,7 +2413,7 @@ void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEn
   plt2.addDataArrays(rawEnvLength, rawEnvTime, rawEnvValue);
   plt2.addDataArrays((int)metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
   plt2.plot();
-  int dummy = 0;
+  
   */
 }
 

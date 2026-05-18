@@ -362,7 +362,7 @@ void drawThickLine2(rsImageF& img, float x0, float y0, float x1, float y1, float
   float C0 = -(A*x0 + B*y0);
   float C1 = -(A*x1 + B*y1);
   //tmp = A*A + B*B;  // for check - should be 1
-  //int dummy = 0;
+  
   // To handle the left end-cap, we take a line going through x0,y0 which is perpendicular to the 
   // main line, express this line with the implicit line equation A*x + B*y + C = 0. When the 
   // coefficients are normalized such that A^2 + B^2 = 1 (which is the case for the formulas 

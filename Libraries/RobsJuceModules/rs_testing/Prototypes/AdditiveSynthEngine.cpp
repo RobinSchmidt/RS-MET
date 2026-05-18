@@ -74,7 +74,7 @@ void rsAdditiveSynthVoice<N>::EditablePatch::createArtificialPhases()
       double wM  = fM * 360;                             // omega in degrees per second
       double pT  = spL->phase + wM * dt;                 // target phase
       spR->phase = rsWrapToInterval(pT, -180.0, +180.0); // wrapped into -180..+180
-      int dummy = 0;
+      
     }
   }
 }
@@ -257,7 +257,7 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
           fR = fL;
         }
 
-        int dummy = 0;
+        
 
       }
       else

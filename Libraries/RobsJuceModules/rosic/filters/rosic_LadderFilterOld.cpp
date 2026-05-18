@@ -355,7 +355,7 @@ double LadderFilterOld::getSampleTest(double in)
   //double b0 = 1.0;  // only during development
   //y1L = y0L - a1*y1L;
 
-  //int dummy = 0;
+  
 
   // cascade of 4 1st order sections:
   y1L = b0*y0L - a1*y1L;

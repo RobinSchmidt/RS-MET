@@ -103,7 +103,7 @@ void GenerateDesiredOutput::forBiquad(int N, double* x, double* b0, double* b1, 
     y2   = y1;
     y1   = y0;
     y[n] = y0;
-    //int dummy = 0;
+    
   }
 }
 

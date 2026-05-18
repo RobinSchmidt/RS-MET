@@ -6,7 +6,7 @@ rsFractalImageRenderer::rsFractalImageRenderer()
   // -set it up in such a way as to render the Madelbrot fractal by calling setPreset with 
   //  the appropriate setting
 
-  int dummy = 0;
+  
 }
 
 

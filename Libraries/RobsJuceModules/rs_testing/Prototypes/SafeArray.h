@@ -150,7 +150,7 @@ public:
         //k = cj-1;
 
 
-        int dummy = 0;
+        
       }
       else
         --k;

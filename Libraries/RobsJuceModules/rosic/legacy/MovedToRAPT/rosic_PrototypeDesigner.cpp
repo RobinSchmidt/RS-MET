@@ -606,7 +606,7 @@ void rsPrototypeDesigner::getEllipticLowpassZerosPolesAndGain(Complex *z, Comple
 void rsPrototypeDesigner::getLowpassZerosPolesAndGain(Complex *z, Complex *p, double *k, int N, 
 int approximationMethod)
 {
-  int dummy = 0;
+  
 }
 */
 

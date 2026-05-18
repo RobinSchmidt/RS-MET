@@ -26,7 +26,7 @@ void rsMeshWeightCalculator2D<T>::weightEdgesByDistances(rsGraph<rsVector2D<T>, 
       T w = mesh.getEdgeData(i, k);
       w  *= pow(d, -q);
       mesh.setEdgeData(i, k, w);
-      int dummy = 0;
+      
     }
   }
   // ToDo: 
@@ -34,7 +34,7 @@ void rsMeshWeightCalculator2D<T>::weightEdgesByDistances(rsGraph<rsVector2D<T>, 
   //   mesh.scaleEdgeData(i, k, s) which does: setEdgeData(i, k, s*getEdgeData(i, k))
   //   where s = pow(d, -q);
 
-  int dummy = 0;
+  
 }
 
 template<class T>
@@ -77,11 +77,11 @@ void rsMeshWeightCalculator2D<T>::weightEdgesByMutualDistance(rsGraph<rsVector2D
       T s_ik  = getNeighborSeparation(mesh, i, k);
       w_ik   *= pow(s_ik, q);
       mesh.setEdgeData(i, k, w_ik);
-      int dummy = 0;
+      
     }
   }
 
-  int dummy = 0;
+  
 }
 
 template<class T>

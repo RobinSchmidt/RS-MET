@@ -27,7 +27,7 @@ void InteractiveTestRunner::runTests()
 
 
 
-  //int dummy = 0;
+  
 }
 
 }

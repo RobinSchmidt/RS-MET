@@ -322,7 +322,7 @@ void ModuleProxy::mapApparentSourceToProcessingSource(Module * &sourceModule, in
     sourceModule         = inputPins[0].sourceModule;
     sourceOutputPinIndex = inputPins[0].outputIndex;
     sourceModule->mapApparentSourceToProcessingSource(sourceModule, sourceOutputPinIndex);
-    //int dummy = 0;
+    
   }
   else
   {

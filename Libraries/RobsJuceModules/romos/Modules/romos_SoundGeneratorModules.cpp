@@ -226,7 +226,7 @@ void BlitIntegratorInitialStates::createStateValueTables()
           stateValues[tableIndex][phaseIndex] += (1.0 / (k*PI)) * sin(2*k*PI * phaseIndex/(numPhases-1.0));
 
 
-        int dummy = 0;
+        
       }
 
 

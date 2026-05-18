@@ -336,7 +336,7 @@ SfzCodeBook::SfzCodeBook()
   // Maybe let's call the extended format SFZ++ :-)
 
 
-  int dummy = 0;
+  
 }
 
 template<class T>

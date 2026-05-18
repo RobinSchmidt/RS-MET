@@ -684,7 +684,7 @@ void TurtleSourceAntiAliased::resetPhase(double targetPhase, double* stepX, doub
   *slopeChangeX = s * (x[1] - x[0] - oldSlopeX);
   *slopeChangeY = s * (y[1] - y[0] - oldSlopeY);
 
-  int dummy = 0;
+  
 }
 // -needs more verification with different resetRatios
 

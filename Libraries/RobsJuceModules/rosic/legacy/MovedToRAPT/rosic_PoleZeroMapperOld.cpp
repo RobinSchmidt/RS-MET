@@ -465,7 +465,7 @@ void PoleZeroMapper::sPlanePrototypeToBandpass(Complex *prototypePoles, Complex 
   std::vector<Complex> pDbg, zDbg; // for debugging
   pDbg = toVector(targetPoles, 2*prototypeOrder);
   zDbg = toVector(targetZeros, 2*prototypeOrder);
-  int dummy = 0;
+  
 }
 
 void PoleZeroMapper::prototypeToAnalogBandstop(Complex *poles, int numPoles, Complex *zeros, int numZeros, double *gain, 
@@ -607,5 +607,5 @@ void PoleZeroMapper::zLowpassToLowpass(Complex *z, Complex *p, double *k, Comple
   // doo stufff....
 
 
-  int dummy = 0;
+  
 }

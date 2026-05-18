@@ -124,7 +124,7 @@ void ProcessingTest::connectTestModuleToInputFeederModules()
   for(unsigned int i = 0; i < moduleToTest->getNumInputPins(); i++)
   {
     moduleToTest->connectInputPinTo(i, inputFeederModules[i], 0);
-    int dummy = 0;
+    
   }
 }
 
@@ -133,7 +133,7 @@ void ProcessingTest::connectTestModuleToOutputRetrieverModules()
   for(unsigned int i = 0; i < moduleToTest->getNumOutputPins(); i++)
   {
     outputRetrieverModules[i]->connectInputPinTo(0, moduleToTest, i);
-    int dummy = 0;
+    
   }
 }
 
@@ -355,7 +355,7 @@ void ProcessingTest::establishInputBlock(int blockStart, int blockSize)
         int offset = inputFeederModules[pinIndex]->getOutputPinMemoryOffset(frameIndex, 0, 0);
         outputPointer[offset] = inputs[0][pinIndex][blockStart+frameIndex];
         double dbg = outputPointer[offset];
-        int dummy = 0;
+        
       }
     }
   }
@@ -374,7 +374,7 @@ void ProcessingTest::establishInputBlock(int blockStart, int blockSize)
           int offset = inputFeederModules[pinIndex]->getOutputPinMemoryOffset(frameIndex, voiceIndex, 0);
           outputPointer[offset] = inputs[voiceIndex][pinIndex][blockStart+frameIndex];
           double dbg = outputPointer[offset];
-          int dummy = 0;
+          
         }
       }
     }
@@ -402,7 +402,7 @@ void ProcessingTest::retrieveOutputBlock(int blockStart, int blockSize)
         int offset = outputRetrieverModules[pinIndex]->getOutputPinMemoryOffset(frameIndex, 0, 0);
         outputs[0][pinIndex][blockStart+frameIndex] = outputPointer[offset];
         double dbg = outputs[0][pinIndex][blockStart+frameIndex];
-        int dummy = 0;
+        
       }
     }
   }
@@ -421,7 +421,7 @@ void ProcessingTest::retrieveOutputBlock(int blockStart, int blockSize)
           int offset = outputRetrieverModules[pinIndex]->getOutputPinMemoryOffset(frameIndex, voiceIndex, 0);
           outputs[voiceIndex][pinIndex][blockStart+frameIndex] = outputPointer[offset];
           double dbg = outputs[voiceIndex][pinIndex][blockStart+frameIndex];
-          int dummy = 0;
+          
         }
       }
     }
@@ -429,7 +429,7 @@ void ProcessingTest::retrieveOutputBlock(int blockStart, int blockSize)
   //DEBUG_BREAK;  // check updated code above
 
   //plotDesiredAndActualOutput(0, 0, numFramesToProcess, 0);
-  //int dummy = 0;
+  
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------

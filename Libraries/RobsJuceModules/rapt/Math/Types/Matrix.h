@@ -1164,7 +1164,7 @@ public:
   /** Destructor. */
   ~rsMatrix()
   {
-    //int dummy = 0; // to figure out, when it gets called for debugging
+     // to figure out, when it gets called for debugging
   }
 
   /** Creates matrix from a std::vector.  */

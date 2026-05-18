@@ -389,7 +389,7 @@ void rsPoleZeroMapper::sPlanePrototypeToBandpass(Complex *prototypePoles, Comple
   // debug:
   pDbg = RAPT::toVector(targetPoles, 2*prototypeOrder);
   zDbg = RAPT::toVector(targetZeros, 2*prototypeOrder);
-  int dummy = 0;
+  
 }
 
 void rsPoleZeroMapper::prototypeToAnalogBandstop(Complex* poles, int numPoles, Complex* zeros, 
@@ -529,5 +529,5 @@ void rsPoleZeroMapper::zLowpassToLowpass(Complex* /*z*/, Complex* /*p*/, double*
   Complex* /*zNew*/, Complex* /*pNew*/, double* /*kNew*/, int /*N*/, double /*wc*/, double /*wt*/)
 {
   // not yet implemented
-  //int dummy = 0;
+  
 }

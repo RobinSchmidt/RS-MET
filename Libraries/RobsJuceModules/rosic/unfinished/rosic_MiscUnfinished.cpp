@@ -131,7 +131,7 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
   //  rsPlotComplexArrays(spectrumSize/2, (double*)tmpSpectrum, (double*)spectrum);
 
   if(p == 8) rsPlotComplexArrays(N/2, (double*)Om);
-  //int dummy = 0;
+  
 
 
   // ToDo:
@@ -256,7 +256,7 @@ void SpectralShifter::shiftViaRS1(Complex* spectrum, int spectrumSize)
   //if(frameIndex == 8) 
   //  rsPlotComplexArrays(spectrumSize/2, (double*)tmpSpectrum, (double*)spectrum);
 
-  int dummy = 0;
+  
 
 
   // ToDo:
@@ -449,7 +449,7 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // an appropriate scale factor from this ratio. That strategy would be more adaptive to the 
     // signal. Maybe try both or let the user decide.
 
-    int dummy = 0;
+    
   }
 
 
@@ -458,7 +458,7 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
   AT::copy(&phs[0], &phsOld[0], spectrumSize);
 
 
-  int dummy = 0;
+  
 }
 
 

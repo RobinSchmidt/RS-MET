@@ -393,7 +393,7 @@ void ParameterModule::parameterChanged(int index)
 
   }
 
-  int dummy = 0;
+  
 }
 void ParameterModule::setModuleName(const std::string& newName)
 {

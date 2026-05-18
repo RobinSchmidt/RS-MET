@@ -225,7 +225,7 @@ bool WrappedAdderNTest::runTest()
   result &= getAdderNumInputPins() == 10;
   result &= ProcessingTest::runTest();
 
-  //int dummy = 0;
+  
   return result;
 }
 void WrappedAdderNTest::removeConnection(int index)

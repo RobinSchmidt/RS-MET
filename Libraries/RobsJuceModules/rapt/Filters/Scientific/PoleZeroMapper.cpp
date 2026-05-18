@@ -537,7 +537,7 @@ void rsPoleZeroMapper<T>::zLowpassToLowpass(Complex* /*z*/, Complex* /*p*/, T* /
   Complex* /*zNew*/, Complex* /*pNew*/, T* /*kNew*/, int /*N*/, T /*wc*/, T /*wt*/)
 {
   // not yet implemented
-  //int dummy = 0;
+  
 }
 
 template<class T>

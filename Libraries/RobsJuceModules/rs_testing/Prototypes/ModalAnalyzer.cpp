@@ -571,7 +571,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     //  or near the start. Both ways could make sense: match near the peak: better time-domain 
     //  subtraction results with original, match near start: may model the transient better.
 
-    int dummy = 0;
+    
   }
 
 
