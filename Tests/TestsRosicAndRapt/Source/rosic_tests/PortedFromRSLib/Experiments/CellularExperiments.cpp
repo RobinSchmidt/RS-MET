@@ -10,7 +10,7 @@ void testCellularAutomaton1()
 {
 
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 

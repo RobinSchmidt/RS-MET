@@ -106,9 +106,6 @@ void allpassFDN()
 
   //...TBC...and I'm not sure, if everything is right, so far.
 
-
-  int dummy = 0;
-
   // Ideas for naming the matrices:
   // -FeedIn, FeedBack (standard), FeedOut, FeedThrough
   // -Injection, Transition (standard), Extraction, Circumvention
@@ -396,13 +393,11 @@ void biquadResoGainToQ()
 
 void butterworthEnergy()
 {
-  int N = 5;  // Butterworth order
-  int M = 8;  // number of passes
-  double E = RAPT::rsPrototypeDesigner<double>::butterworthEnergy(N, M);
+  //int N = 5;  // Butterworth order
+  //int M = 8;  // number of passes
+  //double E = RAPT::rsPrototypeDesigner<double>::butterworthEnergy(N, M);
 
   // todo: maybe make plots of both normalizing functions (energy and cutoff based
-
-  int dummy = 0;
 }
 
 
@@ -734,7 +729,7 @@ void biquadDesignVicanek()
   {
     calcIntermediates(w0, Q);
 
-    double B0 = 0;                          // Text
+    //double B0 = 0;                          // Text
     double R1 = A0*p0 + A1*p1 + A2*p2;      // Eq 39
     double R2 = -A0 + A1 + 4*(p0-p1)*A2;    // Eq 39
     double B2 = (R1 - R2*p1) / (4*p1*p1);   // Eq 40
@@ -939,8 +934,6 @@ void biquadDesignVicanek()
   //  b-coeffs up to a scale factor), then use pole radius, angle and overall gain as degrees
   //  of freedom and require: match at DC, fs/2 and ...hmmm... maybe the lower bandedge?
   // -Plot the LP/HP/BP/BR responses in one plot. Maybe add also the peak response
-
-  int dummy = 0;
 }
 
 void biquadStability()
@@ -1091,7 +1084,6 @@ void biquadTail()
   // plot both results:
   rsPopFront(tFrm); // because they agree only up to a shift by one sample
   rsPlotVectors(tFlt, tFrm); 
-  int dummy = 0;
 }
 
 void biquadModulation()
@@ -1291,7 +1283,6 @@ void brickwallThenAllpass()
   //rsPlotVectors(y);
   rsPlotVectors(x, y);
   //rsPlotVectors(x, y, 0.5*(x+y));
-  int dummy = 0;
 
 
   // Plot the phase responses of the originla lowpass filter and the lowpass combined with the 
@@ -1402,8 +1393,7 @@ void brickwallPlusBandpass()
   Real Q          =    25.0;   // Quality factor for the bandpass
   int  order      =     8;
   int  N          =  5000;     // Number of samples
-
-  int  delay      =   260;     // Delay for the bandpass filter
+  //int  delay      =   260;     // Delay for the bandpass filter
 
 
   Real wc = 2*PI*cutoff/sampleRate;
@@ -1559,16 +1549,13 @@ void onePoleFilterSimper()
   using Vec  = std::vector<Real>;
 
   // Setup:
-  int  N          =  4096;    // Number of samples to produce
-  Real sawFreq    =   100;    // Frequency of input sawtooth wave
+  //int  N          =  4096;    // Number of samples to produce
+  //Real sawFreq    =   100;    // Frequency of input sawtooth wave
   Real sampleRate = 44100;    // Sample rate for the numerical test.
   Real cutoff     =  1000;    // Cutoff frequency of the filter
 
   rsOnePoleFilterSimper<Real> flt;
-  Real w = 2*PI*cutoff/sampleRate;
-
-
-  int dummy = 0;
+  //Real w = 2*PI*cutoff/sampleRate;
 }
 
 void sallenKeyFilterSimper()
@@ -2009,8 +1996,6 @@ void stateVarFilterSimper()
   getImpulseResponse(svf, &ySvf2[0], N);
   rsPlotVectors(yCbf, ySvf2);                   // Both should be the same
 
-  int dummy = 0;
-
   // Observations:
   //
   // - The impulse- and frequency responses of the RBJ cookbook filters and the Simper SVF do 
@@ -2187,7 +2172,7 @@ void stateVectorFilter()
   double fs = 44100;         // sample rate
   double f  = 1000;          // filter frequency
   double q  = 0.5;           // Q value
-  double g  = 2;             // gain factor (for shelf or bell filters)
+  //double g  = 2;             // gain factor (for shelf or bell filters)
 
   using DSN = rosic::BiquadDesigner;
   double b0, b1, b2, a1, a2; // biquad coeffs
@@ -2487,8 +2472,6 @@ void averager()
   plotData(N, t, ySum, y3);
   // maybe the remaining bump can be compesnated by another attach/decay function
 
-
-  int dummy = 0;
 }
 
 
@@ -2510,7 +2493,7 @@ void movingAverage()
 
   getImpulseResponse(ma, h, N);
   plotData(N, t, h);
-  double sum = RAPT::rsArrayTools::sum(h, L);
+  //double sum = RAPT::rsArrayTools::sum(h, L);
 }
 
 void trapezAverager()
@@ -2712,8 +2695,6 @@ void compareOldAndNewEngineersFilter()
 
   // in rsInfiniteImpulseResponseDesigner<T>::getBiquadCascadeCoefficients, the zeros are not 
   // properly sorted
-
-  int dummy = 0;
 }
 
 void testPoleZeroMapper()
@@ -2747,8 +2728,6 @@ void testPoleZeroMapper()
   // in-place processing sounds like they should do the same thing? are they redundant?
   // ...if so, get rid of redundant code
   // and what about sPlanePrototypeToBandpass - this seems to be actually used in InfiniteImp..
-
-  int dummy = 0;
 }
 
 void ringingTime()
@@ -2779,7 +2758,7 @@ void ringingTime()
   flt.setApproximationMethod(method);
 
   // compute ringing time:
-  double rt = flt.getRingingTimeEstimate(threshold);
+  //double rt = flt.getRingingTimeEstimate(threshold);
 
   // create impulse and normalize response:
   static const int N = 1000;    // number of samples
@@ -2901,8 +2880,6 @@ void halpernPrototype()
 
   }
   plotDataLogX(numBins, w, mH, mP);
-
-  int dummy = 0;
 }
 
 
@@ -3127,10 +3104,10 @@ void splitLowFreqFromDC()
   double fs          = 44100.0;  // samplerate
   double f           =   400.0;  // sine frequency
   double a           =     0.2;  // sine amplitude
-  double dc1         =     1.0;  // amount of DC at start
-  double dc2         =     1.5;  // DC at end
+  //double dc1         =     1.0;  // amount of DC at start
+  //double dc2         =     1.5;  // DC at end
   double fc          =   100.0;  // filter cutoff frequency
-  double order       =     1;    // order of the single-pass filter
+  //double order       =     1;    // order of the single-pass filter
   int    numPass     =     8;    // number of passes
 
 
@@ -3157,8 +3134,6 @@ void splitLowFreqFromDC()
   delete[] x;
   delete[] yl;
   delete[] yh;
-
-  int dummy = 0;
 }
 
 template<class T>
@@ -3252,9 +3227,7 @@ void ladderResonanceGain()
   }
   plt.setLogScale("x");
   plt.plot();
-  int dummy = 0;
   
-
   // Observations:
   // -Effect of the B1 parameter:
   //  -At 0.5 (bilinear) all curves meet at the Nyquist freq. The higher order curves bend upward.
@@ -4055,7 +4028,7 @@ void ladderFeedbackSatDCGain()
     yDC[n] = lpf.getSample(y[n]);
 
   // compute the DC gain that is expected from the settings:
-  double dcGain = 1.0 / flt.getCompensationGain();
+  //double dcGain = 1.0 / flt.getCompensationGain();
 
   // plot outputs:
   GNUPlotter plt;
@@ -4075,7 +4048,7 @@ void ladderFeedbackSatReso()
   double fs       = 44100;      // samplerate
   double fIn      = 50;         // frequency of input sawtooth
   double aIn      = -1.0;       // amplitude of input
-  double drive    = 2.0;        // feedback drive
+  //double drive    = 2.0;        // feedback drive
   //double y1       = 1.0;        // feedback saturator gain at x=1 (parameter for simoid)
   //double lo       = -0.5;       // feedback saturation low-limit
   //double hi       = +0.5;       // feedback saturation high-limit
@@ -4450,7 +4423,6 @@ void ladderZDFvsUDF()
 void ladderResoModulation()
 {
 
-  int dummy = 0;
 }
 
 void resoShapeFeedbackSat()
@@ -4817,9 +4789,6 @@ void resoSeparationNonlinear()
   plt.addDataArrays(N, &y[0]);
   plt.addDataArrays(N, &yr[0]);
   plt.plot();
-
-
-  int dummy = 0;
 }
 
 
@@ -5054,17 +5023,14 @@ void resoReplaceScream()
 void resoWave()
 {
   // User parameters:
-  int   N        = 2000;        // number of samples
-  float fs       = 44100.f;     // sample rate
-  float cutoff   =  1000.f;     // cutoff frequency
-  float resDecay =    10.f;     // resonance decay of ladder in milliseconds
+  //int   N        = 2000;        // number of samples
+  //float fs       = 44100.f;     // sample rate
+  //float cutoff   =  1000.f;     // cutoff frequency
+  //float resDecay =    10.f;     // resonance decay of ladder in milliseconds
 
 
   // Create and set up filter object:
   rosic::rsResoWaveFilter flt;
-
-
-  int dummy = 0;
 }
 
 void fakeResonance()

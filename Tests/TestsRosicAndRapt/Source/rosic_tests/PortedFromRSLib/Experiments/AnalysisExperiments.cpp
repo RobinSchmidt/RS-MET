@@ -2585,7 +2585,7 @@ void multiSineCycleWobbles()  // Maybe rename to sineFromTanhWubs
   y = cy * y;
 
   rsPlotVectorsXY(x, s, y);
-  int dummy = 0;
+  //int dummy = 0;
 
   // Observations:
   //

@@ -425,7 +425,7 @@ void universalCombResponses()
   plotImpAndFreqResp(10, +0.5, -0.9, +0.8, 202, 2001);
 
 
-  int dummy = 0;
+  //int dummy = 0;
 
   // ToDo:
   //
@@ -985,7 +985,7 @@ void dampedCombFilter()
   Comb comb;
 
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void dampedCombAllpassIdea()
@@ -1307,7 +1307,7 @@ void dampedCombAllpassClass()
   };
 
   // Helper function to produce the impulse response for given settings:
-  auto impResp = [&](int delay, Real feedback, Real omega, Real hiGain, bool preDelay, int mode)
+  auto impResp = [&](int delay, Real feedback, Real omega, Real hiGain, bool preDelay, int /*mode*/)
   {
     Allpass comb;
     setupComb(comb, delay, feedback, omega, hiGain, preDelay); 
@@ -1499,7 +1499,7 @@ void dampedCombAllpassResponses()
 
   // User parameters:
   int  delay      =    20;     // Main delay roundtrip length in samples. Is M-1 in the algo
-  int  numSamples =  4410;     // Number of samples to generate  ...rename to numBins
+  //int  numSamples =  4410;     // Number of samples to generate  ...rename to numBins
   Real sampleRate = 44100;     // Sample rate for writing the wavefiles
   Real dampFreq   = 10000;     // Frequency (in Hz) of the shelf filter for feedback damping
   Real dampGain   =     0.5;   // Linear high freq damping gain
@@ -1614,7 +1614,7 @@ void dampedCombAllpassChainOf4()
   Real g  = dampGain;
   Real k  = feedback;
   int  d1 = delay1, d2 = delay2, d3 = delay3, d4 = delay4;
-  int  delaySum = d1 + d2 + d3 + d4;
+  //int  delaySum = d1 + d2 + d3 + d4;
   Allpass apf1; setupComb(apf1, d1, k, w, g, false);
   Allpass apf2; setupComb(apf2, d2, k, w, g, false);
   Allpass apf3; setupComb(apf3, d3, k, w, g, false);
@@ -1732,7 +1732,7 @@ void dampedCombAllpassFeedbackBiquad()
   ap.setMaxDelayInSamples(delay);
   ap.setup(delay, feedback, 2, b, a, false);
   Vec h = impulseResponse(ap, N, 1.0);
-  bool ok = isAllpass(h, 1.e-3);
+  //bool ok = isAllpass(h, 1.e-3);
   rsPlotVectors(h);
 
   // ToDo:
@@ -1773,7 +1773,7 @@ void dampedCombAllpassFreqDependentRT60()
   Real decaySamples = decayTime     * sampleRate;
   Real lowOmega     = 2*PI*lowFreq  / sampleRate;
   Real highOmega    = 2*PI*highFreq / sampleRate;
-  Real spikeFreq    = Real(sampleRate) / Real(delay);  // Frequency of the spikes
+  //Real spikeFreq    = Real(sampleRate) / Real(delay);  // Frequency of the spikes
   int  N            = numSamples;
 
 
@@ -1808,7 +1808,7 @@ void dampedCombAllpassFreqDependentRT60()
     hL[n] = engFlt.getSample(h[n]);
 
   // Extract bandpass part:
-  Real midFreq   = RAPT::rsBandwidthConverter::bandedgesToCenterFrequency(   lowFreq, highFreq);
+  //Real midFreq   = RAPT::rsBandwidthConverter::bandedgesToCenterFrequency(   lowFreq, highFreq);
   Real bandWidth = RAPT::rsBandwidthConverter::bandedgesToBandwidthInOctaves(lowFreq, highFreq);
   engFlt.setMode(rsInfiniteImpulseResponseDesigner<Real>::BANDPASS);
   engFlt.setBandwidth(bandWidth);
@@ -1913,10 +1913,7 @@ void dampedCombAllpassFreqDependentRT60()
 
 
 
-
-
-
-  int dummy = 0;
+  //int dummy = 0;
 
   // Observations:
   //
@@ -2171,7 +2168,7 @@ void dampedMultiCombAllpassIdea()
   Real decaySamples = decayTime     * sampleRate;
   Real lowOmega     = 2*PI*lowFreq  / sampleRate;
   Real highOmega    = 2*PI*highFreq / sampleRate;
-  Real spikeFreq1   = Real(sampleRate) / Real(delay1);  // Frequency of the spikes
+  //Real spikeFreq1   = Real(sampleRate) / Real(delay1);  // Frequency of the spikes
   int  N            = numSamples;
 
   delay1 *= delayScale;
@@ -2216,10 +2213,10 @@ void dampedMultiCombAllpassIdea()
 
 
   // Compute different notions of density for inspection:
-  double densityNum = U.getNumeratorDensity();
-  double densityDen = U.getDenominatorDensity();
-  double densitySep = U.getSeparatedDensity();
-  double densityCmb = U.getCombinedDensity();
+  //double densityNum = U.getNumeratorDensity();
+  //double densityDen = U.getDenominatorDensity();
+  //double densitySep = U.getSeparatedDensity();
+  //double densityCmb = U.getCombinedDensity();
 
 
   // Create the corrector filter and apply it to the comb impulse response:
@@ -2492,7 +2489,7 @@ void dampedCombAllpassComplex()
   //Complex H = ap.getCombTransferFunctionAt(z);
   // Doesn't compile because argument and return value are of type rsComplex<TPar> and TPar is
   // complex, so we'd get a nested complex type.
-  int dummy = 0;
+  //int dummy = 0;
 
 
   // Observations:
@@ -2829,12 +2826,6 @@ void dampedAllpassBiComb_1p()
   ok &= isAllpass(z, 1.e-3);
   rsPlotVectors(y, z);
 
-
-
-
-  int dummy = 0;
-
-
   // ToDo:
   //
   // - Implement rsDampedAllpassBiComb_1p::getTransferFunctionAt() and test it.
@@ -2975,15 +2966,15 @@ std::vector<double> extendedFDN_3x3()
 
 
   // Compute the 9 = 3*3 total roundtrip delays for inspection in debugger:
-  int M1_N1 = M1 + N1;
-  int M1_N2 = M1 + N2;
-  int M1_N3 = M1 + N3;
-  int M2_N1 = M2 + N1;
-  int M2_N2 = M2 + N2;
-  int M2_N3 = M2 + N3;
-  int M3_N1 = M3 + N1;
-  int M3_N2 = M3 + N2;
-  int M3_N3 = M3 + N3;
+  //int M1_N1 = M1 + N1;
+  //int M1_N2 = M1 + N2;
+  //int M1_N3 = M1 + N3;
+  //int M2_N1 = M2 + N1;
+  //int M2_N2 = M2 + N2;
+  //int M2_N3 = M2 + N3;
+  //int M3_N1 = M3 + N1;
+  //int M3_N2 = M3 + N2;
+  //int M3_N3 = M3 + N3;
 
 
   // Compute the feedback damping gain factors:
