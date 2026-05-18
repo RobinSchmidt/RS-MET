@@ -78,8 +78,8 @@ public:
   /** Computes and returns an output sample.  */
   inline T getSample(T in)
   {
-    // debug - so we can see the length when we hit an assert in pushBack:
-    size_t L = maxDeque.getLength();
+    // Debug - so we can see the length when we hit an assert in pushBack:
+    //size_t L = maxDeque.getLength();
 
     // accept new incoming sample - this corresponds to
     // Nayuki's Step 2 - "increment the array range’s right endpoint"

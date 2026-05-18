@@ -814,7 +814,7 @@ public:
     Arr a;
     a.reserve(4);
     size_t N = 6;
-    size_t start = 1000;
+    //size_t start = 1000;
     a.fill(N, 1000);
     ok &= a.size() == N;
     ok &= a.capacity() == 8;

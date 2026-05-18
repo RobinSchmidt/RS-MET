@@ -1234,8 +1234,6 @@ void phaseFreqConsistency()
   // -use longer windows and parabolic interpolation also in the case of rsHarmonicAnalyzer
   // -maybe a combination of two or more approaches is best? like 
   //  parabolic interpolation -> numeric derivative -> consistency enforcement
-
-  int dummy = 0;
 }
 
 
@@ -1326,9 +1324,6 @@ void harmonicDetection2Sines()
   // analyze:
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], (int) x.size());
   plotSineModel(mdl, fs);
-
-  int dummy = 0;
-
 
   // Observations:
 
@@ -1478,8 +1473,6 @@ void harmonicDetection3Sines()
   //  -the analyzed partial zig-zags between the two frequencies, amplitude is constant
   //  -they actually do get detected because there's nothing left or right to them
   //  -try with 5 sines: f = 100,900,975,1025,1100
-
-  int dummy = 0;
 }
 
 void harmonicDetection5Sines()
@@ -1527,8 +1520,6 @@ void harmonicDetection5Sines()
   //plotSineModelAmplitudes(mdl, {10});
   //plotSineModelAmplitudes(mdl, {9, 11});
   plotSineModelAmplitudes(mdl, {9, 10, 11});
-
-  int dummy = 0;
 
   // Observations:
 
@@ -1886,7 +1877,7 @@ void amplitudeDeBeating()
 
   // remove the beating:
   typedef rsEnvelopeExtractor<double>::endPointModes EM;
-  double beatPeriodInFrames = frameRate / beatFrq;  // 38.222...
+  //double beatPeriodInFrames = frameRate / beatFrq;  // 38.222...
   Vec time = rsRangeLinear(0.0, double(numFrames-1), numFrames);  
     // time is measured in frames - todo: measure it in seconds to be consistent with the 
     // sinusoidal model

@@ -105,10 +105,6 @@ void heatEquationNyquistBug()
   double x;
   for(int n = 0; n < N; n++)
     x = hteq.getSample2();
-
-
-
-  int dummy = 0;
 }
 
 void heatEquation1D()
@@ -465,8 +461,6 @@ void rectangularRoom()
     // maybe plot the total energy in the room (sum-of-squares of u plus sum-of-squares
     // of u_t = potential + kinetic)?
     // plot potential and kinetic energies and total energy
-
-    int dummy = 0;
   }
 
   // todo: write the impulse response to a wave file
@@ -519,10 +513,6 @@ void rectangularRoom()
   // i guess, we get a lot of cache-misses when the sizes grow larger...we should use 
   // Nx <= Ny <= Nz for best cache locality...maybe with more complex data-layout using a 
   // Hilbert curve, cache locality could be improved - but that would be really complicated!
- 
-
-
-  int dummy = 0;
 }
 
 
@@ -546,7 +536,7 @@ void particleForceDistanceLaw()
   float size1 = 0.01f;
   float size2 = 0.01f;
 
-  float test = ps.getForceByDistance(1, size1, size2);
+  //float test = ps.getForceByDistance(1, size1, size2);
 
   float dMin = 0;
   float dMax = 2;
@@ -1444,8 +1434,6 @@ void quantumComputer()
   // ToDo:
   // -Repeat the computation multiple times and collect the results as we would do in an actual
   //  quantum computation. Then find the mean value of the result
-
-  int dummy = 0;
 }
 
 
@@ -1517,8 +1505,8 @@ bool quantumSpinEvolution()
 
   double p = 2;             // phase - tweaking this is intersting
   double k = 1 / sqrt(2.);  // to normalize the state
-  double s = k * sin(p);
-  double c = k * cos(p);
+  //double s = k * sin(p);
+  //double c = k * cos(p);
   //QS::prepareState(Psi0, c, s, s, -c); 
 
   // create Pauli matrices and Hamiltonian:
@@ -1686,10 +1674,6 @@ void quantum3StateSystem()
 
   Mat A = lambda * Mat(3, 3, Vec({0,1,0, 1,0,0, 0,0,2}));
   Mat B = mu     * Mat(3, 3, Vec({2,0,0, 0,0,1, 0,1,0}));
-
-
-  int dummy = 0;
-
 }
 
 
