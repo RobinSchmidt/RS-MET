@@ -640,7 +640,11 @@ public:
   { 
     // New:
     static std::string emptyString = "";
-    if(i < 0 || i >= 128) { RAPT::rsError("MIDI CC index out of range"); return emptyString; }
+    if(i < 0 || i >= 128) 
+    { 
+      RAPT::rsError("MIDI CC index out of range"); 
+      return emptyString;
+    }
     // We should probably not return a reference to a static string here. Instead, declare some 
     // global object somewhere that holds the empty string and return a reference to that. This is
     // the null-object pattern. The idea is that we return a reference to an empty string.
@@ -648,7 +652,7 @@ public:
     // Old:
     //if(i < 0 || i >= 128) { RAPT::rsError("MIDI CC index out of range"); return ""; }
 
-    return midiCC_labels[i]; 
+    return midiCC_labels[i];
   }
 
   /** @see setMidiControllerInitValue */

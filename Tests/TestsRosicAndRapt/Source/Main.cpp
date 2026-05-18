@@ -66,10 +66,18 @@ int main(int argc, char* argv[])
   // Unit Tests:
 
   bool ok = true;
-  //ok &= runUnitTestsRapt();
-  //ok &= runUnitTestsRosic();
+  ok &= runUnitTestsRapt();
+  ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
 
+  // We currently get a memory leak when runUnitTestsRapt() is being called. If it's commented out,
+  // the leak does not occurr. It seems to be caused by getMidiControllerLabel() in the file
+  // rosic_SamplerData.h at line 642 where we dealare a static local variable of type std::string
+  // and return a reference to it when the passed index is out of range. Perhaps the right way to
+  // fix it would be to have that empty string as global variable in the rosic namespace.
+
+
+  // Done:
   // The allpass unit test currently fails because I changed the implementation of 
   // rsSparsePolynomial to accomodate for coming new infrastruture to handle inexact floating 
   // point comparisons. The unit tests now implicitly do some exact float comparisions where 
@@ -795,11 +803,13 @@ int main(int argc, char* argv[])
   //===============================================================================================
   // Modular:
 
-  //runModularUnitTests();             // MUST run before performance tests (or access violation)
+  runModularUnitTests();             // MUST run before performance tests (or access violation)
   //runModularPerformanceTests(true);  // Produces a memleak unless we call clearRegisteredTypes() 
   //testModularCodeGenerator();
   //runModularInteractiveTests();              // Triggers assert due to plotting code
-  //romos::moduleFactory.clearRegisteredTypes(); // Avoids memleak in unit tests
+  romos::moduleFactory.clearRegisteredTypes(); // Avoids memleak in unit tests
+    // I think, this cleaing must always be called regardless of whether we rund or don't run
+    // any modular unit tests (verify!). 
 
   // important atomic modules for performance tests:
   // Biquad: pure code, atomic module, wired model
