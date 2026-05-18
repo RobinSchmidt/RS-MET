@@ -3977,7 +3977,7 @@ void expBipolar()
   //double a = s*dy / (-dy * tmp + s); // nope - formula must be wrong 
 
   double d = y1 - y0;
-  double w = productLog(- (exp(-s/d)*s) / d);
+  //double w = productLog(- (exp(-s/d)*s) / d);
   //double a = -d*s / (d*w+s);
   //double b = s  / a;
   //double c = y0 - a;

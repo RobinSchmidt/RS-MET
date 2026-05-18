@@ -336,7 +336,7 @@ void crossCorrelationBestMatch()
   // find the maximum of the cross-correlation sequence with subsample precision:
   int N = rsMin(N1, N2);
   double lag     = rsGetShiftForBestMatch(x1, x2, N, deBias);
-  double lagTrue = (p2-p1)/w;
+  //double lagTrue = (p2-p1)/w;
   //double error   = (lag-lagTrue)/lagTrue;
 
   // shift the 2nd signal so as to match the 1st:
@@ -928,10 +928,10 @@ void zeroCrossingFinder()
   RAPT::rsArrayTools::subtract(z3, zt, e3, Nz);
 
   // find maximum errors:
-  double eMax0 = RAPT::rsArrayTools::maxAbs(e0, Nz);
-  double eMax1 = RAPT::rsArrayTools::maxAbs(e1, Nz);
-  double eMax2 = RAPT::rsArrayTools::maxAbs(e2, Nz);
-  double eMax3 = RAPT::rsArrayTools::maxAbs(e3, Nz);
+  //double eMax0 = RAPT::rsArrayTools::maxAbs(e0, Nz);
+  //double eMax1 = RAPT::rsArrayTools::maxAbs(e1, Nz);
+  //double eMax2 = RAPT::rsArrayTools::maxAbs(e2, Nz);
+  //double eMax3 = RAPT::rsArrayTools::maxAbs(e3, Nz);
 
   // compute error ratios - these are the precision improvement factors by which choosing a higher
   // precision value actually affects the precision

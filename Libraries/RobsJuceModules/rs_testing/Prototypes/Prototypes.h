@@ -228,7 +228,7 @@ rsSparsePolynomial<T, TTol> rsPowNaive(const rsSparsePolynomial<T, TTol>& p, int
 template<class T, class TTol>
 rsSparsePolynomial<T, TTol> rsComposeNaive(
   const rsSparsePolynomial<T, TTol>& inner,
-  const rsSparsePolynomial<T, TTol>& outer, T tol)
+  const rsSparsePolynomial<T, TTol>& outer, T /*tol*/)
 {
   rsSparsePolynomial<T, TTol> r;
   for(int i = 0; i < outer.getNumTerms(); i++)

@@ -359,7 +359,6 @@ void biDirectionalFilter()
   // scaling? ...This seems to depend on the bandedge gain - for 1/sqrt(2), it's is true, but for
   // 0.5 it seems to be advantageous to go higher with order
 
-  int dummy = 0;
 }
 
 void beatingSines1()
@@ -724,7 +723,6 @@ void pseudoAmpModViaBeating()
   //rsPlotVectors(ax, px);      // Instantaneous amp and phase of amp-mod signal
   //rsPlotVectors(ay, py);      // Instantaneous amp and phase of beating signal 1
   //rsPlotVectors(az, pz);      // Instantaneous amp and phase of beating signal 2
-  int dummy = 0;
 
 
   // Observations:
@@ -948,8 +946,8 @@ void envelopeDeBeating()
   double a2 = 0.5;   //           2
   double d1 = 0.2;   // decay time 1
   double d2 = 0.3;   //            2
-  double fc = 10;   // smoothing lowpass cutoff
-  int np = 8;        // smoothing lowpass order/number of passes
+  //double fc = 10;   // smoothing lowpass cutoff
+  //int np = 8;        // smoothing lowpass order/number of passes
   int N = 30000;     // number of samples
 
 
@@ -1218,7 +1216,6 @@ void testSineAmpAndPhaseEstimation()
   r &= rsIsCloseTo(a2,   a3, tol);
   r &= rsIsCloseTo(w,    w2, tol);
 
-  int dummy = 0;
 }
 // in practice, use both formulas, compute an average of the phases and compute the amplitude for
 // exact resynthesis
@@ -1724,8 +1721,8 @@ void partialExtractionTriple()
   // get peak location and height of envelope (later, maybe use quadratic interpolation to find it 
   // with subsample precision - this is actually overkill, but however)
   int    nPeak = RAPT::rsArrayTools::maxIndex(ye, N);
-  double tPeak = nPeak / fs;
-  double aPeak = ye[nPeak];
+  //double tPeak = nPeak / fs;
+  //double aPeak = ye[nPeak];
 
 
 
@@ -2010,14 +2007,15 @@ double isolatePartialWithBiquad(double *x, double *y, int N, double fL, double f
   gL = pow(gL, 2*np);
   double gU = biquadMagnitudeAt(b[0], b[1], b[2], a[1], a[2], 2*PI*fU/fs);
   gU = pow(gU, 2*np);
-  double dBL = rsAmp2dB(gL/g);
-  double dBU = rsAmp2dB(gU/g);
+  //double dBL = rsAmp2dB(gL/g);
+  //double dBU = rsAmp2dB(gU/g);
 
   return fM;
 }
 
-double isolatePartialWithElliptic(double *x, double *y, int N, double fL, double fM, double fU, 
-  double fs, double aM, double aMax, double p)
+double isolatePartialWithElliptic(
+  double* /*x*/, double* /*y*/, int /*N*/, double /*fL*/, double fM, double /*fU*/,
+  double /*fs*/, double /*aM*/, double /*aMax*/, double /*p*/)
 {
   // later, we should use aM and aMax to determine the required stopband rejection: if they are
   // expressed in decibels (as dbM and dbMax), we should add dbMax-dbM to the required rejection
@@ -2192,8 +2190,8 @@ void partialExtractionViaBiquadTriple()
   // get peak location and height of envelope (later, maybe use quadratic interpolation to find it 
   // with subsample precision - this is actually overkill, but however)
   int    nPeak = RAPT::rsArrayTools::maxIndex(ye, N);
-  double tPeak = nPeak / fs;
-  double aPeak = ye[nPeak];
+  //double tPeak = nPeak / fs;
+  //double aPeak = ye[nPeak];
 
    // for fM = 1000, attack = 0.001:
    // passes: 16: tp = 0.013877551020408163, ap = 0.90231040500525828

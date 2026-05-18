@@ -202,7 +202,7 @@ bool testGetSampleAt()
 
 // pan is suppoesed to be in -1...+1
 template<class T>
-void rsApplyPan(std::vector<T>& L, std::vector<T>& R, T pan, bool constPow = false)
+void rsApplyPan(std::vector<T>& L, std::vector<T>& R, T pan, bool /*constPow*/ = false)
 {
   int N = (int)L.size(); rsAssert((int)R.size() == N);
   using AT = RAPT::rsArrayTools;

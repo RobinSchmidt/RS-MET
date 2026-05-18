@@ -13,7 +13,7 @@ void twoPoleFilter()
   double w = s*f;
   flt.setFrequencyAndAbsoluteBandwidth(w, s*bw);
 
-  double g  = flt.getMagnitudeAt(w);
+  //double g  = flt.getMagnitudeAt(w);
   //double dB = rsAmp2dB(g);
 
   plotImpulseResponse(flt, 500, 1.0);
@@ -1165,7 +1165,7 @@ void modalPartialResynthesis()
   Vec ys = synthesizeSinusoidal(sineModel, sampleRate);
 
 
-  double spliceTime = timeArray[spliceIndex];
+  //double spliceTime = timeArray[spliceIndex];
     // this is the time-instant (in seconds) at which instantaneous phase and amplitude of the 
     // exponentially decaying sinusoid will match the values from the sine-model - for splicing
     // together original and tail, it's best to use a crossfade centered at that instant
@@ -1448,7 +1448,7 @@ void modalReverb()
 
   // Compute modal frequencies with limit imposed on the maximum mode frequency fMax:
   Vec freqs = rsModalFreqsRectBox_2(Lx, Ly, Lz, fMax);
-  int numModes = freqs.size();
+  int numModes = (int) freqs.size();
 
 
    
@@ -1496,7 +1496,7 @@ void modalReverb()
   //Real f2   = 2 * (sqrt(3) * c) / (2 * L);      // == f222
   //Real f3   = 3 * (sqrt(3) * c) / (2 * L);      // == f333
   //Real g1   = a + b * cbrt( 1);                 // g(1)           ~ f(1,1,1)
-  Real g8   = a + b * cbrt( 8);                 // g(8)  = g(2^3) ~ f(2,2,2)
+  //Real g8   = a + b * cbrt( 8);                 // g(8)  = g(2^3) ~ f(2,2,2)
   //Real g27  = a + b * cbrt(27);                 // g(27) = g(3^3) ~ f(3,3,3)
   // We want a match at the 1st mode such that we require g(1) = f(1,1,1). We may also want a match
   // at the f(2,2,2) mode. I think, we want g(8) to match f(2,2,2) not g(2) because

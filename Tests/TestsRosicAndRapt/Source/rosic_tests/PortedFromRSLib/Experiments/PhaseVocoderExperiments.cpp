@@ -43,8 +43,7 @@ void phaseRepresentation()
   // obtain the difference between the two signals - it represents the error:
   double d[N];
   RAPT::rsArrayTools::subtract(x2, x1, d, N);
-  double e = RAPT::rsArrayTools::maxAbs(d, N);
-  int dummy = 0;
+  //double e = RAPT::rsArrayTools::maxAbs(d, N);
 
   // Observations:
   // With a samplerate of 96kHz, a sinusoid of 20kHz and a start-time (in samples) of a million

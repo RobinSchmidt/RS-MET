@@ -221,7 +221,6 @@ void rotes::testCombustionEngine()
 
 
   rosic::writeToMonoWaveFile("CombustionEngine.wav", &y[0], N, sampleRate, 16);
-  int dummy = 0;
 
 
   // Observations:
@@ -447,7 +446,7 @@ void rotes::testTurtleSource()
 void samplerEnvelopeTest()
 {
   // Test parameters:
-  float fs        =  1.f;  // sample rate
+  //float fs        =  1.f;  // sample rate
   int   N         =  1500; // number of samples
   int   nOff      =   800; 
   float start     =  0.f;  // Level to start from.
@@ -492,10 +491,6 @@ void samplerEnvelopeTest()
   // -Compute the level at the end when shape = -10.3616...maybe it's some nice target value like
   //  0.0001 or something? Try to figure out, where this strange number comes from. Hmm...nope:
   //  exp(-10.3616) = 0.0000316238175923419
-
-
-
-  int dummy = 0;
 }
 
 void samplerPatchTest_BandpassSaw()
@@ -594,7 +589,4 @@ void rotes::testSamplerEngine()
 
   generateTestSamples();
   samplerPatchTest_BandpassSaw();
-
-
-  int dummy = 0;
 }
