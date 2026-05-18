@@ -1463,8 +1463,8 @@ void twoPieceOsc()
   RAPT::rsBlepReadyOsc<double> osc;
   osc.setPhaseIncrement(inc);
 
-  double a1, b1, a2, b2, h;
-  h = 0.5;
+  double a1, b1, a2, b2;
+  //double h = 0.5;
   //a1 = a2 = +2; b1 = b2 = -1;      // saw up
   a1 = a2 = -2; b1 = b2 = +1;      // saw down
   //a1 = 0; b1 = -1; a2 = 0; b2 = 1; // square (low first) - but here it starts high (start-phase wrong?)
@@ -1480,7 +1480,8 @@ void twoPieceOsc()
   double d1 =  0,   d2 =  0;    // slope difference at start and end
 
   // continuous parameter sweep:
-  for(int n = 0; n < numSamples; n++) {
+  for(int n = 0; n < numSamples; n++) 
+  {
     double p = n / (numSamples-1.0);
     double h = rsLinToLin(p, 0.0, 1.0, h1, h2);
     double s = rsLinToLin(p, 0.0, 1.0, s1, s2);

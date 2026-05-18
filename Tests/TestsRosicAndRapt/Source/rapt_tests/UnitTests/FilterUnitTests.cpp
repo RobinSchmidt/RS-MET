@@ -478,8 +478,9 @@ bool movingMaximumUnitTest()
 }
 
 
-bool testQuantileCore(int maxLength, int smallLength, int largeLength, int numSamples,
-  int seed = 0)
+//bool testQuantileCore(int maxLength, int smallLength, int largeLength, int numSamples,
+//  int seed = 0)
+bool testQuantileCore(int maxLength, int smallLength, int largeLength, int numSamples)
 {
   rsAssert(maxLength >= smallLength + largeLength);
 
@@ -499,10 +500,12 @@ bool testQuantileCore(int maxLength, int smallLength, int largeLength, int numSa
   //Vec x = rsLinearRangeVector(numSamples, 1, numSamples);
   Vec x = rsLinearRangeVector(numSamples, -1, -numSamples);
   Vec y(numSamples), z(numSamples);
-  for(int n = 0; n < numSamples; n++)  {
+  for(int n = 0; n < numSamples; n++)
+  {
     double q = y[n] = fltH.getSample(x[n]);
     double p = z[n] = fltN.getSample(x[n]);
-    r &= p == q; }
+    r &= p == q; 
+  }
 
 
   //rsPlotVectors(y, z);  // uncomment to see the result

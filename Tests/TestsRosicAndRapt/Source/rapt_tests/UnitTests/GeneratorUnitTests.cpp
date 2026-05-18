@@ -2181,7 +2181,7 @@ bool samplerAmplifierCoreTest()
     float a, float b, float c, float d, float tol = 0.f)
   {
     amp.setup(1.f, vol, pan, width, pos);
-    return checkCoeffs(a,b,c,d);
+    return checkCoeffs(a,b,c,d,tol);
   };
 
   // Test panorama and position:

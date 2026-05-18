@@ -2694,7 +2694,7 @@ void quantileFilterElongation()
   }
   Vec err = t-z;
 
-  double xOld = dly[L];
+  //double xOld = dly[L];
   //double branch;
   //double tmp  = flt.getElongatedOutput(xOld);
 
