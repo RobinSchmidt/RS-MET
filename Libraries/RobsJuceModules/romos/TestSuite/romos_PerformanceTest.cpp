@@ -47,7 +47,7 @@ rosic::rsString PerformanceTest::runTestsAndGetReport()
   report += runFrameWiseTestAndGetReport();
   report += runBlockWiseTestAndGetReport();
 
-  int numPlayingVoices = romos::voiceAllocator.getNumPlayingVoices();
+  //int numPlayingVoices = romos::voiceAllocator.getNumPlayingVoices();
 
   report.printToStandardOutput();
   report += "\n";

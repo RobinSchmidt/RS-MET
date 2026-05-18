@@ -211,16 +211,16 @@ void ModularSystemTest::handleEvent(romos::NoteEvent eventToHandle)
 // information output functions:
 
 
-void ModularSystemTest::plotDesiredAndActualOutput(int numFramesToPlot, int startFrame)
+void ModularSystemTest::plotDesiredAndActualOutput(int /*numFramesToPlot*/, int /*startFrame*/)
 {
-  RAPT::rsAssert(false, "plotting code needs update");
+  RAPT::rsAssert(false, "plotting code needs update"); // ToDo: Use rsError()
   //Plotter::plotData(numFramesToPlot, &timeAxis[startFrame], desiredOutputs[0]+startFrame, desiredOutputs[1]+startFrame, 
   //                  outputs[0]+startFrame, outputs[1]+startFrame);
 }
 
-void ModularSystemTest::plotOutputErrors(int numFramesToPlot, int startFrame)
+void ModularSystemTest::plotOutputErrors(int /*numFramesToPlot*/, int /*startFrame*/)
 {
-  RAPT::rsAssert(false, "plotting code needs update");
+  RAPT::rsAssert(false, "plotting code needs update"); // ToDo: Use rsError()
   //Plotter::plotData(numFramesToPlot, &timeAxis[startFrame], outputErrors[0]+startFrame, outputErrors[1]+startFrame);
 }
 

@@ -91,7 +91,7 @@ SawOscillatorPlotTest::SawOscillatorPlotTest(const char* testName)
 }
 void SawOscillatorPlotTest::fillInputSignalArraysWithTestSignal()
 {
-  double fs = romos::processingStatus.getSystemSampleRate();
+  //double fs = romos::processingStatus.getSystemSampleRate();
 
 
   initForConstantFreq(22.04, 0.505); // seems to cause problems becaus it hitsb the cosine branch sometimes
@@ -240,7 +240,7 @@ void SawOscillatorPlotTest::fillInputSignalArraysWithTestSignal()
 }
 void SawOscillatorPlotTest::plotResult()
 {
-  double dc = RAPT::rsArrayTools::mean(outputs[0][0], 50);
+  //double dc = RAPT::rsArrayTools::mean(outputs[0][0], 50);
 
   RAPT::rsAssert(false, "plotting code needs update");
   //Plotter::plotData(numFramesToProcess, xAxis, outputs[0][0]);
@@ -407,7 +407,7 @@ void EnvelopeADSRPlotTest::initEventsForDoubleAttack1()
 void EnvelopeADSRPlotTest::initEventsForDoubleAttack2()
 {
   events = TestEventGenerator::generateNoteOnOffPair(81, 64, 0, noteLength);
-  int secondNoteStart = attackSamples;
+  //int secondNoteStart = attackSamples;
   events = TestEventGenerator::mergeEvents(events, TestEventGenerator::generateNoteOnOffPair(81, 64, attackSamples, noteLength));
 }
 void EnvelopeADSRPlotTest::initEventsForDoubleAttack3()
