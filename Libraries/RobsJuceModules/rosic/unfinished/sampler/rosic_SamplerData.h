@@ -635,30 +635,30 @@ public:
   // before
 
 
-  const std::string emptyString;
-  // This is only needed in order to be able to return a reference to an empty string from
+  const std::string errorString = "ERROR";
+  // This is needed in order to be able to return a reference to an error string from
   // getMidiControllerLabel(int i) when the passed i is out of range. It's very unelegant that we
   // need a member for that purpose. Better would be a global object in the rosic namespace but so
-  // far, I couldn't make that work without breaking the memory leak detection scheme in the 
-  // TestsRosicAndRapt project, so for the time being, I accept that quirk.
-  // ToDo: Maybe turn it into an errorString instead. That could make more sense
+  // far, I couldn't make that work without breaking the memory leak detection scheme (we would
+  // get false positive leak detections) in the TestsRosicAndRapt project, so for the time being, I
+  // accept that quirk. Maybe it could be fixed by returning the string as C-string, i.e. as 
+  // const char* rather than a std::string&.
 
   /** @see: setMidiControllerLabel */
   const std::string& getMidiControllerLabel(int i) const 
   { 
     // New:
-    //static std::string emptyString = "";
     if(i < 0 || i >= 128) 
     { 
       RAPT::rsError("MIDI CC index out of range"); 
-      return emptyString;
+      return errorString;
     }
-    // We should probably not return a reference to a static string here. Instead, declare some 
-    // global object somewhere that holds the empty string and return a reference to that. This is
-    // the null-object pattern. The idea is that we return a reference to an empty string.
 
     // Old:
     //if(i < 0 || i >= 128) { RAPT::rsError("MIDI CC index out of range"); return ""; }
+    // I think, this is totally wrong! We shall not return a reference to a temporary object that 
+    // is created in the return statement and will be destroyed immediately after the return 
+    // statement. 
 
     return midiCC_labels[i];
   }

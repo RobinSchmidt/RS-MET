@@ -5306,6 +5306,13 @@ bool samplerControlsTest()
   ok &= sfz.getMidiControllerLabel(    123) == "Ctrl123";
   ok &= sfz.getMidiControllerInitValue(123) == 5;
 
+  // Check, if error string is returned in case of passing an index that is out of range:
+  //ok &= sfz.getMidiControllerLabel(     -1) == "ERROR";
+  //ok &= sfz.getMidiControllerLabel(    128) == "ERROR";
+  // Nah! We don't do that because it triggers an assertion which we don't want to happen in our
+  // regular unit test suite.
+
+
   std::string sfzString2;
   sfzString2 = se.getAsSfz();
   // Interesting: sfzString2 has 1 region more than the original sfzString
