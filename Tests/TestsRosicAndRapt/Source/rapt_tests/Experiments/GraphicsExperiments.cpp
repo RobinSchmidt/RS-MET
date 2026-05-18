@@ -2876,8 +2876,6 @@ void parametricCurve2D()
 
   // as examples for 3D curves, draw helix, trefoil knot, 3D Lissaous
   // plot some curves and their evolutes
-
-  int dummy = 0;
 }
 
 bool testRotation3D()
@@ -3020,12 +3018,12 @@ void plotCurve3D()
   int N = 1600;        // number of dots
 
   // perspective parameters:
-  double left   = -2.0; 
-  double right  = +2.0; 
-  double bottom = -2.0; 
-  double top    = +2.0; 
-  double near   = -2.0; 
-  double far    = +2.0;
+  //double left   = -2.0; 
+  //double right  = +2.0; 
+  //double bottom = -2.0; 
+  //double top    = +2.0; 
+  //double near   = -2.0; 
+  //double far    = +2.0;
   // how are they interpreted? can we find a more convenient parametrization? maybe via 3 vectors
   // (eye, center, up) such as in OpenGL vmath::lookat, vmath::ortho (see OpenGL Prog. Guide, 
   // pg 220)

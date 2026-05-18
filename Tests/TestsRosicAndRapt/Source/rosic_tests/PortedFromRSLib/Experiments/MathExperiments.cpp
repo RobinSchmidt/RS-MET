@@ -1731,22 +1731,22 @@ void intervalIntegral()
   // compute integral with various formulas using only function values at end- and/or center 
   // points:
   double H = b-a;                                    // size of the whole interval
-  double I_mid  =  H    * f((a+b)/2);                // midpoint
+  //double I_mid  =  H    * f((a+b)/2);                // midpoint
   double I_trap = (H/2) * (f(b)+f(a));               // trapezoidal
-  double I_simp = (H/6) * (f(a)+4*f((a+b)/2)+f(b));  // Simpson
+  //double I_simp = (H/6) * (f(a)+4*f((a+b)/2)+f(b));  // Simpson
 
   // now with 4 values at x1 = a, x2 = a+h/3, x3 = a+2*h/3, x4 = b and Simpson's 3/8 rule:
   double x0,x1,x2,x3,x4, f0,f1,f2,f3,f4;
   double h = (b-a)/3;                                     // size of subintervals
   x0 = a;      x1 = a + h;  x2 = a+2*h;  x3 = b;
   f0 = f(x0);  f1 = f(x1);  f2 = f(x2);  f3 = f(x3);
-  double I_simp38 = (3*h/8) * (f0 + 3*(f1+f2) + f3);      // Simpson's 3/8 rule
+  //double I_simp38 = (3*h/8) * (f0 + 3*(f1+f2) + f3);      // Simpson's 3/8 rule
 
   // Boole's rule:
   h = (b-a)/4;
   x0 = a;      x1 = a + h;  x2 = a+2*h;  x3 = a+3*h;  x4 = b;
   f0 = f(x0);  f1 = f(x1);  f2 = f(x2);  f3 = f(x3);  f4 = f(x4);
-  double I_bool = (2*h/45) * (7*(f0+f4) + 32*(f1+f3) + 12*f2);
+  //double I_bool = (2*h/45) * (7*(f0+f4) + 32*(f1+f3) + 12*f2);
 
   // now the new, experimental rule that uses derivatives at the endpoints a,b:
   double d0, d1;
@@ -1782,7 +1782,7 @@ void intervalIntegral()
   // I_herm = P(b) - P(a) where P is the integral of the polynomial with coeffs c:
   Poly::composeLinearWithCubic(c, c, -a/H, 1/H);  // in general: b0 = -x0/(x1-x0), b1 = 1/(x1-x0)
   Poly::integral(c, c, 3);
-  double I_herm = Poly::evaluate(b, c, 4) -  Poly::evaluate(a, c, 4); // P(b) - P(a)
+  //double I_herm = Poly::evaluate(b, c, 4) -  Poly::evaluate(a, c, 4); // P(b) - P(a)
   // if we use the cubic polynomial for f, all schemes based on 3rd cubic polynomials should 
   // compute the exact result up to rounding error - which seems to work
   // ToDo: absorb the whole computation in a single function that takes as input x0, x1, y0, y1,
@@ -1800,7 +1800,6 @@ void intervalIntegral()
   // todo: implement these as well:
   // http://www.holoborodko.com/pavel/numerical-methods/numerical-integration/stable-newton-cotes-formulas/
 
-  int dummy = 0;
 }
 
 void nonUniformArrayDiffAndInt()

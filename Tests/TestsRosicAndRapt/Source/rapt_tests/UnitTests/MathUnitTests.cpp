@@ -384,7 +384,7 @@ public:
   }
 };
 bool testRootFinding(std::function<float(float)>& func, float xL, float xR, float targetRoot,
-  float targetY = 0.f)
+  float /*targetY*/ = 0.f)
 {
   bool result = true;
   float root;
