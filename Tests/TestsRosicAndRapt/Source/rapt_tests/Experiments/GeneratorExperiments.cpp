@@ -3957,7 +3957,7 @@ void flatZapper()
   showFlatZapPlots();
   showRedZapsInstFreqs();
 
-  int dummy = 0;
+  //int dummy = 0;
 
   // Observations:
   // -When applying the zapper twice, the result is similar to using a single zapper with twice the
@@ -4211,7 +4211,7 @@ void sineSweepBassdrum1()
   //};
 
   // Exponential with offset:
-  auto shapeExp = [](Real x, Real p, Real dummy) 
+  auto shapeExp = [](Real x, Real p, Real /*dummy*/)
   { 
     p = -p;  // We re-interpret the parameter here.
 
@@ -4220,7 +4220,7 @@ void sineSweepBassdrum1()
   };
 
   // Linear fractional law:
-  auto shapeRat = [](Real x, Real p, Real dummy)  // rename to shapeFrac or shapeRat
+  auto shapeRat = [](Real x, Real p, Real /*dummy*/)  // rename to shapeFrac or shapeRat
   { 
     // A linear fractional mapping with a parameter p in -inf..+inf where p = 0 is linear. Uses the
     // same parameter mapping as in rsFlatZapper.
@@ -4232,7 +4232,7 @@ void sineSweepBassdrum1()
   };
 
   // Power law:
-  auto shapePow = [](Real x, Real p, Real dummy)
+  auto shapePow = [](Real x, Real p, Real /*dummy*/)
   {
     //p = RAPT::rsPow(2.0, -p);  // calls pow with integer exponent?
     p = pow(2.0, -p);
@@ -4424,9 +4424,7 @@ void sineSweepBassdrum2()
   //rsPlotVector(x);
   rosic::writeToMonoWaveFile("SweepKick2.wav", &x[0], N, sampleRate);
 
-
-
-  int dummy = 0;
+  //int dummy = 0;
 
   // Observations:
   // -Higher p (like p=2) let the sweep reside a bit at the highest freq before the sweepdown 

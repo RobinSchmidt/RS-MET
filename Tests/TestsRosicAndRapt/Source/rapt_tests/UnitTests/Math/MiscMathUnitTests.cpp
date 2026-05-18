@@ -99,7 +99,7 @@ bool testGradientBasedOptimization(std::string& /*reportString*/)
   return testResult;
 }
 
-bool testMinSqrDifFixSum(std::string &reportString)
+bool testMinSqrDifFixSum(std::string& /*reportString*/)
 {
   // code moved to experiments - todo: implement actual unit-tests
   std::string testName = "MinSqrDifFixSum";
@@ -109,7 +109,7 @@ bool testMinSqrDifFixSum(std::string &reportString)
   return testResult;
 }
 
-bool testPhaseUnwrapStuff(std::string &reportString)  // rename to testUnwrapping
+bool testPhaseUnwrapStuff(std::string& /*reportString*/)  // rename to testUnwrapping
 {
   bool r = true;  // test result
 

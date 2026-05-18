@@ -316,7 +316,7 @@ void attackDecayEnvelope()
   // Plot a family of envelopes with sustain settings 0.0,0.2,0.4,0.6,0.8,1.0:
   plotSmoothEnvWithVariousSustains(att, dec);
 
-  int dummy = 0;
+  //int dummy = 0;
 
   // Observations:
   // -The sustain level works but using nonzero sustain slightly changes the attack-time and
