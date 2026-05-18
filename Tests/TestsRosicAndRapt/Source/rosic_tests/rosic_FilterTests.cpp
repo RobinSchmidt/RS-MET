@@ -102,8 +102,6 @@ void rotes::testLadderFilter()
 
   plotData(N, t, x, y);
   // middle section looks terrible - filter seems to explode? -> investigate!
-
-  int dummy = 0;
 }
 
 void rotes::testModalFilter()
@@ -310,8 +308,6 @@ void rotes::testFiniteImpulseResponseDesigner()
 
   // test cosine power window overlap:
 
-
-  int dummy = 0;
 }
 
 
@@ -495,8 +491,6 @@ void rotes::testFilterAnalyzer()
 
 
   plotData(numBins, frequencies, magnitudes);
-
-  int dummy = 0;
 }
 
 void rotes::testBiquadCascade()
@@ -541,8 +535,6 @@ void rotes::testBiquadCascade()
 
 
   plotData(numBins, frequencies, magnitudes, phases);
-
-  int dummy = 0;
 }
 
 void rotes::testCrossover4Way()
@@ -770,7 +762,7 @@ void rotes::testCrossover4Way2()
   double lowCrossoverFreq  = 250.0;
   double midCrossoverFreq  = 1000.0;
   double highCrossoverFreq = 6000.0;
-  double lowClipValue      = -40.0;   // lower magnitude limit in dB for the plots
+  //double lowClipValue      = -40.0;   // lower magnitude limit in dB for the plots
 
   // Set up the crossover:
   rosic::rsCrossOver4WayStereo crossover;
@@ -925,8 +917,6 @@ void rotes::testSlopeFilter()
   }
   plt2.setLogScale("x");
   plt2.plot();
-  int dummy = 0;
-
 
   // Observations:
   // -For smaller settings between -6,..,+6, the approximation looks quite good, in particular
@@ -959,7 +949,6 @@ void rotes::testPrototypeDesigner()
   designer.setApproximationMethod(rosic::rsPrototypeDesignerD::BESSEL);
   designer.getPolesAndZeros(poles, zeros);
 
-  int dummy = 0;
 }
 
 void rotes::testLowpassToLowshelf()
@@ -1003,8 +992,8 @@ void rotes::testBesselPrototypeDesign()
   double fc  = 1000.0;     // cutoff frequency
   double fl  =  500.0;     // lower bandedge frequency for bandpasses
   double fu  = 1500.0;     // upper bandedge frequency for bandpasses
-  double G0  = 2.2;        // reference gain for shelving filter
-  double G   = 1.4;        // gain for shelving filter
+  //double G0  = 2.2;        // reference gain for shelving filter
+  //double G   = 1.4;        // gain for shelving filter
 
   // radian cutoff frequencies:
   double wc  = 2*PI*fc;   
@@ -1136,7 +1125,7 @@ void rotes::testPoleZeroMapping()
 
   //Complex z[2*N], p[2*N];        // arrays of poles and zeros
   std::complex<double> z[2*N], p[2*N];        // arrays of poles and zeros
-  double  k = 1.0;               // filter gain
+  //double  k = 1.0;               // filter gain
 
 
   rosic::rsInfiniteImpulseResponseDesignerD iirDesigner;
@@ -1150,8 +1139,6 @@ void rotes::testPoleZeroMapping()
   iirDesigner.getPolesAndZeros(p, z);
 
   //double c rosic::PoleZeroMapper::getAllpassWarpCoefficient(
-
-  int dummy = 0;
 }
 
 void rotes::highOrderFilterPolesAndZeros()

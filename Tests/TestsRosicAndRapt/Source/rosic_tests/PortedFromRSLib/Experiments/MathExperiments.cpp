@@ -5378,9 +5378,9 @@ void functionOperators()
 
 
   // A 3-way crossfade between 3 constant functions:
-  fL = [=](Real x) { return 8; };              // fL(x) = 8
-  fM = [=](Real x) { return 2; };              // fM(x) = 2
-  fR = [=](Real x) { return 6; };              // fR(x) = 6
+  fL = [=](Real  ) { return 8; };              // fL(x) = 8
+  fM = [=](Real  ) { return 2; };              // fM(x) = 2
+  fR = [=](Real  ) { return 6; };              // fR(x) = 6
   h = rsCrossFade3Way(fL, fM, fR, 
                       sigmoid, -5.0, 2.0,      // -5 is breakpoint, 2.0 steepness
                       sigmoid, +5.0, 3.0);
