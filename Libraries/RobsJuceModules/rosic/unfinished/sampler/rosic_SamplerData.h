@@ -635,14 +635,19 @@ public:
   // before
 
 
-  //static const std::string emptyString;
-  // ToDo: Move this out of the SfzInstrument class and into the outlying rosic namespace.
+  const std::string emptyString;
+  // This is only needed in order to be able to return a reference to an empty string from
+  // getMidiControllerLabel(int i) when the passed i is out of range. It's very unelegant that we
+  // need a member for that purpose. Better would be a global object in the rosic namespace but so
+  // far, I couldn't make that work without breaking the memory leak detection scheme in the 
+  // TestsRosicAndRapt project, so for the time being, I accept that quirk.
+  // ToDo: Maybe turn it into an errorString instead. That could make more sense
 
   /** @see: setMidiControllerLabel */
   const std::string& getMidiControllerLabel(int i) const 
   { 
     // New:
-    static std::string emptyString = "";
+    //static std::string emptyString = "";
     if(i < 0 || i >= 128) 
     { 
       RAPT::rsError("MIDI CC index out of range"); 
