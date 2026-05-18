@@ -25,7 +25,7 @@ public:
     x = 0.0;
   }
 
-  virtual rsVector<double> f( const double &x, const rsVector<double> &y)
+  virtual rsVector<double> f(const double & /*x*/, const rsVector<double> & y)
   {
     rsVector<double> v(3);
 
@@ -57,7 +57,7 @@ public:
     x = 0.0;
   }
 
-  virtual rsVector<double> f( const double &x, const rsVector<double> &y)
+  virtual rsVector<double> f(const double & x, const rsVector<double> & y)
   {
     rsVector<double> v(2);
 

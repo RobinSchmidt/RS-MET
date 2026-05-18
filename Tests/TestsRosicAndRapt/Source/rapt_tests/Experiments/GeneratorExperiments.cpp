@@ -1962,7 +1962,6 @@ void dualBlepOsc()
   // -maybe it's better to not treat the 2 oscs on the same footing - use a simple phasor as
   //  master and let only the slave be a full osc - then we only need a single blep object
 
-  int dummy = 0;
 }
 
 void bouncillator()
@@ -2018,8 +2017,8 @@ void bouncillatorFormula()
   }
 
   // predict instant of hitting the wall:
-  float nw = bnc.getInstantForHitting(max, min, inc, 1+shape);
-  //float nw = bnc.getInstantForHitting(min, max, -dec, 1+shape);
+  //float nw = bnc.getInstantForHitting(max, min, inc, 1+shape);
+  ////float nw = bnc.getInstantForHitting(min, max, -dec, 1+shape);
 
   GNUPlotter plt;
   plt.addDataArrays(N, x);
@@ -2717,8 +2716,8 @@ void xoxosOsc()
 
   // generate signals:
   float x[N], y[N], sum[N];
-  float sB = sin(B);
-  float cB = cos(B);
+  //float sB = sin(B);
+  //float cB = cos(B);
   //float s, c, Ac, Cs, a;
   for(int n = 0; n < N; n++)
   {
@@ -3157,8 +3156,6 @@ void multiplicativeSynth()
 
   // Notes:
   //
-
-  int dummy = 0;
 }
 
 template<class T>

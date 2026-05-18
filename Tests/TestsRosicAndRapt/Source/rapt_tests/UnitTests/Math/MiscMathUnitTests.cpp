@@ -1262,7 +1262,7 @@ bool testNumericIntegration()
   // Compute the area directly and compare results. They should be the same up to numerical 
   // roundoff:
   Real A2 = NI::trapezoidal(f, 0.0, 1.0, N);  // area estimate 2
-  Real d2 = A2 - A;                           // error 2
+  //Real d2 = A2 - A;                           // error 2
   Real tol = 1.e-14;
   ok &= rsIsCloseTo(A1, A2, tol);
 

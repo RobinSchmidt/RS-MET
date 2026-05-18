@@ -1,5 +1,5 @@
 
-bool testIntAbs(std::string &reportString)
+bool testIntAbs(std::string & /*reportString*/)
 {
   std::string testName = "IntAbs";
   bool r = true; // result
@@ -125,7 +125,7 @@ bool testSumAndProduct()
   return r;
 }
 
-bool testBinomialCoefficients(std::string &reportString)
+bool testBinomialCoefficients(std::string & /*reportString*/)
 {
   std::string testName = "rsBinomialCoefficients";
   bool testResult = true;
@@ -155,7 +155,7 @@ bool testBinomialCoefficients(std::string &reportString)
   return testResult;
 }
 
-bool testMultinomialCoefficients(std::string &reportString)
+bool testMultinomialCoefficients(std::string & /*reportString*/)
 {
   std::string testName = "rsMultinomialCoefficients";
   bool testResult = true;
@@ -212,7 +212,7 @@ bool testMultinomialCoefficients(std::string &reportString)
   return testResult;
 }
 
-bool testMultinomialFormula(std::string &reportString)
+bool testMultinomialFormula(std::string & /*reportString*/)
 {
   std::string testName = "rsMultinomialFormula";
   bool testResult = true;
@@ -251,7 +251,7 @@ bool testMultinomialFormula(std::string &reportString)
   return testResult;
 }
 
-bool testLeviCivita(std::string &reportString)
+bool testLeviCivita(std::string & /*reportString*/)
 {
   std::string testName = "rsLeviCivita";
   bool testResult = true;

@@ -194,10 +194,10 @@ void lineDrawingThick2()
   // user parameters:
   int imageWidth   = 100;
   int imageHeight  = 100;
-  float brightness = 0.5f;
-  float thickness  = 10.f;
-  float x0 = 10.3f, y0 = 10.6f, x1 = 90.2f, y1 = 40.4f;
-  //float x0 = 10, y0 = 10, x1 = 90, y1 = 40;
+  //float brightness = 0.5f;
+  //float thickness  = 10.f;
+  //float x0 = 10.3f, y0 = 10.6f, x1 = 90.2f, y1 = 40.4f;
+  ////float x0 = 10, y0 = 10, x1 = 90, y1 = 40;
 
   rsImageF image(imageWidth, imageHeight);
   //drawThickLine(image, 10, 10, 70, 30, 1.f, 15.f); // dx > dy, x0 < x1, base case
@@ -244,7 +244,7 @@ void lineJoints()
   //vector<float> x0, y0, x1, y1;
   float x0, y0, x1, y1;
   float w2 = 0.5f*imageWidth;
-  float h2 = 0.5f*imageHeight;
+  //float h2 = 0.5f*imageHeight;
   float dy = (float)margin;
   float offset;
   for(int i = 0; i < numAngles; i++)
@@ -436,7 +436,7 @@ void splineArc()
   //float x2 = 1, y2 = 0, x2s = 0, y2s = -1; // end   at (1,0), pointing downward
   float x1 =  10, y1 = 10, x1s = 0, y1s =  1500; // start center left, pointing upward
   float x2 = 390, y2 = 10, x2s = 0, y2s = -1500; // end center right, pointing downward
-  float distance = sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)); // distance between the two points
+  //float distance = sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)); // distance between the two points
 
   //int numDots = density*distance
 
@@ -475,7 +475,7 @@ void splineArc()
 
 
   float splineLength = s[N-1]; // last value in s is total length: s(t=1)
-  int numSplineDots = std::max(1, (int)round(splineLength * density));
+  //int numSplineDots = std::max(1, (int)round(splineLength * density));
 
 
   rsImageF image(width, height);
@@ -484,9 +484,7 @@ void splineArc()
   //painter.drawDottedSpline1(a, b, 1.0, 1.0, numSplineDots); // no density compensation
   //painter.drawDottedSpline2(a, b, 1.0, 1.0); // removed
    
-
   writeImageToFilePPM(*painter.getImage(), "CubicSpline.ppm");
-  int dummy = 0;
 }
 
 void triangles()
@@ -596,8 +594,6 @@ void pixelCoverage()
   float cov = pixelCoverage2(x, y, a, b, c);
 
   cov = pixelCoverage2(x, y, V(2,1), V(-1,0.25f), V(2.5f,-0.25f));
-
-  int dummy = 0;
 }
 
 
@@ -1223,8 +1219,6 @@ void contours()
 
   rsPrintLine("contours() done.");
 
-  int dummy = 0;
-
 
   // Notes:
   // -The (re)gradientification works only with antiAlias turned off because otherwise the 
@@ -1685,7 +1679,7 @@ void parametricCurve()
   // Lissajous curve parameters:
   double a  = 2.0;
   double b  = 3.0;
-  double p  = PI;
+  //double p  = PI;
   double t0 = 0.0;
   double t1 = 2*PI * 1.0;
 
@@ -1833,7 +1827,6 @@ void testImageEffectFrame()
   img.clear(1.f);      
   frameElliptic(img, cx, cy, rx, ry, steepness, shape, amount, invert);
   writeImageToFilePPM(img, "FrameTest.ppm");
-  int dummy = 0;
 
   // todo: try to plot a contour at level 0.5 - it should be independent from the steepness
 }
@@ -1986,7 +1979,8 @@ struct rsSpiralParams
   double range;
 };
 
-void generateSpiralImage(const rsSpiralParams& p, rsImageF& R, rsImageF& G, rsImageF& B)
+void generateSpiralImage(
+  const rsSpiralParams& /*p*/, rsImageF& /*R*/, rsImageF& /*G*/, rsImageF& /*B*/)
 {
 
   /*
@@ -2372,7 +2366,7 @@ void mandelbrot(rsImage<float>& img, int maxIterations,
   std::function<double(double, double)> fx, fy;
   fx = [&](double x, double y) { return x*x - y*y + cx; };
   fy = [&](double x, double y) { return 2*x*y     + cy; };
-  float scl = 1.f / float(maxIterations);
+  //float scl = 1.f / float(maxIterations);
   for(int j = 0; j < img.getHeight(); j++) {
     for(int i = 0; i < img.getWidth(); i++) {
       cx = rsLinToLin((double)i, 0.0,  double(img.getWidth()-1), xMin, xMax);
@@ -2475,7 +2469,6 @@ void splitChannels(const rsImage<rsFloat32x4>& img,
     p3[i] = c[2];            // 3rd channel
     p4[i] = c[3];            // 4th channel
   }
-  int dummy = 0;
 };
 // move into Drawing.h/cpp. if this goes into the rapt library, it should not operate directly on
 // the float/rsFloat32x4 types but rather on some type T and rsSimdVector<T, 4>
