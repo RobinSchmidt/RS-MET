@@ -226,7 +226,6 @@ void sincResamplerModulation()
   // the sum of the tap-weights, such that each instantaneous interpolation filter has a DC gain
   // of unity.
 
-  int dummy = 0;
 }
 
 
@@ -278,8 +277,6 @@ void sincResamplerPassbandRipple()
   // with the Hann window. Theoretically, Hamming and even more so Blackman should give even better
   // results.
 
-
-  int dummy = 0;
 }
 
 
@@ -377,11 +374,9 @@ void sincResamplerSumOfTapWeights()
   // used with slightly longer lengths (about 25% longer)
   
   // we measure the maximum of the wiggles of the 64-sample long sinc and express it in dB:
-  double d64 = rsAmpToDb(RAPT::rsArrayTools::maxValue(ws64, N));
+  //double d64 = rsAmpToDb(RAPT::rsArrayTools::maxValue(ws64, N));
     // rect: 1.43, Hann: 0.11, Hamming: 0.034, Blackman: 0.0029829146655588447,
     // exact Blackman: 0.00084361968017353120 -> that's what we should use for the interpolator
-
-  int dummy = 0;
 }
 
 void timeWarp()

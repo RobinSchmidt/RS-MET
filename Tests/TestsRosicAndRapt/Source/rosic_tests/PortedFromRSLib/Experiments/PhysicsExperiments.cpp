@@ -1503,8 +1503,8 @@ bool quantumSpinEvolution()
   //QS::prepareInState(Psi0);
   //QS::prepareOutState(Psi0);
 
-  double p = 2;             // phase - tweaking this is intersting
-  double k = 1 / sqrt(2.);  // to normalize the state
+  //double p = 2;             // phase - tweaking this is intersting
+  //double k = 1 / sqrt(2.);  // to normalize the state
   //double s = k * sin(p);
   //double c = k * cos(p);
   //QS::prepareState(Psi0, c, s, s, -c); 
@@ -1744,15 +1744,15 @@ void quantumParticle()
   double dt    = 1.e-5;  // time step for Euler solver
 
   double w     = 40;     // angular frequency (?) - controls actually width of initial distribution
-  int    E     = 0;      // energy level
-  double scl   = 5;      // scales x in the Hermite polynomial
+  //int    E     = 0;      // energy level
+  //double scl   = 5;      // scales x in the Hermite polynomial
 
   int numCycles = 400;  // number of cycles to record
   int skipRatio = 200;   // number of iterations to per recorded cycle (i.e. oversampling)
                          // ...needs more
 
   double dx = (xMax-xMin)/(Nx-1);  // spatial sampling rate
-  double r  = dt / (dx*dx);        // should be <= 1/2 for stability of explicit method
+  //double r  = dt / (dx*dx);        // should be <= 1/2 for stability of explicit method
 
 
   // the numerical solving scheme may get unstable when choosing higher number of spatial samples
@@ -1768,7 +1768,7 @@ void quantumParticle()
 
 
   // create the initial wavefunction:
-  double f = 0;
+  //double f = 0;
   std::vector<double>  x(Nx);
   std::vector<Complex> Psi_0(Nx);
   RAPT::rsArrayTools::fillWithRangeLinear(&x[0], Nx, xMin, xMax);
@@ -1866,8 +1866,6 @@ void quantumParticle()
   //GNUPlotter::plotComplexArrayReIm(&x[0], &Psi_0[0], Nx);
   //GNUPlotter plt;
   //plt.addDataArrays(Nx, &x[0], 
-
-  int dummy = 0;
 }
 
 

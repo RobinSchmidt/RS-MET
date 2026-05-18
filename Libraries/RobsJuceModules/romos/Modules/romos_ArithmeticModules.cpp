@@ -12,10 +12,10 @@ void ConstantModule::processMonoFrame(Module* /*module*/, int /*voiceIndex*/)
 {
   // nothing to do - the constant sits just there in the output pin
 }
-void ConstantModule::processPolyFrame(Module *module, int voiceIndex)                {  }
-void ConstantModule::processMonoBlock(Module *module, int voiceIndex, int blockSize) {  }
-void ConstantModule::processPolyBlock(Module *module, int voiceIndex, int blockSize) {  }
-void ConstantModule::clearVoiceBuffer(int voiceIndex)
+void ConstantModule::processPolyFrame(Module* /*module*/, int /*voiceIndex*/) {}
+void ConstantModule::processMonoBlock(Module* /*module*/, int /*voiceIndex*/, int /*blockSize*/) {}
+void ConstantModule::processPolyBlock(Module* /*module*/, int /*voiceIndex*/, int /*blockSize*/) {}
+void ConstantModule::clearVoiceBuffer(int /*voiceIndex*/)
 {
   // do nothing - overriden to avoid resetting the output to zero - the constant just remains in 
   // the output pin
@@ -66,9 +66,9 @@ void IdentityModule::initialize()
   initOutputPins({ "" });
   hasHeaderFlag = false;
 }
-INLINE void IdentityModule::process(Module *module, double *ins, double *outs, int voiceIndex)
+INLINE void IdentityModule::process(Module *module, double *ins, double *outs, int /*voiceIndex*/)
 {
-  IdentityModule *identity = (IdentityModule *)module;
+  //IdentityModule *identity = (IdentityModule *)module;
 
   outs[0] = ins[0];
 
