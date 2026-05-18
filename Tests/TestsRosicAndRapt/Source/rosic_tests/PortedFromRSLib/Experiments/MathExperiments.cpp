@@ -1726,13 +1726,13 @@ void intervalIntegral()
   auto fd = [](double x)->double{ return 3*x*x - 4*x;           };  // 3x^2 - 4x
   auto fi = [](double x)->double{ return x*x*x*x/4 - 2*x*x*x/3; };  // x^4/4 - 2x^3/3
 
-  double I_true = fi(b) - fi(a);  // the exact value of the integral
+  //double I_true = fi(b) - fi(a);  // the exact value of the integral
 
   // compute integral with various formulas using only function values at end- and/or center 
   // points:
   double H = b-a;                                    // size of the whole interval
   //double I_mid  =  H    * f((a+b)/2);                // midpoint
-  double I_trap = (H/2) * (f(b)+f(a));               // trapezoidal
+  //double I_trap = (H/2) * (f(b)+f(a));               // trapezoidal
   //double I_simp = (H/6) * (f(a)+4*f((a+b)/2)+f(b));  // Simpson
 
   // now with 4 values at x1 = a, x2 = a+h/3, x3 = a+2*h/3, x4 = b and Simpson's 3/8 rule:
@@ -2431,7 +2431,6 @@ void convolvePolynomials()
   Poly rL, rM, rR;            // left, middle, right section of result
   double rLL, rLU, rRL, rRU;  // lower and upper limits of the sections
   PiecePoly::convolvePieces(p, pL, pU, q, qL, qU, rL, rLL, rLU, rM, rR, rRL, rRU);
-  int dummy = 0;
 
   // ToDo:
   // -figure out why we get 9th degree results for the pqX and 10th degree for th qpX with topmost 
@@ -2458,9 +2457,6 @@ void convolvePiecewise()  // rename to irwinHall
   //p.integrate(1.0); plot(p);
 
   p.integrate(0.0); plot(p);
-
-
-  int dummy = 0;
 
   // todo: test differentiating, shifting
 }
@@ -3669,7 +3665,7 @@ void dampedSineFormulas()
   rsNumericIntegral(&t[0], &y[0], &yIn[0], N, 0.0); 
   // todo: move function into class rsNumericIntegrator, rename it into trapezoidal
 
-  Real cog = f.getCenterOfMass();
+  //Real cog = f.getCenterOfMass();
   // close to zero, slightly negative....hmmm...that could be plausible. but it's not what we 
   // typically want. we want the center of mass of the envelope or maybe of the squared signal 
   // because squaring gives power whose integral is the energy
@@ -3692,7 +3688,6 @@ void dampedSineFormulas()
   
 
   rsAssert(ok);
-  int dummy = 0;
 
   // ToDo:
   // -Compare results of getIntegral of f2 = f^2 with the old formulas for energy as function of
@@ -3871,8 +3866,6 @@ void dampedSineClass2()
   rsPlotVectorsXY(x, yfg2, (yf+yg)*(yf+yg));  // is purely positive as expected.
   rsPlotVectorsXY(x, yf + yg + yh);           // seems to have DC component? ...verify!
   rsPlotVectorsXY(x, yf + yg - yh);
-
-  int dummy = 0;
 
   // Observations:
   // -We need to be careful with squaring signals to avoid DC components...
@@ -4073,12 +4066,6 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
   // ok - looks quite interesting. a bit fractalish, but ever changing - try to synthesize it 
   // efficiently with full bandwidth...the 6400 operator intrdouces strong inharmonicity
 
- 
-
-
-
-  int dummy = 0;
-
   // ToDo:
   // -What about using 3 factors? Maybe make a similar helper function that takes 3 vectors of 
   //  frequencies and experiment with that
@@ -4220,7 +4207,6 @@ void bernoulliNumbers()
   // Producing this array is O(nMax^3) - can we do better? Is this a Shlemiel the painter algo? Can
   // it be optimized to produce the array in a way that re-uses results from previous iterations?
 
-  int dummy = 0;
 }
 // maybe move to unit tests
 
@@ -4448,10 +4434,6 @@ void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
 
   // ...
 
-
-
-
-  int dummy = 0;
 
   // ToDo:
   // -for maxN >= 9, we seem to get overflow errors (numbers are garbage) 

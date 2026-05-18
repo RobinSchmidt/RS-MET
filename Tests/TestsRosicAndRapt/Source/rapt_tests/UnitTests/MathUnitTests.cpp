@@ -93,7 +93,6 @@ bool correlationUnitTest()
     double scale = double(N)/double(N-n);
     c3[N-1+n] *= scale;
     c3[N-1-n] *= scale;
-    int dummy = 0;
   }
   // ok - looks good
 
@@ -779,8 +778,10 @@ float cubicRoot(float d, float c, float b, float a)
   // h.coefficients(z)               # gives coefficients for powers of z
 }
 
-void cubicRoots(float d, float c, float b, float a, std::complex<float>* r1,
-  std::complex<float>* r2, std::complex<float>* r3)
+void cubicRoots(float d, float c, float b, float a, 
+  std::complex<float>* /*r1*/,
+  std::complex<float>* r2,
+  std::complex<float>* /*r3*/)
 {
   float rr = cubicRoot(d, c, b, a); // find real root
   *r2 = rr;
@@ -788,7 +789,6 @@ void cubicRoots(float d, float c, float b, float a, std::complex<float>* r1,
   //float rem;                        // dummy for remainder
   //RAPT::rsPolynomial<float>::dividePolynomialByMonomialInPlace(cof, 4, rr, &rem); // causes crash
   //RAPT::rsPolynomial<float>::rootsQuadraticComplex(cof[0], cof[1], cof[2], r1, r3);
-  int dummy = 0;
 }
 
 bool polynomialRootsUnitTest()

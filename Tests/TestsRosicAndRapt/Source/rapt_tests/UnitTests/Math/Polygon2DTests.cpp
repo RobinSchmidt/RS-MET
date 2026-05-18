@@ -65,7 +65,7 @@ bool testPointInsidePolygon2D(std::string &reportString)
   return testResult;
 }
 
-bool convexPolygonClipping(std::string &reportString)
+bool convexPolygonClipping(std::string & /*reportString*/)
 {
   bool r = true;
 
@@ -194,7 +194,7 @@ float unitSquareCut(const rsVector2DF& p, const rsVector2DF& q, bool& quadCut)
   unitSquareIntersections(p, q, x0, x1, y0, y1);
   return unitSquareCut(p, q, x0, x1, y0, y1, quadCut); 
 }
-bool pixelCoverage(std::string &reportString)
+bool pixelCoverage(std::string & /*reportString*/)
 {
   bool r = true;
 

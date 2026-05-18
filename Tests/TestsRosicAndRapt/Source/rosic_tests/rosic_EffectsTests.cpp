@@ -1743,7 +1743,7 @@ void testSpectralShift()
 {
   using SS = rosic::SpectralShifter;
   SS::Algorithm    JH   = SS::Algorithm::JuilHirs;
-  SS::Algorithm    RS1  = SS::Algorithm::RobSchm1;
+  //SS::Algorithm    RS1  = SS::Algorithm::RobSchm1;
   SS::Algorithm    RS2  = SS::Algorithm::RobSchm2;
   SS::PhaseFormula Mul  = SS::PhaseFormula::useMultiplier;
   SS::PhaseFormula Keep = SS::PhaseFormula::keepOriginal;
@@ -2243,8 +2243,6 @@ void testSpectralShift()
   testSpectralShifter(0.80, JH, 1024, 2, 2, true, false, 2, Keep, 0, 128, 90.0);
   testSpectralShifter(1.25, JH, 1024, 2, 2, true, false, 2, Mul,  0, 128, 90.0);
 
-
-  int dummy = 0;
 
   // -Shouldn't we accumulate the phase shifts/twiddles? Maybe if we do, we can get rid of that 
   //  weird formula with the modulo operation? It seems to be unnatural to have the frameIndex

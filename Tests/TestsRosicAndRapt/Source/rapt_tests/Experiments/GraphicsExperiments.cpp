@@ -427,7 +427,7 @@ void splineArc()
 
   //int numDots = 100;
 
-  float density = 0.125;
+  //float density = 0.125;
   int N = 100;        // number of spline evaluation samples
   int width   = 400;
   int height  = 400;
@@ -474,7 +474,7 @@ void splineArc()
   //plt.plot();
 
 
-  float splineLength = s[N-1]; // last value in s is total length: s(t=1)
+  //float splineLength = s[N-1]; // last value in s is total length: s(t=1)
   //int numSplineDots = std::max(1, (int)round(splineLength * density));
 
 
@@ -2514,7 +2514,7 @@ void renderNewtonFractal()
 
   // Define iteration function. The function results from applying the Newton iteration rule 
   // zNew = z - f(z)/f'(z) to the function f(z) = z^4 - 1:
-  auto iterFunc = [](Vec2D v, Vec2D p)
+  auto iterFunc = [](Vec2D v, Vec2D /*p*/)
   {
     Complex z(v.x, v.y);
     Complex z2 = z*z;
@@ -2578,7 +2578,7 @@ void renderNewtonFractal()
     int k = findBestMatch(&roots[0], (int) roots.size(), vL, closer);
     return  float(k) / (roots.size()-1);
   };
-  auto postProcess1 = [&](rsImage<Color>& img)
+  auto postProcess1 = [&](rsImage<Color>& /*img*/)
   {
     // Do nothing. The colorFunc1 itself already produces the final RGBA values.
   };

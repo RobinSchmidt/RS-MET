@@ -1244,7 +1244,7 @@ bool testNumericIntegration()
   auto f = [](Real x) { return x*x; };  // f(x) = x^2
   Real a = 0.0;                         // lower integration limit
   Real b = 1.0;                         // upper integration limit
-  Real A = 1./3;                        // actual area
+  //Real A = 1./3;                        // actual area
   int  N = 10;                          // number of intervals
   Vec x(N+1), y(N+1), yi(N+1);
 

@@ -176,7 +176,7 @@ bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, in
   sp.setBlockAndTrafoSize(B, M);
   sp.setHopSize(H);
   rsMatrix<rsComplexDbl> s = sp.getComplexSpectrogram(&x[0], N);
-  int numFrames = s.getNumRows();  
+  //int numFrames = s.getNumRows();  
   // todo: let the function take an FFT-size parameter instead of a zero-padding factor (maybe)
   // facilitates having an FFT size independent from the block-size
 
@@ -642,7 +642,6 @@ bool testSingleSineFormulas()
     r &= rsIsCloseTo(p, p2, tol);
 
     rsAssert(r);
-    int dummy = 0;
   }
 
 

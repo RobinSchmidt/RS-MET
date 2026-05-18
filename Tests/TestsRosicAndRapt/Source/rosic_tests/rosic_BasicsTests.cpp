@@ -26,7 +26,7 @@ bool rotes::testMathFunctions()
 {
   bool ok = true;
 
-  double y = rosic::besselI0(30.0);
+  //double y = rosic::besselI0(30.0);
   // https://www.wolframalpha.com/input/?i=besseli%5B0%2C30%5D
   // 7.81672297823977489717389816705295005444944253977947003347688 × 10^11
   // ...it's not very accurate but in the right ballpark
@@ -90,8 +90,6 @@ void rotes::testWindowFunctions()
   // Test Kaiser window:
   WindowDesigner::getKaiserWindow(window, windowLength,  1.5);
   plotData(windowLength, windowIndices, window);  // looks parabolic - is that correct?
-
-  int dummy = 0;
 }
 
 
@@ -103,8 +101,6 @@ void testDerivativeComputation()
   double yd;
   for(int i = 0; i < 10; i++)
     yd = RAPT::getDelayedSampleAsymmetricHermiteM(0.5, &y[i], 3);
-
-  int dummy = 0;
 }
 
 
@@ -537,7 +533,4 @@ void rotes::testAsymmetricPolynomialInterpolatorsOld()
   Plotter::plotData(length/4, frequencies, decibels);
   */
 
-
-
-  int dummy = 0;
 }

@@ -160,7 +160,7 @@ bool testRemoveElements()
   int testBuffer1[length] = {1,6,7,1,4,5,7,6,1,2};
   int testBuffer2[length] = {0,0,0,0,0,0,0,0,0,0};
   int matchBuffer[3]      = {1,6,7};
-  int numMatches    = AR::copyIfMatching(   testBuffer1, testBuffer2, length, matchBuffer, 3);
+  //int numMatches    = AR::copyIfMatching(   testBuffer1, testBuffer2, length, matchBuffer, 3);
   int numNonMatches = AR::copyIfNotMatching(testBuffer1, testBuffer2, length, matchBuffer, 3);
   numNonMatches     = AR::copyIfNotMatching(testBuffer1, testBuffer1, length, matchBuffer, 3);
 

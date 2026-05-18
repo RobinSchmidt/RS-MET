@@ -1,5 +1,5 @@
 
-bool testPoint2DOperators(std::string &reportString)
+bool testPoint2DOperators(std::string & /*reportString*/)
 {
   std::string testName = "rsPoint2DOperators";
   bool testResult = true;
@@ -33,7 +33,7 @@ bool testPoint2DOperators(std::string &reportString)
   return testResult;
 }
 
-bool testPoint2DTransformations(std::string &reportString)
+bool testPoint2DTransformations(std::string & /*reportString*/)
 {
   std::string testName = "rsPoint2DTransformations";
   bool testResult = true;

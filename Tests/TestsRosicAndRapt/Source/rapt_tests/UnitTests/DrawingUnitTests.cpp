@@ -123,9 +123,7 @@ bool triangleRasterization2()
     v3 = img3.toStdVector();
     err = v1-v3;
     int errMaxIdx = RAPT::rsArrayTools::maxDeviationIndex(&v1[0], &v3[0], w*h);
-    float errMax = err[errMaxIdx];
-
-    int dummy = 0;
+    //float errMax = err[errMaxIdx];
   }
 
   //writeImageToFilePPM(img1, "RandomTriangles.ppm");

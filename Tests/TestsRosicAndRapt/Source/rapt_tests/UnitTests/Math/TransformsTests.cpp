@@ -312,7 +312,7 @@ bool testNumberTheoreticTransform()
   static const int numRoots = ModInt::numRoots;
 
 
-  int maxN  = rsPowInt(2, numRoots);
+  //int maxN  = rsPowInt(2, numRoots);
   ModInt a, b, c;
   ModInt one  = ModInt(1);
   for(int i = 0; i < numRoots; i++)
