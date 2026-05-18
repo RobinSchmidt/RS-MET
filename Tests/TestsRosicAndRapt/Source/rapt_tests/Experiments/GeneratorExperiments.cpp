@@ -197,7 +197,7 @@ void noise()
 
 
   // some preliminray experiments:
-  bool periodFormulaWorks = testIrwinHallPeriods(100);  // check conjectured formula
+  //bool periodFormulaWorks = testIrwinHallPeriods(100);  // check conjectured formula
   plotIrwinHall(order);  // plot theoretical distribution
 
   rsNoiseGenerator2<double> prng;
@@ -272,7 +272,7 @@ void noiseReverseMode()
 
 
   rsAssert(ok);
-  int dummy = 0;
+  //int dummy = 0;
 
   // Ideas:
   // -Use this algorithm to scramble data:
@@ -1285,7 +1285,7 @@ void superSawStereo()
 
 // computes algorithm parameters for the two-pice oscillator from user parameters
 // pulse-width: -1..+1, sawVsSquare: -1..+1
-void getTwoPieceAlgoParams(double pulseWidth, double sawVsSquare,
+void getTwoPieceAlgoParams(double /*pulseWidth*/, double sawVsSquare,
   double& h, double& a1, double& b1, double& a2, double& b2)
 {
   typedef RAPT::rsBlepReadyOscBase<double> Osc;

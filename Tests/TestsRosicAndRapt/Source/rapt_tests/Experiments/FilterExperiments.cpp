@@ -2177,8 +2177,8 @@ void nonUniformBiquad()
   // which we obtain via an oversampled, uniform filter.
 
 
-  int Nf = 50;             // number of samples taken from the filter
-  int oversampling = 10;   // oversampling factor for pseudo-continuous signal
+  //int Nf = 50;             // number of samples taken from the filter
+  //int oversampling = 10;   // oversampling factor for pseudo-continuous signal
 
 
   //int Nc = Nf * oversampling; // number of samples for oversampled signal
@@ -2559,8 +2559,8 @@ void poleZeroPrototype()
   typedef PoleZeroPrototype<Real> PZP;
   static const int minOrder = 4;   // minimum filter order to plot
   static const int maxOrder = 4;  // maximum filter order to plot
-  Real G0 = 0.f;    // use G0=0, G=1 for lowpass and G0=2, G=8 for low-shelf
-  Real G  = 1.f;     
+  //Real G0 = 0.f;    // use G0=0, G=1 for lowpass and G0=2, G=8 for low-shelf
+  //Real G  = 1.f;     
 
   PZP pzp;
   pzp.setApproximationMethod(PZP::BUTTERWORTH);
@@ -2696,7 +2696,7 @@ void quantileFilterElongation()
 
   double xOld = dly[L];
   //double branch;
-  double tmp  = flt.getElongatedOutput(xOld);
+  //double tmp  = flt.getElongatedOutput(xOld);
 
   //rsPlotVectors(t, z, err);
   rsPlotVectors(x, t, z, err);
@@ -2722,7 +2722,7 @@ void quantileFilterSweep()
   // integer lengths.
 
   // user parameters:
-  double fs          = 44100;    // sample rate
+  //double fs          = 44100;    // sample rate
   int    N           = 200000;   // number of samples
   double minLength   = 2.0;      // minimum length in sweep
   double maxLength   = 20.0;     // maximum length in sweep
@@ -2843,7 +2843,7 @@ void quantileFilterDual()
 {
   double fs = 44100;  // sample rate
   int    N  = 1000; // number of samples
-  int    L  = 100;    // filter length in samples (can we make this a double, too?)
+  //int    L  = 100;    // filter length in samples (can we make this a double, too?)
   double q  = 1.0;   // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
   double f1 = fs/2;
   double f2 = fs/500;  // fs/256 is a nice end value for a sweep

@@ -722,8 +722,8 @@ void orthogonalizedPowerIteration()
   // Let's try it:
   Vec  u2  = w1 + w2;
   Vec  p2  = A*u2;
-  Real q12 = rsDot(w1, p2);  // -0.42857142857126318
-  Real q22 = rsDot(w2, p2);  //  2 == 2nd eigenvalue
+  //Real q12 = rsDot(w1, p2);  // -0.42857142857126318
+  //Real q22 = rsDot(w2, p2);  //  2 == 2nd eigenvalue
   //Real r12 = q12/q22;        // -0.21428571428564130
   // ...hmmm - nope! but can it somehow help us to reconstruct the projection coeff of v2 onto v1?
   // -q12 and therfore r12 grows with growing largest eigenvalue s1
@@ -753,7 +753,7 @@ void orthogonalizedPowerIteration()
     //Vec  u2  = s1*w1 + s2*w2;       // test
     Vec  p2  = A*u2;
     Real q12 = rsDot(w1, p2);
-    Real q22 = rsDot(w2, p2);       // always(?) equals the smaller eigenvalue
+    //Real q22 = rsDot(w2, p2);       // always(?) equals the smaller eigenvalue
     //Real r12 = q12/q22;
     //Real r21 = q22/q12;
     //return r21;
@@ -3979,8 +3979,8 @@ void expBipolar()
   double d = y1 - y0;
   double w = productLog(- (exp(-s/d)*s) / d);
   double a = -d*s / (d*w+s);
-  double b = s  / a;
-  double c = y0 - a;
+  //double b = s  / a;
+  //double c = y0 - a;
 
   // compute values at the endpoints for test:
   //double f0  = a * exp(b * 0) + c; // f0 is wrong
