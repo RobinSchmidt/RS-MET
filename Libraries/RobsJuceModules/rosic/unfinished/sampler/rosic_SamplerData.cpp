@@ -521,6 +521,10 @@ bool SfzInstrument::Global::operator==(const SfzInstrument::Global& rhs) const
 //-------------------------------------------------------------------------------------------------
 // The actual SfzInstrument class:
 
+//const std::string SfzInstrument::emptyString;
+//const std::string SfzInstrument::emptyString = "";
+// ToDo: Move this out of the SfzInstrument class and into the outlying rosic namespace.
+
 int SfzInstrument::addRegion(int gi, uchar loKey, uchar hiKey)
 {
   if(gi < 0 || gi >= (int)global.groups.size()) {

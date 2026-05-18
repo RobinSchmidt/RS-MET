@@ -74,7 +74,15 @@ int main(int argc, char* argv[])
   // the leak does not occurr. It seems to be caused by getMidiControllerLabel() in the file
   // rosic_SamplerData.h at line 642 where we dealare a static local variable of type std::string
   // and return a reference to it when the passed index is out of range. Perhaps the right way to
-  // fix it would be to have that empty string as global variable in the rosic namespace.
+  // fix it would be to have that empty string as global variable in the rosic namespace. Hmm - 
+  // that seems to be not so easy to do after all. When trying to add a global string variable to 
+  // the rosic namespace (decalring the string in rosic_Constants.h and defining it in 
+  // rosic_Constants.cpp (which had to be created)), I got "multiple definition" linker errors.
+  // It said that the object was already defined in Misc.obj which seems to come from
+  // TestsRosicAndRapt/Source/Misc/Misc.cpp. As another option, I tried to define the string as
+  // static member inside the SfzInstrument class (defined in rosic_SamplerData.h/cpp) but doing
+  // so made the memleak situation even worse. In this scenario, the leak occurrs even when we
+  // don't call runUnitTestsRapt();
 
 
   // Done:

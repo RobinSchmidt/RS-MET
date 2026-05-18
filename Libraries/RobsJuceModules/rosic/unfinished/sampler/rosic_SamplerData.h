@@ -635,6 +635,9 @@ public:
   // before
 
 
+  //static const std::string emptyString;
+  // ToDo: Move this out of the SfzInstrument class and into the outlying rosic namespace.
+
   /** @see: setMidiControllerLabel */
   const std::string& getMidiControllerLabel(int i) const 
   { 
