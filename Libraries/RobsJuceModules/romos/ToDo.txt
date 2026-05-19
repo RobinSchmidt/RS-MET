@@ -1,3 +1,13 @@
+
+-In many functions, we use "module" as parameter name. Change that to something shorter like
+ maybe mdl or just m. In C++20, "module" becase a keyword so we cant use that anymore for 
+ variables when we want to be compatible with C++20 - which we eventually do want. See:
+ https://en.cppreference.com/cpp/language/modules  
+ 
+ Update also the macros in:
+ romos\Modules\romos_ModuleDefinitionMacros.h  (ok - done)
+
+
 -clean up the #includes - includes should ideally occur only in the unity build file
 -get rid of using namespace declarations - warp the code itself into the appropriate namespace
  in the unity build file

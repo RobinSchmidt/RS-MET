@@ -81,55 +81,55 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                      \
 
 
-// given a function process(Module *module, double *out, int voiceIndex), these macros create the 
+// given a function process(Module *mdl, double *out, int voiceIndex), these macros create the 
 // mono/poly, frame/block processing functions respectively for modules without input pins:
 #define CREATE_MONO_FRAME_FUNCTION_0(ClassName)                                                \
-  void ClassName::processMonoFrame(Module *module, int voiceIndex)                             \
+  void ClassName::processMonoFrame(Module *mdl, int voiceIndex)                             \
   {                                                                                            \
-    ClassName::process(module,                                                                 \
-                       module->audioOutputs,                                                   \
+    ClassName::process(mdl,                                                                 \
+                       mdl->audioOutputs,                                                   \
                        voiceIndex);                                                            \
   }                                                                                            \
 
 #define CREATE_POLY_FRAME_FUNCTION_0(ClassName)                                                \
-  void ClassName::processPolyFrame(Module *module, int voiceIndex)                             \
+  void ClassName::processPolyFrame(Module *mdl, int voiceIndex)                             \
   {                                                                                            \
-    int outVoiceStride = module->outFrameStride * processingStatus.getBufferSize();            \
-    double *outPointer = module->audioOutputs;                                                 \
+    int outVoiceStride = mdl->outFrameStride * processingStatus.getBufferSize();            \
+    double *outPointer = mdl->audioOutputs;                                                 \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)      \
     {                                                                                          \
       int voiceIndex  = voiceAllocator.getPlayingVoiceIndices()[playIndex];                    \
-      ClassName::process(module,                                                               \
+      ClassName::process(mdl,                                                               \
                          outPointer + voiceIndex * outVoiceStride,                             \
                          voiceIndex);                                                          \
     }                                                                                          \
   }                                                                                            \
 
 #define CREATE_MONO_BLOCK_FUNCTION_0(ClassName)                                                \
-  void ClassName::processMonoBlock(Module *module, int voiceIndex, int blockSize)              \
+  void ClassName::processMonoBlock(Module *mdl, int voiceIndex, int blockSize)              \
   {                                                                                            \
-    int outFrameStride = module->outFrameStride;                                               \
-    double *outPointer = module->audioOutputs;                                                 \
+    int outFrameStride = mdl->outFrameStride;                                               \
+    double *outPointer = mdl->audioOutputs;                                                 \
     for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                              \
     {                                                                                          \
-      ClassName::process(module, outPointer, voiceIndex);                                      \
+      ClassName::process(mdl, outPointer, voiceIndex);                                      \
       outPointer += outFrameStride;                                                            \
     }                                                                                          \
   }                                                                                            \
 
 #define CREATE_POLY_BLOCK_FUNCTION_0(ClassName)                                                \
-  void ClassName::processPolyBlock(Module *module, int voiceIndex, int blockSize)              \
+  void ClassName::processPolyBlock(Module *mdl, int voiceIndex, int blockSize)              \
   {                                                                                            \
-    int outFrameStride       = module->outFrameStride;                                         \
+    int outFrameStride       = mdl->outFrameStride;                                         \
     int outVoiceStride       = outFrameStride * processingStatus.getBufferSize();              \
-    double *outPointerVoice0 = module->audioOutputs;                                           \
+    double *outPointerVoice0 = mdl->audioOutputs;                                           \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)      \
     {                                                                                          \
       int voiceIndex     = voiceAllocator.getPlayingVoiceIndices()[playIndex];                 \
       double *outPointer = outPointerVoice0 + voiceIndex * outVoiceStride;                     \
       for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                            \
       {                                                                                        \
-        ClassName::process(module, outPointer, voiceIndex);                                    \
+        ClassName::process(mdl, outPointer, voiceIndex);                                    \
         outPointer += outFrameStride;                                                          \
       }                                                                                        \
     }                                                                                          \
@@ -149,32 +149,32 @@ create a special project for that. Maybe it can be made part of the Liberty test
   ENFORCE_FACTORY_USAGE(ClassName);                                                            \
   DECLARE_PROCESSING_FUNCTIONS;                                                                \
   virtual void initialize();                                                                   \
-  static INLINE void process(Module *module, double *out, int voiceIndex);                     \
+  static INLINE void process(Module *mdl, double *out, int voiceIndex);                     \
 
 
-// given a function process(Module *module, double *in, double *out, int voiceIndex), these macros 
+// given a function process(Module *mdl, double *in, double *out, int voiceIndex), these macros 
 // create the mono/poly, frame/block processing functions respectively for modules with one input 
 // pin:
 #define CREATE_MONO_FRAME_FUNCTION_1(ClassName)                                                \
-  void ClassName::processMonoFrame(Module *module, int voiceIndex)                             \
+  void ClassName::processMonoFrame(Module *mdl, int voiceIndex)                             \
   {                                                                                            \
-    ClassName::process(module,                                                                 \
-                       module->inputPins[0].outputPointer,                                     \
-                       module->audioOutputs,                                                   \
+    ClassName::process(mdl,                                                                 \
+                       mdl->inputPins[0].outputPointer,                                     \
+                       mdl->audioOutputs,                                                   \
                        voiceIndex);                                                            \
   }                                                                                            \
 
 #define CREATE_POLY_FRAME_FUNCTION_1(ClassName)                                                \
-  void ClassName::processPolyFrame(Module *module, int voiceIndex)                             \
+  void ClassName::processPolyFrame(Module *mdl, int voiceIndex)                             \
   {                                                                                            \
-    int outVoiceStride = module->outFrameStride * processingStatus.getBufferSize();            \
-    int inVoiceStride  = module->inputPins[0].outputVoiceStride;                               \
-    double *inPointer  = module->inputPins[0].outputPointer;                                   \
-    double *outPointer = module->audioOutputs;                                                 \
+    int outVoiceStride = mdl->outFrameStride * processingStatus.getBufferSize();            \
+    int inVoiceStride  = mdl->inputPins[0].outputVoiceStride;                               \
+    double *inPointer  = mdl->inputPins[0].outputPointer;                                   \
+    double *outPointer = mdl->audioOutputs;                                                 \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)      \
     {                                                                                          \
       int voiceIndex  = voiceAllocator.getPlayingVoiceIndices()[playIndex];                    \
-      ClassName::process(module,                                                               \
+      ClassName::process(mdl,                                                               \
                          inPointer  + voiceIndex * inVoiceStride,                              \
                          outPointer + voiceIndex * outVoiceStride,                             \
                          voiceIndex);                                                          \
@@ -182,29 +182,29 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                            \
 
 #define CREATE_MONO_BLOCK_FUNCTION_1(ClassName)                                                \
-  void ClassName::processMonoBlock(Module *module, int voiceIndex, int blockSize)              \
+  void ClassName::processMonoBlock(Module *mdl, int voiceIndex, int blockSize)              \
   {                                                                                            \
-    int outFrameStride = module->outFrameStride;                                               \
-    int inFrameStride  = module->inputPins[0].outputFrameSize;                                 \
-    double *inPointer  = module->inputPins[0].outputPointer;                                   \
-    double *outPointer = module->audioOutputs;                                                 \
+    int outFrameStride = mdl->outFrameStride;                                               \
+    int inFrameStride  = mdl->inputPins[0].outputFrameSize;                                 \
+    double *inPointer  = mdl->inputPins[0].outputPointer;                                   \
+    double *outPointer = mdl->audioOutputs;                                                 \
     for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                              \
     {                                                                                          \
-      ClassName::process(module, inPointer, outPointer, voiceIndex);                           \
+      ClassName::process(mdl, inPointer, outPointer, voiceIndex);                           \
       inPointer  += inFrameStride;                                                             \
       outPointer += outFrameStride;                                                            \
     }                                                                                          \
   }                                                                                            \
 
 #define CREATE_POLY_BLOCK_FUNCTION_1(ClassName)                                                \
-  void ClassName::processPolyBlock(Module *module, int voiceIndex, int blockSize)              \
+  void ClassName::processPolyBlock(Module *mdl, int voiceIndex, int blockSize)              \
   {                                                                                            \
-    int outFrameStride       = module->outFrameStride;                                         \
+    int outFrameStride       = mdl->outFrameStride;                                         \
     int outVoiceStride       = outFrameStride * processingStatus.getBufferSize();              \
-    int inFrameStride        = module->inputPins[0].outputFrameSize;                           \
-    int inVoiceStride        = module->inputPins[0].outputVoiceStride;                         \
-    double *inPointerVoice0  = module->inputPins[0].outputPointer;                             \
-    double *outPointerVoice0 = module->audioOutputs;                                           \
+    int inFrameStride        = mdl->inputPins[0].outputFrameSize;                           \
+    int inVoiceStride        = mdl->inputPins[0].outputVoiceStride;                         \
+    double *inPointerVoice0  = mdl->inputPins[0].outputPointer;                             \
+    double *outPointerVoice0 = mdl->audioOutputs;                                           \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)      \
     {                                                                                          \
       int voiceIndex     = voiceAllocator.getPlayingVoiceIndices()[playIndex];                 \
@@ -212,7 +212,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
       double *outPointer = outPointerVoice0 + voiceIndex * outVoiceStride;                     \
       for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                            \
       {                                                                                        \
-        ClassName::process(module, inPointer, outPointer, voiceIndex);                         \
+        ClassName::process(mdl, inPointer, outPointer, voiceIndex);                         \
         inPointer  += inFrameStride;                                                           \
         outPointer += outFrameStride;                                                          \
       }                                                                                        \
@@ -233,36 +233,36 @@ create a special project for that. Maybe it can be made part of the Liberty test
   ENFORCE_FACTORY_USAGE(ClassName);                                                            \
   DECLARE_PROCESSING_FUNCTIONS;                                                                \
   virtual void initialize();                                                                   \
-  static INLINE void process(Module *module, double *in, double *out, int voiceIndex);         \
+  static INLINE void process(Module *mdl, double *in, double *out, int voiceIndex);         \
 
 
 
-// given a function process(Module *module, double *in1, double *in2, double *out, int voiceIndex), 
+// given a function process(Module *mdl, double *in1, double *in2, double *out, int voiceIndex), 
 // these macros create the mono/poly, frame/block processing functions respectively for modules 
 // with two input pins:
 #define CREATE_MONO_FRAME_FUNCTION_2(ClassName)                                                       \
-  void ClassName::processMonoFrame(Module *module, int voiceIndex)                                    \
+  void ClassName::processMonoFrame(Module *mdl, int voiceIndex)                                    \
   {                                                                                                   \
-    ClassName::process(module,                                                                        \
-                       module->inputPins[0].outputPointer,                                            \
-                       module->inputPins[1].outputPointer,                                            \
-                       module->audioOutputs,                                                          \
+    ClassName::process(mdl,                                                                        \
+                       mdl->inputPins[0].outputPointer,                                            \
+                       mdl->inputPins[1].outputPointer,                                            \
+                       mdl->audioOutputs,                                                          \
                        voiceIndex);                                                                   \
   }                                                                                                   \
 
 #define CREATE_POLY_FRAME_FUNCTION_2(ClassName)                                                       \
-  void ClassName::processPolyFrame(Module *module, int voiceIndex)                                    \
+  void ClassName::processPolyFrame(Module *mdl, int voiceIndex)                                    \
   {                                                                                                   \
-    int outVoiceStride = module->outFrameStride * processingStatus.getBufferSize();                   \
-    int inVoiceStride0 = module->inputPins[0].outputVoiceStride;                                      \
-    int inVoiceStride1 = module->inputPins[1].outputVoiceStride;                                      \
-    double *inPointer0 = module->inputPins[0].outputPointer;                                          \
-    double *inPointer1 = module->inputPins[1].outputPointer;                                          \
-    double *outPointer = module->audioOutputs;                                                        \
+    int outVoiceStride = mdl->outFrameStride * processingStatus.getBufferSize();                   \
+    int inVoiceStride0 = mdl->inputPins[0].outputVoiceStride;                                      \
+    int inVoiceStride1 = mdl->inputPins[1].outputVoiceStride;                                      \
+    double *inPointer0 = mdl->inputPins[0].outputPointer;                                          \
+    double *inPointer1 = mdl->inputPins[1].outputPointer;                                          \
+    double *outPointer = mdl->audioOutputs;                                                        \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)             \
     {                                                                                                 \
       int voiceIndex  = voiceAllocator.getPlayingVoiceIndices()[playIndex];                           \
-      ClassName::process(module,                                                                      \
+      ClassName::process(mdl,                                                                      \
                          inPointer0 + voiceIndex * inVoiceStride0,                                    \
                          inPointer1 + voiceIndex * inVoiceStride1,                                    \
                          outPointer + voiceIndex * outVoiceStride,                                    \
@@ -271,17 +271,17 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_MONO_BLOCK_FUNCTION_2(ClassName)                                                       \
-  void ClassName::processMonoBlock(Module *module, int voiceIndex, int blockSize)                     \
+  void ClassName::processMonoBlock(Module *mdl, int voiceIndex, int blockSize)                     \
   {                                                                                                   \
-    int outFrameStride = module->outFrameStride;                                                      \
-    double *outPointer = module->audioOutputs;                                                        \
-    int inFrameStride0 = module->inputPins[0].outputFrameSize;                                        \
-    double *inPointer0 = module->inputPins[0].outputPointer;                                          \
-    int inFrameStride1 = module->inputPins[1].outputFrameSize;                                        \
-    double *inPointer1 = module->inputPins[1].outputPointer;                                          \
+    int outFrameStride = mdl->outFrameStride;                                                      \
+    double *outPointer = mdl->audioOutputs;                                                        \
+    int inFrameStride0 = mdl->inputPins[0].outputFrameSize;                                        \
+    double *inPointer0 = mdl->inputPins[0].outputPointer;                                          \
+    int inFrameStride1 = mdl->inputPins[1].outputFrameSize;                                        \
+    double *inPointer1 = mdl->inputPins[1].outputPointer;                                          \
     for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                                     \
     {                                                                                                 \
-      ClassName::process(module, inPointer0, inPointer1, outPointer, voiceIndex);                     \
+      ClassName::process(mdl, inPointer0, inPointer1, outPointer, voiceIndex);                     \
       inPointer0 += inFrameStride0;                                                                   \
       inPointer1 += inFrameStride1;                                                                   \
       outPointer += outFrameStride;                                                                   \
@@ -289,17 +289,17 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_POLY_BLOCK_FUNCTION_2(ClassName)                                                       \
-  void ClassName::processPolyBlock(Module *module, int voiceIndex, int blockSize)                     \
+  void ClassName::processPolyBlock(Module *mdl, int voiceIndex, int blockSize)                     \
   {                                                                                                   \
-    int outFrameStride          = module->outFrameStride;                                             \
+    int outFrameStride          = mdl->outFrameStride;                                             \
     int outVoiceStride          = outFrameStride * processingStatus.getBufferSize();                  \
-    int inFrameStride0          = module->inputPins[0].outputFrameSize;                               \
-    int inVoiceStride0          = module->inputPins[0].outputVoiceStride;                             \
-    double *inPointerVoice0Pin0 = module->inputPins[0].outputPointer;                                 \
-    int inFrameStride1          = module->inputPins[1].outputFrameSize;                               \
-    int inVoiceStride1          = module->inputPins[1].outputVoiceStride;                             \
-    double *inPointerVoice0Pin1 = module->inputPins[1].outputPointer;                                 \
-    double *outPointerVoice0    = module->audioOutputs;                                               \
+    int inFrameStride0          = mdl->inputPins[0].outputFrameSize;                               \
+    int inVoiceStride0          = mdl->inputPins[0].outputVoiceStride;                             \
+    double *inPointerVoice0Pin0 = mdl->inputPins[0].outputPointer;                                 \
+    int inFrameStride1          = mdl->inputPins[1].outputFrameSize;                               \
+    int inVoiceStride1          = mdl->inputPins[1].outputVoiceStride;                             \
+    double *inPointerVoice0Pin1 = mdl->inputPins[1].outputPointer;                                 \
+    double *outPointerVoice0    = mdl->audioOutputs;                                               \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)             \
     {                                                                                                 \
       int voiceIndex     = voiceAllocator.getPlayingVoiceIndices()[playIndex];                        \
@@ -308,7 +308,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
       double *outPointer = outPointerVoice0    + voiceIndex * outVoiceStride;                         \
       for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                                   \
       {                                                                                               \
-        ClassName::process(module, inPointer0, inPointer1, outPointer, voiceIndex);                   \
+        ClassName::process(mdl, inPointer0, inPointer1, outPointer, voiceIndex);                   \
         inPointer0 += inFrameStride0;                                                                 \
         inPointer1 += inFrameStride1;                                                                 \
         outPointer += outFrameStride;                                                                 \
@@ -330,37 +330,37 @@ create a special project for that. Maybe it can be made part of the Liberty test
   ENFORCE_FACTORY_USAGE(ClassName);                                                                   \
   DECLARE_PROCESSING_FUNCTIONS;                                                                       \
   virtual void initialize();                                                                          \
-  static INLINE void process(Module *module, double *in1, double *in2, double *out, int voiceIndex);  \
+  static INLINE void process(Module *mdl, double *in1, double *in2, double *out, int voiceIndex);  \
 
 
-// given a function process(Module *module, double *in1, double *in2, double *in3, double *out, int voiceIndex), these macros create the 
+// given a function process(Module *mdl, double *in1, double *in2, double *in3, double *out, int voiceIndex), these macros create the 
 // mono/poly, frame/block processing functions respectively for modules with 3 input pins:
 #define CREATE_MONO_FRAME_FUNCTION_3(ClassName)                                                       \
-  void ClassName::processMonoFrame(Module *module, int voiceIndex)                                    \
+  void ClassName::processMonoFrame(Module *mdl, int voiceIndex)                                    \
   {                                                                                                   \
-    ClassName::process(module,                                                                        \
-                       module->inputPins[0].outputPointer,                                            \
-                       module->inputPins[1].outputPointer,                                            \
-                       module->inputPins[2].outputPointer,                                            \
-                       module->audioOutputs,                                                          \
+    ClassName::process(mdl,                                                                        \
+                       mdl->inputPins[0].outputPointer,                                            \
+                       mdl->inputPins[1].outputPointer,                                            \
+                       mdl->inputPins[2].outputPointer,                                            \
+                       mdl->audioOutputs,                                                          \
                        voiceIndex);                                                                   \
   }                                                                                                   \
 
 #define CREATE_POLY_FRAME_FUNCTION_3(ClassName)                                                       \
-  void ClassName::processPolyFrame(Module *module, int voiceIndex)                                    \
+  void ClassName::processPolyFrame(Module *mdl, int voiceIndex)                                    \
   {                                                                                                   \
-    int outVoiceStride = module->outFrameStride * processingStatus.getBufferSize();                   \
-    int inVoiceStride0 = module->inputPins[0].outputVoiceStride;                                      \
-    int inVoiceStride1 = module->inputPins[1].outputVoiceStride;                                      \
-    int inVoiceStride2 = module->inputPins[2].outputVoiceStride;                                      \
-    double *inPointer0 = module->inputPins[0].outputPointer;                                          \
-    double *inPointer1 = module->inputPins[1].outputPointer;                                          \
-    double *inPointer2 = module->inputPins[2].outputPointer;                                          \
-    double *outPointer = module->audioOutputs;                                                        \
+    int outVoiceStride = mdl->outFrameStride * processingStatus.getBufferSize();                   \
+    int inVoiceStride0 = mdl->inputPins[0].outputVoiceStride;                                      \
+    int inVoiceStride1 = mdl->inputPins[1].outputVoiceStride;                                      \
+    int inVoiceStride2 = mdl->inputPins[2].outputVoiceStride;                                      \
+    double *inPointer0 = mdl->inputPins[0].outputPointer;                                          \
+    double *inPointer1 = mdl->inputPins[1].outputPointer;                                          \
+    double *inPointer2 = mdl->inputPins[2].outputPointer;                                          \
+    double *outPointer = mdl->audioOutputs;                                                        \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)             \
     {                                                                                                 \
       int voiceIndex  = voiceAllocator.getPlayingVoiceIndices()[playIndex];                           \
-      ClassName::process(module,                                                                      \
+      ClassName::process(mdl,                                                                      \
                          inPointer0 + voiceIndex * inVoiceStride0,                                    \
                          inPointer1 + voiceIndex * inVoiceStride1,                                    \
                          inPointer2 + voiceIndex * inVoiceStride2,                                    \
@@ -370,19 +370,19 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_MONO_BLOCK_FUNCTION_3(ClassName)                                                       \
-  void ClassName::processMonoBlock(Module *module, int voiceIndex, int blockSize)                     \
+  void ClassName::processMonoBlock(Module *mdl, int voiceIndex, int blockSize)                     \
   {                                                                                                   \
-    int outFrameStride = module->outFrameStride;                                                      \
-    double *outPointer = module->audioOutputs;                                                        \
-    int inFrameStride0 = module->inputPins[0].outputFrameSize;                                        \
-    double *inPointer0 = module->inputPins[0].outputPointer;                                          \
-    int inFrameStride1 = module->inputPins[1].outputFrameSize;                                        \
-    double *inPointer1 = module->inputPins[1].outputPointer;                                          \
-    int inFrameStride2 = module->inputPins[2].outputFrameSize;                                        \
-    double *inPointer2 = module->inputPins[2].outputPointer;                                          \
+    int outFrameStride = mdl->outFrameStride;                                                      \
+    double *outPointer = mdl->audioOutputs;                                                        \
+    int inFrameStride0 = mdl->inputPins[0].outputFrameSize;                                        \
+    double *inPointer0 = mdl->inputPins[0].outputPointer;                                          \
+    int inFrameStride1 = mdl->inputPins[1].outputFrameSize;                                        \
+    double *inPointer1 = mdl->inputPins[1].outputPointer;                                          \
+    int inFrameStride2 = mdl->inputPins[2].outputFrameSize;                                        \
+    double *inPointer2 = mdl->inputPins[2].outputPointer;                                          \
     for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                                     \
     {                                                                                                 \
-      ClassName::process(module,                                                                      \
+      ClassName::process(mdl,                                                                      \
                          inPointer0,                                                                  \
                          inPointer1,                                                                  \
                          inPointer2,                                                                  \
@@ -396,20 +396,20 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_POLY_BLOCK_FUNCTION_3(ClassName)                                                       \
-  void ClassName::processPolyBlock(Module *module, int voiceIndex, int blockSize)                     \
+  void ClassName::processPolyBlock(Module *mdl, int voiceIndex, int blockSize)                     \
   {                                                                                                   \
-    int outFrameStride          = module->outFrameStride;                                             \
+    int outFrameStride          = mdl->outFrameStride;                                             \
     int outVoiceStride          = outFrameStride * processingStatus.getBufferSize();                  \
-    int inFrameStride0          = module->inputPins[0].outputFrameSize;                               \
-    int inVoiceStride0          = module->inputPins[0].outputVoiceStride;                             \
-    double *inPointerVoice0Pin0 = module->inputPins[0].outputPointer;                                 \
-    int inFrameStride1          = module->inputPins[1].outputFrameSize;                               \
-    int inVoiceStride1          = module->inputPins[1].outputVoiceStride;                             \
-    double *inPointerVoice0Pin1 = module->inputPins[1].outputPointer;                                 \
-    int inFrameStride2          = module->inputPins[2].outputFrameSize;                               \
-    int inVoiceStride2          = module->inputPins[2].outputVoiceStride;                             \
-    double *inPointerVoice0Pin2 = module->inputPins[2].outputPointer;                                 \
-    double *outPointerVoice0    = module->audioOutputs;                                               \
+    int inFrameStride0          = mdl->inputPins[0].outputFrameSize;                               \
+    int inVoiceStride0          = mdl->inputPins[0].outputVoiceStride;                             \
+    double *inPointerVoice0Pin0 = mdl->inputPins[0].outputPointer;                                 \
+    int inFrameStride1          = mdl->inputPins[1].outputFrameSize;                               \
+    int inVoiceStride1          = mdl->inputPins[1].outputVoiceStride;                             \
+    double *inPointerVoice0Pin1 = mdl->inputPins[1].outputPointer;                                 \
+    int inFrameStride2          = mdl->inputPins[2].outputFrameSize;                               \
+    int inVoiceStride2          = mdl->inputPins[2].outputVoiceStride;                             \
+    double *inPointerVoice0Pin2 = mdl->inputPins[2].outputPointer;                                 \
+    double *outPointerVoice0    = mdl->audioOutputs;                                               \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)             \
     {                                                                                                 \
       int voiceIndex     = voiceAllocator.getPlayingVoiceIndices()[playIndex];                        \
@@ -419,7 +419,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
       double *outPointer = outPointerVoice0    + voiceIndex * outVoiceStride;                         \
       for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                                   \
       {                                                                                               \
-        ClassName::process(module,                                                                    \
+        ClassName::process(mdl,                                                                    \
                            inPointer0,                                                                \
                            inPointer1,                                                                \
                            inPointer2,                                                                \
@@ -447,40 +447,40 @@ create a special project for that. Maybe it can be made part of the Liberty test
   ENFORCE_FACTORY_USAGE(ClassName);                                                                   \
   DECLARE_PROCESSING_FUNCTIONS;                                                                       \
   virtual void initialize();                                                                          \
-  static INLINE void process(Module *module, double *in1, double *in2, double *in3, double *out,      \
+  static INLINE void process(Module *mdl, double *in1, double *in2, double *in3, double *out,      \
                              int voiceIndex);                                                         \
 
 
 // ...and so on - 4 input pins:
 #define CREATE_MONO_FRAME_FUNCTION_4(ClassName)                                                       \
-  void ClassName::processMonoFrame(Module *module, int voiceIndex)                                    \
+  void ClassName::processMonoFrame(Module *mdl, int voiceIndex)                                    \
   {                                                                                                   \
-    ClassName::process(module,                                                                        \
-                       module->inputPins[0].outputPointer,                                            \
-                       module->inputPins[1].outputPointer,                                            \
-                       module->inputPins[2].outputPointer,                                            \
-                       module->inputPins[3].outputPointer,                                            \
-                       module->audioOutputs,                                                          \
+    ClassName::process(mdl,                                                                        \
+                       mdl->inputPins[0].outputPointer,                                            \
+                       mdl->inputPins[1].outputPointer,                                            \
+                       mdl->inputPins[2].outputPointer,                                            \
+                       mdl->inputPins[3].outputPointer,                                            \
+                       mdl->audioOutputs,                                                          \
                        voiceIndex);                                                                   \
   }                                                                                                   \
 
 #define CREATE_POLY_FRAME_FUNCTION_4(ClassName)                                                       \
-  void ClassName::processPolyFrame(Module *module, int voiceIndex)                                    \
+  void ClassName::processPolyFrame(Module *mdl, int voiceIndex)                                    \
   {                                                                                                   \
-    int outVoiceStride = module->outFrameStride * processingStatus.getBufferSize();                   \
-    int inVoiceStride0 = module->inputPins[0].outputVoiceStride;                                      \
-    int inVoiceStride1 = module->inputPins[1].outputVoiceStride;                                      \
-    int inVoiceStride2 = module->inputPins[2].outputVoiceStride;                                      \
-    int inVoiceStride3 = module->inputPins[3].outputVoiceStride;                                      \
-    double *inPointer0 = module->inputPins[0].outputPointer;                                          \
-    double *inPointer1 = module->inputPins[1].outputPointer;                                          \
-    double *inPointer2 = module->inputPins[2].outputPointer;                                          \
-    double *inPointer3 = module->inputPins[3].outputPointer;                                          \
-    double *outPointer = module->audioOutputs;                                                        \
+    int outVoiceStride = mdl->outFrameStride * processingStatus.getBufferSize();                   \
+    int inVoiceStride0 = mdl->inputPins[0].outputVoiceStride;                                      \
+    int inVoiceStride1 = mdl->inputPins[1].outputVoiceStride;                                      \
+    int inVoiceStride2 = mdl->inputPins[2].outputVoiceStride;                                      \
+    int inVoiceStride3 = mdl->inputPins[3].outputVoiceStride;                                      \
+    double *inPointer0 = mdl->inputPins[0].outputPointer;                                          \
+    double *inPointer1 = mdl->inputPins[1].outputPointer;                                          \
+    double *inPointer2 = mdl->inputPins[2].outputPointer;                                          \
+    double *inPointer3 = mdl->inputPins[3].outputPointer;                                          \
+    double *outPointer = mdl->audioOutputs;                                                        \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)             \
     {                                                                                                 \
       int voiceIndex  = voiceAllocator.getPlayingVoiceIndices()[playIndex];                           \
-      ClassName::process(module,                                                                      \
+      ClassName::process(mdl,                                                                      \
                          inPointer0 + voiceIndex * inVoiceStride0,                                    \
                          inPointer1 + voiceIndex * inVoiceStride1,                                    \
                          inPointer2 + voiceIndex * inVoiceStride2,                                    \
@@ -491,21 +491,21 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_MONO_BLOCK_FUNCTION_4(ClassName)                                                       \
-  void ClassName::processMonoBlock(Module *module, int voiceIndex, int blockSize)                     \
+  void ClassName::processMonoBlock(Module *mdl, int voiceIndex, int blockSize)                     \
   {                                                                                                   \
-    int outFrameStride = module->outFrameStride;                                                      \
-    double *outPointer = module->audioOutputs;                                                        \
-    int inFrameStride0 = module->inputPins[0].outputFrameSize;                                        \
-    double *inPointer0 = module->inputPins[0].outputPointer;                                          \
-    int inFrameStride1 = module->inputPins[1].outputFrameSize;                                        \
-    double *inPointer1 = module->inputPins[1].outputPointer;                                          \
-    int inFrameStride2 = module->inputPins[2].outputFrameSize;                                        \
-    double *inPointer2 = module->inputPins[2].outputPointer;                                          \
-    int inFrameStride3 = module->inputPins[3].outputFrameSize;                                        \
-    double *inPointer3 = module->inputPins[3].outputPointer;                                          \
+    int outFrameStride = mdl->outFrameStride;                                                      \
+    double *outPointer = mdl->audioOutputs;                                                        \
+    int inFrameStride0 = mdl->inputPins[0].outputFrameSize;                                        \
+    double *inPointer0 = mdl->inputPins[0].outputPointer;                                          \
+    int inFrameStride1 = mdl->inputPins[1].outputFrameSize;                                        \
+    double *inPointer1 = mdl->inputPins[1].outputPointer;                                          \
+    int inFrameStride2 = mdl->inputPins[2].outputFrameSize;                                        \
+    double *inPointer2 = mdl->inputPins[2].outputPointer;                                          \
+    int inFrameStride3 = mdl->inputPins[3].outputFrameSize;                                        \
+    double *inPointer3 = mdl->inputPins[3].outputPointer;                                          \
     for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                                     \
     {                                                                                                 \
-      ClassName::process(module,                                                                      \
+      ClassName::process(mdl,                                                                      \
                          inPointer0,                                                                  \
                          inPointer1,                                                                  \
                          inPointer2,                                                                  \
@@ -521,23 +521,23 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_POLY_BLOCK_FUNCTION_4(ClassName)                                                       \
-  void ClassName::processPolyBlock(Module *module, int voiceIndex, int blockSize)                     \
+  void ClassName::processPolyBlock(Module *mdl, int voiceIndex, int blockSize)                     \
   {                                                                                                   \
-    int outFrameStride          = module->outFrameStride;                                             \
+    int outFrameStride          = mdl->outFrameStride;                                             \
     int outVoiceStride          = outFrameStride * processingStatus.getBufferSize();                  \
-    int inFrameStride0          = module->inputPins[0].outputFrameSize;                               \
-    int inVoiceStride0          = module->inputPins[0].outputVoiceStride;                             \
-    double *inPointerVoice0Pin0 = module->inputPins[0].outputPointer;                                 \
-    int inFrameStride1          = module->inputPins[1].outputFrameSize;                               \
-    int inVoiceStride1          = module->inputPins[1].outputVoiceStride;                             \
-    double *inPointerVoice0Pin1 = module->inputPins[1].outputPointer;                                 \
-    int inFrameStride2          = module->inputPins[2].outputFrameSize;                               \
-    int inVoiceStride2          = module->inputPins[2].outputVoiceStride;                             \
-    double *inPointerVoice0Pin2 = module->inputPins[2].outputPointer;                                 \
-    int inFrameStride3          = module->inputPins[3].outputFrameSize;                               \
-    int inVoiceStride3          = module->inputPins[3].outputVoiceStride;                             \
-    double *inPointerVoice0Pin3 = module->inputPins[3].outputPointer;                                 \
-    double *outPointerVoice0    = module->audioOutputs;                                               \
+    int inFrameStride0          = mdl->inputPins[0].outputFrameSize;                               \
+    int inVoiceStride0          = mdl->inputPins[0].outputVoiceStride;                             \
+    double *inPointerVoice0Pin0 = mdl->inputPins[0].outputPointer;                                 \
+    int inFrameStride1          = mdl->inputPins[1].outputFrameSize;                               \
+    int inVoiceStride1          = mdl->inputPins[1].outputVoiceStride;                             \
+    double *inPointerVoice0Pin1 = mdl->inputPins[1].outputPointer;                                 \
+    int inFrameStride2          = mdl->inputPins[2].outputFrameSize;                               \
+    int inVoiceStride2          = mdl->inputPins[2].outputVoiceStride;                             \
+    double *inPointerVoice0Pin2 = mdl->inputPins[2].outputPointer;                                 \
+    int inFrameStride3          = mdl->inputPins[3].outputFrameSize;                               \
+    int inVoiceStride3          = mdl->inputPins[3].outputVoiceStride;                             \
+    double *inPointerVoice0Pin3 = mdl->inputPins[3].outputPointer;                                 \
+    double *outPointerVoice0    = mdl->audioOutputs;                                               \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)             \
     {                                                                                                 \
       int voiceIndex     = voiceAllocator.getPlayingVoiceIndices()[playIndex];                        \
@@ -548,7 +548,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
       double *outPointer = outPointerVoice0    + voiceIndex * outVoiceStride;                         \
       for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                                   \
       {                                                                                               \
-        ClassName::process(module,                                                                    \
+        ClassName::process(mdl,                                                                    \
                            inPointer0,                                                                \
                            inPointer1,                                                                \
                            inPointer2,                                                                \
@@ -578,44 +578,44 @@ create a special project for that. Maybe it can be made part of the Liberty test
   ENFORCE_FACTORY_USAGE(ClassName);                                                                   \
   DECLARE_PROCESSING_FUNCTIONS;                                                                       \
   virtual void initialize();                                                                          \
-  static INLINE void process(Module *module, double *in1, double *in2, double *in3, double *in4,      \
+  static INLINE void process(Module *mdl, double *in1, double *in2, double *in3, double *in4,      \
                              double *out, int voiceIndex);                                            \
 
 
 
 // 5 input pins:
 #define CREATE_MONO_FRAME_FUNCTION_5(ClassName)                                                       \
-  void ClassName::processMonoFrame(Module *module, int voiceIndex)                                    \
+  void ClassName::processMonoFrame(Module *mdl, int voiceIndex)                                    \
   {                                                                                                   \
-    ClassName::process(module,                                                                        \
-                       module->inputPins[0].outputPointer,                                            \
-                       module->inputPins[1].outputPointer,                                            \
-                       module->inputPins[2].outputPointer,                                            \
-                       module->inputPins[3].outputPointer,                                            \
-                       module->inputPins[4].outputPointer,                                            \
-                       module->audioOutputs,                                                          \
+    ClassName::process(mdl,                                                                        \
+                       mdl->inputPins[0].outputPointer,                                            \
+                       mdl->inputPins[1].outputPointer,                                            \
+                       mdl->inputPins[2].outputPointer,                                            \
+                       mdl->inputPins[3].outputPointer,                                            \
+                       mdl->inputPins[4].outputPointer,                                            \
+                       mdl->audioOutputs,                                                          \
                        voiceIndex);                                                                   \
   }                                                                                                   \
 
 #define CREATE_POLY_FRAME_FUNCTION_5(ClassName)                                                       \
-  void ClassName::processPolyFrame(Module *module, int voiceIndex)                                    \
+  void ClassName::processPolyFrame(Module *mdl, int voiceIndex)                                    \
   {                                                                                                   \
-    int outVoiceStride = module->outFrameStride * processingStatus.getBufferSize();                   \
-    int inVoiceStride0 = module->inputPins[0].outputVoiceStride;                                      \
-    int inVoiceStride1 = module->inputPins[1].outputVoiceStride;                                      \
-    int inVoiceStride2 = module->inputPins[2].outputVoiceStride;                                      \
-    int inVoiceStride3 = module->inputPins[3].outputVoiceStride;                                      \
-    int inVoiceStride4 = module->inputPins[4].outputVoiceStride;                                      \
-    double *inPointer0 = module->inputPins[0].outputPointer;                                          \
-    double *inPointer1 = module->inputPins[1].outputPointer;                                          \
-    double *inPointer2 = module->inputPins[2].outputPointer;                                          \
-    double *inPointer3 = module->inputPins[3].outputPointer;                                          \
-    double *inPointer4 = module->inputPins[4].outputPointer;                                          \
-    double *outPointer = module->audioOutputs;                                                        \
+    int outVoiceStride = mdl->outFrameStride * processingStatus.getBufferSize();                   \
+    int inVoiceStride0 = mdl->inputPins[0].outputVoiceStride;                                      \
+    int inVoiceStride1 = mdl->inputPins[1].outputVoiceStride;                                      \
+    int inVoiceStride2 = mdl->inputPins[2].outputVoiceStride;                                      \
+    int inVoiceStride3 = mdl->inputPins[3].outputVoiceStride;                                      \
+    int inVoiceStride4 = mdl->inputPins[4].outputVoiceStride;                                      \
+    double *inPointer0 = mdl->inputPins[0].outputPointer;                                          \
+    double *inPointer1 = mdl->inputPins[1].outputPointer;                                          \
+    double *inPointer2 = mdl->inputPins[2].outputPointer;                                          \
+    double *inPointer3 = mdl->inputPins[3].outputPointer;                                          \
+    double *inPointer4 = mdl->inputPins[4].outputPointer;                                          \
+    double *outPointer = mdl->audioOutputs;                                                        \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)             \
     {                                                                                                 \
       int voiceIndex  = voiceAllocator.getPlayingVoiceIndices()[playIndex];                           \
-      ClassName::process(module,                                                                      \
+      ClassName::process(mdl,                                                                      \
                          inPointer0 + voiceIndex * inVoiceStride0,                                    \
                          inPointer1 + voiceIndex * inVoiceStride1,                                    \
                          inPointer2 + voiceIndex * inVoiceStride2,                                    \
@@ -627,23 +627,23 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_MONO_BLOCK_FUNCTION_5(ClassName)                                                       \
-  void ClassName::processMonoBlock(Module *module, int voiceIndex, int blockSize)                     \
+  void ClassName::processMonoBlock(Module *mdl, int voiceIndex, int blockSize)                     \
   {                                                                                                   \
-    int outFrameStride = module->outFrameStride;                                                      \
-    double *outPointer = module->audioOutputs;                                                        \
-    int inFrameStride0 = module->inputPins[0].outputFrameSize;                                        \
-    double *inPointer0 = module->inputPins[0].outputPointer;                                          \
-    int inFrameStride1 = module->inputPins[1].outputFrameSize;                                        \
-    double *inPointer1 = module->inputPins[1].outputPointer;                                          \
-    int inFrameStride2 = module->inputPins[2].outputFrameSize;                                        \
-    double *inPointer2 = module->inputPins[2].outputPointer;                                          \
-    int inFrameStride3 = module->inputPins[3].outputFrameSize;                                        \
-    double *inPointer3 = module->inputPins[3].outputPointer;                                          \
-    int inFrameStride4 = module->inputPins[4].outputFrameSize;                                        \
-    double *inPointer4 = module->inputPins[4].outputPointer;                                          \
+    int outFrameStride = mdl->outFrameStride;                                                      \
+    double *outPointer = mdl->audioOutputs;                                                        \
+    int inFrameStride0 = mdl->inputPins[0].outputFrameSize;                                        \
+    double *inPointer0 = mdl->inputPins[0].outputPointer;                                          \
+    int inFrameStride1 = mdl->inputPins[1].outputFrameSize;                                        \
+    double *inPointer1 = mdl->inputPins[1].outputPointer;                                          \
+    int inFrameStride2 = mdl->inputPins[2].outputFrameSize;                                        \
+    double *inPointer2 = mdl->inputPins[2].outputPointer;                                          \
+    int inFrameStride3 = mdl->inputPins[3].outputFrameSize;                                        \
+    double *inPointer3 = mdl->inputPins[3].outputPointer;                                          \
+    int inFrameStride4 = mdl->inputPins[4].outputFrameSize;                                        \
+    double *inPointer4 = mdl->inputPins[4].outputPointer;                                          \
     for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                                     \
     {                                                                                                 \
-      ClassName::process(module,                                                                      \
+      ClassName::process(mdl,                                                                      \
                          inPointer0,                                                                  \
                          inPointer1,                                                                  \
                          inPointer2,                                                                  \
@@ -661,26 +661,26 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_POLY_BLOCK_FUNCTION_5(ClassName)                                                       \
-  void ClassName::processPolyBlock(Module *module, int voiceIndex, int blockSize)                     \
+  void ClassName::processPolyBlock(Module *mdl, int voiceIndex, int blockSize)                     \
   {                                                                                                   \
-    int outFrameStride          = module->outFrameStride;                                             \
+    int outFrameStride          = mdl->outFrameStride;                                             \
     int outVoiceStride          = outFrameStride * processingStatus.getBufferSize();                  \
-    int inFrameStride0          = module->inputPins[0].outputFrameSize;                               \
-    int inVoiceStride0          = module->inputPins[0].outputVoiceStride;                             \
-    double *inPointerVoice0Pin0 = module->inputPins[0].outputPointer;                                 \
-    int inFrameStride1          = module->inputPins[1].outputFrameSize;                               \
-    int inVoiceStride1          = module->inputPins[1].outputVoiceStride;                             \
-    double *inPointerVoice0Pin1 = module->inputPins[1].outputPointer;                                 \
-    int inFrameStride2          = module->inputPins[2].outputFrameSize;                               \
-    int inVoiceStride2          = module->inputPins[2].outputVoiceStride;                             \
-    double *inPointerVoice0Pin2 = module->inputPins[2].outputPointer;                                 \
-    int inFrameStride3          = module->inputPins[3].outputFrameSize;                               \
-    int inVoiceStride3          = module->inputPins[3].outputVoiceStride;                             \
-    double *inPointerVoice0Pin3 = module->inputPins[3].outputPointer;                                 \
-    int inFrameStride4          = module->inputPins[4].outputFrameSize;                               \
-    int inVoiceStride4          = module->inputPins[4].outputVoiceStride;                             \
-    double *inPointerVoice0Pin4 = module->inputPins[4].outputPointer;                                 \
-    double *outPointerVoice0    = module->audioOutputs;                                               \
+    int inFrameStride0          = mdl->inputPins[0].outputFrameSize;                               \
+    int inVoiceStride0          = mdl->inputPins[0].outputVoiceStride;                             \
+    double *inPointerVoice0Pin0 = mdl->inputPins[0].outputPointer;                                 \
+    int inFrameStride1          = mdl->inputPins[1].outputFrameSize;                               \
+    int inVoiceStride1          = mdl->inputPins[1].outputVoiceStride;                             \
+    double *inPointerVoice0Pin1 = mdl->inputPins[1].outputPointer;                                 \
+    int inFrameStride2          = mdl->inputPins[2].outputFrameSize;                               \
+    int inVoiceStride2          = mdl->inputPins[2].outputVoiceStride;                             \
+    double *inPointerVoice0Pin2 = mdl->inputPins[2].outputPointer;                                 \
+    int inFrameStride3          = mdl->inputPins[3].outputFrameSize;                               \
+    int inVoiceStride3          = mdl->inputPins[3].outputVoiceStride;                             \
+    double *inPointerVoice0Pin3 = mdl->inputPins[3].outputPointer;                                 \
+    int inFrameStride4          = mdl->inputPins[4].outputFrameSize;                               \
+    int inVoiceStride4          = mdl->inputPins[4].outputVoiceStride;                             \
+    double *inPointerVoice0Pin4 = mdl->inputPins[4].outputPointer;                                 \
+    double *outPointerVoice0    = mdl->audioOutputs;                                               \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)             \
     {                                                                                                 \
       int voiceIndex     = voiceAllocator.getPlayingVoiceIndices()[playIndex];                        \
@@ -692,7 +692,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
       double *outPointer = outPointerVoice0    + voiceIndex * outVoiceStride;                         \
       for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                                   \
       {                                                                                               \
-        ClassName::process(module,                                                                    \
+        ClassName::process(mdl,                                                                    \
                            inPointer0,                                                                \
                            inPointer1,                                                                \
                            inPointer2,                                                                \
@@ -724,46 +724,46 @@ create a special project for that. Maybe it can be made part of the Liberty test
   ENFORCE_FACTORY_USAGE(ClassName);                                                                   \
   DECLARE_PROCESSING_FUNCTIONS;                                                                       \
   virtual void initialize();                                                                          \
-  static INLINE void process(Module *module, double *in1, double *in2, double *in3, double *in4,      \
+  static INLINE void process(Module *mdl, double *in1, double *in2, double *in3, double *in4,      \
                              double *in5, double *out, int voiceIndex);                               \
 
 
 // 6 input pins:
 #define CREATE_MONO_FRAME_FUNCTION_6(ClassName)                                                       \
-  void ClassName::processMonoFrame(Module *module, int voiceIndex)                                    \
+  void ClassName::processMonoFrame(Module *mdl, int voiceIndex)                                    \
   {                                                                                                   \
-    ClassName::process(module,                                                                        \
-                       module->inputPins[0].outputPointer,                                            \
-                       module->inputPins[1].outputPointer,                                            \
-                       module->inputPins[2].outputPointer,                                            \
-                       module->inputPins[3].outputPointer,                                            \
-                       module->inputPins[4].outputPointer,                                            \
-                       module->inputPins[5].outputPointer,                                            \
-                       module->audioOutputs,                                                          \
+    ClassName::process(mdl,                                                                        \
+                       mdl->inputPins[0].outputPointer,                                            \
+                       mdl->inputPins[1].outputPointer,                                            \
+                       mdl->inputPins[2].outputPointer,                                            \
+                       mdl->inputPins[3].outputPointer,                                            \
+                       mdl->inputPins[4].outputPointer,                                            \
+                       mdl->inputPins[5].outputPointer,                                            \
+                       mdl->audioOutputs,                                                          \
                        voiceIndex);                                                                   \
   }                                                                                                   \
 
 #define CREATE_POLY_FRAME_FUNCTION_6(ClassName)                                                       \
-  void ClassName::processPolyFrame(Module *module, int voiceIndex)                                    \
+  void ClassName::processPolyFrame(Module *mdl, int voiceIndex)                                    \
   {                                                                                                   \
-    int outVoiceStride = module->outFrameStride * processingStatus.getBufferSize();                   \
-    int inVoiceStride0 = module->inputPins[0].outputVoiceStride;                                      \
-    int inVoiceStride1 = module->inputPins[1].outputVoiceStride;                                      \
-    int inVoiceStride2 = module->inputPins[2].outputVoiceStride;                                      \
-    int inVoiceStride3 = module->inputPins[3].outputVoiceStride;                                      \
-    int inVoiceStride4 = module->inputPins[4].outputVoiceStride;                                      \
-    int inVoiceStride5 = module->inputPins[5].outputVoiceStride;                                      \
-    double *inPointer0 = module->inputPins[0].outputPointer;                                          \
-    double *inPointer1 = module->inputPins[1].outputPointer;                                          \
-    double *inPointer2 = module->inputPins[2].outputPointer;                                          \
-    double *inPointer3 = module->inputPins[3].outputPointer;                                          \
-    double *inPointer4 = module->inputPins[4].outputPointer;                                          \
-    double *inPointer5 = module->inputPins[5].outputPointer;                                          \
-    double *outPointer = module->audioOutputs;                                                        \
+    int outVoiceStride = mdl->outFrameStride * processingStatus.getBufferSize();                   \
+    int inVoiceStride0 = mdl->inputPins[0].outputVoiceStride;                                      \
+    int inVoiceStride1 = mdl->inputPins[1].outputVoiceStride;                                      \
+    int inVoiceStride2 = mdl->inputPins[2].outputVoiceStride;                                      \
+    int inVoiceStride3 = mdl->inputPins[3].outputVoiceStride;                                      \
+    int inVoiceStride4 = mdl->inputPins[4].outputVoiceStride;                                      \
+    int inVoiceStride5 = mdl->inputPins[5].outputVoiceStride;                                      \
+    double *inPointer0 = mdl->inputPins[0].outputPointer;                                          \
+    double *inPointer1 = mdl->inputPins[1].outputPointer;                                          \
+    double *inPointer2 = mdl->inputPins[2].outputPointer;                                          \
+    double *inPointer3 = mdl->inputPins[3].outputPointer;                                          \
+    double *inPointer4 = mdl->inputPins[4].outputPointer;                                          \
+    double *inPointer5 = mdl->inputPins[5].outputPointer;                                          \
+    double *outPointer = mdl->audioOutputs;                                                        \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)             \
     {                                                                                                 \
       int voiceIndex  = voiceAllocator.getPlayingVoiceIndices()[playIndex];                           \
-      ClassName::process(module,                                                                      \
+      ClassName::process(mdl,                                                                      \
                          inPointer0 + voiceIndex * inVoiceStride0,                                    \
                          inPointer1 + voiceIndex * inVoiceStride1,                                    \
                          inPointer2 + voiceIndex * inVoiceStride2,                                    \
@@ -776,25 +776,25 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_MONO_BLOCK_FUNCTION_6(ClassName)                                                       \
-  void ClassName::processMonoBlock(Module *module, int voiceIndex, int blockSize)                     \
+  void ClassName::processMonoBlock(Module *mdl, int voiceIndex, int blockSize)                     \
   {                                                                                                   \
-    int outFrameStride = module->outFrameStride;                                                      \
-    double *outPointer = module->audioOutputs;                                                        \
-    int inFrameStride0 = module->inputPins[0].outputFrameSize;                                        \
-    double *inPointer0 = module->inputPins[0].outputPointer;                                          \
-    int inFrameStride1 = module->inputPins[1].outputFrameSize;                                        \
-    double *inPointer1 = module->inputPins[1].outputPointer;                                          \
-    int inFrameStride2 = module->inputPins[2].outputFrameSize;                                        \
-    double *inPointer2 = module->inputPins[2].outputPointer;                                          \
-    int inFrameStride3 = module->inputPins[3].outputFrameSize;                                        \
-    double *inPointer3 = module->inputPins[3].outputPointer;                                          \
-    int inFrameStride4 = module->inputPins[4].outputFrameSize;                                        \
-    double *inPointer4 = module->inputPins[4].outputPointer;                                          \
-    int inFrameStride5 = module->inputPins[5].outputFrameSize;                                        \
-    double *inPointer5 = module->inputPins[5].outputPointer;                                          \
+    int outFrameStride = mdl->outFrameStride;                                                      \
+    double *outPointer = mdl->audioOutputs;                                                        \
+    int inFrameStride0 = mdl->inputPins[0].outputFrameSize;                                        \
+    double *inPointer0 = mdl->inputPins[0].outputPointer;                                          \
+    int inFrameStride1 = mdl->inputPins[1].outputFrameSize;                                        \
+    double *inPointer1 = mdl->inputPins[1].outputPointer;                                          \
+    int inFrameStride2 = mdl->inputPins[2].outputFrameSize;                                        \
+    double *inPointer2 = mdl->inputPins[2].outputPointer;                                          \
+    int inFrameStride3 = mdl->inputPins[3].outputFrameSize;                                        \
+    double *inPointer3 = mdl->inputPins[3].outputPointer;                                          \
+    int inFrameStride4 = mdl->inputPins[4].outputFrameSize;                                        \
+    double *inPointer4 = mdl->inputPins[4].outputPointer;                                          \
+    int inFrameStride5 = mdl->inputPins[5].outputFrameSize;                                        \
+    double *inPointer5 = mdl->inputPins[5].outputPointer;                                          \
     for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                                     \
     {                                                                                                 \
-      ClassName::process(module,                                                                      \
+      ClassName::process(mdl,                                                                      \
                          inPointer0,                                                                  \
                          inPointer1,                                                                  \
                          inPointer2,                                                                  \
@@ -814,29 +814,29 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_POLY_BLOCK_FUNCTION_6(ClassName)                                                       \
-  void ClassName::processPolyBlock(Module *module, int voiceIndex, int blockSize)                     \
+  void ClassName::processPolyBlock(Module *mdl, int voiceIndex, int blockSize)                     \
   {                                                                                                   \
-    int outFrameStride          = module->outFrameStride;                                             \
+    int outFrameStride          = mdl->outFrameStride;                                             \
     int outVoiceStride          = outFrameStride * processingStatus.getBufferSize();                  \
-    int inFrameStride0          = module->inputPins[0].outputFrameSize;                               \
-    int inVoiceStride0          = module->inputPins[0].outputVoiceStride;                             \
-    double *inPointerVoice0Pin0 = module->inputPins[0].outputPointer;                                 \
-    int inFrameStride1          = module->inputPins[1].outputFrameSize;                               \
-    int inVoiceStride1          = module->inputPins[1].outputVoiceStride;                             \
-    double *inPointerVoice0Pin1 = module->inputPins[1].outputPointer;                                 \
-    int inFrameStride2          = module->inputPins[2].outputFrameSize;                               \
-    int inVoiceStride2          = module->inputPins[2].outputVoiceStride;                             \
-    double *inPointerVoice0Pin2 = module->inputPins[2].outputPointer;                                 \
-    int inFrameStride3          = module->inputPins[3].outputFrameSize;                               \
-    int inVoiceStride3          = module->inputPins[3].outputVoiceStride;                             \
-    double *inPointerVoice0Pin3 = module->inputPins[3].outputPointer;                                 \
-    int inFrameStride4          = module->inputPins[4].outputFrameSize;                               \
-    int inVoiceStride4          = module->inputPins[4].outputVoiceStride;                             \
-    double *inPointerVoice0Pin4 = module->inputPins[4].outputPointer;                                 \
-    int inFrameStride5          = module->inputPins[5].outputFrameSize;                               \
-    int inVoiceStride5          = module->inputPins[5].outputVoiceStride;                             \
-    double *inPointerVoice0Pin5 = module->inputPins[5].outputPointer;                                 \
-    double *outPointerVoice0    = module->audioOutputs;                                               \
+    int inFrameStride0          = mdl->inputPins[0].outputFrameSize;                               \
+    int inVoiceStride0          = mdl->inputPins[0].outputVoiceStride;                             \
+    double *inPointerVoice0Pin0 = mdl->inputPins[0].outputPointer;                                 \
+    int inFrameStride1          = mdl->inputPins[1].outputFrameSize;                               \
+    int inVoiceStride1          = mdl->inputPins[1].outputVoiceStride;                             \
+    double *inPointerVoice0Pin1 = mdl->inputPins[1].outputPointer;                                 \
+    int inFrameStride2          = mdl->inputPins[2].outputFrameSize;                               \
+    int inVoiceStride2          = mdl->inputPins[2].outputVoiceStride;                             \
+    double *inPointerVoice0Pin2 = mdl->inputPins[2].outputPointer;                                 \
+    int inFrameStride3          = mdl->inputPins[3].outputFrameSize;                               \
+    int inVoiceStride3          = mdl->inputPins[3].outputVoiceStride;                             \
+    double *inPointerVoice0Pin3 = mdl->inputPins[3].outputPointer;                                 \
+    int inFrameStride4          = mdl->inputPins[4].outputFrameSize;                               \
+    int inVoiceStride4          = mdl->inputPins[4].outputVoiceStride;                             \
+    double *inPointerVoice0Pin4 = mdl->inputPins[4].outputPointer;                                 \
+    int inFrameStride5          = mdl->inputPins[5].outputFrameSize;                               \
+    int inVoiceStride5          = mdl->inputPins[5].outputVoiceStride;                             \
+    double *inPointerVoice0Pin5 = mdl->inputPins[5].outputPointer;                                 \
+    double *outPointerVoice0    = mdl->audioOutputs;                                               \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)             \
     {                                                                                                 \
       int voiceIndex     = voiceAllocator.getPlayingVoiceIndices()[playIndex];                        \
@@ -849,7 +849,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
       double *outPointer = outPointerVoice0    + voiceIndex * outVoiceStride;                         \
       for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                                   \
       {                                                                                               \
-        ClassName::process(module,                                                                    \
+        ClassName::process(mdl,                                                                    \
                            inPointer0,                                                                \
                            inPointer1,                                                                \
                            inPointer2,                                                                \
@@ -883,49 +883,49 @@ create a special project for that. Maybe it can be made part of the Liberty test
   ENFORCE_FACTORY_USAGE(ClassName);                                                                   \
   DECLARE_PROCESSING_FUNCTIONS;                                                                       \
   virtual void initialize();                                                                          \
-  static INLINE void process(Module *module, double *in1, double *in2, double *in3, double *in4,      \
+  static INLINE void process(Module *mdl, double *in1, double *in2, double *in3, double *in4,      \
                              double *in5, double *in6, double *out, int voiceIndex);                  \
 
 
 // 7 input pins:
 #define CREATE_MONO_FRAME_FUNCTION_7(ClassName)                                                       \
-  void ClassName::processMonoFrame(Module *module, int voiceIndex)                                    \
+  void ClassName::processMonoFrame(Module *mdl, int voiceIndex)                                    \
   {                                                                                                   \
-    ClassName::process(module,                                                                        \
-                       module->inputPins[0].outputPointer,                                            \
-                       module->inputPins[1].outputPointer,                                            \
-                       module->inputPins[2].outputPointer,                                            \
-                       module->inputPins[3].outputPointer,                                            \
-                       module->inputPins[4].outputPointer,                                            \
-                       module->inputPins[5].outputPointer,                                            \
-                       module->inputPins[6].outputPointer,                                            \
-                       module->audioOutputs,                                                          \
+    ClassName::process(mdl,                                                                        \
+                       mdl->inputPins[0].outputPointer,                                            \
+                       mdl->inputPins[1].outputPointer,                                            \
+                       mdl->inputPins[2].outputPointer,                                            \
+                       mdl->inputPins[3].outputPointer,                                            \
+                       mdl->inputPins[4].outputPointer,                                            \
+                       mdl->inputPins[5].outputPointer,                                            \
+                       mdl->inputPins[6].outputPointer,                                            \
+                       mdl->audioOutputs,                                                          \
                        voiceIndex);                                                                   \
   }                                                                                                   \
 
 #define CREATE_POLY_FRAME_FUNCTION_7(ClassName)                                                       \
-  void ClassName::processPolyFrame(Module *module, int voiceIndex)                                    \
+  void ClassName::processPolyFrame(Module *mdl, int voiceIndex)                                    \
   {                                                                                                   \
-    int outVoiceStride = module->outFrameStride * processingStatus.getBufferSize();                   \
-    int inVoiceStride0 = module->inputPins[0].outputVoiceStride;                                      \
-    int inVoiceStride1 = module->inputPins[1].outputVoiceStride;                                      \
-    int inVoiceStride2 = module->inputPins[2].outputVoiceStride;                                      \
-    int inVoiceStride3 = module->inputPins[3].outputVoiceStride;                                      \
-    int inVoiceStride4 = module->inputPins[4].outputVoiceStride;                                      \
-    int inVoiceStride5 = module->inputPins[5].outputVoiceStride;                                      \
-    int inVoiceStride6 = module->inputPins[6].outputVoiceStride;                                      \
-    double *inPointer0 = module->inputPins[0].outputPointer;                                          \
-    double *inPointer1 = module->inputPins[1].outputPointer;                                          \
-    double *inPointer2 = module->inputPins[2].outputPointer;                                          \
-    double *inPointer3 = module->inputPins[3].outputPointer;                                          \
-    double *inPointer4 = module->inputPins[4].outputPointer;                                          \
-    double *inPointer5 = module->inputPins[5].outputPointer;                                          \
-    double *inPointer6 = module->inputPins[6].outputPointer;                                          \
-    double *outPointer = module->audioOutputs;                                                        \
+    int outVoiceStride = mdl->outFrameStride * processingStatus.getBufferSize();                   \
+    int inVoiceStride0 = mdl->inputPins[0].outputVoiceStride;                                      \
+    int inVoiceStride1 = mdl->inputPins[1].outputVoiceStride;                                      \
+    int inVoiceStride2 = mdl->inputPins[2].outputVoiceStride;                                      \
+    int inVoiceStride3 = mdl->inputPins[3].outputVoiceStride;                                      \
+    int inVoiceStride4 = mdl->inputPins[4].outputVoiceStride;                                      \
+    int inVoiceStride5 = mdl->inputPins[5].outputVoiceStride;                                      \
+    int inVoiceStride6 = mdl->inputPins[6].outputVoiceStride;                                      \
+    double *inPointer0 = mdl->inputPins[0].outputPointer;                                          \
+    double *inPointer1 = mdl->inputPins[1].outputPointer;                                          \
+    double *inPointer2 = mdl->inputPins[2].outputPointer;                                          \
+    double *inPointer3 = mdl->inputPins[3].outputPointer;                                          \
+    double *inPointer4 = mdl->inputPins[4].outputPointer;                                          \
+    double *inPointer5 = mdl->inputPins[5].outputPointer;                                          \
+    double *inPointer6 = mdl->inputPins[6].outputPointer;                                          \
+    double *outPointer = mdl->audioOutputs;                                                        \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)             \
     {                                                                                                 \
       int voiceIndex  = voiceAllocator.getPlayingVoiceIndices()[playIndex];                           \
-      ClassName::process(module,                                                                      \
+      ClassName::process(mdl,                                                                      \
                          inPointer0 + voiceIndex * inVoiceStride0,                                    \
                          inPointer1 + voiceIndex * inVoiceStride1,                                    \
                          inPointer2 + voiceIndex * inVoiceStride2,                                    \
@@ -939,27 +939,27 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_MONO_BLOCK_FUNCTION_7(ClassName)                                                       \
-  void ClassName::processMonoBlock(Module *module, int voiceIndex, int blockSize)                     \
+  void ClassName::processMonoBlock(Module *mdl, int voiceIndex, int blockSize)                     \
   {                                                                                                   \
-    int outFrameStride = module->outFrameStride;                                                      \
-    double *outPointer = module->audioOutputs;                                                        \
-    int inFrameStride0 = module->inputPins[0].outputFrameSize;                                        \
-    double *inPointer0 = module->inputPins[0].outputPointer;                                          \
-    int inFrameStride1 = module->inputPins[1].outputFrameSize;                                        \
-    double *inPointer1 = module->inputPins[1].outputPointer;                                          \
-    int inFrameStride2 = module->inputPins[2].outputFrameSize;                                        \
-    double *inPointer2 = module->inputPins[2].outputPointer;                                          \
-    int inFrameStride3 = module->inputPins[3].outputFrameSize;                                        \
-    double *inPointer3 = module->inputPins[3].outputPointer;                                          \
-    int inFrameStride4 = module->inputPins[4].outputFrameSize;                                        \
-    double *inPointer4 = module->inputPins[4].outputPointer;                                          \
-    int inFrameStride5 = module->inputPins[5].outputFrameSize;                                        \
-    double *inPointer5 = module->inputPins[5].outputPointer;                                          \
-    int inFrameStride6 = module->inputPins[6].outputFrameSize;                                        \
-    double *inPointer6 = module->inputPins[6].outputPointer;                                          \
+    int outFrameStride = mdl->outFrameStride;                                                      \
+    double *outPointer = mdl->audioOutputs;                                                        \
+    int inFrameStride0 = mdl->inputPins[0].outputFrameSize;                                        \
+    double *inPointer0 = mdl->inputPins[0].outputPointer;                                          \
+    int inFrameStride1 = mdl->inputPins[1].outputFrameSize;                                        \
+    double *inPointer1 = mdl->inputPins[1].outputPointer;                                          \
+    int inFrameStride2 = mdl->inputPins[2].outputFrameSize;                                        \
+    double *inPointer2 = mdl->inputPins[2].outputPointer;                                          \
+    int inFrameStride3 = mdl->inputPins[3].outputFrameSize;                                        \
+    double *inPointer3 = mdl->inputPins[3].outputPointer;                                          \
+    int inFrameStride4 = mdl->inputPins[4].outputFrameSize;                                        \
+    double *inPointer4 = mdl->inputPins[4].outputPointer;                                          \
+    int inFrameStride5 = mdl->inputPins[5].outputFrameSize;                                        \
+    double *inPointer5 = mdl->inputPins[5].outputPointer;                                          \
+    int inFrameStride6 = mdl->inputPins[6].outputFrameSize;                                        \
+    double *inPointer6 = mdl->inputPins[6].outputPointer;                                          \
     for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                                     \
     {                                                                                                 \
-      ClassName::process(module,                                                                      \
+      ClassName::process(mdl,                                                                      \
                          inPointer0,                                                                  \
                          inPointer1,                                                                  \
                          inPointer2,                                                                  \
@@ -981,32 +981,32 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_POLY_BLOCK_FUNCTION_7(ClassName)                                                       \
-  void ClassName::processPolyBlock(Module *module, int voiceIndex, int blockSize)                     \
+  void ClassName::processPolyBlock(Module *mdl, int voiceIndex, int blockSize)                     \
   {                                                                                                   \
-    int outFrameStride          = module->outFrameStride;                                             \
+    int outFrameStride          = mdl->outFrameStride;                                             \
     int outVoiceStride          = outFrameStride * processingStatus.getBufferSize();                  \
-    int inFrameStride0          = module->inputPins[0].outputFrameSize;                               \
-    int inVoiceStride0          = module->inputPins[0].outputVoiceStride;                             \
-    double *inPointerVoice0Pin0 = module->inputPins[0].outputPointer;                                 \
-    int inFrameStride1          = module->inputPins[1].outputFrameSize;                               \
-    int inVoiceStride1          = module->inputPins[1].outputVoiceStride;                             \
-    double *inPointerVoice0Pin1 = module->inputPins[1].outputPointer;                                 \
-    int inFrameStride2          = module->inputPins[2].outputFrameSize;                               \
-    int inVoiceStride2          = module->inputPins[2].outputVoiceStride;                             \
-    double *inPointerVoice0Pin2 = module->inputPins[2].outputPointer;                                 \
-    int inFrameStride3          = module->inputPins[3].outputFrameSize;                               \
-    int inVoiceStride3          = module->inputPins[3].outputVoiceStride;                             \
-    double *inPointerVoice0Pin3 = module->inputPins[3].outputPointer;                                 \
-    int inFrameStride4          = module->inputPins[4].outputFrameSize;                               \
-    int inVoiceStride4          = module->inputPins[4].outputVoiceStride;                             \
-    double *inPointerVoice0Pin4 = module->inputPins[4].outputPointer;                                 \
-    int inFrameStride5          = module->inputPins[5].outputFrameSize;                               \
-    int inVoiceStride5          = module->inputPins[5].outputVoiceStride;                             \
-    double *inPointerVoice0Pin5 = module->inputPins[5].outputPointer;                                 \
-    int inFrameStride6          = module->inputPins[6].outputFrameSize;                               \
-    int inVoiceStride6          = module->inputPins[6].outputVoiceStride;                             \
-    double *inPointerVoice0Pin6 = module->inputPins[6].outputPointer;                                 \
-    double *outPointerVoice0    = module->audioOutputs;                                               \
+    int inFrameStride0          = mdl->inputPins[0].outputFrameSize;                               \
+    int inVoiceStride0          = mdl->inputPins[0].outputVoiceStride;                             \
+    double *inPointerVoice0Pin0 = mdl->inputPins[0].outputPointer;                                 \
+    int inFrameStride1          = mdl->inputPins[1].outputFrameSize;                               \
+    int inVoiceStride1          = mdl->inputPins[1].outputVoiceStride;                             \
+    double *inPointerVoice0Pin1 = mdl->inputPins[1].outputPointer;                                 \
+    int inFrameStride2          = mdl->inputPins[2].outputFrameSize;                               \
+    int inVoiceStride2          = mdl->inputPins[2].outputVoiceStride;                             \
+    double *inPointerVoice0Pin2 = mdl->inputPins[2].outputPointer;                                 \
+    int inFrameStride3          = mdl->inputPins[3].outputFrameSize;                               \
+    int inVoiceStride3          = mdl->inputPins[3].outputVoiceStride;                             \
+    double *inPointerVoice0Pin3 = mdl->inputPins[3].outputPointer;                                 \
+    int inFrameStride4          = mdl->inputPins[4].outputFrameSize;                               \
+    int inVoiceStride4          = mdl->inputPins[4].outputVoiceStride;                             \
+    double *inPointerVoice0Pin4 = mdl->inputPins[4].outputPointer;                                 \
+    int inFrameStride5          = mdl->inputPins[5].outputFrameSize;                               \
+    int inVoiceStride5          = mdl->inputPins[5].outputVoiceStride;                             \
+    double *inPointerVoice0Pin5 = mdl->inputPins[5].outputPointer;                                 \
+    int inFrameStride6          = mdl->inputPins[6].outputFrameSize;                               \
+    int inVoiceStride6          = mdl->inputPins[6].outputVoiceStride;                             \
+    double *inPointerVoice0Pin6 = mdl->inputPins[6].outputPointer;                                 \
+    double *outPointerVoice0    = mdl->audioOutputs;                                               \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)             \
     {                                                                                                 \
       int voiceIndex     = voiceAllocator.getPlayingVoiceIndices()[playIndex];                        \
@@ -1020,7 +1020,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
       double *outPointer = outPointerVoice0    + voiceIndex * outVoiceStride;                         \
       for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                                   \
       {                                                                                               \
-        ClassName::process(module,                                                                    \
+        ClassName::process(mdl,                                                                    \
                            inPointer0,                                                                \
                            inPointer1,                                                                \
                            inPointer2,                                                                \
@@ -1056,52 +1056,52 @@ create a special project for that. Maybe it can be made part of the Liberty test
   ENFORCE_FACTORY_USAGE(ClassName);                                                                   \
   DECLARE_PROCESSING_FUNCTIONS;                                                                       \
   virtual void initialize();                                                                          \
-  static INLINE void process(Module *module, double *in1, double *in2, double *in3, double *in4,      \
+  static INLINE void process(Module *mdl, double *in1, double *in2, double *in3, double *in4,      \
                              double *in5, double *in6, double *in7, double *out, int voiceIndex);     \
 
 
 // 8 input pins:
 #define CREATE_MONO_FRAME_FUNCTION_8(ClassName)                                                       \
-  void ClassName::processMonoFrame(Module *module, int voiceIndex)                                    \
+  void ClassName::processMonoFrame(Module *mdl, int voiceIndex)                                    \
   {                                                                                                   \
-    ClassName::process(module,                                                                        \
-                       module->inputPins[0].outputPointer,                                            \
-                       module->inputPins[1].outputPointer,                                            \
-                       module->inputPins[2].outputPointer,                                            \
-                       module->inputPins[3].outputPointer,                                            \
-                       module->inputPins[4].outputPointer,                                            \
-                       module->inputPins[5].outputPointer,                                            \
-                       module->inputPins[6].outputPointer,                                            \
-                       module->inputPins[7].outputPointer,                                            \
-                       module->audioOutputs,                                                          \
+    ClassName::process(mdl,                                                                        \
+                       mdl->inputPins[0].outputPointer,                                            \
+                       mdl->inputPins[1].outputPointer,                                            \
+                       mdl->inputPins[2].outputPointer,                                            \
+                       mdl->inputPins[3].outputPointer,                                            \
+                       mdl->inputPins[4].outputPointer,                                            \
+                       mdl->inputPins[5].outputPointer,                                            \
+                       mdl->inputPins[6].outputPointer,                                            \
+                       mdl->inputPins[7].outputPointer,                                            \
+                       mdl->audioOutputs,                                                          \
                        voiceIndex);                                                                   \
   }                                                                                                   \
 
 #define CREATE_POLY_FRAME_FUNCTION_8(ClassName)                                                       \
-  void ClassName::processPolyFrame(Module *module, int voiceIndex)                                    \
+  void ClassName::processPolyFrame(Module *mdl, int voiceIndex)                                    \
   {                                                                                                   \
-    int outVoiceStride = module->outFrameStride * processingStatus.getBufferSize();                   \
-    int inVoiceStride0 = module->inputPins[0].outputVoiceStride;                                      \
-    int inVoiceStride1 = module->inputPins[1].outputVoiceStride;                                      \
-    int inVoiceStride2 = module->inputPins[2].outputVoiceStride;                                      \
-    int inVoiceStride3 = module->inputPins[3].outputVoiceStride;                                      \
-    int inVoiceStride4 = module->inputPins[4].outputVoiceStride;                                      \
-    int inVoiceStride5 = module->inputPins[5].outputVoiceStride;                                      \
-    int inVoiceStride6 = module->inputPins[6].outputVoiceStride;                                      \
-    int inVoiceStride7 = module->inputPins[7].outputVoiceStride;                                      \
-    double *inPointer0 = module->inputPins[0].outputPointer;                                          \
-    double *inPointer1 = module->inputPins[1].outputPointer;                                          \
-    double *inPointer2 = module->inputPins[2].outputPointer;                                          \
-    double *inPointer3 = module->inputPins[3].outputPointer;                                          \
-    double *inPointer4 = module->inputPins[4].outputPointer;                                          \
-    double *inPointer5 = module->inputPins[5].outputPointer;                                          \
-    double *inPointer6 = module->inputPins[6].outputPointer;                                          \
-    double *inPointer7 = module->inputPins[7].outputPointer;                                          \
-    double *outPointer = module->audioOutputs;                                                        \
+    int outVoiceStride = mdl->outFrameStride * processingStatus.getBufferSize();                   \
+    int inVoiceStride0 = mdl->inputPins[0].outputVoiceStride;                                      \
+    int inVoiceStride1 = mdl->inputPins[1].outputVoiceStride;                                      \
+    int inVoiceStride2 = mdl->inputPins[2].outputVoiceStride;                                      \
+    int inVoiceStride3 = mdl->inputPins[3].outputVoiceStride;                                      \
+    int inVoiceStride4 = mdl->inputPins[4].outputVoiceStride;                                      \
+    int inVoiceStride5 = mdl->inputPins[5].outputVoiceStride;                                      \
+    int inVoiceStride6 = mdl->inputPins[6].outputVoiceStride;                                      \
+    int inVoiceStride7 = mdl->inputPins[7].outputVoiceStride;                                      \
+    double *inPointer0 = mdl->inputPins[0].outputPointer;                                          \
+    double *inPointer1 = mdl->inputPins[1].outputPointer;                                          \
+    double *inPointer2 = mdl->inputPins[2].outputPointer;                                          \
+    double *inPointer3 = mdl->inputPins[3].outputPointer;                                          \
+    double *inPointer4 = mdl->inputPins[4].outputPointer;                                          \
+    double *inPointer5 = mdl->inputPins[5].outputPointer;                                          \
+    double *inPointer6 = mdl->inputPins[6].outputPointer;                                          \
+    double *inPointer7 = mdl->inputPins[7].outputPointer;                                          \
+    double *outPointer = mdl->audioOutputs;                                                        \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)             \
     {                                                                                                 \
       int voiceIndex  = voiceAllocator.getPlayingVoiceIndices()[playIndex];                           \
-      ClassName::process(module,                                                                      \
+      ClassName::process(mdl,                                                                      \
                          inPointer0 + voiceIndex * inVoiceStride0,                                    \
                          inPointer1 + voiceIndex * inVoiceStride1,                                    \
                          inPointer2 + voiceIndex * inVoiceStride2,                                    \
@@ -1116,29 +1116,29 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_MONO_BLOCK_FUNCTION_8(ClassName)                                                       \
-  void ClassName::processMonoBlock(Module *module, int voiceIndex, int blockSize)                     \
+  void ClassName::processMonoBlock(Module *mdl, int voiceIndex, int blockSize)                     \
   {                                                                                                   \
-    int outFrameStride = module->outFrameStride;                                                      \
-    double *outPointer = module->audioOutputs;                                                        \
-    int inFrameStride0 = module->inputPins[0].outputFrameSize;                                        \
-    double *inPointer0 = module->inputPins[0].outputPointer;                                          \
-    int inFrameStride1 = module->inputPins[1].outputFrameSize;                                        \
-    double *inPointer1 = module->inputPins[1].outputPointer;                                          \
-    int inFrameStride2 = module->inputPins[2].outputFrameSize;                                        \
-    double *inPointer2 = module->inputPins[2].outputPointer;                                          \
-    int inFrameStride3 = module->inputPins[3].outputFrameSize;                                        \
-    double *inPointer3 = module->inputPins[3].outputPointer;                                          \
-    int inFrameStride4 = module->inputPins[4].outputFrameSize;                                        \
-    double *inPointer4 = module->inputPins[4].outputPointer;                                          \
-    int inFrameStride5 = module->inputPins[5].outputFrameSize;                                        \
-    double *inPointer5 = module->inputPins[5].outputPointer;                                          \
-    int inFrameStride6 = module->inputPins[6].outputFrameSize;                                        \
-    double *inPointer6 = module->inputPins[6].outputPointer;                                          \
-    int inFrameStride7 = module->inputPins[7].outputFrameSize;                                        \
-    double *inPointer7 = module->inputPins[7].outputPointer;                                          \
+    int outFrameStride = mdl->outFrameStride;                                                      \
+    double *outPointer = mdl->audioOutputs;                                                        \
+    int inFrameStride0 = mdl->inputPins[0].outputFrameSize;                                        \
+    double *inPointer0 = mdl->inputPins[0].outputPointer;                                          \
+    int inFrameStride1 = mdl->inputPins[1].outputFrameSize;                                        \
+    double *inPointer1 = mdl->inputPins[1].outputPointer;                                          \
+    int inFrameStride2 = mdl->inputPins[2].outputFrameSize;                                        \
+    double *inPointer2 = mdl->inputPins[2].outputPointer;                                          \
+    int inFrameStride3 = mdl->inputPins[3].outputFrameSize;                                        \
+    double *inPointer3 = mdl->inputPins[3].outputPointer;                                          \
+    int inFrameStride4 = mdl->inputPins[4].outputFrameSize;                                        \
+    double *inPointer4 = mdl->inputPins[4].outputPointer;                                          \
+    int inFrameStride5 = mdl->inputPins[5].outputFrameSize;                                        \
+    double *inPointer5 = mdl->inputPins[5].outputPointer;                                          \
+    int inFrameStride6 = mdl->inputPins[6].outputFrameSize;                                        \
+    double *inPointer6 = mdl->inputPins[6].outputPointer;                                          \
+    int inFrameStride7 = mdl->inputPins[7].outputFrameSize;                                        \
+    double *inPointer7 = mdl->inputPins[7].outputPointer;                                          \
     for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                                     \
     {                                                                                                 \
-      ClassName::process(module,                                                                      \
+      ClassName::process(mdl,                                                                      \
                          inPointer0,                                                                  \
                          inPointer1,                                                                  \
                          inPointer2,                                                                  \
@@ -1162,35 +1162,35 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_POLY_BLOCK_FUNCTION_8(ClassName)                                                       \
-  void ClassName::processPolyBlock(Module *module, int voiceIndex, int blockSize)                     \
+  void ClassName::processPolyBlock(Module *mdl, int voiceIndex, int blockSize)                     \
   {                                                                                                   \
-    int outFrameStride          = module->outFrameStride;                                             \
+    int outFrameStride          = mdl->outFrameStride;                                             \
     int outVoiceStride          = outFrameStride * processingStatus.getBufferSize();                  \
-    int inFrameStride0          = module->inputPins[0].outputFrameSize;                               \
-    int inVoiceStride0          = module->inputPins[0].outputVoiceStride;                             \
-    double *inPointerVoice0Pin0 = module->inputPins[0].outputPointer;                                 \
-    int inFrameStride1          = module->inputPins[1].outputFrameSize;                               \
-    int inVoiceStride1          = module->inputPins[1].outputVoiceStride;                             \
-    double *inPointerVoice0Pin1 = module->inputPins[1].outputPointer;                                 \
-    int inFrameStride2          = module->inputPins[2].outputFrameSize;                               \
-    int inVoiceStride2          = module->inputPins[2].outputVoiceStride;                             \
-    double *inPointerVoice0Pin2 = module->inputPins[2].outputPointer;                                 \
-    int inFrameStride3          = module->inputPins[3].outputFrameSize;                               \
-    int inVoiceStride3          = module->inputPins[3].outputVoiceStride;                             \
-    double *inPointerVoice0Pin3 = module->inputPins[3].outputPointer;                                 \
-    int inFrameStride4          = module->inputPins[4].outputFrameSize;                               \
-    int inVoiceStride4          = module->inputPins[4].outputVoiceStride;                             \
-    double *inPointerVoice0Pin4 = module->inputPins[4].outputPointer;                                 \
-    int inFrameStride5          = module->inputPins[5].outputFrameSize;                               \
-    int inVoiceStride5          = module->inputPins[5].outputVoiceStride;                             \
-    double *inPointerVoice0Pin5 = module->inputPins[5].outputPointer;                                 \
-    int inFrameStride6          = module->inputPins[6].outputFrameSize;                               \
-    int inVoiceStride6          = module->inputPins[6].outputVoiceStride;                             \
-    double *inPointerVoice0Pin6 = module->inputPins[6].outputPointer;                                 \
-    int inFrameStride7          = module->inputPins[7].outputFrameSize;                               \
-    int inVoiceStride7          = module->inputPins[7].outputVoiceStride;                             \
-    double *inPointerVoice0Pin7 = module->inputPins[7].outputPointer;                                 \
-    double *outPointerVoice0    = module->audioOutputs;                                               \
+    int inFrameStride0          = mdl->inputPins[0].outputFrameSize;                               \
+    int inVoiceStride0          = mdl->inputPins[0].outputVoiceStride;                             \
+    double *inPointerVoice0Pin0 = mdl->inputPins[0].outputPointer;                                 \
+    int inFrameStride1          = mdl->inputPins[1].outputFrameSize;                               \
+    int inVoiceStride1          = mdl->inputPins[1].outputVoiceStride;                             \
+    double *inPointerVoice0Pin1 = mdl->inputPins[1].outputPointer;                                 \
+    int inFrameStride2          = mdl->inputPins[2].outputFrameSize;                               \
+    int inVoiceStride2          = mdl->inputPins[2].outputVoiceStride;                             \
+    double *inPointerVoice0Pin2 = mdl->inputPins[2].outputPointer;                                 \
+    int inFrameStride3          = mdl->inputPins[3].outputFrameSize;                               \
+    int inVoiceStride3          = mdl->inputPins[3].outputVoiceStride;                             \
+    double *inPointerVoice0Pin3 = mdl->inputPins[3].outputPointer;                                 \
+    int inFrameStride4          = mdl->inputPins[4].outputFrameSize;                               \
+    int inVoiceStride4          = mdl->inputPins[4].outputVoiceStride;                             \
+    double *inPointerVoice0Pin4 = mdl->inputPins[4].outputPointer;                                 \
+    int inFrameStride5          = mdl->inputPins[5].outputFrameSize;                               \
+    int inVoiceStride5          = mdl->inputPins[5].outputVoiceStride;                             \
+    double *inPointerVoice0Pin5 = mdl->inputPins[5].outputPointer;                                 \
+    int inFrameStride6          = mdl->inputPins[6].outputFrameSize;                               \
+    int inVoiceStride6          = mdl->inputPins[6].outputVoiceStride;                             \
+    double *inPointerVoice0Pin6 = mdl->inputPins[6].outputPointer;                                 \
+    int inFrameStride7          = mdl->inputPins[7].outputFrameSize;                               \
+    int inVoiceStride7          = mdl->inputPins[7].outputVoiceStride;                             \
+    double *inPointerVoice0Pin7 = mdl->inputPins[7].outputPointer;                                 \
+    double *outPointerVoice0    = mdl->audioOutputs;                                               \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)             \
     {                                                                                                 \
       int voiceIndex     = voiceAllocator.getPlayingVoiceIndices()[playIndex];                        \
@@ -1205,7 +1205,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
       double *outPointer = outPointerVoice0    + voiceIndex * outVoiceStride;                         \
       for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                                   \
       {                                                                                               \
-        ClassName::process(module,                                                                    \
+        ClassName::process(mdl,                                                                    \
                            inPointer0,                                                                \
                            inPointer1,                                                                \
                            inPointer2,                                                                \
@@ -1243,7 +1243,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
   ENFORCE_FACTORY_USAGE(ClassName);                                                                   \
   DECLARE_PROCESSING_FUNCTIONS;                                                                       \
   virtual void initialize();                                                                          \
-  static INLINE void process(Module *module, double *in1, double *in2, double *in3, double *in4,      \
+  static INLINE void process(Module *mdl, double *in1, double *in2, double *in3, double *in4,      \
                              double *in5, double *in6, double *in7, double *in8, double *out,         \
                              int voiceIndex);                                                         \
 
@@ -1265,75 +1265,75 @@ create a special project for that. Maybe it can be made part of the Liberty test
 // given the ClassName::process function, this macro creates the corresponding monophonic per-frame 
 // processing function:
 #define CREATE_MONO_FRAME_FUNCTION_N(ClassName)                                                                           \
-  void ClassName::processMonoFrame(Module *module, int voiceIndex)                                                        \
+  void ClassName::processMonoFrame(Module *mdl, int voiceIndex)                                                        \
   {                                                                                                                       \
-    for(unsigned int pinIndex = 0; pinIndex < ((Module*) module)->getNumInputsInlined(); pinIndex++)                      \
-      WorkArea::tmpInFrame[pinIndex] = *(((Module*) module)->inputPins[pinIndex].outputPointer);                          \
-    ClassName::process(module, WorkArea::tmpInFrame, ((Module*) module)->audioOutputs, voiceIndex);                       \
+    for(unsigned int pinIndex = 0; pinIndex < ((Module*) mdl)->getNumInputsInlined(); pinIndex++)                      \
+      WorkArea::tmpInFrame[pinIndex] = *(((Module*) mdl)->inputPins[pinIndex].outputPointer);                          \
+    ClassName::process(mdl, WorkArea::tmpInFrame, ((Module*) mdl)->audioOutputs, voiceIndex);                       \
   }                                                                                                                       \
 
 // given the ClassName::process function, this macro creates the corresponding polyphonic per-frame processing function:
 #define CREATE_POLY_FRAME_FUNCTION_N(ClassName)                                                                           \
-  void ClassName::processPolyFrame(Module *module, int voiceIndex)                                                        \
+  void ClassName::processPolyFrame(Module *mdl, int voiceIndex)                                                        \
   {                                                                                                                       \
-    int outVoiceStride = ((Module*) module)->outFrameStride * processingStatus.getBufferSize();                           \
-    double *outPointer = ((Module*) module)->audioOutputs;                                                                \
+    int outVoiceStride = ((Module*) mdl)->outFrameStride * processingStatus.getBufferSize();                           \
+    double *outPointer = ((Module*) mdl)->audioOutputs;                                                                \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)                                 \
     {                                                                                                                     \
       int voiceIndex = voiceAllocator.getPlayingVoiceIndices()[playIndex];                                                \
-      for(unsigned int pinIndex = 0; pinIndex < ((Module*) module)->getNumInputsInlined(); pinIndex++)                    \
+      for(unsigned int pinIndex = 0; pinIndex < ((Module*) mdl)->getNumInputsInlined(); pinIndex++)                    \
       {                                                                                                                   \
-        WorkArea::tmpInFrame[pinIndex] = *(((Module*) module)->inputPins[pinIndex].outputPointer                          \
-                                           + voiceIndex * ((Module*) module)->inputPins[pinIndex].outputVoiceStride);     \
+        WorkArea::tmpInFrame[pinIndex] = *(((Module*) mdl)->inputPins[pinIndex].outputPointer                          \
+                                           + voiceIndex * ((Module*) mdl)->inputPins[pinIndex].outputVoiceStride);     \
       }                                                                                                                   \
-      ClassName::process(module, WorkArea::tmpInFrame, outPointer + voiceIndex * outVoiceStride, voiceIndex);             \
+      ClassName::process(mdl, WorkArea::tmpInFrame, outPointer + voiceIndex * outVoiceStride, voiceIndex);             \
     }                                                                                                                     \
   }                                                                                                                       \
 
 // given the ClassName::process function, this macro creates the corresponding monophonic per-blaoc processing function:
 #define CREATE_MONO_BLOCK_FUNCTION_N(ClassName)                                                                           \
-  void ClassName::processMonoBlock(Module *module, int voiceIndex, int blockSize)                                         \
+  void ClassName::processMonoBlock(Module *mdl, int voiceIndex, int blockSize)                                         \
   {                                                                                                                       \
-    int outFrameStride = ((Module*) module)->outFrameStride;                                                              \
-    double *outPointer = ((Module*) module)->audioOutputs;                                                                \
+    int outFrameStride = ((Module*) mdl)->outFrameStride;                                                              \
+    double *outPointer = ((Module*) mdl)->audioOutputs;                                                                \
     for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                                                         \
     {                                                                                                                     \
-      for(unsigned int pinIndex = 0; pinIndex < ((Module *) module)->getNumInputsInlined(); pinIndex++)                   \
+      for(unsigned int pinIndex = 0; pinIndex < ((Module *) mdl)->getNumInputsInlined(); pinIndex++)                   \
       {                                                                                                                   \
-        WorkArea::tmpInFrame[pinIndex] = * (((Module *) module)->inputPins[pinIndex].outputPointer                        \
-                                            + frameIndex * ((Module *) module)->inputPins[pinIndex].outputFrameSize);     \
+        WorkArea::tmpInFrame[pinIndex] = * (((Module *) mdl)->inputPins[pinIndex].outputPointer                        \
+                                            + frameIndex * ((Module *) mdl)->inputPins[pinIndex].outputFrameSize);     \
       }                                                                                                                   \
-      ClassName::process(module, WorkArea::tmpInFrame, outPointer + outFrameStride * frameIndex, voiceIndex);             \
+      ClassName::process(mdl, WorkArea::tmpInFrame, outPointer + outFrameStride * frameIndex, voiceIndex);             \
     }                                                                                                                     \
   }                                                                                                                       \
 
 // given the ClassName::process function, this macro creates the corresponding polyphonic per-block processing function:
 #define CREATE_POLY_BLOCK_FUNCTION_N(ClassName)                                                                               \
-  void ClassName::processPolyBlock(Module *module, int voiceIndex, int blockSize)                                             \
+  void ClassName::processPolyBlock(Module *mdl, int voiceIndex, int blockSize)                                             \
   {                                                                                                                           \
     unsigned int pinIndex;                                                                                                    \
-    int outFrameStride = ((Module*) module)->outFrameStride;                                                                  \
+    int outFrameStride = ((Module*) mdl)->outFrameStride;                                                                  \
     int outVoiceStride = outFrameStride * processingStatus.getBufferSize();                                                   \
     double *outVoiceFramePointer;                                                                                             \
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)                                     \
     {                                                                                                                         \
       int voiceIndex       = voiceAllocator.getPlayingVoiceIndices()[playIndex];                                              \
-      outVoiceFramePointer = ((Module*) module)->audioOutputs + voiceIndex * outVoiceStride;                                  \
-      for(pinIndex = 0; pinIndex < ((Module *) module)->getNumInputsInlined(); pinIndex++)                                    \
+      outVoiceFramePointer = ((Module*) mdl)->audioOutputs + voiceIndex * outVoiceStride;                                  \
+      for(pinIndex = 0; pinIndex < ((Module *) mdl)->getNumInputsInlined(); pinIndex++)                                    \
       {                                                                                                                       \
-        WorkArea::inVoiceFramePointer[pinIndex] = ((Module *) module)->inputPins[pinIndex].outputPointer                      \
-                                                  + voiceIndex * ((Module *) module)->inputPins[pinIndex].outputVoiceStride   \
-                                                  - ((Module *) module)->inputPins[pinIndex].outputFrameSize;                 \
+        WorkArea::inVoiceFramePointer[pinIndex] = ((Module *) mdl)->inputPins[pinIndex].outputPointer                      \
+                                                  + voiceIndex * ((Module *) mdl)->inputPins[pinIndex].outputVoiceStride   \
+                                                  - ((Module *) mdl)->inputPins[pinIndex].outputFrameSize;                 \
           /* points 1 position before the actual start, to allow increment before dereferencing  */                           \
       }                                                                                                                       \
       for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                                                           \
       {                                                                                                                       \
-        for(pinIndex = 0; pinIndex < ((Module *) module)->getNumInputsInlined(); pinIndex++)                                  \
+        for(pinIndex = 0; pinIndex < ((Module *) mdl)->getNumInputsInlined(); pinIndex++)                                  \
         {                                                                                                                     \
-          WorkArea::inVoiceFramePointer[pinIndex] += ((Module *) module)->inputPins[pinIndex].outputFrameSize;                \
+          WorkArea::inVoiceFramePointer[pinIndex] += ((Module *) mdl)->inputPins[pinIndex].outputFrameSize;                \
           WorkArea::tmpInFrame[pinIndex]           = *(WorkArea::inVoiceFramePointer[pinIndex]);                              \
         }                                                                                                                     \
-        ClassName::process(module, WorkArea::tmpInFrame, outVoiceFramePointer, voiceIndex);                                   \
+        ClassName::process(mdl, WorkArea::tmpInFrame, outVoiceFramePointer, voiceIndex);                                   \
         outVoiceFramePointer   += outFrameStride;                                                                             \
       }                                                                                                                       \
     }                                                                                                                         \
@@ -1355,6 +1355,6 @@ create a special project for that. Maybe it can be made part of the Liberty test
   ENFORCE_FACTORY_USAGE(ClassName);                                                        \
   DECLARE_PROCESSING_FUNCTIONS;                                                            \
   virtual void initialize();                                                               \
-  static INLINE void process(Module *module, double  *ins, double *outs, int voiceIndex);  \
+  static INLINE void process(Module *mdl, double  *ins, double *outs, int voiceIndex);  \
 
 #endif 
