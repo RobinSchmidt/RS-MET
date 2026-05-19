@@ -38,7 +38,7 @@ using namespace rotes;  // Get rid of this !
 // passed &= runUnitTest(&triangleRasterization,  "Triangle Rasterization");
 // in UnitTests.cpp
 
-int main(int argc, char* argv[])
+int main(int /*argc*/, char* /*argv[]*/)
 {
   // Here, a lot of experimentation and test functions are called. It's for research and 
   // development. Most of the time, most function calls are commented out - the idea is to 

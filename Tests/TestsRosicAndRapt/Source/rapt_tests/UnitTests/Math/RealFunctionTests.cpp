@@ -330,7 +330,7 @@ bool testPowerIterator(double p, double e)
     yt[n] = pow(x[n]+e, p);  // but it should be scaled and shifted!
 
 
-    double yn;
+    double yn = 0;
     for(int i = 0; i < oversampling; i++)
       yn = it.getValue(dx);
     y[n] = yn;

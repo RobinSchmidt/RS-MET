@@ -167,18 +167,25 @@ bool testStringDoubleConversionsGeometricProgression(double start, double factor
     iteration++;
   }
   return ok;
+
+  // ToDo:
+  //
+  // - This test needs some serious reconsideration. It used to pass a long time ago but at some 
+  //   point it started to fail even though the code that it tests didn't change (as far as I can
+  //   remember). We also get compiler warnings about limit being used but potentially 
+  //   uninitialized. I think, the times when it passed may have been before switching to x64.
 }
 bool testStringDoubleConversionsDenormals()
 {
   bool ok = true;
-  ok &= testStringDoubleConversionsGeometricProgression(1.0, 0.5/SQRT2);
+  ok &= testStringDoubleConversionsGeometricProgression(1.0, +0.5/SQRT2);
   ok &= testStringDoubleConversionsGeometricProgression(1.0, -0.5/SQRT2);
   return ok;
 }
 bool testStringDoubleConversionsLarge()
 {
   bool ok = true;
-  ok &= testStringDoubleConversionsGeometricProgression(1.0, SQRT2);
+  ok &= testStringDoubleConversionsGeometricProgression(1.0,  SQRT2);
   ok &= testStringDoubleConversionsGeometricProgression(1.0, -SQRT2);
   return ok;
 }
