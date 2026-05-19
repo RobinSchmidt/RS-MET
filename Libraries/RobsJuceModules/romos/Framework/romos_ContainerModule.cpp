@@ -94,7 +94,7 @@ void processContainerBlockFrameWisePoly(Module *moduleAsVoid, int blockSize)
   romos::ContainerModule *container = ((romos::ContainerModule *) moduleAsVoid);
   const int *playingVoiceIndices    = voiceAllocator.getPlayingVoiceIndices();
   int numPlayingVoices              = voiceAllocator.getNumPlayingVoices();
-  int bufferSize                    = processingStatus.getBufferSize();
+  //int bufferSize                    = processingStatus.getBufferSize();
 
   int    pinIndex, playIndex, voiceIndex;
   int    inFrameSize    = container->numInputs;
@@ -177,7 +177,7 @@ void processContainerBlockFrameWisePoly(Module *moduleAsVoid, int blockSize)
 }
 
 // gcc complains
-void processContainerBlockFrameWiseMixed(Module *moduleAsVoid, int blockSize)
+void processContainerBlockFrameWiseMixed(Module* /*moduleAsVoid*/, int /*blockSize*/)
 {
 
 }

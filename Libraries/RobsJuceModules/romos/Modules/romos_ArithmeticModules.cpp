@@ -66,7 +66,7 @@ void IdentityModule::initialize()
   initOutputPins({ "" });
   hasHeaderFlag = false;
 }
-INLINE void IdentityModule::process(Module *module, double *ins, double *outs, int /*voiceIndex*/)
+INLINE void IdentityModule::process(Module* /*module*/, double* ins, double* outs, int /*voiceIndex*/)
 {
   //IdentityModule *identity = (IdentityModule *)module;
 
@@ -85,7 +85,7 @@ void UnaryMinusModule::initialize()
   initOutputPins({ "" });
   hasHeaderFlag = false;
 }
-INLINE void UnaryMinusModule::process(Module *module, double *ins, double *outs, int voiceIndex)
+INLINE void UnaryMinusModule::process(Module* /*module*/, double* ins, double* outs, int /*voiceIndex*/)
 {
   outs[0] = -ins[0];
 }

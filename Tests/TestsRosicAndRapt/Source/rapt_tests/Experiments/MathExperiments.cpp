@@ -3966,8 +3966,8 @@ void expBipolar()
   // which can be given to wolfram alpha as:
   // Solve[d == a e^(s/a) - a, a ]
 
-  double y0 = 0.2;
-  double y1 = 8.0;
+  //double y0 = 0.2;
+  //double y1 = 8.0;
   //double s  = 1.0;
 
   // compute coeffs:

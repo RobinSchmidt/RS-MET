@@ -1720,7 +1720,7 @@ void partialExtractionTriple()
 
   // get peak location and height of envelope (later, maybe use quadratic interpolation to find it 
   // with subsample precision - this is actually overkill, but however)
-  int    nPeak = RAPT::rsArrayTools::maxIndex(ye, N);
+  //int    nPeak = RAPT::rsArrayTools::maxIndex(ye, N);
   //double tPeak = nPeak / fs;
   //double aPeak = ye[nPeak];
 
@@ -1993,7 +1993,7 @@ double isolatePartialWithBiquad(double *x, double *y, int N, double fL, double f
   // re-adjust gain of filter output signal (factor out):
   //rsNegate(a, a, 3); // analysing function's sign convention is different from filtering routine - fix this!
                        // hmm - nope - doesn't seem to be the case
-  double w = 2*PI*fM/fs;
+  //double w = 2*PI*fM/fs;
   double g = biquadMagnitudeAt(b[0], b[1], b[2], a[1], a[2], 2*PI*fM/fs);
   g = pow(g, 2*np);  // bidirectional: g^2, multipass: g^np -> g^(2*np)
   RAPT::rsArrayTools::scale(y, N, 1.0/g);
@@ -2040,7 +2040,7 @@ double isolatePartialWithElliptic(
 //       domain seperation at the expense of more time-domain smearing
 // np:   number of (bi-directional) passes of the filter
 double isolatePartial(double *x, double *y, int N, double fL, double fM, double fU, double fs, 
-  double aM, double aMax, double p, int np)
+  double /*aM*/, double /*aMax*/, double p, int np)
 {
   return isolatePartialWithBiquad(x, y, N, fL, fM, fU, fs, p, np);
     // p scales the filter's Q - observations when passing a single partial at 
@@ -2189,7 +2189,7 @@ void partialExtractionViaBiquadTriple()
 
   // get peak location and height of envelope (later, maybe use quadratic interpolation to find it 
   // with subsample precision - this is actually overkill, but however)
-  int    nPeak = RAPT::rsArrayTools::maxIndex(ye, N);
+  //int    nPeak = RAPT::rsArrayTools::maxIndex(ye, N);
   //double tPeak = nPeak / fs;
   //double aPeak = ye[nPeak];
 

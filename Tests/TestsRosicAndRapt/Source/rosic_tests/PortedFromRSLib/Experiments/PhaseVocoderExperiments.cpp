@@ -105,8 +105,6 @@ void grainRoundTrip()
   pv.setAnalysisWindowType(RAPT::rsWindowFunction::WindowType::hanningZN);
   //pv.setZeroPaddingFactor(1);
   pv.shortTimeSpectrum(x, N, n0, X);
-
-  int dummy = 0;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -460,9 +458,9 @@ void sineParameterEstimation()
   // compute errors with respect to true values:
   double targetPhase = startPhase + 2*PI*frequency*anaTime; // actual phase of cosine at anaTime
   targetPhase = RAPT::rsWrapToInterval(targetPhase, -PI, PI);
-  double freqError  = frequency - freqEstimate;
-  double levelError = rsAmp2dB(amplitude / ampEstimate);
-  double phaseError = targetPhase - phaseEstimate;
+  //double freqError  = frequency - freqEstimate;
+  //double levelError = rsAmp2dB(amplitude / ampEstimate);
+  //double phaseError = targetPhase - phaseEstimate;
 
   // Observations:
   // -when the blockSize is odd, we can estimate the phase much more accurately which is consistent
@@ -793,7 +791,7 @@ void sinusoidalAnalysis1()
   int zeroPadFactor = 2;
 
   // create signal:
-  double period = sampleRate / frequency;         // in samples
+  //double period = sampleRate / frequency;         // in samples
   size_t N = (size_t)ceil(length * sampleRate);   // number of samples
   std::vector<double> x = createSinusoid(N, frequency, sampleRate, amplitude, phase);
   applyFadeInAndOut(&x[0], (int)N, int(sampleRate*fadeTime));
@@ -802,7 +800,7 @@ void sinusoidalAnalysis1()
   RAPT::rsSinusoidalAnalyzer<double> sa;
   int blockSize = sa.getRequiredBlockSize(window, freqRes, sampleRate);
   int hopSize = blockSize/2;
-  double maxLevelThresh = sa.getRequiredThreshold(window, 0.0);
+  //double maxLevelThresh = sa.getRequiredThreshold(window, 0.0);
   sa.setWindowType(window);
   sa.setMaxFreqDeltaBase(20);
   sa.setBlockAndTrafoSize(blockSize, zeroPadFactor*blockSize);
@@ -935,8 +933,8 @@ void sinusoidalAnalysis2()
   // figure out, if there's a bias in the frequency estimates:
   double f1a = model2.getPartial(0).getMeanFreq();
   double f2a = model2.getPartial(1).getMeanFreq();
-  double freqBias1 = f1 - f1a;
-  double freqBias2 = f2 - f2a;
+  //double freqBias1 = f1 - f1a;
+  //double freqBias2 = f2 - f2a;
 
   // test - synthesize and resynthesize only one partial
   //model.removePartial( 1);
@@ -1068,7 +1066,7 @@ void sinusoidalAnalysis3()
 
   // figure out, if there's a bias in the frequency estimates:
   double fa = model2.getPartial(0).getMeanFreq(); // maybe have a getMeanFreq that takes two time-stamps as parameters
-  double freqBias = fa - (f1+f2)/2;
+  //double freqBias = fa - (f1+f2)/2;
 
   // create and set up a sinusoidal synthesizer object and plot resynthesis result:
   rsSinusoidalSynthesizer<double> synth;

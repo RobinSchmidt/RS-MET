@@ -3017,7 +3017,8 @@ public:
     // glitches.
 
 
-    maxNumCombs = maxNumCombs;
+    //maxNumCombs = maxNumCombs;  // What's this? Probably a bug!
+    maxNumCombs = newMaxNumCombs; // This is probably the intended thing.
     maxDelay    = newMaxDelayInSamples;
     //protoAllpass.setMaxDelayInSamples(maxDelay);
     settings.resize(maxNumCombs);
