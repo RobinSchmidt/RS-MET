@@ -4604,9 +4604,19 @@ void rsColor<T>::rgb2hex(unsigned char R, unsigned char G, unsigned char B,
     if(c >= 10) return c + 55;          // 65: ASCII code of A and we need to subtract 10
     else        return c + 48;          // 48: ASCII code of 0
   };
-  int s = 4;                            // shift
-  int m = 15;                           // mask
-  int i = 0;                            // index
+
+  // Old (worked but gave compiler warnings):
+  //int s = 4;                            // shift
+  //int m = 15;                           // mask
+  //int i = 0;                            // index
+
+  // New (needs verification):
+  unsigned char s = 4;                  // shift
+  unsigned char m = 15;                 // mask
+  unsigned char i = 0;                  // index
+  // There is a unit test that calls this rgb2hex() function and it still passes after the change,
+  // so it should probably be fine.
+
   if(sharp) { hex[i] = '#'; i++; }
   hex[i] = toHex((R >> s) & m); i++;
   hex[i] = toHex( R       & m); i++;
