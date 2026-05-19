@@ -931,8 +931,8 @@ void sinusoidalAnalysis2()
   //plotModelOutputComparison(model, model2, synth);
 
   // figure out, if there's a bias in the frequency estimates:
-  double f1a = model2.getPartial(0).getMeanFreq();
-  double f2a = model2.getPartial(1).getMeanFreq();
+  //double f1a = model2.getPartial(0).getMeanFreq();
+  //double f2a = model2.getPartial(1).getMeanFreq();
   //double freqBias1 = f1 - f1a;
   //double freqBias2 = f2 - f2a;
 
@@ -1065,7 +1065,7 @@ void sinusoidalAnalysis3()
 
 
   // figure out, if there's a bias in the frequency estimates:
-  double fa = model2.getPartial(0).getMeanFreq(); // maybe have a getMeanFreq that takes two time-stamps as parameters
+  //double fa = model2.getPartial(0).getMeanFreq(); // maybe have a getMeanFreq that takes two time-stamps as parameters
   //double freqBias = fa - (f1+f2)/2;
 
   // create and set up a sinusoidal synthesizer object and plot resynthesis result:
@@ -2178,8 +2178,6 @@ void harmonicDeBeating2()  // rename to harmonicDeBeating4Sines
   //  -> that calls for non-uniform filters
   //  -> but maybe a box-shaped moving average with length of one sawtooth period would be best?
   //     it would completely zero out the sawtooth (except for the boudaries)
-
-  int dummy = 0;
 
   // seems like i'm running into the harmonic drop-in/out issue with this test signal with 2nd and 
   // 3rd harmonic when using bm or bh window - and most of the time, they are off. hm window seems

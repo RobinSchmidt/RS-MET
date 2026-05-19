@@ -4019,8 +4019,8 @@ public:
     inDelay.setDelayInSamples( delay);
     outDelay.setDelayInSamples(delay);
     b.resize(dampOrder+1);
-    for(int k = 0;  k <= dampOrder; k++)
-      b[k] = dampCoeffsB[k];
+    for(int i = 0;  i <= dampOrder; i++)
+      b[i] = dampCoeffsB[i];
   }
 
 
