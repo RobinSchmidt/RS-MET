@@ -1337,13 +1337,10 @@ void sineShift2()
 
 void pitchDetectWithSilence()
 {
-  int N = 10000;
-  double fs = 44100;
+  //int N = 10000;
+  //double fs = 44100;
 
   // not yet implemented
-
-
-  int dummy = 0;
 }
 
 
@@ -1672,7 +1669,7 @@ void bestMatchShift()
   x1 = RSLib::readMonoWaveFile("../../TestInputs/autocorrelate_test-001.wav", N1, fs);
   x2 = RSLib::readMonoWaveFile("../../TestInputs/autocorrelate_test-002.wav", N2, fs);
 
-  double shift = rsGetShiftForBestMatch(x1, x2, rsMin(N1, N2));
+  //double shift = rsGetShiftForBestMatch(x1, x2, rsMin(N1, N2));
 
   delete[] x1;
   delete[] x2;

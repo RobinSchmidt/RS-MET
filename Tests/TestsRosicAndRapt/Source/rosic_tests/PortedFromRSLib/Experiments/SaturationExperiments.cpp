@@ -354,8 +354,8 @@ void sigmoidScaleAndShift()
   double hi   = +0.4;             // maximum of output range
 
   // compute center and y-width of the sigmoid (lo = c-w, hi = c+w):
-  double c = 0.5*(lo+hi);  // center
-  double w = hi-lo;        // width (in y-direction)
+  //double c = 0.5*(lo+hi);  // center
+  //double w = hi-lo;        // width (in y-direction)
 
   // allocate arrays:
   double x[N];                  // array of x-values
@@ -1355,10 +1355,6 @@ void adHocTapeEmuIdeas()
   // ...
 
 
-
-
-  int dummy = 0;
-
   // Observations:
   //
 
@@ -1635,7 +1631,6 @@ void tapeEmulationChow()
   for(int n = 0; n < N; n++)
     y[n] = tapeSat.getSample(x[n]);
   rsPlotVectors(x, y);
-  int dummy = 0;
 
   // Observations:
   //

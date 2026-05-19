@@ -371,9 +371,12 @@ A * X = B. Can be used for investigations on numerical precision issues in matri
 computations. We can construct a matrix from a diagonal matrix by shuffling - for the diagonal
 matrix, the exact solutions are easy to compute..... */
 template<class T>
-void shuffle(rsMatrix<T>& A, rsMatrix<T>& B, int range, int seed = 0)
+void shuffle(rsMatrix<T>& A, rsMatrix<T>& B, int /*range*/, int seed = 0)
 {
+  // ToDo: Document the purpose of the range parameter. Maybe it has none. If so, remove it.
+
   rsNoiseGenerator<T> prng;
+  prng.setSeed(seed);        // New. Verify!
 
   T w; int i;
 
@@ -2420,7 +2423,7 @@ int minimizePartialParabolic(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
     }
 
     iterations++;
-    int dummy = 0;
+    //int dummy = 0;
   }
 
   return evals;  // return the number of evaluations of f

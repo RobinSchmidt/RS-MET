@@ -73,7 +73,7 @@ void particleBouncerExperiment()
     xe[n] = a * cos(t);
     ye[n] = b * sin(t);
   }
-  double areaOverPi = a*b; // actual area is PI*a*b
+  //double areaOverPi = a*b; // actual area is PI*a*b
 
   // plot sequence:
   GNUPlotter plt;
