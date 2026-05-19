@@ -110,7 +110,7 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 
 
 template<class T>
-T rsEpsilon(T x)
+T rsEpsilon(T /*x*/)
 {
   return std::numeric_limits<T>::epsilon();
 

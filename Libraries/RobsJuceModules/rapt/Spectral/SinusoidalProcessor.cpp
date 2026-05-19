@@ -77,18 +77,19 @@ void rsSinusoidalProcessor<T>::makeFreqsConsistentWithPhases(rsSinusoidalPartial
   //plotVector(p);
 
   std::vector<T> a(M-1);   // average frequencies (optimized code could avoid this array, too)
-  for(m = 0; m < M-1; m++) {
+  for(m = 0; m < M-1; m++) 
+  {
     T dt = t[m+1] - t[m];                   // length of time interval t[m]...t[m+1] "delta-t"
     a[m] = T(0.5) * (f[m] + f[m+1]);        // "old" average freq in interval t[m]...t[m+1]
     T q  = p[m] + a[m] * dt * 2*PI;         // computed phase at end of interval
-    T ps = p[m+1];                          // stored phase at end of current interval
+    //T ps = p[m+1];                          // stored phase at end of current interval
     T qp = rsConsistentUnwrappedValue0(q, p[m+1], 2*PI);        // q' - adjusted phase
     a[m] = (qp-p[m])/(dt*2*PI);             // "new" average freq, consistent with p[m] and p[m+1]
 
     // ...wait - what if this becomes negative?
     //rsAssert(a[m] >= T(0));
 
-    T dq = q - qp;  // |dq| should be (much) less than pi - otherwise the hopSize is too small for
+    //T dq = q - qp;  // |dq| should be (much) less than pi - otherwise the hopSize is too small for
     // correctly estimating frequencies from phase-differences - maybe return the maximum dp as
     // feedback and/or maybe have a function getMaximumPhaseDeviation (where the deviation is
     // measured with respect to integrated frequency)

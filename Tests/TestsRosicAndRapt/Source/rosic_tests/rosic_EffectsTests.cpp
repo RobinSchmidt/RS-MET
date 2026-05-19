@@ -2455,7 +2455,7 @@ void testSpectralShiftViaRS()
   // Write input and output into wave files:
   //rosic::writeToMonoWaveFile("SpectralShifterInput.wav",  &x[0], N, sampleRate, 16);
   //rosic::writeToMonoWaveFile("SpectralShifterOutput.wav", &y[0], N, sampleRate, 16);
-  int dummy = 0;
+  //int dummy = 0;
 
   // We use the following abbrevations:
   // inCyc: inputPeriod (cycle), inPhs: inputPhase

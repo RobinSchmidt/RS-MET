@@ -372,7 +372,7 @@ std::vector<int> rsSinusoidalAnalyzer<T>::peakIndices(T* x, int N, T threshToMax
   std::vector<int> peaks;
   for(int i = 1; i < N-1; i++)
   {
-    T dbg = x[i];
+    //T dbg = x[i];
     if(x[i] > x[i-1] && x[i] > x[i+1] && x[i] > threshToMax*max)
       peaks.push_back(i);
   }

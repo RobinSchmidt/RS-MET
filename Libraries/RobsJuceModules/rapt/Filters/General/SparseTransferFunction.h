@@ -209,7 +209,7 @@ inline bool rsIsBetterPivot(
 template<class T, class TTol>
 inline bool rsIsInvalidDivisor(
   const rsSparseTransferFunction<T, TTol>& x,
-  const rsSparseTransferFunction<T, TTol>& tol)
+  const rsSparseTransferFunction<T, TTol>& /*tol*/)
 {
   return x.isZero(); 
   // Maybe we should pass in a tolerance into x.isZero()? But then this tolerance should 

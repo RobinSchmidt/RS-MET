@@ -238,6 +238,8 @@ bool rsZeroCrossingFinder::isUpwardCrossing(T *x, int n)
 template<class T>
 int rsZeroCrossingFinder::closestUpwardCrossingLeft(T *x, int N, int n)
 {
+  rsAssert(rsIsInRange(n, 0, N-1)); // New. Needs verification!
+
   for(int i = n; i >= 0; i--)
     if(isUpwardCrossing(x, i))
       return i;
@@ -247,6 +249,8 @@ int rsZeroCrossingFinder::closestUpwardCrossingLeft(T *x, int N, int n)
 template<class T>
 int rsZeroCrossingFinder::closestUpwardCrossingRight(T *x, int N, int n)
 {
+  rsAssert(rsIsInRange(n, 0, N-1)); // New. Needs verification!
+
   for(int i = n; i < N-1; i++)
     if(isUpwardCrossing(x, i))
       return i;

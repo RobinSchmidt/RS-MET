@@ -203,7 +203,7 @@ template<class TCor, class TWgt>
 void rsRealTimeSpline<TCor, TWgt>::dotsCubic(TWgt w1, TWgt w2, int numDots)
 {
   TWgt dw = w2-w1;                      // weight difference
-  TCor scaler = (TCor)(1.0 / numDots);  // not 1/(numDots-1) because last dot of this call is drawn 
+  //TCor scaler = (TCor)(1.0 / numDots);  // not 1/(numDots-1) because last dot of this call is drawn 
                                         // as first dot in next call? ..avoids drawing it twice?
   for(int i = 0; i < numDots; i++) {
     dotsX[i] = rsPolynomial<TCor>::evaluate(t[i], a, 3);

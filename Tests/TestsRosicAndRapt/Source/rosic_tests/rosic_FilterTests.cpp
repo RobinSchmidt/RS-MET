@@ -1167,6 +1167,4 @@ void rotes::highOrderFilterPolesAndZeros()
   //Complex z[2*N], p[2*N];        // arrays of poles and zeros
   std::complex<double> z[2*N], p[2*N];        // arrays of poles and zeros
   designer.getPolesAndZeros(p, z);
-
-  int dummy = 0;
 }
