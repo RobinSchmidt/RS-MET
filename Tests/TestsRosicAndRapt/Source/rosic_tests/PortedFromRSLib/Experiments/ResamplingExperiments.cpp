@@ -595,7 +595,7 @@ void phaseLockedCrossfade()
 vector<double> linearCrossfade(vector<double> x1, vector<double> x2, int start, int end, 
   int shift)
 {
-  int N1 = (int)x1.size();               // length of x1
+  //int N1 = (int)x1.size();               // length of x1
   int N2 = (int)x2.size();               // length of x2
   int Ny = N2+shift;                     // length of output
   vector<double> y(Ny);
@@ -610,7 +610,7 @@ vector<double> linearCrossfade(vector<double> x1, vector<double> x2, int start, 
   }
   for(n = end+1; n < Ny; n++)            // trailing section
   {
-    int n2 = n - shift;
+    //int n2 = n - shift;
     y[n] = x2[n-shift];
   }
   return y;
@@ -1272,9 +1272,6 @@ void sineShift()
 
   // plot:
   plotData(N, 0, 1, x, yi, y); // input and output signals with integer and noninteger shift
-
-
-  int dummy = 0;
 }
 
 void sineShift2()
@@ -1300,13 +1297,13 @@ void sineShift2()
   // fill arrays of frequencies, amplitudes, start-phases and create input harmonics (with 
   // randomized amplitudes and initial phases)
   rsRandomUniform(0.0, 1.0, randomSeed);
-  int h, n;                              // loop indices for harmonics and samples
-  for(h = 0; h < numHarmonics; h++)
+  //int h, n;                              // loop indices for harmonics and samples
+  for(int h = 0; h < numHarmonics; h++)
   {
     f[h] = f0 * (h+1);
     a[h] = rsRandomUniform(aMin, aMax);
     p[h] = rsRandomUniform(0.0, 2*PI); 
-    for(n = 0; n < numSamples; n++)
+    for(int n = 0; n < numSamples; n++)
     {
       double w = 2*PI*f[h]/fs;            // normalized radian frequency of current sinusoid
       x[h][n]  = a[h] * sin(w*n + p[h]);
@@ -1324,7 +1321,7 @@ void sineShift2()
   double xMix[numSamples], yMix[numSamples];
   RAPT::rsArrayTools::fillWithZeros(xMix, numSamples);
   RAPT::rsArrayTools::fillWithZeros(yMix, numSamples);
-  for(h = 0; h < numHarmonics; h++)
+  for(int h = 0; h < numHarmonics; h++)
   {
     RAPT::rsArrayTools::add(xMix, x[h], xMix, numSamples);
     RAPT::rsArrayTools::add(yMix, y[h], yMix, numSamples);

@@ -1751,7 +1751,7 @@ void quantumParticle()
   int skipRatio = 200;   // number of iterations to per recorded cycle (i.e. oversampling)
                          // ...needs more
 
-  double dx = (xMax-xMin)/(Nx-1);  // spatial sampling rate
+  //double dx = (xMax-xMin)/(Nx-1);  // spatial sampling rate
   //double r  = dt / (dx*dx);        // should be <= 1/2 for stability of explicit method
 
 
