@@ -1491,8 +1491,8 @@ void rsInstantaneousFundamentalEstimator<T>::estimateReliability(const T *x, int
 {
   int Nz = (int) z.size(); // number of zero crossings in z
   int nz;                  // index of zero-crossing
-  int sl, sr, el, er;      // start and end, left and right
-  T c;                     // cross-correlation value
+  int sl, sr, el(0), er;   // start and end, left and right
+  T c(0);                  // cross-correlation value
 
   sr = rsCeilInt( z[0]);
   er = rsFloorInt(z[1]);

@@ -242,6 +242,8 @@ T rsSinePhaseAt(T *x, int N, int n0)
 template <class T>
 inline bool isUpwardZeroCrossing(T x, int N, int n0)
 {
+  rsAssert(rsIsInRange(n0, 0, N-2)); // New. Needs verification.
+
   if( x[n0] <= 0 && x[n0+1] > 0 )
     return true;
   else
@@ -251,6 +253,8 @@ inline bool isUpwardZeroCrossing(T x, int N, int n0)
 template <class T>
 inline bool isDownwardZeroCrossing(T x, int N, int n0)
 {
+  rsAssert(rsIsInRange(n0, 0, N-2)); // New. Needs verification.
+
   if( x[n0] >= 0 && x[n0+1] < 0 )
     return true;
   else

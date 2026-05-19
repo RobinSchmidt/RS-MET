@@ -489,7 +489,7 @@ void rsSingleSineModeler<T>::smoothFreqs(T* w, int N, int medianOrder, int avera
 }
 
 template<class T>
-T refinePhase(T p, T pL, T pR, int n) // n is only passed for debugging
+T refinePhase(T p, T pL, T pR, int /*n*/) // n is only passed for debugging
 {
   // Idea: compare phase p to the average of its two neighbours pL, pR and also compare and 
   // appropriately reflected phase to this average. Return either original or reflected value,
