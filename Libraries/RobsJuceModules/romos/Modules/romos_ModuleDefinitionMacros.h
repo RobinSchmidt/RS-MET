@@ -38,14 +38,17 @@ create a special project for that. Maybe it can be made part of the Liberty test
 
 
 // This macro can be used in a Module subclass to declare all 4 static processing functions and 
-// the (then necessary) override for assignProcessingFunctions():
-#define DECLARE_PROCESSING_FUNCTIONS                                                      \
-  protected:                                                                              \
-    static INLINE void processMonoFrame(Module *module, int voiceIndex);                  \
-    static INLINE void processPolyFrame(Module *module, int voiceIndex);                  \
-    static INLINE void processMonoBlock(Module *module, int voiceIndex,  int blockSize);  \
-    static INLINE void processPolyBlock(Module *module, int voiceIndex,  int blockSize);  \
-    virtual void assignProcessingFunctions();                                             \
+// the (then necessary) override for assignProcessingFunctions(). The parameters are:
+//  1: Module*  :  Pointer to the module
+//  2: int      :  Voice index
+//  3: int      :  Block size (if applicable)
+#define DECLARE_PROCESSING_FUNCTIONS                         \
+  protected:                                                 \
+    static INLINE void processMonoFrame(Module*, int);       \
+    static INLINE void processPolyFrame(Module*, int);       \
+    static INLINE void processMonoBlock(Module*, int, int);  \
+    static INLINE void processPolyBlock(Module*, int, int);  \
+    virtual void assignProcessingFunctions();                \
 
 
 // This macro can be used in place of ENFORCE_FACTORY_USAGE, DECLARE_PROCESSING_FUNCTIONS and the 

@@ -1521,11 +1521,11 @@ public:
   }
 
   /** Sets the current state consisting of the angular velocities along the 3 principal axes. */
-  void setState(T w1, T w2, T w3)
+  void setState(T newW1, T newW2, T newW3)
   {
-    this->w1 = w1;
-    this->w2 = w2;
-    this->w3 = w3;
+    w1 = newW1;
+    w2 = newW2;
+    w3 = newW3;
   }
 
   /** Sets the step size for the numerical integration scheme */
