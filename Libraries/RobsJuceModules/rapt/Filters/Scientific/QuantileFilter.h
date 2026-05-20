@@ -397,18 +397,23 @@ public:
   /** Sets the new length and quantile. The length can be a non-integer number >= 1 (smaller 
   values are clipped from below at 1). The quantile should be a number between 0 and 1 (both 
   ends inclusive). */
-  void setLengthAndQuantile(T L, T q)
+  void setLengthAndQuantile(T newLength, T newQuantile)
   {
-    rsAssert(q >= T(0) && q <= T(1), "Quantiles must be values between 0 and 1.");
-    if(L < T(2)) {
-      L = rsMax(L, T(1));     // 1 is really the lower limit for the length
-      blend = L - floor(L);
-      frac  = q;
-      Base::setLengthAndQuantile(2, q); }
-    else {
+    rsAssert(newQuantile >= T(0) && newQuantile <= T(1), 
+             "Quantiles must be values between 0 and 1.");
+    if(newLength < T(2)) 
+    {
+      newLength = rsMax(newLength, T(1));     // 1 is really the lower limit for the length
+      blend = newLength - floor(newLength);
+      frac  = newQuantile;
+      Base::setLengthAndQuantile(2, newQuantile); 
+    }
+    else 
+    {
       blend = T(1);
-      frac  = L - floor(L);
-      Base::setLengthAndQuantile((int)L, q); }
+      frac  = newLength - floor(newLength);
+      Base::setLengthAndQuantile((int)newLength, newQuantile); 
+    }
   }
 
   /** Prodcues one sample at a time. */
