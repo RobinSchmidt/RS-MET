@@ -300,19 +300,19 @@ void rsPitchDitherProto<T>::distributionViaOverlap(
 {
   T periodFloor = rsFloor(period);
   T periodFrac  = period - periodFloor;
-  if(periodFrac < 0.5)
+  if(periodFrac < T(0.5))
   {
     cd->L1 = (int)periodFloor - 1;
-    cd->p1 = 0.5 * (0.5 - periodFrac);
-    cd->p3 = 0.5 - cd->p1;
+    cd->p1 = T(0.5) * (T(0.5) - periodFrac);
+    cd->p3 = T(0.5) - cd->p1;
   }
   else
   {
-    cd->L1 = (int)periodFloor;              // No -1 here
-    cd->p3 = 0.5 * (periodFrac - 0.5);
-    cd->p1 = 0.5 - cd->p3;
+    cd->L1 = (int)periodFloor;                // No -1 here
+    cd->p3 = T(0.5) * (periodFrac - T(0.5));
+    cd->p1 = T(0.5) - cd->p3;
   }
-  cd->p2 = 0.5;                             // p2 is always 0.5
+  cd->p2 = T(0.5);                            // p2 is always 0.5
   cd->L2 = cd->L1 + 1;
   cd->L3 = cd->L2 + 1;
 }
@@ -325,7 +325,7 @@ void rsPitchDitherProto<T>::distributionEqualDeviation(
   T periodFrac  = period - periodFloor;
 
   // Compute lengths:
-  if(periodFrac < 0.5)
+  if(periodFrac < T(0.5))
     cd->L1 = (int)periodFloor - 1;
   else
     cd->L1 = (int)periodFloor;
@@ -359,7 +359,7 @@ void rsPitchDitherProto<T>::distributionEqualVariance(
   T periodFrac  = period - periodFloor;
 
   // Compute lengths:
-  if(periodFrac < 0.5)
+  if(periodFrac < T(0.5))
     cd->L1 = (int)periodFloor - 1;
   else
     cd->L1 = (int)periodFloor;
