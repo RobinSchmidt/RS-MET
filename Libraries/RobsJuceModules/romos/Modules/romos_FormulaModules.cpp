@@ -221,7 +221,7 @@ void FormulaModule_N_1::setInputVariables(const std::vector<std::string>& newInV
   std::vector<std::pair<AudioConnection, std::string>> 
     inputConnections = getInputVariableConnections(); // remember connectivity
 
-  size_t oldSize = audioInputNames.size(); // == inputPins.size()
+  //size_t oldSize = audioInputNames.size(); // == inputPins.size()
   size_t newSize = newInVars.size();
   audioInputNames.resize(newSize);
   inputPins.resize(newSize);
@@ -278,7 +278,7 @@ FormulaModule_N_1::getInputVariableConnections()
   std::vector<AudioConnection> cons = getIncomingAudioConnections();
   for(size_t i = 0; i < cons.size(); i++) {
     AudioConnection connection = cons[i];
-    int inPinIndex = connection.getTargetInputIndex();
+    //int inPinIndex = connection.getTargetInputIndex();
     std::string inPinName = audioInputNames[i].asStdString();
     pairs.push_back(std::pair<AudioConnection, std::string>(connection, inPinName));
   }

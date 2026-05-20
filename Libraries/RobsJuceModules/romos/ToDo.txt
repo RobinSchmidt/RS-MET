@@ -8,6 +8,9 @@
  romos\Modules\romos_ModuleDefinitionMacros.h  
  ..ok - done - but maybe some re-fromatting would be nice.
 
+ Next, we need to fix some "local variable declaration hides parameter" warnings by commenting
+ out the voiceIndex parameter...
+
 
 -clean up the #includes - includes should ideally occur only in the unity build file
 -get rid of using namespace declarations - warp the code itself into the appropriate namespace
