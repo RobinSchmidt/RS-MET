@@ -3659,7 +3659,7 @@ protected:
 
 
 template<class TSig, class TPar, class TTol>
-void rsDampedAllpassBiComb_1p<TSig, TPar, TTol>::rsDampedAllpassBiComb_1p<TSig, TPar, TTol>::reset()
+void rsDampedAllpassBiComb_1p<TSig, TPar, TTol>::::reset()
 {
   mainDelay1.reset();
   mainDelay2.reset();
