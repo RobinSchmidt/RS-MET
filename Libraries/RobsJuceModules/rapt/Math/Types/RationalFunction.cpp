@@ -1,5 +1,5 @@
 template<class T>
-bool rsRationalFunction<T>::reduce(T tol)
+bool RAPT::rsRationalFunction<T>::reduce(T tol)
 {
   std::vector<T> gcd = polyGCD(num.coeffs, den.coeffs, tol);
   if(gcd.size() == 1)
@@ -10,9 +10,9 @@ bool rsRationalFunction<T>::reduce(T tol)
 }
 
 template<class T>
-void rsRationalFunction<T>::valueAndSlopeAt(const T& x, T* y, T* yp) const
+void RAPT::rsRationalFunction<T>::valueAndSlopeAt(const T& x, T* y, T* yp) const
 {
-  T n, np, d, dp;
+  T n(0), np(0), d(0), dp(0);
   num.valueAndSlopeAt(x, &n, &np); // compute value n and derivative np of numerator
   den.valueAndSlopeAt(x, &d, &dp); // compute value d and derivative dp of denominator
   *y  = n / d;                     // compute and assign function value 
@@ -21,6 +21,7 @@ void rsRationalFunction<T>::valueAndSlopeAt(const T& x, T* y, T* yp) const
   // ToDo: 
   // -maybe precompute 1/d and replace the divisions by multiplications
 }
+
 
 //-------------------------------------------------------------------------------------------------
 // Computations on std::vector
@@ -32,7 +33,7 @@ void rsRationalFunction<T>::valueAndSlopeAt(const T& x, T* y, T* yp) const
 // about the new size by a return value. ...maybe some of them should be moved into rsPolynomial
 
 template<class T>
-T rsRationalFunction<T>::polyEval(std::vector<T>& p, T x)
+T RAPT::rsRationalFunction<T>::polyEval(std::vector<T>& p, T x)
 {
   int k = (int)p.size()-1;  // last valid index
   if(k < 0)
@@ -45,7 +46,7 @@ T rsRationalFunction<T>::polyEval(std::vector<T>& p, T x)
 }
 
 template<class T>
-void rsRationalFunction<T>::polyTrunc(std::vector<T>& p, T tol)
+void RAPT::rsRationalFunction<T>::polyTrunc(std::vector<T>& p, T tol)
 {
   int i = (int)p.size();
   while(i > 1) {  // a polynomial should have at least 1 coeff
@@ -57,7 +58,7 @@ void rsRationalFunction<T>::polyTrunc(std::vector<T>& p, T tol)
 }
 
 template<class T>
-T rsRationalFunction<T>::makeMonic(std::vector<T>& p)
+T RAPT::rsRationalFunction<T>::makeMonic(std::vector<T>& p)
 {
   T lc = rsLast(p);
   for(size_t i = 0; i < p.size(); i++)
@@ -66,7 +67,7 @@ T rsRationalFunction<T>::makeMonic(std::vector<T>& p)
 }
 
 template<class T>
-std::vector<T> rsRationalFunction<T>::polyAdd(
+std::vector<T> RAPT::rsRationalFunction<T>::polyAdd(
   const std::vector<T>& p, const std::vector<T>& q, 
   T tol, T wp, T wq)
 {
@@ -87,14 +88,14 @@ std::vector<T> rsRationalFunction<T>::polyAdd(
 }
 
 template<class T>
-std::vector<T> rsRationalFunction<T>::polySub(const std::vector<T>& p, const std::vector<T>& q,
+std::vector<T> RAPT::rsRationalFunction<T>::polySub(const std::vector<T>& p, const std::vector<T>& q,
   T tol)
 {
   return polyAdd(p, q, 1, -1, tol);
 }
 
 template<class T>
-std::vector<T> rsRationalFunction<T>::polyMul(const std::vector<T>& x, const std::vector<T>& h,
+std::vector<T> RAPT::rsRationalFunction<T>::polyMul(const std::vector<T>& x, const std::vector<T>& h,
   T tol)
 {
   int L = (int)x.size() + (int)h.size() - 1;  // length of result
@@ -108,7 +109,7 @@ std::vector<T> rsRationalFunction<T>::polyMul(const std::vector<T>& x, const std
 }
 
 template<class T>
-void rsRationalFunction<T>::polyDivMod(std::vector<T> p, std::vector<T> d, 
+void RAPT::rsRationalFunction<T>::polyDivMod(std::vector<T> p, std::vector<T> d, 
   std::vector<T>& q, std::vector<T>& r, T tol)
 { 
   q.resize(p.size());
@@ -129,7 +130,7 @@ void rsRationalFunction<T>::polyDivMod(std::vector<T> p, std::vector<T> d,
 }
 
 template<class T>
-std::vector<T> rsRationalFunction<T>::polyDiv(std::vector<T> p, std::vector<T> d, T tol)
+std::vector<T> RAPT::rsRationalFunction<T>::polyDiv(std::vector<T> p, std::vector<T> d, T tol)
 {
   std::vector<T> q, r;
   polyDivMod(p, d, q, r, tol);
@@ -137,7 +138,7 @@ std::vector<T> rsRationalFunction<T>::polyDiv(std::vector<T> p, std::vector<T> d
 }
 
 template<class T>
-std::vector<T> rsRationalFunction<T>::polyMod(std::vector<T> p, std::vector<T> d, T tol)
+std::vector<T> RAPT::rsRationalFunction<T>::polyMod(std::vector<T> p, std::vector<T> d, T tol)
 {
   std::vector<T> q, r;
   polyDivMod(p, d, q, r, tol);
@@ -145,7 +146,7 @@ std::vector<T> rsRationalFunction<T>::polyMod(std::vector<T> p, std::vector<T> d
 }
 
 template<class T>
-bool rsRationalFunction<T>::isAllZeros(const std::vector<T>& v, T tol)
+bool RAPT::rsRationalFunction<T>::isAllZeros(const std::vector<T>& v, T tol)
 {
   for(size_t i = 0; i < v.size(); i++)
     //if(fabs(v[i]) > tol)
@@ -155,7 +156,7 @@ bool rsRationalFunction<T>::isAllZeros(const std::vector<T>& v, T tol)
 }
 
 template<class T>
-std::vector<T> rsRationalFunction<T>::polyGCD(
+std::vector<T> RAPT::rsRationalFunction<T>::polyGCD(
   const std::vector<T>& p, const std::vector<T>& q, T tol, bool monic)
 {
   std::vector<T> a = p, b = q, t;
@@ -172,7 +173,7 @@ std::vector<T> rsRationalFunction<T>::polyGCD(
 
 
 template<class T>
-std::vector<T> rsRationalFunction<T>::polyNest(const std::vector<T>& a, const std::vector<T>& b)
+std::vector<T> RAPT::rsRationalFunction<T>::polyNest(const std::vector<T>& a, const std::vector<T>& b)
 {
   int aN = (int)a.size()-1;               // degree of a
   int bN = (int)b.size()-1;               // degree of b
@@ -190,7 +191,7 @@ std::vector<T> rsRationalFunction<T>::polyNest(const std::vector<T>& a, const st
 }
 
 template<class T>
-void rsRationalFunction<T>::ratReduce(const std::vector<T>& pIn, const std::vector<T>& qIn,
+void RAPT::rsRationalFunction<T>::ratReduce(const std::vector<T>& pIn, const std::vector<T>& qIn,
   std::vector<T>& pOut, std::vector<T>& qOut, T tol)
 {
   std::vector<T> gcd = polyGCD(pIn, qIn, tol);
@@ -199,7 +200,7 @@ void rsRationalFunction<T>::ratReduce(const std::vector<T>& pIn, const std::vect
 }
 
 template<class T>
-void rsRationalFunction<T>::ratMul(
+void RAPT::rsRationalFunction<T>::ratMul(
   const std::vector<T>& p, const std::vector<T>& q,
   const std::vector<T>& r, const std::vector<T>& s,
   std::vector<T>& u, std::vector<T>& v, T tol, bool reduced)
@@ -211,7 +212,7 @@ void rsRationalFunction<T>::ratMul(
 }
 
 template<class T>
-void rsRationalFunction<T>::ratDiv(
+void RAPT::rsRationalFunction<T>::ratDiv(
   const std::vector<T>& p, const std::vector<T>& q,
   const std::vector<T>& r, const std::vector<T>& s,
   std::vector<T>& u, std::vector<T>& v, T tol, bool reduced)
@@ -220,7 +221,7 @@ void rsRationalFunction<T>::ratDiv(
 }
 
 template<class T>
-void rsRationalFunction<T>::ratAdd(
+void RAPT::rsRationalFunction<T>::ratAdd(
   const std::vector<T>& n1, const std::vector<T>& d1,
   const std::vector<T>& n2, const std::vector<T>& d2,
   std::vector<T>& nr, std::vector<T>& dr, 
@@ -237,7 +238,7 @@ void rsRationalFunction<T>::ratAdd(
 }
 
 template<class T>
-void rsRationalFunction<T>::ratPolyNest(
+void RAPT::rsRationalFunction<T>::ratPolyNest(
   const std::vector<T>& ni, const std::vector<T>& di,
   const std::vector<T>& po,
   std::vector<T>& nr, std::vector<T>& dr, T tol)
@@ -254,7 +255,7 @@ void rsRationalFunction<T>::ratPolyNest(
 }
 
 template<class T>
-void rsRationalFunction<T>::ratNest(
+void RAPT::rsRationalFunction<T>::ratNest(
   const std::vector<T>& nI, const std::vector<T>& dI,
   const std::vector<T>& nO, const std::vector<T>& dO,
   std::vector<T>& nR, std::vector<T>& dR, T tol)
@@ -268,27 +269,6 @@ void rsRationalFunction<T>::ratNest(
 // calculated just the same in both calls, namely the successive powers of ni - but this is not 
 // meant to be optimized, high performance code. Maybe in production code, this optimization should
 // be done.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //-------------------------------------------------------------------------------------------------
@@ -309,7 +289,7 @@ int actualDegree(std::complex<T>* p, int maxDegree, T tol)
 
 template<class T>
 template<class R>
-void rsRationalFunction<T>::partialFractionExpansionDistinctPoles(
+void RAPT::rsRationalFunction<T>::partialFractionExpansionDistinctPoles(
   std::complex<R>* num, int numDeg, std::complex<R>* den, int denDeg,
   const std::complex<R>* poles, std::complex<R>* pfeCoeffs)
 {
@@ -329,13 +309,14 @@ void rsRationalFunction<T>::partialFractionExpansionDistinctPoles(
 
 template<class T>
 template<class R>
-void rsRationalFunction<T>::partialFractionExpansionMultiplePoles(
+void RAPT::rsRationalFunction<T>::partialFractionExpansionMultiplePoles(
   const std::complex<R>* num, int numDeg, const std::complex<R>* den, int denDeg,
   const std::complex<R>* poles, const int* multiplicities, int numDistinctPoles,
   std::complex<R>* pfeCoeffs)
 {
   // establish coefficient matrix:
-  std::complex<R> **A; rsArrayTools::allocateSquareArray2D(A, denDeg);
+  std::complex<R>**A = nullptr; 
+  rsArrayTools::allocateSquareArray2D(A, denDeg);
   std::complex<R> *tmp = new std::complex<R>[denDeg+1]; // deflated denominator
   std::complex<R> remainder;                            // always zero
   for(int i = 0, k = 0; i < numDistinctPoles; i++) {
@@ -370,7 +351,7 @@ void rsRationalFunction<T>::partialFractionExpansionMultiplePoles(
 
 template<class T>
 template<class R>
-void rsRationalFunction<T>::partialFractionExpansion(
+void RAPT::rsRationalFunction<T>::partialFractionExpansion(
   std::complex<R> *num, int numDeg, std::complex<R> *den, int denDeg,
   const std::complex<R> *poles, const int *multiplicities, int numDistinctPoles,
   std::complex<R> *pfeCoeffs, std::complex<R>* polyCoeffs)
@@ -409,7 +390,7 @@ void rsRationalFunction<T>::partialFractionExpansion(
 
 template<class T>
 template<class R>
-std::vector<std::complex<R>> rsRationalFunction<T>::partialFractions(
+std::vector<std::complex<R>> RAPT::rsRationalFunction<T>::partialFractions(
   const std::vector<std::complex<R>>& numerator,
   const std::vector<std::complex<R>>& denominator,
   const std::vector<std::complex<R>>& poles)
@@ -426,7 +407,7 @@ std::vector<std::complex<R>> rsRationalFunction<T>::partialFractions(
 
 template<class T>
 template<class R>
-std::vector<std::complex<R>> rsRationalFunction<T>::partialFractions(
+std::vector<std::complex<R>> RAPT::rsRationalFunction<T>::partialFractions(
   const std::vector<std::complex<R>>& numerator,
   const std::vector<std::complex<R>>& denominator,
   const std::vector<std::complex<R>>& poles,
@@ -452,6 +433,14 @@ std::vector<std::complex<R>> rsRationalFunction<T>::partialFractions(
 
 //=================================================================================================
 /*
+
+Notes:
+
+- I prefixed the member functions with RAPT:: to get rid of some errors shown in MSVCs "Error List"
+  which seems not to be a list of compilation errors but a list that gets updated as one types. I 
+  don't know why I would need this RAPT prefix here but not elsewhere. ToDo: Figure it out and then
+  get rid of it.
+
 
 ToDo:
 
