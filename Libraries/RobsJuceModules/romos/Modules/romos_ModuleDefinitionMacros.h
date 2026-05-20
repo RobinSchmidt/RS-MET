@@ -251,7 +251,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_POLY_FRAME_FUNCTION_2(ClassName)                                                       \
-  void ClassName::processPolyFrame(Module *mdl, int voiceIndex)                                    \
+  void ClassName::processPolyFrame(Module *mdl, int /*voiceIndex*/)                                \
   {                                                                                                   \
     int outVoiceStride = mdl->outFrameStride * processingStatus.getBufferSize();                   \
     int inVoiceStride0 = mdl->inputPins[0].outputVoiceStride;                                      \
@@ -289,7 +289,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_POLY_BLOCK_FUNCTION_2(ClassName)                                                       \
-  void ClassName::processPolyBlock(Module *mdl, int voiceIndex, int blockSize)                     \
+  void ClassName::processPolyBlock(Module *mdl, int /*voiceIndex*/, int blockSize)                 \
   {                                                                                                   \
     int outFrameStride          = mdl->outFrameStride;                                             \
     int outVoiceStride          = outFrameStride * processingStatus.getBufferSize();                  \
@@ -347,7 +347,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_POLY_FRAME_FUNCTION_3(ClassName)                                                       \
-  void ClassName::processPolyFrame(Module *mdl, int voiceIndex)                                    \
+  void ClassName::processPolyFrame(Module *mdl, int /*voiceIndex*/)                                \
   {                                                                                                   \
     int outVoiceStride = mdl->outFrameStride * processingStatus.getBufferSize();                   \
     int inVoiceStride0 = mdl->inputPins[0].outputVoiceStride;                                      \
@@ -396,7 +396,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_POLY_BLOCK_FUNCTION_3(ClassName)                                                       \
-  void ClassName::processPolyBlock(Module *mdl, int voiceIndex, int blockSize)                     \
+  void ClassName::processPolyBlock(Module *mdl, int /*voiceIndex*/, int blockSize)                 \
   {                                                                                                   \
     int outFrameStride          = mdl->outFrameStride;                                             \
     int outVoiceStride          = outFrameStride * processingStatus.getBufferSize();                  \
@@ -465,7 +465,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_POLY_FRAME_FUNCTION_4(ClassName)                                                       \
-  void ClassName::processPolyFrame(Module *mdl, int voiceIndex)                                    \
+  void ClassName::processPolyFrame(Module *mdl, int /*voiceIndex*/)                                \
   {                                                                                                   \
     int outVoiceStride = mdl->outFrameStride * processingStatus.getBufferSize();                   \
     int inVoiceStride0 = mdl->inputPins[0].outputVoiceStride;                                      \
@@ -521,7 +521,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_POLY_BLOCK_FUNCTION_4(ClassName)                                                       \
-  void ClassName::processPolyBlock(Module *mdl, int voiceIndex, int blockSize)                     \
+  void ClassName::processPolyBlock(Module *mdl, int /*voiceIndex*/, int blockSize)                 \
   {                                                                                                   \
     int outFrameStride          = mdl->outFrameStride;                                             \
     int outVoiceStride          = outFrameStride * processingStatus.getBufferSize();                  \
@@ -598,7 +598,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_POLY_FRAME_FUNCTION_5(ClassName)                                                       \
-  void ClassName::processPolyFrame(Module *mdl, int voiceIndex)                                    \
+  void ClassName::processPolyFrame(Module *mdl, int /*voiceIndex*/)                                \
   {                                                                                                   \
     int outVoiceStride = mdl->outFrameStride * processingStatus.getBufferSize();                   \
     int inVoiceStride0 = mdl->inputPins[0].outputVoiceStride;                                      \
@@ -661,7 +661,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_POLY_BLOCK_FUNCTION_5(ClassName)                                                       \
-  void ClassName::processPolyBlock(Module *mdl, int voiceIndex, int blockSize)                     \
+  void ClassName::processPolyBlock(Module *mdl, int /*voiceIndex*/, int blockSize)                 \
   {                                                                                                   \
     int outFrameStride          = mdl->outFrameStride;                                             \
     int outVoiceStride          = outFrameStride * processingStatus.getBufferSize();                  \
@@ -744,7 +744,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_POLY_FRAME_FUNCTION_6(ClassName)                                                       \
-  void ClassName::processPolyFrame(Module *mdl, int voiceIndex)                                    \
+  void ClassName::processPolyFrame(Module *mdl, int /*voiceIndex*/)                                \
   {                                                                                                   \
     int outVoiceStride = mdl->outFrameStride * processingStatus.getBufferSize();                   \
     int inVoiceStride0 = mdl->inputPins[0].outputVoiceStride;                                      \
@@ -814,7 +814,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                                                                   \
 
 #define CREATE_POLY_BLOCK_FUNCTION_6(ClassName)                                                       \
-  void ClassName::processPolyBlock(Module *mdl, int voiceIndex, int blockSize)                     \
+  void ClassName::processPolyBlock(Module *mdl, int /*voiceIndex*/, int blockSize)                 \
   {                                                                                                   \
     int outFrameStride          = mdl->outFrameStride;                                             \
     int outVoiceStride          = outFrameStride * processingStatus.getBufferSize();                  \
