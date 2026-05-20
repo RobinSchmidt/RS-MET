@@ -74,7 +74,9 @@ public:
   easier to wrap this class into a plugin. The first index is for the channel (and is assumed to 
   range from 0...7) and the second index is the sample-frame number (assumed to range from 
   0...length-1). */
-  void processBuffer(float** inOutBuffer, int length);
+  //void processBuffer(float** inOutBuffer, int length);
+  // Implementation is commented out. I don't know why. Maybe it's buggy or maybe I didn't want to
+  // provide the buffer based API anymore? Figure out and document!
 
   //-----------------------------------------------------------------------------------------------
   /** \name Misc */

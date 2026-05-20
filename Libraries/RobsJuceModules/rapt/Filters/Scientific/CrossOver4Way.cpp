@@ -162,10 +162,10 @@ void rsCrossOver4Way<TSig, TPar>::getMagnitudeResponse(TPar* frequencies, TPar* 
 
 // audio-processing:
 
+/*
 template<class TSig, class TPar>
 void rsCrossOver4Way<TSig, TPar>::processBuffer(TSig** inOutBuffer, int length)
 {
-  /*
   int c, n;
   double sampleFrame[8];
   for(n = 0; n < length; n++)
@@ -178,8 +178,8 @@ void rsCrossOver4Way<TSig, TPar>::processBuffer(TSig** inOutBuffer, int length)
     for(c = 0; c < 8; c++)
       inOutBuffer[c][n] = (float) sampleFrame[c];
   }
-  */
 }
+*/
 
 // others:
 
