@@ -455,8 +455,8 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarks(const T *x, int N)
   // todo: maybe work with the more precise version that splits integer and fractional parts
   // of the zero-crossings
 
-  rsError("Unknown algorithm setting");
-  return std::vector<T>();
+  //rsError("Unknown algorithm setting");
+  //return std::vector<T>();
 }
 
 template<class T>

@@ -852,8 +852,8 @@ int rsSingleSineModeler<T>::newPhaseZone(T pNew, T pOld, T w, int oldZone)
   // function - if this works can be tested with phase-modulated signals
 
 
-  rsError("Case not handled");
-  return 0; // preliminary
+  //rsError("Case not handled");
+  //return 0; // preliminary
 }
 // input: 
 // pNew: preliminary, measured phase at sample n (range: -pi/2 <= pNew < pi/2) 

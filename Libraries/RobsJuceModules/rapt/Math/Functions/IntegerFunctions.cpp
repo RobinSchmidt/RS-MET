@@ -21,7 +21,7 @@ TUInt rsBinomialCoefficient(TUInt n, TUInt k)
 
   else
   {
-    int result = n-k+1;
+    int result = n-k+1;             // Why int and not TUint?
     for(TUInt i = 2; i <= k; i++)
     {
       result *= n-k+i;
@@ -44,7 +44,7 @@ template<class TUInt>
 TUInt rsBinomialCoefficientUpTo20(TUInt n, TUInt k)
 {
   rsAssert(n <= 20);   // can only be used for n <= 20, otherwise internal overflow occurs
-  unsigned long long nL  = n;
+  unsigned long long nL  = n;  // ToDo: Use uint64_t
   unsigned long long kL  = k;
   return (TUInt)(rsProduct(kL+1ULL, nL) / rsProduct(1ULL, nL-kL));
 }

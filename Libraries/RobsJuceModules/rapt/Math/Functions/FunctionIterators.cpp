@@ -64,8 +64,13 @@ void rsPolynomialIterator<T, N>::setup(const T* aIn, T h, T x0)
       //double bi = T(0);                     // Hack! Preliminary to silence MSVC warning.
       for(int j = i; j <= n; j++)
       {
+        __pragma(warning(suppress:4244))      // For MSVC
+        T bji = static_cast<T>(rsBinomialCoefficient(j, j-i)); // Returns an int
+        T hji = rsPowI(h, j-i);                                // Returns a T
+        bi += a[j] * hji * bji;
+
         //__pragma(warning(suppress:4244))
-        bi += a[j] * T(rsPowI(h, j-i)) * T(rsBinomialCoefficient(j, j-i));
+        //bi += a[j] * T(rsPowI(h, j-i)) * T(rsBinomialCoefficient(j, j-i));
         //bi += a[j] * (T)rsPowI(h, j-i) * (T)rsBinomialCoefficient(j, j-i);
         //bi += a[j] * rsPow(h, j-i) * T(rsBinomialCoefficient(j, j-i));
         // ToDo: Try to get rid of this pragma. Its purpose is to silence an obnoxious conversion
