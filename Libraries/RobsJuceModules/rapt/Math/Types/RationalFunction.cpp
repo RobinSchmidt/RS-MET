@@ -199,7 +199,7 @@ void rsRationalFunction<T>::ratReduce(const std::vector<T>& pIn, const std::vect
 }
 
 template<class T>
-void rsRationalFunction<T>::rsRationalFunction<T>::ratMul(
+void rsRationalFunction<T>::ratMul(
   const std::vector<T>& p, const std::vector<T>& q,
   const std::vector<T>& r, const std::vector<T>& s,
   std::vector<T>& u, std::vector<T>& v, T tol, bool reduced)
