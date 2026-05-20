@@ -354,15 +354,15 @@ void rsInfiniteImpulseResponseDesigner<T>::getBiquadCascadeCoefficients(T *b0, T
     prototypeDesigner.setPrototypeMode(rsPrototypeDesigner<T>::LOWSHELV_PROTOTYPE);
     if( rsIsCloseTo(gain, 0.0, 0.001) || mode == BYPASS ) // gains of zero yield a 'bypass' filter
     {
-      for(int b = 0; b < numBiquads; b++) // msvc gives an "unreachable code" warning here - but
-      {                                   // the code is definitely reachable...hmmm
+      for(int b = 0; b < numBiquads; b++) 
+      {
         b0[b] = 1.0;
         b1[b] = 0.0;
         b2[b] = 0.0;
         a1[b] = 0.0;
         a2[b] = 0.0;
-        return;
       }
+      return;
     }
   }
   else
