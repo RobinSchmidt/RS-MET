@@ -1525,7 +1525,7 @@ void rsInstantaneousFundamentalEstimator<T>::estimateReliability(const T *x, int
 
 template<class T>
 void rsInstantaneousFundamentalEstimator<T>::measureInstantaneousFundamental(const T *x, T *f,
-  int N, T fs, T fMin, T fMax, T *r, int cycleMarkAlgo)
+  int N, T fs, T fMin, T fMax, T *r, int /*cycleMarkAlgo*/)
 {
   rsCycleMarkFinder<T> cmf(fs, fMin, fMax); // todo: maybe set it up - or maybe have it a member and allow client code to set it up
   std::vector<T> z = cmf.findCycleMarks(x, N);

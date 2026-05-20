@@ -5,25 +5,25 @@ bool rsPixelClassifier<TPix>::isInInterior(int i, int j)
 }
 
 template<class TPix>
-bool rsPixelClassifier<TPix>::isAtLeftEdge(int i, int j)
+bool rsPixelClassifier<TPix>::isAtLeftEdge(int i, int /*j*/)
 {
   return i == 0;
 }
 
 template<class TPix>
-bool rsPixelClassifier<TPix>::isAtRightEdge(int i, int j)
+bool rsPixelClassifier<TPix>::isAtRightEdge(int i, int /*j*/)
 {
   return i == img.getWidth()-1;
 }
 
 template<class TPix>
-bool rsPixelClassifier<TPix>::isAtTopEdge(int i, int j)
+bool rsPixelClassifier<TPix>::isAtTopEdge(int /*i*/, int j)
 {
   return j == 0;
 }
 
 template<class TPix>
-bool rsPixelClassifier<TPix>::isAtBottomEdge(int i, int j)
+bool rsPixelClassifier<TPix>::isAtBottomEdge(int /*i*/, int j)
 {
   return j == img.getHeight()-1;
 }

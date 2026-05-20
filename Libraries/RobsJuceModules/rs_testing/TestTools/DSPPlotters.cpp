@@ -756,7 +756,7 @@ void SpectrogramPlotter<T>::addSpectrogramData(GNUPlotter& p, int numFrames, int
 
 template <class T>
 void SinusoidalModelPlotter<T>::addModelToPlot(
-  const RAPT::rsSinusoidalModel<T>& model, GNUPlotter& plt,T sampleRate,
+  const RAPT::rsSinusoidalModel<T>& model, GNUPlotter& plt,T /*sampleRate*/,
   const std::string& graphColor)
 {
   std::vector<float> t, f; // we plot frequency vs time
@@ -804,7 +804,7 @@ void SinusoidalModelPlotter<T>::plotTwoModels(
 
 template <class T>
 std::string SinusoidalModelPlotter<T>::getPartialColor(
-  const RAPT::rsSinusoidalModel<T>& mdl, size_t i)
+  const RAPT::rsSinusoidalModel<T>& /*mdl*/, size_t /*i*/)
 {
   return "000000"; // preliminary
 }

@@ -50,7 +50,7 @@ template<class T> inline T rsZeroValue( T /*value*/) { return T(0); }
 /** Turns a given integer constant into another target type T using a value from that target type
 as prototype. It is used, for example, to convert an integer into a modular integer. In this case,
 the prototype value is used to copy the modulus from the prototype into the result. */
-template<class T> inline T rsIntValue(int value, T targetTemplate) { return T(value); }
+template<class T> inline T rsIntValue(int value, T /*targetTemplate*/) { return T(value); }
 
 
 template<class T> inline T rsIdentity(T value) { return value; }
@@ -614,7 +614,7 @@ inline bool rsIsNegligible(const TVal& val, TTol tol)  // Maybe pass tol via con
 }
 
 template<class TVal> 
-inline bool rsIsNegligible(TVal val, rsEmptyType tol)
+inline bool rsIsNegligible(TVal val, rsEmptyType /*tol*/)
 {
   return rsIsZero(val);
 

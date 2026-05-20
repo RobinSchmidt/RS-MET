@@ -1403,7 +1403,7 @@ struct rsFrequencyResponsePlotSettings
 template<class T, class TFunc>
 void rsPlotThreeFilterResponses(
   const TFunc& tfComb, const TFunc& tfCorr, const TFunc& tfFull, 
-  const rsFrequencyResponsePlotSettings& plotSetup, T dummy)
+  const rsFrequencyResponsePlotSettings& plotSetup, T /*dummy*/)
 {
   // The dummy is need for the compiler to infer the type T. Maybe later we can replace it by some
   // actually useful parameter of type T.

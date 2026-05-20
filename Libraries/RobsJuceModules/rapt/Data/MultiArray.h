@@ -222,7 +222,7 @@ public:
   // needs test
 
 
-  T getElementPadded3D(int i, int j, int k, T padding) const
+  T getElementPadded3D(int i, int j, int k, T /*padding*/) const
   {
     rsAssert(shape.size() == 3, "Must be used only with 3D arrays");
     if(i < 0 || i >= shape[0] || j < 0 || j >= shape[1] || k < 0 || k >= shape[2]) 

@@ -88,13 +88,13 @@ void MultiLayerPerceptron<T>::setWeightVector(const rsVectorDbl &newWeightVector
 }
 
 template<class T>
-void MultiLayerPerceptron<T>::saveStateToFile(char *fileName)
+void MultiLayerPerceptron<T>::saveStateToFile(char* /*fileName*/)
 {
   //....
 }
 
 template<class T>
-void MultiLayerPerceptron<T>::loadStateFromFile(char *fileName)
+void MultiLayerPerceptron<T>::loadStateFromFile(char* /*fileName*/)
 {
   //....
 }
@@ -546,9 +546,9 @@ void MultiLayerPerceptronTrainer<T>::initializeWeightsToZeros()
 }
 
 template<class T>
-void MultiLayerPerceptronTrainer<T>::initializeWeightsRandomly(T min, T max, int seed)
+void MultiLayerPerceptronTrainer<T>::initializeWeightsRandomly(T /*min*/, T /*max*/, int /*seed*/)
 {
-
+  rsError("Not yet implemented");
 }
 
 template<class T>

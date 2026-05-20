@@ -48,8 +48,10 @@ void rsHeatEquation1D<T>::setTwoValueDistribution(T highFraction, int N)
 
 
 template<class T>
-void rsHeatEquation1D<T>::normalizeHeatDistribution(T targetMean, T targetVariance)
+void rsHeatEquation1D<T>::normalizeHeatDistribution(T /*targetMean*/, T /*targetVariance*/)
 {
+  rsError("Not yet implemented");
+
   // set mean to desired target value (maybe factor out):
   //int N = (int) rodArray1.size();
   int N = (int) rodLength;
@@ -154,7 +156,7 @@ void rsWaveEquation1D<T>::computeInteriorPointsSimple()
 }
 
 template<class T>
-void rsWaveEquation1D<T>::computeBoundaryPoints(T timeStep)
+void rsWaveEquation1D<T>::computeBoundaryPoints(T /*timeStep*/)
 {
   int N  = getNumGridPoints()-1; // see (1), section 5.2.8
   tmp[0] = tmp[N] = T(0);        // endpoints fixed at zero - "Dirichlet" conditions

@@ -140,7 +140,7 @@ void rsMultiBandSplitter<TSig, TPar>::insertBand(int index, CRPar splitFrequency
 }
 
 template<class TSig, class TPar>
-void rsMultiBandSplitter<TSig, TPar>::removeBand(int index, bool mergeWithRightNeighbour)
+void rsMultiBandSplitter<TSig, TPar>::removeBand(int index, bool /*mergeWithRightNeighbour*/)
 {
   numActiveBands--;
   rsRemove(splitters,  index);

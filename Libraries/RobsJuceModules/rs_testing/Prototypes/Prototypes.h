@@ -435,6 +435,8 @@ std::vector<T> coeffsAdamsMoulton(int order)
 template<class T>
 T newton(const std::function<T(T)>& f, const std::function<T(T)>& fp, T x0, T yt = T(0))
 {
+  rsAssert(yt == T(0), "Not yet implemented for other values of yt");
+
   T tol = 1.e-10;  // preliminary
   T x   = x0;
   int its = 0;
@@ -2331,7 +2333,7 @@ protected:
     return a*yR;
   }
 
-  void computeMinMaxWeights(T* wMin, T* wMax, T x, T yL, T yD, T yMin, T yMax)
+  void computeMinMaxWeights(T* wMin, T* wMax, T x, T yL, T yD, T yMin, T /*yMax*/)
   {
     T yB = bandpass.getSample(yD);  // or maybe feed x
 
@@ -4192,7 +4194,7 @@ public:
 
   using ModInt = rsModularIntegerNTT;
 
-  rsUint64 value;  // i think, we need a 128 bit wide integer type for this modulus
+  rsUint64 value = 0;  // i think, we need a 128 bit wide integer type for this modulus
 
   rsModularIntegerNTT() {}
   rsModularIntegerNTT(rsUint64 x) : value(x) {}

@@ -473,10 +473,10 @@ protected:
   EnvGen* determineReleaseEnvelope();
 
 
-  const Region* region;                 
+  const Region* region = nullptr;
   /**< Pointer to the Region object that this player should play. */
 
-  const AudioFileStream<float>* stream; 
+  const AudioFileStream<float>* stream = nullptr;
   /**< Pointer to the AudioFileStream object where we get our actual audio data from. */
 
   const EnvGen* releaseEnv = nullptr; // UNDER CONSTRUCTION
