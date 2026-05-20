@@ -1274,7 +1274,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
 
 // given the ClassName::process function, this macro creates the corresponding polyphonic per-frame processing function:
 #define CREATE_POLY_FRAME_FUNCTION_N(ClassName)                                                                           \
-  void ClassName::processPolyFrame(Module *mdl, int voiceIndex)                                                        \
+  void ClassName::processPolyFrame(Module *mdl, int /*voiceIndex*/)                                                      \
   {                                                                                                                       \
     int outVoiceStride = ((Module*) mdl)->outFrameStride * processingStatus.getBufferSize();                           \
     double *outPointer = ((Module*) mdl)->audioOutputs;                                                                \
@@ -1309,7 +1309,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
 
 // given the ClassName::process function, this macro creates the corresponding polyphonic per-block processing function:
 #define CREATE_POLY_BLOCK_FUNCTION_N(ClassName)                                                                               \
-  void ClassName::processPolyBlock(Module *mdl, int voiceIndex, int blockSize)                                             \
+  void ClassName::processPolyBlock(Module *mdl, int /*voiceIndex*/, int blockSize)                                            \
   {                                                                                                                           \
     unsigned int pinIndex;                                                                                                    \
     int outFrameStride = ((Module*) mdl)->outFrameStride;                                                                  \
