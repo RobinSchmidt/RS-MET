@@ -366,6 +366,7 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
 
 
 
+  /*
 
   // Do a linear interpolation of the magnitudes and use a free-running phase:
   double readScale = 1.0 / freqScale;        // Scaler for read-position wrt write-position 
@@ -449,16 +450,12 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // an appropriate scale factor from this ratio. That strategy would be more adaptive to the 
     // signal. Maybe try both or let the user decide.
 
-    
   }
-
-
 
   // Update phase buffer:
   AT::copy(&phs[0], &phsOld[0], spectrumSize);
 
-
-  
+  */
 }
 
 
