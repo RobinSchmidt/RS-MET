@@ -64,7 +64,7 @@ void SystemSampleRateModule::initialize()
 {
   initOutputPins({ "SampleRate" });
 }
-INLINE void SystemSampleRateModule::process(Module *module, double *out, int voiceIndex)
+INLINE void SystemSampleRateModule::process(Module *module, double *out, int /*voiceIndex*/)
 {
   *out = processingStatus.getSystemSampleRate();
 }
@@ -76,7 +76,7 @@ void SystemSamplePeriodModule::initialize()
 {
   initOutputPins({ "SamplePeriod" });
 }
-INLINE void SystemSamplePeriodModule::process(Module *module, double *out, int voiceIndex)
+INLINE void SystemSamplePeriodModule::process(Module *module, double *out, int /*voiceIndex*/)
 {
   *out = processingStatus.getSystemSamplePeriod();
 }

@@ -2,21 +2,21 @@
 //using namespace romos;
 
 void ModuleTypeInfo::addInputPinInfo(
-  const char* shortName, const char* fullName, const char* description)
+  const char* shortName_, const char* fullName_, const char* description_)
 {
-  inputShortNames.push_back(shortName);
-  inputFullNames.push_back(fullName);
-  inputDescriptions.push_back(description);
+  inputShortNames.push_back(shortName_);
+  inputFullNames.push_back(fullName_);
+  inputDescriptions.push_back(description_);
 }
 // rename parameters to shortPinName, fullPinName, pinDescription to fix
 // "hides class member" warning
 
 void ModuleTypeInfo::addOutputPinInfo(
-  const char* shortName, const char* fullName, const char* description)
+  const char* shortName_, const char* fullName_, const char* description_)
 {
-  outputShortNames.push_back(shortName);
-  outputFullNames.push_back(fullName);
-  outputDescriptions.push_back(description);
+  outputShortNames.push_back(shortName_);
+  outputFullNames.push_back(fullName_);
+  outputDescriptions.push_back(description_);
 }
 
 //-------------------------------------------------------------------------------------------------

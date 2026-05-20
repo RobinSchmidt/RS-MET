@@ -591,7 +591,7 @@ void biDirectionalStateInit2()
   // compute forward/backward tail numerically:
   flt.setStateForConstInput(v);  // x1 == t[inf] == v, y1 == s[inf] == (a+d)*v / (1-b)
   double sn[N];
-  double xNew, yNew;             // desired new states - will be recorded at n==1
+  double xNew(0), yNew(0);             // desired new states - will be recorded at n==1
   for(n = N-1; n >= 0; n--)
   {
     sn[n] = flt.getSample(tn[n]);

@@ -100,7 +100,7 @@ void ScalerModule::initialize()
   addParameter("Multiplier", "1");
   hasHeaderFlag = false;
 }
-INLINE void ScalerModule::process(Module *module, double *ins, double *outs, int voiceIndex)
+INLINE void ScalerModule::process(Module *module, double *ins, double *outs, int /*voiceIndex*/)
 {
   //double p = 1; // preliminary - todo: connect to our parameter
 
@@ -121,7 +121,7 @@ void ReciprocalModule::initialize()
   initOutputPins({ "" });
   hasHeaderFlag = false;
 }
-INLINE void ReciprocalModule::process(Module *module, double *in, double *out, int voiceIndex)
+INLINE void ReciprocalModule::process(Module *module, double *in, double *out, int /*voiceIndex*/)
 {
   if(*in != 0.0)
     *out = 1.0 / *in;
@@ -139,7 +139,7 @@ void AdderModule::initialize()
   hasHeaderFlag = false;
 }
 INLINE void AdderModule::process(Module *module, double *in1, double *in2, double *out, 
-  int voiceIndex)
+  int /*voiceIndex*/)
 {
   *out = *in1 + *in2;
 }
@@ -154,7 +154,7 @@ void SubtractorModule::initialize()
   hasHeaderFlag = false;
 }
 INLINE void SubtractorModule::process(Module *module, double *in1, double *in2, double *out, 
-  int voiceIndex)
+  int /*voiceIndex*/)
 {
   *out = *in1 - *in2;
 }
@@ -169,7 +169,7 @@ void MultiplierModule::initialize()
   hasHeaderFlag = false;
 }
 INLINE void MultiplierModule::process(Module *module, double *in1, double *in2, double *out,
-  int voiceIndex)
+  int /*voiceIndex*/)
 {
   *out = *in1 * *in2;
 }
@@ -184,7 +184,7 @@ void DividerModule::initialize()
   hasHeaderFlag = false;
 }
 INLINE void DividerModule::process(Module *module, double *in1, double *in2, double *out, 
-  int voiceIndex)
+  int /*voiceIndex*/)
 {
   if(*in2 != 0.0)
     *out = *in1 / *in2;
@@ -202,7 +202,7 @@ void Adder3Module::initialize()
   hasHeaderFlag = false;
 }
 INLINE void Adder3Module::process(Module *module, double *in1, double *in2, double *in3, 
-  double *out, int voiceIndex)
+  double *out, int /*voiceIndex*/)
 {
   *out = *in1 + *in2 + *in3;
 }
@@ -217,7 +217,7 @@ void Adder4Module::initialize()
   hasHeaderFlag = false;
 }
 INLINE void Adder4Module::process(Module *module, double *in1, double *in2, double *in3, 
-  double *in4, double *out, int voiceIndex)
+  double *in4, double *out, int /*voiceIndex*/)
 {
   *out = *in1 + *in2 + *in3 + *in4;  // perhaps optimizable via parentheses
 }
@@ -232,7 +232,7 @@ void Adder5Module::initialize()
   hasHeaderFlag = false;
 }
 INLINE void Adder5Module::process(Module *module, double *in1, double *in2, double *in3, 
-  double *in4, double *in5, double *out, int voiceIndex)
+  double *in4, double *in5, double *out, int /*voiceIndex*/)
 {
   *out = *in1 + *in2 + *in3 + *in4 + *in5; // perhaps optimizable via parentheses
 }
@@ -245,7 +245,7 @@ void AdderNModule::initialize()
   initInputPins({ "", "" });
   initOutputPins({ "" });
 }
-INLINE void AdderNModule::process(Module *module, double *ins, double *outs, int voiceIndex)
+INLINE void AdderNModule::process(Module *module, double *ins, double *outs, int /*voiceIndex*/)
 {
   AdderNModule *sumModule = static_cast<AdderNModule*> (module);
   outs[0] = 0.0;

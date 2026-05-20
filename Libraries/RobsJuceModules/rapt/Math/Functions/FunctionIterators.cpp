@@ -61,10 +61,22 @@ void rsPolynomialIterator<T, N>::setup(const T* aIn, T h, T x0)
     for(int i = 0; i <= n-1; i++)
     {
       T bi = T(0);
+      //double bi = T(0);                     // Hack! Preliminary to silence MSVC warning.
       for(int j = i; j <= n; j++)
+      {
+        //__pragma(warning(suppress:4244))
         bi += a[j] * T(rsPowI(h, j-i)) * T(rsBinomialCoefficient(j, j-i));
+        //bi += a[j] * (T)rsPowI(h, j-i) * (T)rsBinomialCoefficient(j, j-i);
         //bi += a[j] * rsPow(h, j-i) * T(rsBinomialCoefficient(j, j-i));
+        // ToDo: Try to get rid of this pragma. Its purpose is to silence an obnoxious conversion
+        // warning from MSVC about an entirely intentional and explicit type conversion. There are
+        // other solutions to get rid of it but for the time being, the pragma was the fastest fix.
+        // OK - I now use a double precision accumulator which also suppresses the warning. But
+        // that's not a good solution because it restricts the type T to float or double. Do 
+        // better! ...But nope! that doesn't even compile! WTF!!
+      }
       c[i] = bi - a[i];
+      //c[i] = T(bi - a[i]);
     }
   };
   // maybe make this available as public static member function - oh, but maybe it should go into 

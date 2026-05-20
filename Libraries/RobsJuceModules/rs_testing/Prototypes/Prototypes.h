@@ -1142,10 +1142,10 @@ void rsLinearFractionalInterpolator<T>::interpolate(
 {  
   // The code below follows closely rsInterpolateLinear.
 
-  int n = 0;       // Index into input data
-  int i = 0;       // Index into interpolated data
-  T dx, dy, dxr;   // Segment length (or width), height and reciprocal of length.
-  T a, b, c, d;    // Coeffs for the linfrac y = (a*x + b) / (c*x + d)
+  int n = 0;                // Index into input data
+  int i = 0;                // Index into interpolated data
+  T dx(0), dy(0), dxr(0);   // Segment length (or width), height and reciprocal of length.
+  T a(0), b(0), c(0), d(0); // Coeffs for the linfrac y = (a*x + b) / (c*x + d)
 
   // Linear front extrapolation, if necessary:
   if(extrapolateLinearly) {

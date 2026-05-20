@@ -693,7 +693,7 @@ void blep()
   std::vector<double> x(N), ylt(N), ymt(N), yp1(N), yp2(N); 
   // lt: linear-phase/table, mt: minimum-phase/table, p1/2: poly-blep1/2
 
-  double stepDelay, stepAmp;
+  double stepDelay(0), stepAmp(0);
 
   for(int n = 0; n < N; n++)
   {
