@@ -302,7 +302,7 @@ void rsQuantumComputer<T>::setState(const std::vector<bool>& newState)
 // use of it kroneckerProduct member function
 
 template<class T>
-void rsQuantumComputer<T>::applyHadamardGate(int i)
+void rsQuantumComputer<T>::applyHadamardGate(int /*i*/)
 {
   // Create the matrix that represents the Hadamard gate:
   static const T s = T(1) / sqrt(T(2));

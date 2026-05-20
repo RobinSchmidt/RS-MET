@@ -107,7 +107,7 @@ INLINE void ScalerModule::process(Module *module, double *ins, double *outs, int
   ScalerModule *sclr = static_cast<ScalerModule*> (module);
   outs[0] = sclr->multiplier * ins[0];
 }
-void ScalerModule::parameterChanged(int index)
+void ScalerModule::parameterChanged(int /*index*/)
 {
   multiplier = parameters[0].value.asDouble(); // maybe rename to toDouble
 }
@@ -153,7 +153,7 @@ void SubtractorModule::initialize()
   initOutputPins({ "" });
   hasHeaderFlag = false;
 }
-INLINE void SubtractorModule::process(Module *module, double *in1, double *in2, double *out, 
+INLINE void SubtractorModule::process(Module* /*module*/, double *in1, double *in2, double *out,
   int /*voiceIndex*/)
 {
   *out = *in1 - *in2;
@@ -168,7 +168,7 @@ void MultiplierModule::initialize()
   initOutputPins({ "" });
   hasHeaderFlag = false;
 }
-INLINE void MultiplierModule::process(Module *module, double *in1, double *in2, double *out,
+INLINE void MultiplierModule::process(Module* /*module*/, double *in1, double *in2, double *out,
   int /*voiceIndex*/)
 {
   *out = *in1 * *in2;

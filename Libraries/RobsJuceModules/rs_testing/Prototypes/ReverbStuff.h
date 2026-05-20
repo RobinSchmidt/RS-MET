@@ -4377,7 +4377,7 @@ public:
 
   // Under construction:
   template<class TTol>
-  rsMatrix<rsSparseTransferFunction<TPar, TTol>> getTransferFunction(TTol tol)
+  rsMatrix<rsSparseTransferFunction<TPar, TTol>> getTransferFunction(TTol /*tol*/)
   {
     using TF  = rsSparseTransferFunction<TPar, TTol>;
     using LA  = rsLinearAlgebraNew;

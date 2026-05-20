@@ -290,7 +290,7 @@ int actualDegree(std::complex<T>* p, int maxDegree, T tol)
 template<class T>
 template<class R>
 void RAPT::rsRationalFunction<T>::partialFractionExpansionDistinctPoles(
-  std::complex<R>* num, int numDeg, std::complex<R>* den, int denDeg,
+  std::complex<R>* num, int numDeg, std::complex<R>* /*den*/, int denDeg,
   const std::complex<R>* poles, std::complex<R>* pfeCoeffs)
 {
   typedef RAPT::rsPolynomial<R> PolyR;
