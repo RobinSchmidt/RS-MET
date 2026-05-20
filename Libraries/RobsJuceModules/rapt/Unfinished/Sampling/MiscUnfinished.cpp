@@ -853,7 +853,7 @@ T rsCycleMarkFinder<T>::refineCycleMark(T* x, int N, T anchor, T mark)
 }
 
 template<class T>
-T rsCycleMarkFinder<T>::refineByZeroCrossing(T* x, int N, T anchor, T mark)
+T rsCycleMarkFinder<T>::refineByZeroCrossing(T* x, int N, T /*anchor*/, T mark)
 {
   //T delta = mark - anchor; // for debug
   //rsAssert(abs(delta) > T(0));

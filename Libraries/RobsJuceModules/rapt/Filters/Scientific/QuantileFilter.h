@@ -244,11 +244,11 @@ protected:
   void storeInput(T x)
   {
     //rsAssert(isStateConsistent(), "inconsistent state");
-    int k = keyBuf[bufIdx];        // heap-key of oldest sample
-    int w = wrap(bufIdx + L);      // (write) index of new node in keyBuf
-    keyBuf[w] = k;                 // store preliminary key (== old node's key) in kexBuf at w
-    dblHp.replace(k, Node(x, w));  // replace the old node, reshuffles heaps and keyBuf
-    bufIdx = wrap(bufIdx + 1);     // update position in circular buffer of keys
+    int k = keyBuf[bufIdx];         // heap-key of oldest sample
+    int ww = wrap(bufIdx + L);      // (write) index of new node in keyBuf
+    keyBuf[ww] = k;                 // store preliminary key (== old node's key) in kexBuf at w
+    dblHp.replace(k, Node(x, ww));  // replace the old node, reshuffles heaps and keyBuf
+    bufIdx = wrap(bufIdx + 1);      // update position in circular buffer of keys
     //rsAssert(isStateConsistent(), "inconsistent state");
   }
 

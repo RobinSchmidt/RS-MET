@@ -287,7 +287,7 @@ template<class T>
 T MultiLayerPerceptronErrorFunction<T>::activationDerivative(T z)
 {
   typedef MultiLayerPerceptron<T> MLP;
-  T gp;
+  T gp(0);
   switch(mlp->activationFunctionIndex)
   {
   case MLP::LOGISTIC:        gp = z * (1.0-z);         break; // g' = g * (1-g)
@@ -411,7 +411,7 @@ template<class T>
 T MultiLayerPerceptronTrainer<T>::activationDerivative(T z)
 {
   typedef MultiLayerPerceptron<T> MLP;
-  T gp;
+  T gp(0);
   switch(mlp->activationFunctionIndex)
   {
   case MLP::LOGISTIC:

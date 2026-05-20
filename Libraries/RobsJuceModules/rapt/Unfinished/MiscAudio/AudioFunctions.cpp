@@ -203,8 +203,8 @@ T rsSineFrequencyAt(const T *x, int N, int n0, bool refine)
 
   // experimental: try to remove measurement bias by predicting and compensating (to use one of these,
   // comment out the "return f" above and uncomment one of the formulas here:
-  T dw = wR - wL;
-  T rw = wR / wL;
+  //T dw = wR - wL;
+  //T rw = wR / wL;
   //return w + 0.5*dw*w;
   //return w + 0.5*dw*w*rw; // error around 10/10^5 for 1000-2000 sweep, biased to -
   //return w + 0.25*dw*w*rw; // error around 5/10^5 for 1000-2000 sweep, biased to +
