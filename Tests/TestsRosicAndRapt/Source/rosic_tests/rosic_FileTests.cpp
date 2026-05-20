@@ -11,7 +11,7 @@ rsString createStringWithAllCharacters()
 {
   char cString[256];
   for(int i=0; i<256; i++)
-    cString[256-i-1] = i;  // backwards for compliance with C strings
+    cString[256-i-1] = (char)i;  // backwards for compliance with C strings
   return rsString(cString);
 }
 rsString createStringWithAllPrintableCharacters()

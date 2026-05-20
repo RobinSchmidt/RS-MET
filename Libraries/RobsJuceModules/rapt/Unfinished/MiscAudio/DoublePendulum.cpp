@@ -4,8 +4,8 @@ template<class TSig, class TPar>
 rsDoublePendulum<TSig, TPar>::rsDoublePendulum()
 {
   // init inherited variables:
-  this->x = 0.0;
-  this->y.setDimensionality(4);
+  this->_x = 0.0;
+  this->_y.setDimensionality(4);
   setState(0.5*PI, PI, 0.0, 0.0); // 1st arm horizontal, 2nd arm upright
 
   // set up user parameters:
@@ -51,10 +51,10 @@ void rsDoublePendulum<TSig, TPar>::setStepSize(TPar newStepSize)
 template<class TSig, class TPar>
 void rsDoublePendulum<TSig, TPar>::setState(TSig theta1, TSig theta2, TSig momentum1, TSig momentum2)
 {
-  this->y[0] = theta1;
-  this->y[1] = theta2;
-  this->y[2] = momentum1;
-  this->y[3] = momentum2;
+  this->_y[0] = theta1;
+  this->_y[1] = theta2;
+  this->_y[2] = momentum1;
+  this->_y[3] = momentum2;
 }
 
 // Inquiry:
@@ -62,24 +62,24 @@ void rsDoublePendulum<TSig, TPar>::setState(TSig theta1, TSig theta2, TSig momen
 template<class TSig, class TPar>
 void rsDoublePendulum<TSig, TPar>::getState(TSig *t1, TSig *t2, TSig *p1, TSig *p2)
 {
-  *t1 = this->y[0];
-  *t2 = this->y[1];
-  *p1 = this->y[2];
-  *p2 = this->y[3];
+  *t1 = this->_y[0];
+  *t2 = this->_y[1];
+  *p1 = this->_y[2];
+  *p2 = this->_y[3];
 }
 
 template<class TSig, class TPar>
 void rsDoublePendulum<TSig, TPar>::getAngles(TSig *a1, TSig *a2)
 {
-  *a1 = this->y[0];
-  *a2 = this->y[1];
+  *a1 = this->_y[0];
+  *a2 = this->_y[1];
 }
 
 template<class TSig, class TPar>
 void rsDoublePendulum<TSig, TPar>::getMomenta(TSig *m1, TSig *m2)
 {
-  *m1 = this->y[2];
-  *m2 = this->y[3];
+  *m1 = this->_y[2];
+  *m2 = this->_y[3];
 }
 
 template<class TSig, class TPar>
@@ -99,8 +99,8 @@ template<class TSig, class TPar>
 void rsDoublePendulum<TSig, TPar>::updateState()
 {
   this->stepRungeKutta4(h);
-  this->y[0] = rsWrapToInterval(this->y[0], -PI, PI);
-  this->y[1] = rsWrapToInterval(this->y[1], -PI, PI);
+  this->_y[0] = rsWrapToInterval(this->_y[0], -PI, PI);
+  this->_y[1] = rsWrapToInterval(this->_y[1], -PI, PI);
 }
 
 template<class TSig, class TPar>

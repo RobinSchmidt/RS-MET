@@ -55,7 +55,7 @@ public:
   dimensionality) is deferred to subclasses. */
   rsDifferentialEquationSystem()
   {
-    x = TypeX(0);
+    _x = TypeX(0);
   }
 
 
@@ -64,19 +64,19 @@ public:
   /** Sets the current value of the independent variable. */
   inline void setX(const TypeX &newX)
   {
-    x = newX;
+    _x = newX;
   }
 
   /** Sets the current position in phase-space. \todo maybe rename to setState */
   inline void setY(const rsVector<TypeY> &newY)
   {
-    y = newY;
+    _y = newY;
   }
 
   /** Sets the i-th element of the current coordinate y-vector to a new value. */
   inline void setElementOfY(int i, TypeY newValue)
   {
-    y[i] = newValue;
+    _y[i] = newValue;
   }
 
 
@@ -85,25 +85,25 @@ public:
   /** Returns the current value of the independent variable. */
   inline TypeX getX()
   {
-    return x;
+    return _x;
   }
 
   /** Returns the current position in phase-space. */
   inline rsVector<TypeY> getY()
   {
-    return y;
+    return _y;
   }
 
   /** Returns the i-th element of the current y-vector. */
   inline TypeY getElementOfY(int i)
   {
-    return y[i];
+    return _y[i];
   }
 
   /** Returns the number of dimensions of the phase-space. */
   inline int getNumDimensions()
   {
-    return y.dim;
+    return _y.dim;
   }
 
 
@@ -119,8 +119,8 @@ public:
   /** Performs a forward Euler step using stepsize h.  See (1), p. 710, Eq. 16.1.1 */
   void stepEuler(TypeX h)
   {
-    y += h * f(x, y);
-    x += h;
+    _y += h * f(_x, _y);
+    _x += h;
   }
 
   /** Performs a midpoint-method step using stepsize h. See (1), p. 710, Eq. 16.1.2 */
@@ -128,11 +128,11 @@ public:
   {
     rsVector<TypeY> k1, k2;
 
-    k1 = h * f(x, y);
-    k2 = h * f(x+h/2, y+k1/2);
+    k1 = h * f(_x, _y);
+    k2 = h * f(_x+h/2, _y+k1/2);
 
-    y += k2;
-    x += h;
+    _y += k2;
+    _x += h;
   }
 
   /** Performs a 2nd order Heun step using stesize h. See (2), p. 493, Eq. 6.102
@@ -141,11 +141,11 @@ public:
   {
     rsVector<TypeY> k1, k2;
 
-    k1 = f(x, y);
-    k2 = f(x+h, y+h*k1);
+    k1 = f(_x,   _y);
+    k2 = f(_x+h, _y+h*k1);
 
-    y += (h/2) * (k1 + k2);
-    x += h;
+    _y += (h/2) * (k1 + k2);
+    _x += h;
   }
 
   /*
@@ -154,12 +154,12 @@ public:
   {
     rsVector<TypeY> k1, k2, k3;
 
-    k1 = f(x              , y                 );
-    k2 = f(x + (1.0/3.0)*h, y + h*(1.0/3.0)*k1);
-    k3 = f(x + (2.0/3.0)*h, y + h*(2.0/3.0)*k2);
+    k1 = f(_x              , _y                 );
+    k2 = f(_x + (1.0/3.0)*h, _y + h*(1.0/3.0)*k1);
+    k3 = f(_x + (2.0/3.0)*h, _y + h*(2.0/3.0)*k2);
 
-    y += h * ((1.0/4.0)*k1 + (3.0/4.0)*k3);
-    x += h;
+    _y += h * ((1.0/4.0)*k1 + (3.0/4.0)*k3);
+    _x += h;
   }
   */
 
@@ -168,13 +168,13 @@ public:
   {
     rsVector<TypeY> k1, k2, k3, k4;
 
-    k1 = h * f(x,     y     );
-    k2 = h * f(x+h/2, y+k1/2);
-    k3 = h * f(x+h/2, y+k2/2);
-    k4 = h * f(x+h,   y+k3  );
+    k1 = h * f(_x,     _y     );
+    k2 = h * f(_x+h/2, _y+k1/2);
+    k3 = h * f(_x+h/2, _y+k2/2);
+    k4 = h * f(_x+h,   _y+k3  );
 
-    y += k1/6 + k2/3 + k3/3 + k4/6;
-    x += h;
+    _y += k1/6 + k2/3 + k3/3 + k4/6;
+    _x += h;
   }
 
   /** Performs a 5-th order Runge-Kutta step and returns a local error estimate. The estimated
@@ -203,15 +203,15 @@ public:
       b65=253.0/4096.0;
 
     // (1), p. 716, Eq. 16.2.4:
-    k1 = h * f(x, y);
-    k2 = h * f(x+a2*h, y+b21*k1);
-    k3 = h * f(x+a3*h, y+b31*k1+b32*k2);
-    k4 = h * f(x+a4*h, y+b41*k1+b42*k2+b43*k3);
-    k5 = h * f(x+a5*h, y+b51*k1+b52*k2+b53*k3+b54*k4);
-    k6 = h * f(x+a6*h, y+b61*k1+b62*k2+b63*k3+b64*k4+b65*k5);
+    k1 = h * f(_x, _y);
+    k2 = h * f(_x+a2*h, _y+b21*k1);
+    k3 = h * f(_x+a3*h, _y+b31*k1+b32*k2);
+    k4 = h * f(_x+a4*h, _y+b41*k1+b42*k2+b43*k3);
+    k5 = h * f(_x+a5*h, _y+b51*k1+b52*k2+b53*k3+b54*k4);
+    k6 = h * f(_x+a6*h, _y+b61*k1+b62*k2+b63*k3+b64*k4+b65*k5);
 
-    y += c1*k1+c3*k3+c4*k4+c6*k6;   // c2*k2, c5*k5 missing because c2=c5=0
-    x += h;
+    _y += c1*k1+c3*k3+c4*k4+c6*k6;   // c2*k2, c5*k5 missing because c2=c5=0
+    _x += h;
 
     // return estimated error via (1), p. 716, Eq. 16.2.6:
     return d1*k1+d3*k3+d4*k4+d5*k5+d6*k6;  // d2*k2 missing because d2=0
@@ -222,8 +222,8 @@ protected:
 
   /** \name Data Members */
 
-  TypeX           x;  ///< current value of the independent variable
-  rsVector<TypeY> y;  ///< current position in phase-space
+  TypeX           _x;  ///< current value of the independent variable
+  rsVector<TypeY> _y;  ///< current position in phase-space
 
 };
 

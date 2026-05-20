@@ -18,11 +18,11 @@ public:
     rho   = 28.0;
     beta  = 8.0/3.0;
 
-    y.setDimensionality(3);
-    y.initWithZeros();
-    y.v[0] = 0.5;
+    _y.setDimensionality(3);
+    _y.initWithZeros();
+    _y.v[0] = 0.5;
 
-    x = 0.0;
+    _x = 0.0;
   }
 
   virtual rsVector<double> f(const double & /*x*/, const rsVector<double> & y)
@@ -50,11 +50,11 @@ public:
   {
     n = 0.0;
 
-    y.setDimensionality(2);
-    y.initWithZeros();
-    y.v[0] = 1.0;
+    _y.setDimensionality(2);
+    _y.initWithZeros();
+    _y.v[0] = 1.0;
 
-    x = 0.0;
+    _x = 0.0;
   }
 
   virtual rsVector<double> f(const double & x, const rsVector<double> & y)
@@ -82,12 +82,12 @@ public:
 
   rsTestSystem1()
   {
-    y.setDimensionality(1);
-    y.v[0] = 1.0;
-    x = 0.0;
+    _y.setDimensionality(1);
+    _y.v[0] = 1.0;
+    _x = 0.0;
   }
 
-  virtual rsVector<double> f(const double & /*x*/, const rsVector<double> &y)
+  virtual rsVector<double> f(const double & /*x*/, const rsVector<double> & y)
   {
     rsVector<double> v(1);
     v[0] = y[0];
@@ -111,10 +111,10 @@ public:
     tau = 1.0;
     c   = 1.0;
 
-    y.setDimensionality(1);
-    y.v[0] = 1.0;
+    _y.setDimensionality(1);
+    _y.v[0] = 1.0;
 
-    x = 0.0;
+    _x = 0.0;
   }
 
   void setParameters(double newN, double newTau, double newC) // remove
@@ -124,14 +124,14 @@ public:
     c   = newC;
   }
 
-  virtual rsVector<double> f(const double & _x, const rsVector<double> & _y)
+  virtual rsVector<double> f(const double & x, const rsVector<double> & y)
   {
     rsVector<double> v(1);
 
-    if( fabs(_x) < EPS )
-      v[0] = -(_y[0]-c)/tau;  // avoid division by zero (use limit)
+    if( fabs(x) < EPS )
+      v[0] = -(y[0]-c)/tau;  // avoid division by zero (use limit)
     else
-      v[0] = n*((_y[0]-c)/_x) - (_y[0]-c)/tau;
+      v[0] = n*((y[0]-c)/x) - (y[0]-c)/tau;
 
     return v;
   }

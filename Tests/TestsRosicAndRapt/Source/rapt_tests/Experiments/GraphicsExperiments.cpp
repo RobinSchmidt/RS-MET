@@ -3121,7 +3121,7 @@ void imageScaling()
   Image img(w, h);
   for(int j = 0; j < h; j++)
     for(int i = 0; i < w; i++)
-      img(i, j) = (pow(-1.f, i+j) + 1.f) * 0.5f;
+      img(i, j) = (powf(-1.f, i+j) + 1.f) * 0.5f;
 
   // Scale it up using bilinear interpolation:
   Image imgS = Proc::interpolateBilinear(img, kx, ky);
