@@ -271,6 +271,8 @@ Resources:
 - Was ich nach 900 Stunden KI-Coding komplett anders mache
   https://www.youtube.com/watch?v=V_pfdrvwh5w  
   
+- 72% of Devs Don't Vibe Code — Here's What They Actually Do
+  https://www.youtube.com/watch?v=4z5hb9X9uno  
   
 ToDo:
 
