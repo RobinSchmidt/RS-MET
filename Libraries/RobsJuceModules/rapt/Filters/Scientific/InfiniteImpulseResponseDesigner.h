@@ -8,7 +8,9 @@ template<class T>
 class rsInfiniteImpulseResponseDesigner
 {
 
-  typedef std::complex<T> Complex; // preliminary
+  //typedef std::complex<T> Complex; // Preliminary
+  // Get rid of that. Use std::complex<T> directly. Later switch (back) to using rsComplex
+
 
 public:
 
@@ -126,7 +128,7 @@ public:
   /** \name Coefficient Retrieval */
 
   /** Returns the z-domain poles and zeros. */
-  void getPolesAndZeros(Complex* poles, Complex* zeros);
+  void getPolesAndZeros(std::complex<T>* poles, std::complex<T>* zeros);
   // ALLOCATES HEAP MEMORY!!!
 
   /** Calculates and stores the coefficients for a biquad cascade which realizes the filter with 

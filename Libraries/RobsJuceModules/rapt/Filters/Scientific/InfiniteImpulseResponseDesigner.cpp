@@ -181,7 +181,8 @@ bool rsInfiniteImpulseResponseDesigner<T>::hasCurrentModeRejectionParameter()
 // coefficient retrieval:
 
 template<class T>
-void rsInfiniteImpulseResponseDesigner<T>::getPolesAndZeros(Complex* poles, Complex* zeros)
+void rsInfiniteImpulseResponseDesigner<T>::getPolesAndZeros(
+  std::complex<T>* poles, std::complex<T>* zeros)
 {
   // calculate the required order and number of biquads for the filter:
   int finalOrder;
@@ -250,11 +251,11 @@ void rsInfiniteImpulseResponseDesigner<T>::getPolesAndZeros(Complex* poles, Comp
     prototypeDesigner.setReferenceGain(0.0);
 
   // Allocate temporary memory (Get rid of this! Preallocate):
-  //Complex* protoPoles = new Complex[prototypeOrder];
-  //Complex* protoZeros = new Complex[prototypeOrder];
-  std::vector<Complex> pp(prototypeOrder), pz(prototypeOrder); // !!!HEAP-ALLOCATION!!!
-  Complex* protoPoles = &pp[0];
-  Complex* protoZeros = &pz[0];
+  //std::complex<T>* protoPoles = new std::complex<T>[prototypeOrder];
+  //std::complex<T>* protoZeros = new std::complex<T>[prototypeOrder];
+  std::vector<std::complex<T>> pp(prototypeOrder), pz(prototypeOrder); // !!!HEAP-ALLOCATION!!!
+  std::complex<T>* protoPoles = &pp[0];
+  std::complex<T>* protoZeros = &pz[0];
 
   // design the analog prototype filter:
   if( mode == HIGH_SHELV )
@@ -318,7 +319,7 @@ void rsInfiniteImpulseResponseDesigner<T>::getPolesAndZeros(Complex* poles, Comp
   default:         rsPoleZeroMapper<T>::sPlanePrototypeToLowpass(   protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);      break;
   };
 
-  //std::vector<Complex> pDbg, zDbg; // for debugging
+  //std::vector<std::complex<T>> pDbg, zDbg; // for debugging
   //pDbg = toVector(poles, finalOrder);
   //zDbg = toVector(zeros, finalOrder);
 
@@ -404,7 +405,7 @@ void rsInfiniteImpulseResponseDesigner<T>::getBiquadCascadeCoefficients(T *b0, T
     //wa2 = 0.0;                  // unused
   }
 
-  std::vector<Complex> poles(finalOrder), zeros(finalOrder); // !!!HEAP-ALLOCATION!!!
+  std::vector<std::complex<T>> poles(finalOrder), zeros(finalOrder); // !!!HEAP-ALLOCATION!!!
 
   getPolesAndZeros(&poles[0], &zeros[0]); // seems to return zeros in wrong order for elliptic bandpass
   rsFilterCoefficientConverter<T>::polesAndZerosToBiquadCascade(&poles[0], &zeros[0], finalOrder, 
