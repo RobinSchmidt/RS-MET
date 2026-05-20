@@ -64,7 +64,7 @@ template<class T, class TTol>
 void rsSparseRationalFunction<T, TTol>::weightedSum(
   const rsSparseRationalFunction<T, TTol>& p, T wp,
   const rsSparseRationalFunction<T, TTol>& q, T wq,
-  rsSparseRationalFunction<T, TTol>* r, T tol)
+  rsSparseRationalFunction<T, TTol>* r, T /*tol*/)
 {
   r->den = p.den * q.den;
   r->num = wp * p.num * q.den  +  wq * q.num * p.den;
@@ -81,7 +81,7 @@ template<class T, class TTol>
 void rsSparseRationalFunction<T, TTol>::weightedSumDestructive(
   rsSparseRationalFunction<T, TTol>* p, T wp,
   rsSparseRationalFunction<T, TTol>* q, T wq,
-  rsSparseRationalFunction<T, TTol>* r, T tol)  // Get rid of tol param!
+  rsSparseRationalFunction<T, TTol>* r, T /*tol*/)  // Get rid of tol param!
 
 {
   rsAssert(rsAreAddressesDistinct(*p, *q));

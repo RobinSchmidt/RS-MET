@@ -2786,6 +2786,11 @@ T extremumViaLineIntersect(const T* x, const int N, const int k)
   // use the two neighbours of the minimum to the left and the two neighbours to the right to 
   // define two lines and find the x-coordinate of the intersection of these two lines - this is 
   // our estimate with subsample precision:
+
+  // Trying to suppress the "local variable is not initialized" warning:
+  //RS_DONTWARN_UNINITIALIZED()
+  //__pragma(warning(disable:4701))
+  //#pragma warning (disable : 4701)
   T al, bl, ar, br;
   rsLine2D<T>::twoPointToExplicit(T(-1), x[k-1], T(-2), x[k-2], &al, &bl);
   rsLine2D<T>::twoPointToExplicit(T(+1), x[k+1], T(+2), x[k+2], &ar, &br);

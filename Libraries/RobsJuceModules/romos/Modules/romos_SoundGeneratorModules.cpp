@@ -440,7 +440,8 @@ void DualBlitSaw::resetVoiceState(int voiceIndex)
 {
   BlitSaw::resetVoiceState(voiceIndex);
 }
-void DualBlitSaw::resetIntegratorState(Module *module, int voiceIndex, double startPhase, double blitOut, double oscOmega,
+void DualBlitSaw::resetIntegratorState(Module* /*module*/, int voiceIndex, double startPhase,
+  double blitOut, double oscOmega,
   double phaseOffset, double secondBlitAmplitude)
 {
   double desiredSaw1 =  0.5 - fmod(startPhase + fixedPhaseOffset, 1.0);

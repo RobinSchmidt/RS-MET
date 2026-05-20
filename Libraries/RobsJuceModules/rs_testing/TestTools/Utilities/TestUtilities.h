@@ -704,7 +704,7 @@ T** createRowPointers(RAPT::rsMatrix<T>& M)
   return rp;
 }
 template<class T>
-void deleteRowPointers(T** rowPointers, const RAPT::rsMatrix<T>& M)
+void deleteRowPointers(T** rowPointers, const RAPT::rsMatrix<T>& /*M*/)
 {
   // New:
   delete[] rowPointers;

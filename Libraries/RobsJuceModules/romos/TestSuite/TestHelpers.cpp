@@ -395,8 +395,8 @@ bool checkProcessingFunctionsAndPrintResults(romos::Module *module, int numVoice
   return result;
 }
 
-bool checkProcessingInFramesMonoAndPrintResult(romos::Module *module, int numFrames, double ***x, double ***y, double ***d,
-                                               double tolerance, char *testName, std::vector<romos::NoteEvent> *events)
+bool checkProcessingInFramesMonoAndPrintResult(romos::Module *module, int numFrames, double ***x, 
+  double ***y, double ***d, double /*tolerance*/, char *testName, std::vector<romos::NoteEvent> *events)
 {
   module->resetStateForAllVoices();
   RAPT::rsArrayTools::fillWithZeros(y[0][0], numFrames);
@@ -414,8 +414,9 @@ bool checkProcessingInFramesMonoAndPrintResult(romos::Module *module, int numFra
   return result;
 }
 
-bool checkProcessingInBlocksMonoAndPrintResult(romos::Module *module, int numFrames, double ***x, double ***y, double ***d,
-                                               double tolerance, char *testName, std::vector<romos::NoteEvent> *events)
+bool checkProcessingInBlocksMonoAndPrintResult(romos::Module *module, int numFrames, double ***x, 
+  double ***y, double ***d, double /*tolerance*/, char *testName, 
+  std::vector<romos::NoteEvent> *events)
 {
   module->resetStateForAllVoices();
   RAPT::rsArrayTools::fillWithZeros(y[0][0], numFrames);
@@ -458,9 +459,9 @@ bool checkProcessingInFramesPolyAndPrintResult(romos::Module *module, int numVoi
   return result;
 }
 
-bool checkProcessingInBlocksPolyAndPrintResult(romos::Module *module, int numVoicesToCheck, int numFrames,
-                                               double ***x, double ***y, double ***d,
-                                               double tolerance, char *testName, std::vector<romos::NoteEvent> *events)
+bool checkProcessingInBlocksPolyAndPrintResult(
+  romos::Module *module, int numVoicesToCheck, int numFrames, double ***x, double ***y,
+  double ***d, double /*tolerance*/, char *testName, std::vector<romos::NoteEvent> *events)
 {
   module->resetStateForAllVoices();
   int v;
@@ -492,7 +493,8 @@ bool checkProcessingInBlocksPolyAndPrintResult(romos::Module *module, int numVoi
 
 
 
-void establishInputBlock(romos::Module *module, double ***inputs, int blockStart, int blockSize)
+void establishInputBlock(romos::Module* /*module*/, double*** /*inputs*/, 
+  int /*blockStart*/, int /*blockSize*/)
 {
   RAPT::rsAssert(false, "Code seems to be out of date" );
   /*

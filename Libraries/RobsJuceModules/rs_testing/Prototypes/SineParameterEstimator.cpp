@@ -100,7 +100,7 @@ void rsSingleSineModeler<T>::synthesizeFromAmpAndFreq(const T* a, const T* w, in
 
 template<class T>
 void rsSingleSineModeler<T>::synthesizeFromAmpFreqAndPhaseMod(
-  const T* a, const T* w, const T* pm, int N, T* y)
+  const T* /*a*/, const T* w, const T* /*pm*/, int N, T* /*y*/)
 {
   T wi = T(0); // integrated w
   for(int n = 0; n < N; n++) {
@@ -825,7 +825,7 @@ void rsSingleSineModeler<T>::unreflectPhase3(const T* w, T* p, int N)
 // maybe remove oldZone parameter, maybe add xNew, xOld, amp instead - they may be useful to figure 
 // out if phase has moved forward or backward between samples n-1 and n
 template<class T>
-int rsSingleSineModeler<T>::newPhaseZone(T pNew, T pOld, T w, int oldZone)
+int rsSingleSineModeler<T>::newPhaseZone(T pNew, T pOld, T w, int /*oldZone*/)
 {
   rsAssert(w >= 0 && w <= PI); 
   // the analysis should produce values in that range, right? ...nope: only the zero-crossing based

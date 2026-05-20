@@ -187,6 +187,31 @@ updated to get rid of the deprecation warnings. */
 // https://en.cppreference.com/w/cpp/language/attributes.html
 
 
+// EXPERIMENTAL. Was suggested by copilot (gpt-5-mini) to use for locally supressing compiler
+// warnings about uninitialized local variables
+// Diagnostic suppression helpers - cross-compiler
+#if defined(_MSC_VER)
+  /* MSVC */
+  #define RS_DONTWARN_PUSH()           __pragma(warning(push))
+  #define RS_DONTWARN_POP()            __pragma(warning(pop))
+  #define RS_DONTWARN_UNINITIALIZED()  __pragma(warning(disable:4701)) /* C4701: potentially uninitialized local variable used */
+#elif defined(__clang__)
+  /* Clang */
+  #define RS_DONTWARN_PUSH()           _Pragma("clang diagnostic push")
+  #define RS_DONTWARN_POP()            _Pragma("clang diagnostic pop")
+  #define RS_DONTWARN_UNINITIALIZED()  _Pragma("clang diagnostic ignored \"-Wuninitialized\"")
+#elif defined(__GNUC__)
+  /* GCC */
+  #define RS_DONTWARN_PUSH()          _Pragma("GCC diagnostic push")
+  #define RS_DONTWARN_POP()           _Pragma("GCC diagnostic pop")
+  #define RS_DONTWARN_UNINITIALIZED() _Pragma("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
+#else
+  #define RS_DONTWARN_PUSH()
+  #define RS_DONTWARN_POP()
+  #define RS_DONTWARN_UNINITIALIZED()
+#endif
+
+
 
 // Compiler hinting:
 #if defined(__GNUC__) && __GNUC__ >= 4

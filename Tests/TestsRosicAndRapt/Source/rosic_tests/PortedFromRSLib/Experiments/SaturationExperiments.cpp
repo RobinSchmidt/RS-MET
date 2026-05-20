@@ -1403,7 +1403,7 @@ public:
   // Internal helper functions:
 
   // Numeric derivative calculuation:
-  static TSig Derivative(TSig T, TSig x, TSig x_n1, TSig x_d_n1) 
+  static TSig Derivative(TSig T, TSig x, TSig x_n1, TSig /*x_d_n1*/)
   {
     return (1 / T) * (x - x_n1);             // Backward difference rule - my variation
     //return ((2 / T) * (x - x_n1)) - x_d_n1;  // Trapezoidal rule - original code
