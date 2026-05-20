@@ -49,7 +49,7 @@ T** rsAllocateMatrix(int M, int N)
 }
 
 template<class T>
-void rsDeAllocateMatrix(T** A, int M)
+void rsDeAllocateMatrix(T** A, int /*M*/)
 {
   delete[] A[0];
   delete[] A;

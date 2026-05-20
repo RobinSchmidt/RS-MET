@@ -295,8 +295,8 @@ void testModalResynthesis(const std::string& name, std::vector<double>& x,
   rosic::writeToMonoWaveFile("rsModalAnalyzer_Output.wav", &y[0],  N, (int)fs);
 }
 
-void testModalResynthesis2(const std::string& name, std::vector<double>& x,
-  double fs, double f0)
+void testModalResynthesis2(const std::string& /*name*/, std::vector<double>& x,
+  double fs, double /*f0*/)
 {
   int N = (int)x.size();
 
@@ -658,7 +658,7 @@ void testEnvelopeMatching2(std::vector<double>& x1, std::vector<double>& x2)
   plt.plot();
 }
 
-void testTimeWarping1(const std::vector<double>& x, double fs, double f0)
+void testTimeWarping1(const std::vector<double>& /*x*/, double /*fs*/, double /*f0*/)
 {
   //rsTimeWarper<double, double> tw;
   //tw.timeWarpSinc(

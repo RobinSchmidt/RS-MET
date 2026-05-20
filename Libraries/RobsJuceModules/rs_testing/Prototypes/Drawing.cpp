@@ -1041,7 +1041,7 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
     return false;
     // Maybe factor out into isAdjacentTo(int i, int j, const rsImage<char>& C, char c) or something
   };
-  auto isAtBoundarySlow = [&](int i, int j, const rsImageF& img)
+  auto isAtBoundarySlow = [&](int i, int j, const rsImageF& /*img*/)
   {
     return (!isFlat(i, j)) && hasFlatNeighbor(i, j);
   };

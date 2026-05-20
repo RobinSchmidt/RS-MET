@@ -18,7 +18,7 @@ void rsMatrixTools::allocateMatrix(T**& A, int N, int M)
 }
 
 template<class T>
-void rsMatrixTools::deallocateMatrix(T**& A, int N, int M)
+void rsMatrixTools::deallocateMatrix(T**& A, int N, int /*M*/)
 {
   for(int i = 0; i < N; i++)
     delete[] A[i];

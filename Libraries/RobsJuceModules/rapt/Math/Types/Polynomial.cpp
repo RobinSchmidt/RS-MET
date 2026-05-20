@@ -355,7 +355,7 @@ void rsPolynomial<T>::dividePolynomialByMonomialInPlace(T *dividendAndResult, in
 
 template <class T>
 void rsPolynomial<T>::greatestCommonDivisor(
-  const T* p, int pDeg, const T* q, int qDeg, T* gcd, int* gcdDeg, T tol)
+  const T* /*p*/, int /*pDeg*/, const T* /*q*/, int /*qDeg*/, T* /*gcd*/, int* /*gcdDeg*/, T /*tol*/)
 {
   rsError("Not yet implemented");
 }

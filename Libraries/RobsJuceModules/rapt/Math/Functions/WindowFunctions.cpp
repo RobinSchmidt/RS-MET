@@ -145,7 +145,7 @@ T rsWindowFunction::raisedCosine(T x, T length, T p)
 }
 
 template<class T>
-T rsWindowFunction::exactBlackman(T x, T length, T p)
+T rsWindowFunction::exactBlackman(T x, T length, T /*p*/)
 {
   if( rsAbs(x) > 0.5*length )
     return 0.0;

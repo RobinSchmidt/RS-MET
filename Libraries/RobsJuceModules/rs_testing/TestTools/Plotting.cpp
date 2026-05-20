@@ -306,7 +306,7 @@ void plotSpectrogram(int numFrames, int numBins, const rsMatrix<std::complex<dou
 }
 
 void plotSpectrogram(const double* x, int N, int hopSize, int blockSize, int trafoSize,
-  double sampleRate)
+  double /*sampleRate*/)
 {
   // Create and set up the analyzer object:
   rsSinusoidalAnalyzer<double> sa;  // ToDo: use rsSpectrogramProcessor instead

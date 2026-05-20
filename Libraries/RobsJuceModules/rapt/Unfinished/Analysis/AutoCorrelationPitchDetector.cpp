@@ -113,7 +113,7 @@ void rsAutoCorrelationPitchDetector<T>::updateFrequencyEstimate()
 }
 
 template<class T>
-T rsAutoCorrelationPitchDetector<T>::estimateFundamental(T *x, int L, T fs, T fMin, T fMax, 
+T rsAutoCorrelationPitchDetector<T>::estimateFundamental(T *x, int L, T fs, T /*fMin*/, T fMax,
   T *reliability)
 {
   // Get autocorrelation sequence r:
