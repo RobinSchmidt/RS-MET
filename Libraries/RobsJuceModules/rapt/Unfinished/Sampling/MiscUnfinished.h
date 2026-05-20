@@ -462,7 +462,7 @@ protected:
 
 
 
-  // tempoaries to hold left and right cycle (estimate) and their cross-correlation
+  // Tempoaries to hold left and right cycle (estimate) and their cross-correlation
   std::vector<T> cl, cr, corr;
 
 };

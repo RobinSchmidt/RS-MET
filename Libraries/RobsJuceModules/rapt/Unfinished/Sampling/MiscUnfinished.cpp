@@ -404,11 +404,16 @@ void rsCycleMarkFinder<T>::refineCycleMarksByCorrelation(const T *x, int N, std:
   // try to devise an experiment that exposes this behavior (maybe with tow frequencies at
   // 100 and 200*1.618...
 
+  int left = (int) cm[0];
+
   int maxLength = 5000; // preliminary - use something based on the maximum time-delta between the
                         // cycle-marks in cm array
-
-  int left = (int) cm[0];
   std::vector<T> cl(maxLength), cr(maxLength), corr(2*maxLength-1);
+  // I think, the members with the same name serve the same purpose but avoid the re-allocations on
+  // each call. Commenting the local variables out will let us now use these members in the code 
+  // below. If this really works as expected need to be tested
+
+
   for(unsigned int i = 1; i < cm.size(); i++)
   {
     int right      = (int) cm[i];
