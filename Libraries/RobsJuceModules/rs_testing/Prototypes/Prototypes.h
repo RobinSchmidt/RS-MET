@@ -4599,7 +4599,7 @@ template<class T>
 void rsColor<T>::rgb2hex(unsigned char R, unsigned char G, unsigned char B, 
   char* hex, bool sharp, bool null)
 {
-  auto toHex = [](unsigned char c)
+  auto toHex = [](unsigned char c) -> unsigned char
   {
     rsAssert(c >= 0 && c <= 15);
     if(c >= 10) return c + 55;          // 65: ASCII code of A and we need to subtract 10
