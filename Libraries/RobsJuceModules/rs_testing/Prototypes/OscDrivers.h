@@ -232,7 +232,8 @@ public:
   {
     T stepDelay, stepAmp;
 
-    T dummy = master.getSampleSaw(&stepDelay, &stepAmp); // later use just a phasor - output not actually used
+    //T dummy = master.getSampleSaw(&stepDelay, &stepAmp); // later use just a phasor - output not actually used
+    master.getSampleSaw(&stepDelay, &stepAmp); // Return value is ignored. Document why!
 
 
     if(stepAmp != 0.0)

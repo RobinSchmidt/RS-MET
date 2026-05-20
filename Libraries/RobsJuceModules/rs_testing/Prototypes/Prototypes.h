@@ -2422,7 +2422,8 @@ public:
 
   void prepareSortedDelayBuffer(T x)
   {
-    T y = buf.getSample(x);
+    //T y = buf.getSample(x);           // Old.
+    buf.getSample(x);                   // Return value is ignored. ToDo: Document why.
     buf.copyTo(&tmp[0], true);          // O(N)
     rsHeapSort(&tmp[0], getLength());   // O(N*log(N))
   }

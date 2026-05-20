@@ -138,7 +138,7 @@ public:
 
   //void trigger();  // maybe let it take a "strength" parameter?
 
-  void noteOn(int key, int vel)
+  void noteOn(int key, int /*vel*/)
   {
     if(retrigMode == RetriggerMode::reset)
       reset();
@@ -165,7 +165,7 @@ public:
   // blend between accumulative and non-accumulative behavior
 
 
-  void noteOff(int key, int vel) { currentNote = -1; }
+  void noteOff(int /*key*/, int /*vel*/) { currentNote = -1; }
   // why do we expect key and vel parameters? ...maybe we can do something with the note-off 
   // velocity later, like adjusting the release time?
 

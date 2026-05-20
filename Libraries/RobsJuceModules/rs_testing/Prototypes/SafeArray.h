@@ -367,7 +367,7 @@ void rsNonReAllocatingArray<T>::reserve(size_t numElems)
   else
   {
     // This branch is for later reservation of more memory than was initially reserved.
-    size_t needed = totalCapacity - numElems;
+    //size_t needed = totalCapacity - numElems;
 
     // ToDo:
     // -figure out, how many more chunks are needed - we must follow the pattern: 

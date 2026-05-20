@@ -310,7 +310,7 @@ protected:
 
   /** Fills our temporary buffer with sampled values from the given table  (one of blitTbl,
   blepTbl, blampTbl, etc.). */
-  inline void fillTmpBuffer(TTim delayFraction, TSig amplitude, const std::vector<TTim>& tbl)
+  inline void fillTmpBuffer(TTim delayFraction, TSig /*amplitude*/, const std::vector<TTim>& tbl)
   {
     int i;
     TTim frac = delayFraction;

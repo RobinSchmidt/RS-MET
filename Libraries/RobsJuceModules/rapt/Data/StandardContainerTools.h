@@ -118,7 +118,7 @@ a float vector if doubleVec is a vector of doubles is for example:
    std::vector<float> floatVec = rsConvert(doubleVec, float());
 */
 template<class TSrc, class TDst>
-std::vector<TDst> rsConvert(const std::vector<TSrc>& x, TDst dummy)
+std::vector<TDst> rsConvert(const std::vector<TSrc>& x, TDst /*dummy*/)
 {
   std::vector<TDst> y(x.size());
   RAPT::rsArrayTools::convert(&x[0], &y[0], (int) x.size());

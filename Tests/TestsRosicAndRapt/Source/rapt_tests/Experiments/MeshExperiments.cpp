@@ -1155,7 +1155,7 @@ void hessian2DViaTaylor(const rsGraph<rsVector2D<T>, T>& mesh,
   // optimized:
   //solveSymmetric3x3(a11, a12, a13, a22, a23, a33, b1, b2, b3, u_xx, u_xy, u_yy);
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 template<class T>
 void hessian2DViaTaylor(const rsGraph<rsVector2D<T>, T>& mesh, 
