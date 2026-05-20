@@ -1,12 +1,12 @@
-typedef rsVector2DF Vec2;
-typedef std::vector<Vec2> ArrVec2;
+//typedef rsVector2DF Vec2;
+//typedef std::vector<rsVector2DF> ArrVec2;  // Try to get rid!
 
 //-------------------------------------------------------------------------------------------------
 // Utilities
 
 float edgeFunction(const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& p) 
 {
-  return Vec2::crossProduct(b-a, p-a);
+  return rsVector2DF::crossProduct(b-a, p-a);
 }
 
 bool isInsideEdge(const rsVector2DF& p, const rsVector2DF& e0, const rsVector2DF& e1)
@@ -37,13 +37,13 @@ rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,
 // move to rsLine2D
 // actually, it computes an intersection point of the infinitely extended lines...hmm
 
-float polygonSignedArea(const ArrVec2& p)
+float polygonSignedArea(const std::vector<rsVector2DF>& p)
 {
   if(p.size() < 3)
     return 0.f;
-  float sum = Vec2::crossProduct(rsLast(p), p[0]);
+  float sum = rsVector2DF::crossProduct(rsLast(p), p[0]);
   for(size_t i = 0; i < p.size()-1; i++)
-    sum += Vec2::crossProduct(p[i], p[i+1]);
+    sum += rsVector2DF::crossProduct(p[i], p[i+1]);
   return 0.5f * sum;
 }
 
@@ -124,9 +124,9 @@ std::vector<rsVector2DF> clipAgainstEdge(const std::vector<rsVector2DF>& p,
   std::vector<rsVector2DF> r;
   if(p.size() == 0)
     return r;
-  Vec2 S = p[p.size()-1];                // start of edge under consideration
+  rsVector2DF S = p[p.size()-1];                // start of edge under consideration
   for(size_t i = 0; i < p.size(); i++) { // loop over edges of polynomial
-    Vec2 E = p[i];                       // end of edge under consideration
+    rsVector2DF E = p[i];                       // end of edge under consideration
     if(isInsideEdge(E, e0, e1)) {
       if(!isInsideEdge(S, e0, e1))
         r.push_back(lineIntersection(S, E, e0, e1));
@@ -145,7 +145,7 @@ std::vector<rsVector2DF> clipPolygon(const std::vector<rsVector2DF>& p,
   const std::vector<rsVector2DF>& c)
 {
   std::vector<rsVector2DF> r = p;
-  Vec2 e0 = rsLast(c), e1;
+  rsVector2DF e0 = rsLast(c), e1;
   for(size_t i = 0; i < c.size(); i++)
   {
     e1 = c[i];
@@ -160,17 +160,17 @@ std::vector<rsVector2DF> clipPolygon(const std::vector<rsVector2DF>& p,
 std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p, 
 const std::vector<rsVector2DF>& c)
 {
-ArrVec2 out = p;          // output polygon
-Vec2 e0 = c[c.size()-1];  // current clip edge start
-Vec2 e1 = c[0];           // current clip edge end
+std::vector<rsVector2DF> out = p;          // output polygon
+rsVector2DF e0 = c[c.size()-1];  // current clip edge start
+rsVector2DF e1 = c[0];           // current clip edge end
 for(int i = 0; i < c.size(); i++)   {   // loop over clip polygon edges
-ArrVec2 in = out;                     // holds the partially clipped polygon
+std::vector<rsVector2DF> in = out;                     // holds the partially clipped polygon
 if(in.size() == 0) 
 continue;
 out.clear();
-Vec2 S = in[in.size()-1];             // start point of current edge in subject polygon
+rsVector2DF S = in[in.size()-1];             // start point of current edge in subject polygon
 for(int j = 0; j < in.size(); j++) {  // loop over vertices in current input polygon
-Vec2 E = in[j];                     // end point of current edge in subject polygon
+rsVector2DF E = in[j];                     // end point of current edge in subject polygon
 if(isInsideEdge(E, e0, e1)) {
 if(!isInsideEdge(S, e0, e1))
 out.push_back(lineIntersection(S, E, e0, e1));  // add intersection vertex
@@ -214,7 +214,7 @@ return out; // nope - this doesn't work yet
 
 
 // Experimental clipping:
-void unitSquareIntersections(const Vec2& p, const Vec2& q, 
+void unitSquareIntersections(const rsVector2DF& p, const rsVector2DF& q, 
   float& x0, float& x1, float& y0, float& y1) // rename to bottom, top, left right
 {
   // p, q and stand for a, b or c
@@ -231,7 +231,7 @@ void unitSquareIntersections(const Vec2& p, const Vec2& q,
   // is in place) - but maybe the way it currently looks is ideal for simd processing
   // get rid of pq prefix
 }
-float unitSquareCut(const Vec2& p, const Vec2& q, 
+float unitSquareCut(const rsVector2DF& p, const rsVector2DF& q, 
   float& x0, float& x1, float& y0, float& y1, bool& quadCut)
 {
   // get rid of the pq prefix in the x0,x1,...names
@@ -309,12 +309,12 @@ float unitSquareCut(const Vec2& p, const Vec2& q,
 
   return 0; // all booleans were false - nothing is cut off from the square
 }
-bool isInsideUnitSquare(Vec2 v)
+bool isInsideUnitSquare(rsVector2DF v)
 {
   return v.x > 0 && v.x < 1 && v.y > 0 && v.y < 1;
 }
 
-float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
+float unitSquareCoverage(rsVector2DF a, rsVector2DF b, rsVector2DF c)
 {
   // notation: abx0 denotes the x-coordinate of the intersection of the edge (a,b) with the line
   // in the x-direction for which y=0 (i.e. the x-axis), abx1 is the x coordinate of the 
@@ -363,13 +363,13 @@ float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
   // that would be better than just the coverage because we can use it to compute the center
   // of gravity and use that for linear deinterpolation
   //int nv = 0;   // number of vertices in clipped polygon (so far)
-  Vec2 v[7];    // array for clipped polygon vertices
+  rsVector2DF v[7];    // array for clipped polygon vertices
 
   return area; // preliminary
 }
-float pixelCoverage2(float x, float y, Vec2 a, Vec2 b, Vec2 c)
+float pixelCoverage2(float x, float y, rsVector2DF a, rsVector2DF b, rsVector2DF c)
 {
-  Vec2 d(x, y);
+  rsVector2DF d(x, y);
   return unitSquareCoverage(a-d, b-d, c-d);
 }
 // Idea:

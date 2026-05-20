@@ -70,10 +70,10 @@ public:
   public:
     Vertex(const TVtx& newData) : data(newData) {}
 
-    void setData(const TVtx& newData)         { data = newData;         }
-    void addEdge(const Edge& edge)            { edges.push_back(edge);  }
-    void setEdgeData(int j, const TEdg& data) { edges[j].setData(data); }
-    void removeEdge(int k)                    { rsRemove(edges, k);     }
+    void setData(const TVtx& newData)            { data = newData;            }
+    void addEdge(const Edge& edge)               { edges.push_back(edge);     }
+    void setEdgeData(int j, const TEdg& newData) { edges[j].setData(newData); }
+    void removeEdge(int k)                       { rsRemove(edges, k);        }
 
     const TVtx& getData()            const { return data;                 }
     int         getNumEdges()        const { return (int) edges.size();   }

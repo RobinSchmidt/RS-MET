@@ -222,7 +222,7 @@ inline bool rsIsInvalidDivisor(
 
 template<class T, class TTol>
 inline rsSparseTransferFunction<T, TTol> rsGetPivotingTolerance(
-  const rsMatrixView<rsSparseTransferFunction<T, TTol>>& A)
+  const rsMatrixView<rsSparseTransferFunction<T, TTol>>& /*A*/)
 {
   return rsSparseTransferFunction<T, TTol>();
   // I think, this should return a TTol. Maybe the return type should be set to "auto"

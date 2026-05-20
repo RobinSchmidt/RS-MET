@@ -1,14 +1,14 @@
-typedef rsVector2DF Vec2;
-typedef std::vector<Vec2> ArrVec2;
+//typedef rsVector2DF Vec2;
+//typedef std::vector<rsVector2DF> ArrVec2;
 
 //-------------------------------------------------------------------------------------------------
 // Utilities
 
-float pixelCoverage(float x, float y, Vec2 a, Vec2 b, Vec2 c)
+float pixelCoverage(float x, float y, rsVector2DF a, rsVector2DF b, rsVector2DF c)
 {
-  ArrVec2 triangle = { a, b, c };
-  ArrVec2 square   = { Vec2(x, y), Vec2(x, y+1), Vec2(x+1, y+1), Vec2(x+1, y) };
-  ArrVec2 polygon  = clipPolygon(triangle, square);
+  std::vector<rsVector2DF> triangle = { a, b, c };
+  std::vector<rsVector2DF> square   = { rsVector2DF(x, y), rsVector2DF(x, y+1), rsVector2DF(x+1, y+1), rsVector2DF(x+1, y) };
+  std::vector<rsVector2DF> polygon  = clipPolygon(triangle, square);
   return abs(polygonSignedArea(polygon));
 }
 float pixelCoverage(int x, int y, const rsVector2DF& a, const rsVector2DF& b, 
@@ -560,10 +560,10 @@ void drawTriangle(rsImageDrawerFFF& drw,
   const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color)
 {
   // use pointers so we can swap (for sorting purposes)
-  typedef rsVector2DF Vec2; // for convenience
-  const Vec2* pv0 = &v0;
-  const Vec2* pv1 = &v1;
-  const Vec2* pv2 = &v2;
+  typedef rsVector2DF rsVector2DF; // for convenience
+  const rsVector2DF* pv0 = &v0;
+  const rsVector2DF* pv1 = &v1;
+  const rsVector2DF* pv2 = &v2;
   // todo: use pointers as arguments - maybe provide convenience function that takes const 
   // references
 
@@ -583,7 +583,7 @@ void drawTriangle(rsImageDrawerFFF& drw,
   else {
     // split general triangle into flat-top and flat-bottom:
     const float alpha = (pv1->y - pv0->y) / (pv2->y - pv0->y);
-    const Vec2 vi = *pv0 + alpha * (*pv2 - *pv0);    // splitting vertex by linear interpolation between v0 and v2
+    const rsVector2DF vi = *pv0 + alpha * (*pv2 - *pv0);    // splitting vertex by linear interpolation between v0 and v2
     if(pv1->x < vi.x) { // long side is on the right (major right)
       drawTriangleFlatBottom(drw, *pv0, *pv1,   vi, color);
       drawTriangleFlatTop(   drw, *pv1,   vi, *pv2, color);

@@ -261,7 +261,7 @@ inline bool rsIsInvalidDivisor(const rsFraction<T>& p, const rsFraction<T>& tol)
 }
 
 template<class T>
-inline rsFraction<T> rsGetPivotingTolerance(const rsMatrixView<rsFraction<T>>& A)
+inline rsFraction<T> rsGetPivotingTolerance(const rsMatrixView<rsFraction<T>>& /*A*/)
 {
   return rsFraction<T>(0, 1);
 }
