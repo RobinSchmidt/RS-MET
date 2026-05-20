@@ -576,8 +576,8 @@ public:
   /** \name Inquiry */
 
   /** Returns true, iff this multiarry has the given shape. */
-  bool hasShape(const std::vector<int>& shape)
-  { return shape == this->shape; }
+  bool hasShape(const std::vector<int>& shapeToTest)
+  { return shapeToTest == this->shape; }
 
 
   //-----------------------------------------------------------------------------------------------

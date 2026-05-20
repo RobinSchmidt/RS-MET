@@ -128,7 +128,7 @@ public:
   saw-down:  x1(t) = x2(t) = -2*t + 1
   square:    x1(t) = -1, x2(t) = +1
   triangle:  x1(t) = 4*t - 1, x2(t) = -4*t + 3  */
-  inline T getSampleTwoPiece(T inc, T* stepCornerDelay, T* stepAmp, T* cornerAmp, 
+  inline T getSampleTwoPiece(T inc, T* /*stepCornerDelay*/, T* stepAmp, T* cornerAmp,
     T h, T a1, T b1, T a2, T b2)
   {
     *stepAmp   = T(0);

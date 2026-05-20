@@ -245,7 +245,7 @@ RAPT::rsSinusoidalModel<T> rsSinusoidalAnalyzer<T>::analyzeSpectrogram(
   int firstFrame = 0; 
   int lastFrame  = numFrames-1;
   int frameIndex  = firstFrame;
-  T binDelta   = sampleRate / sp.getFftSize();
+  //T binDelta   = sampleRate / sp.getFftSize();
   T frameDelta = sp.getHopSize() / sampleRate;
 
 

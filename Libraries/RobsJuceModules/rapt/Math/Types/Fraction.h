@@ -255,7 +255,7 @@ rsFraction<T> rsCeil(const rsFraction<T>& x)
 // Some free functions that are relevant mainly in the context of matrices of fractions:
 
 template<class T>
-inline bool rsIsInvalidDivisor(const rsFraction<T>& p, const rsFraction<T>& tol)
+inline bool rsIsInvalidDivisor(const rsFraction<T>& p, const rsFraction<T>& /*tol*/)
 {
   return p.isZero();
 }
