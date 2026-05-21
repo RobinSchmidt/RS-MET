@@ -109,6 +109,7 @@ protected:
   T    val1;  // e.g. key, controller number, pitchWheelMSB
   T    val2;  // e.g. velocity, controller value, pitchWheelLSB
   uint time;  // time-stamp of the event in samples, usually relative to the buffer start
+  // ToDo: Use int
 
 };
 // maybe move the class elsewhere for more general use - maybe it should go into rapt due to the

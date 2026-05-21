@@ -215,7 +215,7 @@ public:
 
 
   /** Returns the number of child modules. */
-  virtual unsigned int getNumChildModules() const { return (unsigned int)childModules.size(); }
+  virtual int getNumChildModules() const { return (int)childModules.size(); }
 
   /** Returns a pointer to one of the child modules. */
   virtual Module* getChildModule(int index) const;
@@ -270,7 +270,7 @@ public:
     //return (unsigned int)getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_OUTPUT).size();
     // old version
 
-    return (unsigned int)getChildModulesWithType("AudioOutput").size(); // new version doesn't work because of wrong id?
+    return (int)getChildModulesWithType("AudioOutput").size(); // new version doesn't work because of wrong id?
   }
 
   /** Overriden her because for containers, this does not necessarily equal the number of output 

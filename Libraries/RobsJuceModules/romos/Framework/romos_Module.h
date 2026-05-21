@@ -567,6 +567,7 @@ public:
 
   //unsigned int outFrameStride = 1, numInputs = 0; // isn't numInputs redundant with inputPins.size()?
   int outFrameStride = 1, numInputs = 0; // isn't numInputs redundant with inputPins.size()?
+  // Try to get rid of numInputs
 
   // rename outFrameStride to numOutputs, or numAudioOutputs
   // try to move them into the protected section - currently, doing so gives compiler errors

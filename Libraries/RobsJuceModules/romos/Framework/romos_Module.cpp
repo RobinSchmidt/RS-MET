@@ -167,7 +167,7 @@ void romos::Module::disconnectInputPinsWithInputFrom(
   romos::Module *sourceModuleToDisconnect,
   int outputPinIndex)
 {
-  for(unsigned int i = 0; i < inputPins.size(); i++)
+  for(int i = 0; i < (int)inputPins.size(); i++)
   {
     if( inputPins[i].sourceModule == sourceModuleToDisconnect
       && inputPins[i].outputIndex == outputPinIndex )
@@ -179,7 +179,7 @@ void romos::Module::disconnectOutputPin(int outputPinIndex)
 {
   if( parentModule != nullptr )
   {
-    for(unsigned int i = 0; i < parentModule->getNumChildModules(); i++)
+    for(int i = 0; i < parentModule->getNumChildModules(); i++)
       parentModule->getChildModule(i)->disconnectInputPinsWithInputFrom(this, outputPinIndex);
   }
 }
@@ -188,14 +188,14 @@ void romos::Module::disconnectAllOutputPins()
 {
   if( parentModule != nullptr )
   {
-    for(unsigned int i = 0; i < parentModule->getNumChildModules(); i++)
+    for(int i = 0; i < parentModule->getNumChildModules(); i++)
       parentModule->getChildModule(i)->disconnectInputPinsWithInputFrom(this);
   }
 }
 
 void romos::Module::updateInputPointersAndInFrameStrides()
 {
-  for(unsigned int i = 0; i < inputPins.size(); i++)
+  for(int i = 0; i < (int)inputPins.size(); i++)
   {
     if( inputPins[i].sourceModule != nullptr )
     {
@@ -402,10 +402,10 @@ std::vector<AudioConnection> romos::Module::getOutgoingAudioConnections()
     return result;
 
   Module *sibling;  // with respect to "this"
-  for(unsigned int i = 0; i < parent->getNumChildModules(); i++)
+  for(int i = 0; i < parent->getNumChildModules(); i++)
   {
     sibling = parent->getChildModule(i);
-    for(unsigned int j = 0; j < sibling->getNumInputPins(); j++)
+    for(int j = 0; j < sibling->getNumInputPins(); j++)
     {
       AudioInputPinData pin = sibling->getAudioInputPinData(j);
       if( pin.sourceModule == this )
@@ -420,7 +420,7 @@ std::vector<AudioConnection> romos::Module::getOutgoingAudioConnectionsFromPin(i
 {
   std::vector<AudioConnection> result;
   std::vector<AudioConnection> outgoingAudioConnections = getOutgoingAudioConnections();
-  for(unsigned int i = 0; i < outgoingAudioConnections.size(); i++)
+  for(int i = 0; i < (int)outgoingAudioConnections.size(); i++)
   {
     if( outgoingAudioConnections[i].getSourceOutputIndex() == pinIndex )
       rosic::appendElement(result, outgoingAudioConnections[i]);
