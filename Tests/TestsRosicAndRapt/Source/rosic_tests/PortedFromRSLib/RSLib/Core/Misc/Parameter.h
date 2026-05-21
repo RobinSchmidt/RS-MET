@@ -22,6 +22,8 @@ namespace RSLib
 
   public:
 
+    virtual ~rsRealFunctionInvertible() {}
+
     virtual double evaluateInverse(double y) = 0;
 
   };
