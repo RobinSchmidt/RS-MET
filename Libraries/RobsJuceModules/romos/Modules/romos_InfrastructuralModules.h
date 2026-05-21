@@ -180,9 +180,12 @@ public:
 protected:
   virtual void allocateMemory();
   virtual void freeMemory();
-  unsigned int *sampleCounters;
 
-  double threshold, timeOut;
+  unsigned int *sampleCounters = nullptr;
+  double threshold = 0.0, timeOut = 1.0;
+  // ToDo: Document what these mean. I think the voice gets killed if the output remains below the
+  // given amplitude threshold (raw or in dB?) for timeOut (seconds or milliseconds or samples?).
+  // Figure that out and document it!
 };
 class VoiceKillerTypeInfo : public ModuleTypeInfo
 {
@@ -340,18 +343,18 @@ protected:
   function returns the corresponding normalized value in the range 0...1 (both inclusive). */
   double unmapToNormalizedValue(double mappedValue);
 
-  double minValue;
-  double maxValue;
-  double defaultValue;
-  double quantization;
+  double minValue     = 0.0;
+  double maxValue     = 1.0;
+  double defaultValue = 0.5;
+  double quantization = 0.0;
 
   // maybe have a normalizedValue member - it would make snapshot-interpolation morde efficient 
   // (because this is done in the normalized domain), but it also introduce redundancy in the 
   // data ...we'll see
 
-  int mappingFunction;
+  int mappingFunction = LINEAR_MAPPING;
 
-  int assignedController;
+  int assignedController = -1;
 
   std::vector<double> snapshotValues;
 

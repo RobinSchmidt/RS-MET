@@ -17,7 +17,7 @@ public:
   virtual unsigned int getNumOutputPins() const { return 1; }
   virtual double getValue() const { return value; }
 protected:
-  double value;
+  double value = 0.0;
 };
 class ConstantModuleTypeInfo : public ModuleTypeInfo
 {

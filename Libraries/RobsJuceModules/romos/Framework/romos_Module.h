@@ -545,9 +545,9 @@ public:
     processBlock(this, 0, blockSize);
   }
 
-  std::vector<AudioInputPinData> inputPins;  // temporarily moved to public for debug
-  double *audioOutputs;
-  unsigned int outFrameStride, numInputs; // isn't numInputs redundant with inputPins.size()?
+  std::vector<AudioInputPinData> inputPins;       // temporarily moved to public for debug
+  double *audioOutputs = nullptr;
+  unsigned int outFrameStride = 1, numInputs = 0; // isn't numInputs redundant with inputPins.size()?
   // rename outFrameStride to numOutputs, or numAudioOutputs
   // try to move them into the protected section - currently, doing so gives compiler errors
   // figure out why and try to fix

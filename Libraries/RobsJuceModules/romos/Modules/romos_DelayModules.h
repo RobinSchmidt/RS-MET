@@ -11,7 +11,7 @@ public:
 protected:
   virtual void allocateMemory();
   virtual void freeMemory();
-  double *buffer;
+  double *buffer = nullptr;
 };
 class UnitDelayTypeInfo : public ModuleTypeInfo
 {

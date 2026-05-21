@@ -19,7 +19,7 @@ public:
 protected:
   virtual void allocateMemory();
   virtual void freeMemory();
-  double *buffers;
+  double *buffers = nullptr;
 };
 class FirstOrderLowpassTypeInfo : public ModuleTypeInfo
 {
@@ -47,7 +47,7 @@ public:
 protected:
   virtual void allocateMemory();
   virtual void freeMemory();
-  double *buffers;
+  double *buffers = nullptr;
 };
 class FirstOrderFilterTypeInfo : public ModuleTypeInfo
 {
@@ -74,7 +74,7 @@ public:
 protected:
   virtual void allocateMemory();
   virtual void freeMemory();
-  double *buffers;
+  double *buffers = nullptr;
 };
 class BiquadTypeInfo : public ModuleTypeInfo
 {
@@ -134,9 +134,9 @@ public:
 protected:
   virtual void allocateMemory();
   virtual void freeMemory();
-  double *oldParameters; // frequency, gain, Q
-  double *oldOutputs;    // b0, b1, b2, a1, a2
-  int    mode;
+  double *oldParameters = nullptr;    // frequency, gain, Q
+  double *oldOutputs    = nullptr;    // b0, b1, b2, a1, a2
+  int    mode           = BYPASS;
 };
 class BiquadDesignerTypeInfo : public ModuleTypeInfo
 {
@@ -196,9 +196,11 @@ protected:
   virtual void allocateMemory();
   virtual void freeMemory();
 
-  double *outputs, *coeffs;
-  double *oldParameters; // frequency, resonance, autogain
-  int    filterMode, saturationMode;
+  double *outputs       = nullptr; 
+  double *coeffs        = nullptr;
+  double *oldParameters = nullptr; // frequency, resonance, autogain
+  int    filterMode     = FLAT; 
+  int    saturationMode = NO_SATURATION;
 };
 
 class LadderFilterTypeInfo : public ModuleTypeInfo
