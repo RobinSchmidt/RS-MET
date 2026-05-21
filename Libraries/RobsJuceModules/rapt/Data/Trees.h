@@ -305,7 +305,7 @@ public:
       // for debuging a weird bug in gcc:
       int lhi = toLargeHeapIndex(k);
       int lhs = large.getSize();
-      int shs = small.getSize();  // just for info
+      //int shs = small.getSize();  // just for info
       rsAssert(lhi < lhs);
       // we need a test for rsDoubleHeap that fills up both heaps up to their capacity. somehow,
       // with gcc, it tries to add an element to the large heap when it's already full. this

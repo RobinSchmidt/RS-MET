@@ -387,7 +387,7 @@ void FormulaModule_N_M::setOutputVariables(const std::vector<std::string>& newOu
   std::vector<std::pair<AudioConnection, std::string>>
     outputConnections = getOutputVariableConnections();
 
-  size_t oldSize = audioOutputNames.size();
+  //size_t oldSize = audioOutputNames.size();
   size_t newSize = newOutVars.size();
   audioOutputNames.resize(newSize);
   for(size_t i = 0; i < newSize; i++)
@@ -425,7 +425,7 @@ FormulaModule_N_M::getOutputVariableConnections()
   std::vector<AudioConnection> cons = getOutgoingAudioConnections();
   for(size_t i = 0; i < cons.size(); i++) {
     AudioConnection connection = cons[i];
-    int outPinIndex = connection.getSourceOutputIndex();
+    //int outPinIndex = connection.getSourceOutputIndex();
     std::string outPinName = audioOutputNames[i].asStdString();
     pairs.push_back(std::pair<AudioConnection, std::string>(connection, outPinName));
   }

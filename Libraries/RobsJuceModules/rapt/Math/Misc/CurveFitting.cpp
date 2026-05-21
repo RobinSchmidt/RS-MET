@@ -5,7 +5,7 @@ bool rsCurveFitter::fitExponentialSum(T* y, int numValues, T* A, T* a, int numEx
     // later, we may generalize this to allow numExponentials <= numValues/2
     // for a least squares fit
 
-  int N = numValues;
+  //int N = numValues;
   int k = numExponentials;
   bool result = true;
   T *C   = new T[k+1];                  // characteristic polynomial coefficients

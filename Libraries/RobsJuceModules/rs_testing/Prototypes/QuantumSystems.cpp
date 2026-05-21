@@ -329,7 +329,7 @@ void rsQuantumComputer<T>::measure(std::vector<bool>& result, bool collapseState
 
     // Generate a (pseudo) random number, equally distributed in 0..1, and depending on whether or
     // not it is >= our p, assign the classical state 0 or 1 to the respective output qbit:
-    T r = prng.getSample();
+    //T r = prng.getSample();
 
     /*
     if(r >= p)

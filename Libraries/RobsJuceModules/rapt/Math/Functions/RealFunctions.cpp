@@ -124,7 +124,7 @@ T rsSineIntegralViaAuxFunctions(T x) // usable for |x| > 1
 template<class T>
 T rsSineIntegralViaPowerSeries(T x)  // recommended for |x| <= 3
 {
-  T xAbs = fabs(x);  // |x|
+  //T xAbs = fabs(x);  // |x|
   T sum  = 0.0;      // accumulator for result
   T mx2  = -x*x;     // -x^2
   int    k    = 1;        // k := 2*n+1

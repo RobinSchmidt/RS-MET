@@ -535,7 +535,7 @@ T fourExpEnergy(T A, T a, T B, T b, T C, T c, T D, T d)
 
   T A2 = A*A,  B2 = B*B,  C2 = C*C,  D2 = D*D;
   T A3 = A*A2, B3 = B*B2, C3 = C*C2, D3 = D*D2;
-  T A4 = A*A3, B4 = B*B3, C4 = C*C3, D4 = D*D3;
+  //T A4 = A*A3, B4 = B*B3, C4 = C*C3, D4 = D*D3;
 
   T a2 = a*a,  b2 = b*b,  c2 = c*c,  d2 = d*d;
   T a3 = a*a2, b3 = b*b2, c3 = c*c2, d3 = d*d2;
@@ -1308,7 +1308,7 @@ fMax for the modal frequency and returns them in a std::vector. */
 template<class T>
 std::vector<T> rsModalFreqsRectBox_2(T Lx, T Ly, T Lz, T fMax, T c = T(rsSpeedOfSound))
 {
-  int numModes = 1;      // PRELIMINARY! ToDo: Precompute how many modes we will produce
+  //int numModes = 1;      // PRELIMINARY! ToDo: Precompute how many modes we will produce
   std::vector<T> freqs;    
   freqs.reserve(1);      // This amount of pre-allocation is not yet enough!
 

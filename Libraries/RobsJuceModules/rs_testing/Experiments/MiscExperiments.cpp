@@ -298,7 +298,7 @@ void testModalResynthesis(const std::string& name, std::vector<double>& x,
 void testModalResynthesis2(const std::string& /*name*/, std::vector<double>& x,
   double fs, double /*f0*/)
 {
-  int N = (int)x.size();
+  //int N = (int)x.size();
 
   // Analyze the sound, i.e. estimate the modal parameters from the signal:
   rsModalAnalyzer2<double> ma;

@@ -520,7 +520,7 @@ T refinePhase(T p, T pL, T pR, int /*n*/) // n is only passed for debugging
 template<class T>
 void refinePhase(T* p, int N)
 {
-  T pi2 = 0.5*PI;
+  //T pi2 = 0.5*PI;
   for(int n = 1; n < N-1; n++)
     p[n] = refinePhase(p[n], p[n-1], p[n+1], n);
 }

@@ -643,7 +643,7 @@ void processModuleInBlocks(romos::Module *module, int numFrames, double ***input
     processModuleInBlocksNoEvents(module, numFrames, inputs, outputs, 0);
   else
   {
-    int maxBlockSize     = romos::processingStatus.getBufferSize();
+    //int maxBlockSize     = romos::processingStatus.getBufferSize();
     int blockStart       = 0;
     int numEventsHandled = 0;
     while( blockStart < numFrames )

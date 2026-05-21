@@ -1837,7 +1837,7 @@ void smooth(const std::vector<T>& t, const std::vector<T>& x, std::vector<T>& y,
       y[n] = flt.getSample(y[n], t[n+1]-t[n]);
   }
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void amplitudeDeBeating()

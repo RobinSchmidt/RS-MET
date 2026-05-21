@@ -372,7 +372,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   for(int m = 0; m < numModes; m++)       // to such a vector and just resize it here, thenn fill it
   {
     T f = peaks[m].y;
-    T a = peaks[m].x;
+    //T a = peaks[m].x;
 
     mp[m].freq = f;    // preliminary
     //mp[m].amp  = a;    // preliminary

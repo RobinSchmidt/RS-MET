@@ -257,7 +257,7 @@ void ProcessingTest::processModuleInBlocks()
     processModuleInBlocksNoEvents(numFramesToProcess, 0);
   else
   {
-    int maxBlockSize     = romos::processingStatus.getBufferSize();
+    //int maxBlockSize     = romos::processingStatus.getBufferSize();
     int blockStart       = 0;
     int numEventsHandled = 0;
     while( blockStart < numFramesToProcess )
@@ -354,8 +354,7 @@ void ProcessingTest::establishInputBlock(int blockStart, int blockSize)
       {
         int offset = inputFeederModules[pinIndex]->getOutputPinMemoryOffset(frameIndex, 0, 0);
         outputPointer[offset] = inputs[0][pinIndex][blockStart+frameIndex];
-        double dbg = outputPointer[offset];
-        
+        //double dbg = outputPointer[offset];
       }
     }
   }
@@ -373,8 +372,7 @@ void ProcessingTest::establishInputBlock(int blockStart, int blockSize)
         {
           int offset = inputFeederModules[pinIndex]->getOutputPinMemoryOffset(frameIndex, voiceIndex, 0);
           outputPointer[offset] = inputs[voiceIndex][pinIndex][blockStart+frameIndex];
-          double dbg = outputPointer[offset];
-          
+          //double dbg = outputPointer[offset];
         }
       }
     }
@@ -401,8 +399,7 @@ void ProcessingTest::retrieveOutputBlock(int blockStart, int blockSize)
       {
         int offset = outputRetrieverModules[pinIndex]->getOutputPinMemoryOffset(frameIndex, 0, 0);
         outputs[0][pinIndex][blockStart+frameIndex] = outputPointer[offset];
-        double dbg = outputs[0][pinIndex][blockStart+frameIndex];
-        
+        //double dbg = outputs[0][pinIndex][blockStart+frameIndex];
       }
     }
   }
@@ -420,8 +417,7 @@ void ProcessingTest::retrieveOutputBlock(int blockStart, int blockSize)
         {
           int offset = outputRetrieverModules[pinIndex]->getOutputPinMemoryOffset(frameIndex, voiceIndex, 0);
           outputs[voiceIndex][pinIndex][blockStart+frameIndex] = outputPointer[offset];
-          double dbg = outputs[voiceIndex][pinIndex][blockStart+frameIndex];
-          
+          //double dbg = outputs[voiceIndex][pinIndex][blockStart+frameIndex];
         }
       }
     }

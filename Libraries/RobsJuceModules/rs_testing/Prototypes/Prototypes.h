@@ -2347,7 +2347,7 @@ protected:
     // sense and have the same effect regardless of input volume and bandwidth setting
 
     T a = T(1);  // scaler to control the resonance amplitude
-    T f = this->getFrequency();
+    //T f = this->getFrequency();
     //a = 10 / length;
     //a = T(1) + T(4)*rsClip(f / T(20000), T(0), T(1)); 
     // yes, we need a factor, but we also need a highpass, otherwise we just amplify noise

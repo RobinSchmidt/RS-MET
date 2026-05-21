@@ -343,7 +343,7 @@ double BlitSaw::getDesiredFirstSample(double frequency, double startPhase)
 
 
   int    cycleLength = (int)floor(processingStatus.getSystemSampleRate() / frequency);
-  double roundedFreq = processingStatus.getSystemSampleRate() / cycleLength;
+  //double roundedFreq = processingStatus.getSystemSampleRate() / cycleLength;
 
 
   static const double maxNumHarmonics = 100000.0;

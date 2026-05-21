@@ -202,7 +202,7 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
     nR = round(tR);
     timeStamps[i] = (int)nL;
     double dt = tR - tL;
-    double dn = nR - nL;
+    //double dn = nR - nL;
     // Or should it be nR-nL? That may also have to depend on how we handle phase correction etc.
 
     // Loop over the partials in current breakpoint:

@@ -230,7 +230,7 @@ void rsHarmonicAnalyzer<T>::deFlattenPitch(RAPT::rsSinusoidalModel<T>& mdl)
   std::vector<T> lw = rsDifference(tOut);  // warped lengths of cycles
   std::vector<T> lu = rsDifference(tIn);   // unwarped lengths of cycles
   for(int m = 0; m < getNumFrames(); m++) {
-    T tw = getTimeStampForFrame(m);         // warped time
+    //T tw = getTimeStampForFrame(m);         // warped time
     T tu = getUnWarpedTimeStampForFrame(m); // unwarped time
     T r  = lw[m] / lu[m];                   // stretching ratio applied to frame m
     for(int k = 0; k < getNumHarmonics(); k++) {

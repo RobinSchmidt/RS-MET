@@ -2419,7 +2419,7 @@ int minimizePartialParabolic(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
         // do we need this? can it happen, that in one inner iteration it gets set to true and in a
         // later one back to false? and if so - is this desirable?
 
-      int dummy = 0;
+      //int dummy = 0;
     }
 
     iterations++;

@@ -21,7 +21,7 @@ MultiLayerPerceptron<T>::MultiLayerPerceptron(int numInputs, int numOutputs, int
   for(int i=1; i<numWeightLayers; i++)
   {
     z[i] = rsVectorDbl(numNeuronsInHiddenLayers[i-1]+1);
-    rsVectorDbl* zDbg = &(z[i]);
+    //rsVectorDbl* zDbg = &(z[i]);
   }
   z[numWeightLayers] = rsVectorDbl(numOutputs+1); // output layer has a dummy-bias, too
   for(int i=0; i<=numWeightLayers; i++)
@@ -172,9 +172,9 @@ void MultiLayerPerceptron<T>::initializeWeightsToZeros()
 }
 
 template<class T>
-void MultiLayerPerceptron<T>::initializeWeightsRandomly(T min, T max, int seed)
+void MultiLayerPerceptron<T>::initializeWeightsRandomly(T min, T max, int /*seed*/)
 {
-  T dummy = rsRandomUniform(min, max, seed); // init PNRG
+  //T dummy = rsRandomUniform(min, max, seed); // init PNRG
   for(int i=0; i<numWeightLayers; i++)
   {
     w[i].randomizeElements(min, max);

@@ -91,9 +91,9 @@ void runModularTests()
   rosic::rsString s15 = rosic::rsString(9.9999999999999999);
   */
 
-  double someDouble = -0.4;
-  double absOfSomeDouble = fabs(someDouble);
-  double abs2 = RAPT::rsAbs(someDouble);
+  //double someDouble = -0.4;
+  //double absOfSomeDouble = fabs(someDouble);
+  //double abs2 = RAPT::rsAbs(someDouble);
   //unsigned long long intAbsValue = *((unsigned long long*) &someDouble) & 0x7FFFFFFFFFFFFFFFULL;
   //abs2 = *((double*) &intAbsValue);
 

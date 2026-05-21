@@ -1150,7 +1150,7 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
       wL *= s; wR *= s; wU *= s; wD *= s;  // they should sum to 1 now
 
       // Test:
-      float oldColor = out(x,y);
+      //float oldColor = out(x,y);
 
       // Assign new color as weighted average:
       //float cL = out(xL,y);  // left color

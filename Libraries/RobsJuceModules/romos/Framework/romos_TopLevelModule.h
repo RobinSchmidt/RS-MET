@@ -177,7 +177,7 @@ INLINE void TopLevelModule::getSampleFrameStereo(SampleType *inOutL, SampleType 
 
   *inL = (double)*inOutL;
   *inR = (double)*inOutR;
-  double *doublePointerL = audioOutputs;
+  //double *doublePointerL = audioOutputs;
     //doublePointerR = audioOutputs + processingStatus.getBufferSize();  // later
     // double *doublePointerR = audioOutputs + getRequiredOutputBufferSizePerPin();
 
@@ -200,8 +200,8 @@ INLINE void TopLevelModule::getBlockOfSampleFramesStereo(SampleType *inOutL,
 
 
   // for debug:
-  int offset1 = processingStatus.getBufferSize();
-  int offset2 = getRequiredOutputBufferSizePerPin();
+  //int offset1 = processingStatus.getBufferSize();
+  //int offset2 = getRequiredOutputBufferSizePerPin();
 
   int maxBlockSize = romos::processingStatus.getBufferSize();
   int blockStart   = 0;

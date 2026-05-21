@@ -165,7 +165,7 @@ template<class T>
 T rsNormalizedSigmoids<T>::clippedOddPower(T x, int N)
 {
   T p = T(N) / T(N-1);
-  T a = (T(1)-p) / rsPowI(p, N);
+  //T a = (T(1)-p) / rsPowI(p, N);
   x = rsClip(x, -p, p);
   return x - rsPowI(x, N);
   // this is a very inefficient prototype - todo: choose some power, like 5 or 9 (if N=(2^k)-1, the

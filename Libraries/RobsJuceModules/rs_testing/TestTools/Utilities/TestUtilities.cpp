@@ -294,7 +294,7 @@ void generateTestSamples()  // rename to gerenrateSamplerTestSamples
   std::string name = "Saw2048.wav";
   float fs  = 56320;               // sample rate
   int   N   = 2048;                // length of single cycle sample
-  float key = rsFreqToPitch(fs/N); // keycenter for test, should be 21 ~ A0 ~ 27.5 Hz
+  //float key = rsFreqToPitch(fs/N); // keycenter for test, should be 21 ~ A0 ~ 27.5 Hz
   Vec   sample(N); 
   double w = 2.0*PI/N;
   for(int n = 0; n < N; n++)

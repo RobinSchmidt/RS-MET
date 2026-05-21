@@ -1148,7 +1148,7 @@ void rsSineAmplitudeAndPhaseL(T y0, T yL, T w, T* a, T* p)
   *p = atan2(-y0*sw, yL-y0*cw) + PI;
   *a = y0 / sin(*p);
 
-  int dummy = 0;
+  //int dummy = 0;
   // ...not yet finished...needs a switch to avoid div-by-zero
 }
 // now implemted in rsSingleSineModeler::phaseAndAmpFormulaBackward

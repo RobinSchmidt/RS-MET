@@ -868,7 +868,7 @@ double rsCos2(double x)
 void rsSinCos2(double x, double* s, double* c)
 {
   double xa = rsAbs(x);
-  double xs = rsSign(x);
+  //double xs = rsSign(x);
 
   double o  = double(xa > 0.5*PI);     // |x| is outside range -> reflect to inside
   double xr = (1.0-o)*xa + o*(PI-xa);
@@ -898,7 +898,7 @@ void rsSinCos2(double x, double* s, double* c)
 void rsSinCosApprox4(double x, double* s, double* c)
 {
   double xa = rsAbs(x);
-  double xs = rsSign(x);
+  //double xs = rsSign(x);
 
   double o  = double(xa > 0.5*PI);     // |x| is outside range -> reflect to inside
   double xr = (1.0-o)*xa + o*(PI-xa);
