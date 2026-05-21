@@ -15,7 +15,7 @@
 namespace rsTestRomos
 {
 double _x[maxNumVoices][maxNumIns][maxNumFrames];      // inputs
-double y[maxNumVoices][maxNumOuts][maxNumFrames];     // outputs
+double _y[maxNumVoices][maxNumOuts][maxNumFrames];     // outputs
 double d[maxNumVoices][maxNumOuts][maxNumFrames];     // desired outputs
 double t[maxNumFrames];                               // timline in samples for plots
 double *px0[maxNumIns];                               // pointers to the inputs of voice 0
@@ -124,11 +124,11 @@ void initializeInputSequences()
       for(n = 0; n < maxNumFrames; n++)
       {
         _x[v][c][n] = RAPT::rsRandomUniform(-1.0, 1.0);
-        y[v][c][n] = 0.0;
+        _y[v][c][n] = 0.0;
         d[v][c][n] = 0.0;
       }
       px[v][c] = &(_x[v][c][0]);
-      py[v][c] = &(y[v][c][0]);
+      py[v][c] = &(_y[v][c][0]);
       pd[v][c] = &(d[v][c][0]);
     }
     ppx[v] = &(px[v][0]);
@@ -139,7 +139,7 @@ void initializeInputSequences()
   for(c = 0; c < maxNumIns; c++)
   {
     px0[c] = &(_x[0][c][0]);
-    py0[c] = &(y[0][c][0]);
+    py0[c] = &(_y[0][c][0]);
     pd0[c] = &(d[0][c][0]);
   }
 }

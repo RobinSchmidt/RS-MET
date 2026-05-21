@@ -218,7 +218,7 @@ bool testContainerizationAddedConstants(bool verboseOutput)
   //testModule->resetState();  
   testModule->resetStateForAllVoices();
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  RAPT::rsArrayTools::copy(y[0][0], d[0][0], N);
+  RAPT::rsArrayTools::copy(_y[0][0], d[0][0], N);
 
   for(int i=0; i<numIterations; i++)
   {
@@ -227,7 +227,7 @@ bool testContainerizationAddedConstants(bool verboseOutput)
     processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
     if(verboseOutput == true)
       printModuleStructure(testModule, 0);
-    if(!RAPT::rsArrayTools::equal(y[0][0], d[0][0], N))
+    if(!RAPT::rsArrayTools::equal(_y[0][0], d[0][0], N))
     {
       printf("%s", "!!! ContainerizationAddedConstants failed !!!\n");
       //printModuleStructure(testModule, 0);
