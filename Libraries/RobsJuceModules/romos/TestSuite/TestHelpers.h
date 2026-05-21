@@ -16,9 +16,9 @@ static const int maxNumVoices = 8;
 static const int maxNumIns    = 10;
 static const int maxNumOuts   = 10;
 static const int maxNumFrames = 1000;
-static const int N            = 50;
-extern double _x[maxNumVoices][maxNumIns][maxNumFrames];      // inputs
-extern double _y[maxNumVoices][maxNumOuts][maxNumFrames];     // outputs
+static const int _N           = 50;
+extern double _x[maxNumVoices][maxNumIns][maxNumFrames];     // inputs
+extern double _y[maxNumVoices][maxNumOuts][maxNumFrames];    // outputs
 extern double d[maxNumVoices][maxNumOuts][maxNumFrames];     // desired outputs
 extern double t[maxNumFrames];                               // timeline in samples for plots
 extern double *px0[maxNumIns];                               // pointers to the inputs of voice 0

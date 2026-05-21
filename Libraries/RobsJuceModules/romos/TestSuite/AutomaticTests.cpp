@@ -106,107 +106,107 @@ bool testModuleTypeRegistry()
 bool testGain(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createGain("Gain", 0, 0, false);
-  RAPT::rsArrayTools::multiply(_x[0][0], _x[0][1], d[0][0], N);  // create desired output
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  //Plotter::plotData(N, t, d[0][0], y[0][0]);
+  RAPT::rsArrayTools::multiply(_x[0][0], _x[0][1], d[0][0], _N);  // create desired output
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  //Plotter::plotData(_N, t, d[0][0], y[0][0]);
 
   romos::moduleFactory.deleteModule(testModule);
-  return checkAndPrintResult(py0, pd0, 1, N, "Gain", 0.0);
+  return checkAndPrintResult(py0, pd0, 1, _N, "Gain", 0.0);
 }
 
 bool testSumDiff(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createSumDiff("SumDiff", 0, 0, false);
-  RAPT::rsArrayTools::add(_x[0][0], _x[0][1], d[0][0], N);
-  RAPT::rsArrayTools::subtract(_x[0][0], _x[0][1], d[0][1], N);
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  //Plotter::plotData(N, t, d[0][0], y[0][0]);
+  RAPT::rsArrayTools::add(_x[0][0], _x[0][1], d[0][0], _N);
+  RAPT::rsArrayTools::subtract(_x[0][0], _x[0][1], d[0][1], _N);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  //Plotter::plotData(_N, t, d[0][0], y[0][0]);
   romos::moduleFactory.deleteModule(testModule);
-  return checkAndPrintResult(py0, pd0, 2, N, "SumDiff", 0.0);
+  return checkAndPrintResult(py0, pd0, 2, _N, "SumDiff", 0.0);
 }
 
 bool testWrappedSumDiff(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createSumDiff("WrappedSumDiff", 0, 0, false);
-  RAPT::rsArrayTools::add(_x[0][0], _x[0][1], d[0][0], N);
-  RAPT::rsArrayTools::subtract(_x[0][0], _x[0][1], d[0][1], N);
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  //Plotter::plotData(N, t, d[0][0], y[0][0]);
+  RAPT::rsArrayTools::add(_x[0][0], _x[0][1], d[0][0], _N);
+  RAPT::rsArrayTools::subtract(_x[0][0], _x[0][1], d[0][1], _N);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  //Plotter::plotData(_N, t, d[0][0], y[0][0]);
   romos::moduleFactory.deleteModule(testModule);
-  return checkAndPrintResult(py0, pd0, 2, N, "WrappedSumDiff", 0.0);
+  return checkAndPrintResult(py0, pd0, 2, _N, "WrappedSumDiff", 0.0);
 }
 
 bool testSummedDiffs(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createSummedDiffs("SummedDiffs", 0, 0, false);
-  getDesiredOutputForSummedDiffs(N, px0, pd0);
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  //Plotter::plotData(N, t, d[0][0], y[0][0]);
+  getDesiredOutputForSummedDiffs(_N, px0, pd0);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  //Plotter::plotData(_N, t, d[0][0], y[0][0]);
   romos::moduleFactory.deleteModule(testModule);
-  return checkAndPrintResult(py0, pd0, 4, N, "SummedDiffs", 0.0);
+  return checkAndPrintResult(py0, pd0, 4, _N, "SummedDiffs", 0.0);
 }
 
 bool testMovingAverage(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createMovingAverage("MovingAverage", 0, 0, false);
-  getDesiredOutputForMovingAverage(N, _x[0][0], _x[0][1], _x[0][2], d[0][0]);
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  //Plotter::plotData(N, t, d[0][0], y[0][0]);
+  getDesiredOutputForMovingAverage(_N, _x[0][0], _x[0][1], _x[0][2], d[0][0]);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  //Plotter::plotData(_N, t, d[0][0], y[0][0]);
   romos::moduleFactory.deleteModule(testModule);
-  return checkAndPrintResult(py0, pd0, 1, N, "MovingAverage", 0.0);
+  return checkAndPrintResult(py0, pd0, 1, _N, "MovingAverage", 0.0);
 }
 
 bool testLeakyIntegrator(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createLeakyIntegrator("LeakyIntegrator", 0, 0, false);
-  getDesiredOutputForLeakyIntegrator(N, _x[0][0], _x[0][1], d[0][0]);
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  //Plotter::plotData(N, t, d[0][0], y[0][0]);
+  getDesiredOutputForLeakyIntegrator(_N, _x[0][0], _x[0][1], d[0][0]);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  //Plotter::plotData(_N, t, d[0][0], y[0][0]);
   romos::moduleFactory.deleteModule(testModule);
-  return checkAndPrintResult(py0, pd0, 1, N, "LeakyIntegrator", 0.0);
+  return checkAndPrintResult(py0, pd0, 1, _N, "LeakyIntegrator", 0.0);
 }
 
 bool testLeakyIntegratorDoubleDelay(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createLeakyIntegrator("LeakyIntegratorDoubleDelay", 0, 0, false);
-  getDesiredOutputForLeakyIntegratorDoubleDelay(N, _x[0][0], _x[0][1], d[0][0]);
+  getDesiredOutputForLeakyIntegratorDoubleDelay(_N, _x[0][0], _x[0][1], d[0][0]);
   //romos::Module *identity = ((ContainerModule*) testModule)->getChildModulesWithTypeOld(ModuleTypeRegistry::IDENTITY).at(0);
   romos::Module* identity = ((romos::ContainerModule*)testModule)->getChildModulesWithType("Identity").at(0);
   identity->setPositionXY(17, 2);
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  //Plotter::plotData(N, t, d[0][0], y[0][0]);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  //Plotter::plotData(_N, t, d[0][0], y[0][0]);
   romos::moduleFactory.deleteModule(testModule);
-  return checkAndPrintResult(py0, pd0, 1, N, "LeakyIntegratorDoubleDelay", 0.0);
+  return checkAndPrintResult(py0, pd0, 1, _N, "LeakyIntegratorDoubleDelay", 0.0);
 }
 
 bool testTestFilter1(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createTestFilter1("TestFilter1", 0, 0, false);
-  getDesiredOutputForTestFilter1(N, _x[0][0], _x[0][1], _x[0][2], _x[0][3], d[0][0], d[0][1], d[0][2]);
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  //Plotter::plotData(N, t, d[2][0], y[2][0]);
+  getDesiredOutputForTestFilter1(_N, _x[0][0], _x[0][1], _x[0][2], _x[0][3], d[0][0], d[0][1], d[0][2]);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  //Plotter::plotData(_N, t, d[2][0], y[2][0]);
   romos::moduleFactory.deleteModule(testModule);
-  return checkAndPrintResult(py0, pd0, 3, N, "TestFilter1", 0.0);
+  return checkAndPrintResult(py0, pd0, 3, _N, "TestFilter1", 0.0);
 }
 
 bool testBiquadMacro(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createBiquadMacro("BiquadMacro", 0, 0, false);
-  getDesiredOutputForBiquad(N, _x[0][0], _x[0][1], _x[0][2], _x[0][3], _x[0][4], _x[0][5], d[0][0]);
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  //Plotter::plotData(N, t, d[0][0], y[0][0]);
+  getDesiredOutputForBiquad(_N, _x[0][0], _x[0][1], _x[0][2], _x[0][3], _x[0][4], _x[0][5], d[0][0]);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  //Plotter::plotData(_N, t, d[0][0], y[0][0]);
   romos::moduleFactory.deleteModule(testModule);
-  return checkAndPrintResult(py0, pd0, 1, N, "BiquadMacro", 0.0);
+  return checkAndPrintResult(py0, pd0, 1, _N, "BiquadMacro", 0.0);
 }
 
 bool testBiquadAtomic(bool /*verboseOutput*/)
 {
   //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD);
   romos::Module* testModule = romos::moduleFactory.createModule("Biquad");
-  getDesiredOutputForBiquad(N, _x[0][0], _x[0][1], _x[0][2], _x[0][3], _x[0][4], _x[0][5], d[0][0]);
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
+  getDesiredOutputForBiquad(_N, _x[0][0], _x[0][1], _x[0][2], _x[0][3], _x[0][4], _x[0][5], d[0][0]);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
   romos::moduleFactory.deleteModule(testModule);
-  return checkAndPrintResult(py0, pd0, 1, N, "BiquadAtomic", 1.e-13); // use test with tolerance
+  return checkAndPrintResult(py0, pd0, 1, _N, "BiquadAtomic", 1.e-13); // use test with tolerance
 }
 
 bool testContainerizationAddedConstants(bool verboseOutput)
@@ -217,21 +217,21 @@ bool testContainerizationAddedConstants(bool verboseOutput)
 
   //testModule->resetState();  
   testModule->resetStateForAllVoices();
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  RAPT::rsArrayTools::copy(_y[0][0], d[0][0], N);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  RAPT::rsArrayTools::copy(_y[0][0], d[0][0], _N);
 
   for(int i=0; i<numIterations; i++)
   {
     randomizeContainment(testModule);
     //testModule->resetState();  // resetting the state lets the test fail
-    processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
+    processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
     if(verboseOutput == true)
       printModuleStructure(testModule, 0);
-    if(!RAPT::rsArrayTools::equal(_y[0][0], d[0][0], N))
+    if(!RAPT::rsArrayTools::equal(_y[0][0], d[0][0], _N))
     {
       printf("%s", "!!! ContainerizationAddedConstants failed !!!\n");
       //printModuleStructure(testModule, 0);
-      //Plotter::plotData(N, t, d[0][0], y[0][0]);
+      //Plotter::plotData(_N, t, d[0][0], y[0][0]);
       romos::moduleFactory.deleteModule(testModule);
       return false;
     }
@@ -246,8 +246,8 @@ bool testPinSorting(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createPinSortTest("PinSorting", 0, 0, false);
 
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  processModuleInFrames(testModule, N, ppx, ppd, NULL, false);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  processModuleInFrames(testModule, _N, ppx, ppd, NULL, false);
 
   // retrieve pointers to some embedded modules (assumes certain order):
   romos::ContainerModule* inner = dynamic_cast<romos::ContainerModule*> (((romos::ContainerModule*)testModule)->getChildModule(3));
@@ -261,45 +261,45 @@ bool testPinSorting(bool /*verboseOutput*/)
 
   bool result = true;
 
-  //Plotter::plotData(N, t, d[0][0], y[0][0]);
+  //Plotter::plotData(_N, t, d[0][0], y[0][0]);
 
   // test all possible permutations of the input order:
   exchangeModulePositions(in1, in2);      // input order: 1,2,3 -> 2,1,3
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  result &= checkResult(py0, pd0, 3, N, 0.0);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  result &= checkResult(py0, pd0, 3, _N, 0.0);
   exchangeModulePositions(in1, in3);      // input order: 2,1,3 -> 2,3,1
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  result &= checkResult(py0, pd0, 3, N, 0.0);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  result &= checkResult(py0, pd0, 3, _N, 0.0);
   exchangeModulePositions(in1, in2);      // input order: 2,3,1 -> 1,3,2
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  result &= checkResult(py0, pd0, 3, N, 0.0);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  result &= checkResult(py0, pd0, 3, _N, 0.0);
   exchangeModulePositions(in1, in3);      // input order: 1,3,2 -> 3,1,2
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  result &= checkResult(py0, pd0, 3, N, 0.0);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  result &= checkResult(py0, pd0, 3, _N, 0.0);
   exchangeModulePositions(in1, in2);      // input order: 3,1,2 -> 3,2,1
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  result &= checkResult(py0, pd0, 3, N, 0.0);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  result &= checkResult(py0, pd0, 3, _N, 0.0);
   exchangeModulePositions(in1, in3);      // input order: 3,2,1 -> 1,2,3 (again)
 
   // test all possible permutations of the output order:
   exchangeModulePositions(out1, out2);      // output order: 1,2,3 -> 2,1,3
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  result &= checkResult(py0, pd0, 3, N, 0.0);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  result &= checkResult(py0, pd0, 3, _N, 0.0);
   exchangeModulePositions(out1, out3);      // output order: 2,1,3 -> 2,3,1
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  result &= checkResult(py0, pd0, 3, N, 0.0);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  result &= checkResult(py0, pd0, 3, _N, 0.0);
   exchangeModulePositions(out1, out2);      // output order: 2,3,1 -> 1,3,2
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  result &= checkResult(py0, pd0, 3, N, 0.0);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  result &= checkResult(py0, pd0, 3, _N, 0.0);
   exchangeModulePositions(out1, out3);      // output order: 1,3,2 -> 3,1,2
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  result &= checkResult(py0, pd0, 3, N, 0.0);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  result &= checkResult(py0, pd0, 3, _N, 0.0);
   exchangeModulePositions(out1, out2);      // output order: 3,1,2 -> 3,2,1
-  processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  result &= checkResult(py0, pd0, 3, N, 0.0);
+  processModuleInFrames(testModule, _N, ppx, ppy, NULL, false);
+  result &= checkResult(py0, pd0, 3, _N, 0.0);
   exchangeModulePositions(out1, out3);      // output order: 3,2,1 -> 1,2,3 (again)
 
-  //Plotter::plotData(N, t, d[0][0], y[0][0]);
+  //Plotter::plotData(_N, t, d[0][0], y[0][0]);
 
   romos::moduleFactory.deleteModule(testModule);
   if(result == false)
