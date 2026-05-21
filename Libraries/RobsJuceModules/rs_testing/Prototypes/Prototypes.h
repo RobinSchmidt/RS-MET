@@ -4236,7 +4236,12 @@ public:
 
   rsUint64 value;
 
-  rsModularIntegerNTT_64() {}
+  rsModularIntegerNTT_64()
+  {
+    //RS_DONTWARN_UNINITIALIZED();
+    // Our value member is intentionally not initialized in the standard constructor for 
+    // performance reasons. ...We seem to still get the compiler warning, though. Or do we?
+  }
   rsModularIntegerNTT_64(rsUint64 x) : value(x) {}
 
   ModInt operator+(const ModInt& b) { return (value + b.value) % modulus; }

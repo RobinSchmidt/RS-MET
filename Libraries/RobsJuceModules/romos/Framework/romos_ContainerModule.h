@@ -428,10 +428,10 @@ protected:
 
   std::vector<Module*> childModules;
 
-  double *tmpOutFrame; // needed, when processing a block in frames
+  double *tmpOutFrame = nullptr; // needed, when processing a block in frames
 
   //bool   canDoBlockProcessing;
-  bool hasDelayedConnections;
+  bool hasDelayedConnections = false;
 
   // friend functions:
 
