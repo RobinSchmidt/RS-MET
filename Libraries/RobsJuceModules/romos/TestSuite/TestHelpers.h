@@ -24,6 +24,9 @@ extern double t[maxNumFrames];                               // timeline in samp
 extern double *px0[maxNumIns];                               // pointers to the inputs of voice 0
 extern double *py0[maxNumOuts];                              // pointers to the outputs of voice 0
 extern double *pd0[maxNumOuts];                              // pointers to the desired(?) outputs of voice 0
+// ToDo: Rename N,x,y,d,t to fix compiler warnings of the type "declaration of 'x' hides global 
+// declaration". Maybe prefix the globals with an underscore. maybe for consistency also prefix the
+// other variables with an underscore although they currently do not cuase any problems.
 
 extern double *px[maxNumVoices][maxNumIns];                  // pointers to the inputs of all voices 
 extern double *py[maxNumVoices][maxNumOuts];                 // pointers to the outputs of all voices 
