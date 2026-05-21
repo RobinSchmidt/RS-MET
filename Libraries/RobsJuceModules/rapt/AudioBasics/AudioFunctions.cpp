@@ -44,7 +44,10 @@ T rsConsistentUnwrappedValue(T value, T target, T rangeMin, T rangeMax)
   T maxDelta  = T(0.5) * rangeSize;  // maybe we should have a safety margin based on eps?
 
   //T margin    = RS_EPS(T);         // nope! hangs! ...
-  T margin    = 1.e-13;              // ...but that's rather arbitrary!
+  T margin    = T(1.e-13);           // ...but that's rather arbitrary!
+  // ToDo: Use something better. Something that depends on the type T. Using the epsilon may be too
+  // tight, though.
+
   maxDelta   *= 1 + margin;          // should that depend on value, too? ..or maybe we should use 
                                      // as 2nd break condition that the sign of delta changes?
 

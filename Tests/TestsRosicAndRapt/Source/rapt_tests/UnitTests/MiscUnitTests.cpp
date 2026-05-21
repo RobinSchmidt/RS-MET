@@ -771,6 +771,9 @@ bool singleSineModelerUnitTest()
   // unit-test:
   return r;
 
+
+  /*
+
   //ssm.setFreqSmoothing(1, 3);
 
   ssm.setAmpPrecision(1); // with 2, we trigger an assert (amplitude undershoots signal)
@@ -825,6 +828,10 @@ bool singleSineModelerUnitTest()
   //rsPlotVectors(x, a, w, pm);
   // looks also good - we need some automatic check for this, too
 
+  */
+
+
+
 
   /*
   // tests for new phase-unreflection algos - they do not yet work:
@@ -874,7 +881,7 @@ bool singleSineModelerUnitTest()
   //  probably really use the freq-first algotithms - the idea with estimating amplitude first may
   //  have been not such a great idea after all.
 
-  return r;
+  //return r;
 }
 
 bool sineModelingUnitTest()
