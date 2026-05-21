@@ -17,7 +17,7 @@ static const int maxNumIns    = 10;
 static const int maxNumOuts   = 10;
 static const int maxNumFrames = 1000;
 static const int N            = 50;
-extern double x[maxNumVoices][maxNumIns][maxNumFrames];      // inputs
+extern double _x[maxNumVoices][maxNumIns][maxNumFrames];      // inputs
 extern double y[maxNumVoices][maxNumOuts][maxNumFrames];     // outputs
 extern double d[maxNumVoices][maxNumOuts][maxNumFrames];     // desired outputs
 extern double t[maxNumFrames];                               // timeline in samples for plots

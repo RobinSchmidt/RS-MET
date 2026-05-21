@@ -106,7 +106,7 @@ bool testModuleTypeRegistry()
 bool testGain(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createGain("Gain", 0, 0, false);
-  RAPT::rsArrayTools::multiply(x[0][0], x[0][1], d[0][0], N);  // create desired output
+  RAPT::rsArrayTools::multiply(_x[0][0], _x[0][1], d[0][0], N);  // create desired output
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
 
@@ -117,8 +117,8 @@ bool testGain(bool /*verboseOutput*/)
 bool testSumDiff(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createSumDiff("SumDiff", 0, 0, false);
-  RAPT::rsArrayTools::add(x[0][0], x[0][1], d[0][0], N);
-  RAPT::rsArrayTools::subtract(x[0][0], x[0][1], d[0][1], N);
+  RAPT::rsArrayTools::add(_x[0][0], _x[0][1], d[0][0], N);
+  RAPT::rsArrayTools::subtract(_x[0][0], _x[0][1], d[0][1], N);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
   romos::moduleFactory.deleteModule(testModule);
@@ -128,8 +128,8 @@ bool testSumDiff(bool /*verboseOutput*/)
 bool testWrappedSumDiff(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createSumDiff("WrappedSumDiff", 0, 0, false);
-  RAPT::rsArrayTools::add(x[0][0], x[0][1], d[0][0], N);
-  RAPT::rsArrayTools::subtract(x[0][0], x[0][1], d[0][1], N);
+  RAPT::rsArrayTools::add(_x[0][0], _x[0][1], d[0][0], N);
+  RAPT::rsArrayTools::subtract(_x[0][0], _x[0][1], d[0][1], N);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
   romos::moduleFactory.deleteModule(testModule);
@@ -149,7 +149,7 @@ bool testSummedDiffs(bool /*verboseOutput*/)
 bool testMovingAverage(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createMovingAverage("MovingAverage", 0, 0, false);
-  getDesiredOutputForMovingAverage(N, x[0][0], x[0][1], x[0][2], d[0][0]);
+  getDesiredOutputForMovingAverage(N, _x[0][0], _x[0][1], _x[0][2], d[0][0]);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
   romos::moduleFactory.deleteModule(testModule);
@@ -159,7 +159,7 @@ bool testMovingAverage(bool /*verboseOutput*/)
 bool testLeakyIntegrator(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createLeakyIntegrator("LeakyIntegrator", 0, 0, false);
-  getDesiredOutputForLeakyIntegrator(N, x[0][0], x[0][1], d[0][0]);
+  getDesiredOutputForLeakyIntegrator(N, _x[0][0], _x[0][1], d[0][0]);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
   romos::moduleFactory.deleteModule(testModule);
@@ -169,7 +169,7 @@ bool testLeakyIntegrator(bool /*verboseOutput*/)
 bool testLeakyIntegratorDoubleDelay(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createLeakyIntegrator("LeakyIntegratorDoubleDelay", 0, 0, false);
-  getDesiredOutputForLeakyIntegratorDoubleDelay(N, x[0][0], x[0][1], d[0][0]);
+  getDesiredOutputForLeakyIntegratorDoubleDelay(N, _x[0][0], _x[0][1], d[0][0]);
   //romos::Module *identity = ((ContainerModule*) testModule)->getChildModulesWithTypeOld(ModuleTypeRegistry::IDENTITY).at(0);
   romos::Module* identity = ((romos::ContainerModule*)testModule)->getChildModulesWithType("Identity").at(0);
   identity->setPositionXY(17, 2);
@@ -182,7 +182,7 @@ bool testLeakyIntegratorDoubleDelay(bool /*verboseOutput*/)
 bool testTestFilter1(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createTestFilter1("TestFilter1", 0, 0, false);
-  getDesiredOutputForTestFilter1(N, x[0][0], x[0][1], x[0][2], x[0][3], d[0][0], d[0][1], d[0][2]);
+  getDesiredOutputForTestFilter1(N, _x[0][0], _x[0][1], _x[0][2], _x[0][3], d[0][0], d[0][1], d[0][2]);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[2][0], y[2][0]);
   romos::moduleFactory.deleteModule(testModule);
@@ -192,7 +192,7 @@ bool testTestFilter1(bool /*verboseOutput*/)
 bool testBiquadMacro(bool /*verboseOutput*/)
 {
   romos::Module* testModule = TestModuleBuilder::createBiquadMacro("BiquadMacro", 0, 0, false);
-  getDesiredOutputForBiquad(N, x[0][0], x[0][1], x[0][2], x[0][3], x[0][4], x[0][5], d[0][0]);
+  getDesiredOutputForBiquad(N, _x[0][0], _x[0][1], _x[0][2], _x[0][3], _x[0][4], _x[0][5], d[0][0]);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
   romos::moduleFactory.deleteModule(testModule);
@@ -203,7 +203,7 @@ bool testBiquadAtomic(bool /*verboseOutput*/)
 {
   //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD);
   romos::Module* testModule = romos::moduleFactory.createModule("Biquad");
-  getDesiredOutputForBiquad(N, x[0][0], x[0][1], x[0][2], x[0][3], x[0][4], x[0][5], d[0][0]);
+  getDesiredOutputForBiquad(N, _x[0][0], _x[0][1], _x[0][2], _x[0][3], _x[0][4], _x[0][5], d[0][0]);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   romos::moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 1, N, "BiquadAtomic", 1.e-13); // use test with tolerance
@@ -313,7 +313,7 @@ bool testAdderBlock(bool /*verboseOutput*/)
 {
   //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::ADDER);
   romos::Module* testModule = romos::moduleFactory.createModule("Adder");
-  RAPT::rsArrayTools::add(x[0][0], x[0][1], d[0][0], maxNumFrames);  // establish desired result
+  RAPT::rsArrayTools::add(_x[0][0], _x[0][1], d[0][0], maxNumFrames);  // establish desired result
   bool result = checkBlockProcessingAndPrintResult(testModule, ppx, ppy, ppd, maxNumFrames, 50, "AdderBlock", 0.0);
   romos::moduleFactory.deleteModule(testModule);
   return result;
@@ -323,7 +323,7 @@ bool testBiquadAtomicBlock(bool /*verboseOutput*/)
 {
   //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD);
   romos::Module* testModule = romos::moduleFactory.createModule("Biquad");
-  getDesiredOutputForBiquad(maxNumFrames, x[0][0], x[0][1], x[0][2], x[0][3], x[0][4], x[0][5], d[0][0]);
+  getDesiredOutputForBiquad(maxNumFrames, _x[0][0], _x[0][1], _x[0][2], _x[0][3], _x[0][4], _x[0][5], d[0][0]);
   bool result = checkBlockProcessingAndPrintResult(testModule, ppx, ppy, ppd, maxNumFrames, 50, "BiquadAtomicBlock", 1.e-13);
   //Plotter::plotData(200, t, d[0][0], y[0][0]);
   romos::moduleFactory.deleteModule(testModule);
@@ -427,7 +427,7 @@ bool testAdderProcessingFunctions(int numVoicesToCheck)
   romos::Module* testModule = romos::moduleFactory.createModule("Adder");
 
   for(int v = 0; v < numVoicesToCheck; v++)
-    RAPT::rsArrayTools::add(x[v][0], x[v][1], d[v][0], maxNumFrames);
+    RAPT::rsArrayTools::add(_x[v][0], _x[v][1], d[v][0], maxNumFrames);
 
   std::vector<romos::NoteEvent> events = generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToCheck, 12);
   bool result = checkProcessingFunctionsAndPrintResults(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0, "Adder", &events);
@@ -441,7 +441,7 @@ bool testUnitDelayProcessingFunctions(int numVoicesToCheck)
   //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::UNIT_DELAY);
   romos::Module* testModule = romos::moduleFactory.createModule("UnitDelay");
   for(int v = 0; v < numVoicesToCheck; v++)
-    getDesiredOutputForUnitDelay(maxNumFrames, x[v][0], d[v][0]);
+    getDesiredOutputForUnitDelay(maxNumFrames, _x[v][0], d[v][0]);
   std::vector<romos::NoteEvent> events = generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToCheck, 12);
   bool result = checkProcessingFunctionsAndPrintResults(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0,
     "UnitDelay", &events);
@@ -453,7 +453,7 @@ bool testWrappedAdderProcessingFunctions(int numVoicesToCheck)
 {
   romos::Module* testModule =  TestModuleBuilder::createWrappedAdder("WrappedAdder", 0, 0, false);
   for(int v = 0; v < numVoicesToCheck; v++)
-    RAPT::rsArrayTools::add(x[v][0], x[v][1], d[v][0], maxNumFrames);
+    RAPT::rsArrayTools::add(_x[v][0], _x[v][1], d[v][0], maxNumFrames);
   std::vector<romos::NoteEvent> events = generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToCheck, 12);
   bool result = checkProcessingFunctionsAndPrintResults(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0,
     "WrappedAdder", &events);
