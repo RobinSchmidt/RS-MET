@@ -111,7 +111,7 @@ int findIndexOfMatchingNoteOff(const std::vector<romos::NoteEvent> &events, romo
 
 void initializeInputSequences()
 {
-  RAPT::rsArrayTools::fillWithIndex(t, maxNumFrames);
+  RAPT::rsArrayTools::fillWithIndex(_t, maxNumFrames);
 
   int v, c, n;
 

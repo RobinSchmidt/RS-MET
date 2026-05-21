@@ -194,34 +194,39 @@ bool VoiceAllocatorTest::testStealOldestWithRetrigger()
 
   return testPassed;
 }
-bool VoiceAllocatorTest::areAllNoteOnTriggerFlagsUnchecked(const romos::VoiceAllocator& voiceAllocator)
+bool VoiceAllocatorTest::areAllNoteOnTriggerFlagsUnchecked(
+  const romos::VoiceAllocator& voiceAlloc)
 {
   bool result = true;
-  for(int i = 0; i < voiceAllocator.getNumVoices(); i++)
-    result &= voiceAllocator.getNoteOnTriggerFlag(i) == false;
+  for(int i = 0; i < voiceAlloc.getNumVoices(); i++)
+    result &= voiceAlloc.getNoteOnTriggerFlag(i) == false;
   return result;
 }
-bool VoiceAllocatorTest::isNoteOnTriggerFlagCheckedExclusively(const romos::VoiceAllocator& voiceAllocator, int voiceIndexThatShouldHaveFlagSet)
+bool VoiceAllocatorTest::isNoteOnTriggerFlagCheckedExclusively(
+  const romos::VoiceAllocator& voiceAlloc, 
+  int voiceIndexThatShouldHaveFlagSet)
 {
   bool result = true;
-  for(int i = 0; i < voiceAllocator.getNumVoices(); i++)
+  for(int i = 0; i < voiceAlloc.getNumVoices(); i++)
   {
     if(i == voiceIndexThatShouldHaveFlagSet)
-      result &= voiceAllocator.getNoteOnTriggerFlag(i) == true;
+      result &= voiceAlloc.getNoteOnTriggerFlag(i) == true;
     else
-      result &= voiceAllocator.getNoteOnTriggerFlag(i) == false;
+      result &= voiceAlloc.getNoteOnTriggerFlag(i) == false;
   }
   return result;
 }
-bool VoiceAllocatorTest::isNoteOffTriggerFlagCheckedExclusively(const romos::VoiceAllocator& voiceAllocator, int voiceIndexThatShouldHaveFlagSet)
+bool VoiceAllocatorTest::isNoteOffTriggerFlagCheckedExclusively(
+  const romos::VoiceAllocator& voiceAlloc, 
+  int voiceIndexThatShouldHaveFlagSet)
 {
   bool result = true;
-  for(int i = 0; i < voiceAllocator.getNumVoices(); i++)
+  for(int i = 0; i < voiceAlloc.getNumVoices(); i++)
   {
     if(i == voiceIndexThatShouldHaveFlagSet)
-      result &= voiceAllocator.getNoteOffTriggerFlag(i) == true;
+      result &= voiceAlloc.getNoteOffTriggerFlag(i) == true;
     else
-      result &= voiceAllocator.getNoteOffTriggerFlag(i) == false;
+      result &= voiceAlloc.getNoteOffTriggerFlag(i) == false;
   }
   return result;
 }
