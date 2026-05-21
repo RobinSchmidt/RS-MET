@@ -9,7 +9,7 @@ void ClipperModule::initialize()
   inputPins[1].setDefaultValue(-1.0); 
   inputPins[2].setDefaultValue(+1.0); 
 }
-INLINE void ClipperModule::process(Module *module, double *in1, double *in2, double *in3, 
+INLINE void ClipperModule::process(Module* /*module*/, double *in1, double *in2, double *in3,
   double *out, int /*voiceIndex*/)
 {
   *out = RAPT::rsClip(*in1, *in2, *in3);
@@ -23,7 +23,7 @@ void SinCosModule::initialize()
   initInputPins({ "In" });
   initOutputPins({ "Sin", "Cos" });
 }
-INLINE void SinCosModule::process(Module *module, double *in, double *out, int /*voiceIndex*/)
+INLINE void SinCosModule::process(Module* /*module*/, double *in, double *out, int /*voiceIndex*/)
 {
   RAPT::rsSinCos(2.0*PI*(*in), out, out+1);
 }
@@ -36,7 +36,7 @@ void TriSawModule::initialize()
   initInputPins({ "In", "Asym", "AtBn", "AtSg", "DcBn", "DcSg" });
   initOutputPins({ "" });
 }
-INLINE void TriSawModule::process(Module *module, double *In, double *Asym, double *AtBn, 
+INLINE void TriSawModule::process(Module* /*module*/, double *In, double *Asym, double *AtBn,
   double *AtSg, double *DcBn, double *DcSg, double *out, int /*voiceIndex*/)
 {
   double h  = 0.5 * (*Asym+1);

@@ -64,7 +64,7 @@ void SystemSampleRateModule::initialize()
 {
   initOutputPins({ "SampleRate" });
 }
-INLINE void SystemSampleRateModule::process(Module *module, double *out, int /*voiceIndex*/)
+INLINE void SystemSampleRateModule::process(Module* /*module*/, double *out, int /*voiceIndex*/)
 {
   *out = processingStatus.getSystemSampleRate();
 }
@@ -76,7 +76,7 @@ void SystemSamplePeriodModule::initialize()
 {
   initOutputPins({ "SamplePeriod" });
 }
-INLINE void SystemSamplePeriodModule::process(Module *module, double *out, int /*voiceIndex*/)
+INLINE void SystemSamplePeriodModule::process(Module* /*module*/, double *out, int /*voiceIndex*/)
 {
   *out = processingStatus.getSystemSamplePeriod();
 }
@@ -90,7 +90,7 @@ void NoteGateModule::initialize()
   initOutputPins({ "" });
   hasHeaderFlag = false;
 }
-INLINE void NoteGateModule::process(Module *module, double *out, int voiceIndex)
+INLINE void NoteGateModule::process(Module* /*module*/, double *out, int voiceIndex)
 {
   *out = (double)voiceAllocator.isNoteOn(voiceIndex);
 }
@@ -104,7 +104,7 @@ void NoteOnTriggerModule::initialize()
   initOutputPins({ "" });
   hasHeaderFlag = false;
 }
-INLINE void NoteOnTriggerModule::process(Module *module, double *out, int voiceIndex)
+INLINE void NoteOnTriggerModule::process(Module* /*module*/, double *out, int voiceIndex)
 {
   *out = voiceAllocator.getNoteOnTriggerFlag(voiceIndex);
 }
@@ -117,7 +117,7 @@ void NoteOffTriggerModule::initialize()
   initOutputPins({ "" });
   hasHeaderFlag = false;
 }
-INLINE void NoteOffTriggerModule::process(Module *module, double *out, int voiceIndex)
+INLINE void NoteOffTriggerModule::process(Module* /*module*/, double *out, int voiceIndex)
 {
   *out = voiceAllocator.getNoteOffTriggerFlag(voiceIndex);
 }
@@ -132,7 +132,7 @@ void VoiceKillerModule::initialize()
   addParameter(rosic::rsString("TimeOut"), "0.01");
   parameterChanged(0);   // to init internal variables threshold, timeOut
 }
-INLINE void VoiceKillerModule::process(Module *module, double *in, double *out, int voiceIndex)
+INLINE void VoiceKillerModule::process(Module* module, double* in, double* /*out*/, int voiceIndex)
 {
   if(!voiceAllocator.isVoicePlaying(voiceIndex))
     return;  // because it is always called for voice 0 in monophonic mode
@@ -158,7 +158,7 @@ void VoiceKillerModule::resetVoiceState(int voiceIndex)
   AtomicModule::resetVoiceState(voiceIndex);
   sampleCounters[voiceIndex] = 0;
 }
-void VoiceKillerModule::parameterChanged(int index)
+void VoiceKillerModule::parameterChanged(int /*index*/)
 {
   threshold = RAPT::rsDbToAmp(parameters[0].value.asDouble());
   timeOut   = parameters[1].value.asDouble();
@@ -184,15 +184,16 @@ void VoiceCombinerModule::initialize()
   initOutputPins({ "" });
   hasHeaderFlag = false;
 }
-INLINE void VoiceCombinerModule::process(Module *module, double *ins, double *outs, int voiceIndex)
+INLINE void VoiceCombinerModule::process(Module* /*module*/, double *ins, double *outs, 
+  int /*voiceIndex*/)
 {
   outs[0] = ins[0];  // function actually not used
 }
-void VoiceCombinerModule::processMonoFrame(Module *module, int voiceIndex)
+void VoiceCombinerModule::processMonoFrame(Module *module, int /*voiceIndex*/)
 {
   module->audioOutputs[0] = *(module->inputPins[0].outputPointer);
 }
-void VoiceCombinerModule::processPolyFrame(Module *module, int voiceIndex)
+void VoiceCombinerModule::processPolyFrame(Module *module, int /*voiceIndex*/)
 {
   module->audioOutputs[0] = 0.0;
   for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)
@@ -203,13 +204,13 @@ void VoiceCombinerModule::processPolyFrame(Module *module, int voiceIndex)
     // can be streamlined (like in the macros)
   }
 }
-void VoiceCombinerModule::processMonoBlock(Module *module, int voiceIndex, int blockSize)
+void VoiceCombinerModule::processMonoBlock(Module *module, int /*voiceIndex*/, int blockSize)
 {
   for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)
     module->audioOutputs[frameIndex] = *(module->inputPins[0].outputPointer 
       + module->inputPins[0].outputFrameSize);
 }
-void VoiceCombinerModule::processPolyBlock(Module *module, int voiceIndex, int blockSize)
+void VoiceCombinerModule::processPolyBlock(Module *module, int /*voiceIndex*/, int blockSize)
 {
   for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)
   {
@@ -233,11 +234,11 @@ void VoiceCombinerModule::freeMemory()
 {
   AtomicModule::freeMemory();
 }
-void VoiceCombinerModule::setPolyphonic(bool shouldBePolyphonic)
+void VoiceCombinerModule::setPolyphonic(bool /*shouldBePolyphonic*/)
 {
   // do nothing - voice-combiners are always monophonic (on their output side)
 }
-void VoiceCombinerModule::clearVoiceBuffer(int voiceIndex)
+void VoiceCombinerModule::clearVoiceBuffer(int /*voiceIndex*/)
 {
   // do nothing - clearing the buffer would lead to gaps in the output signal (with the length of 
   // bufferSize) whenever voice 0 gets killed
@@ -287,7 +288,7 @@ void NoteFrequencyModule::initialize()
   initOutputPins({ "" });
   hasHeaderFlag = false;
 }
-INLINE void NoteFrequencyModule::process(Module *module, double *out, int voiceIndex)
+INLINE void NoteFrequencyModule::process(Module* /*module*/, double *out, int voiceIndex)
 {
   *out = (double)voiceAllocator.getFrequencyOfVoice(voiceIndex);
 }
@@ -300,7 +301,7 @@ void NoteVelocityModule::initialize()
   initOutputPins({ "" });
   hasHeaderFlag = false;
 }
-INLINE void NoteVelocityModule::process(Module *module, double *out, int voiceIndex)
+INLINE void NoteVelocityModule::process(Module* /*module*/, double *out, int voiceIndex)
 {
   *out = voiceAllocator.getNormalizedVelocityOfVoice(voiceIndex);
 }

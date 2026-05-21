@@ -180,7 +180,7 @@ void BiquadDesigner::resetVoiceState(int voiceIndex)
   oldParams[0] = oldParams[1] = oldParams[2] = 0.0; // div by zero? -> we should tolerate this
   oldOuts[0] = oldOuts[1] = oldOuts[2] = oldOuts[3] = oldOuts[4] = 0.0;
 }
-void BiquadDesigner::parameterChanged(int index)
+void BiquadDesigner::parameterChanged(int /*index*/)
 {
   rosic::rsString m = parameters[0].value;
 
@@ -307,7 +307,7 @@ void LadderFilter::resetVoiceState(int voiceIndex)
   ptr = oldParameters + 3*voiceIndex;
   ptr[0] = ptr[1] = ptr[2] = 0.0;
 }
-void LadderFilter::parameterChanged(int index)
+void LadderFilter::parameterChanged(int /*index*/)
 {
   rosic::rsString m = parameters[0].value;
   if(     m == "Lowpass, 6 dB/oct")      filterMode = LP_6;

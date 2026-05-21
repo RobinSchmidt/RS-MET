@@ -2333,7 +2333,7 @@ protected:
     return a*yR;
   }
 
-  void computeMinMaxWeights(T* wMin, T* wMax, T x, T yL, T yD, T yMin, T /*yMax*/)
+  void computeMinMaxWeights(T* wMin, T* wMax, T /*x*/, T yL, T yD, T /*yMin*/, T /*yMax*/)
   {
     T yB = bandpass.getSample(yD);  // or maybe feed x
 

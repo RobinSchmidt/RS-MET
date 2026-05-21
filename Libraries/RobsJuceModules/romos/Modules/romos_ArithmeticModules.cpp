@@ -121,7 +121,7 @@ void ReciprocalModule::initialize()
   initOutputPins({ "" });
   hasHeaderFlag = false;
 }
-INLINE void ReciprocalModule::process(Module *module, double *in, double *out, int /*voiceIndex*/)
+INLINE void ReciprocalModule::process(Module* /*module*/, double *in, double *out, int /*voiceIndex*/)
 {
   if(*in != 0.0)
     *out = 1.0 / *in;
@@ -138,7 +138,7 @@ void AdderModule::initialize()
   initOutputPins({ "" });
   hasHeaderFlag = false;
 }
-INLINE void AdderModule::process(Module *module, double *in1, double *in2, double *out, 
+INLINE void AdderModule::process(Module* /*module*/, double *in1, double *in2, double *out,
   int /*voiceIndex*/)
 {
   *out = *in1 + *in2;
@@ -183,7 +183,7 @@ void DividerModule::initialize()
   initOutputPins({ "" });
   hasHeaderFlag = false;
 }
-INLINE void DividerModule::process(Module *module, double *in1, double *in2, double *out, 
+INLINE void DividerModule::process(Module* /*module*/, double *in1, double *in2, double *out,
   int /*voiceIndex*/)
 {
   if(*in2 != 0.0)
@@ -201,7 +201,7 @@ void Adder3Module::initialize()
   initOutputPins({ "" });
   hasHeaderFlag = false;
 }
-INLINE void Adder3Module::process(Module *module, double *in1, double *in2, double *in3, 
+INLINE void Adder3Module::process(Module* /*module*/, double *in1, double *in2, double *in3,
   double *out, int /*voiceIndex*/)
 {
   *out = *in1 + *in2 + *in3;
@@ -216,7 +216,7 @@ void Adder4Module::initialize()
   initOutputPins({ "" });
   hasHeaderFlag = false;
 }
-INLINE void Adder4Module::process(Module *module, double *in1, double *in2, double *in3, 
+INLINE void Adder4Module::process(Module* /*module*/, double *in1, double *in2, double *in3,
   double *in4, double *out, int /*voiceIndex*/)
 {
   *out = *in1 + *in2 + *in3 + *in4;  // perhaps optimizable via parentheses
@@ -231,7 +231,7 @@ void Adder5Module::initialize()
   initOutputPins({ "" });
   hasHeaderFlag = false;
 }
-INLINE void Adder5Module::process(Module *module, double *in1, double *in2, double *in3, 
+INLINE void Adder5Module::process(Module* /*module*/, double *in1, double *in2, double *in3,
   double *in4, double *in5, double *out, int /*voiceIndex*/)
 {
   *out = *in1 + *in2 + *in3 + *in4 + *in5; // perhaps optimizable via parentheses

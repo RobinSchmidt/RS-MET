@@ -306,7 +306,7 @@ LeakyIntegratorTest::LeakyIntegratorTest()
 {
   moduleToTest = TestModuleBuilder::createLeakyIntegrator("LeakyIntegrator", 0, 0, false);
 }
-void LeakyIntegratorTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
+void LeakyIntegratorTest::fillDesiredOutputSignalArrays(bool /*testModuleIsPolyphonic*/)
 {
   for(int v = 0; v < numVoicesToUse; v++)
     GenerateDesiredOutput::forLeakyIntegrator(numFramesToProcess, inputs[v][0], inputs[v][1], desiredOutputs[v][0]);
