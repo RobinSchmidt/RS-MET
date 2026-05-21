@@ -2166,7 +2166,7 @@ void lookAtMatrix4D(T A[4][4],
   translationMatrix4D(t, -eye.x, -eye.y, -eye.z);
 
   multiplyMatrices4D(m, t , A);  // A = m*t
-  int dummy = 0;
+  //int dummy = 0;
 }
 // code adapted from vmath.h
 // -compare results to what OpenGL's vmath::lookAt produces
@@ -2396,12 +2396,12 @@ int minimizePartialParabolic(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
       if(f2 > 0)  // parabola has minimum
       {
         x += dx;          // todo: use x += step*dx;
-        int dummy = 0;
+        //int dummy = 0;
       }
       else        // parabola has maximum
       {
         x -= dx;          // todo: use x -= step*dx;
-        int dummy = 0;
+        //int dummy = 0;
         // this branch needs tests - to test it, we need a function with a local maximum somewhere
         // maybe use something like sin(x+y) or sin(x*y) - make contour-plots to get a feel for the
         // function
@@ -2448,7 +2448,7 @@ int minimizeGradientDescent(const F& f, T* v, int N, const T* h, T stepSize, T t
 {
   bool converged = false;
   int evals = 0;
-  int iterations = 0;
+  //int iterations = 0;
 
   using AT     = rsArrayTools;
   using NumDif = rsNumericDifferentiator<T>;
@@ -2484,7 +2484,7 @@ int minimizeGradientDescent(const F& f, T* v, int N, const T* h, T stepSize, T t
 
 
 
-    int dummy = 0;
+    //int dummy = 0;
   }
   return evals;
 }
@@ -2559,7 +2559,7 @@ int minimizeNewton(const F& f, T* x, int N, const T* h, T tol)
   using NumDif = rsNumericDifferentiator<T>;
   using Vec    = std::vector<T>;
   using AT     = rsArrayTools;
-  rsMatrix<T> H(N, N); T* pH = H.getDataPointer(); // Hessian
+  rsMatrix<T> H(N, N); // T* pH = H.getDataPointer(); // Hessian
   rsMatrix<T> g(N, 1); T* pg = g.getDataPointer(); // gradient
   rsMatrix<T> d(N, 1); T* pd = d.getDataPointer(); // update vector "delta-x"
   rsMatrix<T> X(N, 1); T *pX = X.getDataPointer(); // temporary vector for tentative new x

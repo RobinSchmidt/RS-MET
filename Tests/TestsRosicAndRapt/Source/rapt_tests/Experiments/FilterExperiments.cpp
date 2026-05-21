@@ -2429,7 +2429,7 @@ void removeInfiniteValues(vector<complex<T>>& z)
 template<class T>
 rsFilterSpecificationZPK<T> getFilterSpecificationZPK(RAPT::rsPrototypeDesigner<T>& pd)
 {
-  int nz = pd.getNumFiniteZeros();
+  //int nz = pd.getNumFiniteZeros();
   int np = pd.getNumFinitePoles();
   vector<complex<T>> z(np);          // np is correct, we may get infinite zeros which will be..
   vector<complex<T>> p(np);          // ..removed later
@@ -3371,7 +3371,7 @@ void simdFilter()
 
   rsPlotVectors(x, y);
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void shelfFilters()

@@ -534,7 +534,7 @@ T fourExpEnergy(T A, T a, T B, T b, T C, T c, T D, T d)
   //energy = integral(e(t), t, 0, oo)
 
   T A2 = A*A,  B2 = B*B,  C2 = C*C,  D2 = D*D;
-  T A3 = A*A2, B3 = B*B2, C3 = C*C2, D3 = D*D2;
+  //T A3 = A*A2, B3 = B*B2, C3 = C*C2, D3 = D*D2;
   //T A4 = A*A3, B4 = B*B3, C4 = C*C3, D4 = D*D3;
 
   T a2 = a*a,  b2 = b*b,  c2 = c*c,  d2 = d*d;

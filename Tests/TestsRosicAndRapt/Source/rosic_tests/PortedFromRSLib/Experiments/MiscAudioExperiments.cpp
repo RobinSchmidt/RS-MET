@@ -405,7 +405,7 @@ void recursiveCubicSineSweep()  // rename to recursiveCubicSineSweep
   //  more exact formula - but if not, this approach shouldn't be too bad
 
 
-  int dummy = 0;
+  //int dummy = 0;
 
 
   // see also:

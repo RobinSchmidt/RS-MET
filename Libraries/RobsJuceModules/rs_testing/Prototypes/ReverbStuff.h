@@ -4383,8 +4383,8 @@ public:
     using LA  = rsLinearAlgebraNew;
     using Mat = rsMatrix<TF>;
 
-    int numIns   = getNumInputs();
-    int numOuts  = getNumOutputs();
+    //int numIns   = getNumInputs();
+    //int numOuts  = getNumOutputs();
     int numChans = getNumDelayChannels();
 
     // Create the required matrices with transfer functions as elements:
