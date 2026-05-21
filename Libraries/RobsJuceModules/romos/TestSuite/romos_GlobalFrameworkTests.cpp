@@ -25,172 +25,172 @@ bool VoiceAllocatorTest::runTest()
 
 bool VoiceAllocatorTest::testStealOldestWithoutRetrigger()
 {
-  romos::VoiceAllocator voiceAllocator;
-  voiceAllocator.setNumVoices(3);
-  voiceAllocator.setVoiceStealingMode(romos::VoiceAllocator::STEAL_OLDEST_VOICE);
-  voiceAllocator.setRetriggerMode(false);
-  const int* playingVoiceIndices = voiceAllocator.getPlayingVoiceIndices();
+  romos::VoiceAllocator voiceAlloc;
+  voiceAlloc.setNumVoices(3);
+  voiceAlloc.setVoiceStealingMode(romos::VoiceAllocator::STEAL_OLDEST_VOICE);
+  voiceAlloc.setRetriggerMode(false);
+  const int* playingVoiceIndices = voiceAlloc.getPlayingVoiceIndices();
 
   int  noteOffVoice;
   bool testPassed = true;
 
-  voiceAllocator.noteOn(1, 64);  // should use voice 0
-  testPassed &= voiceAllocator.getNumPlayingVoices() == 1;
+  voiceAlloc.noteOn(1, 64);  // should use voice 0
+  testPassed &= voiceAlloc.getNumPlayingVoices() == 1;
   testPassed &= playingVoiceIndices[0] == 0;
-  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAllocator, 0);
+  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAlloc, 0);
 
-  voiceAllocator.resetTriggerFlags();
-  testPassed &= areAllNoteOnTriggerFlagsUnchecked(voiceAllocator);
+  voiceAlloc.resetTriggerFlags();
+  testPassed &= areAllNoteOnTriggerFlagsUnchecked(voiceAlloc);
 
-  voiceAllocator.noteOn(2, 64);  // should use voice 1
-  testPassed &= voiceAllocator.getNumPlayingVoices() == 2;
+  voiceAlloc.noteOn(2, 64);  // should use voice 1
+  testPassed &= voiceAlloc.getNumPlayingVoices() == 2;
   testPassed &= playingVoiceIndices[0] == 0;
   testPassed &= playingVoiceIndices[1] == 1;
-  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAllocator, 1);
+  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAlloc, 1);
 
-  voiceAllocator.resetTriggerFlags();
-  voiceAllocator.noteOn(1, 100);  // should use voice 2
-  testPassed &= voiceAllocator.getNumPlayingVoices() == 3;
-  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAllocator, 2);
+  voiceAlloc.resetTriggerFlags();
+  voiceAlloc.noteOn(1, 100);  // should use voice 2
+  testPassed &= voiceAlloc.getNumPlayingVoices() == 3;
+  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAlloc, 2);
 
-  voiceAllocator.resetTriggerFlags();
-  voiceAllocator.noteOn(3, 64);  // should use voice 0 (the oldest)
-  testPassed &= voiceAllocator.getNumPlayingVoices() == 3;
-  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAllocator, 0);
+  voiceAlloc.resetTriggerFlags();
+  voiceAlloc.noteOn(3, 64);  // should use voice 0 (the oldest)
+  testPassed &= voiceAlloc.getNumPlayingVoices() == 3;
+  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAlloc, 0);
 
-  voiceAllocator.resetTriggerFlags();
-  voiceAllocator.noteOn(4, 64);  // should use voice 1 (the oldest)
-  testPassed &= voiceAllocator.getNumPlayingVoices() == 3;
-  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAllocator, 1);
+  voiceAlloc.resetTriggerFlags();
+  voiceAlloc.noteOn(4, 64);  // should use voice 1 (the oldest)
+  testPassed &= voiceAlloc.getNumPlayingVoices() == 3;
+  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAlloc, 1);
 
-  voiceAllocator.resetTriggerFlags();
-  voiceAllocator.noteOn(5, 64);  // should use voice 2 (the oldest)
-  testPassed &= voiceAllocator.getNumPlayingVoices() == 3;
-  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAllocator, 2);
+  voiceAlloc.resetTriggerFlags();
+  voiceAlloc.noteOn(5, 64);  // should use voice 2 (the oldest)
+  testPassed &= voiceAlloc.getNumPlayingVoices() == 3;
+  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAlloc, 2);
 
-  voiceAllocator.resetTriggerFlags();
-  voiceAllocator.noteOff(4);  // voice 1
-  testPassed &= isNoteOffTriggerFlagCheckedExclusively(voiceAllocator, 1);
-  testPassed &= voiceAllocator.isNoteOn(1)                     == false;
-  testPassed &= voiceAllocator.getNormalizedVelocityOfVoice(1) == 0.0;
-  testPassed &= voiceAllocator.isVoicePlaying(1)               == true;   // voice is still playing in release phase (not yet killed)
-  testPassed &= voiceAllocator.getNumPlayingVoices()           == 3;
+  voiceAlloc.resetTriggerFlags();
+  voiceAlloc.noteOff(4);  // voice 1
+  testPassed &= isNoteOffTriggerFlagCheckedExclusively(voiceAlloc, 1);
+  testPassed &= voiceAlloc.isNoteOn(1)                     == false;
+  testPassed &= voiceAlloc.getNormalizedVelocityOfVoice(1) == 0.0;
+  testPassed &= voiceAlloc.isVoicePlaying(1)               == true;   // voice is still playing in release phase (not yet killed)
+  testPassed &= voiceAlloc.getNumPlayingVoices()           == 3;
 
-  voiceAllocator.resetTriggerFlags();
-  voiceAllocator.noteOn(4, 64);  // should use voice 0 (the oldest)
-  testPassed &= voiceAllocator.getNumPlayingVoices() == 3;
-  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAllocator, 0);
+  voiceAlloc.resetTriggerFlags();
+  voiceAlloc.noteOn(4, 64);  // should use voice 0 (the oldest)
+  testPassed &= voiceAlloc.getNumPlayingVoices() == 3;
+  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAlloc, 0);
 
   // now, voice 0 and 1 are playing note with key == 4 (but voice 1 has already velocity == 0)
 
-  voiceAllocator.resetTriggerFlags();
-  noteOffVoice = voiceAllocator.noteOff(4);
+  voiceAlloc.resetTriggerFlags();
+  noteOffVoice = voiceAlloc.noteOff(4);
   testPassed &=  noteOffVoice == 0; // voice 0 should have received this because voice 1 is already off
-  testPassed &= isNoteOffTriggerFlagCheckedExclusively(voiceAllocator, 0);
-  testPassed &= voiceAllocator.isNoteOn(0)                     == false;
-  testPassed &= voiceAllocator.getNormalizedVelocityOfVoice(0) == 0.0;
-  testPassed &= voiceAllocator.isVoicePlaying(0)               == true;   // voice is still playing in release phase (not yet killed)
-  testPassed &= voiceAllocator.getNumPlayingVoices()           == 3;
+  testPassed &= isNoteOffTriggerFlagCheckedExclusively(voiceAlloc, 0);
+  testPassed &= voiceAlloc.isNoteOn(0)                     == false;
+  testPassed &= voiceAlloc.getNormalizedVelocityOfVoice(0) == 0.0;
+  testPassed &= voiceAlloc.isVoicePlaying(0)               == true;   // voice is still playing in release phase (not yet killed)
+  testPassed &= voiceAlloc.getNumPlayingVoices()           == 3;
 
-  voiceAllocator.resetTriggerFlags();
-  voiceAllocator.killVoice(1);
-  testPassed &= voiceAllocator.isNoteOn(1)                     == false;
-  testPassed &= voiceAllocator.getNormalizedVelocityOfVoice(1) == 0.0;
-  testPassed &= voiceAllocator.isVoicePlaying(1)               == false;
-  testPassed &= voiceAllocator.getNumPlayingVoices()           == 2;
+  voiceAlloc.resetTriggerFlags();
+  voiceAlloc.killVoice(1);
+  testPassed &= voiceAlloc.isNoteOn(1)                     == false;
+  testPassed &= voiceAlloc.getNormalizedVelocityOfVoice(1) == 0.0;
+  testPassed &= voiceAlloc.isVoicePlaying(1)               == false;
+  testPassed &= voiceAlloc.getNumPlayingVoices()           == 2;
 
-  voiceAllocator.resetTriggerFlags();
-  voiceAllocator.noteOn(6, 64);  // should use voice 1 (the one which just became available)
-  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAllocator, 1);
-  testPassed &= voiceAllocator.getNumPlayingVoices() == 3;
-  testPassed &= voiceAllocator.getKeyOfVoice(1)      == 6;
+  voiceAlloc.resetTriggerFlags();
+  voiceAlloc.noteOn(6, 64);  // should use voice 1 (the one which just became available)
+  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAlloc, 1);
+  testPassed &= voiceAlloc.getNumPlayingVoices() == 3;
+  testPassed &= voiceAlloc.getKeyOfVoice(1)      == 6;
 
 
-  //voiceAllocator.killVoice(1);
-  //voiceAllocator.killVoice(2);
-  //voiceAllocator.killVoice(0);
+  //voiceAlloc.killVoice(1);
+  //voiceAlloc.killVoice(2);
+  //voiceAlloc.killVoice(0);
 
   return testPassed;
 }
 bool VoiceAllocatorTest::testStealOldestWithRetrigger()
 {
-  romos::VoiceAllocator voiceAllocator;
-  voiceAllocator.setNumVoices(3);
-  voiceAllocator.setVoiceStealingMode(romos::VoiceAllocator::STEAL_OLDEST_VOICE);
-  voiceAllocator.setRetriggerMode(true);
-  const int* playingVoiceIndices = voiceAllocator.getPlayingVoiceIndices();
+  romos::VoiceAllocator voiceAlloc;
+  voiceAlloc.setNumVoices(3);
+  voiceAlloc.setVoiceStealingMode(romos::VoiceAllocator::STEAL_OLDEST_VOICE);
+  voiceAlloc.setRetriggerMode(true);
+  const int* playingVoiceIndices = voiceAlloc.getPlayingVoiceIndices();
 
   int  noteOffVoice;
   bool testPassed = true;
 
-  voiceAllocator.noteOn(1, 64);  // should use voice 0
-  testPassed &= voiceAllocator.getNumPlayingVoices() == 1;
+  voiceAlloc.noteOn(1, 64);  // should use voice 0
+  testPassed &= voiceAlloc.getNumPlayingVoices() == 1;
   testPassed &= playingVoiceIndices[0] == 0;
-  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAllocator, 0);
+  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAlloc, 0);
 
-  voiceAllocator.resetTriggerFlags();
-  testPassed &= areAllNoteOnTriggerFlagsUnchecked(voiceAllocator);
+  voiceAlloc.resetTriggerFlags();
+  testPassed &= areAllNoteOnTriggerFlagsUnchecked(voiceAlloc);
 
-  voiceAllocator.noteOn(2, 64);  // should use voice 1
-  testPassed &= voiceAllocator.getNumPlayingVoices() == 2;
+  voiceAlloc.noteOn(2, 64);  // should use voice 1
+  testPassed &= voiceAlloc.getNumPlayingVoices() == 2;
   testPassed &= playingVoiceIndices[0] == 0;
   testPassed &= playingVoiceIndices[1] == 1;
-  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAllocator, 1);
+  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAlloc, 1);
 
-  voiceAllocator.resetTriggerFlags();
-  voiceAllocator.noteOn(1, 100);  // should re-use voice 0
-  testPassed &= voiceAllocator.getNumPlayingVoices() == 2;
-  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAllocator, 0);
+  voiceAlloc.resetTriggerFlags();
+  voiceAlloc.noteOn(1, 100);  // should re-use voice 0
+  testPassed &= voiceAlloc.getNumPlayingVoices() == 2;
+  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAlloc, 0);
 
-  voiceAllocator.resetTriggerFlags();
-  voiceAllocator.noteOn(3, 64);  // should use voice 2 
-  testPassed &= voiceAllocator.getNumPlayingVoices() == 3;
-  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAllocator, 2);
+  voiceAlloc.resetTriggerFlags();
+  voiceAlloc.noteOn(3, 64);  // should use voice 2 
+  testPassed &= voiceAlloc.getNumPlayingVoices() == 3;
+  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAlloc, 2);
 
-  voiceAllocator.resetTriggerFlags();
-  voiceAllocator.noteOn(4, 64);  // should use voice 1 (the oldest)
-  testPassed &= voiceAllocator.getNumPlayingVoices() == 3;
-  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAllocator, 1);
+  voiceAlloc.resetTriggerFlags();
+  voiceAlloc.noteOn(4, 64);  // should use voice 1 (the oldest)
+  testPassed &= voiceAlloc.getNumPlayingVoices() == 3;
+  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAlloc, 1);
 
-  voiceAllocator.resetTriggerFlags();
-  voiceAllocator.noteOn(5, 64);  // should use voice 0 (the oldest)
-  testPassed &= voiceAllocator.getNumPlayingVoices() == 3;
-  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAllocator, 0);
+  voiceAlloc.resetTriggerFlags();
+  voiceAlloc.noteOn(5, 64);  // should use voice 0 (the oldest)
+  testPassed &= voiceAlloc.getNumPlayingVoices() == 3;
+  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAlloc, 0);
 
-  voiceAllocator.resetTriggerFlags();
-  voiceAllocator.noteOff(4);  // voice 1
-  testPassed &= isNoteOffTriggerFlagCheckedExclusively(voiceAllocator, 1);
-  testPassed &= voiceAllocator.isNoteOn(1)                     == false;
-  testPassed &= voiceAllocator.getNormalizedVelocityOfVoice(1) == 0.0;
-  testPassed &= voiceAllocator.isVoicePlaying(1)               == true;   // voice is still playing in release phase (not yet killed)
-  testPassed &= voiceAllocator.getNumPlayingVoices()           == 3;
+  voiceAlloc.resetTriggerFlags();
+  voiceAlloc.noteOff(4);  // voice 1
+  testPassed &= isNoteOffTriggerFlagCheckedExclusively(voiceAlloc, 1);
+  testPassed &= voiceAlloc.isNoteOn(1)                     == false;
+  testPassed &= voiceAlloc.getNormalizedVelocityOfVoice(1) == 0.0;
+  testPassed &= voiceAlloc.isVoicePlaying(1)               == true;   // voice is still playing in release phase (not yet killed)
+  testPassed &= voiceAlloc.getNumPlayingVoices()           == 3;
 
-  voiceAllocator.resetTriggerFlags();
-  voiceAllocator.noteOn(4, 64);  // should re-use voice 1
-  testPassed &= voiceAllocator.getNumPlayingVoices() == 3;
-  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAllocator, 1);
+  voiceAlloc.resetTriggerFlags();
+  voiceAlloc.noteOn(4, 64);  // should re-use voice 1
+  testPassed &= voiceAlloc.getNumPlayingVoices() == 3;
+  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAlloc, 1);
 
-  voiceAllocator.resetTriggerFlags();
-  noteOffVoice = voiceAllocator.noteOff(4);
+  voiceAlloc.resetTriggerFlags();
+  noteOffVoice = voiceAlloc.noteOff(4);
   testPassed &=  noteOffVoice == 1; // voice 0 should have received this because voice 1 is already off
-  testPassed &= isNoteOffTriggerFlagCheckedExclusively(voiceAllocator, 1);
-  testPassed &= voiceAllocator.isNoteOn(1)                     == false;
-  testPassed &= voiceAllocator.getNormalizedVelocityOfVoice(1) == 0.0;
-  testPassed &= voiceAllocator.isVoicePlaying(1)               == true;   // voice is still playing in release phase (not yet killed)
-  testPassed &= voiceAllocator.getNumPlayingVoices()           == 3;
+  testPassed &= isNoteOffTriggerFlagCheckedExclusively(voiceAlloc, 1);
+  testPassed &= voiceAlloc.isNoteOn(1)                     == false;
+  testPassed &= voiceAlloc.getNormalizedVelocityOfVoice(1) == 0.0;
+  testPassed &= voiceAlloc.isVoicePlaying(1)               == true;   // voice is still playing in release phase (not yet killed)
+  testPassed &= voiceAlloc.getNumPlayingVoices()           == 3;
 
-  voiceAllocator.resetTriggerFlags();
-  voiceAllocator.killVoice(1);
-  testPassed &= voiceAllocator.isNoteOn(1)                     == false;
-  testPassed &= voiceAllocator.getNormalizedVelocityOfVoice(1) == 0.0;
-  testPassed &= voiceAllocator.isVoicePlaying(1)               == false;
-  testPassed &= voiceAllocator.getNumPlayingVoices()           == 2;
+  voiceAlloc.resetTriggerFlags();
+  voiceAlloc.killVoice(1);
+  testPassed &= voiceAlloc.isNoteOn(1)                     == false;
+  testPassed &= voiceAlloc.getNormalizedVelocityOfVoice(1) == 0.0;
+  testPassed &= voiceAlloc.isVoicePlaying(1)               == false;
+  testPassed &= voiceAlloc.getNumPlayingVoices()           == 2;
 
-  voiceAllocator.resetTriggerFlags();
-  voiceAllocator.noteOn(6, 64);  // should use voice 1 (the one which just became available)
-  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAllocator, 1);
-  testPassed &= voiceAllocator.getNumPlayingVoices() == 3;
-  testPassed &= voiceAllocator.getKeyOfVoice(1)      == 6;
+  voiceAlloc.resetTriggerFlags();
+  voiceAlloc.noteOn(6, 64);  // should use voice 1 (the one which just became available)
+  testPassed &= isNoteOnTriggerFlagCheckedExclusively(voiceAlloc, 1);
+  testPassed &= voiceAlloc.getNumPlayingVoices() == 3;
+  testPassed &= voiceAlloc.getKeyOfVoice(1)      == 6;
 
   return testPassed;
 }
