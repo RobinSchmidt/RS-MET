@@ -17,7 +17,7 @@ namespace rsTestRomos
 double _x[maxNumVoices][maxNumIns][maxNumFrames];     // inputs
 double _y[maxNumVoices][maxNumOuts][maxNumFrames];    // outputs
 double _d[maxNumVoices][maxNumOuts][maxNumFrames];    // desired outputs
-double t[maxNumFrames];                               // timline in samples for plots
+double _t[maxNumFrames];                              // timeline in samples for plots
 double *px0[maxNumIns];                               // pointers to the inputs of voice 0
 double *py0[maxNumOuts];                              // pointers to the outputs of voice 0
 double *pd0[maxNumOuts];                              // pointers to the outputs of voice 0

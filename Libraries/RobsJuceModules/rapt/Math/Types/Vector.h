@@ -15,7 +15,7 @@ public:
 
 
   /** Constructor. Initializes coordinates with the passed values. */
-  rsVector2D(T _x, T _y) : x(_x), y(_y) {}
+  rsVector2D(T x_, T y_) : x(x_), y(y_) {}
 
   /** Standard constructor. Leaves vector elements uninitialized. */
   rsVector2D() {}

@@ -20,7 +20,7 @@ static const int _N           = 50;
 extern double _x[maxNumVoices][maxNumIns][maxNumFrames];     // inputs
 extern double _y[maxNumVoices][maxNumOuts][maxNumFrames];    // outputs
 extern double _d[maxNumVoices][maxNumOuts][maxNumFrames];    // desired outputs
-extern double t[maxNumFrames];                               // timeline in samples for plots
+extern double _t[maxNumFrames];                              // timeline in samples for plots
 extern double *px0[maxNumIns];                               // pointers to the inputs of voice 0
 extern double *py0[maxNumOuts];                              // pointers to the outputs of voice 0
 extern double *pd0[maxNumOuts];                              // pointers to the desired(?) outputs of voice 0
