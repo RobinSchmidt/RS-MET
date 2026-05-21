@@ -1267,7 +1267,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
 #define CREATE_MONO_FRAME_FUNCTION_N(ClassName)                                                                           \
   void ClassName::processMonoFrame(Module *mdl, int voiceIndex)                                                        \
   {                                                                                                                       \
-    for(unsigned int pinIndex = 0; pinIndex < ((Module*) mdl)->getNumInputsInlined(); pinIndex++)                      \
+    for(int pinIndex = 0; pinIndex < ((Module*) mdl)->getNumInputsInlined(); pinIndex++)                      \
       WorkArea::tmpInFrame[pinIndex] = *(((Module*) mdl)->inputPins[pinIndex].outputPointer);                          \
     ClassName::process(mdl, WorkArea::tmpInFrame, ((Module*) mdl)->audioOutputs, voiceIndex);                       \
   }                                                                                                                       \
@@ -1281,7 +1281,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)                                 \
     {                                                                                                                     \
       int voiceIndex = voiceAllocator.getPlayingVoiceIndices()[playIndex];                                                \
-      for(unsigned int pinIndex = 0; pinIndex < ((Module*) mdl)->getNumInputsInlined(); pinIndex++)                    \
+      for(int pinIndex = 0; pinIndex < ((Module*) mdl)->getNumInputsInlined(); pinIndex++)                    \
       {                                                                                                                   \
         WorkArea::tmpInFrame[pinIndex] = *(((Module*) mdl)->inputPins[pinIndex].outputPointer                          \
                                            + voiceIndex * ((Module*) mdl)->inputPins[pinIndex].outputVoiceStride);     \
@@ -1298,7 +1298,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
     double *outPointer = ((Module*) mdl)->audioOutputs;                                                                \
     for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)                                                         \
     {                                                                                                                     \
-      for(unsigned int pinIndex = 0; pinIndex < ((Module *) mdl)->getNumInputsInlined(); pinIndex++)                   \
+      for(int pinIndex = 0; pinIndex < ((Module *) mdl)->getNumInputsInlined(); pinIndex++)                   \
       {                                                                                                                   \
         WorkArea::tmpInFrame[pinIndex] = * (((Module *) mdl)->inputPins[pinIndex].outputPointer                        \
                                             + frameIndex * ((Module *) mdl)->inputPins[pinIndex].outputFrameSize);     \
@@ -1311,7 +1311,7 @@ create a special project for that. Maybe it can be made part of the Liberty test
 #define CREATE_POLY_BLOCK_FUNCTION_N(ClassName)                                                                               \
   void ClassName::processPolyBlock(Module *mdl, int /*voiceIndex*/, int blockSize)                                            \
   {                                                                                                                           \
-    unsigned int pinIndex;                                                                                                    \
+    int pinIndex;                                                                                                    \
     int outFrameStride = ((Module*) mdl)->outFrameStride;                                                                  \
     int outVoiceStride = outFrameStride * processingStatus.getBufferSize();                                                   \
     double *outVoiceFramePointer;                                                                                             \

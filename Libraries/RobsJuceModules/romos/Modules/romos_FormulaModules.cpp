@@ -163,7 +163,7 @@ INLINE void FormulaModule_N_1::process(Module *module, double *in, double *out, 
 {
   FormulaModule_N_1 *formulaModule = static_cast<FormulaModule_N_1*> (module);
   rosic::ExpressionEvaluator* evaluator = formulaModule->evaluators[voiceIndex];
-  for(unsigned int i = 0; i < formulaModule->numInputs; i++) 
+  for(int i = 0; i < formulaModule->numInputs; i++) 
     *(formulaModule->inVariablesN[voiceIndex][i]) = in[i]; // inject inputs
   *out = evaluator->evaluateExpression();
 }
@@ -319,14 +319,14 @@ INLINE void FormulaModule_N_M::process(Module *module, double *in, double *out, 
 {
   FormulaModule_N_1::process(module, in, out, voiceIndex);
   FormulaModule_N_M *formulaModule = static_cast<FormulaModule_N_M*> (module);
-  for(unsigned int i = 0; i < formulaModule->outFrameStride; i++) 
+  for(int i = 0; i < formulaModule->outFrameStride; i++) 
     out[i] = *(formulaModule->outVariablesM[voiceIndex][i]); // collect outputs
 }
 
 void FormulaModule_N_M::resetVoiceState(int voiceIndex)
 {
   FormulaModule_N_1::resetVoiceState(voiceIndex);
-  for(unsigned int i = 0; i < outFrameStride; i++) 
+  for(int i = 0; i < outFrameStride; i++) 
     *(outVariablesM[voiceIndex][i]) = 0.0; // reset outputs
 }
 

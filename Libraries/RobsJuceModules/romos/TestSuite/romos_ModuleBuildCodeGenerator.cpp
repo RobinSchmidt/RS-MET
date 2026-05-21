@@ -43,7 +43,7 @@ rosic::rsString ModuleBuildCodeGenerator::getCodeForModule(romos::Module* module
   code += indent + S("\n");
 
   // 1st pass through the child-modules: create code for creation of atomic child modules:
-  for(unsigned int i = 0; i < container->getNumChildModules(); i++)
+  for(int i = 0; i < container->getNumChildModules(); i++)
   {
     child = container->getChildModule(i);
     if(child->isContainerModule())
@@ -66,7 +66,7 @@ rosic::rsString ModuleBuildCodeGenerator::getCodeForModule(romos::Module* module
 
   // 2nd pass through the child-modules: create code for creation of non-atomic (container) child modules:
   bool hasChildContainers = false;
-  for(unsigned int i=0; i<container->getNumChildModules(); i++)
+  for(int i=0; i<container->getNumChildModules(); i++)
   {
     child = container->getChildModule(i);
     if(child->isContainerModule())
@@ -95,12 +95,12 @@ rosic::rsString ModuleBuildCodeGenerator::getCodeForModule(romos::Module* module
   code += S("\n");
 
   // 3rd pass through the child-modules: create code for creation of connections:
-  for(unsigned int i = 0; i < container->getNumChildModules(); i++)
+  for(int i = 0; i < container->getNumChildModules(); i++)
   {
     //DEBUG_BREAK;
 
     child = container->getChildModule(i);
-    for(unsigned int pinIndex = 0; pinIndex < child->getNumInputPins(); pinIndex++)
+    for(int pinIndex = 0; pinIndex < child->getNumInputPins(); pinIndex++)
     {
       romos::Module* sourceModule = child->inputPins[pinIndex].sourceModule;
       if(sourceModule != NULL)
@@ -157,7 +157,7 @@ int ModuleBuildCodeGenerator::getNumOfSameModulesBefore(romos::Module* module)
   else
   {
     int count  = 0;
-    for(unsigned int i=0; i<parent->getNumChildModules(); i++)
+    for(int i=0; i<parent->getNumChildModules(); i++)
     {
       if(parent->getChildModule(i)->getTypeId() == module->getTypeId())
       {
@@ -174,7 +174,7 @@ int ModuleBuildCodeGenerator::getNumOfSameModulesBefore(romos::Module* module)
 rosic::rsDynamicArray<rosic::rsString> ModuleBuildCodeGenerator::createVariableNames(romos::ContainerModule* container)
 {
   rosic::rsDynamicArray<rosic::rsString> varNames;
-  for(unsigned int i = 0; i < container->getNumChildModules(); i++)
+  for(int i = 0; i < container->getNumChildModules(); i++)
     varNames.appendElement(makeModuleVariableName(container->getChildModule(i)));
   return varNames;
 }
@@ -183,7 +183,7 @@ rosic::rsDynamicArray<rosic::rsString> ModuleBuildCodeGenerator::createModuleNam
 {
   rosic::rsDynamicArray<rosic::rsString> names;
   rosic::rsString name;
-  for(unsigned int i = 0; i < container->getNumChildModules(); i++)
+  for(int i = 0; i < container->getNumChildModules(); i++)
   {
     name = rosic::rsString("\"") + container->getChildModule(i)->getName() + rosic::rsString("\"");
     names.appendElement(name);
@@ -194,7 +194,7 @@ rosic::rsDynamicArray<rosic::rsString> ModuleBuildCodeGenerator::createModuleNam
 rosic::rsDynamicArray<rosic::rsString> ModuleBuildCodeGenerator::createTypeRetrievalStrings(romos::ContainerModule* container)
 {
   rosic::rsDynamicArray<rosic::rsString> typeRetrievalStrings;
-  for(unsigned int i = 0; i < container->getNumChildModules(); i++)
+  for(int i = 0; i < container->getNumChildModules(); i++)
   {
     romos::Module* child = container->getChildModule(i);
 
@@ -230,7 +230,7 @@ void ModuleBuildCodeGenerator::getMaxNameLengths(rosic::rsDynamicArray<rosic::rs
 {
   maxAtomicNameLength    = 0;
   maxContainerNameLength = 0;
-  for(unsigned int i = 0; i < container->getNumChildModules(); i++)
+  for(int i = 0; i < container->getNumChildModules(); i++)
   {
     romos::Module* child = container->getChildModule(i);
     if(child->isContainerModule() && names[i].getLength() > maxContainerNameLength)

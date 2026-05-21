@@ -57,7 +57,7 @@ void UnitTest::printModuleStructure(romos::Module* module, int indent)
   romos::ContainerModule* container = dynamic_cast<romos::ContainerModule*> (module);
   if(container != NULL)
   {
-    for(unsigned int i=0; i<container->getNumChildModules(); i++)
+    for(int i = 0; i < container->getNumChildModules(); i++)
       printModuleStructure(container->getChildModule(i), indent+1);
   }
 }

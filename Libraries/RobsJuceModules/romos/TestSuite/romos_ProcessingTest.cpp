@@ -121,7 +121,7 @@ void ProcessingTest::initTest()
 void ProcessingTest::connectTestModuleToInputFeederModules()
 {
   rassert( moduleToTest != NULL ); // this function should be called after the moduleToTest has been allocated
-  for(unsigned int i = 0; i < moduleToTest->getNumInputPins(); i++)
+  for(int i = 0; i < moduleToTest->getNumInputPins(); i++)
   {
     moduleToTest->connectInputPinTo(i, inputFeederModules[i], 0);
     
@@ -130,7 +130,7 @@ void ProcessingTest::connectTestModuleToInputFeederModules()
 
 void ProcessingTest::connectTestModuleToOutputRetrieverModules()
 {
-  for(unsigned int i = 0; i < moduleToTest->getNumOutputPins(); i++)
+  for(int i = 0; i < moduleToTest->getNumOutputPins(); i++)
   {
     outputRetrieverModules[i]->connectInputPinTo(0, moduleToTest, i);
     
@@ -149,7 +149,7 @@ bool ProcessingTest::doOutputsMatchDesiredOutputs(bool polyphonic)
   bool outputsMatch = true;
   for(int voiceIndex = 0; voiceIndex <= highestVoiceIndexToCheck; voiceIndex++)
   {
-    for(unsigned int pinIndex = 0; pinIndex < moduleToTest->getNumOutputPins(); pinIndex++)
+    for(int pinIndex = 0; pinIndex < moduleToTest->getNumOutputPins(); pinIndex++)
       outputsMatch &= RAPT::rsArrayTools::almostEqual(outputs[voiceIndex][pinIndex], desiredOutputs[voiceIndex][pinIndex],
       numFramesToProcess, tolerance);
   }
@@ -392,7 +392,7 @@ void ProcessingTest::retrieveOutputBlock(int blockStart, int blockSize)
 
   if( !moduleToTest->isPolyphonic() )
   {
-    for(unsigned int pinIndex = 0; pinIndex < moduleToTest->getNumOutputPins(); pinIndex++)
+    for(int pinIndex = 0; pinIndex < moduleToTest->getNumOutputPins(); pinIndex++)
     {
       double *outputPointer = outputRetrieverModules[pinIndex]->getOutputPointer(0);
       for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)
@@ -410,7 +410,7 @@ void ProcessingTest::retrieveOutputBlock(int blockStart, int blockSize)
     for(int currentVoice = 0; currentVoice < numPlayingVoices; currentVoice++)
     {
       int voiceIndex = playingVoiceIndices[currentVoice];
-      for(unsigned int pinIndex = 0; pinIndex < moduleToTest->getNumOutputPins(); pinIndex++)
+      for(int pinIndex = 0; pinIndex < moduleToTest->getNumOutputPins(); pinIndex++)
       {
         double *outputPointer = outputRetrieverModules[pinIndex]->getOutputPointer(0);
         for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)

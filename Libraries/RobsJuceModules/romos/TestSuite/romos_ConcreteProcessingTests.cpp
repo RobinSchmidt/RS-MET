@@ -243,7 +243,7 @@ int WrappedAdderNTest::getAdderNumConnectedInputPins()
 {
   romos::Module* adderN = ((romos::ContainerModule*)moduleToTest)->getChildModule(1);
   int result = 0;
-  for(unsigned int i = 0; i < adderN->getNumInputPins(); i++)
+  for(int i = 0; i < adderN->getNumInputPins(); i++)
   {
     if(adderN->isInputPinConnected(i))
       result++;

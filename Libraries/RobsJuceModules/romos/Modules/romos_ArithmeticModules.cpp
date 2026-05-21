@@ -249,7 +249,7 @@ INLINE void AdderNModule::process(Module *module, double *ins, double *outs, int
 {
   AdderNModule *sumModule = static_cast<AdderNModule*> (module);
   outs[0] = 0.0;
-  for(unsigned int i = 0; i < sumModule->getNumInputPins()-1; i++)
+  for(int i = 0; i < sumModule->getNumInputPins()-1; i++)
     outs[0] += ins[i];
 }
 void AdderNModule::connectInputPinTo(int inputPinIndex, Module *sourceModule, 

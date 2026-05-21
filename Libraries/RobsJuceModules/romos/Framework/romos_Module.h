@@ -567,7 +567,9 @@ public:
 
   //unsigned int outFrameStride = 1, numInputs = 0; // isn't numInputs redundant with inputPins.size()?
   int outFrameStride = 1, numInputs = 0; // isn't numInputs redundant with inputPins.size()?
-  // Try to get rid of numInputs
+  // Try to get rid of numInputs. Or maybe it has a purpose after all. In the audio processing 
+  // functions, we loop over the inputs using an int, so maybe we can save a size_t -> int 
+  // conversion when we keep numInputs as int. 
 
   // rename outFrameStride to numOutputs, or numAudioOutputs
   // try to move them into the protected section - currently, doing so gives compiler errors

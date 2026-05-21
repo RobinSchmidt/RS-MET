@@ -536,7 +536,7 @@ void retrieveOutputBlock(romos::Module *module, double ***outputs, int blockStar
   double *outputAddress = module->getOutputPointer(0);
   if( !module->isPolyphonic() )
   {
-    for(unsigned int c = 0; c < module->getNumOutputPins(); c++)
+    for(int c = 0; c < module->getNumOutputPins(); c++)
     {
       for(int n = 0; n < blockSize; n++)
       {
@@ -552,7 +552,7 @@ void retrieveOutputBlock(romos::Module *module, double ***outputs, int blockStar
     for(int v = 0; v < numPlayingVoices; v++)
     {
       int voiceIndex = playingVoiceIndices[v];
-      for(unsigned int c = 0; c < module->getNumOutputPins(); c++)
+      for(int c = 0; c < module->getNumOutputPins(); c++)
       {
         for(int n = 0; n < blockSize; n++)
         {
@@ -738,7 +738,7 @@ void printModuleStructure(romos::Module *module, int indent)
   romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (module);
   if( container != NULL )
   {
-    for(unsigned int i=0; i<container->getNumChildModules(); i++)
+    for(int i=0; i<container->getNumChildModules(); i++)
       printModuleStructure(container->getChildModule(i), indent+1);
   }
 }

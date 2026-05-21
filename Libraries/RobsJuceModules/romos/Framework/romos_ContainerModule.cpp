@@ -721,7 +721,7 @@ void ContainerModule::unContainerize(ContainerModule *container)
 
 
   // handle connections from children of "this" into the container:
-  for(unsigned int childIndex = 0; childIndex < container->getNumChildModules(); childIndex++)
+  for(int childIndex = 0; childIndex < container->getNumChildModules(); childIndex++)
   {
     Module *childModule = container->getChildModule(childIndex);
     for(int pinIndex = 0; pinIndex < childModule->getNumInputPins(); pinIndex++)
