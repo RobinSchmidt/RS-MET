@@ -501,7 +501,9 @@ void createMiscSamples()
 
   return;
 
+  /*
   // Create miscelanneous other samples that are useful as raw material in the sampler engine.
+  // ToDo: Move into their own create... functions
 
   using Vec = std::vector<double>;
   using AT  = RAPT::rsArrayTools;
@@ -533,9 +535,8 @@ void createMiscSamples()
   //  distributed white noise.
   // -5 seconds should be long enough to have no noticable repetition pattern and/or 
   //  comb-filtering artifacts when layering several shifted copies.
+  */
 
-
-  //int dummy = 0;
 }
 
 // maybe rename to renderBrownZap

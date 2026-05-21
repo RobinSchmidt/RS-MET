@@ -88,8 +88,9 @@ bool testModalFilter2()
 bool testModalSynth()
 {
   return true; 
-  // maybe we can get rid of this "test" - it doesn't really test anything meaningful
+  // Maybe we can get rid of this "test" - it doesn't really test anything meaningful.
 
+  /*
   bool testResult = true;
 
   rsModalFilterBankDD ms;
@@ -121,6 +122,7 @@ bool testModalSynth()
   testResult &= fabs(y[0]) < 1.e-17;  //y[0] should be close to zero
 
   return testResult;
+  */
 }
 
 

@@ -594,24 +594,16 @@ void rsModalFilterBank<TSig, TPar>::updateFilterCoeffs(int m)
 template<class TSig, class TPar>
 void rsModalFilterBank<TSig, TPar>::calculateModalFilterCoefficients()
 {
-  size_t nm = rsMin((size_t)numModes, frequencies.size(), amplitudes.size(), decayTimes.size());
-  nm = rsMin(nm, startPhases.size());
-  for(size_t m = 0; m < nm; m++)
-  {
+  int nm = rsMin(numModes, (int)frequencies.size(), (int)amplitudes.size(), (int)decayTimes.size());
+  nm = rsMin(nm, (int)startPhases.size());
+  for(int m = 0; m < nm; m++)
     updateFilterCoeffs(m);
 
-    // Old:
-    /*
-    // Factor out into calculateModalFilterCoefficients(m) or updateModalFilterCoeffs(m)
-    modalFilters[m].setModalParameters(
-      referenceFrequency * frequencies[m], 
-      referenceAmplitude * amplitudes[m],
-      referenceAttack * attackTimes[m],
-      referenceDecay * decayTimes[m], 
-      startPhases[m], 
-      sampleRate); 
-      */
-  }
+  // Old:
+  //size_t nm = rsMin((size_t)numModes, frequencies.size(), amplitudes.size(), decayTimes.size());
+  //nm = rsMin(nm, startPhases.size());
+  //for(size_t m = 0; m < nm; m++)
+  //  updateFilterCoeffs(m);
 }
 
 // static member functions:

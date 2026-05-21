@@ -739,8 +739,8 @@ bool rotes::testAllpassDelayNested()
   ok &= z3 == y3;
   //rsPlotVectors(y3, z3);
 
+  //RAPT::rsAssert(ok);
   return ok;
-  RAPT::rsAssert(ok);
 }
 
 
@@ -755,22 +755,34 @@ void rsFGHT3(T* v, int N, T a, T b, T c, T d, T e, T f, T g, T H, T I)
   return;
 
 
+  /*
+  // ToDo: Check if the code below is obsolete, i.e. now superseded by 
+  // rsLinearTransforms::kronecker3x3. If so, delete it.
+  // 
   // Experimental - we try to do something similar with a 3x3 seed matrix. We may base this on 3D
   // rotations with or without reflections. We may have 3 independent parameters to control the
   // diffusion - we could just give those 3 parameters directly to the user but maybe we can 
   // somehow give more meaningful parameters like totalDiffusion, diffusionSpread, ...
   // i suppose, the case with 27 delaylines is most useful for reverb, maybe 9 is also ok
   int h = 1;
-  while(h < N) {
-    for(int i = 0; i < N; i += 3*h) {
-      for(int j = i; j < i+h; j++) {
+  while(h < N) 
+  {
+    for(int i = 0; i < N; i += 3*h) 
+    {
+      for(int j = i; j < i+h; j++) 
+      {
         T x = v[j+0*h];
         T y = v[j+1*h];
         T z = v[j+2*h];
         v[j+0*h] = a*x + b*y + c*z;
         v[j+1*h] = d*x + e*y + f*z;
-        v[j+2*h] = g*x + H*y + I*z;  }}
-    h *= 3;  }
+        v[j+2*h] = g*x + H*y + I*z;  
+      }
+    }
+    h *= 3;
+  }
+  */
+
 }
 // -ok - works - move to rapt
 // -use it in the FDN, based on a rotation matrix defined in terms of Euler angles, maybe using
