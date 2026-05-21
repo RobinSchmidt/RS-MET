@@ -558,7 +558,7 @@ bool testDerivativeBasedRootFinding()
     numCalls = 0; // Reset call/iteration counter. 1 call to f1, etc. is 1 iteration in the algo.
 
     // Find the x-value where the graph of sin(x) goes through y using x0 as initial guess:
-    Real x;
+    Real x(0);
     switch(method)
     {
     case 1: x = RF::newton(      f1, x0, y); break;

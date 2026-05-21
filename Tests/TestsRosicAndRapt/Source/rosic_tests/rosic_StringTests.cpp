@@ -147,7 +147,7 @@ bool testStringDoubleConversionsGeometricProgression(double start, double factor
   double numberReconstructed = numString.asDouble();
   int    iteration           = 0;
 
-  double limit;
+  double limit(0);
   double absFactor = fabs(factor);
   if(absFactor < 1.0)
   {

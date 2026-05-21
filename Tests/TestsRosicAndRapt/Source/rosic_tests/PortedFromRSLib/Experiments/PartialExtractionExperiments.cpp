@@ -1349,14 +1349,14 @@ void sineRecreationBandpassNoise()
   Flt flt;
   flt.setSampleRate(fs);
   flt.setMode(Flt::BANDPASS_PEAK);
-  int n;
-  for(n = 0; n < N; n++) {
+  //int n;
+  for(int n = 0; n < N; n++) {
     fa[n] = rsLinToLin(double(n), 0.0, N-1.0, f1, f2);  // actual instantaneous center freq
     x[n]  = ng.getSample();
   }
   for(int m = 0; m < numPasses; m++) {
     flt.reset();
-    for(n = 0; n < N; n++) {
+    for(int n = 0; n < N; n++) {
       double bw = rsLinToLin(double(n), 0.0, N-1.0, bw1, bw2); // instantaneous bandwidth
       double bwOct = rsBandwidthConverter::absoluteBandwidthToOctaves(bw, fa[n]);
       flt.setFrequency(fa[n]);
@@ -1380,17 +1380,17 @@ void sineRecreationBandpassNoise()
 
   // Create cleaned up version via 3-point median filter:
   Vec fm1c(N);
-  for(n = 1; n < N-1; n++)
+  for(int n = 1; n < N-1; n++)
     fm1c[n] = rsMedian(fm1[n-1], fm1[n], fm1[n+1]);
 
   // Measure instantaneous frequency (with algo 2):
   Vec fm2(N);
-  for(n = 0; n < N; n++)
+  for(int n = 0; n < N; n++)
     fm2[n] = rsSineFrequencyAt(&x[0], N, n, false) * (fs/(2*PI));
 
   // Create a median-filtered version of that also:
   Vec fm2c(N);
-  for(n = 1; n < N-1; n++)
+  for(int n = 1; n < N-1; n++)
     fm2c[n] = rsMedian(fm2[n-1], fm2[n], fm2[n+1]);
   // first an last value look wrong - for the moment, just repeat 2nd and 2nd-to-last:
   fm2c[0]   = fm2c[1];
@@ -1419,7 +1419,7 @@ void sineRecreationBandpassNoise()
 
   // measure instantaneous phase and amplitude:
   Vec p(N), a(N);  // maybe use a1, p1
-  for(n = 0; n < N-1; n++)
+  for(int n = 0; n < N-1; n++)
     rsSineAmplitudeAndPhase(x[n], x[n+1], w[n], &a[n], &p[n]);
   // todo: use a symmetric estimation - looking forard and backward and using an average
   // what about the last sample? should we use extrapolation? or is there a similar formula that 
@@ -1438,14 +1438,14 @@ void sineRecreationBandpassNoise()
 
   // re-create the bandpass noise by a freq-, phase- and amp-modulated sine:
   Vec y(N);   // recreated signal 1 - rename to y1
-  for(n = 0; n < N; n++)
+  for(int n = 0; n < N; n++)
     y[n] = a[n] * sin(p[n]);
 
   // Now we want to use the w-array for synthesis, too:
   Vec wi(N);  // integrated w
   Vec pm(N);  // modified p
   rsArrayTools::cumulativeSum(&w[0], &wi[0], N);  // maybe try trapezoidal integration instead
-  for(n = 0; n < N; n++)
+  for(int n = 0; n < N; n++)
     pm[n] = rsWrapToInterval(p[n]-wi[n], -PI, PI);
 
   // actual resynthesis
