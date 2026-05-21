@@ -14,7 +14,7 @@ public:
   virtual void allocateMemory();
   virtual void freeMemory();
   virtual void setModuleName(const std::string& newName);
-  virtual unsigned int getNumOutputPins() const { return 1; }
+  virtual int getNumOutputPins() const { return 1; }
   virtual double getValue() const { return value; }
 protected:
   double value = 0.0;

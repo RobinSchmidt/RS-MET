@@ -163,7 +163,8 @@ void romos::Module::disconnectInputPinsWithInputFrom(romos::Module *sourceModule
   }
 }
 
-void romos::Module::disconnectInputPinsWithInputFrom(romos::Module *sourceModuleToDisconnect,
+void romos::Module::disconnectInputPinsWithInputFrom(
+  romos::Module *sourceModuleToDisconnect,
   int outputPinIndex)
 {
   for(unsigned int i = 0; i < inputPins.size(); i++)
@@ -369,10 +370,11 @@ std::vector<romos::Module*> romos::Module::getConnectedTargetModulesOfPin(int ou
   }
 }
 
-unsigned int romos::Module::getNumIncomingAudioConnections() const
+//unsigned int romos::Module::getNumIncomingAudioConnections() const
+int romos::Module::getNumIncomingAudioConnections() const
 {
   int result = 0;
-  for(unsigned int i = 0; i < inputPins.size(); i++)
+  for(int i = 0; i < (int)inputPins.size(); i++)
   {
     if( inputPins[i].sourceModule != nullptr )
       result++;

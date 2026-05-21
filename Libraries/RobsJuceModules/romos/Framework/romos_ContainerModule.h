@@ -265,7 +265,7 @@ public:
 
   /** Overriden here because it does not equal the outFrameStride member variable for 
   containers. */
-  virtual unsigned int getNumOutputPins() const
+  virtual int getNumOutputPins() const
   {
     //return (unsigned int)getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_OUTPUT).size();
     // old version

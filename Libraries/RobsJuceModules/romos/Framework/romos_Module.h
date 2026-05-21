@@ -50,14 +50,27 @@ public:
 
   romos::Module *sourceModule;
   double        *outputPointer;     // rename to sourcePointer
-  unsigned int  outputIndex;        // rename to sourceOutIndex
-  unsigned int  outputFrameSize;    /*<<< distance between successive output frames */
-  unsigned int  outputVoiceStride;  /*<<< distance between samples of 2 voices */
+
+  //// Old:
+  //unsigned int  outputIndex;        // rename to sourceOutIndex
+  //unsigned int  outputFrameSize;    /*<<< distance between successive output frames */
+  //unsigned int  outputVoiceStride;  /*<<< distance between samples of 2 voices */
+
+  // New (2026/05/21):
+  int outputIndex;        // rename to sourceOutIndex
+  int outputFrameSize;    /*<<< distance between successive output frames */
+  int outputVoiceStride;  /*<<< distance between samples of 2 voices */
 
   double defaultValue; // value to let outputPointer refer to, when input pin is disconnected
 
   // \todo: make sourceModule and outputIndex private
   // -> provide accessors getApparent/ActualSourceModule/Index
+
+  // ToDo:
+  //
+  // - Maybe use int instead of unsigned int. Or do we have a specific reason to use unsigned?
+  //   Maybe use int32_t and maybe move the default value up to avoid padding. But we should 
+  //   benchmark before and after.
 
 
 private:
@@ -288,14 +301,16 @@ public:
 
 
   /** Returns the number of audio input pins. */
-  virtual unsigned int getNumInputPins() const { return (unsigned int)inputPins.size(); }
+  virtual int getNumInputPins() const { return (int)inputPins.size(); }
+  //virtual unsigned int getNumInputPins() const { return (unsigned int)inputPins.size(); }
     // rename to getNumAudioInputs
 
   /** Returns the data for the input pin with given index. */
   virtual AudioInputPinData getAudioInputPinData(int pinIndex) const;
 
   /** Returns the number of audio outputs. */
-  virtual unsigned int getNumOutputPins() const { return outFrameStride; }
+  virtual int getNumOutputPins() const { return outFrameStride; }
+  //virtual unsigned int getNumOutputPins() const { return outFrameStride; }
     // redundant with getOutputFrameStride
 
   /** This is an inlined version of getNumInputs and it is for internal use only - it will return 
@@ -307,7 +322,8 @@ public:
   actually represent the number of inputs of the parent container-module. This is certainly a major
   quirk, but it is required to make the DSP code fast.  ...maybe someday we find a cleaner solution
   to this problem... */
-  INLINE unsigned int getNumInputsInlined() const { return numInputs; }  // not needed anymore?
+  INLINE int getNumInputsInlined() const { return numInputs; }  // not needed anymore?
+  //INLINE unsigned int getNumInputsInlined() const { return numInputs; }  // not needed anymore?
 
   /** For internal use only @see getNumInputsInlined */
   //INLINE unsigned int getNumOutputsInlined() const { return outFrameStride; }
@@ -443,7 +459,8 @@ public:
 
 
   /** Returns the number of audio connections that are coming in into this module. */
-  virtual unsigned int getNumIncomingAudioConnections() const; // { return incomingAudioConnections.size(); }
+  virtual int getNumIncomingAudioConnections() const;
+  //virtual unsigned int getNumIncomingAudioConnections() const; // { return incomingAudioConnections.size(); }
 
   /** Returns a pointer to the incoming audio connection with the given index. */
   //virtual AudioConnection* getIncomingAudioConnection(int index) const { return incomingAudioConnections.at(index); }
@@ -547,7 +564,10 @@ public:
 
   std::vector<AudioInputPinData> inputPins;       // temporarily moved to public for debug
   double *audioOutputs = nullptr;
-  unsigned int outFrameStride = 1, numInputs = 0; // isn't numInputs redundant with inputPins.size()?
+
+  //unsigned int outFrameStride = 1, numInputs = 0; // isn't numInputs redundant with inputPins.size()?
+  int outFrameStride = 1, numInputs = 0; // isn't numInputs redundant with inputPins.size()?
+
   // rename outFrameStride to numOutputs, or numAudioOutputs
   // try to move them into the protected section - currently, doing so gives compiler errors
   // figure out why and try to fix

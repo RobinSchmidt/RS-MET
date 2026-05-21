@@ -1377,7 +1377,7 @@ void ContainerModule::sortChildModuleArray()
   std::vector<Module*> oldOutputModules = getChildModulesWithType("AudioOutput");
 
   std::vector<std::vector<Module*> > oldTargetModuleArrays; // one array for each output pin
-  for(unsigned int outIndex = 0; outIndex < getNumOutputPins(); outIndex++)
+  for(int outIndex = 0; outIndex < getNumOutputPins(); outIndex++)
     rosic::appendElement(oldTargetModuleArrays, getConnectedTargetModulesOfPin(outIndex));
 
   // the actual sorting:
@@ -1386,9 +1386,9 @@ void ContainerModule::sortChildModuleArray()
   // re-connect input pins, if necessary:
   //std::vector<Module*> newInputModules  = getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_INPUT);
   std::vector<Module*> newInputModules  = getChildModulesWithType("AudioInput");
-  for(unsigned int newIndex = 0; newIndex < newInputModules.size(); newIndex++)
+  for(int newIndex = 0; newIndex < newInputModules.size(); newIndex++)
   {
-    unsigned int oldIndex = rosic::findElement(oldInputModules, newInputModules[newIndex]);
+    int oldIndex = rosic::findElement(oldInputModules, newInputModules[newIndex]);
     if(oldIndex != newIndex)
     {
       Module *sourceModule     = oldInputModules[oldIndex]->inputPins[0].sourceModule;
@@ -1400,16 +1400,16 @@ void ContainerModule::sortChildModuleArray()
   // re-connect output pins, if necessary:
   //std::vector<Module*> newOutputModules = getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_OUTPUT);
   std::vector<Module*> newOutputModules = getChildModulesWithType("AudioOutput");
-  for(unsigned int newIndex = 0; newIndex < newOutputModules.size(); newIndex++)
+  for(int newIndex = 0; newIndex < newOutputModules.size(); newIndex++)
   {
-    unsigned int oldIndex = rosic::findElement(oldOutputModules, newOutputModules[newIndex]);
+    int oldIndex = rosic::findElement(oldOutputModules, newOutputModules[newIndex]);
     if(oldIndex != newIndex)
     {
       std::vector<Module*> oldTargetsOfPin = oldTargetModuleArrays[oldIndex];
-      for(unsigned int targetIndex = 0; targetIndex < oldTargetsOfPin.size(); targetIndex++)
+      for(int targetIndex = 0; targetIndex < oldTargetsOfPin.size(); targetIndex++)
       {
         Module *targetModule = oldTargetsOfPin[targetIndex];
-        for(unsigned int pinIndex = 0; pinIndex < targetModule->inputPins.size(); pinIndex++)
+        for(int pinIndex = 0; pinIndex < targetModule->inputPins.size(); pinIndex++)
         {
           if( targetModule->inputPins[pinIndex].outputIndex == oldIndex )
             targetModule->connectInputPinTo(pinIndex, this, newIndex);

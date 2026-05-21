@@ -12,8 +12,8 @@ class AudioInputModule : public IdentityModule
 public:
   //virtual void initialize();
   //virtual void resetState() { } // overriden to avoid heap-corruption - baseclass function would write into invalid memory areas
-  virtual unsigned int getNumInputPins()  const { return 0; }
-  virtual unsigned int getNumOutputPins() const { return 1; }
+  virtual int getNumInputPins()  const { return 0; }
+  virtual int getNumOutputPins() const { return 1; }
 protected:
   //virtual void allocateMemory();
   //virtual void freeMemory();
@@ -44,8 +44,8 @@ class AudioOutputModule : public IdentityModule
 public:
   //virtual void initialize();
   //virtual void resetState() { }
-  virtual unsigned int getNumInputPins()  const { return 1; }
-  virtual unsigned int getNumOutputPins() const { return 0; }
+  virtual int getNumInputPins()  const { return 1; }
+  virtual int getNumOutputPins() const { return 0; }
 protected:
   virtual void allocateMemory();
   virtual void freeMemory();
