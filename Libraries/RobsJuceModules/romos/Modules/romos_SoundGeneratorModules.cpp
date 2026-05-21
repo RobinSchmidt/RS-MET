@@ -126,8 +126,8 @@ void BandlimitedImpulseTrain::initialize()
   else                                                                                \
     ampScaler = 0.0;                                                                  \
   double omega    = *in1 * processingStatus.getFreqToOmegaFactor();                   \
-  /*double absOmega = absFreq * processingStatus.getFreqToOmegaFactor();                \*/
   double theta = blit->phases[voiceIndex] + TWO_PI * (*in2 + blit->fixedPhaseOffset); \
+  //double absOmega = absFreq * processingStatus.getFreqToOmegaFactor();
 
 // ToDo: Maybe try to get rid of that. Macros are a pain to debug.
 
