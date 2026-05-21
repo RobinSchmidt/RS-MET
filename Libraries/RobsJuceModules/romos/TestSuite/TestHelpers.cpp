@@ -14,9 +14,9 @@
 // the global namespace
 namespace rsTestRomos
 {
-double _x[maxNumVoices][maxNumIns][maxNumFrames];      // inputs
-double _y[maxNumVoices][maxNumOuts][maxNumFrames];     // outputs
-double d[maxNumVoices][maxNumOuts][maxNumFrames];     // desired outputs
+double _x[maxNumVoices][maxNumIns][maxNumFrames];     // inputs
+double _y[maxNumVoices][maxNumOuts][maxNumFrames];    // outputs
+double _d[maxNumVoices][maxNumOuts][maxNumFrames];    // desired outputs
 double t[maxNumFrames];                               // timline in samples for plots
 double *px0[maxNumIns];                               // pointers to the inputs of voice 0
 double *py0[maxNumOuts];                              // pointers to the outputs of voice 0
@@ -125,11 +125,11 @@ void initializeInputSequences()
       {
         _x[v][c][n] = RAPT::rsRandomUniform(-1.0, 1.0);
         _y[v][c][n] = 0.0;
-        d[v][c][n] = 0.0;
+        _d[v][c][n] = 0.0;
       }
       px[v][c] = &(_x[v][c][0]);
       py[v][c] = &(_y[v][c][0]);
-      pd[v][c] = &(d[v][c][0]);
+      pd[v][c] = &(_d[v][c][0]);
     }
     ppx[v] = &(px[v][0]);
     ppy[v] = &(py[v][0]);
@@ -140,13 +140,13 @@ void initializeInputSequences()
   {
     px0[c] = &(_x[0][c][0]);
     py0[c] = &(_y[0][c][0]);
-    pd0[c] = &(d[0][c][0]);
+    pd0[c] = &(_d[0][c][0]);
   }
 }
 
 void zeroDesiredOutputs()
 {
-  memset(d, 0, maxNumVoices * maxNumOuts * maxNumFrames * sizeof(double));
+  memset(_d, 0, maxNumVoices * maxNumOuts * maxNumFrames * sizeof(double));
 }
 
 void writeInputSequencesToFile()
