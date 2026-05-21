@@ -23,7 +23,7 @@ void WhiteNoise::resetVoiceState(int voiceIndex)
   state[voiceIndex] = (unsigned long)parameters[0].value.asInt();
   //state[voiceIndex] = (unsigned long) round( *(inputPins[0].outputPointer + voiceIndex * inputPins[0].outputVoiceStride) );
 }
-void WhiteNoise::parameterChanged(int index)
+void WhiteNoise::parameterChanged(int /*index*/)
 {
   // nothing to do - we initialize the PNRG state directly from parameters[0] in resetVoiceState
 }
@@ -304,7 +304,7 @@ void BlitSaw::resetVoiceState(int voiceIndex)
   resetIntegratorState(this, voiceIndex, 0.0, 1.0, 440.0);
     // will be reset with proper oscOmega value on note-on
 }
-void BlitSaw::resetIntegratorState(Module *module, int voiceIndex, double startPhase, double blitOut, double oscFreq)
+void BlitSaw::resetIntegratorState(Module* /*module*/, int voiceIndex, double startPhase, double blitOut, double oscFreq)
 {
   // To initialize the integrator's state, we first prescribe, which value the first output sample 
   // should have. The desired first output sample is computed by considering the continuous time 

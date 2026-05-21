@@ -434,9 +434,9 @@ bool checkProcessingInBlocksMonoAndPrintResult(romos::Module *module, int numFra
   return result;
 }
 
-bool checkProcessingInFramesPolyAndPrintResult(romos::Module *module, int numVoicesToCheck, int numFrames,
-                                               double ***x, double ***y, double ***d,
-                                               double tolerance, char *testName, std::vector<romos::NoteEvent> *events)
+bool checkProcessingInFramesPolyAndPrintResult(romos::Module *module, int numVoicesToCheck, 
+  int numFrames, double ***x, double ***y, double ***d, double /*tolerance*/, 
+  char *testName, std::vector<romos::NoteEvent> *events)
 {
   module->resetStateForAllVoices();
   int v;

@@ -76,3 +76,7 @@ generally available for freelance work on audio DSP algorithms with special inte
 
 - Maybe make a section about ToolChain (with 2nd order headline) with some screenshots. They could
   be stored in a discussion thread in the GitHub repo in order to not bloat the repo itself.
+
+- In the "Repository Structure" explain the dependencies. I already do to some extent but only 
+  partially. Explain it more fully for ToolChain and the TestsRosicandRapt project. Maybe use a 
+  top-down approach.

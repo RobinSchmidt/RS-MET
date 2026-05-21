@@ -456,14 +456,16 @@ void ParameterModule::setMinMaxAndMapping(double newMin, double newMax, int newM
     setParameter(4, "Linear", false);
 }
 
-void ParameterModule::setValueFromController(double controllerValue)
+void ParameterModule::setValueFromController(double /*controllerValue*/)
 {
-  DEBUG_BREAK; // controller stuff not yet implemented
+  RAPT::rsError("Controller stuff not yet implemented");
+  //DEBUG_BREAK; // controller stuff not yet implemented
 }
-void ParameterModule::setValueFromSnapshots(int topLeftIndex, int topRightIndex, 
-  int bottomLeftIndex, int bottomRightIndex, double x, double y)
+void ParameterModule::setValueFromSnapshots(int /*topLeftIndex*/, int /*topRightIndex*/,
+  int /*bottomLeftIndex*/, int /*bottomRightIndex*/, double /*x*/, double /*y*/)
 {
-  DEBUG_BREAK; // snapshot morphing not yet implemented
+  RAPT::rsError("Snapshot morphing not yet implemented");
+  //DEBUG_BREAK; // snapshot morphing not yet implemented
 }
 
 void ParameterModule::enforceConsistencyOfValues()

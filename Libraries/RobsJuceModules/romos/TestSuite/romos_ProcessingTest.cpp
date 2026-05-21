@@ -201,7 +201,7 @@ void ProcessingTest::fillInputSignalArraysWithTestSignal()
   fillInputSignalArraysRandomly(1);
 }
 
-void ProcessingTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
+void ProcessingTest::fillDesiredOutputSignalArrays(bool /*testModuleIsPolyphonic*/)
 {
   clearDesiredOutputSignalArrays();
 }
@@ -456,8 +456,8 @@ void ProcessingTest::setTestPolyphonic(bool shouldBePolyphonic)
 // information output functions:
 
 
-void ProcessingTest::plotDesiredAndActualOutput(int voiceIndex, int pinIndex, int numFramesToPlot,
-  int startFrame)
+void ProcessingTest::plotDesiredAndActualOutput(int voiceIndex, int pinIndex, 
+  int numFramesToPlot, int startFrame)
 {
 #ifdef RS_DEBUG_PLOTTING
   GNUPlotter plt;
@@ -465,6 +465,16 @@ void ProcessingTest::plotDesiredAndActualOutput(int voiceIndex, int pinIndex, in
     &timeAxis[startFrame],
     desiredOutputs[voiceIndex][pinIndex],
     outputs[voiceIndex][pinIndex]);
+#else
+  // Some dummy instructions to avoid "unreferenced parameter" warnings when we compile without
+  // RS_DEBUG_PLOTTING defined:
+  voiceIndex = 0;
+  pinIndex = 0;
+  numFramesToPlot = 0;
+  startFrame = 0;
+  // ToDo: Maybe write and use a convenience function like rsSetZero(voiceIndex, pinIndex, ...).
+  // Maybe it could be a variadic template that takes any number of parameters. Maybe the 
+  // parameters could even be of different types. I'm not sure, if that's possible, though.
 #endif
 }
 
