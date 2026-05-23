@@ -33,7 +33,9 @@ namespace RSLib
 
     /** An abstract class should have a virtual destructor. */
     //virtual ~rsCallbackBase1() {}
-      // leads to segmentation fault error in the "testParameter" unit test with gcc
+      // Declaring the destructor virtual leads to segmentation fault error in the "testParameter" 
+      // unit test with gcc. MSVC gives a warning when we comment this out, though. We need to 
+      // figure out what's going on here! 
 
     /** This is the function to actually invoke the callback. Inside your client-code, the
     invocation code should look like this:

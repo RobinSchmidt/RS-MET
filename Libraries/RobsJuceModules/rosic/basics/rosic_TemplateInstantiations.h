@@ -216,6 +216,22 @@ public:
     *right = tmp[1];
   }
 };
+// MSVC gives a compiler warning of type  
+// "C4661: no suitable definition provided for explicit template instantiation request"
+// But we do have the line
+// template class RAPT::rsEngineersFilter<rsFloat64x2, double>;
+// in the .cpp file that requests an instantiation. Maybe we need to drag that ober into the .h 
+// file? Or maybe we need to move some of the implementation code of RAPT::rsEnigneersFilter into
+// the correpsoning .h file. 
+// 
+// This is what GitHub Copilot autocomplete generates (and I have no idea, if it's meaningful):
+// Or maybe we need to provide an explicit specialization of the getSample function for the 
+// rsFloat64x2 case in the .cpp file. Because the default implementation of getSample in 
+// RAPT::rsEngineersFilter calls getSampleDirect which is not implemented for the rsFloat64x2 
+// instantiation. But we have implemented getSampleDirect2 for the rsFloat64x2 case. So maybe we 
+// need to provide an explicit specialization of getSample for the rsFloat64x2 case that calls 
+// getSampleDirect2. That would be a bit of a hack, but it might be necessary to get rid of the 
+// compiler warning.
 
 class rsCrossOver4WayStereo : public RAPT::rsCrossOver4Way<rsFloat64x2, double>
 {
