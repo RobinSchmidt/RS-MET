@@ -21,8 +21,9 @@ public:
 protected:
   virtual void allocateMemory();
   virtual void freeMemory();
-  unsigned long *state; // actually, we should use a self-defined uint32 to make sure it's 
-                        // machine independent ...or maybe use RAPT::rsNoiseGenerator
+  unsigned long *state = nullptr; 
+  // Actually, we should use a self-defined uint32 to make sure it's machine independent 
+  // ...or maybe use RAPT::rsNoiseGenerator
 };
 class WhiteNoiseTypeInfo : public ModuleTypeInfo
 {
@@ -74,7 +75,7 @@ protected:
   inline static void updatePhase(Phasor* phasor, double freq, int voiceIndex);
   virtual void allocateMemory();
   virtual void freeMemory();
-  double *phases;
+  double *phases = nullptr;
   friend class SineOscillator;
 };
 class PhasorTypeInfo : public ModuleTypeInfo
@@ -154,8 +155,8 @@ protected:
 
   INLINE static double computeUnscaledBlitValue(const double theta, const double numHarmonics);
 
-  double *phases;
-  double fixedPhaseOffset;
+  double *phases = nullptr;
+  double fixedPhaseOffset = 0.0;
 
   // intermediate variables, to be used locally in process:
   //double numHarmonics, ampScaler, omega, theta;
@@ -231,7 +232,7 @@ public:
 protected:
   virtual void allocateMemory();
   virtual void freeMemory();
-  double *oldIntegratorOutputs; // y[n-1] for the integrator
+  double *oldIntegratorOutputs = nullptr; // y[n-1] for the integrator
 
 
   static BlitIntegratorInitialStates initialStates;

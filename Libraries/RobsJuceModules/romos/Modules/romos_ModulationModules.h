@@ -45,8 +45,8 @@ protected:
   virtual void allocateMemory();
   virtual void freeMemory();
 
-  unsigned long *counters;
-  double        *startValues;
+  unsigned long *counters = nullptr;
+  double        *startValues = nullptr;
 };
 
 class EnvelopeADSRTypeInfo : public ModuleTypeInfo
