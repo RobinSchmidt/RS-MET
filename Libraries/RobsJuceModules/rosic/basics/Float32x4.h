@@ -327,6 +327,12 @@ public:
 protected:
 
   __m128 v;
+
+  //__m128 v = _mm_setzero_ps();  
+  // To shut up compiler warnings. But actually I'd like to leave it uninitialized for performance
+  // reasons. Maybe try to use the RS_DONTWARN_UNINITIALIZED() macro from 
+  // rapt/basics/MacroDefinitions.h
+
   //__declspec(align(16)) __m128 v; // the value (define and ALIGN(N) macro for gcc/msc)
   //__declspec(align(32)) __m128 v;
 };

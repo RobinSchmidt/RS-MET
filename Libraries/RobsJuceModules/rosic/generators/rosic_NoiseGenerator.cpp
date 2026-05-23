@@ -31,11 +31,14 @@ NoiseGenerator::NoiseGenerator(int bufferLengthToAllocate)
   }
   mutex.unlock();
 
-  sampleRate  = 44100.0;
-  slope       = 0.0;
-  lowestFreq  = 20.0;
-  highestFreq = 20000.0;
-  seed        = 0;
+  // Update 2026/05/13. These initializations below are now done in the class definition:
+  //sampleRate  = 44100.0;
+  //slope       = 0.0;
+  //lowestFreq  = 20.0;
+  //highestFreq = 20000.0;
+  //seed        = 0;
+  // ...and can be deleted at some point.
+
   createNoiseSequence();
   trigger();
 }

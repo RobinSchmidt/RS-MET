@@ -97,7 +97,7 @@ namespace rosic
     int    length = 0;
       // nominal length (excluding the interpolator margin, maximum delay will be length-1
 
-    double frac;
+    double frac = 0.0;
       // The actual readout-position is this (fractional) number of samples ahead the
       // tapOut-pointer position. It is given by  1.0 - delayInSampleFractionalPart. */
 

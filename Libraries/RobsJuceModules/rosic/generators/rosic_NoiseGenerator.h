@@ -103,18 +103,18 @@ namespace rosic
     /** Frees the allocated memory, in case it is not shared memory. */
     void freeMemoryIfNotShared();
 
-    double *buffer;          // buffer containing the noise sequence for playback
-    int    length;           // length of the buffer
-    int    readIndex;        // current index in the buffer to read from
-    double sampleRate;       // the samplerate at which this generator runs
-    double slope;            // slope of the magnitude spectrum
-    double lowestFreq;       // lowest frequency to be generated
-    double highestFreq;      // highest frequency to be generated
-    int    seed;             // seed for the random number generator for the phase spectrum
-    bool   pointerInvalid;   // flag to indicate that the 'buffer' poinet is invalid
-    bool   memoryIsShared;   // indicates whether we use shared memory
+    double *buffer        = nullptr;  // buffer containing the noise sequence for playback
+    int    length         =     0;    // length of the buffer
+    int    readIndex      =     0;    // current index in the buffer to read from
+    double sampleRate     = 44100.0;  // the samplerate at which this generator runs
+    double slope          =     0.0;  // slope of the magnitude spectrum
+    double lowestFreq     =    20.0;  // lowest frequency to be generated
+    double highestFreq    = 20000.0;  // highest frequency to be generated
+    int    seed           =     0;    // seed for the random number generator for the phase spectrum
+    bool   pointerInvalid = true;     // flag to indicate that the 'buffer' pointer is invalid
+    bool   memoryIsShared = true;     // indicates whether we use shared memory
 
-    MutexLock mutex;         // mutex-lock for accessing the possibly shared memory
+    MutexLock mutex;                  // mutex-lock for accessing the possibly shared memory
 
     //=============================================================================================
 
