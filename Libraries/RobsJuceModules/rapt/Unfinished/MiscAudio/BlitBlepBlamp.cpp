@@ -35,8 +35,8 @@ void rsTableLinBlep<TSig, TTim>::updateTables()
   int ic      = (L-1)/2;  // center index
   timeTbl[ic] = TTim(0);  // time axis in samples
   this->blitTbl[ic] = this->window(TTim(0));
-  int i;
-  for(i = 1; i <= ic; i++) {
+  //int i;
+  for(int i = 1; i <= ic; i++) {
     TTim t = TTim(i) / TTim(this->tablePrecision);  // time in samples
     TTim s = sin(PI*t) / (PI*t); // todo: apply window later
     // todo: apply a window function - use a windowed sinc - try to find analytic expressions for

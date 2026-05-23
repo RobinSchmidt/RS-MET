@@ -230,13 +230,17 @@ public:
 
   inline T getSampleNaive()
   {
-    T stepDelay, stepAmp;
+    T stepDelay, stepAmplitude;
 
-    //T dummy = master.getSampleSaw(&stepDelay, &stepAmp); // later use just a phasor - output not actually used
-    master.getSampleSaw(&stepDelay, &stepAmp); // Return value is ignored. Document why!
+    //T dummy = master.getSampleSaw(&stepDelay, &stepAmplitude); // Old. later use just a phasor - output not actually used
+
+    master.getSampleSaw(&stepDelay, &stepAmplitude); 
+    // Return value is ignored. Document why! Maybe the oscillator is set up in a such way that we are
+    // only supposed to her the slave? Maybe we should introduce an amplitude variable for the master
+    // and add masterAmp * masterOut to the final output signal.
 
 
-    if(stepAmp != 0.0)
+    if(stepAmplitude != 0.0)
     {
       T oldPhase = slave.getPhase();
       T newPhase = master.getPhase() * slave.getPhaseIncrement() / master.getPhaseIncrement();
@@ -257,11 +261,17 @@ public:
       //T stepAmp = T(-1) - slave.sawValue(oldPhase);
 
       blep.prepareForStep(stepDly, stepAmp);
+
+      // ToDo: Document what we do here. Apparently, when we detect a step in the master, we also 
+      // reset the slave and that secondayr phase reset introduces yet another blep to be inserted 
+      // in addition to the one that we insert due to the master phase reset? Maybe rename the 
+      // variables outside the if-statement to masterStepAmp, masterStepDelay and the ones inside
+      // it to slaveStepAmp, slaveStepDelay
     }
 
-    T out = slave.getSampleSaw(&stepDelay, &stepAmp);
-    if(stepAmp != 0.0)
-      blep.prepareForStep(stepDelay, stepAmp);
+    T out = slave.getSampleSaw(&stepDelay, &stepAmplitude);
+    if(stepAmplitude != 0.0)
+      blep.prepareForStep(stepDelay, stepAmplitude);
     return out;
   }
 
