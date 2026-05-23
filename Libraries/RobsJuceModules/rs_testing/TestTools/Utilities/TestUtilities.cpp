@@ -265,7 +265,7 @@ void getSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
 {
   se->reset();
   unsigned int eventIndex =  0;  // index of next event in the events array
-  for(unsigned int n = 0; n < numFrames; n++)
+  for(unsigned int n = 0; n < (unsigned int) numFrames; n++)
   {
     // Send events for this sample:
     while(eventIndex < events.size() && events[eventIndex].getTime() == n) {

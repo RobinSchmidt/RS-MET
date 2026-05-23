@@ -9,13 +9,14 @@ FractionalDelayLine::FractionalDelayLine(int maximumDelayInSamples)
   length      = maximumDelayInSamples + 1;
   delayBuffer = new double[length+interpolatorMargin];
 
-
-  tapIn      = 0;
-  tapOut     = 0;
-  delayTime  = 0.25;
-  sampleRate = 44100.0;
-  bpm        = 120.0;
-  tempoSync  = false;
+  // These are now obsolete because they are initialized in the class:
+  //tapIn      = 0;
+  //tapOut     = 0;
+  //delayTime  = 0.25;
+  //sampleRate = 44100.0;
+  //bpm        = 120.0;
+  //tempoSync  = false;
+  // ...can be deleted at some point.
 
   interpolator.setInterpolationMethod(Interpolator::WARPED_ALLPASS);
 

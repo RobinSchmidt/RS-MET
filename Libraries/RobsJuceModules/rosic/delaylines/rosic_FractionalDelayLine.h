@@ -90,11 +90,11 @@ namespace rosic
       // a large margin imposes long minimum delay time (minimum = margin-1), but allows for higher
       // oder interpolation
 
-    int    tapIn, tapOut;
+    int    tapIn = 0, tapOut = 0;
 
-    double *delayBuffer;
+    double *delayBuffer = nullptr;
 
-    int    length;
+    int    length = 0;
       // nominal length (excluding the interpolator margin, maximum delay will be length-1
 
     double frac;
@@ -102,11 +102,11 @@ namespace rosic
       // tapOut-pointer position. It is given by  1.0 - delayInSampleFractionalPart. */
 
 
-    double delayInSamples;
-    double delayTime;      // in seconds or beats
-    double sampleRate;
-    double bpm;
-    bool   tempoSync;
+    double delayInSamples = 0.0;
+    double delayTime = 0.25;      // in seconds or beats
+    double sampleRate = 44100.0;
+    double bpm = 120.0;
+    bool   tempoSync = false;;
 
     Interpolator interpolator;
 
