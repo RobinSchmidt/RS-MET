@@ -111,7 +111,7 @@ bool areNumbersEqual(double x, double y, double relativeTolerance)
   // relativeTolerance*rsMax(fabs(x), fabs(y)) yields a zero absolute tolerance whereas the 
   // difference on the left hand side is a very small (denormal) nonzero number
   //double denormThresh = RS_MIN(double);
-  double denormThresh = std::numeric_limits<double>::min();
+  constexpr double denormThresh = std::numeric_limits<double>::min();
   if( fabs(x) <= denormThresh && fabs(y) <= denormThresh )
     return true;
 
@@ -264,8 +264,8 @@ void getSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
   float* outL, float* outR, int numFrames)
 {
   se->reset();
-  int eventIndex =  0;  // index of next event in the events array
-  for(int n = 0; n < numFrames; n++)
+  unsigned int eventIndex =  0;  // index of next event in the events array
+  for(unsigned int n = 0; n < numFrames; n++)
   {
     // Send events for this sample:
     while(eventIndex < events.size() && events[eventIndex].getTime() == n) {
@@ -276,7 +276,12 @@ void getSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
     se->processFrame(&outL[n], &outR[n]);
   }
 
-  
+  // ToDo:
+  //
+  // - Maybe use "int" instead of "unsigned int" for n. But then we should change the return type 
+  //   of events[eventIndex].getTime() to "int", too. Or maybe convert. But we actually shoudl 
+  //   avoid signed/unsigned conversions in the hot loop over the samples because that's performane
+  //   critical.
 }
 
 void generateTestSamples()  // rename to gerenrateSamplerTestSamples
