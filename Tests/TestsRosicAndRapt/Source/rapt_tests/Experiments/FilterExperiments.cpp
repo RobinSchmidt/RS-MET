@@ -1303,11 +1303,22 @@ void engineersFilterFreqRespsMeasured()
   // of the filters. The precision of the types should be non-decresasing to make sense. For 
   // example float/float/double is OK, float/double/long double is OK, double/double/double is OK, 
   // etc.
-  using TPlt = float;                                    // Plot data type
-  using TSig = float;                                    // Signal type
-  using TPar = double;                                   // Parameter type
+  //using TPlt = float;                                    // Plot data type
+  //using TSig = float;                                    // Signal type
+  //using TPar = double;                                   // Parameter type
   // ...eventually, I want to try double/long double/long double (in x86 mode) but it doesn't 
   // compile yet with these types in x86. There's some config problem with the SSE code
+
+  // Update 2026/05/23:
+  // We do get compiler warnings with TSig=float, TPar=double of the type: 
+  // "C4244: '=': conversion from 'TCoef' to 'TSig', possible loss of data" 
+  // in rsBiquadCascade::getSample.. which makes sense because we are implicitly narrowing the
+  // parameters of type double to signals of type float. To get rid of this warning, let's use 
+  // double for everything:
+  using TPlt = double;                                   // Plot data type
+  using TSig = double;                                   // Signal type
+  using TPar = double;                                   // Parameter type
+
 
   // For convenience:
   using EF     = rsEngineersFilter<TSig, TPar>;
