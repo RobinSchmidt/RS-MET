@@ -129,7 +129,8 @@ void rsPolyToCheby(T* a, int N)
   if(N <= 1)
     return;
 
-  T s = pow(T(0.5), N-1);         // ToDo: use rsPow or rsPowInt
+  //T s = pow(T(0.5), N-1);         // ToDo: use rsPow or rsPowInt
+  T s = rsPow(T(0.5), T(N-1));      // ToDo: use rsPow or rsPowInt
   a[N]   *= s;
   a[N-1] *= s;
   for(int i = N-2; i >= 0; i--)

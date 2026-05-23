@@ -22,7 +22,7 @@ rsString createStringWithAllPrintableCharacters()
 
   char cString[numPrintables+1];
   for(int i=0; i<numPrintables; i++)
-    cString[i] = i+firstPrintableIndex;
+    cString[i] = char(i + firstPrintableIndex);
   cString[numPrintables] = '\0';
   return rsString(cString);
 }
