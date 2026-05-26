@@ -607,13 +607,13 @@ void rsArrayTools::filterBiDirectional(const T *x, int xLength, T *y, int yLengt
   int aOrder, int numRingOutSamples)
 {
   // allocate and intitialize memory for the filters internal state:
-  int i, n;
+  //int i, n;
   T tmp;
   T *xOld    = new T[bOrder+1];
   T *yOld    = new T[aOrder+1];
   T *ringOut = new T[numRingOutSamples];
-  for(i=0; i<=bOrder; i++) xOld[i] = T(0);
-  for(i=0; i<=aOrder; i++) yOld[i] = T(0);
+  for(int i=0; i<=bOrder; i++) xOld[i] = T(0);
+  for(int i=0; i<=aOrder; i++) yOld[i] = T(0);
 
   /*
   // backward pass through a portion of the x-buffer to warm up the filter:
@@ -634,13 +634,13 @@ void rsArrayTools::filterBiDirectional(const T *x, int xLength, T *y, int yLengt
 
   // compute the part of the signal where both buffers have values:
   int length = rsMin(xLength, yLength);
-  for(n = 0; n < length; n++)
+  for(int n = 0; n < length; n++)
   {
     tmp = b[0] * x[n];
-    for(i=1; i<=bOrder; i++) tmp += b[i] * xOld[i];
-    for(i=1; i<=aOrder; i++) tmp -= a[i] * yOld[i];
-    for(i=bOrder; i>=2; i--) xOld[i] = xOld[i-1];
-    for(i=aOrder; i>=2; i--) yOld[i] = yOld[i-1];
+    for(int i=1; i<=bOrder; i++) tmp += b[i] * xOld[i];
+    for(int i=1; i<=aOrder; i++) tmp -= a[i] * yOld[i];
+    for(int i=bOrder; i>=2; i--) xOld[i] = xOld[i-1];
+    for(int i=aOrder; i>=2; i--) yOld[i] = yOld[i-1];
     xOld[1] = x[n];
     yOld[1] = tmp;
     y[n]    = tmp;
@@ -650,48 +650,48 @@ void rsArrayTools::filterBiDirectional(const T *x, int xLength, T *y, int yLengt
   for(int n = length; n < yLength; n++)
   {
     tmp = T(0);
-    for(i=1; i<=bOrder; i++) tmp += b[i] * xOld[i];
-    for(i=1; i<=aOrder; i++) tmp -= a[i] * yOld[i];
-    for(i=bOrder; i>=2; i--) xOld[i] = xOld[i-1];
-    for(i=aOrder; i>=2; i--) yOld[i] = yOld[i-1];
+    for(int i=1; i<=bOrder; i++) tmp += b[i] * xOld[i];
+    for(int i=1; i<=aOrder; i++) tmp -= a[i] * yOld[i];
+    for(int i=bOrder; i>=2; i--) xOld[i] = xOld[i-1];
+    for(int i=aOrder; i>=2; i--) yOld[i] = yOld[i-1];
     xOld[1] = T(0);
     yOld[1] = tmp;
     y[n]    = tmp;
   }
 
   // compute the ringout tail:
-  for(n = 0; n < numRingOutSamples; n++)
+  for(int n = 0; n < numRingOutSamples; n++)
   {
     tmp = T(0);
-    for(i=1; i<=bOrder; i++) tmp += b[i] * xOld[i];
-    for(i=1; i<=aOrder; i++) tmp -= a[i] * yOld[i];
-    for(i=bOrder; i>=2; i--) xOld[i] = xOld[i-1];
-    for(i=aOrder; i>=2; i--) yOld[i] = yOld[i-1];
+    for(int i=1; i<=bOrder; i++) tmp += b[i] * xOld[i];
+    for(int i=1; i<=aOrder; i++) tmp -= a[i] * yOld[i];
+    for(int i=bOrder; i>=2; i--) xOld[i] = xOld[i-1];
+    for(int i=aOrder; i>=2; i--) yOld[i] = yOld[i-1];
     xOld[1]    = y[n];
     yOld[1]    = tmp;
     ringOut[n] = tmp;
   }
 
   // backward pass through the ringout tail:
-  for(n = numRingOutSamples-1; n>=0; n--)
+  for(int n = numRingOutSamples-1; n>=0; n--)
   {
     tmp = b[0] * ringOut[n];
-    for(i=1; i<=bOrder; i++) tmp += b[i] * xOld[i];
-    for(i=1; i<=aOrder; i++) tmp -= a[i] * yOld[i];
-    for(i=bOrder; i>=2; i--) xOld[i] = xOld[i-1];
-    for(i=aOrder; i>=2; i--) yOld[i] = yOld[i-1];
+    for(int i=1; i<=bOrder; i++) tmp += b[i] * xOld[i];
+    for(int i=1; i<=aOrder; i++) tmp -= a[i] * yOld[i];
+    for(int i=bOrder; i>=2; i--) xOld[i] = xOld[i-1];
+    for(int i=aOrder; i>=2; i--) yOld[i] = yOld[i-1];
     xOld[1] = y[n];
     yOld[1] = tmp;
   }
 
   // backward pass through the y-buffer:
-  for(n = yLength-1; n >= 0; n--)
+  for(int n = yLength-1; n >= 0; n--)
   {
     tmp = b[0] * y[n];
-    for(i=1; i<=bOrder; i++) tmp += b[i] * xOld[i];
-    for(i=1; i<=aOrder; i++) tmp -= a[i] * yOld[i];
-    for(i=bOrder; i>=2; i--) xOld[i] = xOld[i-1];
-    for(i=aOrder; i>=2; i--) yOld[i] = yOld[i-1];
+    for(int i=1; i<=bOrder; i++) tmp += b[i] * xOld[i];
+    for(int i=1; i<=aOrder; i++) tmp -= a[i] * yOld[i];
+    for(int i=bOrder; i>=2; i--) xOld[i] = xOld[i-1];
+    //for(int i=aOrder; i>=2; i--) yOld[i] = yOld[i-1];
     xOld[1] = y[n];
     yOld[1] = tmp;
     y[n]    = tmp;

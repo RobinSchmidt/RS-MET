@@ -1003,7 +1003,7 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   float tol  = 1.e-5f;      // was 1.e-5
   int w = in.getWidth();
   int h = in.getHeight();
-  int i, j, k;                   // loop iteration indices
+  //int i, j, k;                   // loop iteration indices
   out.copyPixelDataFrom(in);     // initialize output - do we need this?
   //writeImageToFilePPM(out, "AfterInit.ppm");  // for debug
 
@@ -1045,8 +1045,8 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   {
     return (!isFlat(i, j)) && hasFlatNeighbor(i, j);
   };
-  for(j = 1; j < h-1; j++) {
-    for(i = 1; i < w-1; i++) {
+  for(int j = 1; j < h-1; j++) {
+    for(int i = 1; i < w-1; i++) {
       if(isAtBoundarySlow(i, j, in)) {
         B.push_back(Vec2D(i,j));
         C(i,j) = boundary;  }}} 
@@ -1064,10 +1064,10 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
     //return !isFlat(i, j);  // test
     //return true;  // may also be useful. maybe provide different modes
   }; 
-  for(k = 0; k < (int)B.size(); k++)
+  for(int k = 0; k < (int)B.size(); k++)
   {
-    i = B[k].x;
-    j = B[k].y;
+    int i = B[k].x;
+    int j = B[k].y;
 
     // Accumulate sum of the relevant neighbors:
     int   n = 0;    // number of relevant neighbors
@@ -1130,7 +1130,7 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   // where the weight is inversely proportional to the respective distance:
   auto interpolateFlatPixels = [&]()
   {
-    for(k = 0; k < F.size(); k++)
+    for(int k = 0; k < (int) F.size(); k++)
     {
       int x = F[k].x;  // x-coordinate
       int y = F[k].y;  // y-coordinate
@@ -1188,7 +1188,7 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
     {
       float dMax = 0.f;                 // maximum delta applied
       //tmp.copyPixelDataFrom(out);
-      for(k = 0; k < P.size(); k++) {
+      for(int k = 0; k < (int)P.size(); k++) {
         float d = applyFilter(out, out, P[k].x, P[k].y, step);
         dMax = rsMax(d, dMax);   }
       if(dMax <= tol)                   // Check convergence criterion
