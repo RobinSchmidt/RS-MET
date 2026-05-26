@@ -192,9 +192,9 @@ void rsPhasorStateMapper<T>::map(T *xInOut, T *yInOut) const
   T R2 = x*x + y*y;         // new length
   if(R2 > 0)                // avoid div-by-zero
   {
-    T s = sqrt(r2/R2);   // scaler to restore length
-    x *= s;
-    y *= s;
+    T scl = sqrt(r2/R2);   // scaler to restore length  ...ToDo: Rename to scl...done
+    x *= scl;
+    y *= scl;
   }
   // maybe we should have different renormalization modes: never, always, if R2 > r2, etc.
 

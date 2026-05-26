@@ -3,7 +3,9 @@
 
 /** This is a filter based on a spiraling phasor in the xy-plane... 
 
-This class is just a stub - it's still under construction..
+This class is just a stub - it's still under construction... It needs unit tests. Also, I think, 
+it's conceptually similar to rsStateVectorFilter in Prototypes.h/cpp so maybe the code should be
+merged.
 
 here's a paper that describes a similar concept:
 https://ccrma.stanford.edu/courses/250a-fall-2003/hiqfilters.pdf

@@ -190,16 +190,14 @@ std::complex<TPar> rsMultiBandSplitter<TSig, TPar>::getBandFrequencyResponseAt(
   int bandIndex, CRPar frequency) const
 {
   TPar w = TPar(2*PI)*frequency/sampleRate;
-  std::complex<TPar> j  = std::complex<TPar>(0, 1); // imaginary unit
-  std::complex<TPar> z  = exp(j*w);                 // z-value where to evaluate H(z)
-  std::complex<TPar> H = 1;                         // frequency response H(z=e^(j*w))
-  int k;
+  std::complex<TPar> z = rsOmegaToZ(w);   // z = e^(j*w). Value of z where we evaluate H(z).
+  std::complex<TPar> H = 1;               // Frequency response H(z) at z.
   int numSplits = numActiveBands - 1; // assume numActiveBands >= 1
   switch(mode)
   {
   case ACCUMULATE_INTO_HIGHPASS: 
   {
-    for(k = 0; k <= std::min(bandIndex, numSplits-1); k++)
+    for(int k = 0; k <= std::min(bandIndex, numSplits-1); k++)
     {
       if(k == bandIndex) // only the last stage is possibly lowpass
         H *= splitters[k]->getLowpassTransferFunctionAt(z);
@@ -210,7 +208,7 @@ std::complex<TPar> rsMultiBandSplitter<TSig, TPar>::getBandFrequencyResponseAt(
   case ACCUMULATE_INTO_LOWPASS: 
   {
     int i = numActiveBands-1-bandIndex;
-    for(k = std::min(i, numSplits-1); k >= 0; k--)
+    for(int k = std::min(i, numSplits-1); k >= 0; k--)
     {
       int j = numSplits-1-k;
       if(k == i)
@@ -224,7 +222,6 @@ std::complex<TPar> rsMultiBandSplitter<TSig, TPar>::getBandFrequencyResponseAt(
 
   default: H = std::complex<TPar>(0, 0);
   }
-
 
   return H;
 }

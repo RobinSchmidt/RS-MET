@@ -164,6 +164,25 @@ inline T rsFreqToPitch(T freq, T masterTuneA4 = T(440))
 }
 // ToDo: templatize rsLog2. It currently uses double for the data type
 
+
+/** Converts a normalized radian frequency omega (written as w) with w = 2*pi*freq/sampleRate to a
+complex number z = exp(i*w), i.e. the place on the unit circle at which we need to evaluate a 
+filter transfer function H(z) when we are interested in its frequency response at the given w. */
+template<class T>
+std::complex<T> rsOmegaToZ(T w)
+{
+  std::complex<T> j = std::complex<T>(0, 1);  // Imaginary unit
+  std::complex<T> z = std::exp(j*w);          // z = e^(j*w)
+  return z;
+
+  // ToDo:
+  //
+  // - Optimize. I think, we can use rsSinCos or std::polar to compute real and imaginary part
+  //   of z. That may be cheaper than using std::exp().
+  // 
+  // - Maybe use rsComplex instead of std::complex to enable use with TPar = some SIMD type.
+}
+
 /** Returns, how far two phase values are apart after wrapping them both into the interval
 0..2pi. The returned value will be in 0..2pi. */
 template<class T>
