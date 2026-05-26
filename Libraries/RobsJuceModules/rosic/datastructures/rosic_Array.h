@@ -253,7 +253,7 @@ public:
         tmpElements[i] = elements[i];
 
       // delete the old array which has become too small:
-      if(elements != NULL)
+      if(elements != NULL)  // Why do we need this? Maybe we don't? Check that!
       {
         delete[] elements;
         elements = NULL;

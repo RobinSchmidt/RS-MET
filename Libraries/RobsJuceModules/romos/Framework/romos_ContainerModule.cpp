@@ -389,7 +389,7 @@ romos::Module* ContainerModule::addAudioInputModule(std::string inputName, int p
   rosic::appendElement(inputPins, AudioInputPinData());
   numInputs++;
 
-  //allocateAudioInputs();
+  //allocateAudioInputs();  // Obsolete? Verify and if so, delete it
   updateInputPointersAndInFrameStrides();
 
   return newModule;

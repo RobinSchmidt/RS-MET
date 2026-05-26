@@ -884,7 +884,7 @@ int main(int /*argc*/, char* /*argv[]*/)
   // maybe class ProcessingStatus can be extended for that - it would fit well there, too
 
 
-  getchar();
+  int c = getchar();
   // Having the getchar here is more convenient for running the unit tests. Having it wrapped in
   // the "if(detectMemoryLeaks())" conditional makes more sense for experiments.
 

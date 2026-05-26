@@ -384,12 +384,31 @@ namespace RSLib
     the old memory area. */
     void reAllocateMemoryAndMoveData(int numElementsToAllocate)
     {
+      // Old code - for reference. This code gave a compiler warning:
       ElementType* tmpElements = new ElementType[numElementsToAllocate];
       for(int i = 0; i < numUsed; i++)
         tmpElements[i] = elements[i];
       delete[] elements;
       elements     = tmpElements;
       numAllocated = numElementsToAllocate;
+
+      //// New code - suggested by Copilot to fix the warning:
+      //ElementType* tmpElements = new ElementType[numElementsToAllocate];
+      //// Only copy up to the minimum of numUsed and numElementsToAllocate to avoid buffer overrun:
+      //int numToCopy = numUsed < numElementsToAllocate ? numUsed : numElementsToAllocate;
+      //for(int i = 0; i < numToCopy; i++)
+      //  tmpElements[i] = elements[i];
+      //delete[] elements;
+      //elements     = tmpElements;
+      //numAllocated = numElementsToAllocate;
+      //// If numUsed > numElementsToAllocate, shrink numUsed to avoid out-of-bounds access elsewhere:
+      //if(numUsed > numElementsToAllocate)
+      //  numUsed = numElementsToAllocate;
+
+      // ToDo:
+      //
+      // - Implement a unit test and run it with the old and the new version of the code. Make sure
+      //   that it successfully triggers a failure in case of the old code.
     }
 
     /** Shrinks the allocated memory size to the next power of two of the actual number of used
@@ -416,7 +435,7 @@ namespace RSLib
     /** Initializes the data members. */
     void initMembers()
     {
-      elements     = NULL;
+      elements     = nullptr;
       numUsed      = 0;
       numAllocated = 0;
     }
@@ -424,9 +443,9 @@ namespace RSLib
 
     /** \name Data */
 
-    ElementType* elements;  // the C-array containing the elements
-    int numUsed;            // number of used elements
-    int numAllocated;       // number of allocated elements
+    ElementType* elements = nullptr;  // the C-array containing the elements
+    int numUsed = 0;                  // number of used elements
+    int numAllocated = 0;             // number of allocated elements
 
   };
 
