@@ -81,24 +81,24 @@ double dummyFunction(double x)
 double rSinh(double x)
 {
   long double ex = exp(x);    // e^x
-  return (ex*ex - 1.0) / (ex+ex);
+  return (double)((ex*ex - 1.0) / (ex+ex));
 }
 double rCosh(double x)
 {
   long double ex = exp(x);    // e^x
-  return (ex*ex + 1.0) / (ex+ex);
+  return (double)((ex*ex + 1.0) / (ex+ex));
 }
 double rTanh(double x)
 {
   long double e2x = exp(2*x); // e^(2x)
-  return (e2x - 1.0) / (e2x + 1.0);
+  return (double)((e2x - 1.0) / (e2x + 1.0));
 }
 
 double rHypot(double x, double y)
 {
   long double xL = x;
   long double yL = y;
-  return sqrt(xL*xL + yL*yL);
+  return (double)sqrt(xL*xL + yL*yL);
 }
 
 
