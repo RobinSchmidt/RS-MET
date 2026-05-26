@@ -552,25 +552,25 @@ void rsArrayTools::filter(const T *x, int xLength, T *y, int yLength, const T *b
   // We assume the filter coefficient arrays to be normalized such that a[0] == 1.
 
   // allocate and intitialize memory for the filters internal state:
-  int i, n;
+  //int i, n;
   T *xOld = new T[bOrder+1];
   T *yOld = new T[aOrder+1];
-  for(i=0; i<=bOrder; i++) xOld[i] = T(0);
-  for(i=0; i<=aOrder; i++) yOld[i] = T(0);
+  for(int i=0; i<=bOrder; i++) xOld[i] = T(0);
+  for(int i=0; i<=aOrder; i++) yOld[i] = T(0);
 
   // compute the part of the signal where both buffers have values:
   int length = rsMin(xLength, yLength);
   T tmp;
-  for(n = 0; n < length; n++)
+  for(int n = 0; n < length; n++)
   {
     // compute y[n]:
     tmp = b[0] * x[n];
-    for(i=1; i<=bOrder; i++) tmp += b[i] * xOld[i];
-    for(i=1; i<=aOrder; i++) tmp -= a[i] * yOld[i];
+    for(int i=1; i<=bOrder; i++) tmp += b[i] * xOld[i];
+    for(int i=1; i<=aOrder; i++) tmp -= a[i] * yOld[i];
 
     // update state buffers:
-    for(i=bOrder; i>=2; i--) xOld[i] = xOld[i-1];
-    for(i=aOrder; i>=2; i--) yOld[i] = yOld[i-1];
+    for(int i=bOrder; i>=2; i--) xOld[i] = xOld[i-1];
+    for(int i=aOrder; i>=2; i--) yOld[i] = yOld[i-1];
     xOld[1] = x[n];
     yOld[1] = tmp;
 
@@ -582,10 +582,10 @@ void rsArrayTools::filter(const T *x, int xLength, T *y, int yLength, const T *b
   for(int n = length; n < yLength; n++)
   {
     tmp = T(0);
-    for(i=1; i<=bOrder; i++) tmp += b[i] * xOld[i];
-    for(i=1; i<=aOrder; i++) tmp -= a[i] * yOld[i];
-    for(i=bOrder; i>=2; i--) xOld[i] = xOld[i-1];
-    for(i=aOrder; i>=2; i--) yOld[i] = yOld[i-1];
+    for(int i=1; i<=bOrder; i++) tmp += b[i] * xOld[i];
+    for(int i=1; i<=aOrder; i++) tmp -= a[i] * yOld[i];
+    for(int i=bOrder; i>=2; i--) xOld[i] = xOld[i-1];
+    for(int i=aOrder; i>=2; i--) yOld[i] = yOld[i-1];
     xOld[1] = T(0);
     yOld[1] = tmp;
     y[n]    = tmp;

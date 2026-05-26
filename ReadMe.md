@@ -18,7 +18,7 @@ in the repo which are not shown, though. This is just an overview over the most 
 ```
 RS-MET/                        # Root folder of the repo
 ├── Libraries/                 # My own and 3rd party libraries
-│   ├── JUCE/                  # Complete copy of the JUCE source tree
+│   ├── JUCE/                  # Complete copy of the JUCE source tree (lib only, no add ons)
 │   └── RobsJuceModules/       # My own libraries in the JUCE module format
 │       ├── jura-framework/    # My JUCE-based GUI and plugin framework
 │       ├── jura-processors/   # My audio plugin components with GUI and infrastructure
@@ -33,7 +33,8 @@ RS-MET/                        # Root folder of the repo
     └── TestsRosicAndRapt/     # Console app with tests for rapt and rosic
 ```
 
-The "Libraries" folder contains a "RobsJuceModules" subfolder which contains a couple of my own JUCE modules, conforming to the way, JUCE itself is organized into modules. The rapt module (Rob's Audio 
+The "Libraries" folder contains a "RobsJuceModules" subfolder which contains a couple of my own JUCE
+ modules, conforming to the way, JUCE itself is organized into modules. The rapt module (Rob's Audio 
 Processing Templates) is a template based library with rather low level code for math, number 
 crunching and signal processing. It has no dependencies whatsoever (not even on juce_core). The
 rosic module (Rob's Signal Processing Classes), which depends only on rapt, is a bit more high-level
@@ -50,10 +51,12 @@ The most important project that can actually be built by itself is ToolChain. It
 actually many plugins in one. You can create a chain of several sound processors (which I internally
 call AudioModules) that were previously distributed as plugins in their own right. Project
 management is just sooo much easier when everything is lumped into a single project. The code in
-this project is trivial because all the actual code is in the library. The other projects that can
-be built are mostly for internal use, i.e. research, development, testing, debugging, etc. and
-should probably be ignored by people that are just interested in the ToolChain plugin which I assume
-to be the vast majority of visitors.
+this project is trivial because all the actual code is in the library, more specifically, in the
+jura_processors module. This module is where all the high-level plugin code of ToolChain itself as
+well as all of its sub-plugins (aka "processors" aka "AudioModules") resides. The other projects 
+that can be built are mostly for internal use, i.e. research, development, testing, debugging, etc. 
+and should probably be ignored by people that are just interested in the ToolChain plugin which I 
+assume to be the vast majority of visitors.
 
 
 Disclaimer

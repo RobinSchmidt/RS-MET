@@ -407,7 +407,7 @@ public:
   template <class T>
   static void filter(const T *x, int xLength, T *y, int yLength, 
     const T *b, int bOrder, const T *a, int aOrder);
-  // Allocates heap memory - todo: pass a workspace.
+  // ALLOCATES heap memory - todo: pass a workspace.
 
   /** \todo check and comment this function  */
   template <class T>
