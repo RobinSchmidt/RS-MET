@@ -33,8 +33,11 @@ RS-MET/                        # Root folder of the repo
     └── TestsRosicAndRapt/     # Console app with tests for rapt and rosic
 ```
 
-The "Libraries" folder contains a "RobsJuceModules" subfolder which contains a couple of my own JUCE
- modules, conforming to the way, JUCE itself is organized into modules. The rapt module (Rob's Audio 
+The repo is fully self contained so you don't need to worry about downloading any additional
+dependencies. The "Libraries" folder contains a JUCE subfolder which contains a full copy of the 
+source tree of the JUCE library. It's just the library itself without all the additional add-ons, 
+example projects etc. The "RobsJuceModules" subfolder contains a couple of my own JUCE modules, 
+conforming to the way, JUCE itself is organized into modules. The rapt module (Rob's Audio 
 Processing Templates) is a template based library with rather low level code for math, number 
 crunching and signal processing. It has no dependencies whatsoever (not even on juce_core). The
 rosic module (Rob's Signal Processing Classes), which depends only on rapt, is a bit more high-level
@@ -45,18 +48,21 @@ module organization, do not depend in any way on juce. They can be used in their
 combined with other frameworks. jura_framework is my juce-based GUI and plugin framework and
 jura_processors is the glue that ties together the DSP code from rapt and rosic with the
 jura_framework based GUI code into actual plugins or sub-modules of plugins (such as oscillators,
-filters, effects, etc.).
+filters, effects, etc.). So that means that they depend on both rapt/rosic and juce. They are the
+most high level modules and the ones from which actual plugins (with GUI and plugin-API plumbing) 
+can be built.
 
-The most important project that can actually be built by itself is ToolChain. It is a plugin that is
-actually many plugins in one. You can create a chain of several sound processors (which I internally
-call AudioModules) that were previously distributed as plugins in their own right. Project
-management is just sooo much easier when everything is lumped into a single project. The code in
-this project is trivial because all the actual code is in the library, more specifically, in the
-jura_processors module. This module is where all the high-level plugin code of ToolChain itself as
-well as all of its sub-plugins (aka "processors" aka "AudioModules") resides. The other projects 
-that can be built are mostly for internal use, i.e. research, development, testing, debugging, etc. 
-and should probably be ignored by people that are just interested in the ToolChain plugin which I 
-assume to be the vast majority of visitors.
+The most important project that can actually be built by itself (i.e. is not just a library that is
+supposed to be consumed by some other project) is ToolChain. It is a plugin that is actually many 
+plugins in one. You can create a chain of several sound processors (which I internally call 
+AudioModules) that were previously distributed as plugins in their own right. Project management is 
+just sooo much easier when everything is lumped into a single project. The code in this project is 
+trivial because all the actual code is in the library, more specifically, in the jura_processors 
+module. This module is where all the high-level plugin code of ToolChain itself as well as all of 
+its sub-plugins (aka "processors" aka "AudioModules") resides. The other projects that can be built 
+are mostly for internal use, i.e. research, development, testing, debugging, etc. and should 
+probably be ignored by people that are just interested in the ToolChain plugin which I assume to be 
+the vast majority of visitors.
 
 
 Disclaimer
@@ -83,3 +89,14 @@ generally available for freelance work on audio DSP algorithms with special inte
 - In the "Repository Structure" explain the dependencies. I already do to some extent but only 
   partially. Explain it more fully for ToolChain and the TestsRosicandRapt project. Maybe use a 
   top-down approach.
+
+- Explain a bit the "TestsRosicAndRapt" project. It's the second most important one. It has all the
+  unit tests for the (math, DSP, etc.) algorithms which makes it also kind of important. The 3rd
+  most important project is probably the TestAppJURA. It has the unit tests for the higher level
+  infrastructural stuff which is also kind of important. 
+  
+- Maybe also include a reference to the research repo. Some parts of the R&D I do also there and the
+  criteria for what goes where are not very strict. They are roughly: What I suppose to eventually
+  end up in the main repo, I may already initially develop within the main repo. The research repo
+  also has a lot of "just for fun" stuff that will probably never make it into the main repo. 
+  ...but who knows...
