@@ -84,7 +84,12 @@ generally available for freelance work on audio DSP algorithms with special inte
 #### ToDo
 
 - Maybe make a section about ToolChain (with 2nd order headline) with some screenshots. They could
-  be stored in a discussion thread in the GitHub repo in order to not bloat the repo itself.
+  be stored in a discussion thread in the GitHub repo in order to not bloat the repo itself. Explain
+  how ToolChain it self can be viewed as a semi-modular synthesizer by letting the modules in
+  different slots talk to one another via the modulation system. ToolChain has modules that can be
+  used like full blown (effect- or instrument-) plugins in their own right but it has also simpler
+  modules that make most sense in combination with other modules (like filters, oscillators, 
+  envelope generators, etc.). Explain the ideas and concepts behind this.
 
 - In the "Repository Structure" explain the dependencies. I already do to some extent but only 
   partially. Explain it more fully for ToolChain and the TestsRosicandRapt project. Maybe use a 
@@ -100,3 +105,10 @@ generally available for freelance work on audio DSP algorithms with special inte
   end up in the main repo, I may already initially develop within the main repo. The research repo
   also has a lot of "just for fun" stuff that will probably never make it into the main repo. 
   ...but who knows...
+
+- Explain the branches. The most important ones are "master" and "work". Maybe rename "master" to
+  "main" or "release" or "stable". It's supposed to be the cleanest branch. The "work" branch is 
+  always the most up-to-date one, i.e. the one inside of which I usually work - with all the latest
+  features but also the dirtiest one with the least thorough code review, testing and vetting. It's 
+  currently set to be the default branch. Maybe include a warning about this or change it. ...but 
+  I'm not sure how that will affect how GitHub will count my commit statistics.
