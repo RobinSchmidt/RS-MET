@@ -98,7 +98,7 @@ struct PostExitMemLeakChecker
     if(_CrtDumpMemoryLeaks() == 1)
     {
       std::cout << "\n\n!!! Memory leaks detected (post exit of main) !!! \n";
-      int c = getchar();
+      (void)getchar();
     }
   }
 };

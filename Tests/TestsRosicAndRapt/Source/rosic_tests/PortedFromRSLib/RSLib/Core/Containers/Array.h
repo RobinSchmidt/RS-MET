@@ -384,7 +384,7 @@ namespace RSLib
     the old memory area. */
     void reAllocateMemoryAndMoveData(int numElementsToAllocate)
     {
-      // Old code - for reference. This code gave a compiler warning:
+      // Old code - for reference. This code gives a compiler warning:
       ElementType* tmpElements = new ElementType[numElementsToAllocate];
       for(int i = 0; i < numUsed; i++)
         tmpElements[i] = elements[i];
