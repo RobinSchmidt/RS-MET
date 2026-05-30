@@ -422,6 +422,14 @@
         <MODULEPATH id="rs_testing" path="../../Libraries/RobsJuceModules"/>
       </MODULEPATHS>
     </VS2022>
+    <CLION targetFolder="Builds/CLion" clionCodeBlocksEnabled="0" clionXcodeEnabled="1">
+      <MODULEPATHS>
+        <MODULEPATH id="rs_testing"/>
+        <MODULEPATH id="rosic"/>
+        <MODULEPATH id="romos"/>
+        <MODULEPATH id="rapt"/>
+      </MODULEPATHS>
+    </CLION>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="rapt" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>

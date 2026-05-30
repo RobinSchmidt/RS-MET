@@ -1045,6 +1045,16 @@ https://www.youtube.com/watch?v=bnvK5Nll4Sg  Tracking Spectrograms Demo - Januar
 -Spectrogram analysis using a bank of resonator filters. In the advanced version, these resonators 
  track the frequencies present in the input signal.
 
+Madronalib:
+https://github.com/madrona-labs/madronalib
+-"A C++ framework for DSP applications."  ...so maybe it's more than "just" a DSP library and should
+ be moved into the "Frameworks" section. Figure out!
+
+Loris:
+https://github.com/madrona-labs/loris
+-C++ class library implementing analysis, manipulation, and synthesis of digitized sounds using the 
+ Reassigned Bandwidth-Enhanced Additive Sound Model.
+
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:
 
