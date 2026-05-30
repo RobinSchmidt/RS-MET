@@ -105,6 +105,22 @@ should avoid that, say, a master branch of the Research repo depends on code in 
 work branch of the main repo.
 
 ----------------------------------------------------------------------------------------------------
+Adding files to one of my JUCE modules:
+
+-After adding a pair of .h/.cpp files to one of the subfolders of RS-MET/Libraries/RobsJuceModules 
+ we need to do the following steps to update the build system:
+ -Open the .jucer files in the projects with Projucer and click on File -> Save Project. This will
+  re-export all the different IDE project files such that they now include the new .h/.cpp files.
+  To get the project files for the latest version of Visual Studio and XCode, use the Projucer 8. To
+  also get the project files for CLion and/or CodeBlocks, we need to do the same with an older 
+  version of the Projucer (live version 6.x) because unfortunately, support for CLion and CodeBlocks
+  was removed. :-(
+ -We need to add the new .h file to the appropriate #include list in some of the higher level .h 
+  files and the .cpp file to the corresponding #include list in the corresponding (unity build) .cpp
+  file.
+
+
+----------------------------------------------------------------------------------------------------
 My Programming Environment prefs:
 
 My primary development environment is Microsoft Visual Studio running on a windows machine. On mac,

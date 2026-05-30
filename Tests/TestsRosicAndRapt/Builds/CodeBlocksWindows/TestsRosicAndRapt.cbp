@@ -34,7 +34,7 @@
           <Add option="-DJucePlugin_Build_Unity=&quot;0&quot;"/>
           <Add option="-m64"/>
           <Add option="-O0"/>
-          <Add option="-std=c++11"/>
+          <Add option="-std=c++14"/>
           <Add option="-mstackrealign"/>
           <Add option="-g"/>
           <Add option="-march=pentium4"/>
@@ -72,7 +72,7 @@
           <Add option="-DJucePlugin_Build_Unity=&quot;0&quot;"/>
           <Add option="-m64"/>
           <Add option="-O3"/>
-          <Add option="-std=c++11"/>
+          <Add option="-std=c++14"/>
           <Add option="-mstackrealign"/>
           <Add option="-march=pentium4"/>
           <Add directory="."/>
@@ -111,7 +111,7 @@
           <Add option="-DJucePlugin_Build_Unity=&quot;0&quot;"/>
           <Add option="-m32"/>
           <Add option="-O0"/>
-          <Add option="-std=c++11"/>
+          <Add option="-std=c++14"/>
           <Add option="-mstackrealign"/>
           <Add option="-g"/>
           <Add option="-march=pentium4"/>
@@ -2161,6 +2161,20 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Generators/PitchDitherOscs.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option target="ConsoleApp | Debug 32-bit"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Generators/PitchDitherOscs.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option target="ConsoleApp | Debug 32-bit"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Generators/RayBouncer.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
@@ -2183,6 +2197,20 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Generators/VariousOscillators.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option target="ConsoleApp | Debug 32-bit"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Generators/WaveForms.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option target="ConsoleApp | Debug 32-bit"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Generators/WaveForms.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
@@ -4052,6 +4080,20 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../Libraries/RobsJuceModules/romos/Modules/romos_SoundGeneratorModules.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option target="ConsoleApp | Debug 32-bit"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/RobsJuceModules/romos/Modules/romos_UnfinishedModules.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option target="ConsoleApp | Debug 32-bit"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/RobsJuceModules/romos/Modules/romos_UnfinishedModules.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
@@ -11157,6 +11199,20 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../Libraries/RobsJuceModules/rs_testing/Prototypes/FractalRenderer.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option target="ConsoleApp | Debug 32-bit"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/RobsJuceModules/rs_testing/Prototypes/Generators.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option target="ConsoleApp | Debug 32-bit"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/RobsJuceModules/rs_testing/Prototypes/Generators.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
