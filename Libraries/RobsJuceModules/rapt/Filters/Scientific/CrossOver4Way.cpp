@@ -171,17 +171,19 @@ void rsCrossOver4Way<TSig, TPar>::processBuffer(TSig** inOutBuffer, int length)
   // but I'm not sure if the implementation below is good or not. We need to set up a unit test for
   // it and then re-implement/uncomment and test it. 
 
-  int c, n;
   TSig sampleFrame[8];
   rsArrayTools::fillWithZeros(sampleFrame, 8);  // Not sure, if that's strictly needed.
-  for(n = 0; n < length; n++)
+  for(int n = 0; n < length; n++)
   {
+    // Fetch:
     sampleFrame[0] = inOutBuffer[0][n];
     sampleFrame[1] = inOutBuffer[1][n];
 
+    // Process:
     processSampleFrame(sampleFrame);
 
-    for(c = 0; c < 8; c++)
+    // Store:
+    for(int c = 0; c < 8; c++)
       inOutBuffer[c][n] = sampleFrame[c];
   }
 
@@ -198,6 +200,19 @@ void rsCrossOver4Way<TSig, TPar>::processBuffer(TSig** inOutBuffer, int length)
   //   matter because the caller knows that we are using less bands and will also ignore the upper
   //   components. But there are also conceivable contexts where this may not be the case, so let's
   //   better play it safe.
+  //
+  // - Maybe unroll the loop over c manually as:
+  // 
+  //     inOutBuffer[0][n] = sampleFrame[0];
+  //     inOutBuffer[1][n] = sampleFrame[1];
+  //     ...
+  //     inOutBuffer[7][n] = sampleFrame[7];
+  //
+  //   but I guess the compiler should be able to do that as well. Maybe inspect the generated 
+  //   assembly and/or set up a benchmark with both versions.
+  //
+  // - Why do we even need this Fetch/Process/Store business anyway? Can't we just directly call
+  //   processSampleFrame(&inOutBuffer[0][n])? Set up a unit test an try it!
 }
 
 // others:
