@@ -173,6 +173,7 @@ void rsCrossOver4Way<TSig, TPar>::processBuffer(TSig** inOutBuffer, int length)
 
   int c, n;
   TSig sampleFrame[8];
+  rsArrayTools::fillWithZeros(sampleFrame, 8);  // Not sure, if that's strictly needed.
   for(n = 0; n < length; n++)
   {
     sampleFrame[0] = inOutBuffer[0][n];
@@ -183,6 +184,20 @@ void rsCrossOver4Way<TSig, TPar>::processBuffer(TSig** inOutBuffer, int length)
     for(c = 0; c < 8; c++)
       inOutBuffer[c][n] = sampleFrame[c];
   }
+
+  // ToDo:
+  //
+  // - Document why sampleFrame is a vector of 8. I think it may be because we have a stereo input 
+  //   (= 2 channels) and with at most 4 frequency bands, we could get up to 2*4 = 8 output 
+  //   channels, so processSampleFrame() expects in inOut vector of 8. Verify that!
+  // 
+  // - Figure out if we should perhaps initialize the sampleFrame vector to all zeros. If so, do 
+  //   it and document why it's needed...done.. I think, if we have less than 4 bands, the call to 
+  //   processSampleFrame() will not touch the upper components of the in/out vector, so without
+  //   the zeroing, we may return garbage in the upper bands. Maybe in many contexts that doesn't 
+  //   matter because the caller knows that we are using less bands and will also ignore the upper
+  //   components. But there are also conceivable contexts where this may not be the case, so let's
+  //   better play it safe.
 }
 
 // others:
