@@ -92,7 +92,7 @@ bool testStringDoubleConversionsRandom(int numIterations)
     numString           = numberOriginal;
     numberReconstructed = numString.asDouble();
     ok &= numberReconstructed == numberOriginal;
-    //rsAssert(ok);
+    rsAssert(ok);
   }
   return ok;
   // This test fails, because the double -> string conversion (done via sprintf in 
@@ -193,10 +193,10 @@ bool testStringDoubleConversionsLarge()
 bool testStringDoubleConversions()
 {
   bool ok = true;
-  ok &= testStringDoubleConversionsRandom(10000);    // fails!
+  ok &= testStringDoubleConversionsRandom(10000);
   ok &= testStringDoubleConversionsSpecialValues();
-  ok &= testStringDoubleConversionsDenormals();      // fails!
-  ok &= testStringDoubleConversionsLarge();          // fails!
+  ok &= testStringDoubleConversionsDenormals();
+  ok &= testStringDoubleConversionsLarge();
   return ok;
 }
 
@@ -217,7 +217,7 @@ bool testRosicString()
   ok &= testStringBufferCopying();
   ok &= testSubstringReplace();
   ok &= testStringIntConversions(10000);
-  ok &= testStringDoubleConversions();  // fails!
+  ok &= testStringDoubleConversions();
   ok &= testStringDoubleConversions2();
   // ToDo: testStringConcatenation(), testStringComparison()
   return ok;

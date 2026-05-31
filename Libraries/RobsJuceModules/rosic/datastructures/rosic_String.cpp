@@ -338,7 +338,8 @@ void rsString::initFromDoubleValue(double doubleValue)
   // required length and copy the repsective part of the temporary string - the c-book says,
   // strncpy is unreliable with respect to copying the terminating zero, so we do it manually:
   char tmpString[64];
-  sprintf(tmpString, "%-.17gl", doubleValue);
+  //sprintf(tmpString, "%-.17gl", doubleValue);  // Fails unit test with MSVC
+  sprintf(tmpString, "%-.21gl", doubleValue);
   length = (int) strspn(tmpString, "0123456789+-.eE");
 
   tmpString[length] = '\0'; // maybe removed later
@@ -349,6 +350,12 @@ void rsString::initFromDoubleValue(double doubleValue)
   for(int i=0; i<length; i++)
     cString[i] = tmpString[i];
   cString[length] = '\0';
+
+  // ToDo:
+  //
+  // - Document why we need to use "%-.21gl" and why "%-.17gl" is not enough. Google AI says that
+  //   for perfect double->string->double roundtrips, 17 decimal digits should be enough. For 
+  //   perfect string->double->string roundtrips, one can use at most 15 decimal digits.
 }
 
 int rsString::removeGarbageFromDoubleString(char *s, int length)
