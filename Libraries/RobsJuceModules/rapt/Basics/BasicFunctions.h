@@ -134,6 +134,12 @@ template<class T> inline T rsPow(  T a, T b) { return std::pow(  a, b); }
 // ...OK - done (?)
 
 
+inline int rsLog2(int x) { return (int) std::log2((double)x); }
+// Explicit specialization for int To supress a compiler warning. Can be optimized later using bit
+// trickery.
+
+
+
 // todo: 
 // -sort them alphabetically, maybe use a shorthand #define for the common prefix
 //  template<class T> inline T
