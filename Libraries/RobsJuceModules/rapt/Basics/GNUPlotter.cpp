@@ -128,10 +128,10 @@ void GNUPlotter::plotComplexVectorField(const std::function<std::complex<T>(std:
   fy = [&] (T re, T im) { return sign * imag(f(std::complex<T>(re, im))); };
   plotVectorField2D(fx, fy, Nr, rMin, rMax, Ni, iMin, iMax);
 }
-template void GNUPlotter::plotComplexVectorField(const std::function<std::complex<int>(std::complex<int>)>& f, int Nr, int rMin, int rMax, int Ni, int iMin, int iMax, bool conj);
+//template void GNUPlotter::plotComplexVectorField(const std::function<std::complex<int>(std::complex<int>)>& f, int Nr, int rMin, int rMax, int Ni, int iMin, int iMax, bool conj);
 template void GNUPlotter::plotComplexVectorField(const std::function<std::complex<float>(std::complex<float>)>& f, int Nr, float rMin, float rMax, int Ni, float iMin, float iMax, bool conj);
 template void GNUPlotter::plotComplexVectorField(const std::function<std::complex<double>(std::complex<double>)>& f, int Nr, double rMin, double rMax, int Ni, double iMin, double iMax, bool conj);
-
+// std::complex<int> is not supported!
 
 //-------------------------------------------------------------------------------------------------
 
