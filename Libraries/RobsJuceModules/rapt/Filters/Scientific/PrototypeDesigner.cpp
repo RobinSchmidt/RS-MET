@@ -453,7 +453,10 @@ void rsPrototypeDesigner<T>::scaleToMatchGainAtUnity(Complex* z, Complex* p, T* 
     zNew[n] = scaler * z[n];
   }
   int nz = rsGetNumFiniteValues(z, N);
-  *kNew  = *k / pow(wc, N-nz);
+  //*kNew  = *k / pow(wc, N-nz);       // Old
+  *kNew  = *k / rsPow(wc, (T)(N-nz));  // New
+  // ToDo: Try using rsPowInt (the exponent is actually a (always positive?) int, so a potentially
+  // more efficient implementation may be possible)
 }
 
 template<class T>
