@@ -162,12 +162,17 @@ void rsCrossOver4Way<TSig, TPar>::getMagnitudeResponse(TPar* frequencies, TPar* 
 
 // audio-processing:
 
-/*
 template<class TSig, class TPar>
 void rsCrossOver4Way<TSig, TPar>::processBuffer(TSig** inOutBuffer, int length)
 {
+  rsWarning("rsCrossOver4Way::processBuffer() needs tests");
+
+  // The implementation was commented out. I have uncommented it again to fix a compiler warning 
+  // but I'm not sure if the implementation below is good or not. We need to set up a unit test for
+  // it and then re-implement/uncomment and test it. 
+
   int c, n;
-  double sampleFrame[8];
+  TSig sampleFrame[8];
   for(n = 0; n < length; n++)
   {
     sampleFrame[0] = inOutBuffer[0][n];
@@ -176,10 +181,9 @@ void rsCrossOver4Way<TSig, TPar>::processBuffer(TSig** inOutBuffer, int length)
     processSampleFrame(sampleFrame);
 
     for(c = 0; c < 8; c++)
-      inOutBuffer[c][n] = (float) sampleFrame[c];
+      inOutBuffer[c][n] = sampleFrame[c];
   }
 }
-*/
 
 // others:
 
