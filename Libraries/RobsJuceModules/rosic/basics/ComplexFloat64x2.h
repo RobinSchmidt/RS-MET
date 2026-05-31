@@ -51,8 +51,11 @@ public:
 */
 
 
+#define RS_STDCOMPLEX_SIMD  // To conveniently turn on/off the (problematic) stuff below.
+// It is problematic because instantiating std::complex<rsFloat64x2> is undefined behavior.
 
 
+#if defined RS_STDCOMPLEX_SIMD
 
 /** Returns the first (index 0) complex number in the complex of simd vectors. */
 inline std::complex<double> get0(const std::complex<rsFloat64x2>& z)
@@ -112,10 +115,7 @@ inline std::complex<rsFloat64x2>& std::complex<rsFloat64x2>::operator/=(
 //  return a = a / b; // THIS NEEDS TESTING!
 //}
 
-
 inline std::complex<rsFloat64x2> operator+(const std::complex<rsFloat64x2>& z) { return z; }
-
-
 
 /** Computes the complex exponential of z. */
 inline std::complex<rsFloat64x2> rsExp(const std::complex<rsFloat64x2>& z)
@@ -133,6 +133,9 @@ inline std::complex<rsFloat64x2> rsExp(const std::complex<rsFloat64x2>& z)
   rsFloat64x2 vim(im0, im1);        // vector of resulting imag parts
   return std::complex<rsFloat64x2>(vre, vim);
 }
+
+#endif  // #if defined RS_STDCOMPLEX_SIMD
+
 
 
 
@@ -159,7 +162,7 @@ inline std::complex<rsFloat64x2> copysign(std::complex<rsFloat64x2> z, std::comp
 //inline std::complex<rsFloat64x2>& std::complex<rsFloat64x2>::operator=(
 //  const std::complex<rsFloat64x2>& z) { return z; }
 
-#endif
+#endif  // #ifndef _MSC_VER
 
 
 
