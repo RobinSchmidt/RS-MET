@@ -1613,7 +1613,13 @@ bool float32x4UnitTest()
 
 bool complexFloat64x2UnitTest()
 {
+  // ToDo:
+  //
+  // - Maybe adapt this test to use rsComplex instead of std::complex
+
   bool r = true;      // test result
+
+#if defined RS_STDCOMPLEX_SIMD
 
   // we have 4 complex numbers z1[0] = 1 + 3i, z1[1] = 2 + 4i, z2[0] = 5 + 7i, z2[1] = 6 + 8i:
   std::complex<double> z10(1, 3), z11(2, 4), z20(5, 7), z21(6, 8), w0, w1;
@@ -1654,6 +1660,8 @@ bool complexFloat64x2UnitTest()
   r &= w1 == get1(w);
   //r &= w0 == rosic::get0(w);
   //r &= w1 == rosic::get1(w);
+
+#endif  // #if defined RS_STDCOMPLEX_SIMD
 
   return r;
 }

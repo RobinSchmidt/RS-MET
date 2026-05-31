@@ -6,6 +6,11 @@ imaginary parts are each a SIMD vector. For some reason, the standard library fu
 std::complex dont work anymore when the template parameter to std::complex is a SIMD type, so we
 provide explicit specializations here. */
 
+// Note: Instantiating std::complex<rsFloat64x2> is actually undefined behavior which is why I
+// now have made the compilation of the code here and the associated unit test conditional behind a
+// #define RS_STDCOMPLEX_SIMD. Maybe we should get rid of it or adapt it to work with rsComplex. 
+// But maybe for rsComplex, we don't even need that additional code? Figure out!
+
 
 /*
 // copied/edited from complex on mac (i commented out most of the declarations - it may become
@@ -51,7 +56,7 @@ public:
 */
 
 
-#define RS_STDCOMPLEX_SIMD  // To conveniently turn on/off the (problematic) stuff below.
+//#define RS_STDCOMPLEX_SIMD  // To conveniently turn on/off the (problematic) stuff below.
 // It is problematic because instantiating std::complex<rsFloat64x2> is undefined behavior.
 
 
