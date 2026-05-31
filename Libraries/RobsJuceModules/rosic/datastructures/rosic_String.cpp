@@ -375,6 +375,8 @@ void rsString::initFromDoubleValue(double doubleValue)
   //   go with the theoretically excessive "%-.21gl" solution. It's actually not so nice to use 
   //   excessively many digits because it may bloat the size of data files. But the guaranteed
   //   roundtrip correctness is more important here.
+  //
+  // - The code is actually quite ugly anyway. It's very old. Maybe we can do better.
 }
 
 int rsString::removeGarbageFromDoubleString(char *s, int length)
