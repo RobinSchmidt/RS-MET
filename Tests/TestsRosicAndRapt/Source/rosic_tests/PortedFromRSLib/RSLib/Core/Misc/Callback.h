@@ -37,6 +37,10 @@ namespace RSLib
       // unit test with gcc. MSVC gives a warning when we comment this out, though. We need to 
       // figure out what's going on here! 
 
+    // Update - as recommended by GitHub Copilot:
+    virtual ~rsCallbackBase1() noexcept = default;
+
+
     /** This is the function to actually invoke the callback. Inside your client-code, the
     invocation code should look like this:
     \code
