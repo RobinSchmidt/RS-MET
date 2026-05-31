@@ -338,8 +338,20 @@ void rsString::initFromDoubleValue(double doubleValue)
   // required length and copy the repsective part of the temporary string - the c-book says,
   // strncpy is unreliable with respect to copying the terminating zero, so we do it manually:
   char tmpString[64];
+
+
   //sprintf(tmpString, "%-.17gl", doubleValue);  // Fails unit test with MSVC
-  sprintf(tmpString, "%-.21gl", doubleValue);
+  //sprintf(tmpString, "%-.21gl", doubleValue);  // Works - but Copilot says the l is wrong
+  sprintf(tmpString, "%-.21g", doubleValue);     // Also works
+
+  //sprintf(tmpString, "%-.17g", doubleValue);    // Fails
+
+  // Suggested by Copilot:
+  //int prec = std::numeric_limits<double>::max_digits10;
+  //snprintf(tmpString, sizeof(tmpString), "%.*g", prec, doubleValue);
+  // This also fails!
+
+
   length = (int) strspn(tmpString, "0123456789+-.eE");
 
   tmpString[length] = '\0'; // maybe removed later
@@ -354,8 +366,14 @@ void rsString::initFromDoubleValue(double doubleValue)
   // ToDo:
   //
   // - Document why we need to use "%-.21gl" and why "%-.17gl" is not enough. Google AI says that
-  //   for perfect double->string->double roundtrips, 17 decimal digits should be enough. For 
-  //   perfect string->double->string roundtrips, one can use at most 15 decimal digits.
+  //   for perfect double->string->double roundtrips, 17 decimal digits should be enough but 
+  //   anything below 21 makes the unit test fail. For perfect string->double->string roundtrips, 
+  //   one can use at most 15 decimal digits, by the way (also what Google says).
+  //
+  // - I tried to figure out what's going on with GitHub Copilot and it also says that 17 should be
+  //   enough. It suggested some other code but that code also failed. It also suggested to use
+  //   std::to_chars() instead. Maybe at some point we should do that. For the time being, I just 
+  //   go with the theoretically excessive "%-.21gl" solution.
 }
 
 int rsString::removeGarbageFromDoubleString(char *s, int length)
