@@ -376,7 +376,8 @@ void rsString::initFromDoubleValue(double doubleValue)
   //   excessively many digits because it may bloat the size of data files. But the guaranteed
   //   roundtrip correctness is more important here.
   //
-  // - The code is actually quite ugly anyway. It's very old. Maybe we can do better.
+  // - The code is actually quite ugly anyway. It's very old. Maybe we can do better. Maybe 
+  //   rosic::rsString should be retired and we should use std::string everywhere instead.
 }
 
 int rsString::removeGarbageFromDoubleString(char *s, int length)
