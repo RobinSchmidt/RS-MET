@@ -335,7 +335,7 @@ void rsString::initFromDoubleValue(double doubleValue)
   }
 
   // Create temporary string long enough to hold all the characters, determine the actually
-  // required length and copy the repsective part of the temporary string - the c-book says,
+  // required length and copy the respective part of the temporary string - the c-book says,
   // strncpy is unreliable with respect to copying the terminating zero, so we do it manually:
   char tmpString[64];
 
@@ -343,7 +343,6 @@ void rsString::initFromDoubleValue(double doubleValue)
   //sprintf(tmpString, "%-.17gl", doubleValue);  // Fails unit test with MSVC
   //sprintf(tmpString, "%-.21gl", doubleValue);  // Works - but Copilot says the l is wrong
   sprintf(tmpString, "%-.21g", doubleValue);     // Also works
-
   //sprintf(tmpString, "%-.17g", doubleValue);    // Fails
 
   // Suggested by Copilot:
@@ -373,7 +372,9 @@ void rsString::initFromDoubleValue(double doubleValue)
   // - I tried to figure out what's going on with GitHub Copilot and it also says that 17 should be
   //   enough. It suggested some other code but that code also failed. It also suggested to use
   //   std::to_chars() instead. Maybe at some point we should do that. For the time being, I just 
-  //   go with the theoretically excessive "%-.21gl" solution.
+  //   go with the theoretically excessive "%-.21gl" solution. It's actually not so nice to use 
+  //   excessively many digits because it may bloat the size of data files. But the guaranteed
+  //   roundtrip correctness is more important here.
 }
 
 int rsString::removeGarbageFromDoubleString(char *s, int length)
