@@ -28,18 +28,25 @@ class rsMapperLinToExp : public rsMapper<T>
 
 public:
 
-
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
   rsMapperLinToExp(T inMin = 0, T inMax = 1, T outMin = 1, T outMax = 2)
   {
     setRanges(inMin, inMax, outMin, outMax);
   }
+  RS_DONTWARN_POP();
 
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
   void setRanges(T inMin, T inMax, T outMin, T outMax)
   {
     this->inMin  = inMin;
     this->outMin = outMin;
     argScale = rsLog2(outMax / outMin) / (inMax-inMin);
   }
+  RS_DONTWARN_POP();
+  // ToDo: Rename function parameters to newInMin, etc. and then adapt the code and get rid of the
+  // warning suppression macros.
 
   T map(T x) const override
   {

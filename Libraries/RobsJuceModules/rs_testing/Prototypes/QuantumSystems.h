@@ -87,12 +87,19 @@ public:
   /** \name State setup */
 
   // state creation (factory) functions:
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
   static Vec up()    { Vec s; prepareUpState(s);    return s; }
   static Vec down()  { Vec s; prepareDownState(s);  return s; }
   static Vec right() { Vec s; prepareRightState(s); return s; }
   static Vec left()  { Vec s; prepareLeftState(s);  return s; }
   static Vec in()    { Vec s; prepareInState(s);    return s; }
   static Vec out()   { Vec s; prepareOutState(s);   return s; }
+  RS_DONTWARN_POP();
+  // ToDo: Rename local param s to something else and get rid of warning suppression. Or maybe 
+  // rename the static class member s to something else. It's the constant scaler 1/sqrt(2). Does
+  // it even make sense to keep that as static const member. Figure out how often we use it. If 
+  // it's not that often, maybe get rid of it.
 
   // setting the state of vector A:
   static void prepareUpState(   Vec& A) { A.x = 1; A.y =  0;   }  // (1) Eq 2.11

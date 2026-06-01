@@ -28,8 +28,12 @@ public:
   The frequency variable w stands for "omega" and is actually the radian frequency, i.e. 
   w = 2*pi*f. The amplitude a is a raw multiplier. The decay d is 1/tau where tau is the time 
   constant, i.e. the time it takes to decay to 1/e. The start phase p is in radians. */
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
   void setup(T w, T a, T d, T p = T(0)) { this->w = w; this->a = a; this->d = d; this->p = p; }
-
+  RS_DONTWARN_POP();
+  // ToDo: Rename parameters to something more desrciptive. Maybe omega/radianFreq/radFreq/freqRad,
+  // amplitude, decay, phase.
 
   void canonicalize();
 
