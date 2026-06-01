@@ -649,10 +649,11 @@ template class RAPT::rsCrossOver4Way<double, double>;
 template class RAPT::rsHilbertFilter<double, double>;
 template class RAPT::rsStateVariableFilter<double, double>;
 
-template class rsStateVariableFilterChain<double, double>; // not yet in RAPT namespace
+// Not yet in RAPT namespace:
+template class rsStateVariableFilterChain<double, double>; 
 template class rsStateVariableFilterChain<float, float>; 
-template class rsStateVariableFilterChain<float, double>; 
-template class rsStateVariableFilterChain<long double, long double>; 
+//template class rsStateVariableFilterChain<float, double>; // Triggers compiler warning
+//template class rsStateVariableFilterChain<long double, long double>; // Do we need this? Nope!
 
 template class rsDelay<double>;
 template class rsDelay<RAPT::rsComplex<double>>;
