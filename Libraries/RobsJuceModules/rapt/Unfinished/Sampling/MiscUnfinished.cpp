@@ -408,8 +408,10 @@ void rsCycleMarkFinder<T>::refineCycleMarksByCorrelation(const T *x, int N, std:
 
   int maxLength = 5000; // preliminary - use something based on the maximum time-delta between the
                         // cycle-marks in cm array
+  RS_DONTWARN_PUSH();
   RS_DONTWARN_HIDESMEMBER();
   std::vector<T> cl(maxLength), cr(maxLength), corr(2*maxLength-1);
+  RS_DONTWARN_POP();
   // I think, the members with the same name serve the same purpose but avoid the re-allocations on
   // each call. Commenting the local variables out will let us now use these members in the code 
   // below. If this really works as expected need to be tested

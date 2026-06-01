@@ -215,6 +215,28 @@ updated to get rid of the deprecation warnings. */
   #define RS_DONTWARN_HIDESMEMBER()
 #endif
 
+/*
+// I hoped that these suppress the warning only at the specific site where the macor is placed but I
+// couldn't get it to work:
+#if defined(_MSC_VER)
+  // MSVC 
+  #define RS_DONTWARN_UNINITIALIZED() __pragma(warning(supress:4701)) // potentially uninitialized local variable used
+  #define RS_DONTWARN_HIDESMEMBER()   __pragma(warning(supress:4458)) // declaration of ... hides class member
+#elif defined(__clang__)
+  // Clang 
+  #define RS_DONTWARN_UNINITIALIZED() _Pragma("clang diagnostic ignored \"-Wuninitialized\"")
+  #define RS_DONTWARN_HIDESMEMBER()   _Pragma("clang diagnostic ignored \"-Wshadow\"") 
+#elif defined(__GNUC__)
+  // GCC 
+  #define RS_DONTWARN_UNINITIALIZED() _Pragma("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
+  #define RS_DONTWARN_HIDESMEMBER()   _Pragma("GCC diagnostic ignored \"-Wshadow\"")
+#else
+  #define RS_DONTWARN_UNINITIALIZED()
+  #define RS_DONTWARN_HIDESMEMBER()
+#endif
+*/
+// See:
+// https://www.fluentcpp.com/2019/08/30/how-to-disable-a-warning-in-cpp/
 
 
 // Compiler hinting:
