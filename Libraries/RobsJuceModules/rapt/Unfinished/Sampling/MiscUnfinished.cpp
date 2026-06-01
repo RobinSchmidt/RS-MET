@@ -2375,6 +2375,8 @@ void rsEnvelopeExtractor<T>::setupEndValues(
 
 
 // obsolete:
+RS_DONTWARN_PUSH();
+RS_DONTWARN_HIDESMEMBER();
 template<class T>
 void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T maxSpacing)
@@ -2428,6 +2430,7 @@ void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEn
   
   */
 }
+RS_DONTWARN_POP();
 
 // maybe move to rsArrayTools or make member function:
 template<class T>

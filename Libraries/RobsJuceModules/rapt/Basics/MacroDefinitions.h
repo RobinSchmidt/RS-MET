@@ -214,6 +214,9 @@ updated to get rid of the deprecation warnings. */
   #define RS_DONTWARN_UNINITIALIZED()
   #define RS_DONTWARN_HIDESMEMBER()
 #endif
+// They can be used by either wrapping them around a local variable declaration within a function 
+// or by wrapping them around a whole function definition. The second way is needed when the 
+// function parameters are the culprit, i.e. the shadowcasters. ToDo: Give code examples for both.
 
 /*
 // I hoped that these suppress the warning only at the specific site where the macor is placed but I
