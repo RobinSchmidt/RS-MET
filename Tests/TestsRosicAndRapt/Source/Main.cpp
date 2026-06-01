@@ -66,8 +66,8 @@ int main(int /*argc*/, char* /*argv[]*/)
   // Unit Tests:
 
   bool ok = true;
-  ok &= runUnitTestsRapt();
-  ok &= runUnitTestsRosic();
+  //ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
 
   // We currently get a memory leak when runUnitTestsRapt() is being called. If it's commented out,
@@ -236,9 +236,9 @@ int main(int /*argc*/, char* /*argv[]*/)
   //brickwallDeRinging();         // stub
   //complementaryFiltersIIR();
   //ringingResponses();
-  //engineersFilterFreqResps();
-  //engineersFilterFreqRespsMeasured();  // Measured freq responses - the computated ones may lie!
-  //engineersFilterMethodsComparison();
+  engineersFilterFreqResps();
+  engineersFilterFreqRespsMeasured();  // Measured freq responses - the computated ones may lie!
+  engineersFilterMethodsComparison();
   //firstOrderFilters();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();

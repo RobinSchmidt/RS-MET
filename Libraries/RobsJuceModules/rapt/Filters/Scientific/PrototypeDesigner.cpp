@@ -921,11 +921,16 @@ void rsPrototypeDesigner<T>::getEllipticLowpassZerosPolesAndGain(Complex* z, Com
     p[2*i+1] = conj(p[2*i]);
   }
 
-  T H0 = pow(Gp, 1-r);    // preliminary - can be made simpler (without pow)
+  //T H0 = pow(Gp, 1-r);       // Preliminary - can be made simpler (without pow)
+  T H0 = rsPow(Gp, (T)(1-r));  // New - to fix warning
+  // I think, r is either 0 or 1, so we could also do something like:
+  // T H0 = (r == 1) ? Gp : T(1);
+
   Complex n = rsProductOfFiniteFactors(p, N);
   Complex d = rsProductOfFiniteFactors(z, N);
   *k        = H0 * (n/d).real();
 }
+// Needs unit test
 
 // inquiry:
 
