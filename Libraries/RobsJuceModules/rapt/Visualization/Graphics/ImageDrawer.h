@@ -143,10 +143,10 @@ public:
 
   /** Function to initialize our xOld, yOld members which are used for polyline drawing. Call this
   once with the start point of the polyline before repeatedly calling lineTo  */
-  inline void initPolyLine(TCor x, TCor y)
+  inline void initPolyLine(TCor xStart, TCor yStart)
   {
-    xOld = x;
-    yOld = y;
+    xOld = xStart;
+    yOld = yStart;
     // maybe it should draw a circle?
   }
 

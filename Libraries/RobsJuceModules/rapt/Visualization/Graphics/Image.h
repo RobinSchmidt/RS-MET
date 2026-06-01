@@ -124,10 +124,13 @@ public:
   { return rsIsInRange(x, 0, width-1) && rsIsInRange(y, 0, height-1); }
 
   /** Returns true, iff this image as the given shape. */
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
   inline bool hasShape(int width, int height) const
   {
     return this->width == width && this->height == height;
   }
+  RS_DONTWARN_POP();
 
   /** Returns true, iff this image has the same shape as the given other image. The other image may
   have a different pixel type. */

@@ -36,9 +36,15 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
   void setCoefficients(rsComplex<T> a, rsComplex<T> b,
     rsComplex<T> c, rsComplex<T> d)
-  { this->a = a; this->b = b; this->c = c; this->d = d; }
+  { 
+    this->a = a; this->b = b; this->c = c; this->d = d; 
+  }
+  RS_DONTWARN_POP();
+
 
   /* Normalizes this transform such that the determinant becomes unity. This will determine the
   coefficients up to an inversion of sign. not pinpoint the coefficients uniquely.  */

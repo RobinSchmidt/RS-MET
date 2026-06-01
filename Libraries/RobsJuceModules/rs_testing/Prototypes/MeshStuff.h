@@ -57,12 +57,17 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
   void setNumSamples(int Nx, int Ny)
   {
     this->Nx = Nx;
     this->Ny = Ny;
   }
+  RS_DONTWARN_POP();
 
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
   void setParameterRange(T x0, T x1, T y0, T y1)
   {
     this->x0 = x0;
@@ -70,6 +75,7 @@ public:
     this->y0 = y0;
     this->y1 = y1;
   }
+  RS_DONTWARN_POP();
   // maybe get rid or if not, rename to setRange
 
   void setTopology(Topology newTopology)

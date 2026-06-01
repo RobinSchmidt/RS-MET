@@ -37,7 +37,10 @@ public:
   /** \name Setup */
 
   /** Sets up the elements of the matrix. */
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
   void setValues(T a, T b, T c, T d) { this->a = a; this->b = b; this->c = c; this->d = d; }
+  RS_DONTWARN_POP();
 
   /** Sets all elements of the matrix to zero. */
   void setZero() { this->a = this->b = this->c = this->d = T(0); }
