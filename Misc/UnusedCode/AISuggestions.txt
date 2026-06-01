@@ -1,0 +1,51 @@
+// This file contains collected code snippets that were suggested by AIs such as GitHub Copilot,
+// Claude, etc. which I didn't want to directly incorporate but want to keep around for reference
+// and potential later inclusion into the main code.
+
+//--------------------------------------------------------------------------------------------------
+// GitHub Copilot (with GPT-5 mini) suggested this code for the explicit specialization of
+// rsLog2() for int:
+
+// Integer-specialization for rsLog2: avoid floating-point -> int narrowing and use
+// an exact, fast integer implementation for positive values.
+//
+// Place this after the generic rsLog2 template above.
+template<>
+inline int rsLog2<int>(int x)
+{
+  // For positive integers, return floor(log2(x)) without using floating point.
+  // For non-positive inputs, fall back to the std::log2 behavior converted to int.
+  if(x > 0)
+  {
+    unsigned int u = static_cast<unsigned int>(x);
+#if defined(_MSC_VER)
+    unsigned long index;
+    // __lzcnt? use built-in bit-scan if available, otherwise fall back to loop:
+    #if defined(_M_ARM) || defined(_M_ARM64)
+      // no portable MSVC intrinsics for clz across architectures here - use loop
+      int r = 0;
+      while(u >>= 1) ++r;
+      return r;
+    #else
+      // use _BitScanReverse for MSVC x86/x64
+      if(_BitScanReverse(&index, u))
+        return static_cast<int>(index);
+      // fallback:
+      int r = 0;
+      while(u >>= 1) ++r;
+      return r;
+    #endif
+#else
+    // portable fallback using GCC/Clang builtin if available
+    #if defined(__GNUG__) || defined(__clang__)
+      return 31 - __builtin_clz(u);
+    #else
+      int r = 0;
+      while(u >>= 1) ++r;
+      return r;
+    #endif
+#endif
+  }
+  // non-positive: keep behavior consistent with original (may produce -inf/NaN converted to int)
+  return static_cast<int>(std::log2(static_cast<double>(x)));
+}
