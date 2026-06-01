@@ -177,6 +177,8 @@ void rsSparsePolynomial<T, TTol>::_removeTermsWithZeroCoeff()
   );
 }
 
+RS_DONTWARN_PUSH();
+RS_DONTWARN_HIDESMEMBER();
 template<class T, class TTol>
 bool rsSparsePolynomial<T, TTol>::isCloseTo(const rsSparsePolynomial<T, TTol>& q, TTol tol) const
 {
@@ -195,8 +197,11 @@ bool rsSparsePolynomial<T, TTol>::isCloseTo(const rsSparsePolynomial<T, TTol>& q
 
   return true;
 }
+RS_DONTWARN_POP();
 // ToDo: Implement this as a free function. Rationale: It would be consistent with how we do it for
-// other classes. Or maybe add the free function additionally. 
+// other classes. Or maybe add the free function additionally. This would also let us get rid of
+// the warning suppression which is there because the compiler emits a warning about the parameter
+// tol hiding the member tol. A free function would not have the member in scope anyway.
 
 template<class T, class TTol>
 bool rsSparsePolynomial<T, TTol>::_isCanonical() const

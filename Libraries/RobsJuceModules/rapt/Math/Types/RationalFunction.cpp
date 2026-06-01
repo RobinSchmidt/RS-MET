@@ -1,3 +1,5 @@
+RS_DONTWARN_PUSH();
+RS_DONTWARN_HIDESMEMBER();
 template<class T>
 bool RAPT::rsRationalFunction<T>::reduce(T tol)
 {
@@ -8,6 +10,11 @@ bool RAPT::rsRationalFunction<T>::reduce(T tol)
   den.coeffs = polyDiv(den.coeffs, gcd, tol);
   return true;
 }
+RS_DONTWARN_POP();
+// ToDo: Try to get rid of the warning suppression. I think, maybe we should handle the floating 
+// point tolerance similar to what we do in rsSparsePolynomial/rsSparseRationalFunction. There,
+// we have a 2nd template parameter TTol. The rationale is that the coefficient type maybe 
+// something like a complex type and the TTol should then be the corresponding real type.
 
 template<class T>
 void RAPT::rsRationalFunction<T>::valueAndSlopeAt(const T& x, T* y, T* yp) const

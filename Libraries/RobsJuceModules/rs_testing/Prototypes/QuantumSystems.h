@@ -381,12 +381,19 @@ public:
 
 protected:
 
-  // move to rapt - actually, there is already such a function - but for floats..hmmmm
-  int wrap(int x, int m) {
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
+  int wrap(int x, int m) 
+  {
     while(x <  0) x += m;
     while(x >= m) x -= m;
     return x;
   }
+  RS_DONTWARN_POP();
+  // ToDo: Move to rapt - actually, there is already such a function - but for floats..hmmmm
+  // I think what we do here mathematically is to compute the remainder, i.e. we do x mod m but 
+  // with the mathematically correct behavior for x < 0. Maybe we replicate the functionality of 
+  // rsMod()? Figure out. If so, maybe use that function instead.
 
   std::vector<T>       x;      // x-coordinate values
   std::vector<Complex> Psi;    // the wave-function (or state) itself
