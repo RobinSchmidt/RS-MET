@@ -395,18 +395,18 @@ romos::Module* ContainerModule::addAudioInputModule(std::string inputName, int p
   return newModule;
 }
 
-romos::Module* ContainerModule::addAudioOutputModule(std::string name, int x, int y,
+romos::Module* ContainerModule::addAudioOutputModule(std::string outputName, int posX, int posY,
   bool sortModuleArrayAfterInsertion)
 {
-  if( name.empty() )
-    name = std::string("Out") + std::to_string(getNumOutputPins()+1);
+  if( outputName.empty() )
+    outputName = std::string("Out") + std::to_string(getNumOutputPins()+1);
 
-  //Module *newModule = ModuleFactory::createModule(ModuleTypeRegistry::AUDIO_OUTPUT, name, x, y, this->isPolyphonic());
+  //Module *newModule = ModuleFactory::createModule(ModuleTypeRegistry::AUDIO_OUTPUT, outputName, posX, posY, this->isPolyphonic());
   //newModule->typeInfo = moduleFactory.getModuleTypeInfo("AudioOutput");
   // can be deleted when we create the newModule with the newFactory later (but until then, we
   // need to manually set the typeInfo pointer here
 
-  Module *newModule = moduleFactory.createModule("AudioOutput", name, x, y, this->isPolyphonic());
+  Module *newModule = moduleFactory.createModule("AudioOutput", outputName, posX, posY, this->isPolyphonic());
 
   newModule->parentModule = this;
   rosic::appendElement(childModules, (romos::Module*) newModule);
