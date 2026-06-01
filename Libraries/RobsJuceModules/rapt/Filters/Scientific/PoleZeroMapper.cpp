@@ -76,7 +76,8 @@ void rsPoleZeroMapper<T>::sLowpassToLowpass(Complex* z, Complex* p, T* k, Comple
   for(int n = 0; n < N; n++) zNew[n] = wc * z[n];
   for(int n = 0; n < N; n++) pNew[n] = wc * p[n];
   int nz = rsGetNumFiniteValues(z, N); // number of finite zeros in prototype
-  *kNew = *k * pow(wc, N-nz);
+  //*kNew = *k * pow(wc, N-nz);        // Old
+  *kNew = *k * rsPow(wc, (T)(N-nz));   // New - fixes warning. ToDo: Use rsPowInt()
 }
 
 template<class T>
@@ -142,7 +143,9 @@ void rsPoleZeroMapper<T>::sLowpassToBandpass(Complex* z, Complex* p, T* k, Compl
     }
   }
   int nz = rsGetNumFiniteValues(z, N); // number of finite zeros in prototype
-  *kNew  = *k * pow(bw, N-nz);
+
+  //*kNew  = *k * pow(bw, N-nz);     // Old
+  *kNew  = *k * rsPow(bw, (T)(N-nz));  // New. Fixes warning. ToDo: Use rsPowInt
 }
 
 template<class T>
