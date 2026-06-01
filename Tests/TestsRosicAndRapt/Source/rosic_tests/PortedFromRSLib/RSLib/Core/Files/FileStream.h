@@ -50,7 +50,14 @@ namespace RSLib
     virtual bool isOpen() const { return fileState != CLOSED; }
 
     /** Returns true when the file is open for writing, false otherwise. */
-    virtual bool isOpenForWrite() const { return fileState == OPEN_FOR_WRITE || OPEN_FOR_APPEND; }
+    virtual bool isOpenForWrite() const 
+    { 
+      //return fileState == OPEN_FOR_WRITE || OPEN_FOR_APPEND; // Old - buggy?
+
+      return fileState == OPEN_FOR_WRITE || fileState == OPEN_FOR_APPEND;
+      // I think, this is what the code is supposed to mean.
+    }
+    // Needs unit test.
 
     /** Returns true when the file is open for reading, false otherwise. */
     virtual bool isOpenForRead() const { return fileState == OPEN_FOR_READ; }
