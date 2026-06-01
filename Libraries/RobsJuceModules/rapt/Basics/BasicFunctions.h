@@ -52,6 +52,9 @@ as prototype. It is used, for example, to convert an integer into a modular inte
 the prototype value is used to copy the modulus from the prototype into the result. */
 template<class T> inline T rsIntValue(int value, T /*targetTemplate*/) { return T(value); }
 
+inline std::complex<float> rsIntValue(int value, std::complex<float> /*targetTemplate*/)
+{ return std::complex<float>((float)value, 0.f); }
+// Without this explicit specialization, MSVC produces a warning.
 
 template<class T> inline T rsIdentity(T value) { return value; }
 // Identity function - todo: take arg by const ref (we want to apply it to "big" types like 

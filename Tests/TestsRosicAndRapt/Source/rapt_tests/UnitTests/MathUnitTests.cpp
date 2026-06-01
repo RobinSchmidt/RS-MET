@@ -446,8 +446,8 @@ bool testBracketGuessing()
 
   // Check on linear functions:
   Func f;
-  f = [](float x) { return 5.f - 0.5*x; };  ok &= checkFunc(f);
-  f = [](float x) { return 5.f + 0.5*x; };  ok &= checkFunc(f);
+  f = [](float x) { return 5.f - 0.5f * x; };  ok &= checkFunc(f);
+  f = [](float x) { return 5.f + 0.5f * x; };  ok &= checkFunc(f);
   float a = float(PI);     // Let's use some irrational numbers!
   float b = float(EULER);
   f = [&](float x) { return a - b*x; };  ok &= checkFunc(f);
