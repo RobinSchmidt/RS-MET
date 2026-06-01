@@ -180,6 +180,8 @@ private:
 
   /** Convenience function to possibly plot a pixel with swapped x/y coordinates (needed for steep
   lines). */
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
   inline void plot(int x, int y, TWgt weight, bool swapXY)
   {
     if(swapXY)
@@ -187,6 +189,7 @@ private:
     else
       rsImageDrawer<TPix, TWgt, TCor>::plot(x, y, weight);
   }
+  RS_DONTWARN_POP();
 
   /** Sets up the internal variables for the line drawing algorithm for the two given
   endpoints. */

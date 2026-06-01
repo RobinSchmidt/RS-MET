@@ -47,6 +47,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup:
 
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
   void setData(Tx *x, Ty *y, int numValues)
   {
     this->x = x;
@@ -55,6 +57,7 @@ public:
     updateCoeffs(); // maybe don't directly call it here, just set a "dirty" flag and update them
                     // only when needed
   }
+  RS_DONTWARN_POP();
 
   void setMode(int newMode)
   {

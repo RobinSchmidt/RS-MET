@@ -1294,6 +1294,8 @@ public:
   the data (optionally) - what does std::vector's resize do? Does it retain data...but if it does,
   it would be useless anyway in case the number of columns changed. */
   //void setSize(int numRows, int numColumns)
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
   void setShape(int numRows, int numColumns)
   {
     if(numRows == this->numRows && numColumns == this->numCols)
@@ -1305,7 +1307,11 @@ public:
     updateDataPointer();
     // optionally initialize with zeros
   }
-  // rename to setShape - shall override inherited setShape
+  RS_DONTWARN_POP();
+  // ToDo: Rename to setShape - shall override inherited setShape. ...done?
+  // ToDo: Rename parameters to newNumRows, newNumCols, adapt the implementation and remove the
+  // warning suppression macros. Test with a unit test that we didn't break anything.
+
 
   /** Copies the data from another matrix into this one, converting the datatype, if necessarry. */
   template<class T2>
