@@ -191,24 +191,28 @@ updated to get rid of the deprecation warnings. */
 // warnings about uninitialized local variables
 // Diagnostic suppression helpers - cross-compiler
 #if defined(_MSC_VER)
-  /* MSVC */
-  #define RS_DONTWARN_PUSH()           __pragma(warning(push))
-  #define RS_DONTWARN_POP()            __pragma(warning(pop))
-  #define RS_DONTWARN_UNINITIALIZED()  __pragma(warning(disable:4701)) /* C4701: potentially uninitialized local variable used */
+  // MSVC 
+  #define RS_DONTWARN_PUSH()          __pragma(warning(push))
+  #define RS_DONTWARN_POP()           __pragma(warning(pop))
+  #define RS_DONTWARN_UNINITIALIZED() __pragma(warning(disable:4701)) // potentially uninitialized local variable used
+  #define RS_DONTWARN_HIDESMEMBER()   __pragma(warning(disable:4458)) // declaration of ... hides class member
 #elif defined(__clang__)
-  /* Clang */
+  // Clang 
   #define RS_DONTWARN_PUSH()           _Pragma("clang diagnostic push")
   #define RS_DONTWARN_POP()            _Pragma("clang diagnostic pop")
-  #define RS_DONTWARN_UNINITIALIZED()  _Pragma("clang diagnostic ignored \"-Wuninitialized\"")
+  #define RS_DONTWARN_UNINITIALIZED()  _Pragma("clang diagnostic ignored \"-Wuninitialized\"") // Needs tes
+  #define RS_DONTWARN_HIDESMEMBER()    _Pragma("clang diagnostic ignored \"-Wshadow\"")  // Needs test
 #elif defined(__GNUC__)
-  /* GCC */
+  // GCC 
   #define RS_DONTWARN_PUSH()          _Pragma("GCC diagnostic push")
   #define RS_DONTWARN_POP()           _Pragma("GCC diagnostic pop")
-  #define RS_DONTWARN_UNINITIALIZED() _Pragma("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
+  #define RS_DONTWARN_UNINITIALIZED() _Pragma("GCC diagnostic ignored \"-Wmaybe-uninitialized\"") // Needs test
+  #define RS_DONTWARN_HIDESMEMBER()   _Pragma("GCC diagnostic ignored \"-Wshadow\"")              // Needs test
 #else
   #define RS_DONTWARN_PUSH()
   #define RS_DONTWARN_POP()
   #define RS_DONTWARN_UNINITIALIZED()
+  #define RS_DONTWARN_HIDESMEMBER()
 #endif
 
 

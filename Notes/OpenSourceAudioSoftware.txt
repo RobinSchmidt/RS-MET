@@ -1588,6 +1588,20 @@ https://github.com/cgzirim/seek-tune
 ----------------------------------------------------------------------------------------------------
 Unsorted:
 
+RustAudio
+https://github.com/rustaudio
+-Audio, DSP and music libraries written in Rust. 
+ Discord https://discord.gg/b3hjnGw
+
+https://rust.audio/
+
+https://github.com/rishit-katiyar/rustaudiofx-rust
+
+DASP:
+https://github.com/rustaudio/dasp
+-Digital Audio Signal Processing in Rust.
+
+
 Eclipsa Audio:
 https://github.com/google/eclipsa-audio-plugin
 -Multichannel audio format for spatial audio. Open alternative to DTS, THX, Dolby Atmos, etc.
