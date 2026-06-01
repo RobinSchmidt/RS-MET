@@ -60,6 +60,9 @@ public:
   the quadrature phase component (imaginary part). */
   inline void getOutputSamplePair(TSig in, TSig *outReal, TSig *outImag)
   {
+    rsAssert(rsIsInRange(order, 0, maxOrder), 
+      "Filter order out of range in rsQuadratureNetwork::getOutputSamplePair().");
+
     ComplexSig tmp = gain*in;
     for(int i = 0; i < order; i++)
     {
@@ -78,14 +81,18 @@ public:
     // Maybe it's because the compiler can't assure that order is at least 1? We set it to 12 in
     // the constructor. The user can change it via setOrder(). Maybe there, we should do:
     // newOrder = rsMax(1, newOrder) to ensure that the order is always at least 1. Or maybe we
-    // should allow an order of zero and switch top bypass mode in this case? But we don't want to
+    // should allow an order of zero and switch to bypass mode in this case? But we don't want to
     // introduce an additional conditional here because this is the performace critical code. But 
     // wait! Isn't the assignment after the loop redundant anyway? Will the last iteration of the 
     // loop not already do the same thing? In the last iteration, we have i = order-1 and therefore
     // the assignment  tmp = y[order-1];  should do the same thing as the last  tmp = y[i];  inside
     // the loop, right? That way, when order == 0, the loop won't execute at all and tmp will just
     // be gain*in which is what we want in bypass mode. So maybe the line  tmp = y[order-1];  can 
-    // just be deleted. Set up a test for that and try it!
+    // just be deleted. Set up a test for that and try it! We may also add an
+    // 
+    //   rsAssert(rsIsInRange(order, 0, maxOrder), "order is out of range");
+    //
+    // here. ..ok - done.
 
     *outReal = tmp.real();
     *outImag = tmp.imag();
