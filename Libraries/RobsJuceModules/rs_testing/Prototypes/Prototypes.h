@@ -4402,6 +4402,8 @@ void rsColor<T>::hsl2rgb(T H, T S, T L, T* R, T* G, T* B)
 template<class T>
 void rsColor<T>::rgb2hsl(T R, T G, T B, T* H, T* S, T* L)
 {
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
   auto wrap = [](T x, T min, T max)  // todo: use library function
   {
     T range = max-min;
@@ -4409,6 +4411,7 @@ void rsColor<T>::rgb2hsl(T R, T G, T B, T* H, T* S, T* L)
     while(x < min) x += range;
     return x;
   };
+  RS_DONTWARN_POP();
   T Cmax = rsMax(R, G, B);
   T Cmin = rsMin(R, G, B);
   T D    = Cmax - Cmin;                                 // delta

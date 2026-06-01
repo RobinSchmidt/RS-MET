@@ -378,7 +378,12 @@ public:
 
     //TPar w = getOmega();
     TPar Q = getQualityFactor();
+    RS_DONTWARN_PUSH();
+    RS_DONTWARN_HIDESMEMBER();
     rsComplex<TPar> s = (1/g) * (z-TPar(1)) / (z+TPar(1));
+    RS_DONTWARN_POP();
+    // ToDo: Maybe rename the local s here or the member s and then get rid of the warning 
+    // suppression.
 
     if(isBell())
     {
