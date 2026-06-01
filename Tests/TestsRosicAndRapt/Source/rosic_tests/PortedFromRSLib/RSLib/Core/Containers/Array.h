@@ -384,26 +384,30 @@ namespace RSLib
     the old memory area. */
     void reAllocateMemoryAndMoveData(int numElementsToAllocate)
     {
-      // Old code - for reference. This code gives a compiler warning:
-      ElementType* tmpElements = new ElementType[numElementsToAllocate];
-      for(int i = 0; i < numUsed; i++)
-        tmpElements[i] = elements[i];
-      delete[] elements;
-      elements     = tmpElements;
-      numAllocated = numElementsToAllocate;
-
-      //// New code - suggested by Copilot to fix the warning:
+      //// Old code - for reference. This code gives a compiler warning:
       //ElementType* tmpElements = new ElementType[numElementsToAllocate];
-      //// Only copy up to the minimum of numUsed and numElementsToAllocate to avoid buffer overrun:
-      //int numToCopy = numUsed < numElementsToAllocate ? numUsed : numElementsToAllocate;
-      //for(int i = 0; i < numToCopy; i++)
+      //for(int i = 0; i < numUsed; i++)
       //  tmpElements[i] = elements[i];
       //delete[] elements;
       //elements     = tmpElements;
       //numAllocated = numElementsToAllocate;
-      //// If numUsed > numElementsToAllocate, shrink numUsed to avoid out-of-bounds access elsewhere:
-      //if(numUsed > numElementsToAllocate)
-      //  numUsed = numElementsToAllocate;
+
+      // New code - suggested by Copilot to fix the warning:
+      ElementType* tmpElements = new ElementType[numElementsToAllocate];
+      // Only copy up to the minimum of numUsed and numElementsToAllocate to avoid buffer overrun:
+      int numToCopy = numUsed < numElementsToAllocate ? numUsed : numElementsToAllocate;
+      for(int i = 0; i < numToCopy; i++)
+        tmpElements[i] = elements[i];
+      delete[] elements;
+      elements     = tmpElements;
+      numAllocated = numElementsToAllocate;
+      // If numUsed > numElementsToAllocate, shrink numUsed to avoid out-of-bounds access elsewhere:
+      if(numUsed > numElementsToAllocate)
+        numUsed = numElementsToAllocate;
+      // ToDo: Maybe use rsMin instead of the conditionals, i.e.:
+      // int numToCopy = rsMin(numUsed, numElementsToAllocate);
+      // ...
+      // numUsed = rsMin(numUsed, numElementsToAllocate);
 
       // ToDo:
       //

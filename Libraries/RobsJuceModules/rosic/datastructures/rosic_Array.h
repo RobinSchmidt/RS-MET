@@ -251,6 +251,10 @@ public:
       // copy the elements form the old array to the new larger array:
       for(int i=0; i<numUsed; i++)
         tmpElements[i] = elements[i];
+        // MSVC warns here:
+        // Warning	C6385	Reading invalid data from 'tmpElements':  
+        // the readable size is '(size_t)*56' bytes, but '112' bytes may be read.	
+
 
       // delete the old array which has become too small:
       if(elements != NULL)  // Why do we need this? Maybe we don't? Check that!

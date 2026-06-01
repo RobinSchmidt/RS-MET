@@ -68,7 +68,25 @@ public:
       tmp  = y[i];
       // can(?) be streamlined by noting that x[i] == y[i-1] for i >= 1
     }
+
     tmp = y[order-1];
+    // MSVC warns here about an invalid read in the TestsRosicAndRapt project: 
+    // 
+    // Warning	C6385	Reading invalid data from 'this->y':
+    // the readable size is '320' bytes, but '-16' bytes may be read.
+    // 
+    // Maybe it's because the compiler can't assure that order is at least 1? We set it to 12 in
+    // the constructor. The user can change it via setOrder(). Maybe there, we should do:
+    // newOrder = rsMax(1, newOrder) to ensure that the order is always at least 1. Or maybe we
+    // should allow an order of zero and switch top bypass mode in this case? But we don't want to
+    // introduce an additional conditional here because this is the performace critical code. But 
+    // wait! Isn't the assignment after the loop redundant anyway? Will the last iteration of the 
+    // loop not already do the same thing? In the last iteration, we have i = order-1 and therefore
+    // the assignment  tmp = y[order-1];  should do the same thing as the last  tmp = y[i];  inside
+    // the loop, right? That way, when order == 0, the loop won't execute at all and tmp will just
+    // be gain*in which is what we want in bypass mode. So maybe the line  tmp = y[order-1];  can 
+    // just be deleted. Set up a test for that and try it!
+
     *outReal = tmp.real();
     *outImag = tmp.imag();
   }

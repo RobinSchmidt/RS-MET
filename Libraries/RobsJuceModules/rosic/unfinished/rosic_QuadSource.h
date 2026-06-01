@@ -27,7 +27,12 @@ public:
   {
     RAPT::rsAssert(slot >= 0 && slot <= numSources, "invalid slot index");
     RAPT::rsAssert(newModule != nullptr, "must be a valid object, or else access violation");
+
     delete sources[slot];
+    // MSVC warns here:
+    // Warning	C6385	Reading invalid data from 'this->sources':  
+    // the readable size is '32' bytes, but 'slot' bytes may be read.	
+
     sources[slot] = newModule;
   }
 
