@@ -124,7 +124,8 @@ void segmented_sieve(rsInt64 limit, int segment_size = L1D_CACHE_SIZE)
 
   for (rsInt64 low = 0; low <= limit; low += segment_size)
   {
-    std::fill(segment.begin(), segment.end(), 1);
+    //std::fill(segment.begin(), segment.end(), 1);      // Triggers warning!
+    std::fill(segment.begin(), segment.end(), (char)1);  // Fixes the warning.
 
     // current segment = interval [low, high]
     rsInt64 high = std::min(low + segment_size - 1, limit);
