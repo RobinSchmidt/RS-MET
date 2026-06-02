@@ -252,13 +252,32 @@ TriggerAndKillTest::~TriggerAndKillTest()
 }
 bool TriggerAndKillTest::runTest()
 {
+  // This test seems to be just a stub. It's not yet getting called from the main unit test runner.
+
   //initTest();
 
-  std::vector<romos::NoteEvent> events = TestEventGenerator::generateNoteOnOffPair(1, 64, 10, 100);
-  events = TestEventGenerator::mergeEvents(events, TestEventGenerator::generateNoteOnOffPair(2, 64, 20, 100));
-  events = TestEventGenerator::mergeEvents(events, TestEventGenerator::generateNoteOnOffPair(3, 64, 80, 100));
-  events = TestEventGenerator::mergeEvents(events, TestEventGenerator::generateNoteOnOffPair(4, 64, 120, 100));
-
+  std::vector<romos::NoteEvent> evs = TestEventGenerator::generateNoteOnOffPair(1, 64, 10, 100);
+  evs = TestEventGenerator::mergeEvents(evs, TestEventGenerator::generateNoteOnOffPair(2, 64, 20, 100));
+  evs = TestEventGenerator::mergeEvents(evs, TestEventGenerator::generateNoteOnOffPair(3, 64, 80, 100));
+  evs = TestEventGenerator::mergeEvents(evs, TestEventGenerator::generateNoteOnOffPair(4, 64, 120, 100));
+  // ToDo: Wrap the repetitive parts into a little helper function mergeNote() that we can call like:
+  // 
+  // std::vector<romos::NoteEvent> evs;
+  // evs = mergeNote(evs, 1, 64,  10, 100);
+  // evs = mergeNote(evs, 2, 64,  20, 100);
+  // evs = mergeNote(evs, 3, 64,  80, 100);
+  // evs = mergeNote(evs, 4, 64, 120, 100);
+  //
+  // or maybe like:
+  //
+  // std::vector<romos::NoteEvent> evs;
+  // mergeNote(evs, 1, 64,  10, 100);
+  // mergeNote(evs, 2, 64,  20, 100);
+  // mergeNote(evs, 3, 64,  80, 100);
+  // mergeNote(evs, 4, 64, 120, 100);
+  //
+  // where the new note get directly merged into the passed evs vector which serves as in/out
+  // parameter. Maybe the mergeNote() function should be part of the class TestEventGenerator
 
 
   /*
