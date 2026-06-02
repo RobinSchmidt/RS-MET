@@ -567,6 +567,8 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
   setupPlotterAndPlot();
 }
 
+RS_DONTWARN_PUSH();
+RS_DONTWARN_HIDESMEMBER();
 template <class T>
 std::vector<T> SpectrumPlotter<T>::getFreqAxis(int numBins)
 {
@@ -584,8 +586,14 @@ std::vector<T> SpectrumPlotter<T>::getFreqAxis(int numBins)
   RAPT::rsArrayTools::scale(&f[0], numBins, scaler);
   return f;
 
-  // ToDo: check everything for off-by-one errors for even and odd sizes
+  // ToDo: 
+  // 
+  // - Check everything for off-by-one errors for even and odd sizes.
+  // 
+  // - Maybe use K or M instead of numBins and get rid of the warning suppression. I think, K is
+  //   common in the DSP literature. Look it up!
 }
+RS_DONTWARN_POP();
 
 template <class T>
 void SpectrumPlotter<T>::setupTransformer()

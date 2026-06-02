@@ -130,3 +130,9 @@
   which stands for Rob's Audio and Music Processors.
 
 - Implement a class rsOverSampler (see Prototypes.h for a draft).
+
+- Try to get rid of the warning suppression macros RS_DONTWARN_PUSH(); etc. Try to fix these
+  warnings by other means. We suppress mostly warnings about local variables or function 
+  parameters that shadow class members. Maybe try to rename the locals/parameters or the members.
+  But sometimes, the names in current use really are ideal. Maybe in that case use a _ prefix
+  convention for the members or the locals. But that looks really ugly in formulas.

@@ -1,3 +1,6 @@
+
+RS_DONTWARN_PUSH();
+RS_DONTWARN_HIDESMEMBER();
 template<class Tx, class Ty>
 void rsInterpolatingFunction<Tx, Ty>::interpolate(
   const Tx *x, Ty *y, int N,   const Tx *xi, Ty *yi, int Ni)
@@ -32,6 +35,7 @@ void rsInterpolatingFunction<Tx, Ty>::interpolate(
   if(t != y)
     delete[] t;
 }
+RS_DONTWARN_POP();
 
 template<class Tx, class Ty>
 void rsInterpolatingFunction<Tx, Ty>::updateCoeffs()

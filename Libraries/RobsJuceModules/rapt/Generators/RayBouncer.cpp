@@ -202,6 +202,8 @@ void rsRayBouncerDriver<T>::reset()
 
 //-------------------------------------------------------------------------------------------------
 
+RS_DONTWARN_PUSH();
+RS_DONTWARN_HIDESMEMBER();
 template<class T>
 T rsBouncillator<T>::predictOutput(T n, T s, T a, T b)
 {
@@ -219,6 +221,7 @@ T rsBouncillator<T>::predictOutput(T n, T s, T a, T b)
   // the input was:
   // RSolve[{x[n] == b x[n-1] + a,x[0]==s}, x[n], n]
 }
+RS_DONTWARN_POP();
 
 RS_DONTWARN_PUSH();
 RS_DONTWARN_HIDESMEMBER();

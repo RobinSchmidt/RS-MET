@@ -2174,6 +2174,8 @@ rsRationalFunction<TPar> rsLadderTest<TSig, TPar>::getTransferFunction(bool with
 // the general form of the transfer function in canonical form and implement a function that 
 // computes numerator and denominator coeffs for the general case.
 
+RS_DONTWARN_PUSH();
+RS_DONTWARN_HIDESMEMBER();
 template<class TSig, class TPar>
 rsRationalFunction<TPar> rsLadderTest<TSig, TPar>::getTransferFunctionOld()
 {
@@ -2194,7 +2196,18 @@ rsRationalFunction<TPar> rsLadderTest<TSig, TPar>::getTransferFunctionOld()
   RF G4 = G2*G2;                     // G1^4
   RF H  = this->g * (c[0]*one + c[1]*G1 + c[2]*G2 + c[3]*G3 + c[4]*G4) / (one + this->k * G4 / z); // H(z)
   return H;
+
+  // ToDo:
+  //
+  // - Get rid of the warning suppressions. We need them because the local variables a,c hide
+  //   class members with the same name. But why do we need the local copies anyway? Can't we use
+  //   the members directly? Try that! Ah! I think, it's because we would have to refer to them via
+  //   the this->a syntax which we want to abbreviate. I think, MSVC would even accept it without
+  //   the this-> but GCC doesn't, if I remember correctly. In subclasses of template classes, we
+  //   need the this-> syntax to refer to members of the base class for some weird C++ reason. This
+  //   sucks!
 }
+RS_DONTWARN_POP();
 
 template class rsLadderTest<double, double>; // explicit instantiation
 

@@ -1,5 +1,6 @@
 
-
+RS_DONTWARN_PUSH();
+RS_DONTWARN_HIDESMEMBER();
 template<class TSig, class TPar>
 void rsStateVariableFilterSimper<TSig, TPar>::setupFromBiquad(
   TPar b0, TPar b1, TPar b2, TPar a1, TPar a2)
@@ -96,7 +97,7 @@ void rsStateVariableFilterSimper<TSig, TPar>::setupFromBiquad(
   //   mixing coeffs as we use here for high, band and low). And then there are other places where
   //   it seems like they refer to highpass,bandpass,lowpass (page 9: only m0 = 1 for highpass). 
 }
-
+RS_DONTWARN_POP();
 
 //=================================================================================================
 /*

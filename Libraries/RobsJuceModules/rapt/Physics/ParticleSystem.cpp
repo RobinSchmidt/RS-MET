@@ -181,6 +181,8 @@ T rsParticleSystem<T>::getPotentialEnergy()
   */
 }
 
+RS_DONTWARN_PUSH();
+RS_DONTWARN_HIDESMEMBER();
 template<class T>
 rsVector3D<T> rsParticleSystem<T>::getTotalMomentum()
 {
@@ -189,6 +191,7 @@ rsVector3D<T> rsParticleSystem<T>::getTotalMomentum()
     p += particles[i].getMomentum();
   return p;
 }
+RS_DONTWARN_POP();
 
 // Processing:
 
