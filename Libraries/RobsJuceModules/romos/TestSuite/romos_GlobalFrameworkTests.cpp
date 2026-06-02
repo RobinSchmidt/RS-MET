@@ -256,10 +256,13 @@ bool TriggerAndKillTest::runTest()
 
   //initTest();
 
-  std::vector<romos::NoteEvent> evs = TestEventGenerator::generateNoteOnOffPair(1, 64, 10, 100);
-  evs = TestEventGenerator::mergeEvents(evs, TestEventGenerator::generateNoteOnOffPair(2, 64, 20, 100));
-  evs = TestEventGenerator::mergeEvents(evs, TestEventGenerator::generateNoteOnOffPair(3, 64, 80, 100));
-  evs = TestEventGenerator::mergeEvents(evs, TestEventGenerator::generateNoteOnOffPair(4, 64, 120, 100));
+  using TGE = TestEventGenerator;
+
+  std::vector<romos::NoteEvent> evs;
+  evs =                       TGE::generateNoteOnOffPair(1, 64,  10, 100);
+  evs = TGE::mergeEvents(evs, TGE::generateNoteOnOffPair(2, 64,  20, 100));
+  evs = TGE::mergeEvents(evs, TGE::generateNoteOnOffPair(3, 64,  80, 100));
+  evs = TGE::mergeEvents(evs, TGE::generateNoteOnOffPair(4, 64, 120, 100));
   // ToDo: Wrap the repetitive parts into a little helper function mergeNote() that we can call like:
   // 
   // std::vector<romos::NoteEvent> evs;

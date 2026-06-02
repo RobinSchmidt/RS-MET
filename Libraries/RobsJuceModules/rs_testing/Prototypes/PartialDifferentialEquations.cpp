@@ -493,6 +493,8 @@ void rsRectangularRoom<T>::reset()
   u_tt.setToZero();
 }
 
+RS_DONTWARN_PUSH();
+RS_DONTWARN_HIDESMEMBER();
 template<class T>
 void rsRectangularRoom<T>::computeLaplacian3D(const rsMultiArray<T>& u, rsMultiArray<T>& L)
 {
@@ -544,6 +546,7 @@ void rsRectangularRoom<T>::computeLaplacian3D(const rsMultiArray<T>& u, rsMultiA
   // boundary conditions for the pressure at the room walls? intuitively, the sound-velocity must 
   // go zero at the boundary...does that mean, the pressure gradient must go to zero?
 }
+RS_DONTWARN_POP();
 // see (1), 5.2 for 1D and 10.2 for 2D difference operators
 // todo: 
 // -implement bi-laplacian (aka biharmonic)...but is this actually a thing in 3D? in 1D and 2D

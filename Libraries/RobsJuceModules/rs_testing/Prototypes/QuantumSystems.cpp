@@ -12,6 +12,8 @@ rsVector3D<rsMatrix2x2<std::complex<T>>> rsQuantumSpin<T>::pauliVector()
   return sigma;
 }
 
+RS_DONTWARN_PUSH();
+RS_DONTWARN_HIDESMEMBER();
 template<class T>
 rsMatrix2x2<std::complex<T>> rsQuantumSpin<T>::densityMatrix(
   std::vector<T> p, std::vector<rsVector2D<std::complex<T>>> s)
@@ -22,6 +24,7 @@ rsMatrix2x2<std::complex<T>> rsQuantumSpin<T>::densityMatrix(
     r = r + Complex(p[i]) * projector(s[i]);
   return r;
 }
+RS_DONTWARN_POP();
 
 // state setup:
 

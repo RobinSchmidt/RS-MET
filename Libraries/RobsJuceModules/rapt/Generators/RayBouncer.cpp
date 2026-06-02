@@ -16,6 +16,8 @@ void rsRayBouncer<T>::getLineEllipseIntersectionPoint(T* xi, T* yi)
   *yi = y + *yi * dy;  // ...now not anymore
 }
 
+RS_DONTWARN_PUSH();
+RS_DONTWARN_HIDESMEMBER();
 template<class T>
 void rsRayBouncer<T>::reflectInTangentAt(T xt, T yt, T* x, T *y)
 {
@@ -23,6 +25,7 @@ void rsRayBouncer<T>::reflectInTangentAt(T xt, T yt, T* x, T *y)
   ellipse.getTangentCoeffs(xt, yt, &A, &B, &C);
   rsLine2D<T>::reflectPointInLine(*x, *y, A, B, C, x, y);
 }
+RS_DONTWARN_POP();
 
 template<class T>
 void rsRayBouncer<T>::ensurePointIsInEllipse(T xi, T yi)
@@ -217,6 +220,8 @@ T rsBouncillator<T>::predictOutput(T n, T s, T a, T b)
   // RSolve[{x[n] == b x[n-1] + a,x[0]==s}, x[n], n]
 }
 
+RS_DONTWARN_PUSH();
+RS_DONTWARN_HIDESMEMBER();
 template<class T>
 T rsBouncillator<T>::getInstantForHitting(T w, T s, T a, T b)
 {
@@ -231,6 +236,7 @@ T rsBouncillator<T>::getInstantForHitting(T w, T s, T a, T b)
   // for the input:
   // Solve[w == (a b^n - a + s b^(n+1) - s b^n)/(b-1), n]
 }
+RS_DONTWARN_POP();
 
 template<class T>
 void rsBouncillator<T>::reflectLinear()
