@@ -153,15 +153,19 @@ protected: // temporaly made public because the friend decalarations below don't
 };
 
 template<class T>
-inline T MultiLayerPerceptron<T>::activationFunction(T x) const
+inline T MultiLayerPerceptron<T>::activationFunction(T x_) const
 {
   switch(activationFunctionIndex)
   {
-  case LOGISTIC:        return 1.0 / (1.0 + exp(-x));
-  case TANH:            return tanh(x);
-  case LINEAR_RATIONAL: return x / (1.0 + fabs(x));
+  case LOGISTIC:        return 1.0 / (1.0 + exp(-x_));
+  case TANH:            return tanh(x_);
+  case LINEAR_RATIONAL: return x_ / (1.0 + fabs(x_));
   default:              return 0.0;
   }
+
+  // ToDo:
+  //
+  // - Use rsExp(), rsTanh(), rsAbs(), T(1), T(0)
 }
 
 //===============================================================================================

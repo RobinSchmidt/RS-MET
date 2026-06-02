@@ -265,16 +265,16 @@ T rsParametricSigmoid<T>::coreFunction(T x, T a, T b)
 }
 
 template<class T>
-T rsParametricSigmoid<T>::getA(T y1)
+T rsParametricSigmoid<T>::getA(T y1_)
 {
-  return (1-2*y1)/(y1-1);
+  return (1 - 2*y1_) / (y1_ - 1);
 }
 
 template<class T>
-T rsParametricSigmoid<T>::getB(T aa)
+T rsParametricSigmoid<T>::getB(T a_)
 {
-  //return 1 / (aa + 1);
-  return 1 / rsMax((T)1, aa);
+  //return 1 / (a_ + 1);
+  return 1 / rsMax((T)1, a_);
 
   // The formula: b = 1 / (a+1) is motivated as follows: the 2nd derivative (curvature) of the 
   // core function f at the origin x=0 is given by c = 2*a*b - 2. It would seem desirable to set the 

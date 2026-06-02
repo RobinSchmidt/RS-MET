@@ -18,10 +18,10 @@ void rsEllipse<T>::setParameters(T newScale, T newAspectRatio, T newAngle,
 }
 
 template<class T>
-void rsEllipse<T>::getPointOnEllipse(T angle, T* x, T* y) const
+void rsEllipse<T>::getPointOnEllipse(T a, T* x, T* y) const
 {
-  T s = sin(angle);
-  T c = cos(angle);
+  T s = sin(a);
+  T c = cos(a);
   *x  = Axc*c + Axs*s + centerX;
   *y  = Ayc*c + Ays*s + centerY;
 }
