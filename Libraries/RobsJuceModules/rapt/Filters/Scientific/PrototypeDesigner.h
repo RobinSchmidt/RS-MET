@@ -479,7 +479,7 @@ protected:
   // arrays for nonredundant poles and zeros:
   Complex z[maxBiquads];   // zeros
   Complex p[maxBiquads];   // poles
-  T k = 1;                 // overall gain factor - not yet used
+  //T k = 1;                 // overall gain factor - not yet used
   // ToDo: document why the array sizes are not 2*maxBiquads. Maybe it's because we only store the
   // non-redundant poles and zeros and not their complex conjugates?
 

@@ -1500,7 +1500,8 @@ void rsPrototypeDesigner<T>::makeLowShelfFromZPK(
 
   Complex zTmp[maxOrder];
   Complex pTmp[maxOrder];
-  zpkFunc(zTmp, pTmp, &k, N, G, G0);
+  T kTmp;
+  zpkFunc(zTmp, pTmp, &kTmp, N, G, G0);
 
   // findPolynomialRoots returns the roots sorted by ascending real part. for a Bessel-polynomial, 
   // this ensures that the real pole, if present, is in pTmp[0] (it has the largest negative real 
