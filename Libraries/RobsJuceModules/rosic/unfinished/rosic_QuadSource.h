@@ -34,6 +34,14 @@ public:
     // the readable size is '32' bytes, but 'slot' bytes may be read.	
 
     sources[slot] = newModule;
+    // MSVC _sometimes_ throws a compiler warning here:
+    // 
+    // Warning	C6386	Buffer overrun while writing to 'this->sources':  the writable size is '32' 
+    // bytes, but 'slot' bytes might be written.	
+    // 
+    // when compiling TestsRosicAndRapt_ConsoleApp. But that warning does not always happen (with 
+    // same build config, same everything) even in a clean rebuild. ToDo: Figure out under what
+    // conditions the warning pops up and why!
   }
 
 

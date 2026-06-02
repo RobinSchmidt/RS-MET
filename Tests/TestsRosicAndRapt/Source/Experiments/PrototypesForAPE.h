@@ -149,7 +149,6 @@ inline T rsShepardToneGenerator<T>::getGainForPitch(T pitch)
 
   // ToDo: maybe taper off the "feet" of the Gaussian by multiplying with a function that has zero
   // derivative - this helps to reduce clicks even more when sines are turned on and off
-
 }
 
 template<class T>
