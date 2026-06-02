@@ -1,10 +1,10 @@
-// This file contains collected code snippets that were suggested by AIs such as GitHub Copilot,
-// Claude, etc. which I didn't want to directly incorporate but want to keep around for reference
-// and potential later inclusion into the main code.
+This file contains collected code snippets that were suggested by AIs such as GitHub Copilot,
+Claude, etc. which I didn't want to directly incorporate but want to keep around for reference
+and potential later inclusion into the main code.
 
-//--------------------------------------------------------------------------------------------------
-// GitHub Copilot (with GPT-5 mini) suggested this code for the explicit specialization of
-// rsLog2() for int:
+----------------------------------------------------------------------------------------------------
+GitHub Copilot (with GPT-5 mini) suggested this code for the explicit specialization of rsLog2() 
+for int:
 
 // Integer-specialization for rsLog2: avoid floating-point -> int narrowing and use
 // an exact, fast integer implementation for positive values.
@@ -49,3 +49,41 @@ inline int rsLog2<int>(int x)
   // non-positive: keep behavior consistent with original (may produce -inf/NaN converted to int)
   return static_cast<int>(std::log2(static_cast<double>(x)));
 }
+
+I personally think, maybe we could use the simpler:
+
+int rsLog2(int x)
+{
+  // Error handling:
+  if(x < 1)
+  {
+    rsError("The logarithm is defined only for x > 0");
+    // An integer that is < 1 is necessarily <= 0. Mathematically we could take logarithms of 
+    // negative numbers if we allow complex numbers. But we don't because this function returns a 
+    // simple int.
+    
+    return -1;
+    // Use -1 as error code. It is never avalid result for an integer input. It would be the correct
+    // result for x = 0.5, though. Not sure about that, though.
+  }
+ 
+  // Computational algorithm:
+  int y = 0;
+  while(x >>= 1) 
+    ++y;
+  return y;
+  
+  // or alternatively (more readably):
+  
+  // Computational algorithm:  
+  int y = 0;
+  while(x != 0)
+  {
+    y = y +  1;
+    x = x >> 1;
+  }
+  return y;
+}
+
+But: What about endianness of the integer number representation? Will this code work on big endian 
+and little endian machines?
