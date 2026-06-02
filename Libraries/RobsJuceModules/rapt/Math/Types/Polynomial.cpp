@@ -1951,15 +1951,29 @@ ToDo:
   rsPartialFractionExpansion.
 
 - Factor out the polynomial root finding algorithm into its own class rsPolynomialRootFinder. In 
-  this class, implement different root finding algorithms such a Laguerre, Jenkins-Traub, closed 
-  form formulas for degrees 1..4, algo for factoring real polynomials into linear and quadratic
-  factors (see Numerical Recipies), Newton-Raphson for refining root guesses (and maybe generally 
-  higher order Householder methods - see class rsRootFinder), etc. There is a stub for this in the
-  research repo.
+  this new class, we may then implement different root finding algorithms such as Laguerre (which 
+  is what we have implemented here), Jenkins-Traub (which seems to be the industry standard), 
+  closed form formulas for degrees 1..4, the algo for factoring real polynomials into linear and 
+  quadratic (real) factors (see Numerical Recipies), Newton-Raphson for refining root guesses (and
+  maybe generally higher order Householder methods - see class rsRootFinder), etc. There is a stub
+  for this in the research repo. We could also implement methods for finding rational roots of 
+  integer (or rational) polynomials (see "Poylnomials of One Variable ..." (Caldwell), pg 67 ff)
+  and for polynomials over finite fields (or rings). I think, naive algorithms for this may just
+  try all of the (finitely many) candidates. Maybe there are better ones. For rational roots, one
+  could perhaps also use a real root finder and then approximate the found solution by a rational
+  number using continued fraction expansion techniques and then verify if the end result is indeed
+  a root. If it isn't because the floating point to rational conversion wasn't precise enough, the
+  real result may still be useful to search for rational roots _near_ the found real root to speed
+  up the search by narrowing the search space.
 
 - Maybe factor out some other other functionality into separate classes as well. For example:
   the methods for fitting and interpolation and the methods for dealing with special kinds of 
-  polynomials (Chebychev, Bessel, etc.). The class has currently too many responsibilities.
+  polynomials (Chebychev, Bessel, etc.). The class rsPolynomial is currently rather big. Maybe it
+  has too many responsibilities. These classes could be named: rsOrthogonalPolynomials (or 
+  rsOrthoPolys) or rsSpecialPolynomials (or rsSpecialPolys), rsPolyFitting, rsPolyInterpolation. 
+  Although using just Poly instead of Polynomial may be ambiguous (there are also polygons, 
+  polyphony, polyhedra, polytopes, etc.), so maybe we should write it out. Or maybe abbreviate as
+  Polynom as compromise. The "ial" seems to be just dead fat that doesn't add much meaning.
 
 - For greatest generality, we may want to allow the type for the coefficients, the arguments, the 
   function values, and the roots to be different types. For example, we may want to evaluate 
