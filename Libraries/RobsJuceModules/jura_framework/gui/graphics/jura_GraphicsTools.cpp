@@ -209,7 +209,7 @@ int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw,
   //  -> remove the colourToUse parameter...this will ripple through the codebase
 }
 
-void colorComponentIndices(juce::Image& image, int& ri, int& gi, int& bi, int& ai)
+void colorComponentIndices(juce::Image& /*image*/, int& ri, int& gi, int& bi, int& ai)
 {
   // Preliminary, seems valid on PC - todo: figure these out in a platform specific way from the
   // passed image:

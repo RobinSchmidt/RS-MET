@@ -37,8 +37,11 @@ public:
     wrappedEngineersFilter->setSampleRate(newSampleRate);
   }
 
-  void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  void processBlock(double** inOutBuffer, int numChannels, int numSamples) override
   {
+    jassert(numChannels == 2);
+    //if(numChannels != 2) return;  // Defensive.
+
     for(int n = 0; n < numSamples; n++)
       wrappedEngineersFilter->getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
       //wrappedEngineersFilter->getSampleFrameDirect1(&inOutBuffer[0][n], &inOutBuffer[1][n]);
