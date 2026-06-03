@@ -306,7 +306,7 @@ void CoordinateSystemZoomer::mouseDoubleClick(const MouseEvent& e)
   }
 }
 
-void CoordinateSystemZoomer::paint(Graphics &g)
+void CoordinateSystemZoomer::paint(Graphics& /*g*/)
 {
 
 }

@@ -47,7 +47,7 @@ void RMessageBox::setBodyText(const String& newText)
 //-------------------------------------------------------------------------------------------------
 // callbacks:
 
-void RMessageBox::rButtonClicked(RButton* button)
+void RMessageBox::rButtonClicked(RButton* /*button*/)
 {
   setVisible(false);
 }

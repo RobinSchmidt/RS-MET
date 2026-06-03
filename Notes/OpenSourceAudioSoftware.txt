@@ -1055,6 +1055,11 @@ https://github.com/madrona-labs/loris
 -C++ class library implementing analysis, manipulation, and synthesis of digitized sounds using the 
  Reassigned Bandwidth-Enhanced Additive Sound Model.
 
+NeoDSP:
+https://github.com/neodsp
+-"Improving the audio ecosystem in Rust"
+-A bunch of repos with audio related libraries in Rust
+
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:
 

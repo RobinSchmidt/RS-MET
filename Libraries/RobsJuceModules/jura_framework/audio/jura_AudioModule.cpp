@@ -230,7 +230,7 @@ juce::String AudioModule::getSupportDirectory() const
 }
 */
 
-juce::String AudioModule::getPresetDirectory(bool user) const
+juce::String AudioModule::getPresetDirectory(bool /*user*/) const
 {
   juce::String presetDir = getSupportDirectory() + "/Presets/" + getModuleTypeName();
   juce::File presetDirAsFile(presetDir);
@@ -278,7 +278,7 @@ juce::String AudioModule::getAudioModulePath()
     return parentModule->getAudioModulePath() + moduleName + ".";
 }
 
-AudioModuleEditor* AudioModule::createEditor(int type)
+AudioModuleEditor* AudioModule::createEditor(int /*type*/)
 {
   return new GenericAudioModuleEditor(this);
 }
@@ -286,7 +286,7 @@ AudioModuleEditor* AudioModule::createEditor(int type)
 //-------------------------------------------------------------------------------------------------
 // automation and state management:
 
-void AudioModule::parameterChanged(Parameter* parameterThatHasChanged)
+void AudioModule::parameterChanged(Parameter* /*parameterThatHasChanged*/)
 {
   ScopedLock scopedLock(*lock);
   markStateAsDirty();
@@ -408,16 +408,22 @@ void AudioModule::recallChildModulesFromXml(const XmlElement &xml, bool markAsCl
 void AudioModule::recallMidiMappingFromXml(const XmlElement &xml)
 {
   revertToDefaultMapping(); // rename to revertToDefaultMidiMapping
+
   XmlElement* xmlMapping = xml.getChildByName("MidiMapping");
   if( xmlMapping == nullptr )
     return; // no mapping stored, nothing to do
-  forEachXmlChildElement(*xmlMapping, xmlParamSetup) {
+
+  forEachXmlChildElement(*xmlMapping, xmlParamSetup) 
+  {
     Parameter* p = getParameterByName(xmlParamSetup->getTagName());
     AutomatableParameter *ap = dynamic_cast<AutomatableParameter*>(p);
-    if( ap != nullptr ) {
+    if( ap != nullptr ) 
+    {
       ap->assignMidiController(   xmlParamSetup->getIntAttribute("MidiCC", -1));
       ap->setLowerAutomationLimit(xmlParamSetup->getDoubleAttribute("Min", ap->getMinValue()));
-      ap->setUpperAutomationLimit(xmlParamSetup->getDoubleAttribute("Max", ap->getMaxValue())); }}
+      ap->setUpperAutomationLimit(xmlParamSetup->getDoubleAttribute("Max", ap->getMaxValue())); 
+    }
+  }
 }
 
 void AudioModule::recallMetaMappingFromXml(const XmlElement &xml)
@@ -959,7 +965,7 @@ void AudioModuleEditor::mouseDown(const MouseEvent& e)
 #endif
 }
 
-void AudioModuleEditor::rDialogBoxChanged(RDialogBox* dialogBoxThatHasChanged)
+void AudioModuleEditor::rDialogBoxChanged(RDialogBox* /*dialogBoxThatHasChanged*/)
 {
   copyColourSettingsFrom(setupDialog);
 }
@@ -971,7 +977,7 @@ void AudioModuleEditor::rDialogBoxOKClicked(RDialogBox* dialogBoxThatWantsToAcce
   savePreferencesToFile();
 }
 
-void AudioModuleEditor::rDialogBoxCancelClicked(RDialogBox* dialogBoxThatWantsToBeCanceled)
+void AudioModuleEditor::rDialogBoxCancelClicked(RDialogBox* /*dialogBoxThatWantsToBeCanceled*/)
 {
   copyColourSettingsFrom(setupDialog);
   setupDialog->setVisible(false);

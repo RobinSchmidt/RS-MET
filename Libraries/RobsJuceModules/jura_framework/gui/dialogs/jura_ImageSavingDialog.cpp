@@ -150,12 +150,12 @@ void ImageSavingDialog::buttonClicked(juce::Button *buttonThatWasClicked)
   }
 }
 
-void ImageSavingDialog::comboBoxChanged(juce::ComboBox *comboBoxThatHasChanged)
+void ImageSavingDialog::comboBoxChanged(juce::ComboBox* /*comboBoxThatHasChanged*/)
 {
 
 }
 
-void ImageSavingDialog::labelTextChanged(juce::Label *labelThatHasChanged)
+void ImageSavingDialog::labelTextChanged(juce::Label* /*labelThatHasChanged*/)
 {
 
 }

@@ -2,7 +2,7 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-Editor::Editor(const String& newEditorName) 
+Editor::Editor(const String& /*newEditorName*/) 
 {
   headlineX   = 4;
   headlineY   = 4;

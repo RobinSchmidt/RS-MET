@@ -99,8 +99,8 @@ void InteractiveCoordinateSystem::snapToGrid(double &x, double &y)
 
 //-----------------------------------------------------------------------------
 
-void InteractiveCoordinateSystem::drawLeftLocator(Graphics &g, float x, int arrowPosition, 
-                                                  const Colour &locatorColour, Image *targetImage)
+void InteractiveCoordinateSystem::drawLeftLocator(Graphics &g, float x, int /*arrowPosition*/, 
+  const Colour &locatorColour, Image *targetImage)
 {
   g.setColour(locatorColour);
 
@@ -117,8 +117,8 @@ void InteractiveCoordinateSystem::drawLeftLocator(Graphics &g, float x, int arro
     (float) (y2+9), (float) (x1+4+4), (float) (y2+5), true);
 }
 
-void InteractiveCoordinateSystem::drawRightLocator(Graphics &g, float x, int arrowPosition, 
-                                                   const Colour &locatorColour, Image *targetImage)
+void InteractiveCoordinateSystem::drawRightLocator(Graphics &g, float x, int /*arrowPosition*/, 
+  const Colour &locatorColour, Image *targetImage)
 {
   g.setColour(locatorColour);
 
@@ -136,7 +136,7 @@ void InteractiveCoordinateSystem::drawRightLocator(Graphics &g, float x, int arr
 }
 
 void InteractiveCoordinateSystem::drawCurrentPositionLocator(Graphics &g, float x, 
-                                                             int arrowPosition, const Colour &locatorColour, Image *targetImage)
+  int /*arrowPosition*/, const Colour& locatorColour, Image* targetImage)
 {
   g.setColour(locatorColour);
 

@@ -213,12 +213,12 @@ void ColourSchemeSetupDialog::updateWidgetsAccordingToState()
 }
 
 void ColourSchemeSetupDialog::setStateFromXml(const XmlElement& xmlState,
-  const juce::String& stateName, bool markAsClean)
+  const juce::String& /*stateName*/, bool /*markAsClean*/)
 {
   ColourSchemeComponent::setColourSchemeFromXml(xmlState);
 }
 
-XmlElement* ColourSchemeSetupDialog::getStateAsXml(const juce::String& stateName, bool markAsClean)
+XmlElement* ColourSchemeSetupDialog::getStateAsXml(const juce::String& /*stateName*/, bool /*markAsClean*/)
 {
   return ColourSchemeComponent::getColourSchemeAsXml();
 }

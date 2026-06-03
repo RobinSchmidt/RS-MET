@@ -248,7 +248,7 @@ inline void AudioPlugin::enableFitzdazzing()
   // https://blog.audio-tk.com/2016/09/20/audio-toolkit-handling-denormals/
 }
 
-void AudioPlugin::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages)
+void AudioPlugin::processBlock(AudioBuffer<double>& buffer, MidiBuffer& /*midiMessages*/)
 {
   juce::ScopedLock scopedLock(plugInLock);  // Acquire mutex lock
   juce::ScopedNoDenormals scopedDenormals;  // Temoprarily disable denormals ("fitzdazzing").

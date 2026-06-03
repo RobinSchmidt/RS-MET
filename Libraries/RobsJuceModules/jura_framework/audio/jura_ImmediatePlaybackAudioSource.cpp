@@ -17,7 +17,7 @@ ImmediatePlaybackAudioSource::~ImmediatePlaybackAudioSource()
 //-------------------------------------------------------------------------------------------------
 // overrides for subclasses AudioSource and PositionableAudioSource:
 
-void ImmediatePlaybackAudioSource::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
+void ImmediatePlaybackAudioSource::prepareToPlay(int /*samplesPerBlockExpected*/, double /*sampleRate*/)
 {
   //int dummy = 0;
 }
