@@ -2901,8 +2901,11 @@ public:
   int getNumColumns() const { return numCols; }
 
   /** Returns true, iff this matrix has the given shape. */
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
   bool hasShape(int numRows, int numCols) const
   { return this->numRows == numRows && this->numCols == numCols; }
+  RS_DONTWARN_POP();
 
   /** Returns true, iff B has the same shape as this matrix. */
   bool hasSameShapeAs(const rsSparseMatrix<T>& B) const

@@ -2002,9 +2002,14 @@ rsRationalFunction<TPar> rsLadderTest<TSig, TPar>::getTransferFunction(bool with
 
   using T  = TPar;
   using RF = RAPT::rsRationalFunction<T>;
+
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
   T  a = this->a;
   T* c = this->c;
   T  k = this->k;
+  RS_DONTWARN_POP();
+
   if(this->isBilinear())             // zero at z = -1
   {
     // Compute some intermediate variables:

@@ -113,6 +113,8 @@ void rsLineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1
   yOld = y1;
 }
 
+RS_DONTWARN_PUSH();
+RS_DONTWARN_HIDESMEMBER();
 template<class TPix, class TWgt, class TCor>
 void rsLineDrawer<TPix, TWgt, TCor>::lineTo(TCor x, TCor y, bool uniformColor)
 {
@@ -140,6 +142,7 @@ void rsLineDrawer<TPix, TWgt, TCor>::lineTo(TCor x, TCor y, bool uniformColor)
   xOld = x;
   yOld = y;
 }
+RS_DONTWARN_POP();
 
 // profile functions:
 

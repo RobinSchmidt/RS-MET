@@ -26,6 +26,8 @@ GradientBasedMinimizer<T>::~GradientBasedMinimizer()
 //-------------------------------------------------------------------------------------------------
 // optimization:
 
+RS_DONTWARN_PUSH();
+RS_DONTWARN_HIDESMEMBER();
 template<class T>
 rsVectorDbl GradientBasedMinimizer<T>::minimizeFunction(
   MultivariateErrorFunction<T> *functionToMinimize, rsVectorDbl initialGuess)
@@ -46,6 +48,7 @@ rsVectorDbl GradientBasedMinimizer<T>::minimizeFunction(
 
   return p;
 }
+RS_DONTWARN_POP();
 
 template<class T>
 void GradientBasedMinimizer<T>::minimizeViaGradientDescent()

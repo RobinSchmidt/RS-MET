@@ -67,8 +67,13 @@ void rsStateVariableFilterOld<TSig, TPar>::setupFromBiquad(
   TPar    u1 = -TPar(1) - a1 - a2;     // could be negative
   TPar    u2 = -TPar(1) + a1 - a2;     // ...dito
   // rsAssert(u1*u2 >= 0);             // triggers in one of the unit tests
+
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
   Complex s1 = sqrt(Complex(u1));      // could be imaginary
   Complex s2 = sqrt(Complex(u2));      // ...dito  
+  RS_DONTWARN_POP();
+
   TPar    p  = real(s1 * s2);          // but their product should be real
   TPar    s  = TPar(1) / p;            // we actually need the product's reciprocal
 
@@ -260,6 +265,8 @@ void rsStateVariableFilterOld<TSig, TPar>::calcCoeffs()
   h = 1 / (1 + R2*g + g*g);  // factor for feedback precomputation
 }
 
+RS_DONTWARN_PUSH();
+RS_DONTWARN_HIDESMEMBER();
 template<class TSig, class TPar>
 TPar rsStateVariableFilterOld<TSig, TPar>::bandwidthToR(TPar B)
 {
@@ -270,6 +277,7 @@ TPar rsStateVariableFilterOld<TSig, TPar>::bandwidthToR(TPar B)
                              // center-frequencies
   return sqrt((1-r*r)*(1-r*r)/(4*r*r));
 }
+RS_DONTWARN_POP();
 
 template<class TSig, class TPar>
 void rsStateVariableFilterOld<TSig, TPar>::reset()
