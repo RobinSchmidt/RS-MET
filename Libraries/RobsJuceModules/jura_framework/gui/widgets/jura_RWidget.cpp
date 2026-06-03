@@ -159,6 +159,10 @@ ColourSchemeComponent* RWidget::getOutlyingColourSchemeComponent()
 
 void RWidget::parameterChanged(Parameter* parameterThatHasChanged)
 {
+  jassert(assignedParameter == parameterThatHasChanged);
+  // I think, we should only receive parameterChanged() callbacks from our assignedParameter and 
+  // not from some random other parameter, right? If we do, something feels off.
+
   //triggerAsyncUpdate();
   if( assignedParameter != NULL )
   {
@@ -170,6 +174,10 @@ void RWidget::parameterChanged(Parameter* parameterThatHasChanged)
 
 void RWidget::parameterRangeChanged(Parameter* parameterThatHasChanged)
 {
+  jassert(assignedParameter == parameterThatHasChanged);
+  // I think, we should only receive parameterRangeChanged() callbacks from our assignedParameter
+  // and not from some random other parameter, right? If we do, something feels off.
+
   //triggerAsyncUpdate();
   if( assignedParameter != NULL )
   {

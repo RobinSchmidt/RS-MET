@@ -27,7 +27,7 @@ We give the priorities from 1 to 5 with meanings:
 [3]  Minor feature not working (like zoom in a plot, highlighting of GUI elements)
 [4]  Major feature not working (like setting an important DSP parameter)
 [5]  Showstoppers: crashes, false state recalls, filter instability explosions, wrong signals, 
-     Nans, infinities, ...
+     Nans, infinities, memory leaks, ...
 
 In addition to the priorities 1-5, we also use the following tags:
 
@@ -191,6 +191,14 @@ we build up our suite of unit tests along the way.
   https://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format#Double-double_arithmetic
   for a possible way to achieve quad-precision with reasonable performance. But we would also need
   to implement all the elementary functions for that type which is a big task.
+
+- [5] EngineersFilter: Seems to cause memory leaks. Build-And-Run ToolChain Standalone. Plug in 
+  EngineersFilter. Close ToolChain. Works fine. Run it again. It opens up and restores 
+  EngineersFilter. Close ToolChain again. Now we see memory leaks in the output window. We get 4
+  leaked blocks. 2 of length 0 bytes (? Yes - zero. What does that even mean ?) and 2 of length 
+  5024 bytes. Interestingly, with two instances of EngineersFilter plugged in, we do _not_ get 
+  twice as many leaked blocks. The amount of leaked memory stays the same. Also: Other effects do
+  not show this behavior.
 
 - [1] WaveOscillator: Initially when not yet any file was loaded manually, the first click on the 
   "Next" button loads the first file in the current directory instead of the next one according to 
