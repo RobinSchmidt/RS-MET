@@ -220,7 +220,7 @@ public:
   but it becomes relevant in the ModulationSourcePoly subclass, where we override this method in 
   order to update the modulator outputs for all active voices, so the voice manager must be already
   included in the function signature here. */
-  virtual void updateModulationValue(rsVoiceManager* voiceManager) 
+  virtual void updateModulationValue(rsVoiceManager* /*voiceManager*/) 
   { modValue = renderModulation(); }
   // maybe rename - the singular "Value" part does not apply anymore for the poly subclass which
   // updates all values for all voices - maybe updateModulationOutput
@@ -259,7 +259,7 @@ public:
   returns the modulator output for a given voice. Here, we just return the same value for all 
   voices, because this baseclass is only monophonic and when a monophonic modulator is asked for a
   voice output, it makes most sense to just use the same value for all voices. */
-  virtual double getVoiceModulationValue(int voiceIndex) const { return modValue; }
+  virtual double getVoiceModulationValue(int /*voiceIndex*/) const { return modValue; }
 
 protected:
 
@@ -290,7 +290,7 @@ public:
   /** Must be overriden by subclasses to do whatever they need to do after a modulatedValue has 
   been computed (for example, ModulatableParameter invokes the setter-callback which in turn 
   updates the corresponding value in the core dsp algorithm). */
-  virtual void doModulationUpdate(double modulatedValue)
+  virtual void doModulationUpdate(double /*modulatedValue*/)
   {
     // We need an empty baseclass implementation because in the destructor of a plugin, 
     // doModulationUpdate() would otherwise (in case of a purely virtual function) get called with
@@ -302,7 +302,7 @@ public:
 
   /** Like doModulationUpdate, but for polyphonic modulations. Overriden in 
   ModuldatableParameterPoly. Monophonic modulation targets can ignore this. */
-  virtual void doVoiceModulationUpdate(double modulatedValue, int voiceIndex) { }
+  virtual void doVoiceModulationUpdate(double /*modulatedValue*/, int /*voiceIndex*/) { }
 
 
   /** \name Setup */
@@ -1224,7 +1224,7 @@ protected:
 
 private:
 
-  virtual void callValueChangeCallbacks(double argument) override {}
+  virtual void callValueChangeCallbacks(double /*argument*/) override {}
   // this inherited function should not be used anymore - instead, the function with same name but 
   // different signature: callValueChangeCallbacks(int, double*, int*) should be used here
 

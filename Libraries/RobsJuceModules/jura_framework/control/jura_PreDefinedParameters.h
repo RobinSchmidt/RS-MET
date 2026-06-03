@@ -43,7 +43,7 @@ public:
 class ParameterTwoPoleFilterMode : public ModulatableParameter
 {
 public:
-  ParameterTwoPoleFilterMode(CriticalSection *criticalSectionToUse,
+  ParameterTwoPoleFilterMode(CriticalSection* /*criticalSectionToUse*/,
     const juce::String& newName   = juce::String("Mode"),
     double newLowerLimit          = 0.0,
     double newUpperLimit          = 9.0,
@@ -78,7 +78,7 @@ public:
 class ParameterFourPoleFilterMode : public ModulatableParameter
 {
 public:
-  ParameterFourPoleFilterMode(CriticalSection *criticalSectionToUse,
+  ParameterFourPoleFilterMode(CriticalSection* /*criticalSectionToUse*/,
     const juce::String& newName   = juce::String("Mode"),
     double newLowerLimit          = 0.0,
     double newUpperLimit          = 9.0,

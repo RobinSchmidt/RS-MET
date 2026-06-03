@@ -91,7 +91,7 @@ public:
   rsParameterMapperIdentity() { min = -INF; max = INF; }
   double   map(double x) const override { return x; }
   double unmap(double y) const override { return y; }
-  void setRange(double newMin, double newMax) override {} // do nothing
+  void setRange(double /*newMin*/, double /*newMax*/) override {} // do nothing
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperIdentity)
 };
 // Maybe call it "Unrestricted". Maybe in some contexts, it may be desired to have a range from 

@@ -133,7 +133,7 @@ public:
   interpret the string in different ways (in buttons as bool, in sliders as double, etc.). */
   //virtual void setStateFromString(const juce::String &valueString, bool sendChangeMessage = true) = 0;
   virtual void setStateFromString(const juce::String& /*valueString*/,
-  bool sendChangeMessage = true) {}
+  bool /*sendChangeMessage*/ = true) {}
     // maybe make purely virtual
 
   /** Paints the widget. The baseclass implementations just fills a rectangle with the background

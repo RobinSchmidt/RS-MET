@@ -36,11 +36,11 @@ public:
   // used for note-on events
 
   /** Triggered by a note-on event. */
-  virtual void noteOn(int noteNumber, int velocity) {}
+  virtual void noteOn(int /*noteNumber*/, int /*velocity*/) {}
   // return an int for the used voice
 
   /** Triggered by a note-off event. */
-  virtual void noteOff(int noteNumber) {}
+  virtual void noteOff(int /*noteNumber*/) {}
   // todo: support note-off velocity
 
   /** Triggered by an all-notes-off event. */
@@ -48,16 +48,16 @@ public:
 
   /** Overrides setMidiController which is inherited from both base-classes - and we simply we pass
   through the function call to both of them here. */
-  virtual void setMidiController(int controllerNumber, float controllerValue) {}
+  virtual void setMidiController(int /*controllerNumber*/, float /*controllerValue*/) {}
 
   /** Triggered by a pitch-bend event. */
-  virtual void setPitchBend(int pitchBendValue) {}
+  virtual void setPitchBend(int /*pitchBendValue*/) {}
 
   /** Triggered by an aftertouch event. */
-  virtual void setAfterTouch(int afterTouchValue) {}
+  virtual void setAfterTouch(int /*afterTouchValue*/) {}
 
   /** Triggered by a channel pressure event. */
-  virtual void setChannelPressure(int channelPressureValue) {}
+  virtual void setChannelPressure(int /*channelPressureValue*/) {}
 
 
 
@@ -138,9 +138,9 @@ public:
   
 
 
-  virtual void noteOnForVoice(int key, int vel, int voice) { noteOn(key, vel); }
+  virtual void noteOnForVoice(int key, int vel, int /*voice*/) { noteOn(key, vel); }
 
-  virtual void noteOffForVoice(int key, int voice) { noteOff(key); }
+  virtual void noteOffForVoice(int key, int /*voice*/) { noteOff(key); }
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMidiMessageDispatcher)
