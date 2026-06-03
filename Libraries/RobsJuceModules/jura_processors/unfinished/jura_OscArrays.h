@@ -19,7 +19,7 @@ public:
     oscArrayCore.setSampleRate(newSampleRate);
   }
 
-  virtual void noteOn(int noteNumber, int velocity) override
+  virtual void noteOn(int noteNumber, int /*velocity*/) override
   {
     oscArrayCore.setFrequency(RAPT::rsPitchToFreq(double(noteNumber)));
     oscArrayCore.reset();

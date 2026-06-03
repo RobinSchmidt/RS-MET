@@ -57,7 +57,7 @@ public:
 
   virtual void setSampleRate(double newRate) override { core.setSampleRate(newRate); }
   virtual void reset()                       override { core.reset(); }
-  virtual void noteOn(int key, int vel)      override { core.setNoteKey(key); }
+  virtual void noteOn(int key, int /*vel*/)  override { core.setNoteKey(key); }
 
 protected:
 
@@ -77,7 +77,7 @@ public:
     MetaParameterManager* metaManagerToUse = nullptr, 
     ModulationManager* modManagerToUse = nullptr);
 
-  virtual void noteOn(int key, int vel, int voice) override
+  virtual void noteOn(int /*key*/, int /*vel*/, int voice) override
   {
     jassert(voice >= 0 && voice < voiceManager->getMaxNumVoices());
     // see comment in AttackDecayEnvelopeModulePoly
@@ -89,6 +89,8 @@ public:
     // hmm...but i think this retriggering should only be done, if the voice was previously silent
     // ...in cases where a releasing voice is retriggered ()
 
+    // Why do we ignore key and vel? Shouldn't we use them to set up frequency and amplitude?
+    // Maybe that's just not yet implemented?
   }
 
   void processStereoFrameVoice(double* left, double* right, int voice) override

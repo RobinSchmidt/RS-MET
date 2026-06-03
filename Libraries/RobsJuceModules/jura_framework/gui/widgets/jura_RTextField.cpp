@@ -21,9 +21,16 @@ void RTextField::setJustification(const Justification& newJustification)
   repaint();
 }
 
- void RTextField::setStateFromString(const juce::String &stateString, bool sendChangeMessage)
+ void RTextField::setStateFromString(const juce::String& stateString, bool sendChangeMessage)
  {
    setText(stateString);
+
+   // ToDo:
+   //
+   // - Document why the "sendChangeMessage" parameter is ignored. I think, it has to do with the
+   //   fact that a text field widget is not supposed to be an active GUI element that triggers any
+   //   updates but rather just a static text label. The function needs to have the parameter 
+   //   anyway because it's an overriden function. Verify that!
  }
 
 int RTextField::getTextPixelPositionX() const

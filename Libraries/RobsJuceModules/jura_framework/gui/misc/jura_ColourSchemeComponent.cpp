@@ -8,6 +8,13 @@ ColourSchemeComponent::ColourSchemeComponent(const String& newColourSchemeCompon
 {
   drawWithEnclosingRectangle = true;
   setBufferedToImage(true);
+
+  // ToDo:
+  // 
+  // - Maybe we should pass the newColourSchemeComponentName as name to the juce::Component
+  //   baseclass. When we want to ignore it (as we currently do), then we should perhaps get rid of
+  //   the parameter. I think, we currently do not use these inherited component names for anything
+  //   so maybe getting rid of the parameter is indeed the cleanest solution.
 }
 
 ColourSchemeComponent::~ColourSchemeComponent()

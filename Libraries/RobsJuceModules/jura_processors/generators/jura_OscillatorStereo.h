@@ -62,8 +62,10 @@ public:
   //---------------------------------------------------------------------------------------------
   // audio processing:
 
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  virtual void processBlock(double** inOutBuffer, int numChannels, int numSamples) override
   {
+    jassert(numChannels == 2);
+
     double tmpL, tmpR;
     for(int n = 0; n < numSamples; n++)
     {
@@ -125,7 +127,7 @@ protected:
   virtual void loadDefaultWaveform();
 
   /** Pointer to the underlying rosic object which is wrapped. */
-  rosic::OscillatorStereo *wrappedOsc = nullptr;
+  rosic::OscillatorStereo *wrappedOsc = nullptr;  // ToDo: Rename to core
 
   bool wrappedOscIsOwned = false;
   rosic::MipMappedWaveTableStereo *waveTable = nullptr; 

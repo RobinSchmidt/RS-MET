@@ -14,7 +14,7 @@ public:
   {
     setModuleTypeName("None");
   }
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override 
+  virtual void processBlock(double** /*inOutBuffer*/, int /*numChannels*/, int /*numSamples*/) override 
   {
     //// for debug:
     //std::vector<double> left(numSamples), right(numSamples);

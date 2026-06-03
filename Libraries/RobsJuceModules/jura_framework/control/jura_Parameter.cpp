@@ -311,11 +311,11 @@ void Parameter::addNumericStringValues(int min, int max, int step)
 //-------------------------------------------------------------------------------------------------
 // inquiry:
 
-double Parameter::valueToProportion(double value) const
+double Parameter::valueToProportion(double val) const
 {
-  return mapper->unmap(value);
+  return mapper->unmap(val);
 
-  // old:
+  // Old - I think, it may be deleted:
   /*
   if(minValue >= maxValue)
     return 0.0;
@@ -324,20 +324,25 @@ double Parameter::valueToProportion(double value) const
   case Parameter::EXPONENTIAL:
   {
     if( minValue > 0.0 )
-      return jlimit(0.0, 1.0, log(value/minValue) / (log(maxValue/minValue)) );
+      return jlimit(0.0, 1.0, log(val/minValue) / (log(maxValue/minValue)) );
     else
       return 0.0;
   }
-  default: return (value - minValue) / (maxValue - minValue); // LINEAR(_BIPOLAR)
+  default: return (val - minValue) / (maxValue - minValue); // LINEAR(_BIPOLAR)
   }
   */
+
+  // ToDo:
+  //
+  // - Document why we can assume "mapper" to be non-nullptr. I think, we may use some sort of
+  //   pointer to a default mapper
 }
 
 double Parameter::proportionToValue(double prop) const
 {
   return mapper->map(prop);
 
-  // old:
+  // Old - I think, it may be deleted:
   /*
   switch( scaling )
   {

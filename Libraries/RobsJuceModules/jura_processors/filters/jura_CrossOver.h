@@ -28,8 +28,10 @@ public:
   }
 
   /** Overriden to deal with the multichannel stuff. */
-  virtual void processBlock(AudioSampleBuffer& buffer, int startSample, int length)
+  virtual void processBlock(AudioSampleBuffer& buffer, int /*startSample*/, int /*length*/)
   {
+    jassertfalse;  // This is not yet implemented/updated.
+
     ScopedLock scopedLock(*lock);
 
     if(buffer.getNumChannels() != 8)
@@ -162,7 +164,12 @@ public:
   virtual void assignParameterSlope(int treeLevel, int indexInLevel, Parameter* parameterToAssign);
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
-  virtual void parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted) {}
+  virtual void parameterWillBeDeleted(Parameter* /*parameterThatWillBeDeleted*/) 
+  {
+    jassertfalse; // Not yet implemented 
+    // I think, we need to compare the "parameterThatWillBeDeleted" to our members like
+    // "freq11Parameter" and if we have a match, invalidate our pointer member here.
+  }
 
   //-------------------------------------------------------------------------------------------------------------------------------------
   // inquiry:

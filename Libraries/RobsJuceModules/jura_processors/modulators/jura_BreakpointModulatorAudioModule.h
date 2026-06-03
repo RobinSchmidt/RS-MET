@@ -52,13 +52,14 @@ public:
 
   virtual AudioModuleEditor *createEditor(int type) override;
 
-
+  /*
   // new overrides (added after dragging the old code over - they are currently only dummies):
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override 
+  void processBlock(double** inOutBuffer, int numChannels, int numSamples) override 
   {
-    // we should do nothing here, the computation is done in updateModulationValue()
+    // We should do nothing here, the computation is done in updateModulationValue()
     // actually, the override may be deleted then
   }
+  */
 
   virtual void noteOn(int noteNumber, int velocity) override 
   {
@@ -73,6 +74,12 @@ public:
   virtual void noteOff(int noteNumber) override
   {
     wrappedBreakpointModulator->noteOff(true);
+
+    // ToDo:
+    //
+    // - Maybe we should trigger the noteOff() in the wrapped... only when the noteNumber matches
+    //   the current note? It has a currentKey member but no getter for it yet. Maybe add one and
+    //   use that here.
   }
 
   virtual void setBeatsPerMinute(double bpm) override
@@ -88,6 +95,7 @@ protected:
   /** Pointer to the underlying RAPT object which is wrapped. */
   //RAPT::rsBreakpointModulator<double> *wrappedBreakpointModulator;
   rosic::BreakpointModulator *wrappedBreakpointModulator;
+  // ToDo: Switch to the RAPT version. The one from rosic is obsolete. Rename to "core".
 
   bool wrappedBreakpointModulatorIsOwned = false;
 

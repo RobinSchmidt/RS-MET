@@ -46,6 +46,7 @@ public:
 
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
+    jassert(numChannels == 2);
     for(int n = 0; n < numSamples; n++)
       wrappedStereoDelay->getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
   }

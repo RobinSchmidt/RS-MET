@@ -32,6 +32,7 @@ public:
 
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples)
   {
+    jassert(numChannels == 2);
     for(int n = 0; n < numSamples; n++)
     {
       wrappedEchoLabDelayLine->getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n],
@@ -226,8 +227,8 @@ public:
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
 
   /** Implements the purely virtual callback function inherited from ParameterObserver - but has 
-  nothing to do. */
-  virtual void parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted) { }
+  nothing to do. Maybe someday that may change. */
+  virtual void parameterWillBeDeleted(Parameter* /*parameterThatWillBeDeleted*/) { }
 
   /** Overrides mouseMove in order to update the cursor according to what is under the mouse. */
   virtual void mouseMove(const MouseEvent &e);

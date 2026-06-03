@@ -313,7 +313,7 @@ AudioPlugin* JUCE_CALLTYPE createPluginWithoutMidi(AudioModuleType *dummy, int n
 }
 
 template<class AudioModuleType>
-AudioPluginWithMidiIn* JUCE_CALLTYPE createPluginWithMidi(AudioModuleType *dummy, 
+AudioPluginWithMidiIn* JUCE_CALLTYPE createPluginWithMidi(AudioModuleType* /*dummy*/, 
   int numParameters = 10)
 {
   // wraps audio module into plugin with midi input

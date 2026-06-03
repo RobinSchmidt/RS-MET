@@ -18,10 +18,12 @@ public:
   //---------------------------------------------------------------------------------------------
   // overrides:
 
+  /*
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
     jassertfalse; // not yet implemented
   }
+  */
 
 protected:
 

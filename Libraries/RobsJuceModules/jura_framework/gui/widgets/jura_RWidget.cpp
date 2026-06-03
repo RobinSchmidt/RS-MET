@@ -85,14 +85,17 @@ void RWidget::setColourScheme(const WidgetColourScheme &newColourScheme)
     thisAsComponent->repaint();
 }
 
-void RWidget::setColourSchemeFromXml(const XmlElement &xml)
+void RWidget::setColourSchemeFromXml(const XmlElement& xml)
 {
   WidgetColourScheme tmpColourScheme;
-  //tmpColourScheme.setColourSchemeFromXml(xml); // why commented?
+  //tmpColourScheme.setColourSchemeFromXml(xml); // Why commented out?
   setColourScheme(tmpColourScheme);
-  // we don't use colourScheme.setColourSchemeFromXml(xml) directly here such that subclasses 
-  // need to override only setColourScheme (and not also setColourSchemeFromXml) when they need 
-  // special actions on colour-scheme changes)
+
+  // Notes:
+  //
+  // - We don't use colourScheme.setColourSchemeFromXml(xml) directly here such that subclasses 
+  //   need to override only setColourScheme (and not also setColourSchemeFromXml) when they need 
+  //   special actions on colour-scheme changes)
 }
 
 void RWidget::addChildWidget(RWidget *newChild, bool addAsChildComponent, bool makeVisible)
@@ -208,9 +211,9 @@ void RWidget::handleAsyncUpdate()
   //repaint();
 }
 */
-void RWidget::updateWidgetFromAssignedParameter(bool sendChangeMessage)
+void RWidget::updateWidgetFromAssignedParameter(bool /*sendChangeMessage*/)
 {
-  // needs to be overriden in the subclasses to - for example - update a slider like this:
+  // Needs to be overriden in the subclasses to - for example - update a slider like this:
   // if( assignedParameter != NULL )
   // {
   //  setValue(assignedParameter->getValue());

@@ -596,8 +596,11 @@ protected:
   // mutex lock to acquire when we notify our observers and call our callbacks:
   CriticalSection* mutex = nullptr;
 
-  // mapper object for mapping back and forth between normalized and actual value:
+  // Mapper object for mapping back and forth between normalized and actual value:
   rsParameterMapper* mapper = nullptr;
+  // ToDo: Document, if this can still be a nullptr after construction or if we ensure internally
+  // that it's non-null for the whole lifetime of the Parameter object. I think so but I'm not 
+  // sure.
 
   // the callback objects (it sucks, to have several - maybe we can templatize the Parameter class
   // on the type of the callback object?)

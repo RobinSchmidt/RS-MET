@@ -30,7 +30,7 @@ public:
   //---------------------------------------------------------------------------------------------
   // audio processing:
 
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override {}
+  //virtual void processBlock(double** inOutBuffer, int numChannels, int numSamples) override {}
 
 protected:
 
@@ -101,7 +101,14 @@ public:
   // callbacks:
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
-  virtual void parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted) {}
+  virtual void parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted) 
+  {
+    // Why is this function stiff empty? Maybe we should do:
+    //if(parameterThatWillBeDeleted == xParameter)
+    //  unAssignParameterX();
+    //if(parameterThatWillBeDeleted == yParameter)
+    //  unAssignParameterY();
+  }
 
   /** Overrides the changeListetnerCcallback in order to receive messages which this object sends
   to itself. */

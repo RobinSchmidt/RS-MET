@@ -25,7 +25,7 @@ public:
   //---------------------------------------------------------------------------------------------
   // parameter settings:
 
-  virtual void setSampleRate(double newSampleRate) override
+  void setSampleRate(double newSampleRate) override
   {
     wrappedFourOscSection->setSampleRate(newSampleRate);
   }
@@ -34,13 +34,16 @@ public:
   // audio processing:
 
   /** Calculates a stereo-ouput frame. */
+  /*
   virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
   {
+    jassertfalse; // Not yet implemented
     //if( wrappedFourOscSection != NULL )
     //  wrappedFourOscSection->getSampleFrameStereo(inOutL, inOutR); 
   }
+  */
 
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  void processBlock(double** inOutBuffer, int numChannels, int numSamples) override
   {
     jassertfalse; // no code yet dragged over - maybe we should accumulate the outputs of
     // our embedded WaveOscModule objects - i.e. clear the buffer and let

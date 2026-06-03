@@ -151,6 +151,7 @@ AudioModuleEditor* ModalSynthAudioModule::createEditor(int type)
 
 void ModalSynthAudioModule::processBlock(double **buf, int numChannels, int numSamples)
 {
+  jassert(numChannels == 2);
   for(int n = 0; n < numSamples; n++)
     core.getSampleFrameStereo(&buf[0][n], &buf[1][n]);
 }

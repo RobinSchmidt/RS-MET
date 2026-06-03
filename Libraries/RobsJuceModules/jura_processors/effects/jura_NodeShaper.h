@@ -20,22 +20,24 @@ public:
   //---------------------------------------------------------------------------------------------
   // \name Setup
 
-  virtual void setSampleRate(double newSampleRate) override
+  /*
+  void setSampleRate(double newSampleRate) override
   {
     //wrappedNodeShaper->setSampleRate(newSampleRate);
   }
+  */
 
   //---------------------------------------------------------------------------------------------
   // audio processing:
 
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
     for(int i = 0; i < numChannels; i++)
       for(int n = 0; n < numSamples; n++)
         inOutBuffer[i][n] = mapper.getValue(inOutBuffer[i][n]);
   }
 
-  virtual void processStereoFrame(double *left, double *right) override
+  void processStereoFrame(double *left, double *right) override
   {
     *left  = mapper.getValue(*left);
     *right = mapper.getValue(*right);

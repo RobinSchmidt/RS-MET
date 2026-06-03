@@ -115,6 +115,7 @@ AudioModuleEditor* Snowflake::createEditor(int type)
 
 void Snowflake::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
+  jassert(numChannels == 2);
   for(int n = 0; n < numSamples; n++)
     core.getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
 }

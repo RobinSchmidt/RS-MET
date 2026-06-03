@@ -65,6 +65,7 @@ public:
 
   void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
+    jassert(numChannels == 2);
     if(wrappedStraightliner->isSilent())
     {
       RAPT::rsArrayTools::fillWithZeros(inOutBuffer[0], numSamples);

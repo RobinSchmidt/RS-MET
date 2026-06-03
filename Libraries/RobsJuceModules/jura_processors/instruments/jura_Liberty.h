@@ -143,6 +143,10 @@ public:
 
   void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
+    jassert(numChannels == 2);
+    // Maybe at some point we may support more flexible I/O configurations but at the moment, we 
+    // have only stereo I/O.
+
     if(wrappedLiberty->isSilent())
       return;
 

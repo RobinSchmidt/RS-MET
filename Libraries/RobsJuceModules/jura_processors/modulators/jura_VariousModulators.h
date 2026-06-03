@@ -13,7 +13,7 @@ public:
 
   virtual void setSampleRate(double newSampleRate) override { core.setSampleRate(newSampleRate); }
   virtual void reset() override { core.reset();  }
-  virtual void noteOn(int noteNumber, int velocity) override { core.reset(); }
+  virtual void noteOn(int /*noteNumber*/, int /*velocity*/) override { core.reset(); }
   virtual double renderModulation() override { return core.getSample(); }
 
   //virtual void updateModulationValue() override { modValue = core.getSample();  }
@@ -96,8 +96,8 @@ public:
     setModulationSourceName("ConstantOne");
   }
 
-  double renderModulation()                    override { return 1.0; } 
-  double renderVoiceModulation(int voiceIndex) override { return 1.0; }
+  double renderModulation()                        override { return 1.0; } 
+  double renderVoiceModulation(int /*voiceIndex*/) override { return 1.0; }
 
   void allocateVoiceModResources() override {}
 
