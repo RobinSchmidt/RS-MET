@@ -74,6 +74,6 @@ private:
 
   /** Is now private because it should not be called from client code anymore. Instead use
   addStringValue(const juce::String& valueToAdd, EnumClass enumValue); */
-  virtual void addStringValue(const juce::String& valueToAdd) {}
+  virtual void addStringValue(const juce::String& /*valueToAdd*/) {}
 
 };

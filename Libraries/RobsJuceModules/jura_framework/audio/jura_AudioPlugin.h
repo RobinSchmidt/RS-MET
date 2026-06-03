@@ -115,15 +115,15 @@ public:
 
   virtual int getNumPrograms() override { return 1; }                // 1, because 0 is not allowed
   virtual int getCurrentProgram() override { return 0; }
-  virtual void setCurrentProgram(int index) override {}
-  virtual const String getProgramName (int index) override { return String(); }
-  virtual void changeProgramName(int index, const String& newName) override {}
+  virtual void setCurrentProgram(int /*index*/) override {}
+  virtual const String getProgramName (int /*index*/) override { return String(); }
+  virtual void changeProgramName(int /*index*/, const String& /*newName*/) override {}
   virtual void getStateInformation(juce::MemoryBlock& destData) override;
   virtual void setStateInformation(const void* data, int sizeInBytes) override;
   virtual void processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
 
   // override for MetaParameterManagerObserver baseclass:
-  virtual void metaNameChanged(MetaParameterManager* manager, int index) override
+  virtual void metaNameChanged(MetaParameterManager* /*manager*/, int /*index*/) override
   {
     updateHostDisplay(); // does not yet work
   }
@@ -257,7 +257,7 @@ public:
     // components - is this a change with respect to the old juce?
   }
 
-  virtual void paint(Graphics &g) override {} // we hit a breakpoint if we don't override this
+  virtual void paint(Graphics& /*g*/) override {} // we hit a breakpoint if we don't override this
 
   virtual void resized() override
   {

@@ -300,6 +300,9 @@ void Parameter::addNumericStringValues(int min, int max, int step)
 {
   for(int i = min; i <= max; i++)
     addStringValue(String(i));
+
+  // We get a warning about the unused parameter "step" here. This could be a bug. We should 
+  // probably do: "i += step" rather than "i++" in the loop header.
 }
 
 //-------------------------------------------------------------------------------------------------

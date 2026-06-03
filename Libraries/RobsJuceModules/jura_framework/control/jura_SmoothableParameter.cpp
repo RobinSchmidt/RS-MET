@@ -195,4 +195,12 @@ void rsSmoothableParameter::setNormalizedTargetValue(double newTargetValue, bool
   // normalizedValue may be != newTargetValue now due to the fact that 
   // Parameter::setNormalizedValue may have quantized it and we should aim the smoother at the 
   // quantized value
+
+  // Notes:
+  //
+  // - We get a warning about the unused parameter "callCallbacks" here. ToDo: Figure out and 
+  //   document why we don't use the parameter and then comment the parameter out to get rid of the
+  //   warning. I think ignoring it here is intentional. The callbacks may be called in the 
+  //   smoothing process and here, we only set up the initial conditions for it. But I'm not sure
+  //   about that anymore. Verify this!
 }

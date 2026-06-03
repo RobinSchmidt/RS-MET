@@ -139,10 +139,9 @@ int rsVoiceManager::noteOffReturnVoice(int key)
 // as soon as we receive a setSustainOff message, we loop through all active voices and check their
 // isHeld flag and if it's false, we release the voice
 
-void rsVoiceManager::setPitchBend(int pitchBendValue)
+void rsVoiceManager::setPitchBend(int /*pitchBendValue*/)
 {
-
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
