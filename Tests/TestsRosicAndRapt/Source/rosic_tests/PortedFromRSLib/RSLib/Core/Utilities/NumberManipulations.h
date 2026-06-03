@@ -41,8 +41,11 @@ namespace RSLib
   /** Returns the exponent of a 32 bit IEEE 754 floating point number. */
   RS_INLINE int rsExtractExponentFromFloat(float x)
   {
-    return (((*((reinterpret_cast<rsUint32 *>(&x)))&0x7FFFFFFF)>>23)-127);
+    //return (((*((reinterpret_cast<rsUint32 *>(&x)))&0x7FFFFFFF)>>23)-127);
+    return (int) (((*((reinterpret_cast<rsUint32 *>(&x)))&0x7FFFFFFF)>>23)-127);
   }
+  // ToDo: Create benchmarks. Check, if the type-conversion to (int) at the end causes a 
+  // performance hit.
 
   /** Fills an array of rsUint32 values with the bit pattern of a 64-bit datatype. */
   template <class T>
