@@ -550,7 +550,7 @@ public:
   /** Can be overriden by subclasses to respond to note-on events for a particular voice. Can be 
   used in audio processors (oscillators, filters, etc.) to reset oscillator phases, filter states,
   etc. and in modulators (envelopes, etc.) to reset the position in the envelope etc. */
-  virtual void noteOn(int key, int vel, int voice) {}
+  virtual void noteOn(int /*key*/, int /*vel*/, int /*voice*/) {}
   // maybe make this purely virtual
 
   // todo:
@@ -565,11 +565,11 @@ public:
   pitch. The pitch value already has microtuning baked in, but not pitch-wheel. This is because 
   microtuning is handled globally but the response to pitch-wheel is implemented via the modulation
   system. Pitch-Wheel is available as modulator and can be routed to the parameters at will. */
-  virtual void setVoiceKeyPitch(int voice, double pitch) {}
+  virtual void setVoiceKeyPitch(int /*voice*/, double /*pitch*/) {}
   // obsolete? should this not better be handled by a modulator module? maybe the NotePitch/Freq
   // modulators should have glide already baked in? i think that would make sense
 
-  virtual void setVoiceVelNorm(int voice, double pitch) {}
+  virtual void setVoiceVelNorm(int /*voice*/, double /*pitch*/) {}
   // similar to setVoiceKeyPitch but for (normalized) velocity 
 
   //-----------------------------------------------------------------------------------------------
@@ -680,10 +680,10 @@ public:
 
   // Finalize all the audio processing callbacks - they are not suppsoed not be used for anything 
   // anymore and just pass the audio through:
-  void processBlock(double** inOutBuffer, int numChannels, int numSamples) override final {}
-  void processStereoFrame(double* left, double* right) override final {}
-  void processStereoFrameVoice(double* left, double* right, int voice) override final {}
-  void processStereoFramePoly(double* buffer, int numActiveVoices) override final {}
+  void processBlock(double** /*inOutBuffer*/, int /*numChannels*/, int /*numSamples*/) override final {}
+  void processStereoFrame(double* /*left*/, double* /*right*/) override final {}
+  void processStereoFrameVoice(double* /*left*/, double* /*right*/, int /*voice*/) override final {}
+  void processStereoFramePoly(double* /*buffer*/, int /*numActiveVoices*/) override final {}
 
   /** Overriden to trigger the allocation of the modulator output signal slots and triggers 
   allocateVoiceModResources which must be overriden by subclasses. */

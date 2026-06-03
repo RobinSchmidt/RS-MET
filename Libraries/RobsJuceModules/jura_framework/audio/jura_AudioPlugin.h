@@ -22,7 +22,16 @@ public:
   virtual float getValue() const override { return (float) metaValue; }
   virtual void setValue(float newValue) override;
   virtual float getDefaultValue() const override { return 0.5f; }
-  virtual String getName(int maximumStringLength) const override { return name; }
+
+  virtual String getName(int maxStringLength) const override 
+  { 
+    return name;
+    // We get a compiler warning about "unused parameter" maxStringLength here. This could actually
+    // hint at a genuine bug. We should probably shorten the returned string to the given 
+    // maxStringLength if the name happens to be longer. Maybe it can be done with:
+    //return name.substring(0, maxStringLength);
+  }
+
   virtual String getLabel() const override { return String(); }
   virtual float getValueForText(const String &text) const override { return text.getFloatValue(); }
 
