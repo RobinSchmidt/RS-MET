@@ -35,7 +35,7 @@ public:
     waveformBuffer->setSampleRate(newSampleRate); 
   }
 
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  virtual void processBlock(double** inOutBuffer, int /*numChannels*/, int numSamples) override
   {
     for(int n = 0; n < numSamples; n++)
     {
@@ -43,6 +43,10 @@ public:
       // preliminary - feeds only left channel into the buffer - make stereo version
 
       waveformBuffer->bufferSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+
+      // ToDo: Document why we ignore numChannels. I think, this module supports only one input 
+      // channel, i.e. is a mono module. When it receives more inputs, it just ignores the others.
+      // Verify that!
     }
   }
 

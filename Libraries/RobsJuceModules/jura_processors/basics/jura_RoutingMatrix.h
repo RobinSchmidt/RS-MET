@@ -11,7 +11,7 @@ public:
   RoutingMatrixAudioModule(CriticalSection *newPlugInLock, 
     rosic::RoutingMatrix *newRoutingMatrixToWrap);
   virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override {}
+  virtual void processBlock(double** /*inOutBuffer*/, int /*numChannels*/, int /*numSamples*/) override {}
 
 protected:
 

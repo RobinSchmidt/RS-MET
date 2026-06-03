@@ -209,14 +209,22 @@ int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw,
   //  -> remove the colourToUse parameter...this will ripple through the codebase
 }
 
-void colorComponentIndices(juce::Image& image, int &ri, int &gi, int &bi, int &ai)
+void colorComponentIndices(juce::Image& image, int& ri, int& gi, int& bi, int& ai)
 {
-  // preliminary, seems valid on PC - todo: figure these out in a platform specific way from the
+  // Preliminary, seems valid on PC - todo: figure these out in a platform specific way from the
   // passed image:
   ai = 3;
   ri = 2;
   gi = 1;
   bi = 0;
+
+  // ToDo:
+  //
+  // - Pass the output parameters by pointer rather than by reference. Maybe rename to idxRed,
+  //   idxGreen, idxBlue, idxAlpha. That's more descriptive.
+  //
+  // - Maybe get rid of the image parameter. I think, the mapping depends only on the platform and
+  //   not on the particular image. But I'm not sure.
 }
 
 void dataToImageOpaqueFloat32x4(float *data, juce::Image &image)

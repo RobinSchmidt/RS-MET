@@ -9,7 +9,7 @@ class StandardWaveformRendererAudioModule : public AudioModule
 public:
   StandardWaveformRendererAudioModule(CriticalSection *newPlugInLock,
     rosic::StandardWaveformRenderer *newStandardWaveformRendererToWrap);
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override {}
+  virtual void processBlock(double** /*inOutBuffer*/, int /*numChannels*/, int /*numSamples*/) override {}
   virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 protected:
   virtual void initializeAutomatableParameters();
@@ -25,7 +25,7 @@ class WaveformBufferAudioModule : public AudioModule, public AudioFileManager
 public:
   WaveformBufferAudioModule(CriticalSection *newPlugInLock, 
     rosic::WaveformBuffer *newWaveformBufferToWrap);
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override {}
+  virtual void processBlock(double** /*inOutBuffer*/, int /*numChannels*/, int /*numSamples*/) override {}
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
     bool markAsClean) override;
   virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
@@ -49,7 +49,7 @@ class WaveformRendererAudioModule : public AudioModule
 public:
   WaveformRendererAudioModule(CriticalSection *newPlugInLock, 
     rosic::WaveformRenderer *newWaveformRendererToWrap);
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override {}
+  virtual void processBlock(double** /*inOutBuffer*/, int /*numChannels*/, int /*numSamples*/) override {}
   virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 protected:
   virtual void initializeAutomatableParameters();
@@ -104,7 +104,7 @@ public:
   //---------------------------------------------------------------------------------------------
   // audio processing:
 
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override {}
+  virtual void processBlock(double** /*inOutBuffer*/, int /*numChannels*/, int /*numSamples*/) override {}
 
 protected:
 

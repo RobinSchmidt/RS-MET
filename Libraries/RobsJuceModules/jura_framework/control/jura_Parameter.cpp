@@ -296,14 +296,17 @@ void Parameter::addStringValue(const String& valueToAdd)
   //maxValue = (double) (stringValues.size()-1);
 }
 
+/*
 void Parameter::addNumericStringValues(int min, int max, int step)
 {
   for(int i = min; i <= max; i++)
     addStringValue(String(i));
 
   // We get a warning about the unused parameter "step" here. This could be a bug. We should 
-  // probably do: "i += step" rather than "i++" in the loop header.
+  // probably do: "i += step" rather than "i++" in the loop header. Figure out where we call this
+  // function. If it isn't used anywhere, comment it out. ..OK - done.
 }
+*/
 
 //-------------------------------------------------------------------------------------------------
 // inquiry:

@@ -16,14 +16,24 @@ public:
 
   void handleMidiMessage(MidiMessage message) override;
 
-  void handleMidiMessageForVoice(MidiMessage msg, int voice) override
-  { handleMidiMessage(msg); }
-  // This is getting called instead of handleMidiMessage in ToolChain when the msg is a note event
-  // because note events need a voice dispatch. To not miss note events, we need to override 
-  // handleMidiMessageForVoice as well and pass the msg through to handleMidiMessage
+  void handleMidiMessageForVoice(MidiMessage msg, int /*voice*/) override
+  { 
+    handleMidiMessage(msg); 
+
+    // Notes:
+    // 
+    // - This is getting called instead of handleMidiMessage() in ToolChain when the msg is a note
+    //   event because note events need a voice dispatch. To not miss note events, we need to 
+    //   override handleMidiMessageForVoice as well and pass the msg through to handleMidiMessage.
+    //   We ignore the voice parameter here though because it's irrelevant for the display of the
+    //   message (I think).
+  }
 
 
-  virtual void getSampleFrameStereo(double *inOutL, double *inOutR) { }
+
+  virtual void getSampleFrameStereo(double* /*inOutL*/, double* /*inOutR*/) { }
+  // Why do we override this? Doesn't the baseclass implementation do the same thing, i.e. 
+  // nothing? Figure out and document or remove the override.
 
 protected:
 
