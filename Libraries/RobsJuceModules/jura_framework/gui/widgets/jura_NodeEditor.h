@@ -114,7 +114,7 @@ public:
   /** Callback that will be called after an existing node was moved. Your subclass may choose to
   not override this, if it is already an observer of the parameters associated with the node's x/y
   coordinates. */
-  virtual void nodeWasMoved(rsNodeEditor* editor, int nodeIndex) {};
+  virtual void nodeWasMoved(rsNodeEditor* /*editor*/, int /*nodeIndex*/) {};
 
   // virtual void nodeParameterChanged(rsNodeEditor* editor, int nodeIndex, int paramIndex) {}
   // ...maybe
@@ -215,7 +215,7 @@ public:
   /** This function will be called before an attempt to remove a node and will not remove it, if 
   that function returns false. The baseclass implementation just returns true but you can override 
   it in a subclass if you subclass - for example - requires a certain minimum number of nodes. */
-  virtual bool isNodeRemovable(int index) const { return true; }
+  virtual bool isNodeRemovable(int /*index*/) const { return true; }
 
   /** This function is called after a node has been inserted or moved to a new position. You can
   override it, if you need to apply costraints on the positions of nodes, like for example that the

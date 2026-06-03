@@ -311,7 +311,7 @@ public:
   /** A function to override in case you are producing a stereo-signal and need your module to work
   with the modulation system (i.e. uses ModulatableParameters). It is supposed to produce one 
   stereo sample frame at a time and may be called alternatively to processBlock. */
-  virtual void processStereoFrame(double *left, double *right) {}
+  virtual void processStereoFrame(double* /*left*/, double* /*right*/) {}
 
   //-----------------------------------------------------------------------------------------------
   // \name Misc:

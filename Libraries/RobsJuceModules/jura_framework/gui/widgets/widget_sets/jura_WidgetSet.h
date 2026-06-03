@@ -19,8 +19,8 @@ class JUCE_API WidgetSet : public ColourSchemeComponent
 protected:
 
   // Empty overrides for paint/OverChildren to avoid background and outline drawing:
-  void paint(Graphics &g) override {}
-  void paintOverChildren(Graphics &g) override {}
+  void paint(Graphics& /*g*/) override {}
+  void paintOverChildren(Graphics& /*g*/) override {}
 
 };
 

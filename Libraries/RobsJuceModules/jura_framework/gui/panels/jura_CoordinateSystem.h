@@ -537,10 +537,12 @@ protected:
   //---------------------------------------------------------------------------------------------
   // make obsolete inherited methods unavailable to client code:
 
-  virtual void setColours(const Colour newBackgroundColour, const Colour newOutlineColour,
-    const Colour newHandleColour, const Colour newTextColour, const Colour newSpecialColour1,
-    const Colour newSpecialColour2) {};
-  virtual void setColourScheme(const WidgetColourScheme& newColourScheme) override {}
+  virtual void setColours(const Colour /*newBackgroundColour*/, const Colour /*newOutlineColour*/,
+    const Colour /*newHandleColour*/, const Colour /*newTextColour*/, 
+    const Colour /*newSpecialColour1*/, const Colour /*newSpecialColour2*/) 
+  {};
+
+  virtual void setColourScheme(const WidgetColourScheme& /*newColourScheme*/) override {}
 
 
   juce_UseDebuggingNewOperator;

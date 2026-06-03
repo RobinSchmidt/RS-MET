@@ -181,7 +181,7 @@ inline void setRightKeepLeft(juce::Component* c, int newRight)
   int y = c->getY();
   int w = c->getWidth();
   int h = c->getHeight();
-  int oldRight = x + w;
+  //int oldRight = x + w;
   int newWidth = newRight - x;
   c->setBounds(x, y, newWidth, h);
 }

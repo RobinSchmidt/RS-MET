@@ -46,7 +46,7 @@ public:
   virtual void rsPlotVisibleRangeChanged(rsPlotSettings* plotSettings) override;
 
   /** Does nothing but needs to be overriden. */
-  virtual void rsPlotMaximumRangeChanged(rsPlotSettings* plotSettings) override {};
+  virtual void rsPlotMaximumRangeChanged(rsPlotSettings* /*plotSettings*/) override {};
 
   //-----------------------------------------------------------------------------------------------
   // range-management (split in range setup and range inquiry, inline inquiry functions):

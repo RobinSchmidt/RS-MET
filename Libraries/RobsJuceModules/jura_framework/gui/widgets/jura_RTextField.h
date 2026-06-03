@@ -94,13 +94,13 @@ public:
 
   /** This is called whenever the user has entered new text and finished his typing action via
   enter, escape or losing focus. */
-  virtual void textChanged(RTextEntryField *rTextEntryFieldThatHasChanged) = 0;
+  virtual void textChanged(RTextEntryField* rTextEntryFieldThatHasChanged) = 0;
 
   /** This is called whenever the user types in a new character, deletes a character or portion of
   the text or pastes a portion of text from the clipboard but did not yet finish typing by
   pressing enter, escape or losing focus. You may override this when you want to be informed about
   text-changes during typing - the default implementation does nothing. */
-  virtual void somethingWasTypedIn(RTextEntryField *rTextEntryFieldThatHasChanged) { }
+  virtual void somethingWasTypedIn(RTextEntryField* /*rTextEntryFieldThatHasChanged*/) { }
 
   // \todo: may rename these methods to avoid clashes with TextEditor if necessary
 };

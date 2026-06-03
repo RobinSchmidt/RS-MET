@@ -465,7 +465,7 @@ public:
   virtual ~rsModulationConnectionWidget() {}
 
   void resized() override;
-  void paint(Graphics& g) override {}
+  void paint(Graphics& /*g*/) override {}
 
 protected:
 

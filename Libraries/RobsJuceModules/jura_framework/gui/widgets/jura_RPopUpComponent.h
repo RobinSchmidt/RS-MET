@@ -126,7 +126,7 @@ public:
   dismissed due to a click somewhere else. Distinguishing these cases may be necessary because in
   the first case, the owner will receive a mousDown callback immediately after the dismissal which
   probably should be ignored instead of bringing up the popup (again). */
-  virtual void rPopUpDismissedByClickOnOwner(ROwnedPopUpComponent *popUp) {}
+  virtual void rPopUpDismissedByClickOnOwner(ROwnedPopUpComponent* /*popUp*/) {}
 
   juce_UseDebuggingNewOperator
 };
