@@ -1455,10 +1455,13 @@ public:
   }
 
   // Perform Runge-Kutta step (?):
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
   TSig M_n(TSig M_n1, TSig k1, TSig k2, TSig k3, TSig k4) 
   {
     return ((((((M_n1 + (k1 / 6))) + (k2 / 3))) + (k3 / 3))) + (k4 / 6);
   }
+  RS_DONTWARN_POP();
 
 
   // Sample computation:

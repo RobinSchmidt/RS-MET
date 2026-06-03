@@ -462,6 +462,8 @@ romos::Module* ContainerModule::addChildModule(int moduleIdentifier, rosic::rsSt
 */
 
 // new version - not yet tested:
+RS_DONTWARN_PUSH();
+RS_DONTWARN_HIDESMEMBER();
 romos::Module* ContainerModule::addChildModule(const std::string& fullTypeName,
   const std::string& name, int x, int y, bool poly, bool sortChildModulesAfterInsertion)
 {
@@ -483,8 +485,7 @@ romos::Module* ContainerModule::addChildModule(const std::string& fullTypeName,
     return moduleToAdd;
   }
 }
-
-
+RS_DONTWARN_POP();
 
 
 void ContainerModule::deleteChildModule(Module *moduleToDelete, bool updateHasDelayedConnectionFlag)
@@ -601,7 +602,11 @@ ContainerModule* ContainerModule::containerizeModules(std::vector<Module*> modul
   */
 
   // create a new container and add it as child here:
+  RS_DONTWARN_PUSH();
+  RS_DONTWARN_HIDESMEMBER();
   int xMin, yMin, xMax, yMax, x, y;
+  RS_DONTWARN_POP();
+
   getExtremeCoordinates(modulesToContainerize, xMin, yMin, xMax, yMax);
   getMidpointCoordinates(modulesToContainerize, x, y);
 
@@ -1094,6 +1099,8 @@ bool ContainerModule::containsConnectionsWithImplicitDelay() const
 }
 */
 
+RS_DONTWARN_PUSH();
+RS_DONTWARN_HIDESMEMBER();
 bool ContainerModule::isPositionOccupied(int &x, int &y) const
 {
   for(int i = 0; i < (int)childModules.size(); i++)
@@ -1114,6 +1121,7 @@ void ContainerModule::getNonOccupiedPositionNear(int &x, int &y) const
       return;
   }
 }
+RS_DONTWARN_POP();
 
 /*
 //-----------------------------------------------------------------------------------------------------------------------------------------

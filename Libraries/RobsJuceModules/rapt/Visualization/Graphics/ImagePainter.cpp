@@ -139,10 +139,16 @@ void rsImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, T
   // normalization (maybe try sqrt(0.5) - it seems a bit darker compared to non-anti-aliased mode
   // - maybe compute the ratio between sum-of-pixel values in non-aliased and anti-aliased drawing 
   // forsome "typical" curve and use that factor):
-  if(deTwist) {
+  if(deTwist) 
+  {
+    RS_DONTWARN_PUSH();
+    RS_DONTWARN_HIDESMEMBER();
     TPix s = TPix(0.5) / sqrt(a*a + b*b + c*c + d*d);
     //TPix s = TPix(0.5 + rsSquare(0.5-x) + rsSquare(0.5-y)) / sqrt(a*a + b*b + c*c + d*d); // test - not good!
-    a *= s; b *= s; c *= s; d *= s; }
+    RS_DONTWARN_POP();
+
+    a *= s; b *= s; c *= s; d *= s; 
+  }
   // maybe try different formulas that normalize in a ways such that a^2+b^2 = y, c^2+d^2 = 1-y,
   // a^2+c^2 = 1-x, b^2+d^2 = x ...or something - but maybe that's not possible
   // maybe try a sin/cos based constant power crossfade (does it actually make a difference in this 
@@ -178,7 +184,11 @@ void rsImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, T
   // apply thickness:
   if(weightStraight > 0.f && xi >= 1 && xi < wi-2 && yi >= 1 && yi < hi-2)
   {
+    RS_DONTWARN_PUSH();
+    RS_DONTWARN_HIDESMEMBER();
     TPix t, s, sa, sb, sc, sd, ta, tb, tc, td;
+    RS_DONTWARN_POP();
+
     t = (TPix)weightStraight;      // weight for direct neighbour pixels
     s = (TPix)weightDiagonal;      // weight for diagonal neighbour pixels
 
