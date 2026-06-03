@@ -164,9 +164,14 @@ bool AudioFileManager::loadFile(const File& fileToLoad)
   return success;
 }
 
-bool AudioFileManager::saveToFile(const File& fileToSaveTo)
+bool AudioFileManager::saveToFile(const File& /*fileToSaveTo*/)
 {
+  //jassertfalse;
   return false; // not yet functional
+
+  // ToDo:
+  //
+  // - Maybe issue a "Not yet implemented" warning and/or trigger jassertfalse
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -185,9 +190,9 @@ bool AudioFileManager::loadAudioFile(const File& fileToLoad)
   return success;
 }
 
-bool AudioFileManager::saveAudioFile(const juce::File &fileToSaveTo,
-                                     const juce::AudioSampleBuffer &bufferToSave, int sampleRate,
-                                     int numBits, const juce::String &format)
+bool AudioFileManager::saveAudioFile(const juce::File& /*fileToSaveTo*/,
+  const juce::AudioSampleBuffer& /*bufferToSave*/, int /*sampleRate*/, int /*numBits*/,
+  const juce::String& /*format*/)
 {
   jassertfalse;
   return false;  // not yet functional

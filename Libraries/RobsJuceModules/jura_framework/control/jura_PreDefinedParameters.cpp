@@ -74,14 +74,14 @@ ParameterWithKeyVelScaling::ParameterWithKeyVelScaling(const juce::String& name,
 }
 
 // functions not yet implemented:
-void ParameterWithKeyVelScaling::setKeyScaleRange(double minValue, double maxValue, 
-  double defaultValue)
+void ParameterWithKeyVelScaling::setKeyScaleRange(double /*minValue*/, double /*maxValue*/, 
+  double /*defaultValue*/)
 {
 
 }
 
-void ParameterWithKeyVelScaling::setVelScaleRange(double minValue, double maxValue, 
-  double defaultValue)
+void ParameterWithKeyVelScaling::setVelScaleRange(double /*minValue*/, double /*maxValue*/, 
+  double /*defaultValue*/)
 {
 
 }

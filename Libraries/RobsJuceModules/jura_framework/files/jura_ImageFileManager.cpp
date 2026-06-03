@@ -51,6 +51,12 @@ void ImageFileManager::saveImageToFile(const File& fileToSaveTo, const Image* im
   //bool success = false;
   //bool success = pngFormat.writeImageToStream(*imageToSave, fileStream);
   imageIsUnsaved = false;
+
+  // ToDo:
+  //
+  // - Figure out why the line that actually saves the image is commented out. We get a compiler
+  //   warning about the "unused parameter" "imageToSave" and the compiler may be right to 
+  //   complain.
 }
 
 /*

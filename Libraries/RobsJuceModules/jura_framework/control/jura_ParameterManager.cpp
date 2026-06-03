@@ -118,7 +118,7 @@ void ParameterManager::removeAllObservedParameters(bool deleteObjects)
   }
 }
 
-void ParameterManager::parameterChanged(Parameter *parameterThatHasChanged)
+void ParameterManager::parameterChanged(Parameter* /*parameterThatHasChanged*/)
 {
 
 }

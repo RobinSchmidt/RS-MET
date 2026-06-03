@@ -2,7 +2,7 @@
 // some of these functions need to be updated - setPixelData is not available anymore in the
 // juce::Image class. maybe, we have to somehow use Image::BimapData::getPixelPointer or something
 
-void copyImage(juce::Image *sourceImage, juce::Image *targetImage)
+void copyImage(juce::Image* sourceImage, juce::Image* targetImage)
 {
   int w = targetImage->getWidth();
   int h = targetImage->getHeight();
@@ -36,6 +36,12 @@ void copyImage(juce::Image *sourceImage, juce::Image *targetImage)
   //int numPixels = w*h;
   //int byteSize  = targetImage->getSharedImage()->getPixelStride();
   //int dummy = 0;
+
+  // ToDo:
+  //
+  // - We get a warning here about unused parameters. Apparently, the implementation has been 
+  //   commented out for some reason. Figure out why. Maybe uncomment it. Otherwise document why
+  //   it's commented out.
 }
 
 void normalizedDataToImage(float *data, juce::Image &image, const jura::ColorMap& colorMap)

@@ -41,13 +41,13 @@ RTextField* DescribedItem::getDescriptionField() const
 
 //=================================================================================================
 
-void DescribedComponent::mouseEnter(const juce::MouseEvent &e)
+void DescribedComponent::mouseEnter(const juce::MouseEvent& /*e*/)
 {
   if( descriptionField != NULL )
     descriptionField->setText(description);
 }
 
-void DescribedComponent::mouseExit(const MouseEvent &e)
+void DescribedComponent::mouseExit(const MouseEvent& /*e*/)
 {
   if( descriptionField != NULL )
     descriptionField->setText(String());

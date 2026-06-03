@@ -262,7 +262,7 @@ Colour PlotColourScheme::getCurveColour(int index) const
   }
 }
 
-Colour PlotColourScheme::getCurveColourUniform(int index) const
+Colour PlotColourScheme::getCurveColourUniform(int /*index*/) const
 {
   return curvesAHSL.getAsJuceColour();
 }
