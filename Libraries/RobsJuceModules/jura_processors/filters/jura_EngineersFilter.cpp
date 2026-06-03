@@ -437,11 +437,13 @@ void EngineersFilterModuleEditor::createWidgets()
   plotEditor->addChangeListener(this);
   plotEditor->setEngineersFilterToEdit(sciFilterModuleToEdit->wrappedEngineersFilter);
   addPlot( plotEditor );
-  juce::Array<Colour> graphColours;
-  //graphColours.add(Colour(0xffa00000));   
+
+  // May be obsolete:
+  //juce::Array<Colour> graphColours;
+  //graphColours.add(Colour(0xffa00000));
   //graphColours.add(Colour(0xff30b030));
   //graphColours.add(Colour(0xff6060ff));
-  setGraphColours(graphColours);
+  //setGraphColours(graphColours);
 
   addWidget( modeComboBox = new RNamedComboBox("modeComboBox", "Mode:") );
   modeComboBox->assignParameter( p = sciFilterModuleToEdit->getParameterByName("Mode") );

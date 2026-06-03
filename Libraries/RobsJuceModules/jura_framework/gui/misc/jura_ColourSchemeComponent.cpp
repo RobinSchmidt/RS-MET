@@ -107,11 +107,13 @@ void ColourSchemeComponent::setBrightnessGamma(float newGamma)
   updateEmbeddedObjectsAndRepaint();
 }
 
-void ColourSchemeComponent::setGraphColours(const juce::Array<Colour> &newColours, 
-                                            bool callAlsoForChildColourSchemeComponents)
+/*
+void ColourSchemeComponent::setGraphColours(const juce::Array<Colour>& newColours,
+  bool callAlsoForChildColourSchemeComponents)
 {
-
+  // Why is the function empty? Maybe it's not yet used anywhere?
 }
+*/
 
 void ColourSchemeComponent::copyColourSettingsFrom(const ColourSchemeComponent *componentToCopyFrom)
 {

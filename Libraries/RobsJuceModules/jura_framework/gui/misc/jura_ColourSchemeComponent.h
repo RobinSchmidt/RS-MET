@@ -68,8 +68,8 @@ public:
   virtual void setBrightnessGamma(float newGamma);
 
   /** Sets up the graph colours for the plots and optionally passes this through to children. */
-  virtual void setGraphColours(const juce::Array<Colour> &newColours, 
-    bool callAlsoForChildColourSchemeComponents = true);
+  //virtual void setGraphColours(const juce::Array<Colour> &newColours, 
+  //  bool callAlsoForChildColourSchemeComponents = true);
 
   /** Copies the colourscheme settings from the passed component to this one. */
   virtual void copyColourSettingsFrom(const ColourSchemeComponent *componentToCopyFrom);

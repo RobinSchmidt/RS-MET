@@ -1189,6 +1189,15 @@ void addTextToSvgDrawing(XmlElement* svg, juce::String theText, float x, float y
     String(" text-anchor: ") + jString + String(";") );
   textContainer->addChildElement(text);
   svg->addChildElement(textContainer);
+
+  // ToDo:
+  //
+  // - Make use of the "color" parameter. Maybe the String(" fill: black;") needs to be replaced by
+  //   String(" fill: #") + color.toString().substring(2) + String(";") or something like that 
+  //   (that suggestion was AI generated). To figure out, if this is the right track, try first to
+  //   just replace "black" by "red" and see if this produces red text. If so, then yes - we need
+  //   to change this string. Then we need to figure out how to convert a general color to a svg
+  //   compatible color string.
 }
 
 void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper,
