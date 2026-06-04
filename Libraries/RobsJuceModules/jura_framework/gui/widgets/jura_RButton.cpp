@@ -352,7 +352,7 @@ void RClickButtonWithAutoRepeat::mouseDown(const MouseEvent& /*e*/)
   startTimer(initialDelay);
 }
 
-void RClickButtonWithAutoRepeat::mouseUp(const MouseEvent& e)
+void RClickButtonWithAutoRepeat::mouseUp(const MouseEvent& /*e*/)
 {
   isOn = false;
   repaint();

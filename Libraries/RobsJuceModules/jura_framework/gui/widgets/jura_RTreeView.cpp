@@ -410,12 +410,12 @@ void RTreeView::mouseDown(const MouseEvent &e)
   dismissIfModal(); // move into ModalComponent
 }
 
-void RTreeView::mouseMove(const MouseEvent &e)
+void RTreeView::mouseMove(const MouseEvent& /*e*/)
 {
   repaint(); // Needed for semi-highlighting on mouse-hovering.
 }
 
-void RTreeView::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
+void RTreeView::mouseWheelMove(const MouseEvent& /*e*/, const MouseWheelDetails &wheel)
 {
   if( upDownScrollBar->isVisible() )
     upDownScrollBar->moveScrollbarInSteps((int)-sign(wheel.deltaY));

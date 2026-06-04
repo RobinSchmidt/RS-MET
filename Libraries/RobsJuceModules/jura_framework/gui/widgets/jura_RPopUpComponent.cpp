@@ -45,7 +45,7 @@ void RPopUpComponent::inputAttemptWhenModal()
   // \todo maybe define a user selectable behavior of what to do when this happens...
 }
 
-void RPopUpComponent::focusLost(FocusChangeType cause)
+void RPopUpComponent::focusLost(FocusChangeType /*cause*/)
 {
   if( dismissOnFocusLoss == true )
     dismiss();
@@ -71,7 +71,7 @@ void RPopUpComponent::mouseExit(const MouseEvent &e)
 }
 */
 
-void RPopUpComponent::mouseDown(const MouseEvent &e)
+void RPopUpComponent::mouseDown(const MouseEvent& /*e*/)
 {
   //int dummy = 0;
 }
@@ -148,7 +148,7 @@ ROwnedPopUpComponent::ROwnedPopUpComponent(Component *ownerComponent)
   this->ownerComponent = ownerComponent;
 }
 
-void ROwnedPopUpComponent::focusLost(FocusChangeType cause)
+void ROwnedPopUpComponent::focusLost(FocusChangeType /*cause*/)
 {
   if( dismissOnFocusLoss == true )
   {
@@ -159,7 +159,7 @@ void ROwnedPopUpComponent::focusLost(FocusChangeType cause)
   }
 }
 
-void ROwnedPopUpComponent::componentMovedOrResized(bool wasMoved, bool wasResized)
+void ROwnedPopUpComponent::componentMovedOrResized(bool /*wasMoved*/, bool /*wasResized*/)
 {
   //int dummy = 0;
 }

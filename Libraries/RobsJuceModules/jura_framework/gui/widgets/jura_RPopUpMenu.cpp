@@ -138,8 +138,8 @@ int RPopUpMenu::getSelectedIdentifier() const
     return selectedItem->getNodeIdentifier();
 }
 
-void RPopUpMenu::treeNodeClicked(RTreeView *treeView, RTreeViewNode *nodeThatWasClicked,
-  const MouseEvent &mouseEvent, int clickPosition)
+void RPopUpMenu::treeNodeClicked(RTreeView* /*treeView*/, RTreeViewNode* nodeThatWasClicked,
+  const MouseEvent& /*mouseEvent*/, int /*clickPosition*/)
 {
   if( nodeThatWasClicked->isLeafNode() )
   {

@@ -72,12 +72,16 @@ void RScrollBar::setCurrentRange(double newStart, double newSize) throw()
   }
 }
 
-void RScrollBar::setButtonRepeatSpeed(const int initialDelayInMillisecs, 
-  const int repeatDelayInMillisecs, const int minimumDelayInMillisecs) throw()
+void RScrollBar::setButtonRepeatSpeed(
+  const int initialDelayInMs, 
+  const int repeatDelayInMs, 
+  const int minimumDelayInMs) throw()
 {
-  //forwardButton->setRepeatSpeed( initialDelayInMillisecs,  repeatDelayInMillisecs,  minimumDelayInMillisecs);
-  //backwardButton->setRepeatSpeed(initialDelayInMillisecs,  repeatDelayInMillisecs,  minimumDelayInMillisecs);
-  // re-activate these
+  //forwardButton->setRepeatSpeed( initialDelayInMs, repeatDelayInMs, minimumDelayInMs);
+  //backwardButton->setRepeatSpeed(initialDelayInMs, repeatDelayInMs, minimumDelayInMs);
+  // These have been commented out. Why? ...It seems that we get a compilation error when we 
+  // uncomment them. But the compiler does not complain complain about the code here but somewhere
+  // else. Figure this out!
 }
 
 void RScrollBar::addListener(RScrollBarListener* const listener) throw()
@@ -220,7 +224,7 @@ void RScrollBar::mouseUp(const MouseEvent&)
   repaint();
 }
 
-void RScrollBar::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
+void RScrollBar::mouseWheelMove(const MouseEvent& /*e*/, const MouseWheelDetails& wheel)
 {
   //float increment = vertical ? wheelIncrementY : wheelIncrementX;  // old
   float increment = vertical ? wheel.deltaY : wheel.deltaX;

@@ -1,7 +1,7 @@
 PlotPreviewButton::PlotPreviewButton(const String& name, const rsPlot* plotToPreview) 
 : RButton(name)
 {
-  plotPreviewImage = NULL;
+  plotPreviewImage = nullptr;
 }
 
 PlotPreviewButton::~PlotPreviewButton()
@@ -12,7 +12,7 @@ PlotPreviewButton::~PlotPreviewButton()
 void PlotPreviewButton::paint(Graphics &g)
 {
   // not yet implemeted
-  if( plotPreviewImage != NULL )
+  if( plotPreviewImage != nullptr )
   {
     g.drawImage(*plotPreviewImage, 0, 0, getWidth(), getHeight(), 
                 0, 0, plotPreviewImage->getWidth(), plotPreviewImage->getHeight());
