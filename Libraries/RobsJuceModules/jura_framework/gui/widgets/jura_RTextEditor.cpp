@@ -525,6 +525,8 @@ public:
   {
     if(!atom->isWhitespace())
     {
+      // Why is this commented out?
+
       /*
       Font dummyFont(16);
       GlyphArrangement ga;
@@ -829,7 +831,7 @@ public:
 
   }
 
-  virtual void visibleAreaChanged(const Rectangle<int>& newVisibleArea)
+  virtual void visibleAreaChanged(const Rectangle<int>& /*newVisibleArea*/)
   {
     const int wordWrapWidth = owner->getWordWrapWidth();
     if(wordWrapWidth != lastWordWrapWidth)

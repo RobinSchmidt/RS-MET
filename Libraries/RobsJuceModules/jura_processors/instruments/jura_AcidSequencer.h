@@ -47,7 +47,7 @@ public:
 
   XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
 
-  void processBlock(double **inOutBuffer, int numChannels, int numSamples) override {}
+  void processBlock(double** /*inOutBuffer*/, int /*numChannels*/, int /*numSamples*/) override {}
   // Empty - exists only to satisfy compiler
 
 

@@ -103,7 +103,7 @@ public:
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
   virtual void parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted) 
   {
-    // Why is this function stiff empty? Maybe we should do:
+    // Why is this function still empty? Maybe we should do:
     //if(parameterThatWillBeDeleted == xParameter)
     //  unAssignParameterX();
     //if(parameterThatWillBeDeleted == yParameter)

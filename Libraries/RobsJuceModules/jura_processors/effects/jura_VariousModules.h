@@ -24,8 +24,11 @@ templates (maybe with explicit specializations)?
 class BypassAudioModule : public AudioModule
 {
 public:
-  BypassAudioModule(CriticalSection *newPlugInLock, rosic::BypassModule *newBypassToWrap = nullptr)
-    : AudioModule(newPlugInLock) {}
+  BypassAudioModule(
+    CriticalSection* newPlugInLock, 
+    rosic::BypassModule* /*newBypassToWrap*/ = nullptr)
+    : AudioModule(newPlugInLock) 
+  { }
   //virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override {}
   juce_UseDebuggingNewOperator;
 };
@@ -33,8 +36,8 @@ public:
 class BypassModuleEditor : public AudioModuleEditor
 {
 public:
-  BypassModuleEditor(CriticalSection *newPlugInLock, BypassAudioModule* newBypassAudioModule)
-    :AudioModuleEditor(newBypassAudioModule)
+  BypassModuleEditor(CriticalSection* /*newPlugInLock*/, BypassAudioModule* newBypassAudioModule)
+    : AudioModuleEditor(newBypassAudioModule)
   { }
   juce_UseDebuggingNewOperator;
 };
@@ -45,9 +48,10 @@ public:
 class MuteAudioModule : public AudioModule
 {
 public:
-  MuteAudioModule(CriticalSection *newPlugInLock, rosic::MuteModule *newMuteToWrap) 
+  MuteAudioModule(CriticalSection* newPlugInLock, rosic::MuteModule* /*newMuteToWrap*/) 
     : AudioModule(newPlugInLock)  {}
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+
+  void processBlock(double** inOutBuffer, int numChannels, int numSamples) override
   {
     for(int i = 0; i < numChannels; i++)
       fillWithZeros(inOutBuffer[i], numSamples);
@@ -62,7 +66,7 @@ public:
 class MuteModuleEditor : public AudioModuleEditor
 {
 public:
-  MuteModuleEditor(CriticalSection *newPlugInLock, MuteAudioModule* newMuteAudioModule)
+  MuteModuleEditor(CriticalSection* /*newPlugInLock*/, MuteAudioModule* newMuteAudioModule)
     :AudioModuleEditor(newMuteAudioModule)
   { }
   juce_UseDebuggingNewOperator;

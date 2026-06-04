@@ -102,7 +102,7 @@ void RButton::sendClickMessage()
     buttonListeners[i]->rButtonClicked(this);
 }
 
-void RButton::mouseDown(const MouseEvent& e)
+void RButton::mouseDown(const MouseEvent& /*e*/)
 {
   clicked();
 }
@@ -283,14 +283,14 @@ RClickButton::RClickButton(const juce::String& buttonText) : RButton(buttonText)
   clickTogglesState = false;
 }
 
-void RClickButton::mouseDown(const MouseEvent& e)
+void RClickButton::mouseDown(const MouseEvent& /*e*/)
 {
   isOn = true;
   sendClickMessage();
   repaint();
 }
 
-void RClickButton::mouseUp(const MouseEvent& e)
+void RClickButton::mouseUp(const MouseEvent& /*e*/)
 {
   isOn = false;
   //sendClickMessage();
@@ -313,7 +313,7 @@ RClickButtonNotifyOnMouseUp::RClickButtonNotifyOnMouseUp(const juce::String& but
 
 }
 
-void RClickButtonNotifyOnMouseUp::mouseDown(const MouseEvent& e)
+void RClickButtonNotifyOnMouseUp::mouseDown(const MouseEvent& /*e*/)
 {
   isOn = true;
   repaint();
@@ -344,7 +344,7 @@ RClickButtonWithAutoRepeat::RClickButtonWithAutoRepeat(const juce::String& butto
 
 }
 
-void RClickButtonWithAutoRepeat::mouseDown(const MouseEvent& e)
+void RClickButtonWithAutoRepeat::mouseDown(const MouseEvent& /*e*/)
 {
   isOn = true;
   repaint();

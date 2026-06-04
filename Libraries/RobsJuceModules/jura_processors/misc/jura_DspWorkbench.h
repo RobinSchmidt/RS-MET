@@ -126,7 +126,7 @@ public:
   virtual void rTextEditorFocusLost(RTextEditor& editor) override;
 
 
-  virtual void textChanged(RTextEntryField *rTextEntryFieldThatHasChanged) override {}
+  virtual void textChanged(RTextEntryField* /*rTextEntryFieldThatHasChanged*/) override {}
 
   //---------------------------------------------------------------------------------------------
   // others:

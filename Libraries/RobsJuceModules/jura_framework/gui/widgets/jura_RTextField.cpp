@@ -333,14 +333,14 @@ bool RTextEntryField::keyPressed(const KeyPress &key)
   // KeyPress was consumed and will not be passed any further to possibly registered KeyListeners
 }
 
-void RTextEntryField::focusGained(FocusChangeType cause)
+void RTextEntryField::focusGained(FocusChangeType /*cause*/)
 {
   caretVisible = true;
   startTimer(blinkInterval);
   repaint();
 }
 
-void RTextEntryField::focusLost(FocusChangeType cause)
+void RTextEntryField::focusLost(FocusChangeType /*cause*/)
 {
   caretVisible = false;
   stopTimer();

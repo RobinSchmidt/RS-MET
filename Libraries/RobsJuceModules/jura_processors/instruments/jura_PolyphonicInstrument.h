@@ -78,8 +78,17 @@ public:
   /** Calculates a stereo-ouput frame. */
   virtual void getSampleFrameStereo(double* inL, double* inR, double* outL, double* outR)
   {
-    if(underlyingRosicInstrument != NULL)
+    // Old: Just write into the outputs:
+    if(underlyingRosicInstrument != nullptr)
       underlyingRosicInstrument->getSampleFrameStereo(outL, outR);
+
+    //// New: Accumulate outputs with inputs:
+    //double tmpL = 0.0, tmpR = 0.0;
+    //if(underlyingRosicInstrument != nullptr)
+    //  underlyingRosicInstrument->getSampleFrameStereo(tmpL, tmpR);
+    //*outL = *inL + tmpL;
+    //*outR = *inR + tmpR;
+    //// ToDo: Maybe have mixing coefficients?
   }
 
 protected:
