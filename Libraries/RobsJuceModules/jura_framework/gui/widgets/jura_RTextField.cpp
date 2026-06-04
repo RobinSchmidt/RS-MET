@@ -168,6 +168,11 @@ int RTextEntryField::characterIndexToPixelPosition(int index) const
   juce::String subString = text.substring(0, caretPosition);
   int x = horizontalMargin + font->getTextPixelWidth(subString, font->getDefaultKerning());
   return x;
+
+  // ToDo:
+  //
+  // - Figure out why the "index" parameter is not used. Is this a bug? I think, we actually do
+  //   have a buggy behavior in the text entry field, so maybe this could be the reason for it?
 }
 
 int RTextEntryField::pixelPositionToCharacterIndex(int pixelX) const

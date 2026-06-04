@@ -7,13 +7,27 @@ void copyImage(juce::Image* sourceImage, juce::Image* targetImage)
   int w = targetImage->getWidth();
   int h = targetImage->getHeight();
 
-  // preliminary - at some point, we need to update the commentd code below:
+  // Preliminary - at some point, we need to update the commentd code below:
+  jassertfalse;
   Graphics g(*targetImage);
   g.fillAll(Colours::red);
   g.setColour(Colours::black);
   g.drawText("jura_GraphicsTools.cpp copyImage() needs to be updated", 0, 0, w, h,
     Justification::centred, false);
   return;
+
+  // Maybe this could work?:
+  //*targetImage = sourceImage->createCopy();
+  //targetImage->duplicateIfShared();
+  // ...but I think the whole point of this function might be to bypass any potential memory 
+  // allocations that may take place in the construction/assignment/return-value that may take 
+  // place in such an implementation. I think, the point is to re-use the already allocated memory 
+  // in targetImage and just overwrite it with the new data. Maybe that's what happens in such an
+  // implementation but we can't really be sure about that. Ah! I think the assignment itself would
+  // not by itself copy the image data but rather let targetImage refer to the same data as 
+  // sourceImage. It seems like the actula copy would have to be doen explicitly by calling
+  // targetImage->duplicateIfShared(); afterwards.
+
 
   //// the code below doesn't work anymore because the juce::Image class has changed and does not have
   //// the setPixelData function anymore - we need to check out, how this code needs to be updated:
@@ -1184,9 +1198,14 @@ void addTextToSvgDrawing(XmlElement* svg, juce::String theText, float x, float y
 
   textContainer->setAttribute(String("x"), x);
   textContainer->setAttribute(String("y"), y);
-  textContainer->setAttribute(String("style"), String("font-family: sans-serif;") +  
-    String(" font-size: 12px;") + String(" stroke: none;") + String(" fill: black;") +
-    String(" text-anchor: ") + jString + String(";") );
+  textContainer->setAttribute(String("style"), 
+    String("font-family: sans-serif;") +  
+    String(" font-size: 12px;") + 
+    String(" stroke: none;") + 
+    String(" fill: black;") +                                        // Old
+    //String(" fill: #") + color.toString().substring(2) + String(";") + // New - needs test
+    String(" text-anchor: ") 
+    + jString + String(";") );
   textContainer->addChildElement(text);
   svg->addChildElement(textContainer);
 
@@ -1197,7 +1216,9 @@ void addTextToSvgDrawing(XmlElement* svg, juce::String theText, float x, float y
   //   (that suggestion was AI generated). To figure out, if this is the right track, try first to
   //   just replace "black" by "red" and see if this produces red text. If so, then yes - we need
   //   to change this string. Then we need to figure out how to convert a general color to a svg
-  //   compatible color string.
+  //   compatible color string. See also addLineToSvgDrawing(). There we have something similar. It
+  //   is likely that the AI used that code as a template for the suggestion. Maybe we should 
+  //   factor out a function juce::String rsToSvgColor(juce::Colour c)
 }
 
 void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper,

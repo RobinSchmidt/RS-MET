@@ -43,7 +43,7 @@ public:
   }
   */
 
-  void processBlock(double** inOutBuffer, int numChannels, int numSamples) override
+  void processBlock(double** /*inOutBuffer*/, int /*numChannels*/, int /*numSamples*/) override
   {
     jassertfalse; // no code yet dragged over - maybe we should accumulate the outputs of
     // our embedded WaveOscModule objects - i.e. clear the buffer and let

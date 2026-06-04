@@ -32,8 +32,7 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  ColourSchemeComponent(const juce::String& newColourSchemeComponentName
-    = juce::String("ColourSchemeComponent"));
+  ColourSchemeComponent(const juce::String& newComponentName = juce::String(""));
 
   /** Destructor. */
   virtual ~ColourSchemeComponent();

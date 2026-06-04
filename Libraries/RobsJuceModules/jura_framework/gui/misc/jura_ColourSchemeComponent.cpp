@@ -4,7 +4,8 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-ColourSchemeComponent::ColourSchemeComponent(const String& newColourSchemeComponentName) 
+ColourSchemeComponent::ColourSchemeComponent(const String& newComponentName) 
+  : juce::Component(newComponentName)
 {
   drawWithEnclosingRectangle = true;
   setBufferedToImage(true);
