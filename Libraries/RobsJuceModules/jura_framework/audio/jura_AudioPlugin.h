@@ -25,11 +25,14 @@ public:
 
   virtual String getName(int maxStringLength) const override 
   { 
-    return name;
+    // Old:
+    //return name;
     // We get a compiler warning about "unused parameter" maxStringLength here. This could actually
     // hint at a genuine bug. We should probably shorten the returned string to the given 
-    // maxStringLength if the name happens to be longer. Maybe it can be done with:
-    //return name.substring(0, maxStringLength);
+    // maxStringLength if the name happens to be longer.
+
+    // New - needs tests:
+    return rsTruncateString(name, maxStringLength);
   }
 
   virtual String getLabel() const override { return String(); }

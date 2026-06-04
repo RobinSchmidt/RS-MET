@@ -41,10 +41,10 @@ public:
   distribution of the cycle lengths and update the currently used cycle length. */
   void setMeanCycleLength(T newLength, bool phasorRangeClosed);
 
-  /** Sets up a new period length just like setPeriod() does but without immediately updating the
-  probability distribution and current cycle length. This results in the behavior that the new 
-  period will not become effective immediately but only after finishing the currently running 
-  cycle. */
+  /** Sets up a new period length just like setMeanCycleLength() does but without immediately 
+  updating the probability distribution and current cycle length. This results in the behavior that
+  the new period will not become effective immediately but only after finishing the currently
+  running cycle. */
   void setMeanCycleLengthNoUpdate(T newLength);
 
   /** Sets the seed for the pseudo random number generator. */

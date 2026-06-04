@@ -23,6 +23,21 @@ JUCE_API juce::String intToStringWithLeadingZeros(int value, int minNumDigits);
 /** Converts a MidiMessage int a String.  */
 JUCE_API juce::String midiMessageToString(MidiMessage message, bool addNewLine = false);
 
+/** Truncates a string to a given maximum length. */
+inline JUCE_API juce::String rsTruncateString(const juce::String str, int maxLength)
+{
+  if(str.length() <= maxLength) 
+    return str;
+  else
+    return str.substring(0, maxLength);
+
+  // Always returning str.substring(...) should produce the same result but looking at the 
+  // implementation of String::substring(), it does indeed seem to make sense to use a conditional
+  // here in order to optimize the (supposedly common) case where str.length() is <= maxLength. 
+  // But maybe we should actually measure that. 
+}
+// Needs tests
+
 /** Converts the string to a double value. We need this because String::getDoubleValue() doesn't 
 parse "-inf" correctly (it returns +inf in this case). */
 JUCE_API double toDouble(const juce::String& s);

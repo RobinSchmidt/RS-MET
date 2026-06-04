@@ -38,25 +38,30 @@ return new Image; // something to do here....
 
 void ImageFileManager::saveImageToFile(const File& fileToSaveTo, const Image* imageToSave)
 {
-  // the user has already confirmed to overwrite the file, so we do it:
+  // The user has already confirmed to overwrite the file, so we do it:
   if( fileToSaveTo.existsAsFile() )
     fileToSaveTo.deleteFile();
 
-  // create a PNGImagefileFormat object:
+  // Create a PNGImagefileFormat object:
   PNGImageFormat pngFormat;
 
-  // create the file output stream:
+  // Create the file output stream:
   FileOutputStream fileStream(fileToSaveTo);
 
   //bool success = false;
-  //bool success = pngFormat.writeImageToStream(*imageToSave, fileStream);
+
+  jassertfalse; // The line below was commented out
+  bool success = pngFormat.writeImageToStream(*imageToSave, fileStream);
+  // ...figure out why! Is there something wrong with it?
+
   imageIsUnsaved = false;
 
   // ToDo:
   //
-  // - Figure out why the line that actually saves the image is commented out. We get a compiler
-  //   warning about the "unused parameter" "imageToSave" and the compiler may be right to 
-  //   complain.
+  // - Figure out why the line that actually saves the image ("bool success = ...") is commented 
+  //   out. We get a compiler warning about the "unused parameter" "imageToSave" and the compiler 
+  //   may be right to complain. ...Update: I uncommented it again. But we should figure out why
+  //   it was commented out. There's probably a reason. 
 }
 
 /*
