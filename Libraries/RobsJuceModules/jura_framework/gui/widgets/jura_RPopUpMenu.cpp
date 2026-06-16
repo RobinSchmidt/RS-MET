@@ -148,7 +148,7 @@ void RPopUpMenu::treeNodeClicked(RTreeView* /*treeView*/, RTreeViewNode* nodeTha
   }
 }
 
-void RPopUpMenu::treeNodeChanged(RTreeView *treeView, RTreeViewNode *nodeThatHasChanged)
+void RPopUpMenu::treeNodeChanged(RTreeView* /*treeView*/, RTreeViewNode* /*nodeThatHasChanged*/)
 {
   sendPopUpSelectionNotification();
 }

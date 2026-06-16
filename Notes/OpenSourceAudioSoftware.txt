@@ -90,6 +90,11 @@ https://www.giadamusic.com/
 https://github.com/monocasual/giada
 -Not sure...seems to be some sort of tracker like music software with focus on live performance?
 
+DAW Project:
+https://codeberg.org/andrewrk/daw
+-A DAW by the creator of Zig, Andrew Kelley. Still in eraly stages, I think.
+ Here: https://www.youtube.com/watch?v=iqddnwKF8HQ he explains how he created Zig to write a DAW.
+
 ----------------------------------------------------------------------------------------------------
 Modular environments
 
@@ -105,6 +110,10 @@ https://github.com/kushview/element
 Carla:
 https://kx.studio/Applications:Carla
 -A modular audio plugin host. Works standalone only, I think (verify!).
+
+soemdsp-sandbox:
+https://github.com/soundemote/soemdsp-sandbox
+-Modular environment inside a web browser
 
 ----------------------------------------------------------------------------------------------------
 Audio/musical content analysis apps
@@ -590,6 +599,10 @@ https://www.kvraudio.com/forum/viewtopic.php?t=624211
 -Onset detector based on multiband differential envelope technology (I guess from the description on 
  KVR)
 
+Prettyscope:
+https://github.com/soundemote/prettyscope-revival
+-Oscilloscope with pretty, artistic rendering modes
+
 ----------------------------------------------------------------------------------------------------
 MIDI plugins
 
@@ -1059,6 +1072,10 @@ NeoDSP:
 https://github.com/neodsp
 -"Improving the audio ecosystem in Rust"
 -A bunch of repos with audio related libraries in Rust
+
+soemdsp:
+https://github.com/soundemote/soemdsp
+-SoundEmote DSP library
 
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:

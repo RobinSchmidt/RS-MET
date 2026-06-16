@@ -40,7 +40,7 @@ void RComboBox::setItemText(int index, const juce::String& newText)
   popUpMenu->setItemText(index, newText);
 }
 
-void RComboBox::clear(const bool dontSendChangeMessage)
+void RComboBox::clear(const bool /*dontSendChangeMessage*/)
 {
   popUpMenu->clear();
 }
@@ -206,7 +206,7 @@ juce::String RComboBox::getStateAsString() const
 //-------------------------------------------------------------------------------------------------
 // callbacks:
 
-void RComboBox::rPopUpDismissedByClickOnOwner(ROwnedPopUpComponent *popUp)
+void RComboBox::rPopUpDismissedByClickOnOwner(ROwnedPopUpComponent* /*popUp*/)
 {
   dontOpenPopUpOnNextMouseClick = true;
 }

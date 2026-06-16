@@ -970,7 +970,7 @@ void AudioModuleEditor::rDialogBoxChanged(RDialogBox* /*dialogBoxThatHasChanged*
   copyColourSettingsFrom(setupDialog);
 }
 
-void AudioModuleEditor::rDialogBoxOKClicked(RDialogBox* dialogBoxThatWantsToAcceptAndLeave)
+void AudioModuleEditor::rDialogBoxOKClicked(RDialogBox* /*dialogBoxThatWantsToAcceptAndLeave*/)
 {
   copyColourSettingsFrom(setupDialog);
   setupDialog->setVisible(false);

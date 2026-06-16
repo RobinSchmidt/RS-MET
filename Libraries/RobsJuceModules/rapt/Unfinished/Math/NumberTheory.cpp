@@ -304,15 +304,22 @@ T rsChineseRemainderTheorem(T* r, T* m, rsUint32 count)
 
 Ideas:
 
-Maybe implement Dijstras algorithm for finding prime numbers explained here:
+- Maybe implement Dijstras algorithm for finding prime numbers explained here:
 
-Dijkstra's Hidden Prime Finding Algorithm:
-https://www.youtube.com/watch?v=fwxjMKBMR7s
+  Dijkstra's Hidden Prime Finding Algorithm:
+  https://www.youtube.com/watch?v=fwxjMKBMR7s
 
-it strikes a balance between the time-efficiency of the sieve of Erathostenes and the 
-space-efficiency of trial division. Q: What actually is the time- and space-complexity of the 3 
-algorithms in terms of Big-O?
+  it strikes a balance between the time-efficiency of the sieve of Erathostenes and the 
+  space-efficiency of trial division. Q: What actually is the time- and space-complexity of the 3 
+  algorithms in terms of Big-O?
 
+- Try to optimize the basic sieve of Earthostenes algorithm. For example, after crossing out all
+  multiples of 2, in the next step the naive algo would cross out all multiples of 3. But those of
+  them that are also multiples of 2 have already been crossed out so we do not need to cross them 
+  out again. I think, that means that instead of stepping with an increment of 3 through the array,
+  we can use an increment of 6 (verify!). When we next want to cross out the multiples of 5, maybe 
+  we can find a way to avoid crossing out those multiples of 5 again that are also multiples of 2 
+  or 3, etc.
 
 
 */

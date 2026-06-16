@@ -221,7 +221,7 @@ void RSlider::copySettingsFrom(const RSlider* otherSlider)
   // ...maybe more to add  here later
 }
 
-void RSlider::updateWidgetFromAssignedParameter(bool sendChangeMessage)
+void RSlider::updateWidgetFromAssignedParameter(bool /*sendChangeMessage*/)
 {
   if( assignedParameter != nullptr )
   {
@@ -464,7 +464,7 @@ void RSlider::mouseDoubleClick(const MouseEvent& e)
   }
 }
 
-void RSlider::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
+void RSlider::mouseWheelMove(const MouseEvent& /*event*/, const MouseWheelDetails& wheel)
 {
   double tmpValue;
   if( isEnabled() )

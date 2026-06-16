@@ -57,7 +57,7 @@ void rsDraggableNode::setPosition(double newX, double newY, bool callNodeChanged
   if(callNodeChanged)  nodeEditor->nodeChanged(index);
 }
 
-void rsDraggableNode::parameterChanged(Parameter* p)
+void rsDraggableNode::parameterChanged(Parameter* /*p*/)
 {
   x = paramX->getValue();
   y = paramY->getValue();
@@ -218,7 +218,7 @@ float rsNodeEditor::getPixelY(const rsDraggableNode* node)
 
 // callbacks:
 
-void rsNodeEditor::parameterChanged(Parameter* p)
+void rsNodeEditor::parameterChanged(Parameter* /*p*/)
 {
   //repaintOnMessageThread();
 }
@@ -265,12 +265,12 @@ void rsNodeEditor::mouseDrag(const MouseEvent& e)
     selectedNodeIndex = moveNodeTo(selectedNodeIndex, e.x, e.y);
 }
 
-void rsNodeEditor::mouseUp(const MouseEvent &e)
+void rsNodeEditor::mouseUp(const MouseEvent& /*e*/)
 {
   //draggedNodeIndex = -1;
 }
 
-void rsNodeEditor::mouseMove(const MouseEvent &e)
+void rsNodeEditor::mouseMove(const MouseEvent& e)
 {
   rsDraggableNode* nodeUnderMouse = getNodeAt(e.x, e.y);
   if(nodeUnderMouse != nullptr)

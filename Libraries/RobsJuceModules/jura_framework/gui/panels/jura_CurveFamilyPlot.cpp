@@ -435,8 +435,11 @@ void CurveFamilyPlot::plotCurve(Graphics &g, Image* targetImage, XmlElement *tar
   }
 }
 
-void CurveFamilyPlot::plotFamilyValuesAsDots(Graphics& g, Image* targetImage, XmlElement *targetSVG)
+void CurveFamilyPlot::plotFamilyValuesAsDots(
+  Graphics& /*g*/, Image* /*targetImage*/, XmlElement* /*targetSVG*/)
 {
+  jassertfalse;
+
   /*
   // make sure that the arrays are valid:
   if( valuesX==NULL || valuesY==NULL )
