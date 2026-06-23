@@ -112,3 +112,7 @@ generally available for freelance work on audio DSP algorithms with special inte
   features but also the dirtiest one with the least thorough code review, testing and vetting. It's 
   currently set to be the default branch. Maybe include a warning about this or change it. ...but 
   I'm not sure how that will affect how GitHub will count my commit statistics.
+
+- Maybe explain a bit why there is rapt and rosic with so much overlapping scope. The reasons are
+  historical and it is expected that over time, much of the lower level stuff in rosic will be 
+  promoted (or demoted?) into rapt.
