@@ -10,7 +10,9 @@ to mitigate the problem. Some of the methods are: mip-mapping, bleps and oversam
 describes yet another one of those methods that I recently came up with. It's a way to replace the
 annoying aliasing artifacts with a much more palatable kind of noise. In my explanations of the 
 method, I will take a sawtooth wave as example but the method can be applied to other waveforms as 
-well.
+well. In fact, if you scale and shift the output range of the sawtooth from -1...+1 to 0..1, you can
+just use the sawtooth as "phasor" to produce any waveform from the saw and the result will be
+likewise anti-aliased as well.
 
 
 The Initial Idea
@@ -119,8 +121,8 @@ expectation value of the squared errors, so we set $p_1 e_1^2 + p_2 e_2^2 + p_3 
 value is that $v$? To figure that out, we turn again to our reference case where $c_f = 0.5$. In
 that case, we know that we would only be dealing with two possible error values of $-0.5$ and $+0.5$
 which both would occur with a probability of $0.5$. This gives the variance 
-$v = 0.5 (-0.5)^2 + 0.5 (+0.5)^2 = 0.25$. So, our target value for $v$ is $1/4$. We can now give these 3 equations to the computer algebra
-system SageMath using the following code:
+$v = 0.5 (-0.5)^2 + 0.5 (+0.5)^2 = 0.25$. So, our target value for $v$ is $1/4$. We can now give
+these 3 equations to the computer algebra system SageMath using the following code:
 ```
 var("e1 e2 e3 p1 p2 p3")
 eq1 = 1   == p1       + p2       + p3
