@@ -17,7 +17,7 @@ formulas to contain it. We set out to figure out the transfer function C(z) of a
 that is required to make the following filter structure allpass in nature:
 
                    ┌──────┐              ┌──────┐
-  X(z) ───> + ────>│ A(z) │──────┬──────>│ C(z) │────> Y(z)	
+  X(z) ───> + ────>│ A(z) │──────┬──────>│ C(z) │────> Y(z)
             ^      └──────┘      │       └──────┘
             │                    v
            -k      ┌──────┐    ┌───┐
@@ -26,7 +26,7 @@ that is required to make the following filter structure allpass in nature:
 
 In this drawing, we used d = z^-1 for the unit delay. So, A(z) and F(z) are given and we want to 
 find a suitable C(z). By inspection of the diagram, we see that the uncorrected transfer function 
-which we denote by U(z), i.e. the one of the left part of the diagram (everything before C(z) is 
+which we denote by U(z), i.e. the one of the left part of the diagram (everything before C(z)) is 
 given by:
 
                   A(z)
@@ -35,25 +35,25 @@ given by:
 
 To make the overall transfer function H(z) := X(z) / Y(z) = U(z) * C(z) allpass in nature, we may 
 make the following attempt. We'll use a tilde to denote that this is not our final filter, i.e. we
-call our first attempt C~(z). We could obvioulsy and trivially choose:
+call our first attempt C~(z). We could obviously and trivially choose:
 
   C~(z) = 1 + k * z^-1 * F(z) * A(z)
 
 But that choice looks like cheating. I would completely cancel out the effect of the feedback path 
-and we would be back at A(z) itself. That ticks the box of being allpass but it's actually not 
-useful at all. Well, it might be useful to know that it's actually possible to completely undo a 
-feedback path but in our setup where we have everything under our own control, we might as well just 
-not apply the feedback in the first place and get the same result. What is more interesting is that 
-we can now apply some modifications to C~(z). As we want to produce an allpass filter in the end, 
-our modifications to C~(z) shall leave its magnitude response intact. Really the only thing we can 
-do to a filter that leaves its magnitude response intact is to reflect some or all of its zeros 
-about the unit circle. Well, if only the magnitude is of concern, we could actually also do the same 
-with the poles but then we would turn stable filters into unstable ones, so that is no option. 
-Retaining stability is of course also required. So then, let's reflect zeros. Reflecting all zeros 
-at once in the unit circle is actually a simple operation: We just need to reverse the coefficient 
-array of the numerator, i.e. the FIR part. Reversing an impulse response clearly has no impact on 
-its magnitude response (it has the same shape, after all - just reflected). So, we obtain our final 
-correction filter C(z) from C~(z) by reversing its FIR part.
+and we would be back at A(z) itself. That ticks the box of being allpass (because A(z) is allpass by
+assumption) but it's actually not useful at all. Well, it might be useful to know that it's actually
+possible to completely undo a feedback path but in our setup where we have everything under our own
+control, we might as well just not apply the feedback in the first place and get the same result.
+What is more interesting is that we can now apply some modifications to C~(z). As we want to produce
+an allpass filter in the end, our modifications to C~(z) shall leave its magnitude response intact.
+Really the only thing we can do to a filter that leaves its magnitude response intact is to reflect
+some or all of its zeros about the unit circle. Well, if only the magnitude is of concern, we could
+actually also do the same with the poles but then we would turn stable filters into unstable ones,
+so that is no option. Retaining stability is of course also required. So then, let's reflect zeros.
+Reflecting all zeros at once in the unit circle is actually a simple operation: We just need to
+reverse the coefficient array of the numerator, i.e. the FIR part. Reversing an impulse response
+clearly has no impact on its magnitude response (it has the same shape, after all - just reflected).
+So, we obtain our final correction filter C(z) from C~(z) by reversing its FIR part.
 
 To get a first concrete working example, lets take as A(z) a simple delay of M samples and as F(z)
 a 1-pole/1-zero filter. So we have:
@@ -170,6 +170,8 @@ so
 
 ...TBC...
 
+
+
 ----------------------------------------------------------------------------------------------------
 The stuff from here is still unverified:
 
@@ -191,8 +193,16 @@ where nz, np are the numbers of zeros and poles of the feedback filter, i.e. the
 and denomniator polynomial of the feedback filter F = F(z). If that is correct, then we can use 
 arbitrary feedback filters! We just need to evaluate the formula for C~ and then apply the flip 
 operation. Maybe we'll have to observe some constraints such as np == nz. Or maybe not. I've not yet 
-looked into this. We'll see...  ....OK - I have implemented the general case in rsDampedAllpassComb 
-based on that formula and the thing apparently works as desired. So, the formula seems to be indeed 
-correct. Yay! We can now do allpasses with quite flexible frequency dependent decay characteristics!
+looked into this. We'll see...  
+
+....OK - I have implemented the general case in rsDampedAllpassComb based on that formula and the 
+thing apparently works as desired. So, the formula seems to be indeed correct. Yay! We can now do 
+allpasses with quite flexible frequency dependent decay characteristics! The implementation of the
+general case resulted in two new math classes rsSparsePolynomial and rsSparseRationalFunction. The
+computation of the correction filter C(z) is based on doing arithmetic operations with (sparse)
+rational functions symbolically, i.e. operating on the coefficient arrays. It's even possible to
+create matrices of these sparse rational functions and do linear algebra on these matrices. For
+example, we can do matrix inversion which is relevant in the context of figuring out the transfer
+function matrix of an FDN.
 
 

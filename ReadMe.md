@@ -116,3 +116,6 @@ generally available for freelance work on audio DSP algorithms with special inte
 - Maybe explain a bit why there is rapt and rosic with so much overlapping scope. The reasons are
   historical and it is expected that over time, much of the lower level stuff in rosic will be 
   promoted (or demoted?) into rapt.
+
+- Maybe create a .md file with an overview over the most interesting DSP algorithms that are
+  available inside the library.  
