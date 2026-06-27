@@ -85,7 +85,7 @@ generally available for freelance work on audio DSP algorithms with special inte
 
 - Maybe make a section about ToolChain (with 2nd order headline) with some screenshots. They could
   be stored in a discussion thread in the GitHub repo in order to not bloat the repo itself. Explain
-  how ToolChain it self can be viewed as a semi-modular synthesizer by letting the modules in
+  how ToolChain itself can be viewed as a semi-modular synthesizer by letting the modules in
   different slots talk to one another via the modulation system. ToolChain has modules that can be
   used like full blown (effect- or instrument-) plugins in their own right but it has also simpler
   modules that make most sense in combination with other modules (like filters, oscillators, 
@@ -115,7 +115,8 @@ generally available for freelance work on audio DSP algorithms with special inte
 
 - Maybe explain a bit why there is rapt and rosic with so much overlapping scope. The reasons are
   historical and it is expected that over time, much of the lower level stuff in rosic will be 
-  promoted (or demoted?) into rapt.
+  promoted (or demoted?) into rapt. They may be "floated down" in the dependency chain.
 
 - Maybe create a .md file with an overview over the most interesting DSP algorithms that are
-  available inside the library.  
+  available inside the library. I started it here:
+  https://github.com/RobinSchmidt/RS-MET/blob/work/Notes/Scratch/AlgorithmsOverview.md

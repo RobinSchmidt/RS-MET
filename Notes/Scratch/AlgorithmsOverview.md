@@ -18,10 +18,15 @@ Math
 Filters
 -------
 
+### One Pole Filter
+
+### Biquad Chain
 
 ### State Variable Filter
 
-### Scientific Filters
+### Engineers Filter
+
+### Quantile Filter
 
 
 Generators
@@ -29,11 +34,26 @@ Generators
 
 ### Pitch Dithering
 
+### Table Lookup Oscillator
+
+### Fractal Pattern Synthesis
+
+
+
+Modulators
+----------
+
+
 
 
 
 Under Construction
 ==================
 
+
+
+
+Ideas
+=====
 
 
