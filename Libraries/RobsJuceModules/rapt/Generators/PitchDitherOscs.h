@@ -9,7 +9,8 @@ ToDo:
 
 - Explain the idea of pitch dithering. Refer to the documents that I wrote up about the idea. They
   are currently in draft state, though. Document the phasorRangeClosed parameters that occur in 
-  various places.
+  various places. Here is a draft of the explanation:
+  https://github.com/RobinSchmidt/RS-MET/blob/work/Notes/Scratch/PitchDithering.md
 
 - Document what makes sense for the type T. I think, only scalar floating point types (i.e. 
   float, double, long double, etc.) are meaningful.
@@ -58,7 +59,7 @@ public:
   respective probabilities. The formula is cM = p1*c1 + p2*c2 + p3*c3 where cM is the mean cycle
   length, c1,c2,c3 are the actually produced integer cycle lengths and p1,p2,p3 are their
   associated probabilities. */
-  T getMeanCycleLength();
+  T getMeanCycleLength() const;
   // Needs tests.
 
   //-----------------------------------------------------------------------------------------------

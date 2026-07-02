@@ -28,7 +28,7 @@ annoying kind of artifact which in this method, we will accept. Of course, the p
 we can only produce sawtooths with those fundamental frequencies whose pitch period happens to be
 an integer number of samples. If we just round the cycle length to the nearest integer, we would get
 considerable mistuning which would get worse towards higher pitches. When we have a sampling rate of
-$f_s$ and we want to produce a frequency $f$, then relation between the cycle length $c$ in samples
+$f_s$ and we want to produce a frequency $f$, the relation between the cycle length $c$ in samples
 and frequency $f$ is given by:
 
 $$\boxed{c = \frac{f_s}{f}, \quad f = \frac{f_s}{c}}$$

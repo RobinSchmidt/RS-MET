@@ -7,7 +7,7 @@ rsPitchDitherOsc<T>::rsPitchDitherOsc()
 }
 
 template<class T>  
-T rsPitchDitherOsc<T>::getMeanCycleLength()
+T rsPitchDitherOsc<T>::getMeanCycleLength() const
 {
   T lenShort = lenMid - T(1);
   T lenLong  = lenMid + T(1);
