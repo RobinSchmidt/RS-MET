@@ -109,11 +109,15 @@ Notes:
 - Sound: At a sample rate of 44.1 kHz the low octaves sound pretty clean and the sound gets 
   progressively more noisy towards the higher octaves which is the behavior we expect. We can sense
   a clear pitch up to a fundamental around XXXX ...above that, it sounds more like high frequency
-  noise without much tonality. With a highpass, it can make nice "mosquito" sounds. It's 
-  interesting to feed it into a harsh waveshaper (hard-clip, fold, quantize, ...), cranking up the
-  drive and and then applying an amplitude envelope. The great thing about this is that this 
-  doesn't produce any new aliasing frequencies. They will again line up with the already existing 
-  spectrum. We still get a perfectly pitch dithered waveform
+  noise without much tonality. With a highpass, it can make nice "mosquito" sounds. 
+  
+- It's interesting to see what happens when feeding a pitch-dithered waveform into a harsh 
+  waveshaper (hard-clip, fold, quantize, ...), cranking up the drive and and then applying an 
+  amplitude envelope. The great thing about this is that the waveshaping doesn't produce any new 
+  aliasing frequencies. They will again line up with the already existing spectrum. We still get a
+  perfectly pitch dithered waveform - just another one, as dictated by the waveshaping function. 
+  The "anti-aliasedness" of the output will "survive" the waveshaping. This is a _very_ unusual 
+  feature for an anti-aliasing method and therefore cool.
 
 
 ToDo:
