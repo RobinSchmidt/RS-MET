@@ -572,11 +572,12 @@ void phaseLockedCrossfade()
   plt.plot();
 
   // Observations:
-  // When both signals have different vibrato-speeds, the vibrato in the output during the
-  // crossfade is messed up. It would be desirable to see the vibrato speed just sweep between
-  // both input speeds during the crossfade - i don't know, if that's possible, though. It's
-  // all a question of the exact formula used in computeReadoutTimes - at the moment, this is
-  // double txw = (1-t)*tx1 + t*tx2; 
+  // 
+  // - When both signals have different vibrato-speeds, the vibrato in the output during the
+  //   crossfade is messed up. It would be desirable to see the vibrato speed just sweep between
+  //   both input speeds during the crossfade. I don't know, if that's possible, though. It's
+  //   all a question of the exact formula used in computeReadoutTimes - at the moment, this is
+  //   double txw = (1-t)*tx1 + t*tx2;
 }
 
 //template<class T>

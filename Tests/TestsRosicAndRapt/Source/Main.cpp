@@ -625,8 +625,8 @@ int main(int /*argc*/, char* /*argv[]*/)
   //sincResamplerSumOfTapWeights();
   //timeWarp();
   //pitchFlattening();
-  //phaseLockedCrossfade();
-  //phaseLockedCrossfade2();
+  phaseLockedCrossfade();
+  phaseLockedCrossfade2();
   //pitchDetectWithSilence();
 
   // Matching:
@@ -636,17 +636,17 @@ int main(int /*argc*/, char* /*argv[]*/)
   //amplitudeMatch2();
 
 
-  ////// tests with Elan's example files (they don't work unless the files are available):
+  ////// Tests with Elan's example files (they don't work unless the files are available):
   ////pitchDetectA3();
-  ////phaseLockSaxophone();
-  ////phaseLockSaxophone2();
+  phaseLockSaxophone();
+  phaseLockSaxophone2();
   ////autoTuneHorn();
   ////autoTuneHorn2();
   ////sylophoneCycleMarks();
   ////autoTuneSylophone();
   ////bestMatchShift();
-  // move them into the test repo and add the relevant sample files there (if i still can find
-  // them, that is)
+  // ToDo: Move them into the test repo and add the relevant sample files there (if I still can 
+  // find them and if this is ok with Elan, that is)
 
   // Saturation:
   //powRatioParametricSigmoid();

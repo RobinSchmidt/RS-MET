@@ -752,6 +752,7 @@ public:
 the crossfade, the phases of both signals are matched. This is achieved by applying time varying
 resampling to both signals. To make it work, you have to know the instantaneous frequencies of
 both signals at each sample instant. It is used as follows:
+
 (1) Pass the two signals along with their instantaneous frequency arrays via setInputs
 (2) Retrieve the two pitch-flattened versions of both signals via getFlattenedSignal1/2
 (3) Set up the crossfade start- and end time as well as a time-shift of the 2nd with respect
@@ -759,7 +760,9 @@ both signals at each sample instant. It is used as follows:
     flattened signal x1. Here, you should take care that the phases match inside the flattnened
     signals - if this is the case, they will also be matched in the output during crossfade. You
     may set those values manually or use whatever algorithm seems appropriate for that task.
-(4) Retrieve the output via getOutput  */
+(4) Retrieve the output via getOutput  
+
+*/
 
 template<class TSig, class TPos>
 class rsPhaseLockedCrossfader
@@ -934,14 +937,14 @@ applications, that criterion alone may sift out a lot of spurious peaks that are
 irrelevant and not desired to be included. Therefore, more sophisticated decision criteria may be 
 employed to decide what is and what isn't a relevant peak. This is what this class is made for. 
 
-One situation that is often encountered is that near a high relevant peak, we see some smaller 
+One situation that is often encountered is that near a highly relevant peak, we see some smaller 
 irrelevant peaks - like when small mini-peaks sit on the slope of some larger mountain. Due to 
 sitting on the big mountain's flank, its actual value may be quite high - higher than the peaks of
 some smaller mountains but nontheless, it's less important than those smaller mountains, so a 
 filtering by absolute height is not suitable. We want some criterion that sifts out minipeaks that
 piggyback on the largest mountains, so to speak.
 
-On of the criteria that we employ is that minipeaks need to have soem threshold height with respect
+On of the criteria that we employ is that minipeaks need to have some threshold height with respect
 to their "parent" peak. We realize this by what I call "peak-shadowing". Each peaks casts "shadows"
 left and right ...tbc...see the plots in the experiments  */
 
@@ -1038,7 +1041,7 @@ public:
   The adjustment of the minimum to zero is necessary for two reasons: First: the shadowing 
   algorithm works correctly only for input data >= 0 and second: the prominence thresholding also 
   divides by peak-heights, so it will also work correctly only if data >= 0. Moreover, if 
-  the data would be lifted up to an elevated base-level, the "relaviveness" of the thresholds would
+  the data would be lifted up to an elevated base-level, the "relativeness" of the thresholds would
   work differently. */
   std::vector<T> getPreProcessedData(const T* t, const T* x, int N);
 
@@ -1108,12 +1111,12 @@ public:
 
   /** Given an array of ordinate values x and corresponding abscissa values y (both of length N) 
   and a std::vector of peak-indices p, this function makes sure that between peak-indices n0 and n1
-  there's no missed peak that sticks out of the conneting line between the points 
+  there's no missed peak that sticks out of the connecting line between the points 
   (x[p[n0]], y[p[n0]]) and (x[p[n1]], y[p[n1]]). If there are peaks found that stick out of the 
   connecting line, the one that sticks out most will be added to peaks array - and then the process 
   is recursively called for the section to the left (n0..new) and to the right (new..n1) of the 
   just added new peak. After the whole process, it is ensured that the whole function y(x) lies 
-  wholly under the the envelope that is given by linearly connecting the peaks. Such stickouts may
+  wholly under the envelope that is given by linearly connecting the peaks. Such stickouts may
   arise when we add the edge values inside getRelevantPeaks (in the shadowing algo, they may not 
   arise). Note that peak that sticks out most is not necessarily the highest, but the one whose 
   height-difference to the *slanted* straight line is maximal.

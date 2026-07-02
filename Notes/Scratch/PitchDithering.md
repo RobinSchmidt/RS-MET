@@ -20,7 +20,7 @@ The Initial Idea
 
 When the length of the cycles that we want to produce happens to be an integer number of samples,
 the aliasing frequencies happen to line up with the harmonics that are already there. In this case,
-the resulting waveform will be prefectly periodic even in the discrete time sense such that 
+the resulting waveform will be perfectly periodic even in the discrete time sense such that 
 `x[n] = x[n+P]` where P is the integer(!) period in samples. In this particular scenario, aliasing
 is still present but the aliasing does not introduce any undesired additional frequencies into the
 signal but instead just changes the amplitudes of the existing harmonics. This is a much less 
@@ -151,7 +151,12 @@ guess it could even work.
 Implementation
 --------------
 
-ToDo: Clean up the implementation in the research repo and move it into RAPT and link it here.
+A working implementation in C++ of an oscillator based on this idea can be found here:
+
+https://github.com/RobinSchmidt/RS-MET/blob/work/Libraries/RobsJuceModules/rapt/Generators/PitchDitherOscs.h
+https://github.com/RobinSchmidt/RS-MET/blob/work/Libraries/RobsJuceModules/rapt/Generators/PitchDitherOscs.cpp
+
+ToDo: Give example code for how it can be used.
 
 
 Experimental Results

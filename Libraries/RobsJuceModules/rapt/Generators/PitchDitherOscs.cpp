@@ -125,7 +125,8 @@ ToDo:
 - Add a setPhase(T newPhase) function. It should set the sampleCounter to a phase 
   corresponding to the (rounded) newPhase value such that in the very next call to 
   getSamplePhasor(), we will get exactly that (rounded) newPhase value. We need to round 
-  because our sampleCounter is an integer.
+  because our sampleCounter is an integer even though it's of type T (i.e. float or double). It's 
+  formally a T but restricted to take on integer values.
 
 - Add convenience functions like setOmega(T newOmega), setFrequency(T newFreq, T sampleRate).
   setFrequency should perhaps just call setPeriod(sampleRate/newFreq)
@@ -145,7 +146,7 @@ ToDo:
   think, it should probably default to false because true is mostly to make saws look nicer but 
   they kinda also work with false whereas for a sine wave, using true will create audible 
   artifacts. I think, a half-open range is more common for a phasor. Maybe have two functions:
-  getSamplePhasor() and getSamplerPhasorClosed() where the former implementes the (standard, 
+  getSamplePhasor() and getSamplerPhasorClosed() where the former implements the (standard, 
   default) half-open interval. Maybe start a KVR thread like: "Intervals for (normalized)
   osc-phases: Closed [0,1] or half-open [0,1)?" It seems to me that the correct choice depends on
   the waveform to produce. Sines like the half-open version, saws like the closed version. But
@@ -192,7 +193,7 @@ Ideas:
 
 - Currently, low notes sound cleaner than high notes. Maybe we could create a more complicated
   version of the idea in which we artificially dirtify the low notes by using a broader cycle 
-  distribution that spans more that 3 integer cycle lengths. Maybe we should pick some high note as
+  distribution that spans more than 3 integer cycle lengths. Maybe we should pick some high note as
   reference at which we use 3 lengths and then double the width of the distribution for each octave
   that we go down. If we use 3 lengths at 1 kHz, we could use 5 at 500 Hz, 9 at 250 Hz, 17 at 125
   Hz etc. The idea is that we use numbers of the from 2^k + 1 where the base case of 3 corresponds 
