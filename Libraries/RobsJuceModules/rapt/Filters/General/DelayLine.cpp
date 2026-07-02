@@ -15,8 +15,19 @@ rsDelay<T>::rsDelay()
   // wasted allocations or accept that pointer could initially be null. Or maybe a trick could be 
   // used: just let pointer initially point to some static member variable. We might apply a sort
   // of "null object" pattern to the pointer variable. But I'm not sure, if that's workable. And 
-  // why 3. If anything, we should use 1. Or maybe even 0. But verify if the bit-maksing will work
+  // why 3. If anything, we should use 1. Or maybe even 0. But verify if the bit-masking will work
   // or if this is a weird edge case.
+
+  // Maybe implement a function 
+  // 
+  //   bool isReady() const;
+  //
+  // that checks if delayLine is not nullptr (and maybe if maxDelay > 0) and if the distances 
+  // between tapIn and tapOut is inside the valid range. Maybe call the function isStateValid()
+  // or something. This should become a general idiom throughout the library to have such sanity
+  // self-tests. These can then be checked in an assertions whereever appropriate. With such 
+  // assertions in place, we could perhaps get away with not allocating in the constructor.
+
 }
 
 template<class T>
