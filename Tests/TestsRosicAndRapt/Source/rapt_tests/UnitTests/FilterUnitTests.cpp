@@ -1983,8 +1983,11 @@ bool hilbertFilterUnitTest()
   return ok;
 }
 
-bool delayLineUnitTest()
+
+bool delayLineUnitTest1()
 {
+  // ToDo: Renema to delayLineUnitTestOutput
+
   bool ok = true;
 
   int delay = 5;
@@ -2031,12 +2034,30 @@ bool delayLineUnitTest()
     //int dummy = 0;
   }
 
+  return ok;
+}
+
+bool delayLineUnitTestCopyMove()
+{
+  bool ok = true;
 
   // ToDo: Add code to test copy- and move- construction and assignment
 
 
   return ok;
 }
+
+
+bool delayLineUnitTest()
+{
+  bool ok = true;
+
+  ok &= delayLineUnitTest1();
+  ok &= delayLineUnitTestCopyMove();
+
+  return ok;
+}
+
 
 bool delayLineAllpassUnitTest()
 {
