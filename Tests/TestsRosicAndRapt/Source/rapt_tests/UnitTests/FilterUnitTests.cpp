@@ -1998,7 +1998,7 @@ bool delayLineUnitTest()
 
   int N = 100;  // Number of samples
 
-
+  // Test, if the delayline produces the expected output:
   for(int i = 0; i < N; i++)
   {
     // Test computing the delay time from the taps:
