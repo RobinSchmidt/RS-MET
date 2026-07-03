@@ -32,7 +32,7 @@ public:
   the numerator is canonically represented as empty coefficient array. */
   rsSparseRationalFunction() { den._appendTerm(T(1), 0); }
 
-  /** Constructor that converts a number c to the constnat function that just produces c for any 
+  /** Constructor that converts a number c to the constant function that just produces c for any 
   input. */
   rsSparseRationalFunction(const T& c)
   {

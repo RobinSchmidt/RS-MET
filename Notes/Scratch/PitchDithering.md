@@ -12,7 +12,9 @@ annoying aliasing artifacts with a much more palatable kind of noise. In my expl
 method, I will take a sawtooth wave as example but the method can be applied to other waveforms as 
 well. In fact, if you scale and shift the output range of the sawtooth from -1...+1 to 0..1, you can
 just use the sawtooth as "phasor" to produce any waveform from the saw and the result will be
-likewise anti-aliased as well.
+likewise anti-aliased as well. As a corollary, you can even apply any waveshaper to the so produced
+waveforms and the anti-aliasedness will "survive" the waveshaping which is a pretty unique feature
+of this method.
 
 
 The Initial Idea

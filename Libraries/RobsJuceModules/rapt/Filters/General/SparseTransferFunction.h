@@ -14,8 +14,8 @@ Note that this is actually a rational function not in z itself but in z^-1. We o
 function evaluation operator () to take care of this reciprocation of z. We also implement some 
 additional functionality on top of the baseclass that is specific to such transfer functions. For 
 example, digital filter transfer functions are usually normalized to a0 = 1, as seen above. We 
-implement a check for that condition (and a few others) isCanonical(). We also provide functions to
-invert the transfer function (basically, swapping numerator and denominator but maintaining the 
+implement a check for that condition (and a few others) in isCanonical(). We also provide functions
+to invert the transfer function (basically, swapping numerator and denominator but maintaining the 
 a0 = 1 condition by appropriate pre- and post scaling), reflecting the zeros about the unit circle 
 (turning minimum phase filters into maximum phase ones), etc. ...TBC...   */
 
@@ -128,7 +128,7 @@ public:
   // ToDo: Document use cases for these getDensity() functions.
 
 
-  /** Overrides the function evaluattion operator in order to reciprocate the input z before 
+  /** Overrides the function evaluation operator in order to reciprocate the input z before 
   applying the rational function to it. This is needed because we store the coeffs of H(z^-1) 
   rather than of H(z). That means the numerator and denominator polynomials have coeffs that 
   multiply powers of z^-1 such as z^-1, z^-2, z^-3, etc. and not z^1, z^2, z^3, etc.. Note that 

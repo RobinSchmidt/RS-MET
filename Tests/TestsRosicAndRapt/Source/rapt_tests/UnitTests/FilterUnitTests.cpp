@@ -2031,6 +2031,10 @@ bool delayLineUnitTest()
     //int dummy = 0;
   }
 
+
+  // ToDo: Add code to test copy- and move- construction and assignment
+
+
   return ok;
 }
 

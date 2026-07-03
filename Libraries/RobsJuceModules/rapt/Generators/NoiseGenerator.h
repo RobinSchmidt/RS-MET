@@ -46,7 +46,7 @@ protected:
 
   static const uint64_t modulus = 4294967296ull;  // Too big for uint32_t so we need uin64_t.
 
-	uint32_t state = 0;
+  uint32_t state = 0;
 
 };
 
@@ -61,7 +61,7 @@ Numerical Recipies in C (2nd edition), page 284.
 \todo
 -make subclasses that produce random numbers with different distributions, for example by adding
  outputs of the underlying basic generator and/or using waveshaping (maybe atanh, sinh could be
- useful shaping functions - something with low slope around the origina would contract values
+ useful shaping functions - something with low slope around the origin would contract values
  near the origin - high slope far away from the origin spreads them out - or maybe the rational
  mapping could be nice - try with FuncShaper - maybe we need a histogram analyzer for that)
 -make a colored noise generator by using the SlopeFilter (in rosic - needs to be dragged to rapt)
@@ -91,9 +91,14 @@ public:
 
   /** Sets the seed (initial state) of the PRNG and sets the current state to the seed value. */
   inline void setSeed(uint32_t newSeed) { state = seed = newSeed; }
+  // ToDo: Document the decision to let setSeed() also reset the state. I think, it is the expected
+  // behavior that when one calls such a setSeed() function on a PRNG, that this implies also 
+  // setting the state to that value, so we basically follow the principle of least astonishment. 
+  // Right? Look up what do other implementations do. Like the C++ standard library, Python, etc.
 
   /** Sets the seed without resetting the state. */
   inline void setSeedWithoutReset(uint32_t newSeed) { seed = newSeed; }
+  // ToDo: Maybe rename to setSeedNoReset()
 
   /** Sets the range for the numbers to be produced. */
   inline void setRange(T min, T max)
@@ -188,7 +193,17 @@ https://www.youtube.com/watch?v=-2PA7SbWoJ0&t=17m50s (german)
 ...i have also a sympy notebook somewhere, that computes the convolutions and gives the
 distributions as piecewise polynomials
 
-maybe rename to rsNoiseGeneratorIrwinHall  */
+ToDo:
+
+- Maybe rename to rsNoiseGeneratorIrwinHall  
+
+- Document the period of the generated noise. I think, it should be the period of the underlying 
+  baseclass which is 2^32 divided by the order. At least, if the order is a power of 2. If the 
+  order is not divisible by 2, we may actually get periods longer than 2^32. ...I guess - because 
+  of the way we interleave the prng-generation with the summing. Maybe make some experiments with 
+  prngs with smaller periods (like 256) to figure that out.
+
+*/
 
 template<class T>
 class rsNoiseGenerator2 : public rsNoiseGenerator<T>
