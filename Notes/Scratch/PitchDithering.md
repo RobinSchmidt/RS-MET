@@ -166,14 +166,12 @@ ToDo: Review the experimental results and maybe show some plots of spectra here.
 examples and link them here. Maybe implement an interactive example implementation using APE and
 produce a little demo video with it and link to it here. Apply it to the supersaw. I think, it 
 should be great for that because the introduced noise further thickens the spectrum and adds some
-element of random modulation to the signal while also anti-aliasing it.
+element of random pitch modulation to the indiviudal saws while also anti-aliasing them efficiently.
 
 
 
 
-
-
-
+<!---
 <br><br><br><br><br><br><br><br><br><br>
 ----------------------------------------------------------------------------------------------------
 Snippets
@@ -189,3 +187,5 @@ ToDo:
 
 - Explain what happens when we use a deterministic instead of a probabilistic algorithm to determine
   the next cycle length. In this case, the artifacts sound similar to aliasing.
+
+-->
