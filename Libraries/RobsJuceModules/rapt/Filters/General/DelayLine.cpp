@@ -35,7 +35,9 @@ rsDelay<T>::~rsDelay()
 {
   if( delayLine != nullptr )   // Check if we need this conditional. If not, remove it.
     delete[] delayLine;
+  delayLine = nullptr;
 }
+
 
 
 // -----------------------------------------------------

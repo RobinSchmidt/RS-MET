@@ -452,11 +452,11 @@ int main(int /*argc*/, char* /*argv[]*/)
   //sineFromDecayingSines();
 
   // Delay, allpass, reverb stuff:
-  //delayLines();                    // Also includes allpass, universal comb, comb vs modal bank stuff
-  //twoPoleAllpassDelays();
-  //dampedCombAllpasses();
-  //feedbackDelayNetworks();
-  //allpassFDN();                  // Under construction
+  delayLines();                    // Also includes allpass, universal comb, comb vs modal bank stuff
+  twoPoleAllpassDelays();
+  dampedCombAllpasses();
+  feedbackDelayNetworks();
+  allpassFDN();                  // Under construction
 
   // Filter:
   //bandwidthScaling();

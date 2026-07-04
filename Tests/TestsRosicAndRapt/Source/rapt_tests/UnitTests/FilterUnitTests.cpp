@@ -2039,9 +2039,52 @@ bool delayLineUnitTest1()
 
 bool delayLineUnitTestCopyMove()
 {
+  // Under construction
+
   bool ok = true;
 
+  using Real  = double;
+  using Vec   = std::vector<Real>;
+  using Delay = rsDelay<Real>;
+
+
   // ToDo: Add code to test copy- and move- construction and assignment
+
+  // Create a test signal that we can feed into the delaylines:
+  int N = 100;
+  Vec x = rsRandomIntVector(N, -9, +9, 0);
+  //rsPlotVector(x);
+
+  // Test 1: Create a delayline, set it up and fill it with some signal. Then create 2 copie of
+  // that delayline using copy constructor and copy assignment operator and verify that the 2 
+  // copies have the same settings, same state and same content as the original one:
+  Delay dl1;
+  dl1.setMaxDelayInSamples(15);
+  dl1.setDelayInSamples(10);
+  Vec y(N);
+  for(int n = 0; n < N; n++)
+    y[n] = dl1.getSample(x[n]);
+  //rsPlotVectors(x, y);
+
+  Delay dl2(dl1);  // Calls copy constructor
+
+
+  Delay dl3(dl1);  // Calls copy assigment operator
+
+
+  // ...TBC...
+
+  // Maybe for this, we should implement some helper functions like hasSameSettings(dl1, dl2),
+  // hasSameState(dl1, dl2), hasSameContent(dl1, dl2). By "state" I mean the current values of 
+  // tapIn, tapOut. By setting I mean the current delay and the max delay. By content, I mean
+  // the stored signal values in the delayline. Maybe we should implement a function 
+  // dl1.getContent() that returns a std::vector with the whole content of the delayline. This
+  // function is useful mostly for testing and debugging purposes. Maybe write clearly into the
+  // documentation that it's not for realtime use (it will allocate)
+
+  // In Plotting.h we have a function rsPlotDelayLineContent() which has a helper function
+  // getContent(). This helper may be dragged out and used here also. Maybe it can become a member
+  // function of class rsDelay. I expect it to be generally useful.
 
 
   return ok;
