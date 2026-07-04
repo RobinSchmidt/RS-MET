@@ -276,6 +276,7 @@ protected:
   // mode. It's a bit like the null-object pattern.
 
 
+
   // Make objects of this class non-copyable:
   //rsDelay(const rsDelay&) = delete;
   //rsDelay& operator= (const rsDelay&) = delete;

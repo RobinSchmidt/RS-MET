@@ -2134,7 +2134,10 @@ bool delayLineUnitTestCopyMove()
   ok &= rsHaveSameSettings(dl1, dl4);
   //ok &= dl2.isEmpty();   // This member needs to be added
 
-
+  // Test move assignment:
+  Delay dl5; dl5 = std::move(dl3);
+  ok &= rsHaveSameSettings(dl1, dl5);
+  //ok &= dl3.isEmpty();   // This member needs to be added
 
 
   // ...TBC...
