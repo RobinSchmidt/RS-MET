@@ -133,6 +133,11 @@ public:
   allocates heap memory for the returned vector. */
   std::vector<T> getContent() const;
 
+  /** Returns the current input tap. It's an integer index. */
+  int getTapIn() const { return tapIn; }
+
+  /** Returns the current output tap. It's an integer index. */
+  int getTapOut() const { return tapOut; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -255,7 +260,7 @@ protected:
   /** \name Data */
 
   T* delayLine = nullptr;
-  int tapIn = 0, tapOut = 0, maxDelay = 0;
+  int tapIn = 0, tapOut = 0, maxDelay = 0;  // Maybe use int32_t or uint32_t
   // ToDo: use std::vector for the delayLine. We may then get rid of maxDelay because it's stored
   // in the vector's size. ...or maybe capacity - depends on how we implement it.
 

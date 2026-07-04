@@ -1996,22 +1996,18 @@ bool rsHaveSameSettings(const rsDelay<T>& dl1, const rsDelay<T>& dl2)
   return same;
 }
 
-/** Returns true iff both of the passed delay lines have the same state. */
+/** Returns true iff both of the passed delay lines have the same values for the input- and 
+output taps. */
 template<class T>
-bool rsHaveSameState(const rsDelay<T>& dl1, const rsDelay<T>& dl2)
+bool rsHaveSameTaps(const rsDelay<T>& dl1, const rsDelay<T>& dl2)
 {
   bool same = true;
 
-  //same &= dl1.getTapIn()  == dl2.getTapIn();
-  //same &= dl1.getTapOut() == dl2.getTapOut();
-  // These getters do not yet exist. Add them!
+  same &= dl1.getTapIn()  == dl2.getTapIn();
+  same &= dl1.getTapOut() == dl2.getTapOut();
 
   return same;
 }
-// Maybe rename to rsHaveSameTaps(). State could be misunderstood as meaning "content" because 
-// that's how the term is used in the DSP literature: The "state" of a delay line is defined by
-// its content when viewed as DSP filter. What we here mean is more some kind of technical
-// (implementation dependent) processing status.
 
 /** Returns true iff both of the passed delay lines have the same content. */
 template<class T>
@@ -2026,15 +2022,20 @@ bool rsHaveSameContent(const rsDelay<T>& dl1, const rsDelay<T>& dl2)
 }
 
 /** Returns true iff both of the passed delay lines can be considered to be the same for all 
-DSP intents and purposes. They may point to different memory but their setup, state and content 
-should be the same. */
+DSP intents and purposes. They may point to different memory but their setup, processing state
+(i.e. tap pointers) and content should be the same. Note that for DSP-behavioral purposes, the 
+tap-pointers would actually not need to be the same but we check them here anyway, so our notion of
+equality goes a bit beyond what affects the DSP results. It also goes a bit into some
+implementation details that would not affect the DSP-wise behavior. It's actually only their 
+difference (modulo the (allocated?) delay line length) that affects the DSP results and that
+difference is actually a setting that can be retrieved by getDelayInSamples(). */
 template<class T>
 bool rsAreEqual(const rsDelay<T>& dl1, const rsDelay<T> dl2)
 {
   bool equal = true;
 
   equal &= rsHaveSameSettings(dl1, dl2);
-  equal &= rsHaveSameState(   dl1, dl2);
+  equal &= rsHaveSameTaps(    dl1, dl2);
   equal &= rsHaveSameContent( dl1, dl2);
 
   return equal;
@@ -2042,7 +2043,7 @@ bool rsAreEqual(const rsDelay<T>& dl1, const rsDelay<T> dl2)
 
 bool delayLineUnitTest1()
 {
-  // ToDo: Renema to delayLineUnitTestOutput
+  // ToDo: Rename to delayLineUnitTestOutput
 
   bool ok = true;
 
