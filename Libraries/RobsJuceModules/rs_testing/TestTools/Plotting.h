@@ -592,7 +592,7 @@ void rsPlotDelayLineContent(const RAPT::rsDelay<T>& dl1,
   auto getContent = [](const RAPT::rsDelay<T>& dl)
   {
     // Maybe let the use switch between showing the full content (i.e. the full allocated memory)
-    // or only up to the used length - current, we hrdcoded the used length:
+    // or only up to the used length - current, we hardcoded the used length:
     //int N = dl.getMaxDelayInSamples();
     //int N = dl.getDelayInSamples();    // Maybe we need to use +1?
     int N = dl.getDelayInSamples() + 1;  // Yes, I think, the actual length is delay+1
@@ -601,6 +601,9 @@ void rsPlotDelayLineContent(const RAPT::rsDelay<T>& dl1,
       cnt[n] = dl.readOutputAt(n);
     return cnt;
   };
+  // This helper may now be superfluous because we now have the member function 
+  // rsDelay<T>::getContent(), so maybe use that below (i.e. replace getContent(dl1) by 
+  // dl1.getContent() and likewise for dl2) and delete this helper.
 
   // Retrieve contents of both delaylines and plot them:
   std::vector<T> cnt1 = getContent(dl1);

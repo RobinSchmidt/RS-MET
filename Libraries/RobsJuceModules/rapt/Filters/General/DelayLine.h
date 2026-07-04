@@ -128,6 +128,10 @@ public:
   // ok when the free function resides in this file. It's less discovereable than when it's a 
   // member function but perhaps still divcoverable enough.
 
+  /** Returns the current content of this delay line as a std::vector. This is mostly for testing
+  and debugging purposes and should never be used in a realtime context because it obviously 
+  allocates heap memory for the returned vector. */
+  std::vector<T> getContent() const;
 
 
 

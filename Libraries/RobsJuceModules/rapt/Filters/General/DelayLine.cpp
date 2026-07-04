@@ -209,6 +209,22 @@ void rsDelay<T>::setDelayInSamples(int delay)
     tapOut += maxDelay+1;
 }
 
+// Inquiry:
+
+template<class T>
+std::vector<T> rsDelay<T>::getContent() const
+{
+  // Maybe let the use switch between showing the full content (i.e. the full allocated memory)
+  // or only up to the used length - current, we hardcoded the used length:
+  //int N = dl.getMaxDelayInSamples();
+  //int N = dl.getDelayInSamples();    // Maybe we need to use +1?
+  int N = getDelayInSamples() + 1;     // Yes, I think, the actual length is delay+1
+  std::vector<T> cnt(N);
+  for(int n = 0; n < N; n++)
+    cnt[n] = readOutputAt(n);
+  return cnt;
+}
+
 // Misc:
 
 template<class T>

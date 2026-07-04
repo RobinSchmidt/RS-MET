@@ -1983,6 +1983,29 @@ bool hilbertFilterUnitTest()
   return ok;
 }
 
+/** Returns true iff both of the passed delay lines have the same content. */
+template<class T>
+bool rsHaveSameContent(const rsDelay<T>& dl1, const rsDelay<T> dl2)
+{
+  std::vector<T> c1 = dl1.getContent();
+  std::vector<T> c2 = dl2.getContent();
+  //rsPlotVectors(c1, c2);
+  return c1 == c2;
+
+  // ToDo: Maybe introduce a tolerance parameter and make an inexact comparison.
+}
+
+template<class T>
+bool rsAreEqual(const rsDelay<T>& dl1, const rsDelay<T> dl2)
+{
+  bool equal = true;
+
+  //equal &= rsHaveSameSettings(dl1, dl2);  // ToDo
+  //equal &= rsHaveSameState(dl1, dl2);     // ToDo
+  equal &= rsHaveSameContent(dl1, dl2);
+
+  return equal;
+}
 
 bool delayLineUnitTest1()
 {
@@ -2066,10 +2089,13 @@ bool delayLineUnitTestCopyMove()
     y[n] = dl1.getSample(x[n]);
   //rsPlotVectors(x, y);
 
-  Delay dl2(dl1);  // Calls copy constructor
+  // Test copy constructor;
+  Delay dl2(dl1);
+  ok &= rsAreEqual(dl1, dl2);
 
-
-  Delay dl3(dl1);  // Calls copy assigment operator
+  // Calls copy assigment operator:
+  Delay dl3 = dl1;
+  ok &= rsAreEqual(dl1, dl3);
 
 
   // ...TBC...
@@ -2084,7 +2110,7 @@ bool delayLineUnitTestCopyMove()
 
   // In Plotting.h we have a function rsPlotDelayLineContent() which has a helper function
   // getContent(). This helper may be dragged out and used here also. Maybe it can become a member
-  // function of class rsDelay. I expect it to be generally useful.
+  // function of class rsDelay. I expect it to be generally useful. ...done
 
 
   return ok;
