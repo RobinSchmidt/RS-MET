@@ -2096,7 +2096,13 @@ bool delayLineUnitTest1()
 
 bool delayLineUnitTestCopyMove()
 {
-  // Under construction
+  // Tests copy- and move- constructor and assigment operator of class rsDelay. We create a 
+  // delayline, set it up and fill it with some signal. Then create 2 copies of that delayline 
+  // using copy constructor and copy assignment operator and verify that the 2 copies have the
+  // same settings, same state and same content as the original one. Then we move the two created
+  // copies into new objects and verify that these new object now match our original one and the 
+  // two former copies (from which we have moved) have no resources (i.e. allocated memory) 
+  // anymore.
 
   bool ok = true;
 
@@ -2109,12 +2115,10 @@ bool delayLineUnitTestCopyMove()
   Vec x = rsRandomIntVector(N, -9, +9, 0);
   //rsPlotVector(x);
 
-  // Test 1: Create a delayline, set it up and fill it with some signal. Then create 2 copies of
-  // that delayline using copy constructor and copy assignment operator and verify that the 2 
-  // copies have the same settings, same state and same content as the original one:
+  // Create a reference delay line and fill it up with some random signal:
   Delay dl1;
-  dl1.setMaxDelayInSamples(15);
-  dl1.setDelayInSamples(10);
+  dl1.setMaxDelayInSamples(15);  // We use a max-delay of 15
+  dl1.setDelayInSamples(10);     // and an actual delay of 10
   Vec y(N);
   for(int n = 0; n < N; n++)
     y[n] = dl1.getSample(x[n]);
@@ -2125,42 +2129,22 @@ bool delayLineUnitTestCopyMove()
   ok &= rsAreEqual(dl1, dl2);
 
   // Test copy assigment operator:
-  //Delay dl3 = dl1;           // Wrong! No copy assignment because it's an initialization.
-  Delay dl3; dl3 = dl1;        // This indeed calls the copy assignment operator.
+  //Delay dl3 = dl1;                // Wrong! No copy assignment because it's an initialization.
+  Delay dl3; dl3 = dl1;             // This indeed calls the copy assignment operator.
   ok &= rsAreEqual(dl1, dl3);
 
   // Test move constructor:
   Delay dl4(std::move(dl2));
-  ok &= rsHaveSameSettings(dl1, dl4);
-  //ok &= dl2.isEmpty();   // This member needs to be added
+  ok &= rsAreEqual(dl1, dl4);
+  ok &= !dl2.isReady();             // dl2 has no allocated memory anymore
 
   // Test move assignment:
   Delay dl5; dl5 = std::move(dl3);
-  ok &= rsHaveSameSettings(dl1, dl5);
-  //ok &= dl3.isEmpty();   // This member needs to be added
-
-
-  // ...TBC...
-  // ToDo: Add code to test move- construction and assignment. Maybe move dl2 to a dl4 and dl3
-  // to a dl5. Then check, if d4,dl5 are equal to dl1 and dl2,dl3 are "empty" after that.
-
-
-  // Maybe for this, we should implement some helper functions like hasSameSettings(dl1, dl2),
-  // hasSameState(dl1, dl2), hasSameContent(dl1, dl2). By "state" I mean the current values of 
-  // tapIn, tapOut. By setting I mean the current delay and the max delay. By content, I mean
-  // the stored signal values in the delayline. Maybe we should implement a function 
-  // dl1.getContent() that returns a std::vector with the whole content of the delayline. This
-  // function is useful mostly for testing and debugging purposes. Maybe write clearly into the
-  // documentation that it's not for realtime use (it will allocate)
-
-  // In Plotting.h we have a function rsPlotDelayLineContent() which has a helper function
-  // getContent(). This helper may be dragged out and used here also. Maybe it can become a member
-  // function of class rsDelay. I expect it to be generally useful. ...done
-
+  ok &= rsAreEqual(dl1, dl5);
+  ok &= !dl3.isReady();             // dl3 has no allocated memory anymore
 
   return ok;
 }
-
 
 bool delayLineUnitTest()
 {

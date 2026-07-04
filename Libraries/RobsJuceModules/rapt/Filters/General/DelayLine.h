@@ -139,6 +139,13 @@ public:
   /** Returns the current output tap. It's an integer index. */
   int getTapOut() const { return tapOut; }
 
+  /** Informs, if this delay line is correctly set up and ready to process. */
+  bool isReady() const { return delayLine != nullptr; }
+  // Maybe we should also check that tapIn, tapOut are within the allowed range? I think, checking
+  // for  getDelayInSamples() > 0  is not something we should do here because a delay of 0 should 
+  // be treated as valid. It would be just a "bypass" or "neutral" setting and as such totally 
+  // legal. In fact, it should be the default setting, I think.
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -259,7 +266,7 @@ protected:
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  T* delayLine = nullptr;
+  T* delayLine = nullptr;                   // Maybe rename to buf or dlyBuf
   int tapIn = 0, tapOut = 0, maxDelay = 0;  // Maybe use int32_t or uint32_t
   // ToDo: use std::vector for the delayLine. We may then get rid of maxDelay because it's stored
   // in the vector's size. ...or maybe capacity - depends on how we implement it.
@@ -500,12 +507,11 @@ protected:
   // a large margin imposes long minimum delay time (minimum = margin-1), but allows for higher
   // oder interpolation
 
-  int    tapIn, tapOut;
-
+  // ToDo: Try to replace these members with a member of type rsDelay<TSig>:
+  int  tapIn, tapOut;
   TSig *delayBuffer;
-
-  int    length;
-  // nominal length (excluding the interpolator margin, maximum delay will be length-1
+  int  length;           // Nominal length (excluding the interpolator margin, maximum delay will 
+                         // be length-1
 
   TPar frac;
   // The actual readout-position is this (fractional) number of samples ahead the

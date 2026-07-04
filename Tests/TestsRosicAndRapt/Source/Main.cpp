@@ -452,11 +452,11 @@ int main(int /*argc*/, char* /*argv[]*/)
   //sineFromDecayingSines();
 
   // Delay, allpass, reverb stuff:
-  delayLines();                    // Also includes allpass, universal comb, comb vs modal bank stuff
-  twoPoleAllpassDelays();
-  dampedCombAllpasses();
-  feedbackDelayNetworks();
-  allpassFDN();                  // Under construction
+  //delayLines();                    // Also includes allpass, universal comb, comb vs modal bank stuff
+  //twoPoleAllpassDelays();
+  //dampedCombAllpasses();
+  //feedbackDelayNetworks();
+  //allpassFDN();                  // Under construction
 
   // Filter:
   //bandwidthScaling();
@@ -625,8 +625,8 @@ int main(int /*argc*/, char* /*argv[]*/)
   //sincResamplerSumOfTapWeights();
   //timeWarp();
   //pitchFlattening();
-  phaseLockedCrossfade();
-  phaseLockedCrossfade2();
+  //phaseLockedCrossfade();
+  //phaseLockedCrossfade2();
   //pitchDetectWithSilence();
 
   // Matching:
@@ -638,8 +638,8 @@ int main(int /*argc*/, char* /*argv[]*/)
 
   ////// Tests with Elan's example files (they don't work unless the files are available):
   ////pitchDetectA3();
-  phaseLockSaxophone();
-  phaseLockSaxophone2();
+  ////phaseLockSaxophone();
+  ////phaseLockSaxophone2();
   ////autoTuneHorn();
   ////autoTuneHorn2();
   ////sylophoneCycleMarks();
