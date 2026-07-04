@@ -1983,9 +1983,39 @@ bool hilbertFilterUnitTest()
   return ok;
 }
 
+
+/** Returns true iff both of the passed delay lines have the same settings. */
+template<class T>
+bool rsHaveSameSettings(const rsDelay<T>& dl1, const rsDelay<T>& dl2)
+{
+  bool same = true;
+
+  same &= dl1.getMaxDelayInSamples() == dl2.getMaxDelayInSamples();
+  same &= dl1.getDelayInSamples()    == dl2.getDelayInSamples();
+
+  return same;
+}
+
+/** Returns true iff both of the passed delay lines have the same state. */
+template<class T>
+bool rsHaveSameState(const rsDelay<T>& dl1, const rsDelay<T>& dl2)
+{
+  bool same = true;
+
+  //same &= dl1.getTapIn()  == dl2.getTapIn();
+  //same &= dl1.getTapOut() == dl2.getTapOut();
+  // These getters do not yet exist. Add them!
+
+  return same;
+}
+// Maybe rename to rsHaveSameTaps(). State could be misunderstood as meaning "content" because 
+// that's how the term is used in the DSP literature: The "state" of a delay line is defined by
+// its content when viewed as DSP filter. What we here mean is more some kind of technical
+// (implementation dependent) processing status.
+
 /** Returns true iff both of the passed delay lines have the same content. */
 template<class T>
-bool rsHaveSameContent(const rsDelay<T>& dl1, const rsDelay<T> dl2)
+bool rsHaveSameContent(const rsDelay<T>& dl1, const rsDelay<T>& dl2)
 {
   std::vector<T> c1 = dl1.getContent();
   std::vector<T> c2 = dl2.getContent();
@@ -1995,14 +2025,17 @@ bool rsHaveSameContent(const rsDelay<T>& dl1, const rsDelay<T> dl2)
   // ToDo: Maybe introduce a tolerance parameter and make an inexact comparison.
 }
 
+/** Returns true iff both of the passed delay lines can be considered to be the same for all 
+DSP intents and purposes. They may point to different memory but their setup, state and content 
+should be the same. */
 template<class T>
 bool rsAreEqual(const rsDelay<T>& dl1, const rsDelay<T> dl2)
 {
   bool equal = true;
 
-  //equal &= rsHaveSameSettings(dl1, dl2);  // ToDo
-  //equal &= rsHaveSameState(dl1, dl2);     // ToDo
-  equal &= rsHaveSameContent(dl1, dl2);
+  equal &= rsHaveSameSettings(dl1, dl2);
+  equal &= rsHaveSameState(   dl1, dl2);
+  equal &= rsHaveSameContent( dl1, dl2);
 
   return equal;
 }
@@ -2075,7 +2108,7 @@ bool delayLineUnitTestCopyMove()
   Vec x = rsRandomIntVector(N, -9, +9, 0);
   //rsPlotVector(x);
 
-  // Test 1: Create a delayline, set it up and fill it with some signal. Then create 2 copie of
+  // Test 1: Create a delayline, set it up and fill it with some signal. Then create 2 copies of
   // that delayline using copy constructor and copy assignment operator and verify that the 2 
   // copies have the same settings, same state and same content as the original one:
   Delay dl1;
