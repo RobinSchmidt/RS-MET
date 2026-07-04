@@ -2070,9 +2070,6 @@ bool delayLineUnitTestCopyMove()
   using Vec   = std::vector<Real>;
   using Delay = rsDelay<Real>;
 
-
-  // ToDo: Add code to test copy- and move- construction and assignment
-
   // Create a test signal that we can feed into the delaylines:
   int N = 100;
   Vec x = rsRandomIntVector(N, -9, +9, 0);
@@ -2093,12 +2090,18 @@ bool delayLineUnitTestCopyMove()
   Delay dl2(dl1);
   ok &= rsAreEqual(dl1, dl2);
 
-  // Calls copy assigment operator:
-  Delay dl3 = dl1;
+  // Test copy assigment operator:
+  //Delay dl3 = dl1;     // Doesn't call copy assignment. Is initialization, not assigment.
+  Delay dl3; dl3 = dl1;  // This indeed calls the copy assignment operator.
   ok &= rsAreEqual(dl1, dl3);
 
 
+
+
   // ...TBC...
+  // ToDo: Add code to test move- construction and assignment. Maybe move dl2 to a dl4 and dl3
+  // to a dl5. Then check, if d4,dl5 are equal to dl1 and dl2,dl3 are "empty" after that.
+
 
   // Maybe for this, we should implement some helper functions like hasSameSettings(dl1, dl2),
   // hasSameState(dl1, dl2), hasSameContent(dl1, dl2). By "state" I mean the current values of 
