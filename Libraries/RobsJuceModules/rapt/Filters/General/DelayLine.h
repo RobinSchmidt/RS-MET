@@ -192,13 +192,18 @@ public:
   behind the tapIn pointer where M is the delay in samples. This readout triggers no update action.
   It's sometimes convenient to control the read/write/update steps from outside. That's why this
   function exists. */
-  inline T readOutput() const { return delayLine[tapOut]; }
+  inline T readOutput() const 
+  { 
+    assertReady();
+    return delayLine[tapOut];
+  }
 
   /** Reads the content of the delayline at an arbitrary delay, i.e. at a position that is 
   independent from our current tapOut pointer. This can be used to implement multitap delaylines.
   We can just read the delayline whereever we want. */
   inline T readOutputAt(int delay) const 
   { 
+    assertReady();
     int readPos = tapIn - delay;   // Compute nominal read index
     readPos = readPos & maxDelay;  // Apply bit masking for wrap-around behavior
     return delayLine[readPos];     // Read out the delayline
@@ -214,6 +219,8 @@ public:
   y = 0.7*x[n-10] + 0.3*x[n-11].  */
   inline T readOutputWithAdditionalDelay(int additionalDelay) const
   {
+    assertReady();
+
     int readPos = tapOut - additionalDelay;
 
     readPos = readPos & maxDelay;
@@ -227,7 +234,11 @@ public:
   // Needs tests
 
 
-  inline void writeInputNoUpdate(T in) { delayLine[tapIn] = in; }
+  inline void writeInputNoUpdate(T in) 
+  { 
+    assertReady();
+    delayLine[tapIn] = in; 
+  }
 
   inline void writeInputAndUpdate(T in)
   {
@@ -261,6 +272,16 @@ public:
   void reset();
 
 protected:
+
+
+  /** This is an internal sanity check function that should be called before each access to our
+  delayLine member. */
+  void assertReady() const
+  {
+    rsAssert(isReady(), "No delay memory allocated");
+    // When this triggers, it usually means that you forgot to call setMaxDelayInSamples() before
+    // starting processing.
+  }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -330,6 +351,7 @@ RS_INLINE T rsDelay<T>::getSample(T in)
 template<class T>
 RS_INLINE T rsDelay<T>::getSampleSuppressTapIncrements(T in)
 {
+  assertReady();
   delayLine[tapIn] = in;    // Maybe use writeInput(in) instead
   return delayLine[tapOut];
 }
@@ -337,24 +359,29 @@ RS_INLINE T rsDelay<T>::getSampleSuppressTapIncrements(T in)
 template<class T>
 RS_INLINE void rsDelay<T>::writeInput(T in)
 {
+  assertReady();
   delayLine[tapIn] = in;
 }
 
 template<class T>
 RS_INLINE void rsDelay<T>::writeInputAt(T in, int delay)
 {
+  assertReady();
   delayLine[(tapIn-delay) & maxDelay] = in;
 }
 
 template<class T>
 RS_INLINE void rsDelay<T>::addToInput(T signalToAdd)
 {
+  assertReady();
   delayLine[tapIn] += signalToAdd;
 }
 
 template<class T>
 RS_INLINE void rsDelay<T>::addToInputAt(T signalToAdd, int delay)
 {
+  assertReady();
+
   //int p = tapIn - delay;
   //if(p < 0)
   //  p += maxDelay;  

@@ -230,6 +230,7 @@ std::vector<T> rsDelay<T>::getContent() const
 template<class T>
 void rsDelay<T>::reset()
 {
+  assertReady();
   for(int i = 0; i < maxDelay+1; i++)
     delayLine[i] = 0.0;
 }
