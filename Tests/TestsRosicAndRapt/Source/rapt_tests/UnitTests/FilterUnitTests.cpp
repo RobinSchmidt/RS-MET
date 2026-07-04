@@ -2125,9 +2125,14 @@ bool delayLineUnitTestCopyMove()
   ok &= rsAreEqual(dl1, dl2);
 
   // Test copy assigment operator:
-  //Delay dl3 = dl1;     // Doesn't call copy assignment. Is initialization, not assigment.
-  Delay dl3; dl3 = dl1;  // This indeed calls the copy assignment operator.
+  //Delay dl3 = dl1;           // Wrong! No copy assignment because it's an initialization.
+  Delay dl3; dl3 = dl1;        // This indeed calls the copy assignment operator.
   ok &= rsAreEqual(dl1, dl3);
+
+  // Test move constructor:
+  Delay dl4(std::move(dl2));
+  ok &= rsHaveSameSettings(dl1, dl4);
+  //ok &= dl2.isEmpty();   // This member needs to be added
 
 
 

@@ -264,6 +264,18 @@ protected:
   // ToDo: use std::vector for the delayLine. We may then get rid of maxDelay because it's stored
   // in the vector's size. ...or maybe capacity - depends on how we implement it.
 
+  // Maybe do something like:
+  //static T pseudoNull;
+  //T* delayLine = &pseudoNull;
+  // Rationale: We don't want to actually allocate memory in the constructor (because that would
+  // basically always a superfluous allocation) but we also don't want to allow delayLine to be 
+  // nullptr. So as solution, we could let it point to some valid special memory location after 
+  // initialization, such that writes to that location will not trigger access violations. We may
+  // produce garbage if we forget to set up the delay line after construction by calling 
+  // setMaxdelayInSamples(), setDelayInSamples(), though. But that's a much less dangerous failure
+  // mode. It's a bit like the null-object pattern.
+
+
   // Make objects of this class non-copyable:
   //rsDelay(const rsDelay&) = delete;
   //rsDelay& operator= (const rsDelay&) = delete;
