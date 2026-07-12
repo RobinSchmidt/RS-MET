@@ -78,7 +78,7 @@ is now to also use random cycle lengths, even though we don't have to if the onl
 get the (average) cycle length right. Of course, we want to maintain an average cycle length of 
 $100$. In order to achieve that, it is clear that we additionally need to use cycle lengths above 
 _and_ below $100.0$. We need to use cycles of the 3 lengths $c_1 = 99, c_2 = 100, c_3 = 101$ in such
-a way that the mean cycle length is also exactly $100$ and the variance of the probability 
+a way that the mean cycle length is still exactly $100$ and the variance of the probability 
 distribution matches the variance that we would get in the worst case scenario, i.e. at the 
 half-integers. It is apparent by now that the general task to make this work is to derive a formula 
 or algorithm to compute the 3 desired cycle lengths $c_1, c_2, c_3$ along with their associated 
@@ -169,6 +169,8 @@ examples and link them here. Maybe implement an interactive example implementati
 produce a little demo video with it and link to it here. Apply it to the supersaw. I think, it 
 should be great for that because the introduced noise further thickens the spectrum and adds some
 element of random pitch modulation to the indiviudal saws while also anti-aliasing them efficiently.
+In fact, the idea for this method was born in a forum discussion about the JP-8000 supersaw here:  
+https://www.kvraudio.com/forum/viewtopic.php?p=9189004#p9189004
 
 
 
@@ -189,5 +191,7 @@ ToDo:
 
 - Explain what happens when we use a deterministic instead of a probabilistic algorithm to determine
   the next cycle length. In this case, the artifacts sound similar to aliasing.
+
+
 
 -->
