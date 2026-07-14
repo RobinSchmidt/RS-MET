@@ -54,7 +54,7 @@ void rsPitchDitherOsc<T>::calcCycleDistribution(T c, T* lenMid, T* probShort, T*
   
   // We don't have a probLong output parameter because that would be redundant. It would always be
   // given by probLong = 1 - (probShort + probMid). We will also always have: 
-  // lenShort = lenMid + 1, lenLong = lenMid + 1. The derivation of these formulas can be found in
+  // lenShort = lenMid - 1, lenLong = lenMid + 1. The derivation of these formulas can be found in
   // the textfile PitchDithering.txt in the research repo. ToDo: clean the derivation up and put it
   // into its own dedicated textfile here in the main repo! We actually already have now an .md
   // file but it's not yet finished. When it's done, reference it here.
