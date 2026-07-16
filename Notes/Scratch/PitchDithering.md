@@ -174,6 +174,22 @@ https://www.kvraudio.com/forum/viewtopic.php?p=9189004#p9189004
 
 
 
+Further Ideas
+-------------
+
+I think, the fact that we tune our probabilities in such a way to get the arithmetic(!) mean of the 
+period right implies that in terms of frequencies, we hit the correct desired "mean frequency" only
+when we interpret the "mean" as the harmonic mean. Maybe that is not exactly the right thing to do.
+Maybe we should try to get the artithmetic mean frequency right which would imply that we would need
+to get the harmonic mean of the periods right. So maybe the second equation (in its original form) 
+$p_1 c_1 + p_2 c_2 + p_3 c_3 = c$ should be replaced by $p_1 / c_1 + p_2 / c_2 + p_3 / c_3 = 1 /c$?
+Try that! Maybe then we should also define the 3 errors differently - namely as frequency errors
+rather than period errors. This is basically a perceptual question: which frequency do we _perceive_
+as the center frequency in a rapidly alternating jumble of frequencies? Maybe try to set up a
+perceptual experiment to figure that out. Maybe we should also look into trying to fix the geometric
+mean. See comments of this .md file (invisible in the rendered version) for more details.
+
+
 
 <!---
 <br><br><br><br><br><br><br><br><br><br>
@@ -192,6 +208,15 @@ ToDo:
 - Explain what happens when we use a deterministic instead of a probabilistic algorithm to determine
   the next cycle length. In this case, the artifacts sound similar to aliasing.
 
+- I think that using the geometric mean would mean to use c1^p1 * c2^p2 * c3^p3 = cbrt(c) as 2nd
+  equation (i.e. in place of p1*c1 + p2*c2 + p3*c3 = c)
 
+- Set up a perceptual experiment as follows: Alternate between cycles of length c1 = 100 and
+  c2 = 200 and try to find a single length c that leads to the same pitch sensation. Will it be
+  the arithmetic, geometric or harmonic mean of 100 and 200? That experiment will determine which
+  of the means is the right one to match. Maybe the implementation should get other methods besides
+  setMeanPeriod() namely: setMeanFrequency(), setMeanPitch(). We will need two other helper
+  functions to calculate cycle distributions accoridng to the different rules. The part that
+  computes the cycle lengths c1,c2,c3 will be the same everywhere so it should be factored out.
 
 -->
