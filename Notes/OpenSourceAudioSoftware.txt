@@ -1077,6 +1077,10 @@ soemdsp:
 https://github.com/soundemote/soemdsp
 -SoundEmote DSP library
 
+Eurorack modules by Emilie Gillet:
+https://github.com/pichenettes/eurorack/
+-Various algortihms (plus plumbing code) for digital Eurorack modules
+
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:
 
@@ -1309,6 +1313,13 @@ https://github.com/xiph/ogg
 Vorbis:
 https://github.com/xiph/vorbis
 -Reference implementation of the Ogg Vorbis audio format.
+
+LAME:
+https://lame.sourceforge.io/
+https://sourceforge.net/projects/lame/
+-mp3 encoder
+-Mirrors: https://github.com/rhishi/lame/tree/master
+          https://github.com/zlargon/lame
 
 Opus Codec:
 https://opus-codec.org/

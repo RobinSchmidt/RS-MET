@@ -55,6 +55,7 @@ public:
   (in-band and/or out-of-band) ripple in the shelving filter designs in terms of a percentage
   of the peak gain. */
   void setRipple(TPar newPassbandRipple);
+  // Maybe rename to setPassbandRipple()
 
   /** Sets the rejection in the stopband for pass-filters in decibels. */
   void setStopbandRejection(TPar newStopbandRejection);
