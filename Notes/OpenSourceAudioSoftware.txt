@@ -345,6 +345,12 @@ https://github.com/JonET/monksynth/releases
 -Monophonic vocal synthesizer that sounds like a monk chanting. Built using formant-wave-function 
  (FOF) synthesis, inspired by the classic Delay Lama.
 
+Galdr:
+https://sognevo.com/galdr/
+https://github.com/andreademurtas/galdr
+-"..synthesizer with a black-metal soul.."
+
+
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
 
@@ -563,6 +569,16 @@ Bilinear Audio:
 https://github.com/russellmcc/bilinear-audio
 https://www.russellmcc.com/bilinear-audio/
 -Collection of plug-ins written in Rust and TypeScript using the Conformal framework.
+
+Gala:
+https://sognevo.com/gala/
+https://github.com/andreademurtas/gala
+-"..vocal processor that turns a dry screamed take into a finished black metal vocal.."
+
+Gjalla:
+https://sognevo.com/gjalla/
+https://github.com/andreademurtas/gjalla
+-"..black metal guitar amp simulator.."
 
 ----------------------------------------------------------------------------------------------------
 Analysis plugins
