@@ -187,7 +187,6 @@ public:
   static inline void convolveWithTwoElems(
     const T* x, const int xLength, const T h0, const T h1, T* y);
 
-
   /** Copies the data of one array into another one and converts the type if necessary. */
   template <class T1, class T2>
   static inline void convert(const T1 *source, T2 *destination, const int length);

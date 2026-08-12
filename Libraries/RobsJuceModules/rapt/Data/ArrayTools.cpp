@@ -206,12 +206,24 @@ void rsArrayTools::convolve(const T *x, const int xLength, const T *h, const int
     y[n] = s;
   }
 }
-// ToDo: check, if this has unit tests that cover edge cases like xLength and/or hLength == 0.
+// ToDo: Check, if this has unit tests that cover edge cases like xLength and/or hLength == 0.
 // I'm not sure, what the desired behavior should be. I think, maybe the y-array should just be
 // left completetly untouched. Document the hLength > 0 assertion. Would anything bad happen in
-// such a case?
-// maybe optimize by getting rid of calling rsMin/rsMax in the head of the inner loop by splitting
-// the outer loop into 3 partial loops....maybe
+// such a case? Maybe optimize by getting rid of calling rsMin/rsMax in the head of the inner loop
+// by splitting the outer loop into 3 partial loops....maybe. But then maybe keep this 
+// implementation as prototype for unit tests. Check also if the order of the arguments in the 
+// multiplication  h[k] * x[n-k]  is correct or if it should be  x[n-k] * h[k]. Normally, this 
+// doesn't matter because normally, we are dealing with types T where multiplication is 
+// commutative. But non-commutative convolution is a thing (see "Harmonic Analysis for Engineers 
+// and Applied Scientists", pg. 7 ff) and we want the function to work correctly in such a case as
+// well. After figuring that out (and possibly fixing it), document it. Write a comment that the 
+// order shall not be changed and/or a unit test that will fail if it is changed. Maybe try with
+// T = rsMatrix<double> and/or T = rsVector3D<double> where in the latter case, the * should be
+// the vector product (aka cross product). In both cases, the multiplication is non-commutative.
+// In the the latter case, it's anticommutative. Maybe allow different types Tx, Th, Ty instead of
+// just all sequences being of the same type T to allow, for example, convolving real sequences 
+// with complex ones, etc..
+
 
 //template <class T1, class T2>
 //void rsArrayTools::copy(const T1 *source, T2 *destination, const int length)
@@ -233,6 +245,9 @@ template <class T>
 void rsArrayTools::convolveInPlace(T *x, const int xLength, const T *h, const int hLength)
 {
   convolve(x, xLength, h, hLength, x);
+
+  // The general implementation convolve() actually can be used in place so we can just use it 
+  // here.
 }
 
 template <class T>
