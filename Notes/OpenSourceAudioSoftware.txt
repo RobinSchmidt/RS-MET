@@ -1391,6 +1391,7 @@ https://gitlab.freedesktop.org/pipewire/helvum
 -GTK-based patchbay for pipewire, inspired by the JACK tool catia
 
 Easy Effects
+https://flathub.org/en/apps/com.github.wwmm.easyeffects
 https://github.com/wwmm/easyeffects
 -Seems to be system wide sound effects for Linux
 -Limiter, compressor, convolver, equalizer etc. plugins for PipeWire applications
