@@ -350,6 +350,11 @@ https://sognevo.com/galdr/
 https://github.com/andreademurtas/galdr
 -"..synthesizer with a black-metal soul.."
 
+OctaSine:
+https://www.octasine.com/
+https://github.com/greatest-ape/OctaSine
+-FM Synth plugin (VST2, CLAP) with 4 operators
+-Written in Rust using the Iced GUI framework (see iced.rs)
 
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
@@ -781,6 +786,7 @@ SFML (Simple and Fast Multimedia Library)
 https://github.com/SFML/SFML
 -GUI framework
 
+NIH-plug:
 https://github.com/robbert-vdh/nih-plug/
 -API-agnostic audio plugin framework written in Rust, as well as a small collection of plugins.
 
@@ -820,6 +826,13 @@ https://github.com/JamesHallowell/cxx-juce
 Faceplate:
 https://github.com/AllTheMachines/Faceplate
 -Visual editor for WebView GUIs for JUCE plugins. Has a kind of freemium licensing model.
+
+VSReacT:
+https://vsreact.n9records.com/
+https://github.com/N9RecordsTechnologiesIL/VSReacT
+https://www.kvraudio.com/forum/viewtopic.php?t=632622
+-"Your TSX runs in an embedded QuickJS engine inside the plugin. A custom reconciler streams the
+ tree to C++, Yoga computes flexbox, juce::Graphics paints every pixel. No webview."
 
 ----------------------------------------------------------------------------------------------------
 DSP Libraries
@@ -1637,6 +1650,14 @@ https://github.com/cgzirim/seek-tune
 
 ----------------------------------------------------------------------------------------------------
 Unsorted:
+
+crv:
+https://github.com/scztt/crv
+https://www.youtube.com/watch?v=k4yxNxNCo0k  
+  Building an Optimized DSP Framework in Modern C++ - Scott Carver - ADC 2025
+-"A header-only C++26 library exploring DSP abstractions via heavy template metaprogramming: 
+ compile-time / runtime value variants, hoisting, constexpr directed graphs, and flexible SIMD 
+ vectorization."
 
 RustAudio
 https://github.com/rustaudio
