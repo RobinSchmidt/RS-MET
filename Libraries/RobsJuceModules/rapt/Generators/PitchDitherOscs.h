@@ -56,7 +56,7 @@ public:
 
   /** Returns the average length of the cycles that are being produced. It is given by a weighted
   sum of the 3 integer cycle lengths that are produced where the weights are given by their 
-  respective probabilities. The formula is cM = p1*c1 + p2*c2 + p3*c3 where cM is the mean cycle
+  respective probabilities. The formula is  cM = p1*c1 + p2*c2 + p3*c3  where cM is the mean cycle
   length, c1,c2,c3 are the actually produced integer cycle lengths and p1,p2,p3 are their
   associated probabilities. */
   T getMeanCycleLength() const;
@@ -71,6 +71,7 @@ public:
   documentation of class rsWaveForms for some discussion in which circumtances one may want to opt
   for one or the other variant. */
   inline T getSamplePhasor(bool phasorRangeClosed);
+  // Maybe make the bool parameter optional (defaulting to false)
 
   // Abbreviation for convenience in the functions below:
   using WF = rsWaveForms<T>;
@@ -88,6 +89,7 @@ public:
 
   /** Resets the internal state, i.e. the sample counter and the random generator. */
   void reset(bool phasorRangeClosed);
+  // Maybe make the bool parameter optional (defaulting to false)
 
   //-----------------------------------------------------------------------------------------------
   // \name Helpers

@@ -2005,6 +2005,16 @@ ToDo:
   after each stage and pass that through another filter a_i(z). Thereby we produce the overall
   transfer function: P(z) = a0(z) + a1(z)*H(z) + a2(z)*(H(z))^2 + a3(z)*(H(z))^3 + ...
 
+- Figure out if it's possible to optimize polynomial evaluation (at a single x) using SIMD and if 
+  so, implement it. Maybe for this we will need explicit specializations of (static) member 
+  functions. Is this possible? If not, maybe we can move the algorithm(s) into free functions and
+  then specialize these?
+
+- Maybe try to implement a function multiEvaluate(const T* x, int N, T* y) that evaluates the 
+  polynomial at N values of x and stores the result in y using SIMD. Speeding up evaluation will
+  also speed up root finding which is important in many applications so it may be worth it.
+
+
  Other methods for root finding (here, we use the Laguerre method:)
  https://en.wikipedia.org/wiki/Durand%E2%80%93Kerner_method
  https://en.wikipedia.org/wiki/Jenkins%E2%80%93Traub_algorithm (very popular, I think)
