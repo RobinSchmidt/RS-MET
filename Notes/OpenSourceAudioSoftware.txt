@@ -310,6 +310,7 @@ https://github.com/alexmfink/compufart
 Orbit:
 https://github.com/hugh-buntine/dumumub-0000006
 https://www.kvraudio.com/forum/viewtopic.php?t=627820
+https://dumumub.com/
 -Granular synthesizer featuring physics-based orbital grain movement
 
 OB-Xf:
@@ -598,6 +599,7 @@ https://github.com/ardura/Scrollscope
 
 PerceptoMap
 https://github.com/hqrrr/PerceptoMap
+https://www.kvraudio.com/forum/viewtopic.php?p=9104656
 -Perceptual spectrogram analyzer (with Mel spectrograms, Mel-frequency cepstral coefficients, etc.)
 
 Kholors Station

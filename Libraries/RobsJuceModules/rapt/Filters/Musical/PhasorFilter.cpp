@@ -215,3 +215,18 @@ void rsPhasorStateMapper<T>::map(T *xInOut, T *yInOut) const
   // (x+f)^2 + (y+g)^2 = x^2 + y^2 - maybe we can find such a pair of functions that satisfies this
   // equation (for all values of x,y)
 }
+
+/*=================================================================================================
+
+Ideas:
+
+- Maybe the filter could accept a stereo signal and we inject the left input into x and the right 
+  input into y. Or maybe more generally, use an injection matrix and do:
+
+    [x] += [a b]  [inL]
+    [y]    [c d]  [inR]
+
+  for the injection of the input signal.
+
+
+* /

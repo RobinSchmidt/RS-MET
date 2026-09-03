@@ -90,7 +90,11 @@ public:
 
 //=================================================================================================
 
-/** This class implements an oscillator which can produce stereo waveforms. */
+/** This class implements an oscillator which can produce stereo waveforms. 
+
+ToDo:
+
+- Maybe rename to TableLookupOscStereo or LookupOscStereo or TableOscStereo     */
 
 class OscillatorStereo
 {

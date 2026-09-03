@@ -192,6 +192,11 @@ Ideas:
   would expect to see a suboctave, for a factor of 3 a subharmonic at 1/3 of the fundamental. Try
   that!
 
+- Apply pitch dithering to the table lookup oscillators like the one used in Straightliner. Maybe 
+  let the oscillators in Straightliner switch between different modes of operation: Mip mapping (as 
+  currently implemented), Pitch dithering, Naive,  integrate table - differentiate on playback, 
+  bandlimited interpolation, ...
+
 - Combine pitch dithering with hard-sync. I think, when the master osc is pitch dithered, we may 
   also get some results that don't show obvious aliasing. Try it!
 
@@ -204,7 +209,6 @@ Ideas:
   to k = 1. The idea is that the effective width is actually 2 samples rather than 3 when we also 
   consider the probabilities as weights. At c = xxx.5, we do indeed only use 2 integer lengths 
   (both with probability 0.5). We could also say that we use 2 neighbors around the middle length.
-
 
 
 */
