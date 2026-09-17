@@ -338,7 +338,17 @@ Ideas:
   where M is the order of the LCG. We could generalize this idea even further by incorporating 
   products of past values like a_{ij} * y[n-i] * y[n-j]. We could also try to replace the * 
   operator by some other operator like bitwise xor. And we could also use combinations of all
-  of that.
+  of that. Figure out if increasing the order can increase the period length of the LCG. We can 
+  do this experimentally with small moduli m. It seems plausible that this should be possible 
+  because when the state y[n-1] has at some time n the same value as at some previous time
+  n-P, the state y[n-2] may still be different. If there would only be y[n-1] as state, a 
+  repetition would be forced but y[n-2] would thwart that with high probability. I think, with a 
+  1st order LCG, the maximum possible period would be m and maybe with a 2nd order LCD it could be
+  m^2? But I guess, we need to impose some (number theoretical) constraints on a_0,a_1,a_2,m to 
+  actually achieve that maximum period. Look up the conditions for a_0,a_1,m for a 1st order 
+  generator. I think, there's a theorem about that by Donald Knuth. Maybe that theorem could be 
+  generalized to higher order LCGs.  ...maybe rename a_0 to c. It doesn't really make sense to 
+  call it a_0 in light of the stuff below.
 
 - The above has a structure similar to a digitial filter with constant input a_0. We could take 
   that further into this direction by using:
