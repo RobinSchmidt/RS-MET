@@ -326,16 +326,38 @@ Ideas:
   probably have an impact on the distribution. Try to characterize these effects mathematically and
   perceptually.
 
-- Maybe experiment with generalized linear congruential generators by generializing the rule:
+- Maybe experiment with generalized linear congruential generators (LCGs) by generializing the 
+  rule:
+
     y[n] = (a_0 + a_1 * y[n-1]) % m
+
   to:
+
     y[n] = (a_0 + sum_{k=1}^M a_k * y[n-k]) % m
-  where M is the order of the generator. We could generalize this idea even further by 
-  incorporating products of past values like a_{ij} * y[n-i] * y[n-j]. We could also try to replace
-  the * operator by some other operator like bitwise xor. And we could also use combinations of all
+
+  where M is the order of the LCG. We could generalize this idea even further by incorporating 
+  products of past values like a_{ij} * y[n-i] * y[n-j]. We could also try to replace the * 
+  operator by some other operator like bitwise xor. And we could also use combinations of all
   of that.
 
+- The above has a structure similar to a digitial filter with constant input a_0. We could take 
+  that further into this direction by using:
 
+     y[n] = (sum_{k=0}^N b_k x[n-k]  +  sum_{k=1}^M a_k y[n-k]) % m
+
+  where x[n] is some input signal. I think, such a structure could be used to scramble an input
+  signal and it may be possible to descramble it by an appropriate inverse filter. Figure that out!
+
+- We could use a system of (1st order) LCGs like so:
+
+    // State update:
+    y_1[n] = (a_{10} + a_{11} y_1[n-1]) % m_1
+    y_2[n] = (a_{20} + a_{21} y_2[n-1]) % m_2
+    ...
+    y_M[n] = (a_{M0} + a_{M1} y_M[n-1]) % m_M
+
+    // Output formation:
+    y[n] = (b_0 + sum_{k=1}^M b_k y_k[n]) % m
 
 */
 
