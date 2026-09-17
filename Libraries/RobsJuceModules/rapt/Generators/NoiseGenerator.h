@@ -19,6 +19,7 @@ public:
 
   /** Returns a random value in the half-open unit interval [0,1). */
   inline T getSampleInUnitRange() { return T(getSampleRaw()) * (T(1)/T(modulus)); }
+  // ToDo: Verify and document that the scaler (T(1)/T(modulus)) is evaluated at compile time.
 
   // ToDo: Add getSampleInRange(T rangeMin, T rangeMax), getSampleInClosedUnitRange(). The latter
   // should return T(getSampleRaw()) / T(modulus-1); In this case, we probably can't safely replace

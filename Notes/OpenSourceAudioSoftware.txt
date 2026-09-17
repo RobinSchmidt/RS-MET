@@ -1541,6 +1541,11 @@ https://github.com/erdewit/HiFiScan
 -Has Python interface and can be used from a Jupyter notebook:
  https://github.com/erdewit/HiFiScan/blob/master/chirp.ipynb
 
+logue SDK:
+https://www.korg.com/de/products/synthesizers/minilogue_xd/sdk.php
+https://github.com/korginc/logue-sdk
+-SDK to build custom oscillators and effects for soem Korg hardware synths
+
 ----------------------------------------------------------------------------------------------------
 Audio AI projects and related stuff
 

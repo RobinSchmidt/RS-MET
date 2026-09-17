@@ -194,8 +194,8 @@ inline void rsPitchDitherOsc<T>::updateCycleLength(bool closed)
 template<class T> 
 void rsPitchDitherOsc<T>::reset(bool closed)
 {
-  sampleCount = T(0);
-  prng.setState(seed);
+  sampleCount = T(0);                  // Reset sample counter.
+  prng.setState(seed);                 // Reset state of random generator.
   updateCycleLength(closed);           // Important for correct initial lenNow.
 }
 
