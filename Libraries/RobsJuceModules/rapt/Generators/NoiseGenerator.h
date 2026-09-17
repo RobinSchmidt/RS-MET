@@ -310,7 +310,6 @@ Ideas:
        return varHi * randomVal + meanHi;
      return varMid * randomVal + meanMid;
 
-
 - In the modal synthesizer, we could make these chances dependent on the output signal to
   establish a nonlinear, probabilistic feedback loop interaction between exciter and resonator.
   When the output signal value is strongly negative, we should have a high chance of getting a
@@ -326,6 +325,17 @@ Ideas:
   These should change the noise characteristic without altering the magnitude spectrum. They will 
   probably have an impact on the distribution. Try to characterize these effects mathematically and
   perceptually.
+
+- Maybe experiment with generalized linear congruential generators by generializing the rule:
+    y[n] = (a_0 + a_1 * y[n-1]) % m
+  to:
+    y[n] = (a_0 + sum_{k=1}^M a_k * y[n-k]) % m
+  where M is the order of the generator. We could generalize this idea even further by 
+  incorporating products of past values like a_{ij} * y[n-i] * y[n-j]. We could also try to replace
+  the * operator by some other operator like bitwise xor. And we could also use combinations of all
+  of that.
+
+
 
 */
 
