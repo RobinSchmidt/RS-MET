@@ -38,11 +38,12 @@ public:
   void addPreDelay(int amountInSamples);
 
   /** Removes the predelay from this filter, if any is present. This makes sure that the lowest
-  exponent of z^-1 in the numerator is zero. see getPreDelay(), addPreDelay()  */
+  exponent of z^-1 in the numerator is zero. @see getPreDelay(), addPreDelay()  */
   void removePreDelay() { num.shiftPowers(-getPreDelay()); }
 
   /** Turns the filter into its inverse. This basically amounts to swapping numerator and
-  denominator and possibly applying some scaling of the coefficients if b0 != 1. */
+  denominator and possibly applying some scaling of the coefficients if b0 != 1 to maintain the
+  a0 = 1 normalization after the inversion. */
   void invert();
 
   /** Reflects the zeros of the filter about the unit circle. This will turn a minimum phase
@@ -137,8 +138,8 @@ public:
   TArg operator()(TArg z) const { TArg zr = TArg(1) / z; return num(zr) / den(zr); }
 
 
-  // This boilerplate is needed to have the desired arithmetic operators available also for the 
-  // derived class. They can not be inherited from the baseclass because their parameter and
+  // This boilerplate below is needed to have the desired arithmetic operators available also for 
+  // the derived class. They can not be inherited from the baseclass because their parameter and
   // return types are different. It may work with pointer-types but not with value-types (I guess):
 
 

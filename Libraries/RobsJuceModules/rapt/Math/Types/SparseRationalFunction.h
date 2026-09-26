@@ -41,13 +41,17 @@ public:
     den._appendTerm(T(1), 0);  // The denominator is always one.
   }
 
+  /** Creates a sparse rational function from the two given polynomials for numerator and 
+  denominator. */
   rsSparseRationalFunction(
-    const SparsePoly& numerator, const SparsePoly& denominator) 
-    : num(numerator), den(denominator)  
+    const SparsePoly& numerator, const SparsePoly& denominator)
+    : num(numerator), den(denominator)
   {
   
   }
-  // Maybe it should take an (optional?) tolerance parameter and call canonicalize()
+  // Maybe it should take an (optional?) tolerance parameter and call canonicalize(). Or if we 
+  // don't want to make such an potentially expensive function call here, we should assert that the
+  // given numerator and denominator polynomials are already canonical?
 
 
   // Maybe implement it for const rsSparsePolynomial<T>&&, too. Or maybe that one is then enough, 
@@ -236,10 +240,12 @@ public:
 
 
 
-  // Prefix by underscore:
   rsSparsePolynomial<T, TTol>& _getNumerator() { return num; }
-
   rsSparsePolynomial<T, TTol>& _getDenominator() { return den; }
+  // ToDo: Document these. Explain why they have an underscore, i.e. are considered unsafe. I 
+  // think it's because they allow the caller to mess up the canonical representation of our num or
+  // den members respectively. Maybe we could also provide versions without underscore that return
+  // const referecences.
 
 
 
@@ -265,7 +271,7 @@ public:
   // canonical. Num and den have no common factors. But if we multiply the numerator by the 
   // monomial x, they will have the common factor x. I think, this occurs whenever the denominator
   // has a monomial as factor, i.e. a factor of x^p, i.e. a root (possibly with multiplicity) at 
-  // x = 0. This is equivalent to den not having a constant term. 
+  // x = 0. This is equivalent to den not having a constant term. Figure this out and document it.
 
   void _multiplyBy(const SparseRatFunc& factor) 
   { 
