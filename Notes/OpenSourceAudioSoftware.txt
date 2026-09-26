@@ -1561,6 +1561,28 @@ https://www.korg.com/de/products/synthesizers/minilogue_xd/sdk.php
 https://github.com/korginc/logue-sdk
 -SDK to build custom oscillators and effects for soem Korg hardware synths
 
+Pulp:
+https://github.com/vincehi/pulp
+-Sample manager
+
+OWMB (OpenWav Media Browser):
+https://github.com/samplaman/owmb
+-Sample manager
+
+Saempl:
+https://github.com/jonasblome/Saempl
+-Sample manager
+
+Calloga:
+https://calloga.com/#umu/unshuffle
+https://github.com/calloga/unshuffle
+-Sample manager
+
+Sampson:
+https://github.com/irpina/Sampson-Sample-Manager
+-Sample manager
+
+
 ----------------------------------------------------------------------------------------------------
 Audio AI projects and related stuff
 
