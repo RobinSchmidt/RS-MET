@@ -28,7 +28,6 @@ https://traversodaw.com/
 OpenDAW
 https://opendaw.org/
 https://github.com/andremichelle/openDAW
-https://github.com/andremichelle/opendaw-studio
 https://github.com/andremichelle/opendaw-lib
 -Web-based DAW written in TypeScript with Web Audio API. Runs in a web browser. 
 -Open-source under AGPL-3.
@@ -94,6 +93,17 @@ DAW Project:
 https://codeberg.org/andrewrk/daw
 -A DAW by the creator of Zig, Andrew Kelley. Still in eraly stages, I think.
  Here: https://www.youtube.com/watch?v=iqddnwKF8HQ he explains how he created Zig to write a DAW.
+
+MAGDA (Multi AGent Digital Audio):
+https://magda.land/
+https://github.com/Conceptual-Machines/magda-core
+https://www.youtube.com/watch?v=momhIo5vOSc
+-DAW with AI integrated from the ground up. Built on C++20, JUCE, and Tracktion Engine.
+
+Zrythm:
+https://www.zrythm.org/en/index.html
+https://gitlab.zrythm.org/zrythm/zrythm
+
 
 ----------------------------------------------------------------------------------------------------
 Modular environments
@@ -1111,6 +1121,11 @@ https://github.com/soundemote/soemdsp
 Eurorack modules by Emilie Gillet:
 https://github.com/pichenettes/eurorack/
 -Various algortihms (plus plumbing code) for digital Eurorack modules
+
+biquad-voxengo:
+https://github.com/avaneev/biquad-voxengo
+-A little library for desgining bell and bandpass biquad filters without frequency warping artifacts
+ by Aleksey Vaneev (Voxengo)
 
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:
