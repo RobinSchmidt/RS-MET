@@ -115,7 +115,7 @@ void rsSparseRationalFunction<T, TTol>::weightedSumDestructive(
   //   it may destroy the input parameters in the process of computing the output. It's meant to
   //   be used in place when memory usage should be optimized and the inputs become irrelevant
   //   after the computation. The regular weightedSum function allocates temporary memory due to 
-  //   usage of the =,*,+ operators. This function should not allocate iff all paremeters have 
+  //   usage of the =,*,+ operators. This function should not allocate iff all parameters have 
   //   allocated enough capacity to hold the (intermediate) results.
 }
 // Needs tests

@@ -210,5 +210,24 @@ Ideas:
   consider the probabilities as weights. At c = xxx.5, we do indeed only use 2 integer lengths 
   (both with probability 0.5). We could also say that we use 2 neighbors around the middle length.
 
+- Maybe we could experiment with switching the frequencies not after each and every completed 
+  cycle but after some number n of completed cycles. Maybe that number n could depend on the 
+  desired mean frequency. For higher frequencies, we could let more cycles pass before we switch 
+  the frequency. Maybe that could help reduce the noise. I think we could simply replace the line:
+
+    if(sampleCount >= lenNow)
+
+  by
+   
+    if(sampleCount >= n * lenNow)
+
+  in updateSampleCount() to achieve that effect. Maybe n doesn't even need to be an integer. I 
+  this case, we may just use round(n * lenNow). But no - that would lead to switching mid cycle
+  which is not a good idea.
+  
+- Maybe we could also switch after a fixed total number of samples which is independent from the 
+  completion of the cycle. We would then always complete the currently running cycle, though. I'm
+  not sure if that would still satisfy the requirement that the mean frequency is as the user says
+  it should be. -> Figure out!
 
 */

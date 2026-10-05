@@ -1313,7 +1313,8 @@ https://github.com/justinfrankel/reaper-sdk
 DAWProject:
 https://github.com/bitwig/dawproject
 -Open standard format for DAW project files.
--Created by Bitwig (and Presonus?) and supported by: Bitwig, Studio One, Steinberg Cubase, openDAW
+-Created by Bitwig (and Presonus?) and supported by: Bitwig, Presonus Studio One, Steinberg 
+ Cubase/Cubasis/Nuendo, openDAW, MAGDA, n-Track Studio, Tracktion
 -Converter tools are available for the following other formats: Reaper
  https://mossgrabers.de/Software/ProjectConverter/ProjectConverter.html
 -Ardour seems to be evaluating it: 

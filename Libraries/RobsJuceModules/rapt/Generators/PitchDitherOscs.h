@@ -3,19 +3,15 @@
 
 //=================================================================================================
 
-/** A realtime oscillator that produces pitch-dithered waveforms. ...TBC...
+/** A realtime oscillator that produces pitch-dithered waveforms. Pitch dithering is based on the 
+idea to allow the oscillator to only produce frequencies that have an integer period length and 
+then use dithering in such a way that the average frequency comes out as desired. The end result
+is an oscillator signal that is free of apparent aliasing but instead features a specific kind of
+dithering noise. For more details, see:
 
-ToDo:
-
-- Explain the idea of pitch dithering. Refer to the documents that I wrote up about the idea. They
-  are currently in draft state, though. Document the phasorRangeClosed parameters that occur in 
-  various places. Here is a draft of the explanation:
   https://github.com/RobinSchmidt/RS-MET/blob/work/Notes/Scratch/PitchDithering.md
 
-- Document what makes sense for the type T. I think, only scalar floating point types (i.e. 
-  float, double, long double, etc.) are meaningful.
-
-*/
+The template parameter T should be a scalar floating point type like float or double. */
 
 template<class T> 
 class rsPitchDitherOsc
@@ -41,6 +37,7 @@ public:
   oscillator frequency in Hz. This will immediately trigger a recomputation of the probability
   distribution of the cycle lengths and update the currently used cycle length. */
   void setMeanCycleLength(T newLength, bool phasorRangeClosed);
+  // ToDo: Document the phasorRangeClosed parameter
 
   /** Sets up a new period length just like setMeanCycleLength() does but without immediately 
   updating the probability distribution and current cycle length. This results in the behavior that

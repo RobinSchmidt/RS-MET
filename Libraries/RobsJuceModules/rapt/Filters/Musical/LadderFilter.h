@@ -114,6 +114,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
+  // TODO: Make these functions const correct!
+
   /** Returns the gain factor that needs to be applied to the output signal to ensure unit gain
   at DC (in the lowpass case). Without such a compensation, the DC gain will typically drop with
   incresing resonance. This is only relevant, if you plan to use the getSampleNoGain functions in
