@@ -596,6 +596,10 @@ https://sognevo.com/gjalla/
 https://github.com/andreademurtas/gjalla
 -"..black metal guitar amp simulator.."
 
+ImageStereoMultiband:
+https://github.com/piedracobalto/ImageStereoMultiband
+-5 band stereo width, gain, mute, and solo control.
+
 ----------------------------------------------------------------------------------------------------
 Analysis plugins
 
