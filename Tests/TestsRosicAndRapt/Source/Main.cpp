@@ -793,7 +793,7 @@ int main(int /*argc*/, char* /*argv[]*/)
   //createPiano1();
 
   // The new renering scripts for creating sample content for the sfz engine:
-  //createMiscSamples();
+  createMiscSamples();
   //createAllpassDrums();
   //createSamplerWaveforms();
 
