@@ -8,6 +8,7 @@ namespace rosic
 across the whole audible range using two second order shelving filters. 
 
 ToDo: 
+-Rename to rsTiltFilter
 -templatize and drag over to RAPT 
 -use an SVF-based implementation (but maybe in a subclass - it's more expensive and may not always 
  be needed - it's mostly for better time-variant behavior - maybe a state-vector based version 

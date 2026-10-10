@@ -104,6 +104,11 @@ Zrythm:
 https://www.zrythm.org/en/index.html
 https://gitlab.zrythm.org/zrythm/zrythm
 
+Soundcraft:
+https://github.com/storytold/soundcraft
+-Open-source, clean-room reimplementation of Avid Pro Tools, rebuilt in pure Rust.
+-The same developer has a bunch of other reimplementations of popular software, too - among them 
+ much of the Adobe suite.
 
 ----------------------------------------------------------------------------------------------------
 Modular environments
@@ -1904,6 +1909,27 @@ https://github.com/adion12/DaisyVerb
 https://www.youtube.com/watch?v=PNHGs7RQc_o
 
 
+----------------------------------------------------------------------------------------------------
+Graphics stuff:
+
+Artcraft:
+https://github.com/storytold/artcraft
+-IDE for interactive AI image and video creation
+
+Photocraft:
+https://photocraft.one/
+https://github.com/storytold/photocraft
+-clean-room reimplementation of Adobe Photoshop, rebuilt in pure Rust
+
+Filmcraft:
+https://github.com/storytold/filmcraft
+-clean-room reimplementation of Adobe Premiere Pro, rebuilt in pure Rust.
+
+Lightcraft:
+https://github.com/storytold/lightcraft
+-clean-room reimplementation of Adobe Lightroom, rebuilt in pure Rust.
+
+ToDo: Blender, Gimp, Inkscape
 
 ----------------------------------------------------------------------------------------------------
 Resources

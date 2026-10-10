@@ -157,7 +157,10 @@ inline void rsSweepDrummer<T>::updateCoeffs()
 //=================================================================================================
 
 /** A class to create noise bursts with attack/decay envelopes for spectral slope and amplitude.
-Mostly meant for generating impulse responses for convolution. */
+Mostly meant for generating impulse responses for convolution. 
+
+ToDo: 
+-Move into library under "Generators"  */
 
 
 template<class T>

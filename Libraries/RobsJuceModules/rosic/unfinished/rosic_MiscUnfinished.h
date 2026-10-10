@@ -683,10 +683,8 @@ protected:
   // Rationale for renaming: It's really about the time. One may perhaps even start at a low freq 
   // (not sure, if that would work, though).
 
-  // Rename into chirpAmount, chirpShape
   double chirpAmount;       // Determines (mostly) attack shape
   double chirpShape;        // Determines (mostly) decay shape
-
 
   //double refFreq = 50;   // reference frequency (is hardcoded and fixed - todo: use static const)
   double sweepTime;      // Time to sweep down to refFreq in seconds
