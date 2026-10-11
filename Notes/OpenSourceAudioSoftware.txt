@@ -289,9 +289,8 @@ https://dsp56300.wordpress.com/
 https://github.com/dsp56300/gearmulator/
 https://www.kvraudio.com/forum/viewtopic.php?t=559359
 -Emulates various older digital synthesizers based on the Motorola DSP563xx DSP chip.
--Needs the ROM dumps of the respective synth to run - google "synthesizer ROM archive" or see:
- https://dbwbp.com/index.php/9-misc/37-synth-eprom-dumps
- ...I didn't try it yet and am not sure about the legality
+-Needs the ROM dumps of the respective synth to run which you can usually legally obtain from the
+ original manufacturers websites _iff_ you own the original hardware unit.
 
 VirtualJV:
 https://github.com/giulioz/jv880_juce
@@ -605,6 +604,10 @@ ImageStereoMultiband:
 https://github.com/piedracobalto/ImageStereoMultiband
 -5 band stereo width, gain, mute, and solo control.
 
+Sabrina Reverb:
+https://github.com/soundemote/sabrina-reverb
+-Sabrina reverb algorithm by Walter Hacket as CLAP-first audio plugin created by Soundemote.
+
 ----------------------------------------------------------------------------------------------------
 Analysis plugins
 
@@ -728,6 +731,10 @@ https://github.com/JoepVanlier/ysfx
 SAPF - Sound As Pure Form:
 https://github.com/lfnoise/sapf
 -"Forth-like language for audio synthesis using lazy lists and APL-like auto-mapping"
+
+Glicol (graph-oriented live coding language):
+https://github.com/chaosprint/glicol
+https://github.com/glicol
 
 
 ----------------------------------------------------------------------------------------------------

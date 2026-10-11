@@ -249,6 +249,16 @@ inline void rsNoiseBurst<T>::processFrame(T* L, T* R)
   *R *= amp;
 
   sampleCount++;
+  // BUG! What happens when this overflows? Probably very bad things! Maybe we should use an 
+  // unsigned int such that it wraps around to zero rather than a big negative number. Then it will
+  // just repeat letting the filter slope go through the same values again rather than going 
+  // through garbage (negative) values. That's not really good either but at least it's not as 
+  // catastrophic as the current situation. And maybe we should use a 64 bit (unsigned) int such 
+  // that an overflow basically never actually happens in practice anyway. We should then document
+  // how much time it would theoretically take to overflow at various practical sample rates. Maybe 
+  // also with impractically high sample rates that may actually occur when the class is used in 
+  // a highly oversampled context. Or maybe we should avoid the overflow by saturating it at the 
+  // max value. 
 }
 
 

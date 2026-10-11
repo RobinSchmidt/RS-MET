@@ -7,6 +7,8 @@ SlopeFilter::SlopeFilter()
   slope      = RAPT::rsAmpToDb(sqrt(0.5));  // pinking by default: slope = -3.01 dB/oct
   reset();
   updateCoefficients();
+
+  // ToDo: Change the dealut setting from "pinking" mode to bypass, i.e. slope zero
 }
 
 SlopeFilter::~SlopeFilter()
