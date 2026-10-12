@@ -290,7 +290,7 @@ https://github.com/dsp56300/gearmulator/
 https://www.kvraudio.com/forum/viewtopic.php?t=559359
 -Emulates various older digital synthesizers based on the Motorola DSP563xx DSP chip.
 -Needs the ROM dumps of the respective synth to run which you can usually legally obtain from the
- original manufacturers websites _iff_ you own the original hardware unit.
+ original manufacturers websites _iff_ you own the respective original hardware unit.
 
 VirtualJV:
 https://github.com/giulioz/jv880_juce
@@ -1614,8 +1614,8 @@ https://github.com/Tracktion/whisper.cpp
 Reverb
 https://github.com/revdotcom/reverb
 -Inference and evaluation code for Rev's state-of-the-art speech recognition and diarization models.
- ...so - it's not a reverb, I guess. The only thing that is worse than non descriptive names are
- false descriptive names
+ ...so - it's not a reverb, I guess. The only thing that is worse than non-descriptive names are
+ false-descriptive (i.e. misleading) names
 
 Orpheus-FASTAPI
 https://github.com/Lex-au/Orpheus-FastAPI
@@ -1642,6 +1642,11 @@ https://github.com/Stability-AI/stable-audio-tools
 RC Stable Audio Tools:
 https://github.com/RoyalCities/RC-stable-audio-tools
 -Fork (of the above) with additional modifications to enhance functionality
+
+VoiceStudio:
+https://github.com/debpalash/VoiceStudio
+-voice cloning, voice design, video dubbing, dictation, transcription & audiobook creation in 646
+ languages.
 
 ----------------------------------------------------------------------------------------------------
 People
@@ -1711,6 +1716,10 @@ https://github.com/cgzirim/seek-tune
 
 ----------------------------------------------------------------------------------------------------
 Unsorted:
+
+Tonic:
+https://github.com/TonicAudio/Tonic
+-I think, it's a DSP library in C++
 
 crv:
 https://github.com/scztt/crv
@@ -1949,6 +1958,9 @@ https://en.wikipedia.org/wiki/Comparison_of_free_software_for_audio
 
 https://github.com/sudara/awesome-juce
 -List of open source JUCE libraries, plugins and utilities.
+
+https://github.com/fffaraz/awesome-cpp#audio
+-Audio, Sound, Music, Digitized Voice Libraries
 
 https://github.com/webprofusion/OpenAudio
 -List of open source audio software
