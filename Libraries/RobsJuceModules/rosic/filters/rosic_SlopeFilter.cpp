@@ -78,6 +78,13 @@ void SlopeFilter::updateCoefficients()
   // normalizes to unit gain at DC (for downward slopes) and another one that normalizes at Nyquist
   // (for upward slopes). I think, it currently normalizes the gain to unity at the center/pivot 
   // frequency which is 1000 = sqrt(250 * 4000). Verify and document this!
+  //
+  // There are some presets for the Equalizer module in ToolChain that demonstrate what this does.
+  // The setting that uses 250 and 4000 Hz and a bandwidth of 3 octaves is what is shown in the
+  // preset SlopeDown3dB.xml which shows a 3 db/oct slope. There's also another preset that uses
+  // 125 and 8000 Hz and a bandwidth of 3.7 octaves for both. It gives a curve that extends the 
+  // desired slope further into the lows and highs at the expense of being a bit more wobbly. Maybe
+  // we could give the user a parameter to make that tradeoff themselves.
 }
 
 

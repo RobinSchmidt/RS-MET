@@ -1648,6 +1648,15 @@ https://github.com/debpalash/VoiceStudio
 -voice cloning, voice design, video dubbing, dictation, transcription & audiobook creation in 646
  languages.
 
+Open Unmix:
+https://github.com/sigsep/open-unmix-pytorch
+-AI based stem separation
+
+Demucs:
+https://github.com/facebookresearch/demucs
+https://github.com/adefossez/demucs
+-AI based stem separation
+
 ----------------------------------------------------------------------------------------------------
 People
 
