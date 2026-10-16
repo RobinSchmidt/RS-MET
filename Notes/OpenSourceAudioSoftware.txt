@@ -913,6 +913,10 @@ Maximilian
 https://github.com/micknoise/Maximilian
 -Audio DSP library
 
+Q:
+https://github.com/cycfi/q
+-Audio DSP library, MIT licensed
+
 Spleeter
 https://github.com/deezer/spleeter
 -AI based source separation
@@ -1164,6 +1168,7 @@ biquad-voxengo:
 https://github.com/avaneev/biquad-voxengo
 -A little library for desgining bell and bandpass biquad filters without frequency warping artifacts
  by Aleksey Vaneev (Voxengo)
+
 
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:
