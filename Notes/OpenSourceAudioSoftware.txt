@@ -376,6 +376,23 @@ https://github.com/greatest-ape/OctaSine
 -FM Synth plugin (VST2, CLAP) with 4 operators
 -Written in Rust using the Iced GUI framework (see iced.rs)
 
+Six Sines:
+https://baconpaul.org/sidequests/six-sines/
+https://github.com/baconpaul/six-sines
+-6 operator FM synth. 
+
+RipplerX
+https://github.com/tiagolr/ripplerx
+https://www.kvraudio.com/product/ripplerx-by-tilr
+-Physically modeled synth, capable of sounds similar to AAS Chromaphone and Ableton Collision.
+
+Pro-54
+https://cmajor.dev/docs/Examples/Pro54/
+https://github.com/cmajor-lang/cmajor/tree/main/examples/patches/Pro54
+
+-Cmajor port of the Native Instruments Pro-53
+
+
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
 
@@ -2037,8 +2054,12 @@ https://filmora.wondershare.de/audio-editing/open-source-audio-editor.html
 
 
 Maybe turn this file into a database. Each entry should have the following fields:
+
 - name, author/vendor, license (GPL, MIT, etc.), type (DAW, audio editor, instrument plugin, effect
   plugin, educational, library, utility, ...), formats (CLAP, VST, AU, LV2, Standalone, etc.), 
   Website(s), Repo(s), maybe have a field for auxiliary links (for example to forks, mirrors, 
   support files, etc. - sometimes the main repo or website is not the only relevant thing), maybe 
-  have a field "comments" or "notes" where some free form text can be entered
+  have a field "comments" or "notes" where some free form text can be entered. Maybe we could have a
+  field with links to additional material like reviews, forum discussions, etc.
+  
+- Maybe it could be done in a structured data format like json.
