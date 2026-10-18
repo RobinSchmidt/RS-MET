@@ -313,8 +313,8 @@ int main(int /*argc*/, char* /*argv[]*/)
   //multiplicativeSynth();
   //pulseWidthModulationViaTwoSaws();  // just a stub at the moment
   //flatZapper();  // Various experiments
-  //freqSweeper();
-  //sineSweepBassdrum();
+  freqSweeper();
+  sineSweepBassdrum();
 
   // Modulators:
   //attackDecayEnvelope();

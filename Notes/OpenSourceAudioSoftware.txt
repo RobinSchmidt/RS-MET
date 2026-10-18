@@ -104,7 +104,7 @@ Zrythm:
 https://www.zrythm.org/en/index.html
 https://gitlab.zrythm.org/zrythm/zrythm
 
-Soundcraft:
+SoundCraft:
 https://github.com/storytold/soundcraft
 -Open-source, clean-room reimplementation of Avid Pro Tools, rebuilt in pure Rust.
 -The same developer has a bunch of other reimplementations of popular software, too - among them 
@@ -1357,7 +1357,7 @@ DAWProject:
 https://github.com/bitwig/dawproject
 -Open standard format for DAW project files.
 -Created by Bitwig (and Presonus?) and supported by: Bitwig, Presonus Studio One, Steinberg 
- Cubase/Cubasis/Nuendo, openDAW, MAGDA, n-Track Studio, Tracktion
+ Cubase/Cubasis/Nuendo, openDAW, MAGDA, n-Track Studio, Tracktion, Windows MIDI Sequencer (?)
 -Converter tools are available for the following other formats: Reaper
  https://mossgrabers.de/Software/ProjectConverter/ProjectConverter.html
 -Ardour seems to be evaluating it: 
@@ -1752,6 +1752,12 @@ https://github.com/cgzirim/seek-tune
 
 ----------------------------------------------------------------------------------------------------
 Unsorted:
+
+Windows MIDI Services:
+https://github.com/microsoft/MIDI
+-MIDI API for Windows
+-Includes "Windows MIDI Sequencer" which can be used to play hardware MIDI synthesizers. It supports
+ exporting to the .dawproject format.
 
 Tonic:
 https://github.com/TonicAudio/Tonic

@@ -612,7 +612,12 @@ public:
     return (a + b*pow(t, p*q)) / pow(1 + c*pow(t,p), q);
   }
   // ToDo: 
-  // -Document how I came up with this formula.
+  // -Document how I came up with this formula. The process can be reconstructed from some of the
+  //  experiments. It involved matching the frequency decay curve observed in the allpass chain 
+  //  based implementation FlatZapper and then modifying the result a bit to avoid a division by 
+  //  zero at t=0 and giving the user a couple of tweakable parameters.
+  // -Try the formula f(t) = 1 / (t + exp(-a*t)). Rationale: It's asymptotically like  f(t) = 1/t  
+  //  but the added exponential in the denominator avoids division by zero at t = 0.
   // -Try to parallelize it. Maybe use float instead of double to get even more bang for the buck.
 
 
