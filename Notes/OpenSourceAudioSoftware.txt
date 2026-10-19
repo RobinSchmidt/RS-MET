@@ -34,6 +34,10 @@ https://github.com/andremichelle/opendaw-lib
 -Support .dawproject data format.
 -It seems like here: https://opendaw.studio/ we can use it directly online.
 
+OpenDaw
+https://github.com/glenwrhodes/OpenDaw
+-DAW built using C++20, Qt 6, and the Tracktion Engine
+
 Stargate DAW:
 https://github.com/stargatedaw/stargate
 https://gitlab.com/stargatedaw
@@ -109,6 +113,12 @@ https://github.com/storytold/soundcraft
 -Open-source, clean-room reimplementation of Avid Pro Tools, rebuilt in pure Rust.
 -The same developer has a bunch of other reimplementations of popular software, too - among them 
  much of the Adobe suite.
+ 
+Radium
+https://www.radium.dog/
+https://github.com/kmatheussen/radium
+https://lac.linuxaudio.org/2014/video.php?id=16
+-music editor inspired by the music tracker
 
 ----------------------------------------------------------------------------------------------------
 Modular environments
@@ -1356,15 +1366,27 @@ https://github.com/justinfrankel/reaper-sdk
 DAWProject:
 https://github.com/bitwig/dawproject
 -Open standard format for DAW project files.
--Created by Bitwig (and Presonus?) and supported by: Bitwig, Presonus Studio One, Steinberg 
- Cubase/Cubasis/Nuendo, openDAW, MAGDA, n-Track Studio, Tracktion, Windows MIDI Sequencer (?)
--Converter tools are available for the following other formats: Reaper
- https://mossgrabers.de/Software/ProjectConverter/ProjectConverter.html
+-Created by Bitwig and PreSonus and supported by: Bitwig, PreSonus Studio One, Steinberg 
+ Cubase / Cubasis / Nuendo / VST Live Pro, openDAW, MAGDA, n-Track Studio (import free, export 
+ paid), Tracktion (plugin count limited to 25), Windows MIDI Sequencer (export only), MorningDAW 
+ (import only)
+-Converter tools are available for the following other formats: 
+ -Reaper:
+  https://mossgrabers.de/Software/ProjectConverter/ProjectConverter.html
+ -FL Studio:
+  https://github.com/poznas/flp-to-dawproject
+  -community driven, supports only clips, no MIDI and automation
 -Ardour seems to be evaluating it: 
  https://discourse.ardour.org/t/dawproject-in-ardour/109230/11
+ but it's difficult due to mismatch with Ardour's architecture
 -See also:
  https://www.aatranslator.com.au/
  https://www.amazona.de/feature-das-dawproject-file-format-daw-uebergreifende-projekte/
+-Some more info is in this chat with Google Gemini: 
+ https://share.google/aimode/wVsC1SwxwuK8tn4jh
+-Forum Discussions:
+ https://www.kvraudio.com/forum/viewtopic.php?t=601862  Now this is a game changer ...
+ https://www.kvraudio.com/forum/viewtopic.php?t=615708
 
 OpenTimelineIO:
 https://github.com/AcademySoftwareFoundation/OpenTimelineIO
@@ -1752,6 +1774,10 @@ https://github.com/cgzirim/seek-tune
 
 ----------------------------------------------------------------------------------------------------
 Unsorted:
+
+Bosca Ceoil:
+https://github.com/yurisizov/boscaceoil-blue
+-simple and beginner-friendly app for making music
 
 Windows MIDI Services:
 https://github.com/microsoft/MIDI
