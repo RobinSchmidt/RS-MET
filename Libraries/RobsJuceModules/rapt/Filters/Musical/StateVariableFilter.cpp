@@ -200,9 +200,15 @@ ToDo:
   or t[n+1]-t[n] or maybe the (weighted?) average of both? I assume that the t-array gives 
   timestamps for the corresponding samples x[n].
 
-- Try to implement a function setupFromAnalogBiquad. The goal is to realize a filter with s-domain
+- Implement a function setupFromAnalogBiquad(). The goal is to realize a filter with s-domain
   transfer function H(s) = (B0 + B1*s + B2*s^2) / (A0 + A1*s + A2*s^2) maybe normalized to A0 = 1.
-  It may use BLT or MZT - or maybe we should have two separate functions for these purposes.
+  It may use BLT or MZT. Maybe we should have two separate functions for these purposes. Maybe
+  as a first (perhaps naive) implementation, we could use the existing setupFromBiquad() function 
+  together with a (to be written) function rsFilterCoefficientConverter::biquadAnaToDigiBilinear().
+  See comments in FilterCoefficientConverter.cpp for how such a function could be implemented. When
+  we have that, we could try to figure out simplifications for a more direct computation that 
+  avoids that roundabout route (which should then be kept as prototype/reference and be used in 
+  unit tests).
 
 - Add classes for chains of state variable filters - with equal and with different coeffs per 
   stage.
