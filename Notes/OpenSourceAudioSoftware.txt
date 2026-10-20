@@ -37,6 +37,7 @@ https://github.com/andremichelle/opendaw-lib
 OpenDaw
 https://github.com/glenwrhodes/OpenDaw
 -DAW built using C++20, Qt 6, and the Tracktion Engine
+-This project has nothing to do with the OpenDAW project above. This is just a name clash!
 
 Stargate DAW:
 https://github.com/stargatedaw/stargate
@@ -102,7 +103,7 @@ MAGDA (Multi AGent Digital Audio):
 https://magda.land/
 https://github.com/Conceptual-Machines/magda-core
 https://www.youtube.com/watch?v=momhIo5vOSc
--DAW with AI integrated from the ground up. Built on C++20, JUCE, and Tracktion Engine.
+-DAW with AI integrated. Built on C++20, JUCE, and Tracktion Engine.
 
 Zrythm:
 https://www.zrythm.org/en/index.html

@@ -619,6 +619,9 @@ public:
   // -Try the formula f(t) = 1 / (t + exp(-a*t)). Rationale: It's asymptotically like  f(t) = 1/t  
   //  but the added exponential in the denominator avoids division by zero at t = 0.
   // -Try to parallelize it. Maybe use float instead of double to get even more bang for the buck.
+  // -Try to modify the shape such that we get a little hold time at the start. See:
+  //  https://www.kvraudio.com/forum/viewtopic.php?p=9314588#p9314588
+  //  "People swear by a little hold time when it comes to bass drum designs and pitch envelopes"
 
 
   /** Calculates one output stereo sample-frame at a time. */
