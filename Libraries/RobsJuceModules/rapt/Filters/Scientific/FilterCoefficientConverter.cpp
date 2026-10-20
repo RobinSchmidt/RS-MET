@@ -259,8 +259,50 @@ void rsFilterCoefficientConverter<T>::normalizeBiquadStages(T *b0, T *b1, T *b2,
   }
 }
 
+//=================================================================================================
 /*
 
-Maybe rename to rsFilterStructure/Topology/FormConverter, 
+ToDo:
+
+- Implement a bilinear transform function like:
+
+    biquadAnaToDigiBilinear(T c, 
+      T  B0, T  B1, T  B2, T  A0, T  A1, T  A2, 
+      T* b0, T* b1, T* b2, T* a0, T* a1, T* a2);
+
+  where the coefficient c is typically given by c = 2/T or, in a more general setting as
+  c = 2/T * tan(pi*fc/fs) where fc is the cutoff frequency and fs is the sampling frequency 
+  (Verify! AI suggestion). I actually wanted to write c = w0 / tan(w0*T/2) as suggested here:
+    
+    https://en.wikipedia.org/wiki/Bilinear_transform#Frequency_warping
+
+  The function should assign the  b0,b1,b2,a0,a1,a2  digital coeffs given the B0,B1,B2,A0,A1,A2
+  analog coeffs such that:
+
+            B0 + B1 s + B2 s^2             b0 + b1 z^-1 + b2 z^-2
+    H(s) = --------------------,   H(z) = ------------------------
+            A0 + A1 s + A2 s^2             a0 + a1 z^-1 + a2 z^-2
+
+  I think, the conversion formulas can be found by making the substitution:
+
+               z - 1
+    s  <-   c -------
+               z + 1
+
+  in H(s) and then simplifying. This should be a job for SageMath. The formula for the 
+  correspondence between analog radian frequency (wa = 2 pi f) wa and digital normalized radian 
+  frequency (wd = 2 pi f / fs) is:  wa = c tan(wd/c). Verify all formulas!
+
+- Implement an inverse bilinear transform biquadDigiToAnaBilinear(...). I think, the substitution
+  in this case is (verify!):
+
+            1 + s/c
+    z  <-  ---------
+            1 - s/c
+
+  in H(z) and then simplifying.
+
+
+- Maybe rename to rsFilterStructure/Topology/FormConverter, ...
 
 */
