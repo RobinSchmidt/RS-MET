@@ -610,12 +610,26 @@ void rsFlatZapper::updateCoeffs()
 // See also:
 // https://kilohearts.com/products/disperser
 // https://github.com/robbert-vdh/diopser
-// They seem to be similar in what they do. Diopser also seems to have a mor where the allpass 
+// They seem to be similar in what they do. Diopser also seems to have a mode where the allpass 
 // tunings are distributed linearly. Try that, too. I think, we just need to replace the calls to
 // rsLinToExp with calls to rsLinToLin. But even better would be a continuous parameter to morph 
-// between liner and exponential and maybe go beyond. Check the functions used the 
+// between linear and exponential and maybe go beyond. Check the functions used the 
 // sineSweepBassdrum() experiment. There's this adjustable exp mapping that is also used for the 
 // shape of the envelope segments in the sampler.
+//
+// Ideas:
+// 
+// - Maybe by passing the FlatZapper output through a bandpass, we can impose an attack/decay 
+//   amplitude envelope because the high frequencies occur at the start and the low frequencies
+//   at the end. Maybe we don not need to write a class for that and instead just put an 
+//   EngineersFilter after FlatZapper in ToolChain. Maybe it could make sense to use separate 
+//   lowpass and highpass filters such that they can each have their own slope setting.
+//
+// - Maybe we could also use filters other than allpasses in which we can adjust the ratio between
+//   the Q of the pole and the Q of the zero. That could also help to create an amp env because 
+//   when, for example, at a high freq, the zero has higher Q than the pole, that freq will be 
+//   damped a bit. I think, the allpasses would become shelvers (verify!) when the ratio between
+//   pole-Q and zero-Q is not equal to 1. Or maybe they would become peak/dip filters? Figure out!
 
 //=================================================================================================
 

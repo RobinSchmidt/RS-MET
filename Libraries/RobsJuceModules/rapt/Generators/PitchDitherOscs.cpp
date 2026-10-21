@@ -3,7 +3,7 @@ template<class T>
 rsPitchDitherOsc<T>::rsPitchDitherOsc()
 {
   setMeanCycleLength(T(100.0), true);    // Triggers computations to set up members.
-  reset(true);                           // Assigns sampleCount.
+  reset(true);                           // Assigns sampleCount = 0.
 }
 
 template<class T>  

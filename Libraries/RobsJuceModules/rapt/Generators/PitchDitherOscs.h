@@ -37,7 +37,7 @@ public:
   oscillator frequency in Hz. This will immediately trigger a recomputation of the probability
   distribution of the cycle lengths and update the currently used cycle length. */
   void setMeanCycleLength(T newLength, bool phasorRangeClosed);
-  // ToDo: Document the phasorRangeClosed parameter
+  // ToDo: Document the phasorRangeClosed parameter, make it optional defaulting to false
 
   /** Sets up a new period length just like setMeanCycleLength() does but without immediately 
   updating the probability distribution and current cycle length. This results in the behavior that
