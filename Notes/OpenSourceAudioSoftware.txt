@@ -405,8 +405,10 @@ https://github.com/cmajor-lang/cmajor/tree/main/examples/patches/Pro54
 DrumGroover
 https://haizytiles.reinerstilesets.de/index.php/drumgroover/
 https://github.com/ReinerBforartists/Drumgroover
--Drum groove generator and TR-808 style drum synth
+-Drum groove generator and TR-808 style drum synth.
 -Uses circuit modeling for the synthesis.
+-Here are the Spice models:  https://github.com/ReinerBforartists/yocto_tr808_ngspice
+-TR-909 models are under construction (Oct 2026).
 
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
