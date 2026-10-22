@@ -49,3 +49,19 @@ void rsHilbertFilter<TSig, TPar>::computeCoeffs(TPar* h, int numTaps,
   //   the comments from here before).
 }
 */
+
+//=================================================================================================
+/*
+
+Ideas:
+
+- Implement a stereoizer based on such a Hilbert filter in the following way: (1) Convert L/R 
+  (left/right) inputs to M/S (mid/side). (2) Apply the Hilbert filter to the mid signal. (3) Mix 
+  the so produced signal into the side signal (weighted by an "Amount" parameter). (4) Convert back
+  to L/R. Variations: Maybe we should have "Amount" slider for the Hilbert output as well as for 
+  the original side signal. The length of the Hilbert filter could be another user parameter. 
+  Shorter ones could actually make sense because they would leave the bass mono which is often 
+  desired in mixing.
+  
+
+*/

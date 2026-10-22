@@ -400,9 +400,12 @@ https://www.kvraudio.com/product/ripplerx-by-tilr
 Pro-54
 https://cmajor.dev/docs/Examples/Pro54/
 https://github.com/cmajor-lang/cmajor/tree/main/examples/patches/Pro54
-
 -Cmajor port of the Native Instruments Pro-53
 
+DrumGroover
+https://github.com/ReinerBforartists/Drumgroover
+-Drum groove generator and TR-808 style drum synth
+-Uses circuit modeling for the synthesis.
 
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
@@ -642,7 +645,7 @@ https://github.com/soundemote/sabrina-reverb
 -Sabrina reverb algorithm by Walter Hacket as CLAP-first audio plugin created by Soundemote.
 
 ----------------------------------------------------------------------------------------------------
-Analysis plugins
+Analysis and Visualization plugins
 
 Signalizer
 https://bitbucket.org/Mayae/signalizer/src/master/
@@ -677,9 +680,26 @@ https://www.kvraudio.com/forum/viewtopic.php?t=624211
 -Onset detector based on multiband differential envelope technology (I guess from the description on 
  KVR)
 
-Prettyscope:
+PrettyScope:
 https://github.com/soundemote/prettyscope-revival
 -Oscilloscope with pretty, artistic rendering modes
+
+Advanced Visualization Studio (AVS)
+https://github.com/grandchild/vis_avs
+-Plugin for WinAmp for trippy music visualization.
+
+projectM 
+https://github.com/projectM-visualizer/projectm
+-open-source project that reimplements Winamp MilkDrop
+
+MilkDrop 3
+https://github.com/milkdrop2077/MilkDrop3
+-supports any audio source (Spotify, YouTube, SoundCloud, Winamp...)
+-is based on BeatDrop from Maxim Volskiy
+
+Butterchurn
+https://github.com/jberg/butterchurn
+-WebGL implementation MilkDrop
 
 ----------------------------------------------------------------------------------------------------
 MIDI plugins
