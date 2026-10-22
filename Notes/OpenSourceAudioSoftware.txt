@@ -403,6 +403,7 @@ https://github.com/cmajor-lang/cmajor/tree/main/examples/patches/Pro54
 -Cmajor port of the Native Instruments Pro-53
 
 DrumGroover
+https://haizytiles.reinerstilesets.de/index.php/drumgroover/
 https://github.com/ReinerBforartists/Drumgroover
 -Drum groove generator and TR-808 style drum synth
 -Uses circuit modeling for the synthesis.
