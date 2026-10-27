@@ -621,15 +621,23 @@ void rsFlatZapper::updateCoeffs()
 // 
 // - Maybe by passing the FlatZapper output through a bandpass, we can impose an attack/decay 
 //   amplitude envelope because the high frequencies occur at the start and the low frequencies
-//   at the end. Maybe we don not need to write a class for that and instead just put an 
+//   at the end. Maybe we do not need to write a class for that and instead just put an 
 //   EngineersFilter after FlatZapper in ToolChain. Maybe it could make sense to use separate 
-//   lowpass and highpass filters such that they can each have their own slope setting.
+//   lowpass and highpass filters such that they can each have their own slope setting. We could 
+//   also use the more flexible Equalizer to create a notch/dip somewhere in the lower midrange to
+//   create this typical "fish" shape that bassdrum amp envs often have.
 //
 // - Maybe we could also use filters other than allpasses in which we can adjust the ratio between
 //   the Q of the pole and the Q of the zero. That could also help to create an amp env because 
 //   when, for example, at a high freq, the zero has higher Q than the pole, that freq will be 
 //   damped a bit. I think, the allpasses would become shelvers (verify!) when the ratio between
 //   pole-Q and zero-Q is not equal to 1. Or maybe they would become peak/dip filters? Figure out!
+//   Maybe we could start with a normal ("cookbook") peak EQ and then transform it from minimum 
+//   phase to maximum phase. Try to figure out how to do that with an SVF. At first, we could use
+//   the setupFromBiquad function where we design the biquad with the cookbook method, transform it
+//   to max-phase and then use the resulting coeffs. But maybe there's a simpler and more direct 
+//   way to do it. Maybe try consideriing the poles and zeros in the s domain. Maybe consult AI 
+//   and/or KVR.
 
 //=================================================================================================
 

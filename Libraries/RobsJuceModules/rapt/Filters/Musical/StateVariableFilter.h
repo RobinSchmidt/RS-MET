@@ -256,7 +256,7 @@ void rsStateVariableFilter<TSig, TPar>::setupBell(TPar w, TPar Q, TPar A)
 template<class TSig, class TPar>
 void rsStateVariableFilter<TSig, TPar>::setupLowShelf(TPar w, TPar Q, TPar A)
 {
-  // H(s) = A * (s^2 + (sqrt(A)/Q)*s + A)/(A*s^2 + (sqrt(A)/Q)*s + 1)
+  // H(s) = A * (s^2 + (sqrt(A)/Q)*s + A) / (A*s^2 + (sqrt(A)/Q)*s + 1)
 
   TPar r = 1/Q;
   g  = tan(0.5*w) / sqrt(A);
@@ -270,7 +270,7 @@ void rsStateVariableFilter<TSig, TPar>::setupLowShelf(TPar w, TPar Q, TPar A)
 template<class TSig, class TPar>
 void rsStateVariableFilter<TSig, TPar>::setupHighShelf(TPar w, TPar Q, TPar A)
 {
-  // H(s) = A * (A*s^2 + (sqrt(A)/Q)*s + 1)/(s^2 + (sqrt(A)/Q)*s + A)
+  // H(s) = A * (A*s^2 + (sqrt(A)/Q)*s + 1) / (s^2 + (sqrt(A)/Q)*s + A)
 
   TPar r = 1/Q;
   g  = tan(0.5*w) * sqrt(A);
@@ -289,7 +289,7 @@ inline void rsStateVariableFilter<TSig, TPar>::getPartialOutputs(
 {
   // Compute HP, BP and LP outputs:
   *yH = (in - c*z1 - z2) * s;            // == (in - (g+r)*z1 - z2) / (1 + g*(g+r))
-  *yB = z1 + g * *yH; 
+  *yB = z1 + g * *yH;
   *yL = z2 + g * *yB;
 
   // Update integrator state variables:

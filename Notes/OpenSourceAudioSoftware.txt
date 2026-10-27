@@ -121,6 +121,18 @@ https://github.com/kmatheussen/radium
 https://lac.linuxaudio.org/2014/video.php?id=16
 -music editor inspired by the music tracker
 
+Nota
+https://nota-daw.github.io/nota-site/
+https://github.com/nota-daw/nota
+
+Lemon Studio
+https://github.com/ItsAlphaNeon/Lemon-Studio
+-FL Studio clone made in Rust
+
+Honeydew
+https://github.com/daijro/honeydew
+-Music studio modelled on FL Studio Mobile, written in Rust
+
 ----------------------------------------------------------------------------------------------------
 Modular environments
 
@@ -410,6 +422,42 @@ https://github.com/ReinerBforartists/Drumgroover
 -Here are the Spice models:  https://github.com/ReinerBforartists/yocto_tr808_ngspice
 -TR-909 models are under construction (Oct 2026).
 
+ms2000r-emu
+https://github.com/Tuth/ms2000r-emu
+-Hardware-level emulator of the KORG MS2000R (rack version of MS2000 analog-modeling synthesizer)
+-Based on DSP56300 emulation The Usual Suspects (TUS) 
+
+CA-72
+https://github.com/idlefoundry/ca-72
+https://www.youtube.com/watch?v=QLfwGqYg4wU
+https://www.youtube.com/watch?v=Ekep7V5lWqA
+-Modelled from the circuit of the Minimoog Model D of about 1972-73 with the CA3046 ("old") 
+ oscillator board.
+
+Overtonium
+https://github.com/benjamindehli/overtonium
+https://www.youtube.com/watch?v=L1oYdPxGlGA
+-32-partial additive synthesizer laid out like a 32-channel mixer. Each channel is one sine 
+ oscillator locked to a harmonic of the note you play, and each channel has its own tuning, envelope
+ and modulation.
+
+Wave Emulation
+https://github.com/mo0kid/wave
+-recreates the documented Waldorf Wave signal path
+
+Silver-K 
+https://github.com/temaniak/Silver-K/
+https://www.youtube.com/watch?v=_t6m6lp0Cd8
+-Novation K station and KS series emulation based Gearmulator.
+
+FSVR
+https://github.com/musicastudio/FSVR
+-Yamaha FS1R emulation.
+
+Therum:
+https://github.com/GareBear99/Therum_JUCE-Plugin
+-Wavetable synthesizer, Serum inspired?
+
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
 
@@ -566,7 +614,6 @@ https://plugins.iem.at/
 https://git.iem.at/audioplugins/IEMPluginSuite
 https://atmoky.com/
 
-
 Setekh:
 https://github.com/fullfxmedia/setekh
 -"minimalistic yet sonically powerful distortion plugin"  by https://fullfxmedia.com/
@@ -574,7 +621,6 @@ https://github.com/fullfxmedia/setekh
 VBAP (Vector Base Amplitude Panner):
 https://github.com/drbafflegab/vbap
 -Surround panning plugin
-
 
 Polarity-MD
 https://polarity.productions/polarity-md/
@@ -584,7 +630,6 @@ https://www.youtube.com/watch?v=sHRTu1yD5uU
  https://github.com/polarity
 -...hmm - I think, initially he mentioned that should be open source, but it seems, he changed his
  mind on this. ...too bad! :'-(
-
 
 Nine Strip
 https://github.com/blablack/nine-strip
@@ -646,6 +691,17 @@ https://github.com/piedracobalto/ImageStereoMultiband
 Sabrina Reverb:
 https://github.com/soundemote/sabrina-reverb
 -Sabrina reverb algorithm by Walter Hacket as CLAP-first audio plugin created by Soundemote.
+
+Cineol-X 224
+https://github.com/sergiofrias/cineolX
+https://www.youtube.com/watch?v=DQpMTNFzd7c
+-Daisy DSP project based on the six programs of the original Lexicon 224, firmware v4.4 plus a 
+ desktop preview of all 22 224 XL v8.21 programs
+-Needs original Lexicon ROMs, I think
+
+Vivid Fever Dreams plug-in suite
+https://github.com/vividfeverdreams/vfd-plugin-suite
+-Six free, open-source audio plug-ins for bass music by Vivid Fever Dreams, built with JUCE 9.0.2. 
 
 ----------------------------------------------------------------------------------------------------
 Analysis and Visualization plugins
@@ -1203,6 +1259,9 @@ https://github.com/avaneev/biquad-voxengo
 -A little library for desgining bell and bandpass biquad filters without frequency warping artifacts
  by Aleksey Vaneev (Voxengo)
 
+stmlib
+https://github.com/pichenettes/stmlib
+-Mutable Instruments' project template, makefile, and libraries for STM32F projects.
 
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:
@@ -1217,6 +1276,8 @@ https://github.com/DTolm/VkFFT
  Level Zero, Metal
 
 ToDo: list Ouura FFT, DustFFT, Kiss FFT, Bernsee FFT, FFTW, ...
+
+https://github.com/pichenettes/stmlib/blob/master/fft/shy_fft.h
 
 ----------------------------------------------------------------------------------------------------
 Research and Education Code
@@ -1484,6 +1545,14 @@ Daala:
 https://xiph.org/daala/
 https://github.com/xiph/daala
 -Video compression
+
+serum2vital
+https://github.com/btesser/serum2vital
+-Patch converter from Serum to Vital
+
+serum-preset-packager
+https://github.com/KennethWussmann/serum-preset-packager
+-CLI tool to un/pack Serum preset files.
 
 ----------------------------------------------------------------------------------------------------
 Audio Routing and System Wide Effects
@@ -2041,6 +2110,10 @@ ToDo: Blender, Gimp, Inkscape
 
 ----------------------------------------------------------------------------------------------------
 Resources
+
+https://remade.wiki/
+-"Discover independent software reimplementations. 
+  Request the software you want to see remade next."
 
 https://clapdb.tech/
 -Database of CLAP plugins
