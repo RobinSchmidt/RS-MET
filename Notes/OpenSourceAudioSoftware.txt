@@ -441,6 +441,10 @@ https://www.youtube.com/watch?v=L1oYdPxGlGA
  oscillator locked to a harmonic of the note you play, and each channel has its own tuning, envelope
  and modulation.
 
+KawaiiK50000SV
+https://github.com/Taco2sD/KawaiiK50000SV
+-32-partial additive synth with ZDF SVF filter (VST3)
+
 Wave Emulation
 https://github.com/mo0kid/wave
 -recreates the documented Waldorf Wave signal path
@@ -1867,6 +1871,31 @@ https://github.com/cgzirim/seek-tune
 
 ----------------------------------------------------------------------------------------------------
 Unsorted:
+
+Music Tribe Open Source
+https://github.com/MusicTribeOpenSource
+https://github.com/MusicTribeOpenSource/0716-AAF  Step Sequencer
+https://github.com/MusicTribeOpenSource/0700-AAM  Sampler, Jam DAW
+-Hardware units (Sampler, Production Workstation) with an open source software ecosystem
+-by Behringer
+
+LXR V2 firmware (desktop, STM32F765VG)
+https://github.com/erica-synths/lxr-desktop-app
+-Firmware for LXR desktop drum synthesizer from Erica Synths
+
+AKAI Sample Key  ...coming soon
+
+
+AUDIO NOISE - 3D webgl audio visualisation
+https://github.com/neomiannay/audioNoise
+
+AudioNoise
+https://github.com/torvalds/AudioNoise
+-"Another silly guitar-pedal-related repo"  by Linus Torvalds
+
+GuitarPedal
+https://github.com/torvalds/GuitarPedal
+-"Linus learns analog circuits"
 
 Bosca Ceoil:
 https://github.com/yurisizov/boscaceoil-blue
