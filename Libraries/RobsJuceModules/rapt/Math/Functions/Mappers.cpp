@@ -95,7 +95,8 @@ Ideas:
   Here are some values:
     x:  0.0  0.1  0.2  0.5  0.8  0.9  1.0
     y:  0.0  1/9  1/4  1.0  4.0  9.0  inf
-  This seems to have a nice symmetry: f(1-x) = 1/f(x). (Verify!)
+  This has a nice symmetry: f(1-x) = 1/f(x) because f(1-x) = (1-x)/(1-(1-x)) = (1-x)/x. This
+  symmetry still holds for a != 1 in  f(x) = (x / (1-x))^a.
 
 
 
