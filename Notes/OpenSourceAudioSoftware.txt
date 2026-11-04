@@ -133,6 +133,14 @@ Honeydew
 https://github.com/daijro/honeydew
 -Music studio modelled on FL Studio Mobile, written in Rust
 
+ProWave
+https://github.com/fabox-os/Pro-Wave
+-DAW in the style of Logic Pro, written in pure Rust with egui.
+
+Lynx Share
+https://github.com/Ka1-S/LYNX-SHARE
+-lightweight open-source DAW in C++20/JUCE with the FL Studio workflow
+
 ----------------------------------------------------------------------------------------------------
 Modular environments
 
@@ -298,6 +306,11 @@ https://github.com/Hornfisk/squelchbox
 https://www.kvraudio.com/forum/viewtopic.php?t=629426
 -TB-303 plugin for VST3, CLAP, standalone. Built with Rust, nih-plug, and egui. GPL-3.0.
 
+Lemus (Legacy Electronic MUsic Systems)
+https://lemusdev.org/download
+https://github.com/lemus-dev/lemus/tree/v0.1.4
+-A MAME-style emulator for legacy music equipment. First machine: the Roland TB-303 (ro-mono-303).
+
 Aeolus:
 https://github.com/Archie3d/aeolus_plugin
 -Pipe organ synthesizer
@@ -343,6 +356,10 @@ https://www.kvraudio.com/forum/viewtopic.php?t=628506
 RD Piano:
 https://github.com/giulioz/rdpiano
 -Emulates SA-synthesis digital pianos, such as Roland MKS-20, RD1000, Rhodes MK-80 electric piano.
+
+SQ8L
+https://github.com/sq8l-revival/SQ8L
+-64-bit port of SQ8L 0.91b, the free Ensoniq SQ-80 emulation by Siegfried Kullmann
 
 CompuFart:
 https://github.com/alexmfink/compufart
@@ -462,6 +479,10 @@ Therum:
 https://github.com/GareBear99/Therum_JUCE-Plugin
 -Wavetable synthesizer, Serum inspired?
 
+Quesynth (Pronounced “keh-synth”)
+https://github.com/mauro-moreno/quesynth/
+-Synth1 emulation written in Odin. Supports Synth1 .sy1 patches.
+
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
 
@@ -548,7 +569,11 @@ https://github.com/sdatkinson/NeuralAmpModelerPlugin
 
 ZL-Audio Plugins
 https://github.com/ZL-Audio
+https://www.youtube.com/@zsliu98
 https://github.com/ZL-Audio/ZLEqualizer
+https://github.com/ZL-Audio/ZLSpectrumEqualizer
+https://github.com/ZL-Audio/ZLCompressor
+https://github.com/ZL-Audio/ZLLimiter
 https://github.com/ZL-Audio/ZLSplitter
 -Some plugins made with JUCE. The EQ appears to have a nice visual and modern GUI and uses the
  Vicanek design formulas. It's dynamic as well. The splitter splits signals into transient and 
@@ -1874,9 +1899,12 @@ Unsorted:
 
 Music Tribe Open Source
 https://github.com/MusicTribeOpenSource
-https://github.com/MusicTribeOpenSource/0716-AAF  Step Sequencer
-https://github.com/MusicTribeOpenSource/0700-AAM  Sampler, Jam DAW
--Hardware units (Sampler, Production Workstation) with an open source software ecosystem
+https://github.com/MusicTribeOpenSource/0716-AAF  Ignite: Step Sequencer
+https://github.com/MusicTribeOpenSource/0700-AAM  Kick: Sampler, Jam DAW
+https://github.com/MusicTribeOpenSource/0715-AAW  BCR32: MIDI Controller (lots of knobs)
+https://github.com/MusicTribeOpenSource/0715-AAX  AQ64L: 64-pad RGB grid MIDI controller.
+-Hardware units (Sampler, Production Workstation, MIDI Controller) with an open source software
+ ecosystem
 -by Behringer
 
 LXR V2 firmware (desktop, STM32F765VG)
@@ -1884,6 +1912,9 @@ https://github.com/erica-synths/lxr-desktop-app
 -Firmware for LXR desktop drum synthesizer from Erica Synths
 
 AKAI Sample Key  ...coming soon
+
+M-VAVE FM-1 - Felucca (emulated)
+https://joakimeriksson.github.io/fm1-emu/?fw=felucca&mhz=100
 
 
 AUDIO NOISE - 3D webgl audio visualisation

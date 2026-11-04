@@ -1344,11 +1344,24 @@ Bugs:
 
 ToDo:
 -GUI:
- -Maybe include a virtual keyboard at the bottom that can be swicthed on/off by a little button at 
+ -Maybe include a virtual keyboard at the bottom that can be switched on/off by a little button at 
   the bottom. Maybe the keyboard can also be some more general "MIDI Status" section with a bit 
-  more info like he current BPM setting (as received from the host or set up by the user). a 
-  flashlight for clock/beat (like my JX-305), last received event, number of active notes, a button
-  for "panic" (i.e. MIDI reset), etc.
+  more info like he current BPM setting (as received from the host or set up by the user). A 
+  flashlight for clock/beat (like my JX-305), last received event, number of active (pressed or 
+  releasing) notes, a button for "panic" (i.e. MIDI reset), etc. 
+ -The keyboard should be playable via mouse. Maybe the key should ahve 3 states: Off/Idle/Ready, 
+  Pressed/Held, Releasing indicated by 3 colors. To implement a "Release" indication, we would have
+  to reach into the DSP code to figure out what it is doing. Maybe we should have a VoiceManager 
+  class (we already do) that has an API like getActiveNotes(), getReleasingNotes() that return a
+  const reference to a std::vector<uint8_t>. The voice manager would keep these as members and 
+  adjust theri contents and sizes according to the state. That means, the voice manager needs to 
+  have access to (or be synced in other ways to) to the DSP core. Maybe the whole ToolChain class
+  should once per block trigger an updateMidiState() function that loops through all slots in order
+  to figure out, which keys can go from "Releasing" back to "Idle" state. Or maybe the update could
+  be triggered by a juce::Timer.
+ -Or maybe let the option to show/hide the MIDI status section be set in the Setup. Currently, 
+  there is only the color setup. Maybe make it a tabbed menu with: Colors, Folders, Audio (quality 
+  settings, etc.), Status (MIDI + Help-line + ...), Fonts, ....
  -The gridlines are almost invisible in my current favorite color-scheme. They become visible when 
   reducing the gamma. Try it with the envelope generator. The frequency plots have gridlines at
   strange frequencies - go back to 250, 500, 1k, 2k, etc. as we had formerly.
