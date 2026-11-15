@@ -129,6 +129,12 @@ Lemon Studio
 https://github.com/ItsAlphaNeon/Lemon-Studio
 -FL Studio clone made in Rust
 
+ML Studio
+https://michaellanemusic.de/ml-studio/
+https://github.com/Dorfhaus/ML-Studio
+https://www.youtube.com/watch?v=Saih3gBWuQ0
+-Successor of Lemon Studio
+
 Honeydew
 https://github.com/daijro/honeydew
 -Music studio modelled on FL Studio Mobile, written in Rust
@@ -140,6 +146,11 @@ https://github.com/fabox-os/Pro-Wave
 Lynx Share
 https://github.com/Ka1-S/LYNX-SHARE
 -lightweight open-source DAW in C++20/JUCE with the FL Studio workflow
+
+Gridline
+https://github.com/lolitemaultes/Gridline
+-Music workstation built around the grid. Channel rack, step sequencer, piano roll, playlist, mixer.
+-FL alike. Opens FL Studio projects (.flp)
 
 ----------------------------------------------------------------------------------------------------
 Modular environments
@@ -306,6 +317,10 @@ https://github.com/Hornfisk/squelchbox
 https://www.kvraudio.com/forum/viewtopic.php?t=629426
 -TB-303 plugin for VST3, CLAP, standalone. Built with Rust, nih-plug, and egui. GPL-3.0.
 
+DW-303
+https://github.com/mo0kid/DW-303
+-Circuit-modelled bass line synthesizer and step sequencer, built on RAVET.
+
 Lemus (Legacy Electronic MUsic Systems)
 https://lemusdev.org/download
 https://github.com/lemus-dev/lemus/tree/v0.1.4
@@ -360,6 +375,10 @@ https://github.com/giulioz/rdpiano
 SQ8L
 https://github.com/sq8l-revival/SQ8L
 -64-bit port of SQ8L 0.91b, the free Ensoniq SQ-80 emulation by Siegfried Kullmann
+
+Ensoniq ASR-10 Emulator
+https://github.com/dudumil/Ensoniq-ASR-10-Emulator
+-Hardware-level emulator of the Ensoniq ASR-10 (rack) sampler. It runs the original ROM.
 
 CompuFart:
 https://github.com/alexmfink/compufart
@@ -801,6 +820,14 @@ https://librearp.gitlab.io/
 https://www.youtube.com/watch?v=fzar_v5l_sE
 -Pattern-based arpeggio generator plugin
 
+Vima
+https://github.com/TheoGal/vima-vst
+-8-track melodic MIDI step sequencer, plays notes and sends CC (controller) messages, 
+-each track has up to 32 steps, its own length, timing and direction, and can play notes, send a CC
+ value.
+-can store 64 patterns, chain them into a longer arrangement, switch between them live, and automate
+ almost everything
+
 ----------------------------------------------------------------------------------------------------
 Audio Scripting
 
@@ -840,6 +867,16 @@ SuperCollider:
 https://github.com/supercollider/supercollider
 -Platform for audio synthesis and algorithmic composition
 
+Tidal Cycles
+https://tidalcycles.org/
+-Live coding environment for algorithmic patterns, written in Haskell, based on SuperCollider.
+
+Strudel
+https://strudel.cc/
+https://codeberg.org/uzu/strudel
+-Live coding patterns on the web
+-JavaScript version of Tidal Cycles
+
 CSound:
 https://csound.com/
 -Sound and music computing system
@@ -877,15 +914,14 @@ Glicol (graph-oriented live coding language):
 https://github.com/chaosprint/glicol
 https://github.com/glicol
 
-
 ----------------------------------------------------------------------------------------------------
 Scripts for the scripting languages:
 
 https://github.com/grame-cncm/faustlibraries
 https://faustlibraries.grame.fr/libs/reverbs/
 https://www.reddit.com/r/DSP/comments/1mopqsb/faust_dsp_reverb_code/
-
-
+https://github.com/switchangel/strudel-scripts
+https://github.com/terryds/awesome-strudel
 
 ----------------------------------------------------------------------------------------------------
 Frameworks
@@ -906,10 +942,13 @@ https://www.cockos.com/wdl/
 -GUI-library plus some audio related stuff
 
 YUP:
+https://yup.audio/
 https://github.com/kunitoki/yup
 https://www.kvraudio.com/forum/viewtopic.php?t=621635
 -Framework for GUI and audio plugins built on the ISC-licensed modules forked from JUCE 7
 -GUI stuff is based on Rive: https://github.com/rive-app/rive-runtime
+-Has its own graphics, GUI, DSP, audio graph, and plugin layers.
+-Audio Graph seems to be a modular plugin routing system (or modular synth?)
 
 Choc
 https://github.com/Tracktion/choc/
@@ -976,6 +1015,10 @@ foleys_gui_magic:
 https://github.com/ffAudio/foleys_gui_magic
 -This module allows to create GUIs without any coding.
 
+Raven
+https://github.com/oscar-soirey/Raven
+-A lightweight, multithreaded GUI library in C for editors and tools. For C, Rust, C++, C#, Java, 
+ Python, Zig, Lua, Go, Odin
 
 JUCE Add-Ons:
 
@@ -1002,6 +1045,10 @@ https://github.com/N9RecordsTechnologiesIL/VSReacT
 https://www.kvraudio.com/forum/viewtopic.php?t=632622
 -"Your TSX runs in an embedded QuickJS engine inside the plugin. A custom reconciler streams the
  tree to C++, Yoga computes flexbox, juce::Graphics paints every pixel. No webview."
+
+RAVET (Rust Audio Visual Engineering Toolkit)
+https://github.com/mo0kid/ravet
+-Rust framework in development for audio plug-ins and standalone audio applications.
 
 ----------------------------------------------------------------------------------------------------
 DSP Libraries
@@ -1377,6 +1424,12 @@ Time-Varying Filters for Musical Applications
 https://github.com/iZotope/time_varying_filters_paper/tree/master
 -Code and data used by "Time-Varying Filters for Musical Applications" (DAFx-14 paper)
 
+GRM
+https://github.com/innermost47/grm-core
+-Global Relational Model core: a relational network solver where everything is written as relations 
+ that must balance, solved together with propagated uncertainties. Tested on physics, a guitar 
+ simulator, logic (3-SAT) and route optimisation (TSP).
+
 ----------------------------------------------------------------------------------------------------
 Numerical Math and Algorithms Libraries
 
@@ -1631,6 +1684,20 @@ FineTune
 https://github.com/ronitsingh10/FineTune
 -Volume control per app, routing, equalization and headphone correction for macOS.
 
+Frieve EffeTune
+https://effetune.frieve.com/
+https://github.com/Frieve-A/effetune
+-Real-time audio effects for music listening: EQ, tube amp, AM radio, visualizer, and 100+ more. 
+ Web/PWA, desktop, Chrome/Edge extension, VST3.
+
+CamillaDSP
+https://github.com/HEnquist/camilladsp
+
+FxSound
+https://www.fxsound.com/
+https://github.com/fxsound2/fxsound-app
+-Equalizer, effects, and presets for customized audio.
+
 ----------------------------------------------------------------------------------------------------
 Media Players
 
@@ -1770,6 +1837,13 @@ Sampson:
 https://github.com/irpina/Sampson-Sample-Manager
 -Sample manager
 
+OpenRB-338
+https://github.com/pingw33n/openrb-338
+-Reimplementation of ReBirth RB-338 (2 TB-303, TR-808, TR-909, Effects)
+
+OFAD GOLEM 
+https://github.com/cookhenri-art/ofad-golem-groovebox
+-groovebox logicielle libre ...everything seems to be in french?
 
 ----------------------------------------------------------------------------------------------------
 Audio AI projects and related stuff
@@ -1897,6 +1971,10 @@ https://github.com/cgzirim/seek-tune
 ----------------------------------------------------------------------------------------------------
 Unsorted:
 
+AutoEq
+https://github.com/jaakkopasanen/AutoEq
+-Tool for automatically equalizing headphones.
+
 Music Tribe Open Source
 https://github.com/MusicTribeOpenSource
 https://github.com/MusicTribeOpenSource/0716-AAF  Ignite: Step Sequencer
@@ -1912,6 +1990,11 @@ https://github.com/erica-synths/lxr-desktop-app
 -Firmware for LXR desktop drum synthesizer from Erica Synths
 
 AKAI Sample Key  ...coming soon
+
+AZ0x Open Source Releases
+https://github.com/inmusic-software/az0x-open-source
+-Open source components used in inMusic software. 
+-Firmware for Akai MPCs
 
 M-VAVE FM-1 - Felucca (emulated)
 https://joakimeriksson.github.io/fm1-emu/?fw=felucca&mhz=100
@@ -1963,6 +2046,9 @@ DASP:
 https://github.com/rustaudio/dasp
 -Digital Audio Signal Processing in Rust.
 
+
+https://github.com/thefinalcutbg/QAN1xEditor
+-An editor for the Yamaha AN1x synthesizer
 
 Eclipsa Audio:
 https://github.com/google/eclipsa-audio-plugin

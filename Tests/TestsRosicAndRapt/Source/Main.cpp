@@ -66,8 +66,8 @@ int main(int /*argc*/, char* /*argv[]*/)
   // Unit Tests:
 
   bool ok = true;
-  ok &= runUnitTestsRapt();
-  ok &= runUnitTestsRosic();
+  //ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
 
   // We currently get a memory leak when runUnitTestsRapt() is being called. If it's commented out,
@@ -313,8 +313,8 @@ int main(int /*argc*/, char* /*argv[]*/)
   //multiplicativeSynth();
   //pulseWidthModulationViaTwoSaws();  // just a stub at the moment
   //flatZapper();  // Various experiments
-  freqSweeper();
-  sineSweepBassdrum();
+  //freqSweeper();
+  //sineSweepBassdrum();
 
   // Modulators:
   //attackDecayEnvelope();
@@ -378,11 +378,12 @@ int main(int /*argc*/, char* /*argv[]*/)
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();
 
+  // ToDo: Move to the "Numeric Calculus" section:
   //numericDifferentiation();                // num. dif. on a function object
-  //numericIntegration();                   // a.k.a. numeric "quadrature"
+  //numericIntegration();                    // a.k.a. numeric "quadrature"
   //nonUniformArrayDiffAndInt();            // differentiation and integration of sampled data
   //testNonUniformInvertibleDiff();         // algo that produces reciprocals when swapping x and y
-  //uniformArrayDiffAndInt();               // under construction
+  uniformArrayDiffAndInt();               // under construction
 
   //derivativeFormulas();                   // still empty
   //vertexMeshGradient();                   // implementations are in MeshExperiments.cpp
@@ -700,6 +701,9 @@ int main(int /*argc*/, char* /*argv[]*/)
 
   //===============================================================================================
   // RoSiC tests:
+  // ToDo: Maybe merge this section with the rapt tests. Rationale: a particular test is easier to
+  // find, if they are sorted purely by topic rather than first by library then by topic. The 
+  // distinction doesn't really matter very much anyway.
 
 
   //-----------------------------------------------------------------------------------------------
