@@ -1,3 +1,26 @@
+In this file, I collect various ideas for synthesizing drum sounds
+
+----------------------------------------------------------------------------------------------------
+Drum sounds as impulse responses
+
+- We want to create a (linear time-invariant) filter that turns incoming or internally generated 
+  input impulses into drum sounds. 
+  
+- To achieve this, we set up a chain (i.e series connection) of filters of the following types
+
+- Allpass disperser. Based on a chain of 1st or 2nd order allpasses with exponentially spaced 
+  characterstic frequencies. Turns impulses into sine sweepdowns. See FlatZapper.
+
+- Allpass diffusor. Based on a series connection or nested setup Schroeder/Moorer allpasses 
+  (verify!). Turns impulses into metallic scratch/swoosh sounds. Maybe with a more complex setup, it
+  could even produce noise bursts.
+  
+- Allpass FDN. This needs to be researched. I don't have it implemented yet. But the idea is that
+  it turns impulses into noise bursts. Maybe we could also use regular FDNs, i.e. FDNs that do not 
+  necessarily have an allpass response.
+
+
+
 ----------------------------------------------------------------------------------------------------
 Drum Synth based on allpass filters
 
