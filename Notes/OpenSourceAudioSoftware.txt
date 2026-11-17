@@ -1339,6 +1339,10 @@ stmlib
 https://github.com/pichenettes/stmlib
 -Mutable Instruments' project template, makefile, and libraries for STM32F projects.
 
+liquid-dsp
+https://github.com/jgaeddert/liquid-dsp
+-DSP library designed for software-defined radios on embedded platforms.
+
 ----------------------------------------------------------------------------------------------------
 FFT Libraries:
 
