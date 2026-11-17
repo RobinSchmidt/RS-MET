@@ -5,21 +5,59 @@ Drum sounds as impulse responses
 
 - We want to create a (linear time-invariant) filter that turns incoming or internally generated 
   input impulses into drum sounds. 
-  
+
 - To achieve this, we set up a chain (i.e series connection) of filters of the following types
 
 - Allpass disperser. Based on a chain of 1st or 2nd order allpasses with exponentially spaced 
-  characterstic frequencies. Turns impulses into sine sweepdowns. See FlatZapper.
+  characteristic frequencies. Turns impulses into sine sweepdowns. See FlatZapper.
 
 - Allpass diffusor. Based on a series connection or nested setup Schroeder/Moorer allpasses 
   (verify!). Turns impulses into metallic scratch/swoosh sounds. Maybe with a more complex setup, it
-  could even produce noise bursts.
-  
+  could even produce noise bursts. Maybe by using different settings for left and right channel, we
+  can create a nice stereo width.
+
 - Allpass FDN. This needs to be researched. I don't have it implemented yet. But the idea is that
   it turns impulses into noise bursts. Maybe we could also use regular FDNs, i.e. FDNs that do not 
   necessarily have an allpass response.
 
+- MultiComb allpass. This may be used to create ringing at harmonic series and thereby impose a 
+  tonal character. This is not always desirable for drums, though. But it is optional anyway. Maybe
+  it could be used to create stereo width
 
+- Resonant biquad allpass (maybe as ZDF-SVF). Creates ringing at one particular frequency.
+
+- Tilt filter. To adjust the overall spectral trend/slope/tilt.
+
+- 4-Band equalizer. Or maybe arbitrary N-band equalizer. Available filter types should be the ones
+  from EasyQ plus biquad allpass, one-pole allpass. Then, we may not need an extra resonant biquad 
+  allpass because the EQ can already do that.
+
+- High order lowpass/highpass/...etc. filters could be useful.
+
+- To create stereo-width, we could use a quadrature filter pair.
+
+
+ToDo:
+
+- Document, which of the filter types are already implemented and in which classes.
+
+- Create the individual filter types as ToolChain modules and set up the chain there for 
+  experimentation.
+  
+- Maybe implement them also as (GUI-less) CLAP plugins and as APE scripts.
+
+----------------------------------------------------------------------------------------------------
+Drums based on osc with frequency sweep.
+
+- There should be a frequency envelope with parameters: HiFreq, LoFreq, DecayTime, ....
+
+- The shape of the envelope should be adjustable and among the shapes should be one that is similar
+  f(t) = 1/t. See discussion on KVR: https://www.kvraudio.com/forum/viewtopic.php?t=633942
+  
+- There should be an amplitude envelope, too.
+
+- The oscillator may provide sine wave and rounded triangle waves and maybe also wavetables with an 
+  envelope for the wavetable (depth-) position.
 
 ----------------------------------------------------------------------------------------------------
 Drum Synth based on allpass filters
@@ -36,3 +74,18 @@ Drum Synth based on allpass filters
   amp-envs for the outputs of both filters. Maybe also have filters/equalizers for the two outputs.
   
 - This mix then goes into and FDN and after the FDN, yet another amp-env is applied.
+
+----------------------------------------------------------------------------------------------------
+General ideas:
+
+- Noise bursts may be useful.
+
+- Waveshapers may be useful, specially when placing them after a boost/peak filter.
+
+- A tilt-filter with time-varying tilt may be useful. On noise inputs, this tends to create impact 
+  sounds
+  
+- Modulation synthesis (FM, RM, AM, PD, ...) can be useful for plonky percussion sounds. 
+
+- Maybe we can use several resonators as basis for "multiplicative synthesis", i.e. hierarchical RM
+  synthesis.
