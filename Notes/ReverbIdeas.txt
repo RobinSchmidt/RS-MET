@@ -26,3 +26,33 @@ in an FDN.
   impulses have completed some number of roundtrips. Before that, we will see isolated echos. But 
   that's actually realistic, though, so it might not be that much of a problem.
 
+- When we have established such a fitness function and experimentally verified that indeed captures
+  quality perception reasonably well, we can use that in an automated search for good tunings. Maybe
+  we can use evolutionary algorithms for that.
+
+- We want to develop an algorithm into which we can plug in a range min..max and it returns an array
+  of monotonically increasing lengths within that range. Naively, we could use an equidistant (or 
+  linear) spacing or an exponential spacing. In some first experiments that I did long ago, this 
+  naive approach led to bad sounding reverbs, though. So, simple linear and exponential spacings 
+  seem not to be good. 
+  
+- Somewhere in RAPT, I have a class rsRatioGenerator that is made for this purpose. It has already
+  some more interesting algorithms implemented. New algorithms and formulas should be added to that
+  class. The ratios that this class produces can be used for delay lines in FDNs but also for 
+  frequencies in supersaws and maybe in other contexts as well.
+
+- Maybe we should try a spacing in which the reciprocals of the lengths are linearly spaced. The 
+  rationale is that reciprocals of lengths correspond to modal frequencies (verify!) and I think, 
+  that we ultimately want to spread these modal frequencies equally around the unit circle. 
+  Although, we may actually want to have the modal density increase with frequency, so maybe the 
+  length distribution should be skewed toward shorter lengths.
+
+- Maybe it makes sense to let the longer lengths be tuned such that their produced modes correspond 
+  to musical frequencies. For example, when the song is in A minor, we may want to have a low mode
+  at 55 Hz. Maybe we should let the user tune the low modes in terms of musical pitches.
+
+- Maybe try creating a 4x4 FDN with modal frequencies tunes to A,C,E,G and use it on a sound played
+  in A minor. Maybe try also an 8x8 FDN with A,C,E,G,B,D,F,A spanning 2 octaves or just go up the
+  scale A,B,C,D,E,F,G. Allow the user to select the scale (major, minor, aeolian, lydian, etc.). 
+  Maybe call the module ScaleVerb. Maybe allow custom scales maybe by importing .tun files. Have an
+  overall Tuning parameter. Let the user switch between 4x4, 8x8 and maybe 6x6, 12x12.
