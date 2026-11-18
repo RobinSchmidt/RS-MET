@@ -1,0 +1,28 @@
+In this file, I collect some ideas about designing artificial reverberation algorithms.
+
+----------------------------------------------------------------------------------------------------
+Delayline lengths for Feedback Delay Networks (FDNs)
+
+In this section, I collect some considerations and ideas for tuning the lengths of the delay lines
+in an FDN.
+
+- The classic literature says that the lenghts M1,M2,M3,... should be mutually coprime in order to
+  avoid recirculating impulses to line up in time as much as possible.
+
+- Beyond that "mutually comprime" condition for M1,M2,..., could it perhaps make sense to also have
+  M1+M1, M1+M2, M1+M2, ..., M2+M2, M2+M3, ..., i.e. all possible different pairwise sums also 
+  mutually coprime? And maybe also all the possible triple-wise sums etc.? Just an idea. Try it!
+
+- In order to systematically explore the space of different length tunings, we should try to find a
+  suitable objective function to optimize. We want a function into which we can plug in the lengths
+  and it returns a number that tells us how good that configuration is. The results that this 
+  fitness function produces should correlate well with human perception. Some featues that are known
+  to correlate well with perceived reverb quality are modal density, echo density, ...TBC...
+
+- We want the spectrum to be white with no ringing modes standing out
+
+- Ideally, a lossless prototype network should produce an impulse response that is similar to white 
+  noise. In an FDN, this amount of complexity will typically only happen after some time when the 
+  impulses have completed some number of roundtrips. Before that, we will see isolated echos. But 
+  that's actually realistic, though, so it might not be that much of a problem.
+
