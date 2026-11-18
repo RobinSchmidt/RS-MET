@@ -264,6 +264,12 @@ Coding:
   https://claude.ai/share/4d6c2630-30d6-4010-94d4-27a7e0225391  for an example
   
 
+Chatting:
+
+- Stay on topic. Don't intersperse distractions and derailments. We want to keep the context tidy.
+  Any side quests and side questions that occur along the way should go into separate chat sessions.
+
+
 Debugging:
 
 - "Describe Bug -> Generate Explanation"
