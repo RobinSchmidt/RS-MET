@@ -110,7 +110,15 @@ In this section, I collect some ideas for how to integrate nonlinearities into t
   achieve different decay shapes. The standard decay shape is exponential but it may be interesting
   to try to modify that default shape.
 
-- 
+  - To implement this, we could scale all the feedback gains by a common gain factor g that gets 
+    computed in such a way to scale the overall decay time by some factor k.
+  
+  - The decay time factor k may be computed form the total energy (or sum of abs values) that is 
+    currently stored in the state of the system. But we do not want to run a sum over the complete
+    delayline contents at every sample. Maybe we can update this sum recursively from a known value
+    at the previous sample and our knowledge about how we have modified the state at the current 
+    sample. In all the delaylines, we replace one value. We just need to take the old sum and per
+    delayline, subtract the old delayline sample and add the new delayline sample.
 
 - A pitch shifter in the feedback path could be interesting. Or maybe a frequency shifter.
 
