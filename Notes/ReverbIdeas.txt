@@ -56,3 +56,35 @@ in an FDN.
   scale A,B,C,D,E,F,G. Allow the user to select the scale (major, minor, aeolian, lydian, etc.). 
   Maybe call the module ScaleVerb. Maybe allow custom scales maybe by importing .tun files. Have an
   overall Tuning parameter. Let the user switch between 4x4, 8x8 and maybe 6x6, 12x12.
+
+
+----------------------------------------------------------------------------------------------------
+Time variance
+
+In this section, I collect some ideas for how to incorporate time variance (i.e. modulation) into
+the reverb.
+
+- I think, the classic way to intoduce some modulation is to vary the delayline lengths over time
+  which should create some sort of chorusy effect and helps to fight against a metallic sound due to
+  single modes standing out.
+  
+- Specifically for an FDN using my generalized Hadamard transform as feedback matrix, we could try
+  to modulate the angle parameter phi
+
+- Because I like my effect algorithms to be autononomus, i.e. not requiring some external modulation
+  signal like an LFO, we could try to derive a modulation signal directly from the signals that we
+  already have (input, output, internal state). Passing those through a bandpass could give us a
+  sine-LFO-like signal. Before the bandpass, we could also do stuff like taking the absolute value,
+  squaring, taking another power, multiplying different signals together, etc. The goal of this is 
+  to produce an overtone-rich (ideally noise-like) signal, because a noise-driven bandpass makes for
+  a good modulator. 
+  Q: Should these operations should be linear such that f(a*x) = a*f(x)? I think this holds for the 
+  absolute value. ...but it is normally considered nonlinear. Maybe we only need the "homogeneous"
+  part of linearity but not the "additive" part. Abs does not satisfy f(x+y) = f(x) + f(y). But I 
+  think, a homogeneous operation would mean that the modulation goes down when the signal goes 
+  quiet. This may or may not be desirable. We'll see. Maybe it would be desirable that the amount of 
+  modulation is independent of the volume of the input signal. Maybe we can achieve this by using 
+  an envelope follower and renormalize our signals by the detected envelope (i.e. divide by it).
+
+----------------------------------------------------------------------------------------------------
+Nonlinearities
