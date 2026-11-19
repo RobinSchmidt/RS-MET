@@ -19,16 +19,26 @@ in an FDN.
   fitness function produces should correlate well with human perception. Some featues that are known
   to correlate well with perceived reverb quality are modal density, echo density, ...TBC...
 
-- We want the spectrum to be white with no ringing modes standing out
+- When we have established such a fitness function and experimentally verified that indeed captures
+  quality perception reasonably well, we can use that in an automated search for good tunings. Maybe
+  we can use evolutionary algorithms for that.
 
 - Ideally, a lossless prototype network should produce an impulse response that is similar to white 
   noise. In an FDN, this amount of complexity will typically only happen after some time when the 
   impulses have completed some number of roundtrips. Before that, we will see isolated echos. But 
   that's actually realistic, though, so it might not be that much of a problem.
 
-- When we have established such a fitness function and experimentally verified that indeed captures
-  quality perception reasonably well, we can use that in an automated search for good tunings. Maybe
-  we can use evolutionary algorithms for that.
+- We want the spectrum to be white with no ringing modes standing out so maybe the fitness function
+  should be based on how flat the spectrum is. If we view it as cost function to be minimized, a 
+  completely flat spectrum should give a value of zero and deviations from flatness should increase
+  the value. Maybe such a function could work as follows: Compute the dB-spectrum. Compute the 
+  average (aka mean) dB-value of the spectrum. Compute the sum of (some power of) the absolute 
+  values of the deviations from the mean dB value. Maybe the power could be different for positive 
+  and negative deviations reflecting the fact that notches are less annoying than resonances. Maybe
+  we should not only take the heights of the deviations into account but also their widths. Narrow
+  resonances (and maybe also antiresonances) turn up as ringing whioch is what we want to penalize.
+  Maybe we should look at my idea for a "ringing response" instead of the magnitude response. See
+  experiments in the main repo.
 
 - We want to develop an algorithm into which we can plug in a range min..max and it returns an array
   of monotonically increasing lengths within that range. Naively, we could use an equidistant (or 
@@ -64,14 +74,14 @@ Time variance
 In this section, I collect some ideas for how to incorporate time variance (i.e. modulation) into
 the reverb.
 
-- I think, the classic way to intoduce some modulation is to vary the delayline lengths over time
+- I think, the classic way to introduce some modulation is to vary the delayline lengths over time
   which should create some sort of chorusy effect and helps to fight against a metallic sound due to
   single modes standing out.
   
 - Specifically for an FDN using my generalized Hadamard transform as feedback matrix, we could try
   to modulate the angle parameter phi
 
-- Because I like my effect algorithms to be autononomus, i.e. not requiring some external modulation
+- Because I like my effect algorithms to be autonomous, i.e. not requiring some external modulation
   signal like an LFO, we could try to derive a modulation signal directly from the signals that we
   already have (input, output, internal state). Passing those through a bandpass could give us a
   sine-LFO-like signal. Before the bandpass, we could also do stuff like taking the absolute value,
@@ -88,3 +98,28 @@ the reverb.
 
 ----------------------------------------------------------------------------------------------------
 Nonlinearities
+
+In this section, I collect some ideas for how to integrate nonlinearities into the reverb.
+
+- Gating the wet output for the classic "gated reverb" sound.
+
+- Ducking the wet signal by the input in order to get clean and dry transients together with a 
+  reverberant tail.
+
+- We could try to have some sort of dynamics processor in the feedback path in order to try to 
+  achieve different decay shapes. The standard decay shape is exponential but it may be interesting
+  to try to modify that default shape.
+
+- 
+
+- A pitch shifter in the feedback path could be interesting. Or maybe a frequency shifter.
+
+
+
+See: 
+
+Delay/Reverb with Compressor in feedback path, secret sauce?
+https://www.kvraudio.com/forum/viewtopic.php?t=634777
+
+Someone should make this plugin. Cymbal synthesis.
+https://www.kvraudio.com/forum/viewtopic.php?p=9233715
