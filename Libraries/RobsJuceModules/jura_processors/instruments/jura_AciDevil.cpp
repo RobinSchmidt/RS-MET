@@ -561,6 +561,7 @@ void AciDevilModuleEditor::resized()
   // what can we do below the preset section? maybe a little scope? or some meters?
 }
 
+//-------------------------------------------------------------------------------------------------
 /*
 
 Ideas:
@@ -634,5 +635,15 @@ Ideas:
   and happen to have their volume at the old default value of -12 because default values are not 
   stored. So, if we do this change, we need to also implement the xml-state versioning facilities 
   for state conversion from old to new version.
+
+- Maybe let each step have a pan parameter. Or better: Create a separate module for a pan sequencer
+  or maybe a more general parameter sequencing plugin that can target the following parameters:
+  Gain, Pan, Cutoff1, Cutoff2 where the latter are cutoff frequencies for two independent ZDF-SVF
+  filters with adjustable mode (it should also include 1st order LPF and HPF modes). The filter 
+  configuration should be continuously adjustabel between serial and parallel. I think, somewhere
+  in rosic, I already have such a dual filter. Use that as inspiration - but redo it because the 
+  old one uses standard biquads and we want to use SVFs this time due to their superior modulation
+  response, which is important in this context.
+
 
 */

@@ -266,9 +266,26 @@ Coding:
 
 Chatting:
 
-- Stay on topic. Don't intersperse distractions and derailments. We want to keep the context tidy.
-  Any side quests and side questions that occur along the way should go into separate chat sessions.
-
+- Try to keep the chats short because the longer they get, the more costly (in terms of tokens) will
+  every follow up question be. Strategies to keep chats short are:
+  
+  - Stay on topic. Don't intersperse distractions and derailments. We want to keep the context tidy.
+    Any side quests and side questions that occur along the way should go into separate chat 
+    sessions.
+  
+  - When a chat gets long (like longer than 10-15 back-and-forth messages), request a summary of the
+    key findings and start a fresh chat. In the prompt of the fresh chat, either paste that summary 
+    directly, or - if it's an .md document - point the chatbot to that document.
+  
+  - Toggle off web search when it's not needed for the task at hand.
+  
+  - Batch your questions. Asking three related research questions in a single prompt uses far less 
+    budget than sending three separate back-and-forth messages.
+  
+  - If a response missed the mark and you want to tweak the question retroactively, click Edit on 
+    your last prompt rather than sending a correction. Editing rewinds the conversation to that 
+    point, saving you from carrying dead-end responses forward.
+  
 
 Debugging:
 
