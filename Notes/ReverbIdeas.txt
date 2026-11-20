@@ -79,7 +79,6 @@ in an FDN.
   Maybe call the module ScaleVerb. Maybe allow custom scales maybe by importing .tun files. Have an
   overall Tuning parameter. Let the user switch between 4x4, 8x8 and maybe 6x6, 12x12.
 
-
 ----------------------------------------------------------------------------------------------------
 Time variance
 
@@ -89,12 +88,17 @@ the reverb.
 - I think, the classic way to introduce some modulation is to vary the delayline lengths over time
   which should create some sort of chorusy effect and helps to fight against a metallic sound due to
   single modes standing out.
-  
+
+- Maybe place modulated allpasses into the loop, directly after the delaylines, before the feedback
+  matrix. Try 1st and 2nd order allpasses, Schroeder allpasses, allpass dispersers, etc. I think, a
+  1st order allpass is like modulating the delayline length by at most one sample using allpass 
+  interpolation (verify!).
+
 - Specifically for an FDN using my generalized Hadamard transform as feedback matrix, we could try
   to modulate the angle parameter phi
 
 - Because I like my effect algorithms to be autonomous, i.e. not requiring some external modulation
-  signal like an LFO, we could try to derive a modulation signal directly from the signals that we
+  source like an LFO, we could try to derive a modulation signal directly from the signals that we
   already have (input, output, internal state). Passing those through a bandpass could give us a
   sine-LFO-like signal. Before the bandpass, we could also do stuff like taking the absolute value,
   squaring, taking another power, multiplying different signals together, etc. The goal of this is 
@@ -123,23 +127,28 @@ In this section, I collect some ideas for how to integrate nonlinearities into t
   to try to modify that default shape.
 
   - To implement this, we could scale all the feedback gains by a common gain factor g that gets 
-    computed in such a way to scale the overall decay time by some factor k.
+    computed in such a way to scale the overall decay time by some factor k. Or maybe each feedback
+    gain needs its own scaler? We'll see.
   
-  - The decay time factor k may be computed form the total energy (or sum of abs values) that is 
+  - The decay time factor k may be computed from the total energy (or sum of abs values) that is 
     currently stored in the state of the system. But we do not want to run a sum over the complete
     delayline contents at every sample. Maybe we can update this sum recursively from a known value
     at the previous sample and our knowledge about how we have modified the state at the current 
-    sample. In all the delaylines, we replace one value. We just need to take the old sum and per
-    delayline, subtract the old delayline sample and add the new delayline sample.
+    sample. In all the delaylines, we replace one value. We just need to take the old sum and for
+    each delayline, subtract the value of the old delayline sample (the one that got replaced) and 
+    add the new delayline sample (the replacement value).
+  
+  - See this thread:
+    Delay/Reverb with Compressor in feedback path, secret sauce?
+    https://www.kvraudio.com/forum/viewtopic.php?t=634777
 
 - A pitch shifter in the feedback path could be interesting. Or maybe a frequency shifter.
 
+- A phase distortion algorithm in the feedback path could create a sort of "bloom" effect in the 
+  sense that more passes through the loop make the signal progressively richer in overtones. See:
+  Someone should make this plugin. Cymbal synthesis.
+  https://www.kvraudio.com/forum/viewtopic.php?p=9233715
 
 
-See: 
 
-Delay/Reverb with Compressor in feedback path, secret sauce?
-https://www.kvraudio.com/forum/viewtopic.php?t=634777
 
-Someone should make this plugin. Cymbal synthesis.
-https://www.kvraudio.com/forum/viewtopic.php?p=9233715
