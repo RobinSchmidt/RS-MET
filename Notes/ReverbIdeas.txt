@@ -40,6 +40,18 @@ in an FDN.
   Maybe we should look at my idea for a "ringing response" instead of the magnitude response. See
   experiments in the main repo.
 
+- Maybe the fitness function should contain two terms. One for the spectral features that penalizes
+  deviations from flatness and one for temporal features that penalizes echo collisions. Maybe we
+  should minimize the maximum distance between modal frequencies together with the maximum distance
+  between (early?) echoes. But what do we mean by "early"? Maybe we should express this in terms of
+  passes through the feedback loop. Take the length m_max of the longest delayline and then define
+  1st order echoes as those occurring for n <= m_max, 1st-and-2nd order echoes as those for 
+  n <= 2*m_max, etc. In general, up to k-th order echoes are those occurring for n <= k*m_max. With
+  that definition in place, we can define "early" in terms of the chosen k. Early should mean a 
+  small k. Maybe something in 1..5? But maybe that should depend on the number of delaylines. I 
+  think, with more delaylines, we reach echo pattern complexity faster (i.e. with fewer passes
+  through the feedback loop), so maybe for more delaylines, we should choose a smaller k.
+
 - We want to develop an algorithm into which we can plug in a range min..max and it returns an array
   of monotonically increasing lengths within that range. Naively, we could use an equidistant (or 
   linear) spacing or an exponential spacing. In some first experiments that I did long ago, this 
